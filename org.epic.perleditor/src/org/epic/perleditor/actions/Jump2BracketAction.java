@@ -2,16 +2,12 @@ package org.epic.perleditor.actions;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
-import org.eclipse.jface.text.IDocument;
-import org.eclipse.jface.text.ITextOperationTarget;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.editors.text.TextEditor;
-import org.eclipse.ui.texteditor.TextOperationAction;
 import org.epic.perleditor.editors.PerlEditor;
-import org.epic.perleditor.editors.PerlEditorMessages;
 
 public class Jump2BracketAction extends Action implements
 		org.eclipse.ui.IEditorActionDelegate {
@@ -41,10 +37,9 @@ public class Jump2BracketAction extends Action implements
 	    }
 		
 		if(editor != null) {
-			ISourceViewer viewer = editor.getViewer();
-			int cursorPosition = viewer.getTextWidget().getCaretOffset();
+      ISourceViewer viewer = editor.getViewer();
 
-		  int matchPosition = ((PerlEditor) editor).findNextOccurance(cursorPosition);
+		  int matchPosition = ((PerlEditor) editor).findNextOccurance();
 		  if (matchPosition >= 0) {
 		    viewer.getTextWidget().setCaretOffset(matchPosition +1);
 		    

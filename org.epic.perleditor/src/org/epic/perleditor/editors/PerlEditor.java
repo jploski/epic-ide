@@ -5,25 +5,16 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.debug.core.model.IProcess;
-import org.eclipse.debug.core.model.RuntimeProcess;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuManager;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.preference.PreferenceConverter;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
-import org.eclipse.jface.text.ITextOperationTarget;
 import org.eclipse.jface.text.ITextViewerExtension5;
 import org.eclipse.jface.text.source.CompositeRuler;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.jface.text.source.IVerticalRuler;
 import org.eclipse.jface.text.source.LineNumberRulerColumn;
-import org.eclipse.jface.text.source.SourceViewer;
 import org.eclipse.jface.text.source.projection.ProjectionAnnotationModel;
 import org.eclipse.jface.text.source.projection.ProjectionSupport;
 import org.eclipse.jface.text.source.projection.ProjectionViewer;
@@ -37,20 +28,18 @@ import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.IStorageEditorInput;
 import org.eclipse.ui.editors.text.ILocationProvider;
 import org.eclipse.ui.editors.text.TextEditor;
 import org.eclipse.ui.internal.ViewerActionBuilder;
+import org.eclipse.ui.internal.Workbench;
 import org.eclipse.ui.texteditor.ContentAssistAction;
 import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.texteditor.ITextEditorActionDefinitionIds;
-import org.eclipse.ui.texteditor.TextOperationAction;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 import org.epic.perleditor.PerlEditorPlugin;
-import org.epic.perleditor.actions.IPerlEditorActionDefinitionIds;
 import org.epic.perleditor.editors.util.PerlColorProvider;
 import org.epic.perleditor.preferences.PreferenceConstants;
 import org.epic.perleditor.views.PerlOutlinePage;
@@ -118,8 +107,6 @@ public class PerlEditor extends TextEditor implements
 	
 	private IDocument document;
 
-//	private IDocumentProvider fDocumentProvider;
-
 	private IdleTimer idleTimer;
 
 	private final static String PERL_MODE = "perl";
@@ -133,7 +120,7 @@ public class PerlEditor extends TextEditor implements
 
 	public PerlEditor() {
 		super();
-		//setDocumentProvider(new ColoringDocumentProvider());
+
 		setDocumentProvider(new PerlDocumentProvider());
 
 		PerlEditorPlugin.getDefault().getPreferenceStore()
@@ -142,9 +129,6 @@ public class PerlEditor extends TextEditor implements
 		this.setPreferenceStore(PerlEditorPlugin.getDefault()
 				.getPreferenceStore());
 		setKeyBindingScopes(new String[] { "org.epic.perleditor.perlEditorScope" });
-
-		//		setRulerContextMenuId("#PerlRulerContext");
-		//		setEditorContextMenuId("#PerlDocEditorContext");
 	}
 
 	/**
@@ -152,7 +136,7 @@ public class PerlEditor extends TextEditor implements
 	 * the actions to add those specific to the receiver
 	 */
 
-	protected void createActions() {
+	protected void createActions() { 
 		super.createActions();
 
 		Action action;
@@ -169,10 +153,6 @@ public class PerlEditor extends TextEditor implements
 		fSourceViewer = getSourceViewer();
 		fSourceViewer.setDocument(document);
 
-		
-//		fDocumentProvider = provider;
-//		fSourceViewer = (SourceViewer) getSourceViewer();
-
 		if (fValidationThread == null && isPerlMode()) {
 			fValidationThread = new PerlSyntaxValidationThread(this,
 					getSourceViewer());
@@ -183,17 +163,7 @@ public class PerlEditor extends TextEditor implements
 		}
 
 		if (fValidationThread != null) {
-// Any reason why this is required at all?
-		  //			try {
-//				// Give the validation thread time for initialization
-//				// TODO Find better solution
-//				Thread.sleep(1000);
-//			} catch (InterruptedException e) {
-//				e.printStackTrace();
-//			}
 			// Always check syntax when editor is opened
-			//fValidationThread.setText(getSourceViewer().getTextWidget().getText());
-//			fValidationThread.setText(getSourceViewer().getDocument().get());
 			fValidationThread.setText(document.get());
 		}
 
@@ -203,7 +173,6 @@ public class PerlEditor extends TextEditor implements
 		if ((fTodoMarkerThread == null) && isPerlMode()) {
 			fTodoMarkerThread = new PerlToDoMarkerThread(this,
 			    fSourceViewer);
-			fTodoMarkerThread.setPriority(Thread.MIN_PRIORITY);			
 			fTodoMarkerThread.start();
 		}
 
@@ -290,7 +259,6 @@ public class PerlEditor extends TextEditor implements
 		}
 
 		if (fValidationThread != null) {
-			//fValidationThread.setText(getSourceViewer().getTextWidget().getText());
 			fValidationThread.setText(getSourceViewer().getDocument().get());
 		}
 
@@ -430,10 +398,8 @@ public class PerlEditor extends TextEditor implements
 	 * Method declared on AbstractTextEditor
 	 */
 	protected void initializeEditor() {
-		//PerlEditorEnvironment.connect(this);
 		setSourceViewerConfiguration(new PerlSourceViewerConfiguration(
 				PerlEditorPlugin.getDefault().getPreferenceStore(), this));
-		//setRulerContextMenuId("#TextRulerContext");
 		super.initializeEditor();
 	}
 
@@ -479,8 +445,6 @@ public class PerlEditor extends TextEditor implements
 	public void revalidateSyntax(boolean forceUpdate) {
 
 		if (fValidationThread != null) {
-			//fValidationThread.setText(getSourceViewer().getTextWidget().getText(),
-			// forceUpdate);
 			fValidationThread.setText(getSourceViewer().getDocument().get(),
 					forceUpdate);
 		}
@@ -796,9 +760,10 @@ public class PerlEditor extends TextEditor implements
           myLastStyleRange.foreground = myText.getForeground(); 
         }
       } else {
-//        Shell shell;
-//        shell = PerlEditorPlugin.getWorkbenchWindow().getShell();
-//        MessageDialog.openInformation(shell, "Null Error", "Catching Error!!!");
+        // Unmark for Debug-Information if the Bracket-Matching does not work
+        //        Shell shell;
+        //        shell = PerlEditorPlugin.getWorkbenchWindow().getShell();
+        //        MessageDialog.openInformation(shell, "Null Error", "Catching Error!!!");
       }
     }
   }
@@ -817,8 +782,8 @@ public class PerlEditor extends TextEditor implements
 	}
 
 	public void createPartControl(Composite parent) {
-	  
-	  if (Platform.isRunning()) {
+	  //Workaround for Eclipse Bug 75440 (to fix it somehow) [LeO]
+	  if (!Workbench.getInstance().isClosing()) {
 		  super.createPartControl(parent);
 			ProjectionViewer viewer = (ProjectionViewer) getSourceViewer();
 			
@@ -891,7 +856,7 @@ public class PerlEditor extends TextEditor implements
    * @param StartPosition from the widget
    * @return the position for the widget
    */
-  public int findNextOccurance(int StartPosition){
+  public int findNextOccurance(){
 		StyledText myText = getSourceViewer().getTextWidget();
 		IDocument myDocument=getSourceViewer().getDocument();
 		

@@ -5,6 +5,7 @@ import org.eclipse.jface.text.source.IVerticalRuler;
 import org.eclipse.jface.text.source.SourceViewer;
 import org.eclipse.jface.text.source.projection.ProjectionViewer;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.DocumentCommand;
 
 import org.epic.perleditor.editors.util.PreferenceUtil;
@@ -21,12 +22,17 @@ public class PerlSourceViewer extends ProjectionViewer {
 	}
 
 	protected void customizeDocumentCommand(DocumentCommand command) {
-		if (command.text.equals("\t")) {
-			int line            = getTextWidget().getLineAtOffset(command.offset);
-			int lineStartOffset = getTextWidget().getOffsetAtLine(line);		
-			int column          = command.offset - lineStartOffset;
+		try {
+			if (command.text.equals("\t")) {
+				int line            = getDocument().getLineOfOffset(command.offset);
+				int lineStartOffset = getDocument().getLineOffset(line);		
+				int column          = command.offset - lineStartOffset;
 
-			command.text = PreferenceUtil.getTab(column);
+				command.text = PreferenceUtil.getTab(column);
+			}
+		} catch (BadLocationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		super.customizeDocumentCommand(command);
 	}

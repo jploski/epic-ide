@@ -9,9 +9,8 @@ import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.DefaultAutoIndentStrategy;
 import org.eclipse.jface.text.DocumentCommand;
 import org.eclipse.jface.text.IDocument;
+import org.epic.perleditor.editors.util.PreferenceUtil;
 
-import org.epic.perleditor.PerlEditorPlugin;
-import org.epic.perleditor.preferences.PreferenceConstants;
 
 /**
  * Auto indent strategy sensitive to brackets.
@@ -20,7 +19,7 @@ public class PerlAutoIndentStrategy extends DefaultAutoIndentStrategy {
 
 	public PerlAutoIndentStrategy() {
 	}
-	
+
 	/* 
 	 * Method declared on IAutoIndentStrategy
 	 */
@@ -31,22 +30,22 @@ public class PerlAutoIndentStrategy extends DefaultAutoIndentStrategy {
 			smartInsertAfterBracket(d, c);
 		}
 	}
-	
+
 	/**
 	 * Returns whether or not the text ends with one of the given search strings.
 	 */
 	private boolean endsWithDelimiter(IDocument d, String txt) {
 
-		String[] delimiters= d.getLegalLineDelimiters();
+		String[] delimiters = d.getLegalLineDelimiters();
 
-		for (int i= 0; i < delimiters.length; i++) {
+		for (int i = 0; i < delimiters.length; i++) {
 			if (txt.endsWith(delimiters[i]))
 				return true;
 		}
 
 		return false;
 	}
-	
+
 	/**
 	 * Returns the line number of the next bracket after end.
 	 * @returns the line number of the next matching bracket after end
@@ -55,10 +54,17 @@ public class PerlAutoIndentStrategy extends DefaultAutoIndentStrategy {
 	 * @param end - the end position to search back from
 	 * @param closingBracketIncrease - the number of brackets to skip
 	 */
-	 protected int findMatchingOpenBracket(IDocument document, int line, int end, int closingBracketIncrease) throws BadLocationException {
+	protected int findMatchingOpenBracket(
+		IDocument document,
+		int line,
+		int end,
+		int closingBracketIncrease)
+		throws BadLocationException {
 
-		int start= document.getLineOffset(line);
-		int brackcount= getBracketCount(document, start, end, false) - closingBracketIncrease;
+		int start = document.getLineOffset(line);
+		int brackcount =
+			getBracketCount(document, start, end, false)
+				- closingBracketIncrease;
 
 		// sum up the brackets counts of each line (closing brackets count negative, 
 		// opening positive) until we find a line the brings the count to zero
@@ -67,13 +73,13 @@ public class PerlAutoIndentStrategy extends DefaultAutoIndentStrategy {
 			if (line < 0) {
 				return -1;
 			}
-			start= document.getLineOffset(line);
-			end= start + document.getLineLength(line) - 1;
+			start = document.getLineOffset(line);
+			end = start + document.getLineLength(line) - 1;
 			brackcount += getBracketCount(document, start, end, false);
 		}
 		return line;
 	}
-	
+
 	/**
 	 * Returns the bracket value of a section of text. Closing brackets have a value of -1 and 
 	 * open brackets have a value of 1.
@@ -83,39 +89,44 @@ public class PerlAutoIndentStrategy extends DefaultAutoIndentStrategy {
 	 * @param end - the end position for the search
 	 * @param ignoreCloseBrackets - whether or not to ignore closing brackets in the count
 	 */
-	 private int getBracketCount(IDocument document, int start, int end, boolean ignoreCloseBrackets) throws BadLocationException {
+	private int getBracketCount(
+		IDocument document,
+		int start,
+		int end,
+		boolean ignoreCloseBrackets)
+		throws BadLocationException {
 
 		int begin = start;
-		int bracketcount= 0;
+		int bracketcount = 0;
 		while (begin < end) {
-			char curr= document.getChar(begin);
+			char curr = document.getChar(begin);
 			begin++;
 			switch (curr) {
 				case '/' :
 					if (begin < end) {
-						char next= document.getChar(begin);
+						char next = document.getChar(begin);
 						if (next == '*') {
 							// a comment starts, advance to the comment end
-							begin= getCommentEnd(document, begin + 1, end);
+							begin = getCommentEnd(document, begin + 1, end);
 						} else if (next == '/') {
 							// '//'-comment: nothing to do anymore on this line 
-							begin= end;
+							begin = end;
 						}
 					}
 					break;
 				case '*' :
 					if (begin < end) {
-						char next= document.getChar(begin);
+						char next = document.getChar(begin);
 						if (next == '/') {
 							// we have been in a comment: forget what we read before
-							bracketcount= 0;
+							bracketcount = 0;
 							begin++;
 						}
 					}
 					break;
 				case '{' :
 					bracketcount++;
-					ignoreCloseBrackets= false;
+					ignoreCloseBrackets = false;
 					break;
 				case '}' :
 					if (!ignoreCloseBrackets) {
@@ -124,14 +135,14 @@ public class PerlAutoIndentStrategy extends DefaultAutoIndentStrategy {
 					break;
 				case '"' :
 				case '\'' :
-					begin= getStringEnd(document, begin, end, curr);
+					begin = getStringEnd(document, begin, end, curr);
 					break;
 				default :
 					}
 		}
 		return bracketcount;
 	}
-	
+
 	/**
 	 * Returns the end position a comment starting at pos.
 	 * @returns the end position a comment starting at pos
@@ -139,37 +150,40 @@ public class PerlAutoIndentStrategy extends DefaultAutoIndentStrategy {
 	 * @param position - the start position for the search
 	 * @param end - the end position for the search
 	 */
-	 private int getCommentEnd(IDocument document, int position, int end) throws BadLocationException {
+	private int getCommentEnd(IDocument document, int position, int end)
+		throws BadLocationException {
 		int currentPosition = position;
 		while (currentPosition < end) {
-			char curr= document.getChar(currentPosition);
+			char curr = document.getChar(currentPosition);
 			currentPosition++;
 			if (curr == '*') {
-				if (currentPosition < end && document.getChar(currentPosition) == '/') {
+				if (currentPosition < end
+					&& document.getChar(currentPosition) == '/') {
 					return currentPosition + 1;
 				}
 			}
 		}
 		return end;
 	}
-	
+
 	/**
 	 * Returns the String at line with the leading whitespace removed.
 	 * @returns the String at line with the leading whitespace removed.
 	 * @param document - the document being parsed
 	 * @param line - the line being searched
 	 */
-	 protected String getIndentOfLine(IDocument document, int line) throws BadLocationException {
+	protected String getIndentOfLine(IDocument document, int line)
+		throws BadLocationException {
 		if (line > -1) {
-			int start= document.getLineOffset(line);
-			int end= start + document.getLineLength(line) - 1;
-			int whiteend= findEndOfWhiteSpace(document, start, end);
+			int start = document.getLineOffset(line);
+			int end = start + document.getLineLength(line) - 1;
+			int whiteend = findEndOfWhiteSpace(document, start, end);
 			return document.get(start, whiteend - start);
 		} else {
 			return ""; //$NON-NLS-1$
 		}
 	}
-	
+
 	/**
 	 * Returns the position of the character in the document after position.
 	 * @returns the next location of character.
@@ -178,10 +192,15 @@ public class PerlAutoIndentStrategy extends DefaultAutoIndentStrategy {
 	 * @param end - the end of the document
 	 * @param character - the character you are trying to match
 	 */
-	 private int getStringEnd(IDocument document, int position, int end, char character) throws BadLocationException {
+	private int getStringEnd(
+		IDocument document,
+		int position,
+		int end,
+		char character)
+		throws BadLocationException {
 		int currentPosition = position;
 		while (currentPosition < end) {
-			char currentCharacter= document.getChar(currentPosition);
+			char currentCharacter = document.getChar(currentPosition);
 			currentPosition++;
 			if (currentCharacter == '\\') {
 				// ignore escaped characters
@@ -192,79 +211,91 @@ public class PerlAutoIndentStrategy extends DefaultAutoIndentStrategy {
 		}
 		return end;
 	}
-	
+
 	/**
 	 * Set the indent of a new line based on the command provided in the supplied document.
 	 * @param document - the document being parsed
 	 * @param command - the command being performed
 	 */
-	 protected void smartIndentAfterNewLine(IDocument document, DocumentCommand command) {
+	protected void smartIndentAfterNewLine(
+		IDocument document,
+		DocumentCommand command) {
 
-		int docLength= document.getLength();
+		int docLength = document.getLength();
 		if (command.offset == -1 || docLength == 0)
 			return;
 
 		try {
-			int p= (command.offset == docLength ? command.offset - 1 : command.offset);
-			int line= document.getLineOfOffset(p);
+			int p =
+				(command.offset == docLength
+					? command.offset - 1
+					: command.offset);
+			int line = document.getLineOfOffset(p);
 
-			StringBuffer buf= new StringBuffer(command.text);
-			if (command.offset < docLength && document.getChar(command.offset) == '}') {
-				int indLine= findMatchingOpenBracket(document, line, command.offset, 0);
+			StringBuffer buf = new StringBuffer(command.text);
+			if (command.offset < docLength
+				&& document.getChar(command.offset) == '}') {
+				int indLine =
+					findMatchingOpenBracket(document, line, command.offset, 0);
 				if (indLine == -1) {
-					indLine= line;
+					indLine = line;
 				}
 				buf.append(getIndentOfLine(document, indLine));
 			} else {
-				int start= document.getLineOffset(line);
-				int whiteend= findEndOfWhiteSpace(document, start, command.offset);
+				int start = document.getLineOffset(line);
+				int whiteend =
+					findEndOfWhiteSpace(document, start, command.offset);
 				buf.append(document.get(start, whiteend - start));
-				if (getBracketCount(document, start, command.offset, true) > 0) {
+				if (getBracketCount(document, start, command.offset, true)
+					> 0) {
 					// Indent as many tabs as specified in preferences
-					int tabCount = PerlEditorPlugin.getDefault().getPreferenceStore().getInt(PreferenceConstants.INSERT_TABS_ON_INDENT);
-				
-					for(int i=0; i < tabCount; i++) {
-						buf.append('\t');
-					}
-					
+					buf.append(PreferenceUtil.getIndent());
 				}
 			}
-			command.text= buf.toString();
+			command.text = buf.toString();
 
 		} catch (BadLocationException excp) {
 			System.out.println(PerlEditorMessages.getString("AutoIndent.error.bad_location_1")); //$NON-NLS-1$
 		}
 	}
-	
+
 	/**
 	 * Set the indent of a bracket based on the command provided in the supplied document.
 	 * @param document - the document being parsed
 	 * @param command - the command being performed
 	 */
-	 protected void smartInsertAfterBracket(IDocument document, DocumentCommand command) {
+	protected void smartInsertAfterBracket(
+		IDocument document,
+		DocumentCommand command) {
 		if (command.offset == -1 || document.getLength() == 0)
 			return;
 
 		try {
-			int p= (command.offset == document.getLength() ? command.offset - 1 : command.offset);
-			int line= document.getLineOfOffset(p);
-			int start= document.getLineOffset(line);
-			int whiteend= findEndOfWhiteSpace(document, start, command.offset);
+			int p =
+				(command.offset == document.getLength()
+					? command.offset - 1
+					: command.offset);
+			int line = document.getLineOfOffset(p);
+			int start = document.getLineOffset(line);
+			int whiteend = findEndOfWhiteSpace(document, start, command.offset);
 
 			// shift only when line does not contain any text up to the closing bracket
 			if (whiteend == command.offset) {
 				// evaluate the line with the opening bracket that matches out closing bracket
-				int indLine= findMatchingOpenBracket(document, line, command.offset, 1);
+				int indLine =
+					findMatchingOpenBracket(document, line, command.offset, 1);
 				if (indLine != -1 && indLine != line) {
 					// take the indent of the found line
-					StringBuffer replaceText= new StringBuffer(getIndentOfLine(document, indLine));
+					StringBuffer replaceText =
+						new StringBuffer(getIndentOfLine(document, indLine));
 					// add the rest of the current line including the just added close bracket
-					replaceText.append(document.get(whiteend, command.offset - whiteend));
+					replaceText.append(
+						document.get(whiteend, command.offset - whiteend));
 					replaceText.append(command.text);
 					// modify document command
-					command.length= command.offset - start;
-					command.offset= start;
-					command.text= replaceText.toString();
+					command.length = command.offset - start;
+					command.offset = start;
+					command.text = replaceText.toString();
 				}
 			}
 		} catch (BadLocationException excp) {

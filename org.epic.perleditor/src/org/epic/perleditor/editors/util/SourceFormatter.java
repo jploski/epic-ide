@@ -5,13 +5,14 @@ import gnu.regexp.RE;
 import gnu.regexp.REMatch;
 import gnu.regexp.REException;
 
+
 public class SourceFormatter {
 	public String doConversion(String text) {
 		String result = "";
 		try {
 			String lineIn;
 			int indent = 0;
-			int tabs = 4;
+			//int tabs = 4;
 			BufferedReader br = new BufferedReader(new StringReader(text));
 			while ((lineIn = br.readLine()) != null) {
 				//Handle POD comments
@@ -30,12 +31,17 @@ public class SourceFormatter {
 					indent--;
 				}
 
+                
 				String prefix = "";
 				for (int i = 0; i < indent; i++) {
+					prefix += PreferenceUtil.getIndent();
+					/*
 					for (int j = 0; j < tabs; j++) {
 						prefix += " ";
 					}
+					*/
 				}
+				
 
 				result += prefix + lineIn + "\n";
 

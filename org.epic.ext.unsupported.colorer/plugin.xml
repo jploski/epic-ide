@@ -249,7 +249,14 @@
   </extension>
 
   <extension point="org.eclipse.ui.commands">
-    <!-- Uncomment command -->
+    <!-- Perl Editor Scope definition -->
+    <scope
+		name="perlEditor Scope"
+		parent="org.eclipse.ui.textEditorScope"
+		description="Perl Editor Scope"
+		id="org.epic.perleditor.perlEditorScope">
+	 </scope>
+     <!-- Uncomment command -->
      <command
          id="org.epic.perleditor.uncomment"
          name= "Uncomment"
@@ -257,14 +264,14 @@
      </command>
      <keyBinding
          string="Ctrl+\"
-         scope="org.eclipse.ui.textEditorScope"
+         scope="org.epic.perleditor.perlEditorScope"
          command="org.epic.perleditor.uncomment"
          configuration="org.eclipse.ui.defaultAcceleratorConfiguration">
       </keyBinding>
       <keyBinding
          platform="carbon"
          string="Command+\"
-         scope="org.eclipse.ui.textEditorScope"
+         scope="org.epic.perleditor.perlEditorScope"
          command="org.epic.eclipse.perleditor.uncomment"
          configuration="org.eclipse.ui.defaultAcceleratorConfiguration">
       </keyBinding>
@@ -276,14 +283,14 @@
      </command>
      <keyBinding
          string="Ctrl+/"
-         scope="org.eclipse.ui.textEditorScope"
+         scope="org.epic.perleditor.perlEditorScope"
          command="org.epic.perleditor.comment"
          configuration="org.eclipse.ui.defaultAcceleratorConfiguration">
       </keyBinding>
       <keyBinding
          platform="carbon"
          string="Command+/"
-         scope="org.eclipse.ui.textEditorScope"
+         scope="org.epic.perleditor.perlEditorScope"
          command="org.epic.eclipse.perleditor.comment"
          configuration="org.eclipse.ui.defaultAcceleratorConfiguration">
       </keyBinding>
@@ -295,14 +302,14 @@
      </command>
      <keyBinding
          string="Ctrl+Space"
-         scope="org.eclipse.ui.textEditorScope"
+         scope="org.epic.perleditor.perlEditorScope"
          command="org.epic.perleditor.contentassist"
          configuration="org.eclipse.ui.defaultAcceleratorConfiguration">
       </keyBinding>
       <keyBinding
          platform="carbon"
          string="Command+Space"
-         scope="org.eclipse.ui.textEditorScope"
+         scope="org.epic.perleditor.perlEditorScope"
          command="org.epic.perleditor.contentassist"
          configuration="org.eclipse.ui.defaultAcceleratorConfiguration">
       </keyBinding>
@@ -314,14 +321,14 @@
      </command>
      <keyBinding
          string="Ctrl+Shift+F"
-         scope="org.eclipse.ui.textEditorScope"
+         scope="org.epic.perleditor.perlEditorScope"
          command="org.epic.perleditor.formatsource"
          configuration="org.eclipse.ui.defaultAcceleratorConfiguration">
       </keyBinding>
       <keyBinding
          platform="carbon"
          string="Command+Shift+F"
-         scope="org.eclipse.ui.textEditorScope"
+         scope="org.epic.perleditor.perlEditorScope"
          command="org.epic.perleditor.formatsource"
          configuration="org.eclipse.ui.defaultAcceleratorConfiguration">
       </keyBinding>

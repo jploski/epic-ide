@@ -106,6 +106,7 @@ public class PerlEditor
 
 		this.setPreferenceStore(
 			PerlEditorPlugin.getDefault().getPreferenceStore());
+		setKeyBindingScopes(new String[] { "org.epic.perleditor.perlEditorScope" });
 			
 		setEditorContextMenuId("#PerlDocEditorContext");
 	}

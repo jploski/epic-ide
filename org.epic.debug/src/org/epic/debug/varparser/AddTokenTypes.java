@@ -31,6 +31,8 @@ public interface AddTokenTypes {
 	int PREFIXED_NAME = 29;
 	int PURE_NAME_CHAR = 30;
 	int FIRST_PURE_NAME_CHAR = 31;
-	int WS = 32;
-	int CHAR_ESC = 33;
+	int STRING1 = 32;
+	int STRING2 = 33;
+	int WS = 34;
+	int CHAR_ESC = 35;
 }

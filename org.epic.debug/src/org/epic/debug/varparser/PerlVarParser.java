@@ -169,21 +169,22 @@ public class PerlVarParser
 		
 		StringBuffer out	=	new StringBuffer();
 	    	
-    	out.append("*******************************");
-		out.append("*******************************");
-		out.append("+++++++Error Parsing Vars++++++");
-		out.append("*******************************");
-		out.append("*******************************");
+    	out.append("*******************************\n");
+		out.append("*******************************\n");
+		out.append("+++++++Error Parsing Vars++++++\n");
+		out.append("*******************************\n");
+		out.append("*******************************\n");
 
 			out.append(fText);
 			
-		out.append("-------------------------------");
-		out.append("-------------------------------");
-		out.append("+++++++Error Parsing Vars++++++");
-		out.append("-------------------------------");
-		out.append("-------------------------------");
+		out.append("-------------------------------\n");
+		out.append("-------------------------------\n");
+		out.append("+++++++Error Parsing Vars++++++\n");
+		out.append("-------------------------------\n");
+		out.append("-------------------------------\n");
 		
-		PerlDebugPlugin.getDefault().logError(out.toString());
+		
+		PerlDebugPlugin.getDefault().logError("Error Parsing Debugger Variables", new Exception(out.toString()));
 								 
     }
     

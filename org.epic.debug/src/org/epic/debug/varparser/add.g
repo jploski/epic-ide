@@ -207,12 +207,14 @@ MODULE_NAME: //	(PURE_NAME "::") => PURE_NAME "::" PURE_NAME
 //protected PURE_NAME_CHAR: 		~('\n'| '\r' | ' ' | '\t' |'=' | '\'' | '$' | '@' | '%' | '(' | ')' | '-');//FIRST_PURE_NAME_CHAR | '0'..'9' | '?' | '*';
 protected PURE_NAME_CHAR: 		~('\n'| '\r' | ' ' | '\t' |'='| ')' | '(' );
 //FIRST_PURE_NAME_CHAR | '0'..'9' | '?' | '*';
-protected FIRST_PURE_NAME_CHAR: ~('\n'| '\r' | ' ' | '\t' |'=' | '\'' | '$' | '@' | '%' | '(' | ')' | '-' | '*' | '0'..'9');//FIRST_PURE_NAME_CHAR | '0'..'9' | '?' | '*';
+protected FIRST_PURE_NAME_CHAR: ~('\n'| '\r' | ' ' | '\t' |'=' | '\''| '\"' | '$' | '@' | '%' | '(' | ')' | '-' | '*' | '0'..'9');//FIRST_PURE_NAME_CHAR | '0'..'9' | '?' | '*';
 protected PURE_NAME:   			(FIRST_PURE_NAME_CHAR) (PURE_NAME_CHAR)*;
 ADR: 					"(0x" ('0'..'9' | 'a'..'f')+')';
 REF_SYMB:					"->";
 KEY_ASSIGN:				"=>";
-STRING:					'\''( (~('\'' | '\\')) | CHAR_ESC )* '\'';
+STRING:					STRING1 | STRING2;
+protected STRING1:					'\''( (~('\'' | '\\')) | CHAR_ESC )* '\'';
+protected STRING2:					'\"'( (~('\"' | '\\')) | CHAR_ESC )* '\"';
 NUMBER:					('0'..'9')+('.'('0'..'9')+)?;
 EQ: '=';
 WS:

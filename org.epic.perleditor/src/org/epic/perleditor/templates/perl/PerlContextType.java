@@ -76,7 +76,7 @@ public class PerlContextType extends CompilationUnitContextType {
 		
 		// global
 		addVariable(new GlobalVariables.Cursor());
-		//addVariable(new GlobalVariables.Dollar());
+		addVariable(new GlobalVariables.Dollar());
 		addVariable(new GlobalVariables.Date());
     	addVariable(new GlobalVariables.Year());
 		addVariable(new GlobalVariables.Time());

@@ -9,6 +9,7 @@ Eclipse Perl Integration:
 		* Fixed bug: [ 996351 ] NullPointer exception during Launch (problems if path to Perl executable has spaces) 
 		
 		Editor:
+		* On double-click text selection also select @ and %. (Contributor: Danny Bud <Danny_Bud at bmc.com>)
 		* Fixed bug: [ 996612 ] ClassCastException on Perl project right-click
 		  NOTE by luelljoc: Hope that it's working. Has to be tested.
 		* Fixed bug: [ 993782 ] no warnings displayed until first change is applied
@@ -25,7 +26,7 @@ Version 0.3.0 - 04-July-2004
 		* toogle Perl Nature added to navigator popup menu
 		* Explain Errors/Warnings popup action
 		* Moved Perldoc so separate view
-		* added TODO marker in Perl Editor
+		* added TODO marker in Perl Editor (Contributor: Philipp Traeder <Traeder at ImmobilienScout24.de>
 		* Built in web browser added
 
 Version 0.2.0 - 07-May-2004

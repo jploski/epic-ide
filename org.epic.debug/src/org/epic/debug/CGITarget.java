@@ -506,6 +506,7 @@ public class CGITarget extends DebugTarget implements IDebugEventSetListener
 			e.printStackTrace();
 		}
 		mStartupFile = null;
+		mStartupFileAbsolut = null;
 
 	}
 
@@ -548,5 +549,13 @@ public class CGITarget extends DebugTarget implements IDebugEventSetListener
 	public IProcess getProcess()
 	{
 		return mCGIProxy;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.epic.debug.Target#isLocal()
+	 */
+	boolean isLocal() {
+		
+		return true;
 	}
 }

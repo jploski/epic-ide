@@ -244,7 +244,7 @@ public class PerlDebugPlugin extends AbstractUIPlugin {
 		port = fTarget.getDebugPort();
 		
 		/* avoids problems with local software firewall*/
-		host ="127.0.0.1";
+		if(fTarget.isLocal()) host ="127.0.0.1";
 		return (mDebugOptionsEnvPrefix + host + ":" + port + " " + mDebugOptionsValue);
 	}
 

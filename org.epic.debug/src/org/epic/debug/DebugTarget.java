@@ -19,7 +19,7 @@ import org.epic.debug.util.RemotePort;
  * To enable and disable the creation of type comments go to
  * Window>Preferences>Java>Code Generation.
  */
-public class DebugTarget extends Target 
+public abstract class DebugTarget extends Target 
 {
 
 	private boolean mShutDownStarted;

@@ -149,14 +149,14 @@ public class OutputStreamMonitor implements IFlushableStreamMonitor {
 					fireStreamAppended(text);
 				}
 			} catch (IOException ioe) {
-				DebugPlugin.log(ioe);
+				//DebugPlugin.log(ioe);
 				return;
 			} catch (Exception e) {
 				// killing the stream monitor while reading can cause an NPE
 				// when reading from the stream
-				if (!fKilled || fThread != null) {
-					DebugPlugin.log(e);
-				}
+//				if (!fKilled || fThread != null) {
+//					DebugPlugin.log(e);
+//				}
 				return;
 			}
 		}

@@ -34,6 +34,14 @@ public class RunTarget extends Target {
 		
 			}
 
+	
+	/* (non-Javadoc)
+	 * @see org.epic.debug.Target#isLocal()
+	 */
+	boolean isLocal() {
+		
+		return true;
+	}
 	public void start()
 	{
 		startPerlProcess();

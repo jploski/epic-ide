@@ -33,6 +33,7 @@ public abstract class Target implements IDebugTarget
 	private boolean mShutDownStarted;
 	protected IPath mProjectDir;
 	protected String mStartupFile;
+	protected String mStartupFileAbsolut;
 	protected IPath mWorkingDir;
 	ILaunch mLaunch;
 	IProcess mProcess;
@@ -60,6 +61,9 @@ public abstract class Target implements IDebugTarget
 		
 		//	((PerlDebugPlugin)PerlDebugPlugin.getDefault()).registerDebugTarget(this);
 	}
+	
+	abstract boolean isLocal();
+	
 	/**
 	 * @see org.eclipse.debug.core.model.IDebugTarget#getProcess()
 	 */
@@ -147,13 +151,12 @@ public abstract class Target implements IDebugTarget
 		}
 		IProject prj =
 			PerlDebugPlugin.getWorkspace().getRoot().getProject(prjName);
-
+		
 		mProjectDir = prj.getLocation();
 		IPath path = mProjectDir.append(startfile);
-
 		mWorkingDir = path.removeLastSegments(1);
 		mStartupFile = path.lastSegment();
-
+		mStartupFileAbsolut = prj.findMember(startfile).getLocation().toString();
 	}
 	Process startPerlProcess()
 	{
@@ -217,8 +220,8 @@ public abstract class Target implements IDebugTarget
 
 		
 		
-		startfile = getProjectDir().toString()+"/"+startfile;
-		fCmdList.add(startfile);
+		//startfile = getProjectDir().toString()+"/"+startfile;
+		fCmdList.add(mStartupFileAbsolut);
 		if (progParams.length() > 0)
 		{
 			ExecutionArguments exArgs = new ExecutionArguments(progParams);
@@ -261,7 +264,7 @@ public abstract class Target implements IDebugTarget
 			return mProjectDir;
 	}
 
-	public String getStartupFile()
+	public String _getStartupFile()
 	{
 		return mStartupFile;
 	}

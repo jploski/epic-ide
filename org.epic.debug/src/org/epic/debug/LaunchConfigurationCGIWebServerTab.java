@@ -273,7 +273,7 @@ public class LaunchConfigurationCGIWebServerTab
 					(String) null));
 			
 			mCGIsuffixText.setText(	config.getAttribute(
-								PerlLaunchConfigurationConstants.ATTR_PROJECT_NAME,
+								PerlLaunchConfigurationConstants.ATTR_CGI_FILE_EXTENSION,
 								".cgi,.pl"));
 					
 			//			fWebserverPort.setStringValue(

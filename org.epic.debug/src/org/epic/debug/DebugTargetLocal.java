@@ -38,6 +38,14 @@ public class DebugTargetLocal extends DebugTarget implements IDebugEventSetListe
 
 	}
 
+	/* (non-Javadoc)
+	 * @see org.epic.debug.Target#isLocal()
+	 */
+	boolean isLocal() {
+		
+		return true;
+	}
+	
 	public void start()
 	{
 		if (connectDebugger(true) != RemotePort.mWaitOK)

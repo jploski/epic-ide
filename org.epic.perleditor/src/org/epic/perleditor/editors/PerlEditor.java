@@ -1195,4 +1195,14 @@ public class PerlEditor extends TextEditor implements
     }
     return 0;
   }
+  
+/**
+ * Returns the Idle Timer associated with the editor
+ * 
+ * @return	Idle Timer
+ */
+public IdleTimer getIdleTimer() {
+  		return idleTimer;
+  }
+  	
 }

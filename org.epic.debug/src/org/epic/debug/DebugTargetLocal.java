@@ -1,5 +1,8 @@
 package org.epic.debug;
 
+import org.eclipse.debug.core.DebugEvent;
+import org.eclipse.debug.core.DebugPlugin;
+import org.eclipse.debug.core.IDebugEventSetListener;
 import org.eclipse.debug.core.ILaunch;
 import org.epic.debug.util.RemotePort;
 
@@ -11,7 +14,7 @@ import org.epic.debug.util.RemotePort;
  * To enable and disable the creation of type comments go to
  * Window>Preferences>Java>Code Generation.
  */
-public class DebugTargetLocal extends DebugTarget 
+public class DebugTargetLocal extends DebugTarget implements IDebugEventSetListener 
 {
 
 	
@@ -30,6 +33,7 @@ public class DebugTargetLocal extends DebugTarget
 	public DebugTargetLocal(ILaunch launch)
 	{
 		super(launch);
+		DebugPlugin.getDefault().addDebugEventListener(this);
 		initPath();
 
 	}
@@ -41,5 +45,19 @@ public class DebugTargetLocal extends DebugTarget
 	}
 	 
 	
-
+	public void handleDebugEvents(DebugEvent[] events)
+	{
+		for (int i = 0; i < events.length; i++)
+		{
+			if (events[i].getKind() == DebugEvent.TERMINATE)
+				if (events[i].getSource() == mProcess)
+					DebugPlugin.getDefault().asyncExec(new Runnable()
+				{
+					public void run()
+					{
+						terminate();
+					}
+				});
+		}
+	}
 }

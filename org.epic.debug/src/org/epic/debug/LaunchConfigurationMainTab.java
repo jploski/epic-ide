@@ -230,8 +230,10 @@ public class LaunchConfigurationMainTab extends AbstractLaunchConfigurationTab
 	public void initializeFrom(ILaunchConfiguration config)
 	{
 		updateProjectFromConfig(config);
-		fMainText.setItems(getPerlFiles());
 		updateMainTypeFromConfig(config);
+	//	String file = fMainText.getText();
+	//	fMainText.setItems(getPerlFiles());
+		//fMainText.setText(file);
 		updateParamsFromConfig(config);
 	}
 

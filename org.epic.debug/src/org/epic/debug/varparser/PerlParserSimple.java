@@ -164,37 +164,37 @@ public PerlParserSimple(ParserSharedInputState state) {
 		
 		try {      // for error handling
 			{
-			_loop1211:
+			_loop3:
 			do {
 				if ((LA(1)==NL)) {
 					match(NL);
 				}
 				else {
-					break _loop1211;
+					break _loop3;
 				}
 				
 			} while (true);
 			}
 			{
-			_loop1215:
+			_loop7:
 			do {
 				if ((_tokenSet_0.member(LA(1)))) {
 					namedVar();
 					{
-					_loop1214:
+					_loop6:
 					do {
 						if ((LA(1)==NL)) {
 							match(NL);
 						}
 						else {
-							break _loop1214;
+							break _loop6;
 						}
 						
 					} while (true);
 					}
 				}
 				else {
-					break _loop1215;
+					break _loop7;
 				}
 				
 			} while (true);
@@ -442,7 +442,7 @@ public PerlParserSimple(ParserSharedInputState state) {
 		
 		try {      // for error handling
 			{
-			_loop1283:
+			_loop75:
 			do {
 				if ((_tokenSet_3.member(LA(1)))) {
 					n = LT(1);
@@ -452,7 +452,7 @@ public PerlParserSimple(ParserSharedInputState state) {
 					}
 				}
 				else {
-					break _loop1283;
+					break _loop75;
 				}
 				
 			} while (true);
@@ -475,7 +475,7 @@ public PerlParserSimple(ParserSharedInputState state) {
 		
 		try {      // for error handling
 			{
-			_loop1280:
+			_loop72:
 			do {
 				switch ( LA(1)) {
 				case ARRAY_NAME:
@@ -526,7 +526,7 @@ public PerlParserSimple(ParserSharedInputState state) {
 				}
 				default:
 				{
-					break _loop1280;
+					break _loop72;
 				}
 				}
 			} while (true);
@@ -547,10 +547,10 @@ public PerlParserSimple(ParserSharedInputState state) {
 		
 		
 		try {      // for error handling
-			boolean synPredMatched1226 = false;
+			boolean synPredMatched18 = false;
 			if (((LA(1)==INDENT_START) && ((LA(2) >= ARRAY_NAME && LA(2) <= CHAR_ESC)) && ((LA(3) >= ARRAY_NAME && LA(3) <= CHAR_ESC)))) {
-				int _m1226 = mark();
-				synPredMatched1226 = true;
+				int _m18 = mark();
+				synPredMatched18 = true;
 				inputState.guessing++;
 				try {
 					{
@@ -559,12 +559,12 @@ public PerlParserSimple(ParserSharedInputState state) {
 					}
 				}
 				catch (RecognitionException pe) {
-					synPredMatched1226 = false;
+					synPredMatched18 = false;
 				}
-				rewind(_m1226);
+				rewind(_m18);
 				inputState.guessing--;
 			}
-			if ( synPredMatched1226 ) {
+			if ( synPredMatched18 ) {
 				match(INDENT_START);
 				val_nonl();
 				match(NL);
@@ -573,13 +573,13 @@ public PerlParserSimple(ParserSharedInputState state) {
 			else if ((LA(1)==INDENT_START) && (LA(2)==NUMBER||LA(2)==INDENT_END) && (_tokenSet_7.member(LA(3)))) {
 				match(INDENT_START);
 				{
-				_loop1228:
+				_loop20:
 				do {
 					if ((LA(1)==NUMBER)) {
 						arrayEntry();
 					}
 					else {
-						break _loop1228;
+						break _loop20;
 					}
 					
 				} while (true);
@@ -611,13 +611,13 @@ public PerlParserSimple(ParserSharedInputState state) {
 			name = LT(1);
 			match(ADR);
 			{
-			_loop1222:
+			_loop14:
 			do {
 				if ((_tokenSet_9.member(LA(1)))) {
 					matchNot(NL);
 				}
 				else {
-					break _loop1222;
+					break _loop14;
 				}
 				
 			} while (true);
@@ -671,7 +671,7 @@ public PerlParserSimple(ParserSharedInputState state) {
 		
 		try {      // for error handling
 			{
-			_loop1276:
+			_loop68:
 			do {
 				if ((_tokenSet_9.member(LA(1)))) {
 					n = LT(1);
@@ -681,7 +681,7 @@ public PerlParserSimple(ParserSharedInputState state) {
 					}
 				}
 				else {
-					break _loop1276;
+					break _loop68;
 				}
 				
 			} while (true);
@@ -729,10 +729,10 @@ public PerlParserSimple(ParserSharedInputState state) {
 		
 		
 		try {      // for error handling
-			boolean synPredMatched1239 = false;
+			boolean synPredMatched31 = false;
 			if (((LA(1)==INDENT_START) && (LA(2)==INDENT_END||LA(2)==STRING) && (_tokenSet_7.member(LA(3))))) {
-				int _m1239 = mark();
-				synPredMatched1239 = true;
+				int _m31 = mark();
+				synPredMatched31 = true;
 				inputState.guessing++;
 				try {
 					{
@@ -741,21 +741,21 @@ public PerlParserSimple(ParserSharedInputState state) {
 					}
 				}
 				catch (RecognitionException pe) {
-					synPredMatched1239 = false;
+					synPredMatched31 = false;
 				}
-				rewind(_m1239);
+				rewind(_m31);
 				inputState.guessing--;
 			}
-			if ( synPredMatched1239 ) {
+			if ( synPredMatched31 ) {
 				match(INDENT_START);
 				{
-				_loop1241:
+				_loop33:
 				do {
 					if ((LA(1)==STRING)) {
 						hashEntry();
 					}
 					else {
-						break _loop1241;
+						break _loop33;
 					}
 					
 				} while (true);
@@ -793,13 +793,13 @@ public PerlParserSimple(ParserSharedInputState state) {
 			name = LT(1);
 			match(ADR);
 			{
-			_loop1235:
+			_loop27:
 			do {
 				if ((_tokenSet_9.member(LA(1)))) {
 					matchNot(NL);
 				}
 				else {
-					break _loop1235;
+					break _loop27;
 				}
 				
 			} while (true);
@@ -884,7 +884,7 @@ public PerlParserSimple(ParserSharedInputState state) {
 		
 		try {      // for error handling
 			{
-			_loop1286:
+			_loop78:
 			do {
 				if ((_tokenSet_13.member(LA(1)))) {
 					n = LT(1);
@@ -894,7 +894,7 @@ public PerlParserSimple(ParserSharedInputState state) {
 					}
 				}
 				else {
-					break _loop1286;
+					break _loop78;
 				}
 				
 			} while (true);
@@ -918,10 +918,10 @@ public PerlParserSimple(ParserSharedInputState state) {
 		Token  m = null;
 		
 		try {      // for error handling
-			boolean synPredMatched1254 = false;
+			boolean synPredMatched46 = false;
 			if (((_tokenSet_15.member(LA(1))) && (LA(2)==NL||LA(2)==ADR) && (_tokenSet_7.member(LA(3))))) {
-				int _m1254 = mark();
-				synPredMatched1254 = true;
+				int _m46 = mark();
+				synPredMatched46 = true;
 				inputState.guessing++;
 				try {
 					{
@@ -964,19 +964,19 @@ public PerlParserSimple(ParserSharedInputState state) {
 					}
 				}
 				catch (RecognitionException pe) {
-					synPredMatched1254 = false;
+					synPredMatched46 = false;
 				}
-				rewind(_m1254);
+				rewind(_m46);
 				inputState.guessing--;
 			}
-			if ( synPredMatched1254 ) {
+			if ( synPredMatched46 ) {
 				refs();
 			}
 			else {
-				boolean synPredMatched1256 = false;
+				boolean synPredMatched48 = false;
 				if (((LA(1)==STRING) && (LA(2)==NL) && (_tokenSet_10.member(LA(3))))) {
-					int _m1256 = mark();
-					synPredMatched1256 = true;
+					int _m48 = mark();
+					synPredMatched48 = true;
 					inputState.guessing++;
 					try {
 						{
@@ -985,12 +985,12 @@ public PerlParserSimple(ParserSharedInputState state) {
 						}
 					}
 					catch (RecognitionException pe) {
-						synPredMatched1256 = false;
+						synPredMatched48 = false;
 					}
-					rewind(_m1256);
+					rewind(_m48);
 					inputState.guessing--;
 				}
-				if ( synPredMatched1256 ) {
+				if ( synPredMatched48 ) {
 					s = LT(1);
 					match(STRING);
 					if ( inputState.guessing==0 ) {
@@ -999,10 +999,10 @@ public PerlParserSimple(ParserSharedInputState state) {
 					match(NL);
 				}
 				else {
-					boolean synPredMatched1258 = false;
+					boolean synPredMatched50 = false;
 					if (((LA(1)==NUMBER) && (LA(2)==NL) && (_tokenSet_10.member(LA(3))))) {
-						int _m1258 = mark();
-						synPredMatched1258 = true;
+						int _m50 = mark();
+						synPredMatched50 = true;
 						inputState.guessing++;
 						try {
 							{
@@ -1011,12 +1011,12 @@ public PerlParserSimple(ParserSharedInputState state) {
 							}
 						}
 						catch (RecognitionException pe) {
-							synPredMatched1258 = false;
+							synPredMatched50 = false;
 						}
-						rewind(_m1258);
+						rewind(_m50);
 						inputState.guessing--;
 					}
-					if ( synPredMatched1258 ) {
+					if ( synPredMatched50 ) {
 						n = LT(1);
 						match(NUMBER);
 						if ( inputState.guessing==0 ) {
@@ -1025,10 +1025,10 @@ public PerlParserSimple(ParserSharedInputState state) {
 						match(NL);
 					}
 					else {
-						boolean synPredMatched1260 = false;
+						boolean synPredMatched52 = false;
 						if (((LA(1)==FILE_HANDLE) && (LA(2)==PAREN_OP) && (LA(3)==PURE_NAME))) {
-							int _m1260 = mark();
-							synPredMatched1260 = true;
+							int _m52 = mark();
+							synPredMatched52 = true;
 							inputState.guessing++;
 							try {
 								{
@@ -1036,20 +1036,20 @@ public PerlParserSimple(ParserSharedInputState state) {
 								}
 							}
 							catch (RecognitionException pe) {
-								synPredMatched1260 = false;
+								synPredMatched52 = false;
 							}
-							rewind(_m1260);
+							rewind(_m52);
 							inputState.guessing--;
 						}
-						if ( synPredMatched1260 ) {
+						if ( synPredMatched52 ) {
 							fileHandle();
 							match(NL);
 						}
 						else {
-							boolean synPredMatched1262 = false;
+							boolean synPredMatched54 = false;
 							if (((LA(1)==NL) && (_tokenSet_10.member(LA(2))) && (_tokenSet_7.member(LA(3))))) {
-								int _m1262 = mark();
-								synPredMatched1262 = true;
+								int _m54 = mark();
+								synPredMatched54 = true;
 								inputState.guessing++;
 								try {
 									{
@@ -1057,22 +1057,22 @@ public PerlParserSimple(ParserSharedInputState state) {
 									}
 								}
 								catch (RecognitionException pe) {
-									synPredMatched1262 = false;
+									synPredMatched54 = false;
 								}
-								rewind(_m1262);
+								rewind(_m54);
 								inputState.guessing--;
 							}
-							if ( synPredMatched1262 ) {
+							if ( synPredMatched54 ) {
 								match(NL);
 								if ( inputState.guessing==0 ) {
 									setVal("undef","Scalar");
 								}
 							}
 							else {
-								boolean synPredMatched1265 = false;
+								boolean synPredMatched57 = false;
 								if (((_tokenSet_16.member(LA(1))) && (_tokenSet_9.member(LA(2))) && ((LA(3) >= ARRAY_NAME && LA(3) <= CHAR_ESC)))) {
-									int _m1265 = mark();
-									synPredMatched1265 = true;
+									int _m57 = mark();
+									synPredMatched57 = true;
 									inputState.guessing++;
 									try {
 										{
@@ -1083,15 +1083,15 @@ public PerlParserSimple(ParserSharedInputState state) {
 										}
 									}
 									catch (RecognitionException pe) {
-										synPredMatched1265 = false;
+										synPredMatched57 = false;
 									}
-									rewind(_m1265);
+									rewind(_m57);
 									inputState.guessing--;
 								}
-								if ( synPredMatched1265 ) {
+								if ( synPredMatched57 ) {
 									{
-									int _cnt1268=0;
-									_loop1268:
+									int _cnt60=0;
+									_loop60:
 									do {
 										if ((_tokenSet_16.member(LA(1)))) {
 											{
@@ -1103,18 +1103,18 @@ public PerlParserSimple(ParserSharedInputState state) {
 											}
 										}
 										else {
-											if ( _cnt1268>=1 ) { break _loop1268; } else {throw new NoViableAltException(LT(1), getFilename());}
+											if ( _cnt60>=1 ) { break _loop60; } else {throw new NoViableAltException(LT(1), getFilename());}
 										}
 										
-										_cnt1268++;
+										_cnt60++;
 									} while (true);
 									}
 									match(EQ);
 									{
-									boolean synPredMatched1271 = false;
+									boolean synPredMatched63 = false;
 									if (((_tokenSet_15.member(LA(1))) && (LA(2)==NL||LA(2)==ADR) && (_tokenSet_7.member(LA(3))))) {
-										int _m1271 = mark();
-										synPredMatched1271 = true;
+										int _m63 = mark();
+										synPredMatched63 = true;
 										inputState.guessing++;
 										try {
 											{
@@ -1157,12 +1157,12 @@ public PerlParserSimple(ParserSharedInputState state) {
 											}
 										}
 										catch (RecognitionException pe) {
-											synPredMatched1271 = false;
+											synPredMatched63 = false;
 										}
-										rewind(_m1271);
+										rewind(_m63);
 										inputState.guessing--;
 									}
-									if ( synPredMatched1271 ) {
+									if ( synPredMatched63 ) {
 										refs();
 									}
 									else if (((LA(1) >= ARRAY_NAME && LA(1) <= CHAR_ESC)) && (_tokenSet_7.member(LA(2))) && (_tokenSet_7.member(LA(3)))) {
@@ -1401,7 +1401,7 @@ public PerlParserSimple(ParserSharedInputState state) {
 		
 		try {      // for error handling
 			{
-			_loop1289:
+			_loop81:
 			do {
 				if ((_tokenSet_9.member(LA(1)))) {
 					n = LT(1);
@@ -1411,7 +1411,7 @@ public PerlParserSimple(ParserSharedInputState state) {
 					}
 				}
 				else {
-					break _loop1289;
+					break _loop81;
 				}
 				
 			} while (true);

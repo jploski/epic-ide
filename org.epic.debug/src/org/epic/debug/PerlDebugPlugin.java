@@ -175,12 +175,13 @@ public class PerlDebugPlugin extends AbstractUIPlugin
 		String env = null;
 		String[] debugEnv;
 		int count;
+		String command[]= {PerlExecutableUtilities.getPerlExecPath(), "-e","\"while(($k,$v)= each %ENV){ print\\\"$k=$v\\n\\\";}\""};
 		try
 		{
-			proc =
-				Runtime.getRuntime().exec(
-					PerlExecutableUtilities.getPerlExecPath()
-						+ " -e\"while(($k,$v)= each %ENV){ print\\\"$k=$v\\n\\\";}\"");
+			proc = Runtime.getRuntime().exec(command);
+//				Runtime.getRuntime().exec(
+//					PerlExecutableUtilities.getPerlExecPath()
+//						+ " -e\"while(($k,$v)= each %ENV){ print\\\"$k=$v\\n\\\";}\"");
 		} catch (Exception e)
 		{
 			System.out.println("Failing to create Process !!!");

@@ -814,6 +814,10 @@ public class PerlDB implements IDebugElement, ITerminate {
 		boolean finished = false;
 		boolean skip = false;
 
+		if( !isSuspended(null) )
+			mTarget.killDebugProcess();
+		else
+		{
 		try {
 			mCurrentCommandDest = mThreads[0];
 			mDebugIn.println("q\n");
@@ -859,7 +863,7 @@ public class PerlDB implements IDebugElement, ITerminate {
 		//	}
 		//	startCommand(mCommandClearOutput, null, false, this);
 		//	startCommand(mCommandExecuteCode, "q\n", false, this);
-
+		}
 		mCurrentSubCommand = mCommandNone;
 		mCurrentCommand = mCommandNone;
 		mIsCommandRunning = false;

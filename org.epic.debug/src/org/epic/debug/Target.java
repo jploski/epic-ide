@@ -241,6 +241,7 @@ public abstract class Target implements IDebugTarget
 				e1);
 		}
 
+		
 		//	if( ! isTerminated())
 
 		/**************org***/
@@ -306,6 +307,17 @@ public abstract class Target implements IDebugTarget
 		shutdown(true);
 	}
 
+		public void killDebugProcess()
+		{
+			if (mProcess != null)
+				try {
+					mProcess.terminate();
+				} catch (DebugException e) {
+					// TODO Auto-generated catch block
+					PerlDebugPlugin.getDefault().logError("Could not terminate debugger process", e);
+				}
+			
+		}
 	public void shutdown(boolean unregister)
 	{
 		

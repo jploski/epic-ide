@@ -206,6 +206,36 @@
          </action>
       </viewerContribution>
 
+    <!-- Viewer Popup Source menu (luelljoc) -->
+    <viewerContribution
+            targetID="#PerlSourceEditorContext"
+            id="org.epic.perleditor.PerlSourcePopup">
+          <menu
+               label="&amp;Source"
+               path="additions"
+               id="PerlSourcePopupMenu">
+            <separator
+                  name="PerlDocGroup">
+            </separator>
+         </menu>
+         <!-- Validate syntax -->
+         <action
+               definitionId="org.epic.perleditor.validatesyntax"
+               label="&amp;Validate Syntax"
+               class="org.epic.perleditor.actions.ValidateSourceAction"
+               menubarPath="PerlSourcePopupMenu/PerlSourceGroup"
+               id="org.epic.perleditor.ValidateSyntax">
+         </action>         
+ 		<!-- Format source action -->
+         <action
+               definitionId="org.epic.perleditor.formatsource"
+               label="F&amp;ormat"
+               class="org.epic.perleditor.actions.FormatSourceAction"
+               menubarPath="PerlSourcePopupMenu/PerlSourceGroup"
+               id="org.epic.perleditor.FormatSource">
+         </action>
+    </viewerContribution>
+ 
 	<!-- Perdoc menu -->
       <viewerContribution
             targetID="#PerlDocEditorContext"
@@ -213,7 +243,7 @@
          <menu
                label="&amp;Perldoc"
                path="additions"
-               id="PelDocPopupMenu">
+               id="PerlDocPopupMenu">
             <separator
                   name="PerlDocGroup">
             </separator>
@@ -222,28 +252,28 @@
                label="FAQ Search"
                icon="icons/light_bulb.gif"
                class="org.epic.perleditor.popupmenus.PerlDocAction"
-               menubarPath="PelDocPopupMenu/PerlDocGroup"
+               menubarPath="PerlDocPopupMenu/PerlDocGroup"
                id="org.epic.perleditor.popupmenus.PerlDocAction.Faq">
          </action>
          <action
                label="Builtin Function Documentation"
                icon="icons/epic.gif"
                class="org.epic.perleditor.popupmenus.PerlDocAction"
-               menubarPath="PelDocPopupMenu/PerlDocGroup"
+               menubarPath="PerlDocPopupMenu/PerlDocGroup"
                id="org.epic.perleditor.popupmenus.PerlDocAction.BuiltinFunction">
          </action>
          <action
                label="Module/Program Source"
                icon="icons/module_node.gif"
                class="org.epic.perleditor.popupmenus.PerlDocAction"
-               menubarPath="PelDocPopupMenu/PerlDocGroup"
+               menubarPath="PerlDocPopupMenu/PerlDocGroup"
                id="org.epic.perleditor.popupmenus.PerlDocAction.ModuleSource">
          </action>
          <action
                label="Module/Program Documentation"
                icon="icons/book.gif"
                class="org.epic.perleditor.popupmenus.PerlDocAction"
-               menubarPath="PelDocPopupMenu/PerlDocGroup"
+               menubarPath="PerlDocPopupMenu/PerlDocGroup"
                id="org.epic.perleditor.popupmenus.PerlDocAction.Module">
          </action>
          <menu
@@ -260,7 +290,7 @@
                class="org.epic.perleditor.popupmenus.OpenDeclaration"
                tooltip="Open Declaration for SUBs only, defined locally, in files or in packages!"
                menubarPath="DeclarationPopUp"
-               id="org.epic.perleditor.popupmenus.PerlDocAction.ModuleNew"/>
+               id="org.epic.perleditor.popupmenus.OpenSubAction"/>
       </viewerContribution>
    </extension>
 <!-- Associate menus with PerlEditor -->

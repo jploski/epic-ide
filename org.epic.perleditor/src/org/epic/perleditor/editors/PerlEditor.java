@@ -325,6 +325,7 @@ public class PerlEditor
 		super.editorContextMenuAboutToShow(menu);
 		ViewerActionBuilder builder = new ViewerActionBuilder();
 		builder.readViewerContributions("#PerlDocEditorContext", getSelectionProvider(), this);
+		builder.readViewerContributions("#PerlSourceEditorContext", getSelectionProvider(), this);
 		builder.contribute(menu,null,true);
 	}
 	

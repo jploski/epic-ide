@@ -542,7 +542,7 @@ public class LaunchConfigurationMainTab extends AbstractLaunchConfigurationTab
 			IProject project = projects[i];
 			try
 			{
-				if (project.exists() && project.hasNature(PERL_NATURE_ID))
+				if (project.isAccessible() && project.hasNature(PERL_NATURE_ID))
 				{
 					//System.out.println("Perl Project: " + project.getName());
 					projectList.add(project.getName());

@@ -45,11 +45,14 @@ public class TogglePerlNatureActionDelegate implements IObjectActionDelegate {
 		if (firstElement instanceof IProject) {
 			try {
 				project = (IProject) firstElement;
-				if (project.hasNature(Constants.PERL_NATURE_ID)) {
-					action.setText("Remove Perl Nature");
-				} else {
-					action.setText("Add Perl Nature");
+				if (project.isAccessible()) {
+					if (project.hasNature(Constants.PERL_NATURE_ID)) {
+						action.setText("Remove Perl Nature");
+					} else {
+						action.setText("Add Perl Nature");
+					}
 				}
+				action.setEnabled(project.isAccessible());
 			} catch (CoreException e) {
 				e.printStackTrace();
 			}
@@ -65,10 +68,12 @@ public class TogglePerlNatureActionDelegate implements IObjectActionDelegate {
 
 		if (project != null) {
 			try {
-				if (project.hasNature(Constants.PERL_NATURE_ID)) {
-					NatureUtilities.removeNature(project, Constants.PERL_NATURE_ID);
-				} else {
-					NatureUtilities.addNature(project, Constants.PERL_NATURE_ID);
+				if (project.isAccessible()) {
+					if (project.hasNature(Constants.PERL_NATURE_ID)) {
+						NatureUtilities.removeNature(project, Constants.PERL_NATURE_ID);
+					} else {
+						NatureUtilities.addNature(project, Constants.PERL_NATURE_ID);
+					}
 				}
 			} catch (CoreException e) {
 				// TODO Auto-generated catch block

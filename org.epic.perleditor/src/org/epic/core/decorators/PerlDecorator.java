@@ -75,8 +75,10 @@ public class PerlDecorator extends LabelProvider
 
 		try {
 			if (resource.getType() == IResource.PROJECT) {
-				if (resource.getProject().hasNature(PERL_NATURE_ID)) {
-					isPerlProject = true;
+				if (resource.getProject().isAccessible()) {
+					if (resource.getProject().hasNature(PERL_NATURE_ID)) {
+						isPerlProject = true;
+					}
 				}
 			}
 		} catch (CoreException e) {
@@ -85,8 +87,10 @@ public class PerlDecorator extends LabelProvider
 		
 		try {
 			if (resource.getType() == IResource.FOLDER) {
-				if (resource.getProject().hasNature(PERL_NATURE_ID)) {
-					isPerlFolder = true;
+				if (resource.getProject().isAccessible()) {
+					if (resource.getProject().hasNature(PERL_NATURE_ID)) {
+						isPerlFolder = true;
+					}
 				}
 			}
 		} catch (CoreException e) {

@@ -26,6 +26,8 @@ import org.epic.perleditor.preferences.PreferenceConstants;
 import cbg.editor.*;
 import cbg.editor.rules.*;
 
+import org.eclipse.jface.util.PropertyChangeEvent;
+
 /**
  * @author luelljoc
  *
@@ -48,7 +50,12 @@ public class PerlSourceViewerConfiguration
 						setDefaultReturnToken(new Token(attribute));
 					}
 				};
-
+				
+				
+				
+	protected void adaptToPreferenceChange(PropertyChangeEvent event) {
+		super.adaptToPreferenceChange(event);
+	}
 	/**
 	 * 
 	 */

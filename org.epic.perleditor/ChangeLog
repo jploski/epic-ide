@@ -1,5 +1,8 @@
 Eclipse Perl Integration: Perl Editor Plugin
 
+Version 0.1.0 alpha  - 
+		* Taint mode added
+
 Version 0.1.0 alpha  - 04-November-2003
 		* Fixed bug: [ 833114 ] Ctrl+Space does not work on editing Java Source File
 		* Added better perl executable command line paramter support

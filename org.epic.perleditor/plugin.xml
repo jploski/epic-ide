@@ -87,6 +87,12 @@
             class="org.epic.perleditor.preferences.CodeAssistPreferencePage"
             id="org.epic.perleditor.preferences.CodeAssistPreferencePage">
       </page>
+      <page
+            class="org.epic.perleditor.preferences.TaskTagsPreferencePage"
+            category="org.epic.core.preferences.PerlMainPreferencePage"
+            name="Task Tags"
+            id="org.epic.perleditor.preferences.TaskTagsPreferencePage">      
+      </page>
    </extension>
    <extension
          point="org.eclipse.ui.perspectives">

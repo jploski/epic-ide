@@ -377,6 +377,8 @@ public class PreferenceConstants {
 	public final static String EDITOR_BACKGROUND_DEFAULT_COLOR= AbstractTextEditor.PREFERENCE_COLOR_BACKGROUND_SYSTEM_DEFAULT;
 	
 	public final static String INSERT_TABS_ON_INDENT= "insertTabOnIndent";
+	
+	public final static String SPACES_INSTEAD_OF_TABS= "spacesInsteadOfTabs";
 
 	/**
 	 * Preference key suffix for bold text style preference keys.
@@ -480,6 +482,8 @@ public class PreferenceConstants {
 			store.setDefault(PreferenceConstants.EDITOR_TAB_WIDTH, 4);
 			
 			store.setDefault(PreferenceConstants.INSERT_TABS_ON_INDENT, 1);
+			
+			store.setDefault(PreferenceConstants.SPACES_INSTEAD_OF_TABS, false);
 		
 		
 		    // Syntay highlighting

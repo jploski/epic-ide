@@ -32,6 +32,9 @@ Eclipse Perl Integration:
 		* Fixed bug: [ 991625 ] Outline\Modules also lists modules from POD sections
 		* Empty entries are no longer added to the Perl Include Path
 		* Performance improvements (Outline View redraw enhanced)
+		* Implemented Customizable Task Tags (RFE 990979)
+		* Fixed bug: Task Tags on end of file do not raise an exception anymore
+		* Fixed bug: Task Tags outside of comments are ignored now.
 
 Version 0.3.0 - 04-July-2004
 		* Fixed bug: [ 934795 ] Outline view does not work with Unix source

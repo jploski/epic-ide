@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<site>
+
+   <description url="http://e-p-i-c.sourceforge.net/">
+      EPIC - Eclipse Perl Integration
+   </description>
+   <feature url="features/org.epic.feature.main_0.1.0.jar" id="org.epic.feature.main" version="0.1.0">
+      <category name="EPIC"/>
+   </feature>
+   <category-def name="EPIC" label="EPIC Main Components">
+      <description>
+         This package contains the PerlEditor, Debugger and Regexp Plugin.
+      </description>
+   </category-def>
+</site>

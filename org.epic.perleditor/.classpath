@@ -33,5 +33,7 @@
     <classpathentry kind="var" path="ECLIPSE_HOME/plugins/org.epic.ext.cbg.editor_0.2.8/editor.jar"/>
     <classpathentry kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.debug.core_2.1.0/dtcore.jar"/>
     <classpathentry kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.debug.ui_2.1.0/dtui.jar"/>
+    <classpathentry kind="var" path="ECLIPSE_HOME/plugins/org.apache.xerces_4.0.7/xercesImpl.jar"/>
+    <classpathentry kind="var" path="ECLIPSE_HOME/plugins/org.apache.xerces_4.0.7/xmlParserAPIs.jar"/>
     <classpathentry kind="output" path="bin"/>
 </classpath>

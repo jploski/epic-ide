@@ -234,5 +234,10 @@ public class PerlDebugThread implements IThread {
 	public Object getAdapter(Class arg0) {
 		return null;
 	}
+	
+	public PerlDB getPerlDB()
+	{
+		return(mPerlDB);
+	}
 
 }

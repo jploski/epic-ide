@@ -40,7 +40,11 @@ public class StackFrame implements IStackFrame {
 	public IThread getThread() {
 		return mThread;
 	}
-
+	
+	public PerlDebugThread getPerlThread() {
+			return mThread;
+		}
+	
 	/**
 	 * @see org.eclipse.debug.core.model.IStackFrame#getVariables()
 	 */
@@ -231,7 +235,10 @@ public class StackFrame implements IStackFrame {
 	 * @see org.eclipse.core.runtime.IAdaptable#getAdapter(Class)
 	 */
 	public Object getAdapter(Class adapter) {
-		return null;
+		if( adapter == this.getClass() )
+			return this;
+		else
+			return null;
 	}
 
 	/**

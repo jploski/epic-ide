@@ -68,6 +68,7 @@ public class PerlDB	implements IDebugElement {
 	final static int mCommandTerminate= 32;
 	final static int mCommandClearOutput= 64;
 	final static int mCommandExecuteCode = 128;
+	final static int mCommandEvaluateCode = 256;
 	final static int mCommandModifierRangeStart = 1024;
 	final static int mCommandModifierSkipEvaluateCommandResult = mCommandModifierRangeStart;
 	
@@ -402,7 +403,10 @@ public class PerlDB	implements IDebugElement {
 	 * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
 	 */
 	public Object getAdapter(Class adapter) {
-		return null;
+		if( adapter == this.getClass())
+			return this;
+		else
+			return null;
 	}
 	
 	public boolean startCommand(int fCommand,Object fThread)
@@ -410,6 +414,12 @@ public class PerlDB	implements IDebugElement {
 		return( startCommand(fCommand,null,true,fThread));
 	}
 	
+	public String evaluateStatement(Object fThread, String fText)
+	{
+		startCommand(mCommandEvaluateCode,fText,true, fThread);
+		String result = mDebugOutput.substring(0, mDebugOutput.lastIndexOf("\n"));
+		return(result);
+	}
 	public boolean startCommand(int fCommand,String fCode,boolean fSpawn,Object fThread)
 			{
 				if( mIsCommandRunning )
@@ -479,6 +489,7 @@ public class PerlDB	implements IDebugElement {
 			case mCommandClearOutput:
 			break;
 			case mCommandExecuteCode:
+			case mCommandEvaluateCode:
 				mDebugIn.println(fCode+"\n");
 			break;			
 			default: 
@@ -560,6 +571,13 @@ public class PerlDB	implements IDebugElement {
 					if( !fStart )
 						event = new DebugEvent(fCommandDest, DebugEvent.TERMINATE);
 				break;
+				
+				case mCommandEvaluateCode:
+					if( fStart )
+						event = new DebugEvent(fCommandDest, DebugEvent.RESUME, DebugEvent.CLIENT_REQUEST);
+					else
+						event = new DebugEvent(fCommandDest, DebugEvent.SUSPEND, DebugEvent.BREAKPOINT);
+					break;
 			}
 		}
 		if( event != null )
@@ -774,6 +792,7 @@ public class PerlDB	implements IDebugElement {
 			case mCommandResume:
 			case mCommandSuspend:
 			case mCommandTerminate:
+			case mCommandEvaluateCode:
 				updateStackFrames();
 			break;
 			case mCommandClearOutput:
@@ -1012,8 +1031,13 @@ private boolean insertPendingBreakpoints()
 		 
 	bps.clear();
 	
+	
 	return(true);
 }
-
+protected void finalize()throws Throwable
+	{
+		shutdown();
+		super.finalize();
+	}
 
 }

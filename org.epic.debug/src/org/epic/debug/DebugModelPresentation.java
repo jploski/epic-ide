@@ -6,6 +6,7 @@ import org.eclipse.debug.ui.IValueDetailListener;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IStorageEditorInput;
 import org.eclipse.core.resources.*;
 import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.core.runtime.IPath;
@@ -108,7 +109,7 @@ public class DebugModelPresentation implements IDebugModelPresentation {
 	 * @see org.eclipse.debug.ui.ISourcePresentation#getEditorInput(Object)
 	 */
 	public IEditorInput getEditorInput(Object element) {
-		IEditorInput i;
+		IStorageEditorInput i;
 		StackFrame frame;
 		IPath p;
 		
@@ -124,14 +125,18 @@ public class DebugModelPresentation implements IDebugModelPresentation {
 		
 		
 		p = frame.get_IP_Path();
-		IWorkspaceRoot myWorkspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
+		/*IWorkspaceRoot myWorkspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
 		IFile file;
 		file = myWorkspaceRoot.getFileForLocation(p);
 		if( file != null )
 			i= new FileEditorInput(file);
 		else
+		{
 		  	i = new LocalFileStorageEditorInput(p.toString());
-		  	
+		  	i = new LocalFileEditorInput(i);
+		} */
+		i =  LocalFileEditorInput.getFileEditorInput(p);
+			
 		return(i);
 
 	}

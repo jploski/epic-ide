@@ -15,6 +15,13 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.part.ViewPart;
+import org.eclipse.debug.ui.*;
+import org.eclipse.core.runtime.*;
+import org.eclipse.debug.core.model.*;
+import gnu.regexp.*;
+
+ 
+		
 
 /**
  * @author luelljoc
@@ -23,11 +30,23 @@ import org.eclipse.ui.part.ViewPart;
  * Window&gt;Preferences&gt;Java&gt;Code Generation&gt;Code and Comments
  */
 public class ExpressionView extends ViewPart {
-
+	
+	static RE mReIsWhitespace;
+	private int mCommandCount;
+	
 	SashForm sashForm;
 	Text expressionInput, expressionOutput;
 	Action evaluateAction;
-
+	
+	
+	public  ExpressionView()
+	{
+		try{
+			 mReIsWhitespace = new RE("^\\s*$",0, RESyntax.RE_SYNTAX_PERL5);
+			}catch(Exception e) {System.out.println(e);}
+		mCommandCount = 1;
+			
+	}
 	/* (non-Javadoc)
 	 * @see org.eclipse.ui.part.WorkbenchPart#createPartControl(org.eclipse.swt.widgets.Composite)
 	 */
@@ -79,10 +98,42 @@ public class ExpressionView extends ViewPart {
 	 * Action called, when Evaluate Expressin button is pressed
 	 */
 	private void evaluateExpression() {
-		MessageDialog.openInformation(
+		
+		IAdaptable a = DebugUITools.getDebugContext();
+		StackFrame stackFrame = (StackFrame) a.getAdapter(StackFrame.class);
+		if( stackFrame != null )
+		{
+			try{
+			
+			PerlDebugThread thread =stackFrame.getPerlThread();
+			PerlDB db =thread.getPerlDB();
+						
+			String res = db.evaluateStatement( thread, expressionInput.getText()); 
+			
+			boolean isMatch = mReIsWhitespace.isMatch(res) || 
+			   				mReIsWhitespace.getAllMatches(res).length > 0;
+			   				
+			if( res == null || res.length() == 0 || isMatch == true)			
+			{
+				res =  "\n<Command("+mCommandCount+") finished>n";
+				
+			}
+			else
+			{
+				res = res + "\n<Command("+mCommandCount+") finished>n";
+			}
+			  
+			setExpressionOutput(res);
+			mCommandCount++;
+			
+			}catch( Exception e) {System.out.println( e +"\n")	;}		
+			
+		}
+		else
+			MessageDialog.openInformation(
 						this.getViewSite().getShell(),
-						"Message title",
-						"Expression to evaluate:\n" + this.expressionInput.getText());
+						"Error",
+						"Choose Context/Stack Frame for executing Statement\n" + this.expressionInput.getText());
 	}
 	
 	private void setExpressionOutput(String text) {

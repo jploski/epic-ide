@@ -8,6 +8,7 @@ package org.epic.perleditor.editors.util;
 
 import java.util.List;
 import java.util.ArrayList;
+import java.io.*;
 
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.editors.text.TextEditor;
@@ -29,17 +30,20 @@ public class PerlExecutableUtilities {
 	}
 
 	public static List getPerlExecutableCommandLine(TextEditor textEditor) {
-		IProject project = ((IFileEditorInput) textEditor.getEditorInput()).getFile().getProject();
+		IProject project =
+			((IFileEditorInput) textEditor.getEditorInput())
+				.getFile()
+				.getProject();
 		return getPerlExecutableCommandLine(textEditor, project);
-				
+
 	}
 
 	public static List getPerlExecutableCommandLine(
 		TextEditor textEditor,
 		IProject project) {
-			// Get perl executable and extra parameters
-	String preExe =
-		PerlEditorPlugin.getDefault().getExecutablePreference().trim();
+		// Get perl executable and extra parameters
+		String preExe =
+			PerlEditorPlugin.getDefault().getExecutablePreference().trim();
 
 		int startParams = 0;
 		String perlExe = "";
@@ -68,35 +72,34 @@ public class PerlExecutableUtilities {
 
 		List cmdList = new ArrayList();
 		cmdList.add(perlExe.trim());
-		
+
 		// Support Include Path in executable command line
 		int index;
-		while((index = perlParams.indexOf("-I")) != -1) {
-            
-            //Check for next include path
-            int next = perlParams.indexOf("-I", index + 1);
-            
-            String param;
-            
-            if(next != -1) {
-			   param = perlParams.substring(index, next).trim();
-			   perlParams = perlParams.substring(next);
-            }
-            else {
+		while ((index = perlParams.indexOf("-I")) != -1) {
+
+			//Check for next include path
+			int next = perlParams.indexOf("-I", index + 1);
+
+			String param;
+
+			if (next != -1) {
+				param = perlParams.substring(index, next).trim();
+				perlParams = perlParams.substring(next);
+			} else {
 				param = perlParams.substring(index).trim();
 				perlParams = "";
-            }
-			
+			}
+
 			param.trim();
-			
+
 			cmdList.add(param);
 
 		}
-       /*
-		if (perlParams.length() > 0) {
-			cmdList.add(perlParams.trim());
-		}
-		*/
+		/*
+			if (perlParams.length() > 0) {
+				cmdList.add(perlParams.trim());
+			}
+			*/
 
 		if (textEditor != null) {
 			String currentPath =
@@ -114,8 +117,7 @@ public class PerlExecutableUtilities {
 
 		// Add other project include paths
 		XMLUtilities xmlUtil = new XMLUtilities();
-		String[] includes =
-			xmlUtil.getIncludeEntries(project);
+		String[] includes = xmlUtil.getIncludeEntries(project);
 		for (int i = 0; i < includes.length; i++) {
 			String path = preparePath(includes[i]);
 			cmdList.add("-I");
@@ -147,6 +149,26 @@ public class PerlExecutableUtilities {
 		}
 
 		return path;
+	}
+
+	/**
+	 * Reads all characters from the given stream and returns them as string.
+	 * 
+	 * @param stream
+	 * @return
+	 * @throws IOException
+	 */
+	public static String readStringFromStream(InputStream stream)
+		throws IOException {
+		StringBuffer strbuf = new StringBuffer();
+		byte[] buffer = new byte[100];
+		int read = 0;
+
+		while ((read = stream.read(buffer)) != -1) {
+			strbuf.append(new String(buffer, 0, read));
+		}
+
+		return strbuf.toString();
 	}
 
 }

@@ -99,10 +99,7 @@ public class PerlFoldingThread extends Thread implements IdleTimerListener {
           String podExpr = "^(=head.*(" + lineSep + ".*)+?" + lineSep + "=cut)$";
           podList = SourceParser.getElements(text, podExpr, "", "", SourceParser.DO_NOT_DELETE_COMMENT_POD);
 
-          // Get all subroutines
-          //String subExpr = "^\\s*sub\\s+(.*{.*(" + lineSep +
-          // ".*)+?.*\\n})";
-          String subExpr = "^[\\s]*(sub\\s+[^\\n\\r{]+)";
+          // Get all subroutines          String subExpr = "^[\\s]*sub\\s+([^\\n\\r{#]+)";
           List subListTmp = SourceParser.getElements(text, subExpr, "", "", SourceParser.DELETE_COMMENT | SourceParser.DELETE_POD);          
           subList = new ArrayList();
           // Find closing brackets for subs manually                    int lastBracket=0;

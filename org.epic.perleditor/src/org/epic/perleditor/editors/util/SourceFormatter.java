@@ -11,6 +11,8 @@ import org.epic.perleditor.PerlEditorPlugin;
 import org.epic.perleditor.preferences.PreferenceConstants;
 import org.epic.perleditor.preferences.SourceFormatterPreferences;
 
+import org.epic.perleditor.editors.util.StringReaderThread;
+
 import gnu.regexp.RE;
 import gnu.regexp.REMatch;
 import gnu.regexp.REException;
@@ -18,6 +20,8 @@ import gnu.regexp.REException;
 public class SourceFormatter {
 	public String doConversion(String text) {
 
+	   StringReaderThread srt = new StringReaderThread();
+		
        IPreferenceStore store = PerlEditorPlugin.getDefault().getPreferenceStore();
        
 	   int tabWidth = store.getInt(PreferenceConstants.EDITOR_TAB_WIDTH);
@@ -88,13 +92,18 @@ public class SourceFormatter {
 			proc.getErrorStream().close();
 			InputStream in = proc.getInputStream();
 			OutputStream out = proc.getOutputStream();
+			Reader inr = new InputStreamReader(in);
 			Writer outw = new OutputStreamWriter(out);
+			srt.read(inr);
+			
 			outw.write(text);
 			outw.flush();
 			outw.close();
 			
-			formattedText = PerlExecutableUtilities.readStringFromStream(in);
+			formattedText = srt.getResult();
+			inr.close();
 			in.close();
+			
 
 		} catch (Exception ex) {
 			ex.printStackTrace();

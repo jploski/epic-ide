@@ -53,8 +53,15 @@ public class PerlBuilder extends IncrementalProjectBuilder {
 			if (delta == null) {
 				//System.out.println("Full Build(2)");
 				getProject().accept(new BuildFullVisitor());
-				decorator.fireLabelEvent(new LabelProviderChangedEvent(
-						  decorator, PerlDecoratorManager.getSuccessResources().toArray()));
+				
+				try {
+					decorator.fireLabelEvent(new LabelProviderChangedEvent(
+								  decorator, PerlDecoratorManager.getSuccessResources().toArray()));
+				} catch (Exception e) {
+					// This can happen if a newly created project is the first one in the workspace
+					//e.printStackTrace();
+				}
+				
 				//fullBuild(monitor);
 			} else {
 				//System.out.println("Incremental Build");

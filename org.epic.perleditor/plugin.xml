@@ -32,7 +32,7 @@
       <editor
             name="Epic Perl Editor"
             icon="icons/epic.gif"
-            extensions="pl, ipl, pm, cgi"
+            extensions="pl, ipl, pm, cgi, epl"
             contributorClass="org.epic.perleditor.editors.PerlActionContributor"
             class="org.epic.perleditor.editors.PerlEditor"
             id="org.epic.perleditor.editors.PerlEditor">
@@ -223,7 +223,7 @@
       		menubarPath="org.epic.perleditor.source.menu/export/group1"
       		label="&amp;HTML"
 			definitionId="org.epic.perleditor.htmlexport"
-			class="org.epic.perleditor.actions.ExportHtmlSourceAction" />
+			retarget="true" />
          
          <!-- Format source action -->
 		<action id="org.epic.perleditor.FormatSource"

@@ -26,8 +26,12 @@ public class ExportHtmlSourceAction extends Action implements org.eclipse.ui.IWo
 	public ExportHtmlSourceAction() {
 		super();
 	}
-
+	
 	public void run(IAction action) {
+		run();
+	}
+
+	public void run() {
 		String filePath =
 			((IFileEditorInput) PlatformUI
 				.getWorkbench()

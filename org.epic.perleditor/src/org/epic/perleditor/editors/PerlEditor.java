@@ -30,6 +30,7 @@ import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.ITextOperationTarget;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IFileEditorInput;
+import org.eclipse.ui.IStorageEditorInput;
 import org.eclipse.ui.editors.text.TextEditor;
 import org.eclipse.ui.editors.text.TextEditorPreferenceConstants;
 import org.eclipse.ui.texteditor.AnnotationPreference;
@@ -89,6 +90,8 @@ public class PerlEditor
 	private boolean lineRulerActive = false;
 	private SourceViewer fSourceViewer;
 	private IDocumentProvider fDocumentProvider;
+	
+	private final static String PERL_MODE = "Perl";
 
 	/**
 	 * Default constructor();
@@ -118,6 +121,7 @@ public class PerlEditor
 
 	protected void createActions() {
 		super.createActions();
+		 
 		
 		Action action;
         // Create content assist action
@@ -125,20 +129,23 @@ public class PerlEditor
 											  "ContentAssistProposal.", this);
 		action.setActionDefinitionId(ITextEditorActionDefinitionIds.CONTENT_ASSIST_PROPOSALS);
 		setAction("org.epic.perleditor.ContentAssist", action);
+				
+		// Only enable actions if in Perl mode
+		if(isPerlMode()) {
+		           // Add comment action
+				   action = new TextOperationAction(
+								 PerlEditorMessages.getResourceBundle(),
+								 "Comment.", this, ITextOperationTarget.PREFIX);
+				   action.setActionDefinitionId(IPerlEditorActionDefinitionIds.COMMENT);
+				   setAction("org.epic.perleditor.Comment", action);
 		
-           // Add comment action
-		   action = new TextOperationAction(
-						 PerlEditorMessages.getResourceBundle(),
-						 "Comment.", this, ITextOperationTarget.PREFIX);
-		   action.setActionDefinitionId(IPerlEditorActionDefinitionIds.COMMENT);
-		   setAction("org.epic.perleditor.Comment", action);
-
-		   // Add uncomment action
-		   action = new TextOperationAction(
-		   PerlEditorMessages.getResourceBundle(),
-				 "Uncomment.", this, ITextOperationTarget.STRIP_PREFIX);
-		   action.setActionDefinitionId(IPerlEditorActionDefinitionIds.UNCOMMENT);
-		   setAction("org.epic.perleditor.Uncomment", action);
+				   // Add uncomment action
+				   action = new TextOperationAction(
+				   PerlEditorMessages.getResourceBundle(),
+						 "Uncomment.", this, ITextOperationTarget.STRIP_PREFIX);
+				   action.setActionDefinitionId(IPerlEditorActionDefinitionIds.UNCOMMENT);
+				   setAction("org.epic.perleditor.Uncomment", action);
+		}
 
 		IDocumentProvider provider = getDocumentProvider();
 		IDocument document = provider.getDocument(getEditorInput());
@@ -147,13 +154,16 @@ public class PerlEditor
 		fDocumentProvider = provider;
 		fSourceViewer = (SourceViewer) getSourceViewer();
 
-		if (fValidationThread == null) {
+		if (fValidationThread == null && isPerlMode()) {
 			fValidationThread =
 				new PerlSyntaxValidationThread(this, getSourceViewer());
 			//Thread defaults
 			fValidationThread.start();
 		}
-		fValidationThread.setText(getSourceViewer().getTextWidget().getText());
+		
+		if(fValidationThread != null) {
+			fValidationThread.setText(getSourceViewer().getTextWidget().getText());
+		}
 
 		setEditorForegroundColor();
 
@@ -171,7 +181,11 @@ public class PerlEditor
 				(IResource) ((IAdaptable) input).getAdapter(IResource.class);
 
 			resource.deleteMarkers(IMarker.PROBLEM, true, 1);
-			fValidationThread.dispose();
+			
+			if(fValidationThread != null) {
+				fValidationThread.dispose();
+			}
+			
 			super.dispose();
 		} catch (Exception ex) {
 			ex.printStackTrace();
@@ -237,7 +251,12 @@ public class PerlEditor
 	public void doSetInput(IEditorInput input) throws CoreException {
 
 		super.doSetInput(input);
-
+		
+		// Set coloring editor mode
+		if (input instanceof IStorageEditorInput) {
+					String filename = ((IStorageEditorInput) input).getStorage().getName();
+					((ColoringSourceViewerConfiguration) getSourceViewerConfiguration()).setFilename(filename);
+				}
 	}
 
 	/** The PerlEditor implementation of this 
@@ -415,6 +434,23 @@ public class PerlEditor
 	public ISourceViewer getViewer() {
 		return getSourceViewer();
 	}
+	
+	/**
+	 * Checks if perlmode is used by the editor
+	 * @return true if in perl mode, otherwise false
+	 */
+	public boolean isPerlMode() {
+		return getModeName().equals(PERL_MODE);
+	}
+	
+	/**
+	 * Returns the node name used by the editor
+	 * @return Mode name
+	 */
+	public String  getModeName() {
+			String modeName = ((PerlSourceViewerConfiguration)getSourceViewerConfiguration()).getMode().getDisplayName();
+			return modeName;
+		}
 
 	private void setEditorForegroundColor() {
 		// Set text editor forground colour

@@ -370,7 +370,9 @@ public class TemplatePreferencePage
     partitioner.connect(document);
 
     // TODO changed check
-	viewer.configure(new PerlSourceViewerConfiguration(PerlEditorPlugin.getDefault().getPreferenceStore(), null));
+	PerlSourceViewerConfiguration sourceViewerConfiguration = new PerlSourceViewerConfiguration(PerlEditorPlugin.getDefault().getPreferenceStore(), null);
+	sourceViewerConfiguration.setMode(Modes.getMode("perl.xml"));
+	viewer.configure(sourceViewerConfiguration);
     //viewer.configure(new PerlSourceViewerConfiguration(tools, null));
     // (tools, null));
     viewer.setEditable(false);

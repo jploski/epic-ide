@@ -5,6 +5,7 @@ import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.editors.text.TextEditorActionContributor;
 
+import org.epic.perleditor.actions.ExportHtmlSourceAction;
 import org.epic.perleditor.actions.FormatSourceAction;
 
 
@@ -14,6 +15,7 @@ import org.epic.perleditor.actions.FormatSourceAction;
 public class PerlActionContributor extends TextEditorActionContributor {
 
 	protected FormatSourceAction formatSourceAction;
+	protected ExportHtmlSourceAction htmExportAction;
 
 	/**
 	 * Default constructor.
@@ -21,7 +23,8 @@ public class PerlActionContributor extends TextEditorActionContributor {
 	public PerlActionContributor() {
 		super();
 		formatSourceAction = new FormatSourceAction();
-		formatSourceAction.setActionDefinitionId("org.epic.perledior.formatsource");
+		htmExportAction = new ExportHtmlSourceAction();
+		//formatSourceAction.setActionDefinitionId("org.epic.perledior.formatsource");
 	}
 
 	/*
@@ -42,13 +45,27 @@ public class PerlActionContributor extends TextEditorActionContributor {
 		if (part instanceof PerlEditor) {
 				editor = (PerlEditor) part;
 				
-				formatSourceAction.setEditor(editor);
+				// Only add handlers if in Perl mode
+				if(editor.isPerlMode()) {
+					formatSourceAction.setActionDefinitionId("org.epic.perledior.formatsource");
+					formatSourceAction.setEditor(editor);
+					
+					htmExportAction.setActionDefinitionId("org.epic.perleditor.htmlexport");
+				}
 						
 				IActionBars bars= getActionBars();
 				bars.setGlobalActionHandler("org.epic.perleditor.ContentAssist", getAction(editor, "org.epic.perleditor.ContentAssist"));
 				bars.setGlobalActionHandler("org.epic.perleditor.Comment", getAction(editor, "org.epic.perleditor.Comment"));
 				bars.setGlobalActionHandler("org.epic.perleditor.Uncomment", getAction(editor, "org.epic.perleditor.Uncomment"));
-				bars.setGlobalActionHandler("org.epic.perleditor.FormatSource", formatSourceAction);
+				
+				if(editor.isPerlMode()) {
+					bars.setGlobalActionHandler("org.epic.perleditor.FormatSource", formatSourceAction);
+					bars.setGlobalActionHandler("org.epic.perleditor.HtmlExport", htmExportAction);
+				}
+				else {
+					bars.setGlobalActionHandler("org.epic.perleditor.FormatSource", null);
+					bars.setGlobalActionHandler("org.epic.perleditor.HtmlExport", null);
+				}
 		}
 				
 		

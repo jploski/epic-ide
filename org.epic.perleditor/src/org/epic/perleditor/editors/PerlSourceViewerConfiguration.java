@@ -64,7 +64,7 @@ public class PerlSourceViewerConfiguration
 		//super(new ColorManager(store), EditorPlugin.getDefault().getEditorTools());
 		super(new ColorManager(store));
 		
-		setMode(Modes.getMode("perl.xml"));
+		//setMode(Modes.getMode("perl.xml"));
 	/*	
 		String filename;
 		

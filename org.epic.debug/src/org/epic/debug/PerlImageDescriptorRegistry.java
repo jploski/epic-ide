@@ -88,11 +88,11 @@ public class PerlImageDescriptorRegistry {
 	}
 
 	private void hookDisplay() {
-		fDisplay.disposeExec(new Runnable() {
-			public void run() {
-				dispose();
-			}
-		});
+//		fDisplay.disposeExec(new Runnable() {
+//			public void run() {
+//				dispose();
+//			}
+//		});
 	}
 	
 	/**

@@ -34,15 +34,21 @@ public class PerlLineBreakpoint extends PerlBreakpoint implements ILineBreakpoin
 	private static final String Perl_LINE_BREAKPOINT = "org.epic.debug.perlLineBreakpointMarker"; //$NON-NLS-1$
 	
 	
+	public PerlLineBreakpoint() {
+						super();
+						Map attributes = new HashMap(10); 
+					}		
+					
 	public PerlLineBreakpoint(IResource resource, int lineNumber) throws DebugException, CoreException {
-				super(resource);
+				super();
 			    Map attributes = new HashMap(10); 
 				createPerlLineBreakpoint(resource,lineNumber, -1, -1, true, attributes,Perl_LINE_BREAKPOINT);
 			}
 			
+	
 	public PerlLineBreakpoint(IResource resource, int lineNumber, int charStart, int charEnd, boolean add, Map attributes) 
 		 	throws DebugException,CoreException {
-				super(resource);
+				super();
 				if( attributes == null)
 				{ attributes = new HashMap(10); }
 				createPerlLineBreakpoint(resource,lineNumber, charStart, charEnd, add, attributes, Perl_LINE_BREAKPOINT);
@@ -77,13 +83,16 @@ public class PerlLineBreakpoint extends PerlBreakpoint implements ILineBreakpoin
 
 
 	public void addLineBreakpointAttributes(Map attributes, String modelIdentifier, boolean enabled, int lineNumber, int charStart, int charEnd) {
+			//addBreakPointAttributes(attributes);
 			attributes.put(IBreakpoint.ID, modelIdentifier);
 			attributes.put(IBreakpoint.ENABLED, new Boolean(enabled));
 			attributes.put(IMarker.LINE_NUMBER, new Integer(lineNumber));
 			attributes.put(IMarker.CHAR_START, new Integer(-1));
 			attributes.put(IMarker.CHAR_END, new Integer(-1));
 			attributes.put(PerlBreakpoint.INVALID_POS, new Boolean(false));
+			attributes.put(IBreakpoint.PERSISTED, Boolean.TRUE);
 		}
+		
 	public int getLineNumber()
 	{
 		return getMarker().getAttribute(IMarker.LINE_NUMBER,-1);	
@@ -119,7 +128,7 @@ public class PerlLineBreakpoint extends PerlBreakpoint implements ILineBreakpoin
 			super.setMarker(marker);
 			//configureAtStartup();
 		}
-
+	
 
 	/**
 		 * Execute the given workspace runnable

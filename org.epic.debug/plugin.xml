@@ -7,7 +7,9 @@
    class="org.epic.debug.PerlDebugPlugin">
 
    <runtime>
-      <library name="debug.jar"/>
+      <library name="debug.jar">
+         <export name="*"/>
+      </library>
       <library name="gnu-regexp-1.1.4.jar"/>
       <library name="antlr.jar"/>
       <library name="perlvarparser.jar"/>
@@ -87,23 +89,22 @@
       </viewerContribution>
    </extension>
    <extension
+         id="perlLineBreakpointMarker"
+         point="org.eclipse.core.resources.markers">
+      <super
+            type="org.eclipse.debug.core.breakpointMarker">
+      </super>
+      <persistent
+            value="true">
+      </persistent>
+   </extension>
+   <extension
          point="org.eclipse.debug.core.breakpoints">
       <breakpoint
             markerType="org.epic.debug.perlLineBreakpointMarker"
             class="org.epic.debug.PerlLineBreakpoint"
             id="perlLineBreakpoint">
       </breakpoint>
-   </extension>
-   <extension
-         id="perlLineBreakpointMarker"
-         point="org.eclipse.core.resources.markers">
-      <super
-            type="org.eclipse.debug.core.lineBreakpointMarker">
-         org.eclipse.debug.core.breakpoint
-      </super>
-      <persistent
-            value="false">
-      </persistent>
    </extension>
    <extension
          point="org.eclipse.ui.views">

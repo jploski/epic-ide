@@ -103,6 +103,8 @@ public class DebugModelPresentation implements IDebugModelPresentation {
 		{
 			PerlLineBreakpoint bp = ((PerlLineBreakpoint)element);
 			
+			if( bp.getResourcePath() == null )
+				return( "[]");
 			erg.append( bp.getResourcePath().lastSegment());
 			erg.append(" [line: "+Integer.toString(bp.getLineNumber())+"]");
 			if( bp.isNoValidBreakpointPosition())

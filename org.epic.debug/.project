@@ -3,6 +3,7 @@
 	<name>org.epic.debug</name>
 	<comment></comment>
 	<projects>
+		<project>org.epic.perleditor</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

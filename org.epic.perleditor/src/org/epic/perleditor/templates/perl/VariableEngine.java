@@ -1,7 +1,3 @@
-/*
- * (c) Copyright IBM Corp. 2000, 2001.
- * All Rights Reserved.
- */
 package org.epic.perleditor.templates.perl;
 
 import java.util.ArrayList;
@@ -20,7 +16,7 @@ import org.eclipse.jface.text.Region;
 import org.eclipse.swt.graphics.Point;
 //import org.eclipse.jdt.internal.ui.text.link.LinkedPositionManager;
 
-public class SubroutineEngine {
+public class VariableEngine {
 
 	/** The context type. */
 	private ContextType fContextType;
@@ -31,7 +27,7 @@ public class SubroutineEngine {
 	 * Creates the template engine for a particular context type.
 	 * See <code>TemplateContext</code> for supported context types.
 	 */
-	public SubroutineEngine(ContextType contextType) {
+	public VariableEngine(ContextType contextType) {
 	//	Assert.isNotNull(contextType);
 		fContextType= contextType;
 	}
@@ -64,7 +60,7 @@ public class SubroutineEngine {
   //,ICompilationUnit compilationUnit)
 	//hrows JavaModelException
 	{
-	    IDocument document= viewer.getDocument();
+		IDocument document= viewer.getDocument();
 	    
 		// prohibit recursion
 //		if (LinkedPositionManager.hasActiveManager(document))
@@ -73,16 +69,16 @@ public class SubroutineEngine {
 		if (!(fContextType instanceof CompilationUnitContextType))
 			return;
 		
-    Point selection= viewer.getSelectedRange();
-    // remember selected text
-    String selectedText= null;
-    if (selection.y != 0) {
-      try {
-        selectedText= document.get(selection.x, selection.y);
-      } catch (BadLocationException e) {e.printStackTrace();}
-    }
+	Point selection= viewer.getSelectedRange();
+	// remember selected text
+	String selectedText= null;
+	if (selection.y != 0) {
+	  try {
+		selectedText= document.get(selection.x, selection.y);
+	  } catch (BadLocationException e) {e.printStackTrace();}
+	}
 
-    ((CompilationUnitContextType) fContextType).setContextParameters(document, completionPosition, selection.y);//mpilationUnit);
+	((CompilationUnitContextType) fContextType).setContextParameters(document, completionPosition, selection.y);//mpilationUnit);
 
 		PerlUnitContext context= (PerlUnitContext) fContextType.createContext();
 		int start= context.getStart();
@@ -90,15 +86,14 @@ public class SubroutineEngine {
 		IRegion region= new Region(start, end - start);
 
 //		Template[] templates= Templates.getInstance().getTemplates();
-    String subroutine = null;
+	String subroutine = null;
 		for (int i= 0; i != identifiers.length; i++) {
 			subroutine = (String) identifiers[i];
 				
-			if (context.canEvaluate(subroutine, true)) {
-				fProposals.add(new SubroutineProposal(subroutine, context, region, viewer, PerlImages.ICON_SUBROUTINE.createImage(), PerlImages.ICON_SUBROUTINE.createImage())); 
-      }
-    }
+			if (context.canEvaluate(subroutine, false)) {
+				fProposals.add(new VariableProposal(subroutine, context, region, viewer, PerlImages.ICON_VARIABLE.createImage(), PerlImages.ICON_VARIABLE.createImage())); 
+	  }
+	}
 	}
 
 }
-

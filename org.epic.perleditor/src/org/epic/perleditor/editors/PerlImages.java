@@ -16,6 +16,7 @@ public class PerlImages
    public static final ImageDescriptor ICON_SUBROUTINE_NODE;
    public static final ImageDescriptor ICON_MODULE;
    public static final ImageDescriptor ICON_MODULE_NODE;
+   public static final ImageDescriptor ICON_VARIABLE;
    public static final ImageDescriptor NEW_PROJECT_WIZARD;
    public static final ImageDescriptor IMG_OBJS_ERROR;
 	  public static final ImageDescriptor IMG_OBJS_WARNING;
@@ -24,33 +25,34 @@ public class PerlImages
 
    static
    {
-      String iconPath = "icons/";
+	  String iconPath = "icons/";
 
-      ICON_EDITOR = createImageDescriptor(iconPath + "epic.gif"); 
-      ICON_SUBROUTINE = createImageDescriptor(iconPath + "subroutine.gif");
-      ICON_SUBROUTINE_NODE = createImageDescriptor(iconPath + "subroutine_node.gif");
-      ICON_MODULE = createImageDescriptor(iconPath + "module.gif");
-      ICON_MODULE_NODE = createImageDescriptor(iconPath + "module_node.gif");
+	  ICON_EDITOR = createImageDescriptor(iconPath + "epic.gif"); 
+	  ICON_SUBROUTINE = createImageDescriptor(iconPath + "subroutine.gif");
+	  ICON_SUBROUTINE_NODE = createImageDescriptor(iconPath + "subroutine_node.gif");
+	  ICON_MODULE = createImageDescriptor(iconPath + "module.gif");
+	  ICON_MODULE_NODE = createImageDescriptor(iconPath + "module_node.gif");
+	  ICON_VARIABLE = createImageDescriptor(iconPath + "variable.gif");
 	  NEW_PROJECT_WIZARD = createImageDescriptor(iconPath + "new_wizard.gif");
 	  IMG_OBJS_ERROR = createImageDescriptor(iconPath + "error_obj.gif");
 	  IMG_OBJS_WARNING = createImageDescriptor(iconPath + "warning_obj.gif");
-      IMG_OBJS_INFO = createImageDescriptor(iconPath + "info_obj.gif");
-      IMG_OBJS_TEMPLATE = createImageDescriptor(iconPath + "template_obj.gif");
+	  IMG_OBJS_INFO = createImageDescriptor(iconPath + "info_obj.gif");
+	  IMG_OBJS_TEMPLATE = createImageDescriptor(iconPath + "template_obj.gif");
    }
 
   
    private static ImageDescriptor createImageDescriptor(String path)
    {
-      try
-      {
-         URL url = new URL(BASE_URL, path);
+	  try
+	  {
+		 URL url = new URL(BASE_URL, path);
 
-         return ImageDescriptor.createFromURL(url);
-      }
-      catch(MalformedURLException e)
-      {
-      }
+		 return ImageDescriptor.createFromURL(url);
+	  }
+	  catch(MalformedURLException e)
+	  {
+	  }
 
-      return ImageDescriptor.getMissingImageDescriptor();
+	  return ImageDescriptor.getMissingImageDescriptor();
    }
 }

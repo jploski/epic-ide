@@ -23,7 +23,7 @@ public class PerlUnitContext extends DocumentTemplateContext {
   private static final String PLATFORM_LINE_DELIMITER = System.getProperty("line.separator"); //$NON-NLS-1$
 
   // To allow templates starting with "= # $ @ %"
-  private static final String specialChars = "=#$@%";
+  private static final String specialChars = "=#$@%<";
   /** The compilation unit, may be <code>null</code>. */
   //	private final ICompilationUnit fCompilationUnit;
 
@@ -58,16 +58,23 @@ public class PerlUnitContext extends DocumentTemplateContext {
    * Returns <code>true</code> if template matches the prefix and context,
    * <code>false</code> otherwise.
    */
-  public boolean canEvaluate(String identifier) {
+  public boolean canEvaluate(String identifier, boolean showAllOnEmpty) {
     String prefix = getKey();
     
-    return
-    //      fEnabled &&
-    //      fContextTypeName.equals(contextTypeName) &&
-  //(prefix.length() != 0) && identifier.toLowerCase().startsWith(prefix.toLowerCase());
-   
-    // If nothing is specified, return all identifiers
-	(prefix.length() == 0) || identifier.toLowerCase().startsWith(prefix.toLowerCase());
+    if(showAllOnEmpty) {
+    	return (prefix.length() == 0) || identifier.toLowerCase().startsWith(prefix.toLowerCase());
+    }
+    else {
+    	return (prefix.length() != 0) && identifier.toLowerCase().startsWith(prefix.toLowerCase());
+    }
+// TODO delete!
+//    return
+//    //      fEnabled &&
+//    //      fContextTypeName.equals(contextTypeName) &&
+//  //(prefix.length() != 0) && identifier.toLowerCase().startsWith(prefix.toLowerCase());
+//   
+//    // If nothing is specified, return all identifiers
+//	(prefix.length() == 0) || identifier.toLowerCase().startsWith(prefix.toLowerCase());
   }
 
   /*

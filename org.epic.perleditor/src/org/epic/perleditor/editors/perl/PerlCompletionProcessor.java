@@ -3,17 +3,14 @@ package org.epic.perleditor.editors.perl;
 import java.util.*;
 import java.io.*;
 
+import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.ITextViewer;
-import org.eclipse.jface.text.TextViewer;
 import org.eclipse.jface.text.TextPresentation;
-import org.eclipse.jface.text.contentassist.CompletionProposal;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.eclipse.jface.text.contentassist.IContentAssistProcessor;
 import org.eclipse.jface.text.contentassist.IContextInformation;
 import org.eclipse.jface.text.contentassist.IContextInformationPresenter;
 import org.eclipse.jface.text.contentassist.IContextInformationValidator;
-import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.editors.text.TextEditor;
 import org.eclipse.ui.IFileEditorInput;
 
@@ -22,14 +19,18 @@ import org.eclipse.jface.text.IDocument;
 import gnu.regexp.RE;
 import gnu.regexp.REMatch;
 
-import org.epic.perleditor.editors.PerlImages;
+import org.epic.perleditor.PerlEditorPlugin;
 import org.epic.perleditor.editors.util.PerlExecutableUtilities;
+import org.epic.perleditor.preferences.CodeAssistPreferences;
 import org.epic.perleditor.templates.ContextType;
 import org.epic.perleditor.templates.ContextTypeRegistry;
 import org.epic.perleditor.templates.TemplateEngine;
 import org.epic.perleditor.templates.perl.IPerlCompletionProposal;
 import org.epic.perleditor.templates.perl.PerlCompletionProposalComparator;
 import org.epic.perleditor.templates.perl.SubroutineEngine;
+import org.epic.perleditor.templates.perl.VariableEngine;
+import org.epic.perleditor.views.model.Model;
+import org.epic.perleditor.views.util.SourceParser;
 
 /**
  * Perl completion processor.
@@ -107,9 +108,6 @@ public class PerlCompletionProcessor implements IContentAssistProcessor {
 
 			List proposals = getProposalsForClassname(viewer, className);
 
-			ICompletionProposal[] result =
-				new ICompletionProposal[proposals.size()];
-
 			IPerlCompletionProposal[] subroutineResults =
 				new IPerlCompletionProposal[0];
 			SubroutineEngine subroutineEngine;
@@ -124,15 +122,137 @@ public class PerlCompletionProcessor implements IContentAssistProcessor {
 			}
 			return subroutineResults;
 		} else {
+			IPerlCompletionProposal[] varsResults =	new IPerlCompletionProposal[0];
+			boolean inspectVars = PerlEditorPlugin.getDefault().getPreferenceStore().getBoolean(CodeAssistPreferences.INSPECT_VARIABLES);
+			if(inspectVars) {
+				//Get variables
+				List variables;
+				variables = getCompletionVariables(viewer, documentOffset);
+				VariableEngine varsEngine;
+				ContextType contextType = ContextTypeRegistry.getInstance().getContextType("perl"); //$NON-NLS-1$
+				if (contextType != null) {
+					varsEngine = new VariableEngine(contextType);
+					varsEngine.complete(
+						viewer,
+						documentOffset,
+						(String[]) variables.toArray(new String[0]));
+					varsResults = varsEngine.getResults();
+				}
+			}
+
 			fTemplateEngine.reset();
 			fTemplateEngine.complete(viewer, documentOffset);
-			return sort(fTemplateEngine.getResults());
+			IPerlCompletionProposal[] templateResults =
+				fTemplateEngine.getResults();
+
+			//			concatenate arrays
+			IPerlCompletionProposal[] result;
+			result =
+				new IPerlCompletionProposal[templateResults.length
+					+ varsResults.length];
+			System.arraycopy(
+				templateResults,
+				0,
+				result,
+				0,
+				templateResults.length);
+			System.arraycopy(
+				varsResults,
+				0,
+				result,
+				templateResults.length,
+				varsResults.length);
+
+			return sort(result);
+
 		}
 
 		//return result;
 		//return subroutineResults;
 	}
 
+	/**
+	 * Gets variable/filedescriptor info from source file
+	 * @param viewer
+	 * @param documentOffset
+	 * @return
+	 */
+	private List getCompletionVariables(
+		ITextViewer viewer,
+		int documentOffset) {
+
+		String VARIABLE_REGEXP = "([$@%][a-z0-9A-Z_]+)\\s*[=;]";
+		String FILEHANDLE_REGEXP =
+			"open[a-z]*\\s*?\\s*?[(]\\s*?([A-Z_]+)\\s*?[,]";
+
+		List variablesModel = new ArrayList();
+		List variables = new ArrayList();
+
+		String variableChars = "%$@";
+		String filehandleChars = "<";
+
+		try {
+
+			documentOffset =
+				getCompletionStartOffset(
+					viewer.getDocument(),
+					documentOffset,
+					variableChars + filehandleChars);
+
+			String key = viewer.getDocument().get(documentOffset, 1);
+			if (variableChars.indexOf(key) != -1) {
+				String regexp = VARIABLE_REGEXP;
+				variablesModel =
+					SourceParser.getElements(
+						viewer.getDocument(),
+						regexp,
+						"",
+						"",
+						true);
+			} else if (filehandleChars.indexOf(key) != -1) {
+				String regexp = FILEHANDLE_REGEXP;
+				variablesModel =
+					SourceParser.getElements(
+						viewer.getDocument(),
+						regexp,
+						"<",
+						">",
+						true);
+			}
+
+			Map alreadyInserted = new HashMap();
+			for (Iterator iterate = variablesModel.iterator();
+				iterate.hasNext();
+				) {
+				Model model = (Model) iterate.next();
+				String element = model.getName();
+
+				// Only insert variables once
+				if (alreadyInserted.get(element) == null) {
+					variables.add(element);
+					alreadyInserted.put(element, "");
+					
+					String elementAdditional = null;
+
+					if (element.startsWith("@")) {
+						elementAdditional = "$" + element.substring(1) + "[]";
+					} else if (element.startsWith("%")) {
+						elementAdditional = "$" + element.substring(1) + "{}";
+					}
+					if (elementAdditional != null && alreadyInserted.get(elementAdditional) == null) {
+						variables.add(elementAdditional);
+						alreadyInserted.put(elementAdditional, "");
+					}
+					
+				}
+
+			}
+
+		} catch (BadLocationException ex) {
+			ex.printStackTrace();
+		}
+		return variables;
+	}
 	/* 
 	 * Method declared on IContentAssistProcessor
 	 */
@@ -153,7 +273,10 @@ public class PerlCompletionProcessor implements IContentAssistProcessor {
 	 * Method declared on IContentAssistProcessor
 	 */
 	public char[] getCompletionProposalAutoActivationCharacters() {
-		return new char[] { '>', ':' };
+		String activationCharas  = PerlEditorPlugin.getDefault().getPreferenceStore().getString(CodeAssistPreferences.AUTO_ACTIVATION_CHARS);
+		return activationCharas.toCharArray();
+		//return ">:<$@%".toCharArray();
+		//return new char[] { '>', ':', '<', '$', '@', '%' };
 	}
 
 	/* 
@@ -188,23 +311,11 @@ public class PerlCompletionProcessor implements IContentAssistProcessor {
 			// Calculate documentOffset
 			String specialChars = "_"; // "_" can be contained in classname
 
-			while (((documentOffset != 0)
-				&& Character.isUnicodeIdentifierPart(
-					document.getChar(documentOffset - 1)))
-				|| ((documentOffset != 0)
-					&& specialChars.indexOf(document.getChar(documentOffset - 1))
-						!= (-1))) {
-				documentOffset--;
-			}
-
-			if (((documentOffset != 0)
-				&& Character.isUnicodeIdentifierStart(
-					document.getChar(documentOffset - 1)))
-				|| ((documentOffset != 0)
-					&& specialChars.indexOf(document.getChar(documentOffset - 1))
-						!= (-1))) {
-				documentOffset--;
-			}
+			documentOffset =
+				getCompletionStartOffset(
+					viewer.getDocument(),
+					documentOffset,
+					specialChars);
 
 			String text = document.get(0, documentOffset);
 			if (!text.endsWith("->") && !text.endsWith("::")) {
@@ -376,5 +487,40 @@ public class PerlCompletionProcessor implements IContentAssistProcessor {
 	private IPerlCompletionProposal[] sort(IPerlCompletionProposal[] proposals) {
 		Arrays.sort(proposals, fComparator);
 		return proposals;
+	}
+
+	/**
+	 * Returns the content assist start offset
+	 * 
+	 * @param document
+	 * @param documentOffset
+	 * @param specialChars
+	 * @return offset
+	 * @throws BadLocationException
+	 */
+	private int getCompletionStartOffset(
+		IDocument document,
+		int documentOffset,
+		String specialChars)
+		throws BadLocationException {
+		while (((documentOffset != 0)
+			&& Character.isUnicodeIdentifierPart(
+				document.getChar(documentOffset - 1)))
+			|| ((documentOffset != 0)
+				&& specialChars.indexOf(document.getChar(documentOffset - 1))
+					!= (-1))) {
+			documentOffset--;
+		}
+
+		if (((documentOffset != 0)
+			&& Character.isUnicodeIdentifierStart(
+				document.getChar(documentOffset - 1)))
+			|| ((documentOffset != 0)
+				&& specialChars.indexOf(document.getChar(documentOffset - 1))
+					!= (-1))) {
+			documentOffset--;
+		}
+
+		return documentOffset;
 	}
 }

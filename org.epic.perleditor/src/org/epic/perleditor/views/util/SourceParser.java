@@ -11,6 +11,9 @@ import org.epic.perleditor.editors.perl.PerlPartitionScanner;
 
 import org.epic.perleditor.views.model.Model;
 
+import gnu.regexp.RE;
+import gnu.regexp.REMatch;
+
 public class SourceParser {
 	public static final String FUNCTION = "sub ";
 
@@ -44,22 +47,25 @@ public class SourceParser {
 					String foundName = str.substring(offset, offset + length);
 
 					// Check the whole linefor invalid characters
-					
+
 					int currentLine = doc.getLineOfOffset(offset);
 					int lineOffset = doc.getLineOffset(currentLine);
-					
-					String wholeLine = str.substring(lineOffset, lineOffset + doc.getLineLength(currentLine));
+
+					String wholeLine =
+						str.substring(
+							lineOffset,
+							lineOffset + doc.getLineLength(currentLine));
 					boolean containsInvalidCharacters = false;
 					char[] ic = invalidCharacters.toCharArray();
-			
-					for(int i=0; i<ic.length; i++) {
-						if(wholeLine.indexOf(ic[i]) != -1) {
+
+					for (int i = 0; i < ic.length; i++) {
+						if (wholeLine.indexOf(ic[i]) != -1) {
 							containsInvalidCharacters = true;
 							break;
 						}
 					}
-					
-					if(containsInvalidCharacters) {
+
+					if (containsInvalidCharacters) {
 						token = scanner.nextToken();
 						continue;
 					}
@@ -68,7 +74,7 @@ public class SourceParser {
 
 						foundName =
 							foundName.substring(0, foundName.length() - 1);
-					}	
+					}
 					// The suppressString character has to be the last character in the string.
 					// If not this is not a match.
 					// Somehow it seems that the "end sequence" of the token is not checked
@@ -157,6 +163,85 @@ public class SourceParser {
 		}
 		result.append(source.substring(lastIndex));
 		return result.toString();
+	}
+
+	/**
+	 * Gets elements from sourcecode by using regular expressions.
+	 * @param document
+	 * @param regexp
+	 * @param preFix
+	 * @param postFix
+	 * @param deleteComments
+	 * @return
+	 */
+	public static List getElements(
+		IDocument document,
+		String regexp,
+		String preFix,
+		String postFix,
+		boolean deleteComments) {
+			String text = document.get();
+			return getElements(text, regexp, preFix, postFix, deleteComments);
+	}
+	
+	/**
+	 * Gets elements from sourcecode by using regular expressions.
+	 * @param text
+	 * @param regexp
+	 * @param preFix
+	 * @param postFix
+	 * @param deleteComments
+	 * @return
+	 */
+	public static List getElements(
+		String text,
+		String regexp,
+		String preFix,
+		String postFix,
+		boolean deleteComments) {
+		List results = new ArrayList();
+
+		try {
+			RE reg;
+
+			// Remove POD and comments
+			if (deleteComments) {
+				// Remove POD
+				reg = new RE("^(=.*)((\n.*)+)(=cut)$");
+				text = reg.substituteAll(text, "");
+
+				// Remove comments
+				reg = new RE("[\\n);]\\s*(#.*)$");
+				text = reg.substituteAll(text, "");
+			}
+
+			reg = new RE(regexp, RE.REG_MULTILINE);
+
+			REMatch[] matches = reg.getAllMatches(text);
+
+			for (int i = 0; i < matches.length; i++) {
+				String match = null;
+				int start;
+				int end;
+				if (reg.getNumSubs() > 0) {
+					match = matches[i].toString(1);
+					start = matches[i].getStartIndex(1);
+					end = matches[i].getEndIndex(1);
+				} else {
+					match = matches[i].toString();
+					start = matches[i].getStartIndex();
+					end = matches[i].getEndIndex();
+				}
+
+				Model func =
+					new Model(preFix + match + postFix, start, end - start);
+				results.add(func);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return results;
 	}
 
 }

@@ -7,6 +7,7 @@ import org.eclipse.core.resources.*;
 import java.util.*;
 
 import org.epic.perleditor.editors.PerlDocumentProvider;
+import org.epic.perleditor.preferences.CodeAssistPreferences;
 import org.epic.perleditor.preferences.PreferenceConstants;
 import org.epic.perleditor.preferences.SourceFormatterPreferences;
 
@@ -95,6 +96,7 @@ public class PerlEditorPlugin extends AbstractUIPlugin {
 		store.setDefault(INTERPRETER_TYPE_PREFERENCE, INTERPRETER_TYPE_STANDARD);
 		store.setDefault(SYNTAX_VALIDATION_INTERVAL_PREFERENCE, SYNTAX_VALIDATION_INTERVAL_DEFAULT);
 		SourceFormatterPreferences.initializeDefaultValues(store);
+		CodeAssistPreferences.initializeDefaultValues(store);
 
 	}
 	

@@ -20,7 +20,9 @@ extends ColoringSourceViewerConfiguration {
 	 */
 
 	public PreviewSourceViewerConfiguration(IPreferenceStore store) {
-		super(new ColorManager(store), EditorPlugin.getDefault().getEditorTools());
+		// Changed for version 3.0 of Colorer Plugin
+		//super(new ColorManager(store), EditorPlugin.getDefault().getEditorTools());
+		super(new ColorManager(store));
 		setMode(Modes.getMode("perl.xml"));
 		fStore = store;
 

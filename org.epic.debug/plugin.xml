@@ -3,7 +3,7 @@
 <plugin
    id="org.epic.debug"
    name="Debug Plug-in"
-   version="0.2.2"
+   version="0.2.3"
    provider-name="EPIC Project"
    class="org.epic.debug.PerlDebugPlugin">
 

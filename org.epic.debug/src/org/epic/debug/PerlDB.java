@@ -1094,9 +1094,10 @@ public class PerlDB implements IDebugElement, ITerminate {
 				e.printStackTrace();
 			}
 
-			mIsCommandRunning = false;
-			mIsCommandFinished = true;
-
+		mStopVarUpdate = false;
+		mIsCommandRunning = false;
+		mIsCommandFinished = true;
+		
 		mVarUpdateThread = new VarUpdateThread(fOutputString);
 		mVarUpdateThread.setPriority(Thread.MIN_PRIORITY);
 		mVarUpdateThread.start();
@@ -1552,7 +1553,7 @@ public class PerlDB implements IDebugElement, ITerminate {
 			System.err.println("Start+++++++++++++++++" + mIsCommandFinished);
 			try {
 				for (int x = 0; (x < 5) && !mStopVarUpdate; x++)
-					sleep(500);
+					sleep(100);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

@@ -238,12 +238,12 @@ litigation.
          id="org.epic.perleditor"
          download-size="0"
          install-size="0"
-         version="0.1.3"/>
+         version="0.1.4"/>
 
    <plugin
          id="org.epic.debug"
          download-size="0"
          install-size="0"
-         version="0.2.1"/>
+         version="0.2.2"/>
 
 </feature>

@@ -169,6 +169,22 @@ public class StarRule implements IPredicateRule {
 				return false;
 			}
 		}
+		
+		// Inserted by EPIC -- START
+		if (atWhitepsaceEnd) {
+					c = scanner.read();
+					scanner.unread();
+					//TODO EPIC specific SHOULD BE REMOVED if it works correct in ColorEditor
+					if (whiteDetector.isWhitespace((char) c) || c == ICharacterScanner.EOF) {
+						scanner.unread(); // <-- EPIC: Rewind scanner if whitespace character
+						return true;
+					}
+					for (int j = read - 1; j > 0; j--)
+						scanner.unread();
+					return false;
+		}
+		//	Inserted by EPIC -- END
+		
 		// scan until we hit whitespace or EOF
 		read = 1;
 		c = scanner.read();
@@ -217,11 +233,8 @@ public class StarRule implements IPredicateRule {
 		if (atWhitepsaceEnd) {
 			c = scanner.read();
 			scanner.unread();
-			//TODO EPIC specific SHOULD BE REMOVED if it works correct in ColorEditor
-			if (whiteDetector.isWhitespace((char) c) || c == ICharacterScanner.EOF) {
-				scanner.unread(); // <-- EPIC: Rewind scanner if whitespace character
+			if (whiteDetector.isWhitespace((char) c) || c == ICharacterScanner.EOF)
 				return true;
-			}
 			for (int j = read - 1; j > 0; j--)
 				scanner.unread();
 			return false;

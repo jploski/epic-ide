@@ -21,7 +21,8 @@ public class ColoringWordDetector implements IWordDetector {
 
     public boolean isWordPart(char c) {
     	/* added the dot so properties file would mark_following correctly
-    	 * when they path contained dots. For example a.b.c=124    	 */
+    	 * when they path contained dots. For example a.b.c=124
+    	 */
 		return isWordStart(c) || Character.isDigit(c) || '.' == c;
     }
 }

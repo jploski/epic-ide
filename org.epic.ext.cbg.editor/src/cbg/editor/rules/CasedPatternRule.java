@@ -9,7 +9,7 @@ public class CasedPatternRule extends PatternRule {
 	protected boolean ignoreCase;
 	
 	public CasedPatternRule(String startSequence, String endSequence, IToken token, char escapeCharacter, boolean breaksOnEOL) {
-		    this(startSequence, endSequence, token, escapeCharacter, breaksOnEOL, false);
+		this(startSequence, endSequence, token, escapeCharacter, breaksOnEOL, false);
 	}
 
 	public CasedPatternRule(String startSequence, String endSequence, 

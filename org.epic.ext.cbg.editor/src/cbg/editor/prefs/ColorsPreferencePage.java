@@ -1,15 +1,11 @@
 package cbg.editor.prefs;
 
-import cbg.editor.BooleanColorFieldEditor;
-import cbg.editor.EditorPlugin;
-import cbg.editor.rules.ColorManager;
-
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
-import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.jface.preference.PreferenceConverter;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
+import cbg.editor.BooleanColorFieldEditor;
+import cbg.editor.EditorPlugin;
 
 public class ColorsPreferencePage extends FieldEditorPreferencePage implements IWorkbenchPreferencePage {
 	public static final String NULL_COLOR = "nullColor";
@@ -32,37 +28,6 @@ public class ColorsPreferencePage extends FieldEditorPreferencePage implements I
 	public ColorsPreferencePage() {
 		super(FieldEditorPreferencePage.GRID);
 		setPreferenceStore(EditorPlugin.getDefault().getPreferenceStore());
-	}
-
-	private static void setDefaultColors(IPreferenceStore store) {
-		PreferenceConverter.setDefault(store, COMMENT1_COLOR, ColorManager.DEFAULT_COMMENT1_COLOR);
-		PreferenceConverter.setDefault(store, COMMENT2_COLOR, ColorManager.DEFAULT_COMMENT2_COLOR);		
-		PreferenceConverter.setDefault(store, DIGIT_COLOR, ColorManager.DEFAULT_DIGIT_COLOR);		
-		PreferenceConverter.setDefault(store, FUNCTION_COLOR, ColorManager.DEFAULT_FUNCTION_COLOR);		
-		PreferenceConverter.setDefault(store, INVALID_COLOR, ColorManager.DEFAULT_INVALID_COLOR);
-		PreferenceConverter.setDefault(store, KEYWORD1_COLOR, ColorManager.DEFAULT_KEYWORD1_COLOR);
-		PreferenceConverter.setDefault(store, KEYWORD2_COLOR, ColorManager.DEFAULT_KEYWORD2_COLOR);
-		PreferenceConverter.setDefault(store, KEYWORD3_COLOR, ColorManager.DEFAULT_KEYWORD3_COLOR);		
-		PreferenceConverter.setDefault(store, LABEL_COLOR, ColorManager.DEFAULT_LABEL_COLOR);
-		PreferenceConverter.setDefault(store, LITERAL1_COLOR, ColorManager.DEFAULT_LITERAL1_COLOR);
-		PreferenceConverter.setDefault(store, LITERAL2_COLOR, ColorManager.DEFAULT_LITERAL2_COLOR);
-		PreferenceConverter.setDefault(store, MARKUP_COLOR, ColorManager.DEFAULT_MARKUP_COLOR);
-		PreferenceConverter.setDefault(store, OPERATOR_COLOR, ColorManager.DEFAULT_OPERATOR_COLOR);		
-		PreferenceConverter.setDefault(store, NULL_COLOR, ColorManager.DEFAULT_STRING_COLOR);
-		store.setDefault(COMMENT1_COLOR + BOLD_SUFFIX, false);
-		store.setDefault(COMMENT2_COLOR + BOLD_SUFFIX, false);		
-		store.setDefault(DIGIT_COLOR + BOLD_SUFFIX,  false);
-		store.setDefault(FUNCTION_COLOR + BOLD_SUFFIX,  false);
-		store.setDefault(INVALID_COLOR + BOLD_SUFFIX,  false);
-		store.setDefault(KEYWORD1_COLOR + BOLD_SUFFIX,  false);
-		store.setDefault(KEYWORD2_COLOR + BOLD_SUFFIX,  false);
-		store.setDefault(KEYWORD3_COLOR + BOLD_SUFFIX,  false);
-		store.setDefault(LABEL_COLOR + BOLD_SUFFIX,  false);
-		store.setDefault(LITERAL1_COLOR + BOLD_SUFFIX,  false);
-		store.setDefault(LITERAL2_COLOR + BOLD_SUFFIX,  false);
-		store.setDefault(MARKUP_COLOR + BOLD_SUFFIX,  false);
-		store.setDefault(OPERATOR_COLOR + BOLD_SUFFIX,  false);
-		store.setDefault(NULL_COLOR + BOLD_SUFFIX,  false);
 	}
 
 	protected void createFieldEditors() {

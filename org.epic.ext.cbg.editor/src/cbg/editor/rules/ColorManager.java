@@ -67,7 +67,10 @@ public class ColorManager {
 	/** 
 	 * Converts the ColoringPartitionScanner's type
 	 * name to the appropriate preference store color
-	 * name.	 * @param type	 * @return String	 */
+	 * name.
+	 * @param type
+	 * @return String
+	 */
 	public String colorForType(String type) {
 		return (String) typeToColorMap.get(type);
 	}

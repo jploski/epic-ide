@@ -146,37 +146,37 @@ public PerlParserSimple(ParserSharedInputState state) {
 		
 		try {      // for error handling
 			{
-			_loop627:
+			_loop3:
 			do {
 				if ((LA(1)==NL)) {
 					match(NL);
 				}
 				else {
-					break _loop627;
+					break _loop3;
 				}
 				
 			} while (true);
 			}
 			{
-			_loop631:
+			_loop7:
 			do {
 				if ((_tokenSet_0.member(LA(1)))) {
 					namedVar();
 					{
-					_loop630:
+					_loop6:
 					do {
 						if ((LA(1)==NL)) {
 							match(NL);
 						}
 						else {
-							break _loop630;
+							break _loop6;
 						}
 						
 					} while (true);
 					}
 				}
 				else {
-					break _loop631;
+					break _loop7;
 				}
 				
 			} while (true);
@@ -372,13 +372,13 @@ public PerlParserSimple(ParserSharedInputState state) {
 			if ((LA(1)==INDENT_START) && (LA(2)==NUMBER||LA(2)==INDENT_END)) {
 				match(INDENT_START);
 				{
-				_loop639:
+				_loop15:
 				do {
 					if ((LA(1)==NUMBER)) {
 						arrayEntry();
 					}
 					else {
-						break _loop639;
+						break _loop15;
 					}
 					
 				} while (true);
@@ -551,13 +551,13 @@ public PerlParserSimple(ParserSharedInputState state) {
 			if ((LA(1)==INDENT_START) && (LA(2)==INDENT_END||LA(2)==STRING)) {
 				match(INDENT_START);
 				{
-				_loop647:
+				_loop23:
 				do {
 					if ((LA(1)==STRING)) {
 						hashEntry();
 					}
 					else {
-						break _loop647;
+						break _loop23;
 					}
 					
 				} while (true);
@@ -759,7 +759,7 @@ public PerlParserSimple(ParserSharedInputState state) {
 			}
 			}
 			{
-			_loop658:
+			_loop34:
 			do {
 				switch ( LA(1)) {
 				case PURE_NAME:
@@ -791,7 +791,7 @@ public PerlParserSimple(ParserSharedInputState state) {
 				}
 				default:
 				{
-					break _loop658;
+					break _loop34;
 				}
 				}
 			} while (true);

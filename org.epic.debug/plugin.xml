@@ -160,5 +160,13 @@
          </action>
       </viewContribution>
    </extension>
+   
+    <extension point="org.eclipse.debug.ui.consoleColorProviders">
+   <consoleColorProvider 
+      id="org.epic.debug.CGIConsoleColorProvider"
+      class="org.epic.debug.util.CGIConsoleColorProvider"
+      processType="EpicCGIProxy">
+   </consoleColorProvider>
+ </extension>
 
 </plugin>

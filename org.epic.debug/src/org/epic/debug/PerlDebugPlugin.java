@@ -5,6 +5,9 @@ import org.eclipse.core.runtime.*;
 import org.eclipse.core.resources.*;
 import java.util.*;
 import java.io.*;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.jface.dialogs.ErrorDialog;
@@ -23,7 +26,7 @@ public class PerlDebugPlugin extends AbstractUIPlugin
 
 	final private static int mScreenLogLevel = 0;
 	final private static int mLogLevel = Status.WARNING;
-
+	final private static String mDefaultDebugPort="4444";
 	//The shared instance.
 	private static PerlDebugPlugin plugin;
 	//Resource bundle.
@@ -35,9 +38,11 @@ public class PerlDebugPlugin extends AbstractUIPlugin
 
 	private static PerlImageDescriptorRegistry defaultPerlImageDescriptorRegistry =
 		new PerlImageDescriptorRegistry();
-	private final static String mDebugOptions =
-		"PERLDB_OPTS=RemotePort=localhost:4444 DumpReused ReadLine=0";
-
+	private final static String mDebugOptionsEnvPrefix =
+		"PERLDB_OPTS=RemotePort=";
+	private final static String mDebugOptionsValue =
+			"DumpReused ReadLine=0";
+	//"PERLDB_OPTS=RemotePort=localhost:4444 DumpReused ReadLine=0";
 	// frame=2";
 	/**
 	 * The constructor.
@@ -184,7 +189,22 @@ public class PerlDebugPlugin extends AbstractUIPlugin
 
 	static String getPerlDebugEnv(ILaunch fLaunch)
 	{
-		return mDebugOptions;
+		String port = null;
+		String host = null;
+		try
+		{
+			host =  InetAddress.getLocalHost().getHostAddress();
+		} catch (UnknownHostException e1)
+		{
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		};
+		
+		
+		
+		 port = PerlLaunchConfigurationConstants.getDebugPort(fLaunch);
+		
+		return (mDebugOptionsEnvPrefix+host+":"+port+" "+mDebugOptionsValue);
 	}
 
 	/**
@@ -371,4 +391,10 @@ public class PerlDebugPlugin extends AbstractUIPlugin
 				db.shutdown(false);
 		}
 	}
+	
+	public static String getDefaultDebugPort()
+	{
+		return mDefaultDebugPort;
+	}
+	
 }

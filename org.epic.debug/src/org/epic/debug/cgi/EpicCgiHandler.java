@@ -31,9 +31,13 @@ import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.PrintWriter;
 import java.lang.reflect.Method;
+import java.net.Socket;
+import java.net.UnknownHostException;
 //import java.net.InetAddress;
 //import java.net.Socket;
 import java.util.Enumeration;
@@ -74,7 +78,11 @@ import sunlabs.brazil.server.Server;
  * @version     1.22, 02/05/02
  */
 
-public class EpicCgiHandler implements Handler {
+public class EpicCgiHandler implements Handler
+{
+	private PrintWriter mInWriter;
+	private PrintWriter mOutWriter;
+	private PrintWriter mErrorWriter;
 	private String propsPrefix; // string prefix in properties table
 	private int port; // The listening port
 	private String protocol; // the access protocol http/https
@@ -86,12 +94,16 @@ public class EpicCgiHandler implements Handler {
 	// All cgi scripts must start with this
 	private static final String CUSTOM = "custom";
 	// add custom query variables
-	
+
 	private static final String EXECUTABLE = "executable";
 	private static final String ENV = "ENV";
 
 	private static String software = "Mini Java CgiHandler 0.2";
 	private static Hashtable envMap; // environ maps
+
+	private Socket mInSocket;
+	private Socket mOutSocket;
+	private Socket mErrorSocket;
 
 	/**
 	 * construct table of CGI environment variables that need special handling
@@ -103,7 +115,8 @@ public class EpicCgiHandler implements Handler {
 		envMap.put("content-type", "CONTENT_TYPE");
 	}
 
-	public EpicCgiHandler() {
+	public EpicCgiHandler()
+	{
 	}
 
 	/**
@@ -113,11 +126,34 @@ public class EpicCgiHandler implements Handler {
 	 * upstream handlers to modify the parameters.
 	 */
 
-	public boolean init(Server server, String prefix) {
+	public boolean init(Server server, String prefix)
+	{
 		propsPrefix = prefix;
 		port = server.listen.getLocalPort();
 		hostname = server.hostName;
 		protocol = server.protocol;
+		try
+		{
+			mInSocket = new Socket("localhost", 4080);
+			mOutSocket = new Socket("localhost", 4081);
+			mErrorSocket = new Socket("localhost", 4082);
+
+			mErrorWriter =
+				new PrintWriter(mErrorSocket.getOutputStream(), true);
+			mOutWriter = new PrintWriter(mOutSocket.getOutputStream(), true);
+			mInWriter = new PrintWriter(mInSocket.getOutputStream(), true);
+		} catch (UnknownHostException e)
+		{
+			e.printStackTrace();
+			return false;
+		} catch (IOException e)
+		{
+			e.printStackTrace();
+			return false;
+		}
+		mInWriter.println("IN*****************");
+		mOutWriter.println("Out*****************");
+		mErrorWriter.println("Error*****************");
 		return true;
 	}
 
@@ -138,7 +174,8 @@ public class EpicCgiHandler implements Handler {
 	 * </dl>
 	 */
 
-	public boolean respond(Request request) {
+	public boolean respond(Request request)
+	{
 		String[] command; // The command to run
 		Process cgi; // The result of the cgi process
 
@@ -149,7 +186,8 @@ public class EpicCgiHandler implements Handler {
 		String url = request.props.getProperty("url.orig", request.url);
 		String prefix = request.props.getProperty(propsPrefix + PREFIX, "/");
 
-		if (!url.startsWith(prefix)) {
+		if (!url.startsWith(prefix))
+		{
 			return false;
 		}
 
@@ -173,27 +211,32 @@ public class EpicCgiHandler implements Handler {
 		int start = 1;
 		int end = 0;
 		File name = null;
-		while (end < url.length()) {
+		while (end < url.length())
+		{
 			end = url.indexOf(File.separatorChar, start);
-			if (end < 0) {
+			if (end < 0)
+			{
 				end = url.length();
 			}
 			String s = url.substring(1, end);
-			if (!s.endsWith(suffix)) {
+			if (!s.endsWith(suffix))
+			{
 				s += suffix;
 			}
 			name = new File(root, s);
 			request.log(
 				Server.LOG_DIAGNOSTIC,
 				propsPrefix + " looking for: " + name);
-			if (name.isFile()) {
+			if (name.isFile())
+			{
 				break;
 			}
 			name = null;
 			start = end + 1;
 		}
 
-		if (name == null) {
+		if (name == null)
+		{
 			return false;
 		}
 
@@ -202,10 +245,12 @@ public class EpicCgiHandler implements Handler {
 
 		String query = request.query;
 
-		if (query.indexOf("=") == -1) { // need args
+		if (query.indexOf("=") == -1)
+		{ // need args
 			command = new String[4];
 			command[3] = query; // XXX this is wrong
-		} else { // no args
+		} else
+		{ // no args
 			command = new String[3];
 		}
 
@@ -228,12 +273,15 @@ public class EpicCgiHandler implements Handler {
 		Vector env = new Vector();
 		createEnvArray(env);
 		Enumeration keys = request.headers.keys();
-		while (keys.hasMoreElements()) {
+		while (keys.hasMoreElements())
+		{
 			String key = (String) keys.nextElement();
 			String special = (String) envMap.get(key.toLowerCase());
-			if (special != null) {
+			if (special != null)
+			{
 				env.addElement(special + "=" + request.headers.get(key));
-			} else {
+			} else
+			{
 				env.addElement(
 					"HTTP_"
 						+ key.toUpperCase().replace('-', '_')
@@ -250,9 +298,11 @@ public class EpicCgiHandler implements Handler {
 		env.addElement("PATH_INFO=" + url.substring(end));
 
 		String pre = url.substring(0, end);
-		if (pre.endsWith(suffix)) {
+		if (pre.endsWith(suffix))
+		{
 			env.addElement("SCRIPT_NAME=" + pre);
-		} else {
+		} else
+		{
 			env.addElement("SCRIPT_NAME=" + pre + suffix);
 		}
 		env.addElement("SERVER_PORT=" + port);
@@ -264,7 +314,8 @@ public class EpicCgiHandler implements Handler {
 		env.addElement("SERVER_PROTOCOL=" + request.protocol);
 		env.addElement("QUERY_STRING=" + request.query);
 
-		if (protocol.equals("https")) {
+		if (protocol.equals("https"))
+		{
 			env.addElement("HTTPS=on");
 		}
 		env.addElement("SERVER_URL=" + request.serverUrl());
@@ -273,12 +324,15 @@ public class EpicCgiHandler implements Handler {
 		 * add in the "custom" environment variables, if requested
 		 */
 
-		if (useCustom) {
+		if (useCustom)
+		{
 			int len = propsPrefix.length();
 			keys = request.props.propertyNames();
-			while (keys.hasMoreElements()) {
+			while (keys.hasMoreElements())
+			{
 				String key = (String) keys.nextElement();
-				if (key.startsWith(propsPrefix)) {
+				if (key.startsWith(propsPrefix))
+				{
 					env.addElement(
 						"CONFIG_"
 							+ key.substring(len).toUpperCase()
@@ -287,18 +341,20 @@ public class EpicCgiHandler implements Handler {
 				}
 			}
 			env.addElement("CONFIG_PREFIX=" + propsPrefix);
-		
+
 		}
 
 		// Set custom environment variables
 		keys = request.props.propertyNames();
-		while (keys.hasMoreElements()) {
+		while (keys.hasMoreElements())
+		{
 			String key = (String) keys.nextElement();
 
-			if (key.startsWith(propsPrefix + ENV  + "_")) {
+			if (key.startsWith(propsPrefix + ENV + "_"))
+			{
 				request.log(Server.LOG_DIAGNOSTIC, key);
 				env.addElement(
-						key.substring((propsPrefix + ENV + "_").length())
+					key.substring((propsPrefix + ENV + "_").length())
 						+ "="
 						+ request.props.getProperty(key, null));
 			}
@@ -309,8 +365,18 @@ public class EpicCgiHandler implements Handler {
 		request.log(Server.LOG_DIAGNOSTIC, propsPrefix + " ENV= " + env);
 
 		// Run the script
-
-		try {
+		mInWriter.println(
+			"***********************************************************");
+		mInWriter.println(
+			"-------------------Environmemt Variables-------------------");
+		for (int i = 0; i < environ.length; i++)
+		{
+			mInWriter.println(environ[i]);
+		}
+		mInWriter.println(
+			"------------------------------------------------------------");
+		try
+		{
 			cgi = exec(command, environ, new File(name.getParent()));
 
 			DataInputStream in =
@@ -319,11 +385,13 @@ public class EpicCgiHandler implements Handler {
 
 			// If we have data, send it to the process
 
-			if (request.postData != null) {
+			if (request.postData != null)
+			{
 				OutputStream toGci = cgi.getOutputStream();
-
 				toGci.write(request.postData, 0, request.postData.length);
 				toGci.close();
+				mInWriter.print(request.postData);
+				mInWriter.flush();
 			}
 
 			// Now get the output of the cgi script.  Start by reading the
@@ -332,32 +400,46 @@ public class EpicCgiHandler implements Handler {
 			String head;
 			String type = "text/html";
 			int status = 200;
-			while (true) {
+			while (true)
+			{
 				head = in.readLine();
-				if (head == null || head.length() == 0) {
+				if (head == null || head.length() == 0)
+				{
 					break;
 				}
+				mOutWriter.println(head);
 				int colonIndex = head.indexOf(':');
-				if (colonIndex < 0) {
+				if (colonIndex < 0)
+				{
 					request.sendError(500, "Missing header from cgi output");
+					mErrorWriter.println(
+						"Error 500: Missing header from cgi output");
 					return true;
 				}
 				String lower = head.toLowerCase();
-				if (lower.startsWith("status:")) {
-					try {
+				if (lower.startsWith("status:"))
+				{
+					try
+					{
 						status =
 							Integer.parseInt(
 								head.substring(colonIndex + 1).trim());
-					} catch (NumberFormatException e) {
+					} catch (NumberFormatException e)
+					{
 					}
-				} else if (lower.startsWith("content-type:")) {
-					type = head.substring(colonIndex + 1).trim();
-				} else if (lower.startsWith("location:")) {
-					status = 302;
-					request.addHeader(head);
-				} else {
-					request.addHeader(head);
-				}
+				} else
+					if (lower.startsWith("content-type:"))
+					{
+						type = head.substring(colonIndex + 1).trim();
+					} else
+						if (lower.startsWith("location:"))
+						{
+							status = 302;
+							request.addHeader(head);
+						} else
+						{
+							request.addHeader(head);
+						}
 			}
 
 			/*
@@ -368,8 +450,11 @@ public class EpicCgiHandler implements Handler {
 			ByteArrayOutputStream buff = new ByteArrayOutputStream();
 			int c;
 			int y = 0;
-			while ((c = in.read()) >= 0) {
+			while ((c = in.read()) >= 0)
+			{
 				buff.write(c);
+				mOutWriter.print((char) c);
+				mOutWriter.flush();
 			}
 
 			request.sendHeaders(status, type, buff.size());
@@ -379,10 +464,13 @@ public class EpicCgiHandler implements Handler {
 				propsPrefix,
 				"Cgi output " + buff.size());
 			cgi.waitFor();
-		} catch (Exception e) {
+		} catch (Exception e)
+		{
 			// System.out.println("oops: " + e);
 			//e.printStackTrace();
 			request.sendError(500, "CGI failure", e.getMessage());
+			mErrorWriter.println(
+				"Error 500: " + "CGI failure: " + e.getMessage());
 		}
 		return true;
 	}
@@ -390,19 +478,24 @@ public class EpicCgiHandler implements Handler {
 	private int params;
 	private Method execMethod;
 
-	private void search() throws Exception {
+	private void search() throws Exception
+	{
 		Method[] m = Runtime.class.getDeclaredMethods();
 		int n = -1;
-		for (int i = 0; i < m.length; i++) {
-			if (m[i].getName().equals("exec")) {
+		for (int i = 0; i < m.length; i++)
+		{
+			if (m[i].getName().equals("exec"))
+			{
 				Class[] c = m[i].getParameterTypes();
-				if (c.length == 3 && c[0] == String[].class) {
+				if (c.length == 3 && c[0] == String[].class)
+				{
 					// we have 3 arg exec for sure
 					params = 3;
 					n = i;
 					break;
 				}
-				if (c.length == 2 && c[0] == String[].class) {
+				if (c.length == 2 && c[0] == String[].class)
+				{
 					// let's save it in case we need it, but keep looking
 					params = 2;
 					n = i;
@@ -410,7 +503,8 @@ public class EpicCgiHandler implements Handler {
 			}
 		}
 
-		if (n == -1) {
+		if (n == -1)
+		{
 			throw new Exception("No method exec(String[], ...) found in Runtime");
 		}
 
@@ -420,19 +514,24 @@ public class EpicCgiHandler implements Handler {
 	private Object[] args;
 
 	private Process exec(String[] cmd, String[] envp, File dir)
-		throws Exception {
-		if (execMethod == null) {
+		throws Exception
+	{
+		if (execMethod == null)
+		{
 			search();
-			if (params == 2) {
+			if (params == 2)
+			{
 				args = new Object[2];
-			} else {
+			} else
+			{
 				args = new Object[3];
 			}
 		}
 
 		args[0] = cmd;
 		args[1] = envp;
-		if (params == 3) {
+		if (params == 3)
+		{
 			args[2] = dir;
 		}
 
@@ -440,19 +539,22 @@ public class EpicCgiHandler implements Handler {
 	}
 
 	/***********************************************/
-//	private final static String mDebugOptions =
-		//"PERLDB_OPTS=RemotePort=localhost:4444 DumpReused ReadLine=0";
-//	 frame=2";
-	void createEnvArray(Vector fEnv) {
+	//	private final static String mDebugOptions =
+	//"PERLDB_OPTS=RemotePort=localhost:4444 DumpReused ReadLine=0";
+	//	 frame=2";
+	void createEnvArray(Vector fEnv)
+	{
 		String mDebugEnv[];
 		Process proc = null;
 		String env = null;
 		int count;
-		try {
+		try
+		{
 			proc =
 				Runtime.getRuntime().exec(
 					"perl  -e\"while(($k,$v)= each %ENV){ print\\\"$k=$v\\n\\\";}\"");
-		} catch (Exception e) {
+		} catch (Exception e)
+		{
 			System.out.println("Failing to create Process !!!");
 		}
 
@@ -461,14 +563,17 @@ public class EpicCgiHandler implements Handler {
 
 		byte[] buffer = new byte[1];
 
-		try {
-			while ((count = in.read(buffer)) > 0) {
+		try
+		{
+			while ((count = in.read(buffer)) > 0)
+			{
 				content.append(new String(buffer));
 			}
 
 			env = content.toString();
 			in.close();
-		} catch (Exception e) {
+		} catch (Exception e)
+		{
 		};
 
 		StringTokenizer s = new StringTokenizer(env, "\r\n");
@@ -476,12 +581,13 @@ public class EpicCgiHandler implements Handler {
 
 		String token;
 
-		for (int x = 0; x < count; ++x) {
+		for (int x = 0; x < count; ++x)
+		{
 			token = s.nextToken();
 			fEnv.addElement(token);
 		}
 
-	//	fEnv.addElement(mDebugOptions);
+		//	fEnv.addElement(mDebugOptions);
 
 		//mDebugEnv[count+1] = "PERL5DB=BEGIN {require'perl5db.pl'}";
 	}

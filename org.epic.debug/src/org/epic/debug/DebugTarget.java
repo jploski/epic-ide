@@ -27,6 +27,8 @@ import org.epic.debug.util.RemotePort;
 public class DebugTarget extends Target 
 {
 
+	private boolean mShutDownStarted;
+
 	RemotePort mRemotePort;
 
 	protected PerlDB mPerlDB;
@@ -50,14 +52,16 @@ public class DebugTarget extends Target
 
 	public void start()
 	{
-		if (!connectDebugger(true))
+		if (connectDebugger(true) != RemotePort.mWaitOK)
 					terminate();
 	}
-	 boolean connectDebugger(boolean fTimeout)
+	 int connectDebugger(boolean fTimeout)
 	{
-		if (!connectDebugPort(fTimeout))
+		int res = connectDebugPort(fTimeout);
+		
+		if (  res != RemotePort.mWaitOK)
 		{
-			return false;
+			return res;
 		}
 
 		try
@@ -68,29 +72,31 @@ public class DebugTarget extends Target
 			PerlDebugPlugin.getDefault().logError(
 				"Failing to create PerlDB-Interface !!!",
 				e);
-			return false;
+			return RemotePort.mWaitError;
 		}
 
-		return (true);
+		return (RemotePort.mWaitOK);
 	}
 
-	 boolean connectDebugPort(boolean fTimeout)
+	 int connectDebugPort(boolean fTimeout)
 	{
-		mRemotePort = new RemotePort(4444);
+		mRemotePort = new RemotePort(PerlLaunchConfigurationConstants.getDebugPortInt(mLaunch));
 		mRemotePort.startConnect();
 
 		startPerlProcess();
 
-		if (!mRemotePort.waitForConnect(fTimeout))
+		int res = mRemotePort.waitForConnect(fTimeout);
+		
+
+		if ( res  == RemotePort.mWaitError)
 		{
 			PerlDebugPlugin.errorDialog("Could not connect to Debugg-Port !");
-			return false;
-		}
-
-		return true;
+				}
+		
+			return res;
 	}
 
-	public PrintWriter getDebugWritesStream()
+	public PrintWriter getDebugWriteStream()
 	{
 		return mRemotePort.getWriteStream();
 	}
@@ -281,9 +287,13 @@ public class DebugTarget extends Target
 
 	public void shutdown(boolean unregister)
 	{
-		if (!mPerlDB.isTerminated())
+		if( mShutDownStarted)
+			return;
+		mShutDownStarted = true;
+		if ( mPerlDB != null && !mPerlDB.isTerminated())
 			mPerlDB.shutdown();
-		mRemotePort.shutdown();
+		if( mRemotePort !=null)
+			mRemotePort.shutdown();
 		super.shutdown(unregister);
 	}
 

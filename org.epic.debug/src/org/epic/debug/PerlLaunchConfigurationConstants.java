@@ -6,6 +6,9 @@
  */
 package org.epic.debug;
 
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.debug.core.ILaunch;
+
 /**
  * @author ruehl
  *
@@ -27,4 +30,30 @@ public final static String ATTR_DEBUG_IO_PORT = "ATTR_DEBUG_IO_PORT";
 public final static String ATTR_DEBUG_ERROR_PORT = "ATTR_DEBUG_ERROR_PORT";
 public final static String ATTR_DEBUG_CGI = "ATTR_DEBUG_CGI";
 public final static String ATTR_CUSTOM_BROWSER_PATH = "ATTR_CUSTOM_BROWSER_PATH";
+public final static String ATTR_BROWSER_ID = "ATTR_BROWSER_ID";
+public final static String ATTR_HTML_ROOT_DIR = "ATTR_HTML_ROOT_DIR";
+public final static String ATTR_HTML_ROOT_FILE = "ATTR_HTML_ROOT_FILE";
+public final static String ATTR_CGI_ROOT_DIR = "ATTR_CGI_ROOT_DIR";
+
+
+public final static String getDebugPort(ILaunch fLaunch)
+{
+	try
+	{
+		return fLaunch.getLaunchConfiguration().getAttribute(ATTR_DEBUG_PORT,PerlDebugPlugin.getDefaultDebugPort());
+	} catch (CoreException e)
+	{
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+		return null;
+	}
+}
+
+
+public final static int getDebugPortInt(ILaunch fLaunch)
+{
+	return Integer.parseInt(getDebugPort(fLaunch));
+
+}
+
 }

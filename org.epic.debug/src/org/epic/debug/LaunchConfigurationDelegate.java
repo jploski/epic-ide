@@ -55,49 +55,59 @@ public class LaunchConfigurationDelegate
 
 		mLaunchConfiguration = configuration;
 		mLaunch = launch;
-		
+
 		System.out.println("Launch: " + mLaunchConfiguration.getLocation());
-		
-		String cgi = launch.getLaunchConfiguration().getAttribute(PerlLaunchConfigurationConstants.ATTR_DEBUG_CGI,((String)null));
-		
+
+		String cgi =
+			launch.getLaunchConfiguration().getAttribute(
+				PerlLaunchConfigurationConstants.ATTR_DEBUG_CGI,
+				((String) null));
+
 		launch.setSourceLocator(new SourceLocator());
-		
-		if( cgi != null )
+
+		if (cgi != null)
 		{
-			mTarget =new CGITarget(launch);
+			mTarget = new CGITarget(launch);
 			//target = new CGITarget(launch);
-			Thread start = 
-			new Thread() 
-			{ 
+			Thread start = new Thread()
+			{
 				public void run()
 				{
 					mTarget.start();
-					mLaunch.addDebugTarget(mTarget);
-					((DebugTarget) mTarget).getDebuger().generateDebugInitEvent();
+					if (!mTarget.isTerminated())
+					{
+						mLaunch.addDebugTarget(mTarget);
+						((DebugTarget) mTarget)
+							.getDebuger()
+							.generateDebugInitEvent();
+					}
 				};
 			};
-				
+
 			start.start();
-			
-						
-//			mTarget.start();
-//			mLaunch.addDebugTarget(mTarget);
+
+			//			mTarget.start();
+			//			mLaunch.addDebugTarget(mTarget);
 			//((DebugTarget) mTarget).getDebuger().generateDebugInitEvent();
-		}
-		else	
-		if (launch.getLaunchMode().equals(ILaunchManager.DEBUG_MODE))
-		{
-			mTarget =new DebugTarget(launch);
-			//target = new CGITarget(launch);
-			mTarget.start();
-			mLaunch.addDebugTarget(mTarget);
-			((DebugTarget) mTarget).getDebuger().generateDebugInitEvent();
 		} else
-		{
-			mTarget = new RunTarget(launch);
-			mTarget.start();
-			mLaunch.addDebugTarget(mTarget);
-		}
+			if (launch.getLaunchMode().equals(ILaunchManager.DEBUG_MODE))
+			{
+				mTarget = new DebugTargetLocal(launch);
+				//target = new CGITarget(launch);
+				mTarget.start();
+				if (!mTarget.isTerminated())
+				{
+					mLaunch.addDebugTarget(mTarget);
+					((DebugTargetLocal) mTarget)
+						.getDebuger()
+						.generateDebugInitEvent();
+				}
+			} else
+			{
+				mTarget = new RunTarget(launch);
+				mTarget.start();
+				mLaunch.addDebugTarget(mTarget);
+			}
 
 	}
 

@@ -10,6 +10,8 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 
 import org.eclipse.core.resources.IMarkerDelta;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.Path;
 
 import org.eclipse.debug.core.DebugEvent;
 import org.eclipse.debug.core.DebugException;
@@ -19,12 +21,15 @@ import org.eclipse.debug.core.ILaunch;
 
 import org.eclipse.debug.core.model.IBreakpoint;
 import org.eclipse.debug.core.model.IMemoryBlock;
+import org.eclipse.debug.core.model.IProcess;
 import org.eclipse.debug.core.model.IThread;
 import org.eclipse.help.browser.IBrowser;
+import org.eclipse.help.internal.browser.BrowserDescriptor;
 import org.eclipse.help.internal.browser.BrowserManager;
+import org.epic.debug.cgi.CustomBrowser;
+import org.epic.debug.util.CGIProxy;
 import org.epic.debug.util.RemotePort;
 import org.epic.perleditor.editors.util.PerlExecutableUtilities;
-
 
 /**
  * @author ruehl
@@ -34,14 +39,17 @@ import org.epic.perleditor.editors.util.PerlExecutableUtilities;
  * To enable and disable the creation of type comments go to
  * Window>Preferences>Java>Code Generation.
  */
-public class CGITarget extends DebugTarget
+public class CGITarget extends DebugTarget implements IDebugEventSetListener
 {
+
+	private boolean mShutDownStarted;
 
 	private boolean mReConnect;
 
 	private Process mBrazilProcess;
 	private CGITarget mTarget;
 	private IBrowser mBrowser;
+	private CGIProxy mCGIProxy;
 	/**
 	 * Constructor for DebugTarget.
 	 */
@@ -56,8 +64,8 @@ public class CGITarget extends DebugTarget
 	public CGITarget(ILaunch launch)
 	{
 		super(launch);
-		mProcessName="CGI Perl Debugger";
-		
+		mProcessName = "CGI Perl Debugger";
+		DebugPlugin.getDefault().addDebugEventListener(this);
 
 	}
 
@@ -74,12 +82,61 @@ public class CGITarget extends DebugTarget
 
 	boolean startTarget()
 	{
+
+		String htmlRootDir = null;
+		String htmlRootFile = null;
+		String cgiRootDir = null;
+		try
+		{
+			htmlRootDir =
+				mLaunch.getLaunchConfiguration().getAttribute(
+					PerlLaunchConfigurationConstants.ATTR_HTML_ROOT_DIR,
+					(String) null);
+
+			htmlRootFile =
+				mLaunch.getLaunchConfiguration().getAttribute(
+					PerlLaunchConfigurationConstants.ATTR_HTML_ROOT_FILE,
+					(String) null);
+
+			cgiRootDir =
+				mLaunch.getLaunchConfiguration().getAttribute(
+					PerlLaunchConfigurationConstants.ATTR_CGI_ROOT_DIR,
+					(String) null);
+
+		} catch (CoreException e2)
+		{
+			// TODO Auto-generated catch block
+			e2.printStackTrace();
+		}
+
+		Path htmlDirPath = new Path(htmlRootDir);
+		htmlRootDir = htmlDirPath.toString();
+
+		Path htmlFilePath = new Path(htmlRootFile);
+		htmlRootFile = htmlFilePath.toString();
+
+		Path cgiDirPath = new Path(cgiRootDir);
+		cgiRootDir = cgiDirPath.toString();
+
+		String htmlRootFileRel =
+			htmlFilePath
+				.setDevice(null)
+				.removeFirstSegments(htmlDirPath.segments().length)
+				.toString();
+
 		/* start web-server*/
 		/* create config file*/
 		String brazilProps =
-		"root=" +this.getWorkingDir().toString() + "\n" +
-		"file.default=" + getStartupFile()+"\n" +
-			"cgi.ENV_"
+			"root="
+				+ htmlRootDir
+				+ "\n"
+				+ "cgi.root="
+				+ cgiRootDir
+				+ "\n"
+				+ "file.default="
+				+ htmlRootFileRel
+				+ "\n"
+				+ "cgi.ENV_"
 				+ PerlDebugPlugin.getPerlDebugEnv(mLaunch)
 				+ "\n"
 				+ "cgi.executable="
@@ -104,6 +161,8 @@ public class CGITarget extends DebugTarget
 			return false;
 		}
 
+		mCGIProxy = new CGIProxy(mLaunch, "CGI-Process");
+
 		// Brazil command line parameters
 		String javaExec =
 			getJavaHome() + File.separator + "bin" + File.separator + "java";
@@ -126,14 +185,14 @@ public class CGITarget extends DebugTarget
 				"-c",
 				"brazil.cfg" };
 
-
 		try
 		{
 			String params = " ";
-			for(int x= 0; x < cmdParams.length; ++x )
-				params = params + " "+ cmdParams[x];
-				
-			PerlDebugPlugin.getDefault().logError("CMDline:"+params+"\n"+workingDir);
+			for (int x = 0; x < cmdParams.length; ++x)
+				params = params + " " + cmdParams[x];
+
+			PerlDebugPlugin.getDefault().logError(
+				"CMDline:" + params + "\n" + workingDir);
 			//Startup Brazil
 			mBrazilProcess =
 				Runtime.getRuntime().exec(cmdParams, null, workingDir);
@@ -145,31 +204,109 @@ public class CGITarget extends DebugTarget
 				e1);
 			return false;
 		}
-		mProcess = DebugPlugin.newProcess(mLaunch, mBrazilProcess, "WEB-Server");
 		
+		mProcess =
+					DebugPlugin.newProcess(mLaunch, mBrazilProcess, "WEB-Server");
+				fireCreationEvent(mProcess);
+		mCGIProxy.waitForConnect();
 		
-		mBrowser = BrowserManager.getInstance().createBrowser();
+		System.out.println(mCGIProxy.isConnected());
+		if (!mCGIProxy.isConnected())
+		{
+			PerlDebugPlugin.getDefault().logError(
+				"(CGI-Target)Could not connect to CGI-Proxy");
+			return (false);
+		}
+
+		mLaunch.addProcess(mCGIProxy);
+		fireCreationEvent(mCGIProxy);
 		
 
-	
-			try
-			{
-				mBrowser.displayURL("http://localhost:8080/");
-			} catch (Exception e)
-			{
-				PerlDebugPlugin.getDefault().logError("Could not start browser for CGI debugging", e);
-			}
+		startBrowser();
 		/* start console-proxy*/
 		return true;
+
+	}
+	/**
+		 * Fire a debug event marking the creation of this element.
+		 */
+	private void fireCreationEvent(Object fSource)
+	{
+		fireEvent(new DebugEvent(fSource, DebugEvent.CREATE));
+	}
+
+	/**
+	 * Fire a debug event
+	 */
+	private void fireEvent(DebugEvent event)
+	{
+		DebugPlugin manager = DebugPlugin.getDefault();
+		if (manager != null)
+		{
+			manager.fireDebugEventSet(new DebugEvent[] { event });
+		}
+	}
+
+	void startBrowser()
+	{
+		String browserID = null;
+		String browserPath = null;
+		try
+		{
+			browserID =
+				mLaunch.getLaunchConfiguration().getAttribute(
+					PerlLaunchConfigurationConstants.ATTR_BROWSER_ID,
+					(String) null);
+
+			browserPath =
+				mLaunch.getLaunchConfiguration().getAttribute(
+					PerlLaunchConfigurationConstants.ATTR_CUSTOM_BROWSER_PATH,
+					(String) null);
+		} catch (CoreException e1)
+		{
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		BrowserDescriptor[] browserDescr =
+			BrowserManager.getInstance().getBrowserDescriptors();
+		BrowserDescriptor descr;
+
+		if (CustomBrowser.isCustomBrowserID(browserID))
+		{
+
+			mBrowser = new CustomBrowser(browserPath);
+		} else
+		{
+
+			for (int i = 0; i < browserDescr.length; i++)
+			{
+				descr = browserDescr[i];
+				if (descr.getID().equals(browserID))
+				{
+					mBrowser = descr.getFactory().createBrowser();
+				}
+			}
+
+		}
+
+		try
+		{
+			mBrowser.displayURL("http://localhost:8080/");
+		} catch (Exception e)
+		{
+			PerlDebugPlugin.getDefault().logError(
+				"Could not start browser for CGI debugging",
+				e);
+		}
 
 	}
 
 	boolean startSession()
 	{
 		/* start debugger*/
-		if (!connectDebugger(false))
+		if (connectDebugger(false) != RemotePort.mWaitOK)
 			return false;
-			return true;
+		return true;
 	}
 
 	/**
@@ -177,8 +314,9 @@ public class CGITarget extends DebugTarget
 	 */
 	public boolean isTerminated()
 	{
-		if( mPerlDB == null) return(false);
-		
+		if (mPerlDB == null)
+			return (!mReConnect);
+
 		return mPerlDB.isTerminated(this) && !mReConnect;
 	}
 
@@ -193,19 +331,10 @@ public class CGITarget extends DebugTarget
 		{
 			mBrazilProcess.destroy();
 		}
-		if( mBrowser != null )
+		if (mBrowser != null)
 			mBrowser.close();
-			
+
 		shutdown();
-	}
-
-	public void shutdown(boolean unregister)
-	{
-		if (!mPerlDB.isTerminated())
-			mPerlDB.shutdown();
-		mRemotePort.shutdown();
-
-		super.shutdown(unregister);
 	}
 
 	Process startPerlProcess()
@@ -215,15 +344,15 @@ public class CGITarget extends DebugTarget
 
 	void debugSessionTerminated()
 	{
-			
-		if( mRemotePort != null )
+
+		if (mRemotePort != null)
 			mRemotePort.shutdown();
-			
-	//	 mTarget = new CGITarget(mLaunch);
-	//	 mTarget.mProcessName ="New";
-		
+
+		//	 mTarget = new CGITarget(mLaunch);
+		//	 mTarget.mProcessName ="New";
+
 		mTarget = this;
-			
+
 		Thread term = new Thread()
 		{
 			public void run()
@@ -236,17 +365,16 @@ public class CGITarget extends DebugTarget
 		};
 
 		term.start();
-		
-		
+
 		mLaunch.removeDebugTarget(this);
-	//	mTarget.fireCreateEvent();
-		
-	//	fireTerminateEvent();
-	//	fireTerminateEvent();
+		//	mTarget.fireCreateEvent();
+
+		//	fireTerminateEvent();
+		//	fireTerminateEvent();
 		mReConnect = false;
-		
+
 		fireChangeEvent();
-	
+
 		//((DebugTarget) mTarget).getDebuger().generateDebugInitEvent();
 		return;
 	}
@@ -270,4 +398,65 @@ public class CGITarget extends DebugTarget
 		out.close();
 	}
 
+	void initPath()
+	{
+
+		mProjectDir = null;
+
+		try
+		{
+			mWorkingDir =
+				new Path(
+					mLaunch.getLaunchConfiguration().getAttribute(
+						PerlLaunchConfigurationConstants.ATTR_CGI_ROOT_DIR,
+						(String) null));
+		} catch (CoreException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		mStartupFile = null;
+
+	}
+
+	public void shutdown(boolean unregister)
+	{
+		if (mShutDownStarted)
+			return;
+		mReConnect = false;
+		mShutDownStarted = true;
+
+		super.shutdown(unregister);
+		try
+		{
+			mCGIProxy.terminate();
+		} catch (DebugException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		DebugPlugin.getDefault().removeDebugEventListener(this);
+	}
+
+	public void handleDebugEvents(DebugEvent[] events)
+	{
+		for (int i = 0; i < events.length; i++)
+		{
+			if (events[i].getKind() == DebugEvent.TERMINATE)
+				if (events[i].getSource() == mProcess
+					|| events[i].getSource() == mCGIProxy)
+					DebugPlugin.getDefault().asyncExec(new Runnable()
+				{
+					public void run()
+					{
+						terminate();
+					}
+				});
+		}
+	}
+	
+	public IProcess getProcess()
+		{
+			return mCGIProxy;
+		}
 }

@@ -251,7 +251,7 @@ public class PerlDB implements IDebugElement, ITerminate
 
 		mWorkingDir = mTarget.getWorkingDir();
 
-		mDebugIn = mTarget.getDebugWritesStream();
+		mDebugIn = mTarget.getDebugWriteStream();
 		mDebugOut = mTarget.getDebugReadSrream();
 
 		mPathMapper = null;

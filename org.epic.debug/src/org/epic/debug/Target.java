@@ -10,6 +10,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.debug.core.DebugEvent;
 import org.eclipse.debug.core.DebugException;
+import org.eclipse.debug.core.IDebugEventSetListener;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchManager;
 import org.eclipse.debug.core.Launch;
@@ -31,14 +32,16 @@ import org.epic.perleditor.editors.util.PerlExecutableUtilities;
 public abstract class Target implements IDebugTarget
 {
 
-	private IPath mProjectDir;
-	private String mStartupFile;
-	private IPath mWorkingDir;
+	private boolean mShutDownStarted;
+	protected IPath mProjectDir;
+	protected String mStartupFile;
+	protected IPath mWorkingDir;
 	ILaunch mLaunch;
 	IProcess mProcess;
 	Process mJavaProcess;
 	final static String EMPTY_STRING = "";
 	String mProcessName;
+
 
 	/**
 	 * Constructor for DebugTarget.
@@ -56,6 +59,7 @@ public abstract class Target implements IDebugTarget
 		super();
 		mLaunch = launch;
 		initPath();
+		
 		//	((PerlDebugPlugin)PerlDebugPlugin.getDefault()).registerDebugTarget(this);
 	}
 	/**
@@ -123,6 +127,7 @@ public abstract class Target implements IDebugTarget
 		String prjName = null;
 		String progParams = null;
 
+		
 		try
 		{
 			startfile =
@@ -150,6 +155,8 @@ public abstract class Target implements IDebugTarget
 	}
 	Process startPerlProcess()
 	{
+		
+		initPath();
 		String startfile = null;
 		String prjName = null;
 		String progParams = null;
@@ -245,7 +252,7 @@ public abstract class Target implements IDebugTarget
 
 	public IPath getProjectDir()
 	{
-		return mProjectDir;
+			return mProjectDir;
 	}
 
 	public String getStartupFile()
@@ -296,6 +303,11 @@ public abstract class Target implements IDebugTarget
 
 	public void shutdown(boolean unregister)
 	{
+		
+		if( mShutDownStarted)
+					return;
+				mShutDownStarted = true;
+
 		//((PerlDebugPlugin)PerlDebugPlugin.getDefault()).unregisterDebugTarget(this);
 		try
 		{
@@ -307,11 +319,17 @@ public abstract class Target implements IDebugTarget
 				"Error Termonating " + mProcessName,
 				e);
 		}
-
+		
 		fireTerminateEvent();
 	}
 
 	public void start()
 	{
 	}
+	
+	
+				
+		
+	
+	
 }

@@ -6,7 +6,6 @@
  */
 package org.epic.debug.cgi;
 
-
 import org.eclipse.help.browser.IBrowser;
 
 /**
@@ -18,9 +17,9 @@ import org.eclipse.help.browser.IBrowser;
 
 import java.util.*;
 
+import org.eclipse.help.internal.HelpPlugin;
 import org.eclipse.help.internal.browser.StreamConsumer;
 import org.epic.debug.PerlDebugPlugin;
-
 
 /**
  *
@@ -39,7 +38,7 @@ public class CustomBrowser implements IBrowser
 	{
 		mPath = fPath;
 	}
-	
+
 	public void close()
 	{
 		pr.destroy();
@@ -73,8 +72,10 @@ public class CustomBrowser implements IBrowser
 			errConsumer.start();
 		} catch (Exception e)
 		{
-			PerlDebugPlugin.getDefault().logError("CustomBrowser.errorLaunching "+path, e);
-			
+			PerlDebugPlugin.getDefault().logError(
+				"CustomBrowser.errorLaunching " + path,
+				e);
+
 		}
 	}
 
@@ -175,5 +176,10 @@ public class CustomBrowser implements IBrowser
 		String[] command = new String[tokenList.size()];
 		tokenList.toArray(command);
 		return command;
+	}
+
+	 public static boolean isCustomBrowserID(String fID)
+	{
+		return fID.equals((HelpPlugin.PLUGIN_ID + ".custombrowser"));
 	}
 }

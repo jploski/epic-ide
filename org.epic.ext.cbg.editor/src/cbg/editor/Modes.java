@@ -38,10 +38,10 @@ public class Modes {
 	}
 
 	private String filenameToModeName(String filename) {
-		Mode[] modes = getModeList();
-		if(modes == null) return null;
-		for (int i = 0; i < modes.length; i++) {
-			Mode mode = modes[i];
+		Mode[] localModes = getModeList();
+		if(localModes == null) return null;
+		for (int i = 0; i < localModes.length; i++) {
+			Mode mode = localModes[i];
 			if(mode.matches(filename)) return mode.getFilename();
 		}
 		return null;
@@ -90,7 +90,8 @@ public class Modes {
 
 	/*
 	 * Answer the Rule set this delegate/rule resolves to. This
-	 * may require loading more modes.	 */
+	 * may require loading more modes.
+	 */
 	public static Rule resolveDelegate(Mode mode, String delegateName) {
 		int index = delegateName.indexOf("::");
 		if(index == -1) {

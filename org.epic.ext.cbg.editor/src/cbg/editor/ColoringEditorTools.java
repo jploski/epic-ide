@@ -51,27 +51,29 @@ public class ColoringEditorTools {
 				/* Using a PatternRule instead of a MultiLineRule because
 				 * PatternRule exposes the break on newline behavior. */
 				 
-				 //TODO EPIC workaround !!!!
-				 /* SHOULD BE REMOVED IF REGEXP ARE IMPLEMENTED */
+				//	TODO EPIC workaround !!!!
+				/* SHOULD BE REMOVED IF REGEXP ARE IMPLEMENTED */
 				PatternRule pat;
-				 if(span.getEnd().equals("@EOF")) {
-				 	pat = new PatternRule(span.getStart(), "",  defaultToken, mode.getDefaultRuleSet().getEscape(), false, true);
-				 }
-				 else {
-				      pat = new CasedPatternRule(span.getStart(), span.getEnd(), 
-					    defaultToken, mode.getDefaultRuleSet().getEscape(), span.noLineBreak(),
-					    ignoreCase);
-				 }
+				if(span.getEnd().equals("@EOF")) {
+						pat = new PatternRule(span.getStart(), "",  defaultToken, mode.getDefaultRuleSet().getEscape(), false, true);
+				}
+				else {
+						pat = new CasedPatternRule(span.getStart(), span.getEnd(), 
+						defaultToken, mode.getDefaultRuleSet().getEscape(), span.noLineBreak(), ignoreCase);
+				}
 				rules.add(pat);
 			}
 			public void acceptTextSequence(TextSequence text) {
 				/* If the text sequence can be recognized as a word, don't
 				 * add it. This reduces the number of partitions created. If
 				 * the text sequence can not be recognized as a word add it
-				 * as a text sequence.				 */
+				 * as a text sequence.
+				 */
 				if(isWordStart(text.getText().charAt(0))) return;
-				//TODO EPIC workaround -- Add Operators to whitespace characters
+				
+				//	TODO EPIC workaround -- Add Operators to whitespace characters
 				ColoringWhitespaceDetector.addWhiteSpaceChar(text.getText());
+				
 				rules.add(new TextSequenceRule(text.getText(), token, ignoreCase));
 			}
 			public void acceptEolSpan(EOLSpan eolSpan) {
@@ -120,7 +122,10 @@ public class ColoringEditorTools {
 	 * Answer the file associated with name. This handles the
 	 * case of running as a plugin and running standalone which 
 	 * happens during testing.
-	 * 	 * @param filename	 * @return File	 */
+	 * 
+	 * @param filename
+	 * @return File
+	 */
 	public static File getFile(String filename) throws IOException {
 		if(EditorPlugin.getDefault() != null) {
 			URL installURL = EditorPlugin.getDefault().getDescriptor().getInstallURL();

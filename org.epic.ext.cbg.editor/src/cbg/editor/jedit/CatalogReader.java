@@ -76,7 +76,7 @@ public class CatalogReader {
 		CatalogReader c = new CatalogReader();
 		Mode[] modes = null;
 		try {
-			modes = c.readFile(new File("c:/workspace/cbg.editor/modes/catalog"));
+			modes = c.readFile(new File("C:/workspaces/big/cbg.editor/modes/catalog"));
 		} catch (DocumentException e) {
 		} catch (IOException e) {
 		}

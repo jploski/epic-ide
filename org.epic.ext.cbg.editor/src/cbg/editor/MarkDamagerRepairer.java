@@ -12,7 +12,10 @@ import cbg.editor.rules.LToken;
 public class MarkDamagerRepairer extends DefaultDamagerRepairer {
 
 	/**
-	 * 	 * @see org.eclipse.jface.text.rules.DefaultDamagerRepairer#DefaultDamagerRepairer(ITokenScanner, TextAttribute)	 * @deprecated 	 */
+	 * 
+	 * @see org.eclipse.jface.text.rules.DefaultDamagerRepairer#DefaultDamagerRepairer(ITokenScanner, TextAttribute)
+	 * @deprecated 
+	 */
 	public MarkDamagerRepairer(ITokenScanner scanner, TextAttribute defaultTextAttribute) {
 		super(scanner, defaultTextAttribute);
 	}

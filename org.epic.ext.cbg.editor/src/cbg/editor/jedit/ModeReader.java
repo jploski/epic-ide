@@ -38,7 +38,8 @@ public class ModeReader {
 			Element rulesElement = (Element) iter.next();
 			createRule(rulesElement);
 			/* Because over of rules is important I must read the elements in
-			 * order instead of using elementIterators("SPAN", etc)			 */
+			 * order instead of using elementIterators("SPAN", etc)
+			 */
 			List allTypes = rulesElement.elements();
 			for (Iterator allTypesI = allTypes.iterator(); allTypesI.hasNext();) {
 				Element element = (Element) allTypesI.next();

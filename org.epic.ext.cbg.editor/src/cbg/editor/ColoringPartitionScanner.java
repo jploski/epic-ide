@@ -1,9 +1,7 @@
 package cbg.editor;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.rules.ICharacterScanner;
@@ -34,7 +32,6 @@ public class ColoringPartitionScanner extends RuleBasedPartitionScanner {
 	protected Mode mode;
 	protected int markLength = -1;
 	protected char escape;
-	private Map ruleSets;
 	
 	class LitePartitionScanner extends RuleBasedPartitionScanner {
 		public int getOffset() {
@@ -54,7 +51,8 @@ public class ColoringPartitionScanner extends RuleBasedPartitionScanner {
 	 * JEdit allows the "type" of an element to appear inside the
 	 * keywords element or outside. For example you could have the
 	 * LITERAL2 tag inside the keywords element and as a top level
-	 * element.	 */
+	 * element.
+	 */
 	public ColoringPartitionScanner(String filename) {
 		this(Modes.getModeFor(filename));
 	}
@@ -64,7 +62,6 @@ public class ColoringPartitionScanner extends RuleBasedPartitionScanner {
 		this.mode = mode;
 		escape = mode.getDefaultRuleSet().getEscape();
 		setPredicateRules(createRuleSet(mode.getDefaultRuleSet()));
-		ruleSets = new HashMap();
 	}
 
 	private IPredicateRule[] createRuleSet(Rule rule) {
@@ -114,20 +111,12 @@ public class ColoringPartitionScanner extends RuleBasedPartitionScanner {
 	}
 	
 	/** Move the token offset by a delta.
-	 * 	 * @param delta - a positive or negative amount to move the token offset.
+	 * 
+	 * @param delta - a positive or negative amount to move the token offset.
 	 * @nonapi
 	 */
 	public void moveTokenOffset(int delta) {
 		fTokenOffset = fTokenOffset + delta;
-	}
-
-	private IPredicateRule[] getRuleSet(Rule rule) {
-		IPredicateRule[] ruleSet = (IPredicateRule[])ruleSets.get(rule.getName());
-		if(ruleSet == null) {
-			ruleSet = createRuleSet(rule);
-			ruleSets.put(rule.getName(), ruleSet);
-		}
-		return ruleSet;
 	}
 
 }

@@ -4,6 +4,7 @@ import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.DefaultLineTracker;
 import org.eclipse.jface.text.DocumentCommand;
@@ -31,7 +32,7 @@ public class ColoringEditor extends StatusTextEditor {
 	private TabConverter tabConverter;
 	interface ITextConverter {
 		void customizeDocumentCommand(IDocument document, DocumentCommand command);
-	};
+	}
 	class AdaptedSourceViewer extends SourceViewer {
 		private List textConverters;
 		private boolean ignoreTextConverters = false;
@@ -88,7 +89,7 @@ public class ColoringEditor extends StatusTextEditor {
 					setIndentPrefixes(prefixes, types[i]);
 			}
 		}
-	};
+	}
 	static class TabConverter implements ITextConverter {
 		private int fTabRatio;
 		private ILineTracker fLineTracker;
@@ -144,23 +145,22 @@ public class ColoringEditor extends StatusTextEditor {
 				}
 			}
 		}
-	};
+	}
 	/**
 	 * The constructor.
 	 */
 	public ColoringEditor() {
 		super();
 		setDocumentProvider(new ColoringDocumentProvider());
-		ColoringEditorTools tools = EditorPlugin.getDefault().getEditorTools();
 		ColorManager colorManager = EditorPlugin.getDefault().getColorManager();
-		setSourceViewerConfiguration(new ColoringSourceViewerConfiguration(colorManager, tools));
+		setSourceViewerConfiguration(new ColoringSourceViewerConfiguration(colorManager));
 		/* This is needed for the editor to respond to preference changes from
 		 * the ColoringPreferencePage. When the Workbench's preferences change
 		 * we want to update too, if they are font changes.
 		 */
 		IPreferenceStore store = EditorPlugin.getDefault().getPreferenceStore();
 		setPreferenceStore(store);
-		WorkbenchChainedTextFontFieldEditor.startPropagate(store, PREFERENCE_FONT);
+		WorkbenchChainedTextFontFieldEditor.startPropagate(store, JFaceResources.TEXT_FONT);
 	}
 	protected void doSetInput(IEditorInput input) throws CoreException {
 		super.doSetInput(input);

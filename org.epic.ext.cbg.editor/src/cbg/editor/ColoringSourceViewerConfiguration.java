@@ -53,7 +53,6 @@ public class ColoringSourceViewerConfiguration extends SourceViewerConfiguration
 	public final static String SPACES_FOR_TABS= "spacesForTabs"; //$NON-NLS-1$
 
 	protected ColorManager colorManager;
-	private ColoringEditorTools tools;
 	private Mode mode;
 	protected IAutoIndentStrategy autoIndentStrategy;
 	private PreferenceListener prefListener;
@@ -65,7 +64,7 @@ public class ColoringSourceViewerConfiguration extends SourceViewerConfiguration
 		public void propertyChange(PropertyChangeEvent event) {
 			adaptToPreferenceChange(event);
 		}
-	};
+	}
 	
 	/**
 	 * Adapts the behavior of the contained components to the change
@@ -166,10 +165,9 @@ public class ColoringSourceViewerConfiguration extends SourceViewerConfiguration
 		}
 	}
 
-	public ColoringSourceViewerConfiguration(ColorManager colorManager, ColoringEditorTools tools) {
+	public ColoringSourceViewerConfiguration(ColorManager colorManager) {
 		super();
 		this.colorManager = colorManager;
-		this.tools = tools;
 		tokenMap = new HashMap();
 		autoIndentStrategy = new DefaultAutoIndentStrategy();
 		prefListener = new PreferenceListener();
@@ -367,7 +365,9 @@ public class ColoringSourceViewerConfiguration extends SourceViewerConfiguration
 	 * Inform the SourceViewerConfiguration of the filename of
 	 * the editor. This information is needed so the receiver
 	 * can setup it's mode.
-	 * 	 * @param filename	 */
+	 * 
+	 * @param filename
+	 */
 	public void setFilename(String filename) {
 		setMode(Modes.getModeFor(filename));
 	}

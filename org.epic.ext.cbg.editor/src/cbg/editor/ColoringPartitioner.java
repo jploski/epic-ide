@@ -23,6 +23,9 @@ public class ColoringPartitioner extends DefaultPartitioner {
 		List list = new ArrayList();
 		try {
 			int endOffset = offset + length;
+			
+			//TODO Changed for EPIC (Not available in Eclipse 2.1)
+			//Position[] category = fDocument.getPositions(getManagingPositionCategories()[0]);
 			Position[] category = fDocument.getPositions(CONTENT_TYPES_CATEGORY);
 			TypedPosition previous = null, current = null;
 			int start, end, gapOffset;
@@ -32,6 +35,8 @@ public class ColoringPartitioner extends DefaultPartitioner {
 				gapOffset = (previous != null) ? previous.getOffset() + previous.getLength() : 0;
 				if(gapOffset > current.getOffset()) {
 					if(current != null) {
+						//TODO Changed for EPIC (Not available in Eclipse 2.1)
+						//fDocument.removePosition(getManagingPositionCategories()[0], current);
 						fDocument.removePosition(CONTENT_TYPES_CATEGORY, current);
 					}
 					continue;
@@ -62,6 +67,7 @@ public class ColoringPartitioner extends DefaultPartitioner {
 			if (list.isEmpty())
 				list.add(new TypedRegion(offset, length, IDocument.DEFAULT_CONTENT_TYPE));
 		} catch (BadPositionCategoryException x) {
+			x.printStackTrace();
 		}
 		TypedRegion[] result = new TypedRegion[list.size()];
 		list.toArray(result);

@@ -25,10 +25,10 @@ public class Mode {
 			currentRule.setKeywords(keywords);
 		}
 	
-		public void newRules(String name, boolean highlightDigits, 
+		public void newRules(String theName, boolean highlightDigits, 
 			boolean ignoreCase, String digitRE, char escape, String defaultTokenType) {
 			
-			currentRule = Rule.newRule(Mode.this, name, highlightDigits, ignoreCase, 
+			currentRule = Rule.newRule(Mode.this, theName, highlightDigits, ignoreCase, 
 				digitRE, escape, defaultTokenType);
 			Mode.this.add(currentRule);
 		}
@@ -90,16 +90,19 @@ public class Mode {
 	 * BUGFIX I also found that some of the modes specify
 	 * modes that do not exist. (asp.xml) in cases where
 	 * that happens answer the default rule.
-	 * 	 * @param name	 * @return Rule	 */
-	public Rule getRule(String name) {
-		int colonIndex = name.indexOf("::");
+	 * 
+	 * @param name
+	 * @return Rule
+	 */
+	public Rule getRule(String theName) {
+		int colonIndex = theName.indexOf("::");
 		Rule localRule;
 		if(colonIndex == -1) {
-			localRule = (Rule) rules.get(name);
+			localRule = (Rule) rules.get(theName);
 			if(localRule == null) localRule = getDefaultRuleSet();
 			return localRule;
 		}
-		return Modes.resolveDelegate(this, name);
+		return Modes.resolveDelegate(this, theName);
 	}
 
 	public String toString() {
@@ -120,10 +123,10 @@ public class Mode {
 	/** Answer true if the receiver can represent
 	 * the filename.
 	 */
-	public boolean matches(String filename) {
+	public boolean matches(String aFilename) {
 		if (re == null)
 			createRE();
-		return re.match(filename);
+		return re.match(aFilename);
 	}
 
 	public Map getDelegates() {

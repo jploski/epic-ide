@@ -144,11 +144,16 @@ public class IncludePathPropertyPage extends PropertyPage {
 	}
 
 	public boolean performOk() {
-		XMLUtilities xmlUtil = new XMLUtilities();
-		xmlUtil.writeIncludeEntries(project, incPathList.getItems());
-
-		return true;
-
+        try
+        {
+    		XMLUtilities xmlUtil = new XMLUtilities();
+    		xmlUtil.writeIncludeEntries(project, incPathList.getItems());
+            return true;
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            return false;
+        }
 	}
-
 }

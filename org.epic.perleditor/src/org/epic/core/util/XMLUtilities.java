@@ -24,6 +24,7 @@ import org.jdom.output.*;
 public class XMLUtilities {
 
 	private static final String INCLUDE_FILE_NAME = ".includepath";
+    private static final String CHARSET = "UTF-8";    
 
 	/**
 	 * 
@@ -68,7 +69,7 @@ public class XMLUtilities {
 		return (String[]) includes.toArray(new String[includes.size()]);
 	}
 
-	public void writeIncludeEntries(IProject project, String[] items) {
+	public void writeIncludeEntries(IProject project, String[] items) throws IOException {
 		//Build XML document
 		Element root = new Element("includepath");
 
@@ -81,21 +82,18 @@ public class XMLUtilities {
 		// Prepare output
 		Document doc = new Document(root);
 		String xml = prepareOutput(doc);
-
+        String file = project.getLocation().toString()+File.separator+INCLUDE_FILE_NAME;
+        
+        Writer outw = null;        
+        OutputStream out = null;
 		try {
-			// Write File
-			File file =
-				new File(
-					project.getLocation().toString()
-						+ File.separator
-						+ INCLUDE_FILE_NAME);
-			FileOutputStream out = new FileOutputStream(file);
-			out.write(xml.getBytes());
-			out.close();
-		} catch (Exception e) {
-			e.printStackTrace();
+			out = new FileOutputStream(file);
+            outw = new OutputStreamWriter(out, CHARSET); 
+			outw.write(xml);
+            outw.close();
+		} finally {
+            SafeClose.close(out);
 		}
-
 	}
 
 	private String prepareOutput(Document doc) {
@@ -104,7 +102,7 @@ public class XMLUtilities {
 		xmlout.setIndent(true);
 		xmlout.setNewlines(true);
 		//xmlout.setTextNormalize(true);
-		xmlout.setEncoding("UTF-8");
+		xmlout.setEncoding(CHARSET);
 
 		String xml = xmlout.outputString(doc);
 

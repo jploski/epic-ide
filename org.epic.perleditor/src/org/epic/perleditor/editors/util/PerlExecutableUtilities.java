@@ -25,6 +25,10 @@ import org.epic.core.util.XMLUtilities;
  */
 public class PerlExecutableUtilities {
 
+	public static List getPerlExecutableCommandLine() {
+		return getPerlExecutableCommandLine(null, null);
+	}
+
 	public static List getPerlExecutableCommandLine(IProject project) {
 		return getPerlExecutableCommandLine(null, project);
 	}
@@ -121,12 +125,14 @@ public class PerlExecutableUtilities {
 		*/
 
 		// Add other project include paths
-		XMLUtilities xmlUtil = new XMLUtilities();
-		String[] includes = xmlUtil.getIncludeEntries(project);
-		for (int i = 0; i < includes.length; i++) {
-			String path = preparePath(includes[i]);
-			cmdList.add("-I");
-			cmdList.add(path);
+		if(project != null) {
+			XMLUtilities xmlUtil = new XMLUtilities();
+			String[] includes = xmlUtil.getIncludeEntries(project);
+			for (int i = 0; i < includes.length; i++) {
+				String path = preparePath(includes[i]);
+				cmdList.add("-I");
+				cmdList.add(path);
+			}
 		}
 
 		return cmdList;

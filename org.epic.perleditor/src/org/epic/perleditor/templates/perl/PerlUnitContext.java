@@ -22,8 +22,8 @@ public class PerlUnitContext extends DocumentTemplateContext {
   /** The platform default line delimiter. */
   private static final String PLATFORM_LINE_DELIMITER = System.getProperty("line.separator"); //$NON-NLS-1$
 
-  // To allow templates starting with "=" (for POD comments)
-  private static final String specialChars = "=";
+  // To allow templates starting with "= # $ @ %"
+  private static final String specialChars = "=#$@%";
   /** The compilation unit, may be <code>null</code>. */
   //	private final ICompilationUnit fCompilationUnit;
 

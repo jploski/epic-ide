@@ -25,13 +25,16 @@ public class FormatSourceAction extends Action {
 		int topIndex =  viewer.getTextWidget().getTopIndex();
 		int carretOffset = viewer.getTextWidget().getCaretOffset();
         String text = new SourceFormatter().doConversion(document.get());
-        document.set(text);
-        viewer.getTextWidget().setTopIndex(topIndex);
-        viewer.getTextWidget().setCaretOffset(carretOffset);
-        viewer.getTextWidget().redraw();
-        // Re-validate Syntax
-        if(editor != null) {
-        	editor.revalidateSyntax(true);
+        
+        if(text != null) {
+        	document.set(text);
+        	viewer.getTextWidget().setTopIndex(topIndex);
+        	viewer.getTextWidget().setCaretOffset(carretOffset);
+        	viewer.getTextWidget().redraw();
+        	// Re-validate Syntax
+        	if(editor != null) {
+        		editor.revalidateSyntax(true);
+        	}
         }
 	}
 	

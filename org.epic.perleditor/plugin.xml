@@ -63,10 +63,15 @@
             id="org.epic.perleditor.preferences.EpicPerlEditorPreferencePage">
       </page>
       <page id="org.epic.perleditor.preferences.EpicPerlTemplatesPreferencePage"
-		name="Templates"
-		category="org.epic.core.preferences.PerlMainPreferencePage"
-		class="org.epic.perleditor.templates.preferences.TemplatePreferencePage">
+			name="Templates"
+			category="org.epic.core.preferences.PerlMainPreferencePage"
+			class="org.epic.perleditor.templates.preferences.TemplatePreferencePage">
    		</page>
+   		<page id="org.epic.perleditor.preferences.SourceFormatterPreferencePage"
+  			name="Source Formatter"
+  			category="org.epic.core.preferences.PerlMainPreferencePage"
+ 			 class="org.epic.perleditor.preferences.SourceFormatterPreferencePage">
+     	</page>
    </extension>
    <extension
          point="org.eclipse.ui.perspectives">

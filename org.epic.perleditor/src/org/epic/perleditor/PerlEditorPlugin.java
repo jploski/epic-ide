@@ -8,6 +8,7 @@ import java.util.*;
 
 import org.epic.perleditor.editors.PerlDocumentProvider;
 import org.epic.perleditor.preferences.PreferenceConstants;
+import org.epic.perleditor.preferences.SourceFormatterPreferences;
 
 /**
  * The main plugin class to be used in the desktop.
@@ -93,6 +94,7 @@ public class PerlEditorPlugin extends AbstractUIPlugin {
 		PreferenceConstants.initializeDefaultValues(store);
 		store.setDefault(INTERPRETER_TYPE_PREFERENCE, INTERPRETER_TYPE_STANDARD);
 		store.setDefault(SYNTAX_VALIDATION_INTERVAL_PREFERENCE, SYNTAX_VALIDATION_INTERVAL_DEFAULT);
+		SourceFormatterPreferences.initializeDefaultValues(store);
 
 	}
 	

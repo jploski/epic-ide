@@ -58,8 +58,7 @@ implements IWorkbenchPreferencePage, ITaskTagConstants {
 	
 	public void createFieldEditors() {       
 		addField(new TaskTagsListEditor(ITaskTagConstants.ID_TASK_TAGS, "Task Tags:", getFieldEditorParent()));
-		// TODO bring this back to life after finding out how to convice the FindAdapter to honour this option
-		//addField(new BooleanFieldEditor(ID_IGNORE_CASE, "Ignore Case", getFieldEditorParent()));		
+		addField(new BooleanFieldEditor(ID_IGNORE_CASE, "Ignore Case", getFieldEditorParent()));		
 		addField(new BooleanFieldEditor(ID_WHITESPACE, "Allow leading whitespace", getFieldEditorParent()));
 	}
 	

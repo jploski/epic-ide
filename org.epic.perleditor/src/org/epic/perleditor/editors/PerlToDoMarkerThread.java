@@ -177,7 +177,7 @@ public class PerlToDoMarkerThread extends Thread implements IdleTimerListener, I
 					
 					addTaskMarker(resource, document, currentPos, stopPos, lineNumber+1, todoText);					
 					
-					findResult = findAdapter.find(currentPos + 1, currentToDoString, true, false, false, true);
+					findResult = findAdapter.find(currentPos + 1, currentToDoString, true, !(store.getBoolean(ID_IGNORE_CASE)), false, true);
 				}
 								
 			}

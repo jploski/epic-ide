@@ -305,7 +305,7 @@ public class PerlCompletionProcessor implements IContentAssistProcessor {
 
 			try {
                 outw.write(perlCode);
-                outw.write("\n__END__\n");  //this should avoid problem with Win98
+                outw.write(0x1a);  //this should avoid problem with Win98
                 outw.flush();
 			} catch(IOException ex) {
 				ex.printStackTrace();

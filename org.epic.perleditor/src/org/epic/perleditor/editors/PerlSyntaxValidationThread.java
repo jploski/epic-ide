@@ -196,7 +196,7 @@ public class PerlSyntaxValidationThread extends Thread {
 
             try {
                 outw.write(text);
-                outw.write("\n__END__\n");  //this should avoid problem with Win98
+                outw.write(0x1a);  //this should avoid problem with Win98
                 outw.flush();
             } catch (IOException e) {
                 e.printStackTrace();

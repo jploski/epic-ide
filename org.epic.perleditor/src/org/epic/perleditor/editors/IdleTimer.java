@@ -96,6 +96,16 @@ public class IdleTimer extends Thread {
 			}
 		}
 	}
+	
+	/**
+	 * Sets the changedSinceLastRun state of the idle timer.
+	 * If state is <code>true</code> the Idle Timer will notify all registered objects.
+	 * 
+	 * @param state	<code>true</code> if notify registered objects on next run, otherwise <code>false</code>
+	 */
+	public void setChangedSinceLastRun(boolean state) {
+		changedSinceLastRun = state;
+	}
 
 	public void dispose() throws InterruptedException {
 		this.interrupt();

@@ -14,6 +14,10 @@ import gnu.regexp.RESyntax;
 public class SourceParser {
 
 	public static final String FUNCTION = "sub ";
+	
+	public static final int DO_NOT_DELETE_COMMENT_POD = 0;
+	public static final int DELETE_COMMENT = 1;
+	public static final int DELETE_POD = 2;
 
 	/**
 	 * line separator
@@ -174,6 +178,24 @@ public class SourceParser {
 	 */
 public static List getElements(String text, String regexp, String preFix,
 			String postFix, boolean deleteComments) {
+	if(deleteComments == true) {
+		return getElements(text, regexp, preFix,postFix, DELETE_COMMENT|DELETE_POD);
+	}
+	else {
+		return getElements(text, regexp, preFix,postFix, DO_NOT_DELETE_COMMENT_POD);
+	}
+}
+
+/**
+ * @param text
+ * @param regexp
+ * @param preFix
+ * @param postFix
+ * @param flags
+ * @return
+ */
+public static List getElements(String text, String regexp, String preFix,
+		String postFix, int flags) {
 		List results = new ArrayList();
 		Document docOrg = new Document(text);
 		try {
@@ -207,7 +229,7 @@ public static List getElements(String text, String regexp, String preFix,
 				//no other possibility left for linesep, right?
 			}
 			// Remove POD and comments
-			if (deleteComments) {
+			if ((flags&DELETE_POD) == DELETE_POD) {
 				REMatch[] matches;			
 				// Remove POD
 				reg = new RE("^(=.*)((" + lineSep.getLineSeparator()
@@ -218,7 +240,10 @@ public static List getElements(String text, String regexp, String preFix,
 				for(int i=0; i < matches.length; i++) {
 					text = replaceComment(matches[i], text, lineSep);		
 				}
-				
+			}
+			
+			if ((flags&DELETE_COMMENT) == DELETE_COMMENT) {
+				REMatch[] matches;
 				// Remove comments
 				reg = new RE("^\\s*(#.*)$", RE.REG_MULTILINE, lineSep);
 				matches = reg.getAllMatches(text);

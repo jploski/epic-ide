@@ -1,6 +1,6 @@
 Eclipse Perl Integration: Perl Editor Plugin
 
-Version 0.1.0 alpha
+Version 0.1.0 alpha  - 16-October-2003
 		* Fixed bug: [ 822545 ] a plugin is used that Doesn't exist in platform version.
 		* Quickreference totally revised.
 

@@ -482,7 +482,7 @@
             id="org.epic.perleditor.validatesyntax">
       </command>
       <keyBinding
-            string="F5"
+            string="Shift+F5"
             scope="org.epic.perleditor.perlEditorScope"
             command="org.epic.perleditor.validatesyntax"
             configuration="org.eclipse.ui.defaultAcceleratorConfiguration">

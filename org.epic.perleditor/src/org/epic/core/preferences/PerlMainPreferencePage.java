@@ -71,7 +71,8 @@ public class PerlMainPreferencePage
 				FileDialog fileBrowser = new FileDialog(fParent.getShell());
 				String dir = fileBrowser.open();
 				if (dir != null) {
-					executableText.setText(dir);
+					// Surround interpreter name by ""
+					executableText.setText("\"" + dir + "\"");
 				}
 			}
 		});

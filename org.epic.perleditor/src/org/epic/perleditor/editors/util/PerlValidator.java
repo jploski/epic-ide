@@ -99,7 +99,7 @@ public class PerlValidator {
 		try {
 			// Construct command line parameters
 			List cmdList =
-				PerlExecutableUtilities.getPerlExecutableCommandLine();
+				PerlExecutableUtilities.getPerlExecutableCommandLine(resource.getProject());
 			cmdList.add(PERL_CMD_EXT);
 
 			if (PerlEditorPlugin.getDefault().getWarningsPreference()) {

@@ -186,6 +186,7 @@ public class PerlSyntaxValidationThread extends Thread {
 			proc = Runtime.getRuntime().exec(cmdParams, null, new File(workingDir));
 			Thread.sleep(1);
 
+            proc.getInputStream().close();
 			InputStream in = proc.getErrorStream();		
 			OutputStream out = proc.getOutputStream();
             //TODO which charset?

@@ -297,6 +297,7 @@ public class PerlCompletionProcessor implements IContentAssistProcessor {
 			Process proc = Runtime.getRuntime().exec(cmdParams, null, new File(workingDir));
 			Thread.sleep(1);
 
+            proc.getErrorStream().close();
             InputStream in = proc.getInputStream();
             OutputStream out = proc.getOutputStream();
             //TODO which charset?

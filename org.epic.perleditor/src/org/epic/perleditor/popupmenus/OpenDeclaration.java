@@ -19,6 +19,7 @@ import java.util.Vector;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.text.TextSelection;
@@ -31,6 +32,7 @@ import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.editors.text.TextEditor;
 import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.core.runtime.CoreException;
@@ -42,7 +44,7 @@ import org.epic.perleditor.views.model.Model;
 import org.epic.perleditor.views.util.*;
 //import org.epic.perleditor.PerlEditorPlugin;
 
-public class OpenDeclaration 
+public class OpenDeclaration extends Action
        implements org.eclipse.ui.IEditorActionDelegate,
                   org.eclipse.ui.IWorkbenchWindowActionDelegate
        {
@@ -59,7 +61,10 @@ public class OpenDeclaration
    * @see org.eclipse.ui.IActionDelegate#run(org.eclipse.jface.action.IAction)
    */
   public void run(IAction action) {
-
+  	run();
+  }
+  
+  public void run() {
 System.out.println("LeO was here");
     String selection;
     List currentFileList = null;
@@ -68,6 +73,9 @@ System.out.println("LeO was here");
     String fileElement = "";
     IFile checkFile = null;
     
+    // If fTextEditor is not set, use the current editor
+    fTextEditor = (TextEditor)PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
+     
     if (fTextEditor instanceof PerlEditor) {
       //it makes only a sense to do something here, otherwise we do not get any
       // Input

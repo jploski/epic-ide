@@ -1,6 +1,6 @@
 Eclipse Perl Integration: Perl Editor Plugin
 
-Version 0.1.0 alpha  - 
+Version 0.1.0 alpha  - 25-November-2003
 		* Fixed problems with Eclipse 3.0 Milestone 5
 		* Spaces or now inserted correctly when using "shift left/right" operation.
 		* Support for non Perl files (eg. EmbPerl) add. The source menu has been

@@ -2,8 +2,8 @@
 <plugin
    id="org.epic.debug"
    name="Debug Plug-in"
-   version="1.0.0"
-   provider-name="Stephan Ruehl"
+   version="0.0.7"
+   provider-name="EPIC Project"
    class="org.epic.debug.PerlDebugPlugin">
 
    <runtime>
@@ -115,6 +115,23 @@
             class="org.epic.debug.ExpressionView"
             id="org.eclipse.debug.expressionview">
       </view>
+   </extension>
+   <extension
+         point="org.eclipse.ui.viewActions">
+<!-- Contributions to Expression View Toolbar -->
+      <viewContribution
+            targetID="org.eclipse.debug.ui.VariableView"
+            id="org.epig.debug.showLocalVariablesAction">
+         <action
+               label="Show Local Variables"
+               icon="icons/epic.gif"
+               tooltip="Show Local Variable"
+               state="false"
+               class="org.epic.debug.ShowLocalVariableActionDelegate"
+               menubarPath="additions"
+               id="org.epig.debug.showLocalVariablesAction">
+         </action>
+      </viewContribution>
    </extension>
 
 </plugin>

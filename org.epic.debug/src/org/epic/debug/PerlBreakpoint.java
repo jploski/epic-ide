@@ -13,12 +13,9 @@ import java.util.Set;
 import org.eclipse.debug.core.model.Breakpoint;
 //import org.eclipse.ui.internal.commands.Path;
 import org.eclipse.core.resources.IMarker;
-import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
-import java.util.Map;
-import java.util.HashSet;
+
 
 
 

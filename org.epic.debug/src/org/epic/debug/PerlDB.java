@@ -22,10 +22,11 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.IPath;
 import java.util.*;
 import org.eclipse.debug.core.model.IVariable;
+import org.epic.debug.util.PathMapperCygwin;
 import org.epic.debug.varparser.*;
 import org.epic.perleditor.editors.util.PerlExecutableUtilities;
 import org.epic.perleditor.PerlEditorPlugin;
-import cbg.editor.*;
+
 
 
 
@@ -50,7 +51,8 @@ public class PerlDB	implements IDebugElement {
 	private Object mCurrentCommandDest;
 	
 	private final static String EMPTY_STRING="";
-	private static final String mDBinitPerl =	"{$| = 1;  my $old = select STDERR; $|=1;select $old;}\n";
+	//private static final String mDBinitPerl =	"{$| = 1;  my $old = select STDERR; $|=1;select $old;}\n";
+	private static final String mDBinitPerl ="o frame=2";
 	
 	private PerlDebugThread[] mThreads;
 	
@@ -89,6 +91,8 @@ public class PerlDB	implements IDebugElement {
 	private RE mReSwitchFileFail;
 	private RE mReSetLineBreakpoint;
 	private RE mReStackTrace;
+	private RE mReEnterFrame;
+	private RE mReExitFrame;
 				
 	private IP_Position mStartIP;
 	private PerlVarParser mVarParser = new PerlVarParser(this);
@@ -104,6 +108,8 @@ public class PerlDB	implements IDebugElement {
 	
 	private BreakpointMap mPendingBreakpoints;
 	private BreakpointMap mActiveBreakpoints;
+	
+	private org.epic.debug.util.PathMapper mPathMapper;
 	
 	private class CommandThread extends Thread
 	{
@@ -241,6 +247,8 @@ public class PerlDB	implements IDebugElement {
 		mReSwitchFileFail = new RE("^No file",0, RESyntax.RE_SYNTAX_PERL5);
 		mReSetLineBreakpoint = new RE("^\\s+DB<\\d+>",0, RESyntax.RE_SYNTAX_PERL5);
 		mReStackTrace = new RE("^(.)\\s+=\\s+(.*)called from .* \\`([^\\']+)\\'\\s*line (\\d+)\\s*$",RE.REG_MULTILINE, RESyntax.RE_SYNTAX_PERL5);
+		mReEnterFrame = new RE("^\\s*entering",0, RESyntax.RE_SYNTAX_PERL5);
+		mReExitFrame  = new RE("^\\s*exited",0, RESyntax.RE_SYNTAX_PERL5);
 		} catch (REException e){ new InstantiationException("Couldn't RegEX");};
 		String env[] = new String[1];
 		
@@ -312,9 +320,20 @@ public class PerlDB	implements IDebugElement {
 		}catch(IOException e){throw new InstantiationException("Failing establish Communication with Debug Process  !!!");}
 		 catch(InterruptedException e){throw new InstantiationException("Failing establish Communication with Debug Process  !!!");}
 		 
+		mPathMapper = null;
+		String interpreterType =
+		PerlEditorPlugin.getDefault().getPreferenceStore().getString(
+		PerlEditorPlugin.INTERPRETER_TYPE_PREFERENCE);
+
+//		   Check if cygwin is used
+		if (interpreterType.equals(PerlEditorPlugin.INTERPRETER_TYPE_CYGWIN)) {
+			mPathMapper = new PathMapperCygwin();
+		}
+		
 		startCommand(mCommandClearOutput,null,false, this);
+		startCommand(mCommandExecuteCode,mDBinitPerl,false, this);
 		PerlDebugPlugin.getPerlBreakPointmanager().addDebugger(this);
-		updateStackFrames();
+		updateStackFrames(null);
 		generateDebugInitEvent();
 	}
 	/* (non-Javadoc)
@@ -637,11 +656,10 @@ public class PerlDB	implements IDebugElement {
 			currentOutput = debugOutput.toString();
 	
 			System.out.println("\nCurrent DEBUGOUTPUT:\n"+currentOutput+"\n");
-		
 			if( hasSessionTerminated(currentOutput) )
 				{ finished = mSessionTerminated; break;}
 			if(hasCommandTerminated(currentOutput))
-				{ finished = mCommandFinished; break;}  
+				{ finished = mCommandFinished; break;} 
 		}
 		
 		if( finished == mSessionTerminated)
@@ -801,7 +819,7 @@ public class PerlDB	implements IDebugElement {
 			case mCommandSuspend:
 			case mCommandTerminate:
 			case mCommandEvaluateCode:
-				updateStackFrames();
+				updateStackFrames(fOutputString);
 			break;
 			case mCommandClearOutput:
 			break;
@@ -814,7 +832,7 @@ public class PerlDB	implements IDebugElement {
 	}
 	
 	
-	private void updateStackFrames()
+	private void updateStackFrames(String fOutputString)
 	{
 		PerlDebugValue val;
 		startSubCommand(mCommandExecuteCode,"T",false);
@@ -840,7 +858,7 @@ public class PerlDB	implements IDebugElement {
 			newStackFrameVars = (PerlDebugVar[])frames[0].getVariables();
 			
 			boolean found;
-				
+			boolean checkLocals = 	isRequireCompareLocals(fOutputString);
 			for( int new_pos = 0; new_pos < newStackFrameVars.length; ++new_pos)
 			{
 				found = false;
@@ -848,21 +866,25 @@ public class PerlDB	implements IDebugElement {
 				for( int org_pos = 0; (org_pos < orgStackFrameVars.length) && !found; ++org_pos)
 				{
 					var_org = orgStackFrameVars[org_pos];
-					if( var_org.getName().equals(var_new.getName() ) )
+					if( var_new.matches(var_org) )
 					{
 						found = true;
-						var_new.calculateChangeFlags(var_org);
+						
+						
+						if( !( var_new.isLocalScope() && !checkLocals) )
+							var_new.calculateChangeFlags(var_org);
 					}
 				}
 				if ( !found )
 				{
-					var_new.setChangeFlags(PerlDebugValue.mValueHasChanged,true);
+					if( !( var_new.isLocalScope() && !checkLocals) )
+						var_new.setChangeFlags(PerlDebugValue.mValueHasChanged,true);
 				}
 			}	
 			}
 			
 		} catch (DebugException e1) {
-			// TODO Auto-generated catch block
+			
 			e1.printStackTrace();
 		}
 		
@@ -870,8 +892,8 @@ public class PerlDB	implements IDebugElement {
 		{
 			PerlDebugVar[] vars = new PerlDebugVar[2];
 			
-			vars[0]= new PerlDebugVar(mThreads[0],true);
-			vars[1]= new PerlDebugVar(mThreads[0],true);
+			vars[0]= new PerlDebugVar(mThreads[0], PerlDebugVar.IS_GLOBAL_SCOPE,true);
+			vars[1]= new PerlDebugVar(mThreads[0],PerlDebugVar.IS_GLOBAL_SCOPE,true);
 			vars[0].setName("Called Function");
 			val = new PerlDebugValue(mThreads[0]);
 			val.setValue(matches[pos].toString(2));
@@ -904,19 +926,13 @@ public class PerlDB	implements IDebugElement {
 			REMatch temp;
 			
 			REMatch result = mRe_IP_Pos.getMatch(mDebugSubCommandOutput);
-			System.out.println( result.toString(1)+"--:--"+result.toString(2));
 			file_name = result.toString(1);
 			temp = mRe_IP_Pos_Eval.getMatch(file_name);
 			if( temp != null)
 				result = temp;
-			System.out.println( result.toString(1)+"!--:--!"+result.toString(2));	
 			line = Integer.parseInt(result.toString(2));
 			file = getPathFor(result.toString(1));
-			if( ! file.isAbsolute())
-			{
-				file = mWorkingDir.append(file);
-			}
-			
+				
 			pos = new IP_Position();
 			pos.set_IP_Line(line);
 			pos.set_IP_Path(file);
@@ -926,11 +942,17 @@ public class PerlDB	implements IDebugElement {
 		
  	IPath getPathFor(String fFilename)
  	{
+  		
 		IPath file = new Path(fFilename);
 		if( ! file.isAbsolute())
 		{
 			file = mWorkingDir.append(file);
 		}
+		else
+			if( mPathMapper != null)
+			{
+				file = mPathMapper.mapPath(file);
+			}
 		return(file);
  }
 	private void setCurrent_IP_Position(StackFrame fFrame)
@@ -945,11 +967,21 @@ public class PerlDB	implements IDebugElement {
 	private  void setVarList(StackFrame fFrame)
 			{
 				IVariable[] lVars;
-				startSubCommand(mCommandExecuteCode,"X ",false);
+				ArrayList lVarList;
 				
-				lVars = mVarParser.parseVars(mDebugSubCommandOutput);
+
+				startSubCommand(mCommandExecuteCode,"o frame=0 ",false);
+				if( ShowLocalVariableActionDelegate.getPreferenceValue())
+					startSubCommand(mCommandExecuteCode,"y ",false);
+				lVarList = mVarParser.parseVars(mDebugSubCommandOutput,PerlDebugVar.IS_LOCAL_SCOPE);
+				startSubCommand(mCommandExecuteCode,"o frame=2",false);
+				startSubCommand(mCommandExecuteCode,"X ",false);				
+				mVarParser.parseVars(mDebugSubCommandOutput,PerlDebugVar.IS_GLOBAL_SCOPE,lVarList);
+				
+				
+				
 				try{
-			    fFrame.setVariables(lVars);
+			    fFrame.setVariables((PerlDebugVar[])lVarList.toArray(new PerlDebugVar[lVarList.size()]));
 				}catch (Exception e){};
 		 
 			}
@@ -1122,6 +1154,36 @@ private boolean insertPendingBreakpoints()
 	
 	return(true);
 }
+
+private boolean isRequireCompareLocals(String fOutputString)
+{
+	if( fOutputString == null )
+		return(false);
+	StringTokenizer lines = new StringTokenizer(fOutputString,"\r\n");
+	boolean exited = false;
+	int level = 0;
+	String line;
+	
+	while( lines.hasMoreTokens() )
+	{
+		line = (String) lines.nextToken();
+		
+		if( mReExitFrame.getAllMatches(line).length > 0)
+			level--;
+		else
+			if( mReEnterFrame.getAllMatches(line).length > 0)
+					level++;
+					
+		if( level < 0)
+		 return(false);	
+	}
+	
+	if( level != 0 ) return(false);
+	
+	return(true);
+	
+}
+
 protected void finalize()throws Throwable
 	{
 		shutdown();

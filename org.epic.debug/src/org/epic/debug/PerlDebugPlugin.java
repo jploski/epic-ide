@@ -27,7 +27,7 @@ public class PerlDebugPlugin extends AbstractUIPlugin {
 	private static PerlBreakpointManager mBreakPointmanager;
 	
 	private static PerlImageDescriptorRegistry defaultPerlImageDescriptorRegistry = new PerlImageDescriptorRegistry();
-	private final static String mDebugOptions = "PERLDB_OPTS=RemotePort=localhost:4444 DumpReused";
+	private final static String mDebugOptions = "PERLDB_OPTS=RemotePort=localhost:4444 DumpReused ReadLine=0";// frame=2";
 	/**
 	 * The constructor.
 	 */
@@ -82,7 +82,7 @@ public class PerlDebugPlugin extends AbstractUIPlugin {
 		}
 		
 		mDebugEnv[count] = mDebugOptions;
-		
+		//mDebugEnv[count+1] = "PERL5DB=BEGIN {require'perl5db.pl'}";
 	}
 	/**
 	 * Returns the shared instance.

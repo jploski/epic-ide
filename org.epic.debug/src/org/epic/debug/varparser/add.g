@@ -33,23 +33,38 @@ tokens
 
 {
 	java.util.Stack mVarStack = new java.util.Stack();
-	java.util.ArrayList mVarList = new java.util.ArrayList();
+	java.util.ArrayList mVarList = null; //new java.util.ArrayList();
 	org.eclipse.debug.core.model.IDebugElement mDebugger;
-
+	int mScope;
+	
+	public void setVarList( java.util.ArrayList fVarList )
+	{
+		mVarList = fVarList;	
+	}
+	
 	public void setDebugger(org.eclipse.debug.core.model.IDebugElement fDebugger)
 	{
 		mDebugger = fDebugger;
 	}
 
+	public void setScope(int fScope)
+	{
+		mScope = fScope;
+	}
+	
+	
 	public PerlDebugVar[] getVarArray()
 	{
 		return( (PerlDebugVar[]) mVarList.toArray(new PerlDebugVar[mVarList.size()]));
 	}
 
-
+	public java.util.ArrayList getVars()
+	{
+		return( mVarList);
+	}
 	public void addVar(String fName, String fType)
 	{
-		PerlDebugVar var = new PerlDebugVar(mDebugger);
+		PerlDebugVar var = new PerlDebugVar(mDebugger,mScope);
 		PerlDebugValue val = new PerlDebugValue(mDebugger);
 
 		try{

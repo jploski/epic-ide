@@ -28,6 +28,7 @@ public class PerlVarParser
 {
 	private PerlParser par;
 	private PerlDB mDebugger;
+	private int mScope;
 	   
     public static class PerlLexer extends PerlBaseLexer
     {
@@ -125,7 +126,12 @@ public class PerlVarParser
       mDebugger = fDebugger;
     }
     
-    public PerlDebugVar[] parseVars( String fText)
+	public java.util.ArrayList parseVars( String fText, int fScope)
+	{
+		return( parseVars(fText, fScope,new java.util.ArrayList()));
+	}
+	
+    public java.util.ArrayList parseVars( String fText, int fScope, java.util.ArrayList fVarList )
     {
 		try{
 		// construct the lexer
@@ -134,6 +140,8 @@ public class PerlVarParser
 		// construct the parser
 		par = new PerlParser (lex);
 		par.setDebugger(mDebugger);
+		par.setScope(fScope);
+		par.setVarList(fVarList);
     	
 		par.topLevel();
     	} catch(Exception e){};	
@@ -147,7 +155,7 @@ public class PerlVarParser
     	{
 			System.out.println("!!!!! Paars OK!!!!");
     	}
-    	return(par.getVarArray());
+    	return(par.getVars());
     	
     }
 

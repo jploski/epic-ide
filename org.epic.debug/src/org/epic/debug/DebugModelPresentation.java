@@ -1,7 +1,6 @@
 package org.epic.debug;
 
 import org.eclipse.debug.core.model.IValue;
-import org.eclipse.debug.core.model.IVariable;
 import org.eclipse.debug.ui.IDebugModelPresentation;
 import org.eclipse.debug.ui.IValueDetailListener;
 import org.eclipse.jface.viewers.ILabelProviderListener;
@@ -9,7 +8,6 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IStorageEditorInput;
 import org.eclipse.core.resources.*;
-import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.debug.ui.DebugUITools;
 import org.eclipse.debug.ui.IDebugUIConstants;
@@ -55,10 +53,20 @@ public class DebugModelPresentation implements IDebugModelPresentation {
 			try {
 				if ( ((PerlDebugVar)element).getHideImage() )
 					return PerlDebugPlugin.getDefaultDesciptorImageRegistry().get( new PerlImageDescriptor(DebugUITools.getImageDescriptor(IDebugUIConstants.IMG_OBJS_BREAKPOINT_DISABLED), 0));;
+					
+				if( ((PerlDebugVar)element).isLocalScope())
+				{
+					if ( ((PerlDebugVar)element).isTainted() )
+					 return PerlDebugPlugin.getDefaultDesciptorImageRegistry().get( PerlDebugImages.DESC_OBJS_CHANGED_DEBUG_VAR_LOCAL);
+					else
+					 return PerlDebugPlugin.getDefaultDesciptorImageRegistry().get( PerlDebugImages.DESC_OBJS_DEBUG_VAR_LOCAL);
+				}
+				
 				if ( ((PerlDebugVar)element).isTainted() )
 					return PerlDebugPlugin.getDefaultDesciptorImageRegistry().get( PerlDebugImages.DESC_OBJS_CHANGED_DEBUG_VAR);
 			} catch (DebugException e) {e.printStackTrace();}
 		}
+		
 		if (element instanceof IMarker) {
 			IBreakpoint bp = getBreakpoint((IMarker)element);
 			if (bp != null && bp instanceof PerlBreakpoint) {

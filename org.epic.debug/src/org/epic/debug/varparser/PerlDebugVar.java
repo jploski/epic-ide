@@ -26,12 +26,39 @@ public class PerlDebugVar implements IVariable {
 	private PerlDebugValue mValue;
 	private int mHasChanged;
 	private boolean mHideImage;
-	  
+	int mScope;
+	public static final int IS_LOCAL_SCOPE = 1; 
+	public static final int IS_GLOBAL_SCOPE = 2;  
 	
 	public boolean getHideImage()
 	{
 		return mHideImage;
 	}
+	
+	public boolean matches(PerlDebugVar fVar)
+	{
+		if( ! fVar.mName.equals(mName))
+			return(false);
+		if(  fVar.mScope != mScope )
+			return(false);
+			
+		return(true);
+	}
+			/**
+		 * Constructor for Variable.
+		 */
+		
+
+		public boolean isLocalScope()
+		{
+			return( mScope == IS_LOCAL_SCOPE);
+		}
+	
+		public boolean isGlobalScope()
+		{
+			return( mScope == IS_GLOBAL_SCOPE);
+		}
+	
 	public boolean calculateChangeFlags(PerlDebugVar fVarOrg)
 	{
 		try{
@@ -66,20 +93,23 @@ public class PerlDebugVar implements IVariable {
 	/**
 	 * 
 	 */
-	public PerlDebugVar(IDebugElement fDebugger) {
+	public PerlDebugVar(IDebugElement fDebugger, int fScope) {
 		super();
 		mDebugger = fDebugger;
 		mName = null;
 		mValue = null;
 		mHideImage = false;
+		mScope = fScope;
+		mHasChanged = PerlDebugValue.mValueUnchanged;
 	}
 	
-	public PerlDebugVar(IDebugElement fDebugger, boolean fHide) {
+	public PerlDebugVar(IDebugElement fDebugger,int fScope, boolean fHide) {
 			super();
 			mDebugger = fDebugger;
 			mName = null;
 			mValue = null;
 			mHideImage = fHide;
+			mScope = fScope;
 		}
 
 	/* (non-Javadoc)

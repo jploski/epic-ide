@@ -17,7 +17,6 @@ import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.debug.ui.*;
 import org.eclipse.core.runtime.*;
-import org.eclipse.debug.core.model.*;
 import gnu.regexp.*;
 
  

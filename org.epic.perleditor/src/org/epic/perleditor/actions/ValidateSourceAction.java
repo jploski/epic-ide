@@ -9,7 +9,7 @@ import org.eclipse.ui.PlatformUI;
 import org.epic.perleditor.editors.PerlEditor;
 
 public class ValidateSourceAction extends Action implements
-		org.eclipse.ui.IWorkbenchWindowActionDelegate {
+		org.eclipse.ui.IWorkbenchWindowActionDelegate, org.eclipse.ui.IEditorActionDelegate {
 
 	static private String lastSelectedDir = null;
 
@@ -58,6 +58,14 @@ public class ValidateSourceAction extends Action implements
 	 */
 	public void selectionChanged(IAction action, ISelection selection) {
 
+	}
+
+	/* (non-Javadoc)
+	 * @see org.eclipse.ui.IEditorActionDelegate#setActiveEditor(org.eclipse.jface.action.IAction, org.eclipse.ui.IEditorPart)
+	 */
+	public void setActiveEditor(IAction action, IEditorPart targetEditor) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

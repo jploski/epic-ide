@@ -2,7 +2,7 @@
 <plugin
    id="org.epic.perleditor"
    name="Epic Plugin"
-   version="0.1.0"
+   version="0.1.1"
    provider-name="Epic Project"
    class="org.epic.perleditor.PerlEditorPlugin">
 
@@ -392,10 +392,10 @@
             configuration="org.eclipse.ui.defaultAcceleratorConfiguration">
       </keyBinding>
    </extension>
-<!-- Decorator extension START -->
-<!-- NOTE: According to the docs BOTTOM_LEFT should not be used, because JDT uses it. -->
-<!--             But on some occasions the Java Builder seems to check Perl projecs as well.    -->
 <!--             So to not have equal markers for the same thing we use BOTTOM_LEFT.            -->
+<!--             But on some occasions the Java Builder seems to check Perl projecs as well.    -->
+<!-- NOTE: According to the docs BOTTOM_LEFT should not be used, because JDT uses it. -->
+<!-- Decorator extension START -->
    <extension
          point="org.eclipse.ui.decorators">
       <decorator

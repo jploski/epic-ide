@@ -38,23 +38,27 @@ public class TogglePerlNatureActionDelegate implements IObjectActionDelegate {
 	public void setActivePart(IAction action, IWorkbenchPart targetPart) {
 		this.part = targetPart;
 		//IResourceNavigator nav = (IResourceNavigator) part;
-		IStructuredSelection sel = (IStructuredSelection) part.getSite()
+		
+		ISelection selection = part.getSite()
 				.getSelectionProvider().getSelection();
-		Object firstElement = sel.getFirstElement();
-
-		if (firstElement instanceof IProject) {
-			try {
-				project = (IProject) firstElement;
-				if (project.isAccessible()) {
-					if (project.hasNature(Constants.PERL_NATURE_ID)) {
-						action.setText("Remove Perl Nature");
-					} else {
-						action.setText("Add Perl Nature");
+		if (selection instanceof IStructuredSelection) {
+			IStructuredSelection sel=(IStructuredSelection) selection;
+			Object firstElement = sel.getFirstElement();
+	
+			if (firstElement instanceof IProject) {
+				try {
+					project = (IProject) firstElement;
+					if (project.isAccessible()) {
+						if (project.hasNature(Constants.PERL_NATURE_ID)) {
+							action.setText("Remove Perl Nature");
+						} else {
+							action.setText("Add Perl Nature");
+						}
 					}
+					action.setEnabled(project.isAccessible());
+				} catch (CoreException e) {
+					e.printStackTrace();
 				}
-				action.setEnabled(project.isAccessible());
-			} catch (CoreException e) {
-				e.printStackTrace();
 			}
 		}
 	}

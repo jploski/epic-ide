@@ -204,16 +204,25 @@ public class SourceParser {
 		Document docOrg = new Document(text);
 		try {
 			RE reg;
+			
+			String systemLineSep = System.getProperty("line.separator");
+			
+			
 
 			// Remove POD and comments
 			if (deleteComments) {
+				
+				// support all types of linebreaks on all platforms
+				reg = new RE(regexp, RE.REG_MULTILINE);
+				text = replaceLineSeparator(text, systemLineSep);
+				
 				// Remove POD
-				reg = new RE("^(=.*)((\\n.*)+?)(\\n=cut)$", RE.REG_MULTILINE);
+				reg = new RE("^(=.*)((" + systemLineSep + ".*)+?)(" + systemLineSep + "=cut)$", RE.REG_MULTILINE);
 				//text = reg.substituteAll(text, "");		
 				
 				REMatch match;
 				while((match = reg.getMatch(text)) != null ) {
-					int newlines = match.toString().split("\n").length;
+					int newlines = match.toString().split(systemLineSep).length;
 					char[] nls= new char[newlines];
 					for(int x =0; x < newlines; ++x)
 						nls[x]='\n';
@@ -224,14 +233,13 @@ public class SourceParser {
 				}
 
 				// Remove comments
-				reg = new RE("[\\n);]\\s*(#.*)$");
-				text = reg.substituteAll(text, "\n");
+				reg = new RE("[" + systemLineSep + ");]\\s*(#.*)$");
+				text = reg.substituteAll(text, systemLineSep);
 			}
+			
 			// support all types of linebreaks on all platforms
 			reg = new RE(regexp, RE.REG_MULTILINE);
-			text =text.replaceAll("\r\n","\n");
-			text =text.replaceAll("\r","\n");
-			text =text.replaceAll("\n",System.getProperty("line.separator"));
+			text = replaceLineSeparator(text, systemLineSep);
 			REMatch[] matches = reg.getAllMatches(text);
 
 			for (int i = 0; i < matches.length; i++) {
@@ -264,6 +272,17 @@ public class SourceParser {
 		}
 
 		return results;
+	}
+
+	/**
+	 * @param text
+	 * @return
+	 */
+	private static String replaceLineSeparator(String text, String separator) {
+		text =text.replaceAll("\r\n","\n");
+		text =text.replaceAll("\r","\n");
+		text =text.replaceAll("\n",separator);
+		return text;
 	}
 
 }

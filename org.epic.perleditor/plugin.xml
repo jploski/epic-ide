@@ -8,6 +8,7 @@
 
    <runtime>
       <library name="perleditor.jar">
+         <export name="*"/>
          <packages prefixes="org.epic.core,org.epic.perleditor"/>
       </library>
       <library name="gnu-regexp-1.1.4.jar">
@@ -34,10 +35,10 @@
          point="org.eclipse.ui.editors">
       <editor
             name="Epic Perl Editor"
-            extensions="pl, ipl, pm, cgi, epl"
             icon="icons/epic.gif"
-            class="org.epic.perleditor.editors.PerlEditor"
+            extensions="pl, ipl, pm, cgi, epl"
             contributorClass="org.epic.perleditor.editors.PerlActionContributor"
+            class="org.epic.perleditor.editors.PerlEditor"
             id="org.epic.perleditor.editors.PerlEditor">
       </editor>
    </extension>
@@ -124,8 +125,7 @@
             id="org.epic.perleditor.perlbuilder">
       </builder>
    </extension>
-   
-  <extension
+   <extension
          id="perlinkexternalfilesnature"
          name="Link External Files Nature"
          point="org.eclipse.core.resources.natures">
@@ -143,9 +143,6 @@
             id="org.epic.core.perlinkexternalfilesnature.image">
       </image>
    </extension>
-   
- 
-   
 <!-- Builder START -->
    <extension
          id="perlbuilder"
@@ -400,12 +397,12 @@
          point="org.eclipse.ui.decorators">
       <decorator
             lightweight="true"
-            location="BOTTOM_RIGHT"
             objectClass="org.eclipse.core.resources.IResource"
+            location="BOTTOM_RIGHT"
             adaptable="true"
             label="Perl"
-            class="org.epic.core.decorators.PerlDecorator"
             state="true"
+            class="org.epic.core.decorators.PerlDecorator"
             id="org.epic.core.decorators.PerlDecorator">
          <description>
             Perl Decorator
@@ -434,16 +431,16 @@
          <action
                label="Add &amp;Task"
                helpContextId="org.eclipse.ui.AddTask_action_context"
-               class="org.eclipse.ui.texteditor.TaskRulerAction"
                tooltip="Add Task..."
+               class="org.eclipse.ui.texteditor.TaskRulerAction"
                menubarPath="add"
                id="org.eclipse.ui.texteditor.TaskRulerAction">
          </action>
          <action
                label="Add Boo&amp;kmark"
                helpContextId="org.eclipse.ui.bookmark_action_context"
-               class="org.eclipse.ui.texteditor.BookmarkRulerAction"
                tooltip="Add Bookmark..."
+               class="org.eclipse.ui.texteditor.BookmarkRulerAction"
                menubarPath="add"
                id="org.eclipse.ui.texteditor.BookmarkRulerAction">
          </action>

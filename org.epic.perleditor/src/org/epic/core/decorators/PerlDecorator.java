@@ -67,7 +67,7 @@ public class PerlDecorator
 				.getWorkbench()
 				.getEditorRegistry()
 				.getDefaultEditor(resource.getFullPath().toString());
-
+				
 		try {
 			if (resource.getType() == IResource.PROJECT) {
 				if (resource.getProject().hasNature(PERL_NATURE_ID)) {
@@ -78,7 +78,7 @@ public class PerlDecorator
 			e.printStackTrace();
 		}
 
-		if (!isPerlProject) {
+		if (!isPerlProject &&  defaultEditorDescriptor != null) {
 			if (!defaultEditorDescriptor.getId().equals(PERL_EDITOR_ID)
 				|| resource.getFileExtension().equals(EMB_PERL_FILE_EXTENSION)) {
 				return;

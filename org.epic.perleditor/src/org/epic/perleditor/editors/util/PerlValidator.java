@@ -59,6 +59,10 @@ public class PerlValidator {
 					.getWorkbench()
 					.getEditorRegistry()
 					.getDefaultEditor(resource.getFullPath().toString());
+					
+			if(defaultEditorDescriptor == null) {
+				return false;
+			}
 
 			if (!defaultEditorDescriptor.getId().equals(PERL_EDITOR_ID)
 			    ||  resource.getFileExtension().equals(EMB_PERL_FILE_EXTENSION)) {
@@ -81,7 +85,7 @@ public class PerlValidator {
 			validate(resource, sourceCode.toString());
 			
 		} catch (Exception e) {
-			System.out.println(e);
+			e.printStackTrace();
 			return false;
 		}
 		

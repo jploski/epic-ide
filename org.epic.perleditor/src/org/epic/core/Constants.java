@@ -22,4 +22,7 @@ public class Constants
 	
 	public static final String MARKER_ATTR_PERL_ERROR_EXPLANATION =
 		"org.epic.marker.printfPerlErrorMessage";
+	
+	public static final String DEBUG_PERSPECTIVE_ID =
+		"org.eclipse.debug.ui.DebugPerspective";
 }

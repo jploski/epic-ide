@@ -5,5 +5,5 @@
       autobuild="false"
       scrub-output="true"
       use-console="true">
-   <feature id="org.epic.feature.main" version="0.1.0"/>
+   <feature id="org.epic.feature.main" version="0.2.0"/>
 </site-build>

@@ -444,6 +444,10 @@
             file="HelpToc.xml"
             primary="true">
       </toc>
+      <toc
+            file="html/epicUsersGuide/toc.xml"
+            primary="true">
+      </toc>
    </extension>
    <extension
          point="org.eclipse.help.contexts">

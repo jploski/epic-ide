@@ -393,12 +393,15 @@
       </keyBinding>
    </extension>
 <!-- Decorator extension START -->
+<!-- NOTE: According to the docs BOTTOM_LEFT should not be used, because JDT uses it. -->
+<!--             But on some occasions the Java Builder seems to check Perl projecs as well.    -->
+<!--             So to not have equal markers for the same thing we use BOTTOM_LEFT.            -->
    <extension
          point="org.eclipse.ui.decorators">
       <decorator
             lightweight="true"
             objectClass="org.eclipse.core.resources.IResource"
-            location="BOTTOM_RIGHT"
+            location="BOTTOM_LEFT"
             adaptable="true"
             label="Perl"
             state="true"

@@ -425,11 +425,13 @@ public class PerlDB implements IDebugElement, ITerminate {
 
 		if (mIsCommandRunning) {
 			startSubCommand(command, fText, false);
+			res = mDebugSubCommandOutput;
 		} else {
 			startCommand(command, fText, false, fThread);
+			res = mDebugOutput;
 		}
 
-		res = mDebugOutput;
+		
 		int index_n = res.lastIndexOf("\n");
 		int index_r = res.lastIndexOf("\r");
 
@@ -1073,7 +1075,8 @@ public class PerlDB implements IDebugElement, ITerminate {
 		ArrayList lVarList = null;
 		String command;
 		String command_local = "y ";
-
+		String result;
+		
 		command = "o frame=0\n";
 		if (mPerlVersion.startsWith("5.6")) {
 			command = "O frame=0\n";
@@ -1081,8 +1084,11 @@ public class PerlDB implements IDebugElement, ITerminate {
 		}
 		startSubCommand(mCommandExecuteCode, command, false);
 		if (ShowLocalVariableActionDelegate.getPreferenceValue()) {
-			startSubCommand(mCommandExecuteCode, command_local, false);
-			if (mDebugSubCommandOutput.startsWith(mPadwalkerError)) {
+			result = evaluateStatement(mThreads[0], command_local, false);
+			//startSubCommand(mCommandExecuteCode, command_local, false);
+			if( result != null )
+			{
+			if (result.startsWith(mPadwalkerError)) {
 				PerlDebugPlugin
 						.errorDialog("***Error displaying Local Variables****\nInstall Padawalker on your Perl system or disable displaying of local variables");
 				mLocalVarsAvailable = false;
@@ -1090,8 +1096,9 @@ public class PerlDB implements IDebugElement, ITerminate {
 
 				//System.out.println("\n\n\n\n\n\n\n\n\n********Local Vars:"
 				//		+ mDebugSubCommandOutput);
-				lVarList = mVarParser.parseVars(mDebugSubCommandOutput,
+				lVarList = mVarParser.parseVars(result,
 						PerlDebugVar.IS_LOCAL_SCOPE);
+			}
 			}
 		}
 		command = "o frame=2\n";
@@ -1099,15 +1106,16 @@ public class PerlDB implements IDebugElement, ITerminate {
 			command = "O frame=2\n";
 
 		startSubCommand(mCommandExecuteCode, command, false);
-		startSubCommand(mCommandExecuteCode, "X ", false);
+		result = evaluateStatement(mThreads[0],  "X ", false);
+		//startSubCommand(mCommandExecuteCode, "X ", false);
 
 		//System.out.println("\n\n\n\n\n\n\n\n\n********Global Vars:"
 		//		+ mDebugSubCommandOutput);
-		if (lVarList != null)
-			mVarParser.parseVars(mDebugSubCommandOutput,
+				if (lVarList != null)
+			mVarParser.parseVars(result,
 					PerlDebugVar.IS_GLOBAL_SCOPE, lVarList);
 		else
-			lVarList = mVarParser.parseVars(mDebugSubCommandOutput,
+			lVarList = mVarParser.parseVars(result,
 					PerlDebugVar.IS_GLOBAL_SCOPE);
 	try {
 			//	removeUnwantedVars(lVarList);

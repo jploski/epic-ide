@@ -130,6 +130,7 @@ public class PerlVarParser
     public java.util.ArrayList parseVars( String fText, int fScope, java.util.ArrayList fVarList )
     {
     	boolean hasErrors=false;
+    	fText = fText+ System.getProperty("line.separator");
 		try{
 		// Construct the lexer
 		PerlBaseLexer lex = new PerlLexer ( new StringReader( fText ) );
@@ -155,7 +156,7 @@ public class PerlVarParser
     	   	hasErrors = true;
     	}
     	
-    	if (  par.hasError() > 1 || hasErrors)
+    	if (  par.hasError() > 0 || hasErrors)
     	{
     		System.out.println("!!!!! Parse Error!!!!");
     		logParsError(fText);

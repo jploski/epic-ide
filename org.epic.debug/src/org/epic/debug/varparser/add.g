@@ -162,7 +162,7 @@ ref: REF name:ADR{printConsole("++++REF_SYMB:"+name.getText()+"\n");} NL INDENT_
 
 fileHandle: FILE_HANDLE PAREN_OP name:PURE_NAME{addVar(name.getText(),"FileHandle");printConsole("++++FH:"+name.getText()+"\n");} PAREN_CL KEY_ASSIGN val:FILE_NO{setVal(val.getText(),"FileHandle"); finalizeVar();printConsole("++++FNO_SYMB:"+val.getText()+"\n");};
 fileHandleRef: name:FILE_REF{addVar("->"+name.getText(),"FileHandleRef");printConsole("++++FRef:"+name.getText()+"\n");}  NL (INDENT_START fileHandle NL INDENT_END)? {finalizeVar();};
-globRef: GLOB name:ADR{addVar("GLOB->"+name.getText()," ");printConsole("++++Glob_SYMB:"+name.getText()+"\n");} NL INDENT_START REF_SYMB NL INDENT_START (fileHandle|value) NL INDENT_END INDENT_END{finalizeVar();printConsole("----Glob_SYMB:"+name.getText()+"\n");};
+globRef: GLOB name:ADR{addVar("GLOB->"+name.getText()," ");printConsole("++++Glob_SYMB:"+name.getText()+"\n");} NL INDENT_START REF_SYMB (FILE_REF | PURE_NAME | ) NL INDENT_START (fileHandle|value) NL INDENT_END INDENT_END{finalizeVar();printConsole("----Glob_SYMB:"+name.getText()+"\n");};
 
 value: p:PURE_NAME{setVal(p.getText(),"");System.out.print(" VAL:"+p.getText());} ((p2:PURE_NAME){appendVal(" "+p2.getText());printConsole(" "+p2.getText());})? {printConsole("\n");}NL  | refs | s:STRING{setVal(s.getText(),"Scalar");printConsole(" VAL:"+s.getText()+"\n");} NL | n:NUMBER{setVal(n.getText(),"Scalar");printConsole(" VAL_NUM:"+n.getText()+"\n");}NL | NL{setVal("undef","Scalar");};
 refs:  (hashReference | arrayReference | scalarRef | codeRef | ref | fileHandleRef | globRef);

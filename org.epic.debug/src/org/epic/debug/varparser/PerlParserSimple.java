@@ -146,37 +146,37 @@ public PerlParserSimple(ParserSharedInputState state) {
 		
 		try {      // for error handling
 			{
-			_loop916:
+			_loop351:
 			do {
 				if ((LA(1)==NL)) {
 					match(NL);
 				}
 				else {
-					break _loop916;
+					break _loop351;
 				}
 				
 			} while (true);
 			}
 			{
-			_loop920:
+			_loop355:
 			do {
 				if ((_tokenSet_0.member(LA(1)))) {
 					namedVar();
 					{
-					_loop919:
+					_loop354:
 					do {
 						if ((LA(1)==NL)) {
 							match(NL);
 						}
 						else {
-							break _loop919;
+							break _loop354;
 						}
 						
 					} while (true);
 					}
 				}
 				else {
-					break _loop920;
+					break _loop355;
 				}
 				
 			} while (true);
@@ -372,13 +372,13 @@ public PerlParserSimple(ParserSharedInputState state) {
 			if ((LA(1)==INDENT_START) && (LA(2)==NUMBER||LA(2)==INDENT_END)) {
 				match(INDENT_START);
 				{
-				_loop928:
+				_loop363:
 				do {
 					if ((LA(1)==NUMBER)) {
 						arrayEntry();
 					}
 					else {
-						break _loop928;
+						break _loop363;
 					}
 					
 				} while (true);
@@ -558,13 +558,13 @@ public PerlParserSimple(ParserSharedInputState state) {
 			if ((LA(1)==INDENT_START) && (LA(2)==INDENT_END||LA(2)==STRING)) {
 				match(INDENT_START);
 				{
-				_loop936:
+				_loop371:
 				do {
 					if ((LA(1)==STRING)) {
 						hashEntry();
 					}
 					else {
-						break _loop936;
+						break _loop371;
 					}
 					
 				} while (true);
@@ -771,7 +771,7 @@ public PerlParserSimple(ParserSharedInputState state) {
 			}
 			}
 			{
-			_loop947:
+			_loop382:
 			do {
 				switch ( LA(1)) {
 				case PURE_NAME:
@@ -803,7 +803,7 @@ public PerlParserSimple(ParserSharedInputState state) {
 				}
 				default:
 				{
-					break _loop947;
+					break _loop382;
 				}
 				}
 			} while (true);
@@ -900,6 +900,28 @@ public PerlParserSimple(ParserSharedInputState state) {
 			match(NL);
 			match(INDENT_START);
 			match(REF_SYMB);
+			{
+			switch ( LA(1)) {
+			case FILE_REF:
+			{
+				match(FILE_REF);
+				break;
+			}
+			case PURE_NAME:
+			{
+				match(PURE_NAME);
+				break;
+			}
+			case NL:
+			{
+				break;
+			}
+			default:
+			{
+				throw new NoViableAltException(LT(1), getFilename());
+			}
+			}
+			}
 			match(NL);
 			match(INDENT_START);
 			{

@@ -164,7 +164,7 @@ fileHandleRef: name:FILE_REF{addVar("->"+name.getText(),"FileHandleRef");printCo
 globRef: name:GLOB{addVar("->"+name.getText(),"FileHandleRef");printConsole("++++FRef:"+name.getText()+"\n");}  NL (INDENT_START fileHandle NL INDENT_END)? {finalizeVar();};
 
 value: p:PURE_NAME{setVal(p.getText(),"");System.out.print(" VAL:"+p.getText());} ((p2:PURE_NAME){appendVal(" "+p2.getText());printConsole(" "+p2.getText());})? {printConsole("\n");}NL  | refs | s:STRING{setVal(s.getText(),"Scalar");printConsole(" VAL:"+s.getText()+"\n");} NL | n:NUMBER{setVal(n.getText(),"Scalar");printConsole(" VAL_NUM:"+n.getText()+"\n");}NL | NL{setVal("undef","Scalar");};
-refs:  (hashReference | arrayReference | scalarRef | codeRef | ref | fileHandleRef);
+refs:  (hashReference | arrayReference | scalarRef | codeRef | ref | fileHandleRef | globRef);
 //refs: (PURE_NAME EQ)? (hashReference | arrayReference | scalarRef | codeRef | ref | fileHandleRef);
 // ----------------------------------------------------------------------------
 // the lexer

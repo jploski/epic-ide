@@ -146,37 +146,37 @@ public PerlParserSimple(ParserSharedInputState state) {
 		
 		try {      // for error handling
 			{
-			_loop3:
+			_loop116:
 			do {
 				if ((LA(1)==NL)) {
 					match(NL);
 				}
 				else {
-					break _loop3;
+					break _loop116;
 				}
 				
 			} while (true);
 			}
 			{
-			_loop7:
+			_loop120:
 			do {
 				if ((_tokenSet_0.member(LA(1)))) {
 					namedVar();
 					{
-					_loop6:
+					_loop119:
 					do {
 						if ((LA(1)==NL)) {
 							match(NL);
 						}
 						else {
-							break _loop6;
+							break _loop119;
 						}
 						
 					} while (true);
 					}
 				}
 				else {
-					break _loop7;
+					break _loop120;
 				}
 				
 			} while (true);
@@ -372,13 +372,13 @@ public PerlParserSimple(ParserSharedInputState state) {
 			if ((LA(1)==INDENT_START) && (LA(2)==NUMBER||LA(2)==INDENT_END)) {
 				match(INDENT_START);
 				{
-				_loop15:
+				_loop128:
 				do {
 					if ((LA(1)==NUMBER)) {
 						arrayEntry();
 					}
 					else {
-						break _loop15;
+						break _loop128;
 					}
 					
 				} while (true);
@@ -511,6 +511,7 @@ public PerlParserSimple(ParserSharedInputState state) {
 			case CODE_REF:
 			case REF:
 			case FILE_REF:
+			case GLOB:
 			{
 				refs();
 				break;
@@ -557,13 +558,13 @@ public PerlParserSimple(ParserSharedInputState state) {
 			if ((LA(1)==INDENT_START) && (LA(2)==INDENT_END||LA(2)==STRING)) {
 				match(INDENT_START);
 				{
-				_loop23:
+				_loop136:
 				do {
 					if ((LA(1)==STRING)) {
 						hashEntry();
 					}
 					else {
-						break _loop23;
+						break _loop136;
 					}
 					
 				} while (true);
@@ -689,6 +690,11 @@ public PerlParserSimple(ParserSharedInputState state) {
 				fileHandleRef();
 				break;
 			}
+			case GLOB:
+			{
+				globRef();
+				break;
+			}
 			default:
 			{
 				throw new NoViableAltException(LT(1), getFilename());
@@ -765,7 +771,7 @@ public PerlParserSimple(ParserSharedInputState state) {
 			}
 			}
 			{
-			_loop34:
+			_loop147:
 			do {
 				switch ( LA(1)) {
 				case PURE_NAME:
@@ -797,7 +803,7 @@ public PerlParserSimple(ParserSharedInputState state) {
 				}
 				default:
 				{
-					break _loop34;
+					break _loop147;
 				}
 				}
 			} while (true);
@@ -902,6 +908,14 @@ public PerlParserSimple(ParserSharedInputState state) {
 				break;
 			}
 			case EOF:
+			case ARRAY_NAME:
+			case SCALAR_NAME:
+			case HASH_NAME:
+			case NUMBER:
+			case INDENT_END:
+			case FILE_HANDLE:
+			case NL:
+			case STRING:
 			{
 				break;
 			}
@@ -916,7 +930,7 @@ public PerlParserSimple(ParserSharedInputState state) {
 		catch (RecognitionException ex) {
 			reportError(ex);
 			consume();
-			consumeUntil(_tokenSet_1);
+			consumeUntil(_tokenSet_6);
 		}
 	}
 	
@@ -977,7 +991,7 @@ public PerlParserSimple(ParserSharedInputState state) {
 	}
 	public static final BitSet _tokenSet_2 = new BitSet(mk_tokenSet_2());
 	private static final long[] mk_tokenSet_3() {
-		long[] data = { 369639168L, 0L};
+		long[] data = { 906510080L, 0L};
 		return data;
 	}
 	public static final BitSet _tokenSet_3 = new BitSet(mk_tokenSet_3());

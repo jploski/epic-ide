@@ -27,13 +27,26 @@ public class AddEditorMarker {
 	
 	private ITextEditor textEditor;
 	
+	public AddEditorMarker() {
+		 textEditor = null;
+	}
+	
 	public AddEditorMarker(ITextEditor editor) {
 	    textEditor = editor;
 	}
 	
-	
+	public void addMarker(IResource resource, Map attributes, String markerType) {
+			try {
+				MarkerUtilities.createMarker(resource, attributes, markerType);
+			} catch (CoreException x) {
+				x.printStackTrace();
+			}
+	}
 
 	public void addMarker(Map attributes, String markerType) {
+		if(textEditor == null)
+			return;
+			
 		try {
 			MarkerUtilities.createMarker(getResource(), attributes, markerType);
 		} catch (CoreException x) {

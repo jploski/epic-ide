@@ -128,6 +128,33 @@ options from the popup menu.<br>
 <b>NOTE:</b> In order for PerlTidy to work correctly the Perl
 Interpreter Preferences have to be setup correctly (see above). <br>
 <br>
+<br>
+<h2><a name="Task_Tags"></a>Task Tags</h2>
+<div align="center"><img alt="Task Tags"
+ src="images/preferences_task_tags.gif" height="390" width="637"><br>
+</div>
+<br>
+In this section, you can specify a list of keywords that act as markers
+for tasks inside comments in your perl code, i.e. tags that mark the
+beginning of a task entry.<br>
+<br>
+<br>
+By default, the words "TODO" and "TASK" mark the beginning of a task.<br>
+<br>
+<br>
+Check the "Ignore Case" option if you want EPIC to recognize task tags
+case-insensitively, e.g. <b><code># todo my task</code></b>.<br>
+<br>
+<br>
+If you select "Allow whitespace", task tags do not need to follow a
+comment sign ("#") directly, e.g. <br>
+<b><code># TODO my task</code></b> <br>
+instead of having to write <br>
+<b><code>#TODO my task</code></b>.<br>
+<br>
+<br>
+See the entry <a href="#TODO_Markers">ToDO markers</a> to see how to
+use Task Tags in the Perl Editor.<br>
 <h2>Templates</h2>
 Templates are a powerful tool to insert pre defined code snippets while
 working with the&nbsp; Perl Editor.<br>
@@ -455,6 +482,8 @@ displays the appropriate icon in the annotation ruler (the gray bar on
 the left side of the editor), underlines the error in the source and
 inserts a marker into the<i> Problems View</i> window.<br>
 <br>
+A syntax check can be enforced by pressing <b>F5</b>.<br>
+<br>
 </div>
 <div align="center"><img alt="Syntax Check"
  src="images/syntax_check_1.gif" height="428" width="597"><br>
@@ -484,16 +513,16 @@ View</i>.<br>
 Open SUB Declaration allows the user to search for the declaration of a
 specific SUBroutine. <br>
 <br>
-<img height="234" width="372" alt=""
- src="images/OpenDeclaration_Menu.gif"><br>
+<img alt="" src="images/OpenDeclaration_Menu.gif" height="234"
+ width="372"><br>
 <br>
 <br>
 The search first determines what is selected. If no text is selected,
 under the current cursor-position it is attempted to find a name which
 might be a SUBroutine. The selection cause an Error <br>
 <br>
-<img height="146" width="441" alt=""
- src="images/OpenDeclaration_Error.gif"><br>
+<img alt="" src="images/OpenDeclaration_Error.gif" height="146"
+ width="441"><br>
 <br>
 - only special characters were found <br>
 <br>
@@ -503,8 +532,8 @@ through the packages are also inspected. If the located SUB is not in
 the current editor, the location is opened automatically and
 highlighted. <br>
 <br>
-<img height="88" width="448" alt=""
- src="images/OpenDeclaration_Found.gif"><br>
+<img alt="" src="images/OpenDeclaration_Found.gif" height="88"
+ width="448"><br>
 <br>
 <br>
 <b>NOTE 1:</b> The files in the 'require'-statement are case-sensitive!<br>
@@ -591,11 +620,16 @@ Net::SMTP-&gt;new(.....);<br>
 $smtp-&gt;</font></big>[content assist]</font><br>
 <br>
 <br>
-<h2>TODO Markers</h2>
+<h2><a name="TODO_Markers"></a>TODO Markers</h2>
 <i>TODO Markers</i> are a very convenient way to add&nbsp; todos to the
 Eclipse task list.<br>
 A TODO marker is generated when a <code><b>#TODO <i>any</i></b><i> <b>text</b></i></code>
 is found in the Perl source code.<br>
+<br>
+You can customize the keywords which mark ToDos in the <a
+ href="#Task_Tags">preferences</a> (<b>Preferences &gt; Perl EPIC &gt;
+Task Tags</b>). <br>
+<br>
 On deletion of the <code>#TODO</code> comment, the <i>TODO Marker</i>
 is also deleted.<br>
 <br>
@@ -666,8 +700,9 @@ has a lot of lines.<br>
 <h2>Source Folding</h2>
 The editor supports folding of POD comments and subroutines.<br>
 <br>
-<div align="center"><img height="421" width="413" alt="Source Folding"
- src="file:///home/luelljoc/eclipse/workspace/org.epic.perleditor/html/epicUsersGuide/images/source_folding_1.gif"><br>
+<div align="center"><img alt="Source Folding"
+ src="file:///home/luelljoc/eclipse/workspace/org.epic.perleditor/html/epicUsersGuide/images/source_folding_1.gif"
+ height="421" width="413"><br>
 </div>
 <br>
 Source Folding can be disabled in the Editor Preference page.<br>
@@ -679,23 +714,22 @@ Devel::Refactor module.<br>
 To extract a subroutine mark the code to extract and select <b>Refactor&gt;Extract
 Subroutine</b> from the popup menu.<br>
 <br>
-<div align="center"><img height="313" width="513"
- alt="Extract Subroutine Selection"
- src="images/extract_subroutine_1.gif"><br>
+<div align="center"><img alt="Extract Subroutine Selection"
+ src="images/extract_subroutine_1.gif" height="313" width="513"><br>
 </div>
 <br>
 In the popup menu insert the name of the new subroutine and press <b>Enter</b>.<br>
 <br>
-<div align="center"><img height="157" width="395"
- alt="Extract Subroutine Dialog" src="images/extract_subroutine_2.gif"><br>
+<div align="center"><img alt="Extract Subroutine Dialog"
+ src="images/extract_subroutine_2.gif" height="157" width="395"><br>
 </div>
 <br>
 The new subroutine will be placed at the end of the Perl script (before
 <i>__END__</i> section) and the selection will be replaced with the
 subroutine call.<br>
 <br>
-<div align="center"><img height="178" width="358"
- alt="Extract Subroutine Result" src="images/extract_subroutine_3.gif"><br>
+<div align="center"><img alt="Extract Subroutine Result"
+ src="images/extract_subroutine_3.gif" height="178" width="358"><br>
 </div>
 <br>
 <b>NOTE:</b> The extraction might not work properly at the moment

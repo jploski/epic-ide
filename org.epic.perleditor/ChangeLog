@@ -1,6 +1,7 @@
 Eclipse Perl Integration: 
 
 		Debugger:
+		* Corrected createEnvArray() to work on Linux systems
 		* Fixed problem with Cygwin (Pathmapper error)
 		* Preserve spaces in variable values
 		* Support displaying of empty arrays and hashes

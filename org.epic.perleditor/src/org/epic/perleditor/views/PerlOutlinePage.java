@@ -3,6 +3,7 @@ package org.epic.perleditor.views;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.views.contentoutline.ContentOutlinePage;
 import org.eclipse.jface.text.source.ISourceViewer;
 
@@ -11,27 +12,25 @@ import org.epic.perleditor.views.util.*;
 import org.epic.perleditor.editors.IdleTimerListener;
 import org.epic.perleditor.editors.perl.PerlPartitionScanner;
 
-/**
- * DOCUMENT ME!
- * 
- * @author Addi To change this generated comment edit the template variable "typecomment":
- *         Window>Preferences>Java>Templates. To enable and disable the creation of type comments
- *         go to Window>Preferences>Java>Code Generation.
- */
-public class PerlOutlinePage extends ContentOutlinePage implements IdleTimerListener {
+public class PerlOutlinePage
+	extends ContentOutlinePage
+	implements IdleTimerListener {
 
 	protected ISourceViewer input;
 	protected int lastHashCode = 0;
-	SourceElement subroutines;
-	SourceElement modules;
-
+	private	SourceElement subroutines;
+	private SourceElement modules;
+	private UpdateThread updateThread;
 	
+	private int waitForTermination = 1000; // millis
+
 	public PerlOutlinePage(ISourceViewer input) {
 		super();
 		this.input = input;
+		updateThread = new UpdateThread(Display.getCurrent());
+		updateThread.start();
 	}
 
-	
 	public void createControl(Composite parent) {
 		super.createControl(parent);
 
@@ -40,13 +39,11 @@ public class PerlOutlinePage extends ContentOutlinePage implements IdleTimerList
 		viewer.setLabelProvider(new SourceElementLabelProvider());
 		viewer.setInput(getInitalInput());
 		viewer.setSorter(new NameSorter());
-		
+
 		// Tree is expanded by default
 		viewer.expandAll();
 
 	}
-
-	
 
 	public SourceElement getInitalInput() {
 		SourceElement root = new SourceElement();
@@ -59,20 +56,31 @@ public class PerlOutlinePage extends ContentOutlinePage implements IdleTimerList
 			parser.getElements(
 				input.getTextWidget().getText(),
 				PerlPartitionScanner.TOKEN_SUBROUTINE,
-				"{", "=;"));
+				"{",
+				"=;"));
 		modules.addModules(
 			parser.getElements(
 				input.getTextWidget().getText(),
 				PerlPartitionScanner.TOKEN_MODULE,
-				";", "=>$"));
+				";",
+				"=>$"));
 
 		root.add(modules);
 		root.add(subroutines);
 
 		return root;
 	}
-
 	
+	public void dispose()  {
+			updateThread.interrupt();
+			try {
+				updateThread.join(this.waitForTermination);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			super.dispose();
+		}
+
 	public void update() {
 		// Update only if input has changed
 		int hashCode = input.getTextWidget().getText().hashCode();
@@ -91,32 +99,72 @@ public class PerlOutlinePage extends ContentOutlinePage implements IdleTimerList
 			parser.getElements(
 				input.getTextWidget().getText(),
 				PerlPartitionScanner.TOKEN_SUBROUTINE,
-				"{", "=;"));
-				
+				"{",
+				"=;"));
+
 		modules.addModules(
 			parser.getElements(
 				input.getTextWidget().getText(),
 				PerlPartitionScanner.TOKEN_MODULE,
-				";", "=>$"));
+				";",
+				"=>$"));
 		getTreeViewer().refresh(subroutines, false);
 		getTreeViewer().refresh(modules, false);
 
-        // Tree is expanded by default
+		// Tree is expanded by default
 		//getTreeViewer().expandAll();
-		
+
 		getControl().setRedraw(true);
 	}
-
 
 	/* (non-Javadoc)
 	 * @see org.epic.perleditor.editors.IdleTimerListener#onEditorIdle(org.eclipse.jface.text.source.ISourceViewer)
 	 */
-	public void onEditorIdle(ISourceViewer viewer) {
-		this.update();
+	public synchronized void onEditorIdle(ISourceViewer viewer) {
+		updateThread.releaseLock();
+	}
+
+	class UpdateThread extends Thread {
+		private Object lock = new Object();
+		Display display;
+
+		public UpdateThread(Display display) {
+			this.display = display;
+		}
+
+		public void run() {
+			try {
+				while (!Thread.interrupted()) {
+					System.out.println("OUTLINE - WAIT");
+					synchronized (this.lock) {
+						this.lock.wait();
+					}
+
+					System.out.println("OUTLINE - RESUME");
+					display.syncExec(new Invoker());
+
+				}
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+
+		public synchronized void releaseLock() {
+			synchronized (this.lock) {
+				lock.notify();
+			}
+		}
+	}
+
+	class Invoker implements Runnable {
+
+		public void run() {
+			update();
+		}
+
 	}
 
 }
-
 
 class NameSorter extends ViewerSorter {
 

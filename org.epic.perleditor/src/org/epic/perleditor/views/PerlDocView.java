@@ -184,6 +184,12 @@ public class PerlDocView extends ViewPart {
 			searchPerldocText.setText(searchText);
 		}
 		
+		// Set search string as highlight string if highlight input
+		// field is empty
+		if(highlightText.getText().length() == 0) {
+			highlightText.setText(searchText);
+		}
+		
 		// Search PerlDoc
 		int itemsFound = 0;
 		for(int i = 0; i < ITEM_COUNT; i++) {
@@ -335,7 +341,7 @@ public class PerlDocView extends ViewPart {
 				IRegion findResult;
 				int offset = 0;
 				
-				while ((findResult = findAdapter.find(offset, searchText, true, false, true, false))!= null) {
+				while ((findResult = findAdapter.find(offset, searchText, true, false, false, false))!= null) {
 					int startPos = findResult.getOffset();
 					int endPos = startPos + findResult.getLength();
 					

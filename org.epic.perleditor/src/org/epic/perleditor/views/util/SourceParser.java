@@ -208,11 +208,21 @@ public class SourceParser {
 			if (deleteComments) {
 				// Remove POD
 				reg = new RE("^(=.*)((\\n.*)+?)(\\n=cut)$", RE.REG_MULTILINE);
-				text = reg.substituteAll(text, "");
+				//text = reg.substituteAll(text, "");
+				REMatch[] matches = reg.getAllMatches(text);
+				for(int i=0; i < matches.length; i++) {
+					REMatch match = matches[i];
+					int newlines = match.toString().split("\n").length;
+					char[] nls= new char[newlines];
+					for(int x =0; x < newlines; ++x)
+						nls[x]='\n';
+						
+					match.substituteInto(new String(nls));
+				}
 
 				// Remove comments
 				reg = new RE("[\\n);]\\s*(#.*)$");
-				text = reg.substituteAll(text, "");
+				text = reg.substituteAll(text, "\n");
 			}
 
 			reg = new RE(regexp, RE.REG_MULTILINE);
@@ -232,6 +242,9 @@ public class SourceParser {
 					start = matches[i].getStartIndex();
 					end = matches[i].getEndIndex();
 				}
+				
+				end -= match.length() - match.trim().length();
+				match = match.trim();
 
 				Model func =
 					new Model(preFix + match + postFix, start, end - start);

@@ -76,7 +76,7 @@ public class PerlOutlinePage
 		modules.addModules(
 				SourceParser.getElements(
 					input.getTextWidget().getText(),
-					"^[\\s]*(use\\s+[^a-z][^\\n;]+)",
+					"^[\\s]*use\\s+([^a-z][^\\n;]+)",
 					"", "",
 					true));
 		root.add(modules);
@@ -133,7 +133,7 @@ public class PerlOutlinePage
 		modules.addModules(
 				SourceParser.getElements(
 					input.getTextWidget().getText(),
-					"^[\\s]*(use\\s+[^a-z][^\\n;]+)",
+					"^[\\s]*use\\s+([^a-z][^\\n;]+)",
 					"", "",
 					true));
 

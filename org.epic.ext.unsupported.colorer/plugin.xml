@@ -19,6 +19,7 @@
       -->
    </runtime>
    <requires>
+      <import plugin="org.eclipse.jdt.ui"/>
       <import plugin="org.apache.xerces"/>
       <import plugin="org.eclipse.ui"/>
       <import plugin="org.eclipse.core.resources"/>

@@ -351,7 +351,11 @@ public class EditTemplateDialog extends StatusDialog {
 		//IDocumentPartitioner partitioner= tools.createDocumentPartitioner();
 //		TODO Changed (check)
 		 ColoringPartitionScanner scanner = new ColoringPartitionScanner(Modes.getMode("perl.xml"));
-		IDocumentPartitioner partitioner = new org.eclipse.jface.text.rules.DefaultPartitioner(scanner, scanner.getContentTypes());
+		 
+		 // Do not restrict content assist to partitions
+		//IDocumentPartitioner partitioner = new org.eclipse.jface.text.rules.DefaultPartitioner(scanner, scanner.getContentTypes());
+		IDocumentPartitioner partitioner = new org.eclipse.jface.text.rules.DefaultPartitioner(scanner, new String[] {});
+		
 		document.setDocumentPartitioner(partitioner);
 		partitioner.connect(document);		
 	//	viewer.configure(new SimpleJavaSourceViewerConfiguration(tools, null, fProcessor));

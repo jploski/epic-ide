@@ -17,6 +17,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.jdt.ui.actions.IJavaEditorActionDefinitionIds;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.text.source.ISharedTextColors;
@@ -27,6 +28,7 @@ import org.eclipse.jface.text.source.SourceViewer;
 import org.eclipse.jface.text.source.LineNumberRulerColumn;
 import org.eclipse.jface.text.source.CompositeRuler;
 import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.text.ITextOperationTarget;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.editors.text.TextEditor;
@@ -38,6 +40,7 @@ import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.texteditor.ITextEditorActionDefinitionIds;
 import org.eclipse.ui.texteditor.MarkerAnnotationPreferences;
 import org.eclipse.ui.texteditor.SourceViewerDecorationSupport;
+import org.eclipse.ui.texteditor.TextOperationAction;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -121,6 +124,20 @@ public class PerlEditor
 											  "ContentAssistProposal.", this);
 		action.setActionDefinitionId(ITextEditorActionDefinitionIds.CONTENT_ASSIST_PROPOSALS);
 		setAction("ContentAssist", action);
+		
+           // Add comment action
+		   action = new TextOperationAction(
+						 PerlEditorMessages.getResourceBundle(),
+						 "Comment.", this, ITextOperationTarget.PREFIX);
+		   action.setActionDefinitionId(IJavaEditorActionDefinitionIds.COMMENT);
+		   setAction("Comment", action);
+
+		   // Add uncomment action
+		   action = new TextOperationAction(
+		   PerlEditorMessages.getResourceBundle(),
+				 "Uncomment.", this, ITextOperationTarget.STRIP_PREFIX);
+		   action.setActionDefinitionId(IJavaEditorActionDefinitionIds.UNCOMMENT);
+		   setAction("Uncomment", action);
 
 		IDocumentProvider provider = getDocumentProvider();
 		IDocument document = provider.getDocument(getEditorInput());

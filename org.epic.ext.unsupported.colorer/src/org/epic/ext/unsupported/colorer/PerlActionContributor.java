@@ -6,6 +6,7 @@
 package org.epic.ext.unsupported.colorer;
 
 
+import org.eclipse.jdt.ui.actions.IJavaEditorActionDefinitionIds;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.ui.IActionBars;
@@ -26,6 +27,8 @@ public class PerlActionContributor extends TextEditorActionContributor {
 
 	protected FormatSourceAction formatSourceAction;
 	protected RetargetTextEditorAction fContentAssist;
+	protected RetargetTextEditorAction fComment;
+	protected RetargetTextEditorAction fUncomment;
 
 	/**
 	 * Default constructor.
@@ -39,6 +42,12 @@ public class PerlActionContributor extends TextEditorActionContributor {
         
 		fContentAssist = new RetargetTextEditorAction(PerlEditorMessages.getResourceBundle(), "ContentAssistProposal.");
 		fContentAssist.setActionDefinitionId(ITextEditorActionDefinitionIds.CONTENT_ASSIST_PROPOSALS);
+		
+		fComment = new RetargetTextEditorAction(PerlEditorMessages.getResourceBundle(), "Comment.");
+		fComment.setActionDefinitionId(IJavaEditorActionDefinitionIds.COMMENT);
+
+		fUncomment = new RetargetTextEditorAction(PerlEditorMessages.getResourceBundle(), "Uncomment.");
+		fComment.setActionDefinitionId(IJavaEditorActionDefinitionIds.UNCOMMENT);
 	
 	}
 	
@@ -53,6 +62,8 @@ public class PerlActionContributor extends TextEditorActionContributor {
 		menuManager.insertAfter(editMenu.getId(), sourceMenu);
 		sourceMenu.add(formatSourceAction);
 		sourceMenu.add(fContentAssist);
+		sourceMenu.add(fComment);
+		sourceMenu.add(fUncomment);
 		
 	}
 	
@@ -66,6 +77,8 @@ public class PerlActionContributor extends TextEditorActionContributor {
 			
 	    formatSourceAction.setEditor(editor);
 		fContentAssist.setAction(getAction(editor, "ContentAssist"));
+		fComment.setAction(getAction(editor, "Comment"));
+		fUncomment.setAction(getAction(editor, "Uncomment"));
 
 	}
 	

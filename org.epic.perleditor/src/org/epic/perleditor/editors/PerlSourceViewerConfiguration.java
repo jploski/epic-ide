@@ -126,6 +126,11 @@ public class PerlSourceViewerConfiguration
 		
 		}
 	*/
+	    public String[] getDefaultPrefixes(ISourceViewer sourceViewer, String contentType) {
+				return (new String[] {"#", ""}); //$NON-NLS-1$
+		
+		}
+	
 		/* 
 		 * Method declared on SourceViewerConfiguration
 		 */

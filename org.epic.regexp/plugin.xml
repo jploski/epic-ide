@@ -3,12 +3,12 @@
    id="org.epic.regexp"
    name="Regexp Plug-in"
    version="0.1.0"
-   provider-name=""
+   provider-name="Epic Project"
    class="org.epic.regexp.RegExpPlugin">
 
    <runtime>
       <library name="regexp.jar"/>
-      <library name="gnu-regexp-1.1.4.jar" />
+      <library name="gnu-regexp-1.1.4.jar"/>
    </runtime>
    <requires>
       <import plugin="org.eclipse.core.resources"/>
@@ -26,4 +26,5 @@
             id="org.epic.regexp.views.RegExpView">
       </view>
    </extension>
+
 </plugin>

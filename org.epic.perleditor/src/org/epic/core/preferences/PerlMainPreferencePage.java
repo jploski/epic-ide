@@ -19,6 +19,7 @@ public class PerlMainPreferencePage
 	implements IWorkbenchPreferencePage {
 
 	private Text executableText;
+	private Text browserLabelText;
 	private Button warningsCheckBox;
 	private Button taintCheckBox;
 	private Scale syntaxCheckInterval;
@@ -95,8 +96,8 @@ public class PerlMainPreferencePage
 		dummy.setLayoutData(data);
 		*/
 
-		//data = new GridData(GridData.FILL_HORIZONTAL);
-		//data.grabExcessHorizontalSpace = true;
+//		data = new GridData(GridData.FILL_HORIZONTAL);
+//		data.grabExcessHorizontalSpace = true;
 		new Label(buttonComposite, SWT.NONE).setText("Interpreter type:");
 		interpreterTypeCombo = new Combo(buttonComposite, SWT.READ_ONLY);
 	    interpreterTypeCombo.setItems(intepreterTypes);
@@ -121,9 +122,25 @@ public class PerlMainPreferencePage
 		taintCheckBox.setSelection(
 			PerlEditorPlugin.getDefault().getTaintPreference());
 		taintCheckBox.setLayoutData(data);
+
+		//WebBrowser preferences
+		Composite browserComposite = new Composite(top, SWT.NULL);
+		GridLayout browserLayout = new GridLayout();
+		browserLayout.numColumns = 2;
+		browserComposite.setLayout(browserLayout);
+		data = new GridData(GridData.FILL_BOTH | GridData.VERTICAL_ALIGN_BEGINNING);
+		browserComposite.setLayoutData(data);
 		
+		Label browserLabel=new Label(browserComposite, SWT.NONE);
+		browserLabel.setText("Default Web-Start page:");
 		
-		
+		data = new GridData(GridData.FILL_HORIZONTAL);
+		data.grabExcessHorizontalSpace = true;
+		browserLabelText = new Text(browserComposite, SWT.BORDER);
+		browserLabelText.setLayoutData(data);
+		browserLabelText.setText(
+			PerlEditorPlugin.getDefault().getWebBrowserPreference());
+
 		Composite syntaxIntervalComposite = new Composite(top, SWT.NULL);
 
 		GridLayout syncIntervalLayout = new GridLayout();
@@ -134,7 +151,6 @@ public class PerlMainPreferencePage
 				GridData.FILL_BOTH | GridData.VERTICAL_ALIGN_BEGINNING);
 		syntaxIntervalComposite.setLayoutData(data);
 
-	    
 
 		Label syncIntevalLabel = new Label(syntaxIntervalComposite, SWT.NONE);
 		syncIntevalLabel.setText("Validate source when idle for ");
@@ -185,6 +201,9 @@ public class PerlMainPreferencePage
 					PerlEditorPlugin.getDefault().getDefaultTaintPreference());
 		interpreterTypeCombo.setText(PerlEditorPlugin.INTERPRETER_TYPE_STANDARD);
 
+		browserLabelText.setText(
+			PerlEditorPlugin.getDefault().getDefaultWebBrowserPreference());
+			
 		syntaxIntervalSecondsLabel.setText(PerlEditorPlugin.SYNTAX_VALIDATION_INTERVAL_DEFAULT + " milliseconds");
 		syntaxCheckInterval.setSelection(PerlEditorPlugin.SYNTAX_VALIDATION_INTERVAL_DEFAULT);
 	    
@@ -201,10 +220,11 @@ public class PerlMainPreferencePage
 			warningsCheckBox.getSelection());
 		PerlEditorPlugin.getDefault().setTaintPreference(
 					taintCheckBox.getSelection());
-			
 		PerlEditorPlugin.getDefault().getPreferenceStore().setValue(PerlEditorPlugin.INTERPRETER_TYPE_PREFERENCE, interpreterTypeCombo.getText());
-		
 		PerlEditorPlugin.getDefault().getPreferenceStore().setValue(PerlEditorPlugin.SYNTAX_VALIDATION_INTERVAL_PREFERENCE, syntaxCheckInterval.getSelection());
+		PerlEditorPlugin.getDefault().setWebBrowserPreference(
+			browserLabelText.getText());
+			
 		return super.performOk();
 	}
 }

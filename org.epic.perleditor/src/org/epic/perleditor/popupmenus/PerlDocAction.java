@@ -139,8 +139,9 @@ public class PerlDocAction
 				+ " \""
 				+ selection
 				+ "\"');";
-		String tmpFileName = null;
+//		String tmpFileName = null;
 		String content = "";
+		
 
 		try {
 
@@ -161,11 +162,13 @@ public class PerlDocAction
 					.removeLastSegments(1)
 					.toString();
 
+//			Process proc = Runtime.getRuntime().exec(cmdParams, null, new File(workingDir));
+//Juergen bitte testen
+			Process proc = Runtime.getRuntime().exec(cmdParams);
 			/*
 			 * Due to Java Bug #4763384 sleep for a very small amount of time
 			 * immediately after starting the subprocess
 			 */
-			Process proc = Runtime.getRuntime().exec(cmdParams, null, new File(workingDir));
 			Thread.sleep(1);
 
             proc.getErrorStream().close();
@@ -182,10 +185,8 @@ public class PerlDocAction
 				ex.printStackTrace();
 			}
             out.close();
-
 			content = PerlExecutableUtilities.readStringFromStream(in);
 			in.close();
-
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}

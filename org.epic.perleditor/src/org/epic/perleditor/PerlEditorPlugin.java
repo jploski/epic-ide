@@ -26,6 +26,9 @@ public class PerlEditorPlugin extends AbstractUIPlugin {
 	public static final String PERL_EXECUTABLE_PREFERENCE = "PERL_EXECUTABLE";
 	private static final String PERL_EXECUTABLE_DEFAULT = "perl";
 	
+	public static final String WEB_BROWSER_PREFERENCE = "WEB_BROWSER";
+	private static final String WEB_BROWSER_DEFAULT = "http://";
+	
 	public static final String WARNINGS_PREFERENCE = "SHOW_WARNINGS";
 	public static final String TAINT_MODE_PREFERENCE = "USE_TAINT_MODE";
 	private static final boolean WARNINGS_DEFAULT = true;
@@ -133,7 +136,6 @@ public class PerlEditorPlugin extends AbstractUIPlugin {
 		store.setDefault(SYNTAX_VALIDATION_INTERVAL_PREFERENCE, SYNTAX_VALIDATION_INTERVAL_DEFAULT);
 		SourceFormatterPreferences.initializeDefaultValues(store);
 		CodeAssistPreferences.initializeDefaultValues(store);
-
 	}
 	
 	/**
@@ -157,6 +159,24 @@ public class PerlEditorPlugin extends AbstractUIPlugin {
 	public void setExecutablePreference(String value) {
 		
 		getPreferenceStore().setValue(PERL_EXECUTABLE_PREFERENCE, value);
+	}
+	
+	/**
+	 * Return the bad words preference as an array of
+	 * Strings.
+	 * @return String[]
+	 */
+	public String getWebBrowserPreference() {
+		return getPreferenceStore().getString(WEB_BROWSER_PREFERENCE);
+	}
+	
+	public String getDefaultWebBrowserPreference() {
+		return WEB_BROWSER_DEFAULT;
+	}
+	
+	public void setWebBrowserPreference(String value) {
+		
+		getPreferenceStore().setValue(WEB_BROWSER_PREFERENCE, value);
 	}
 	
 	public boolean getWarningsPreference() {

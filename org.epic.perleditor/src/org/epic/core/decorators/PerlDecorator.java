@@ -61,7 +61,12 @@ public class PerlDecorator extends LabelProvider
 		IResource resource = getResource(element);
 		boolean isPerlProject = false;
 		boolean isPerlFolder = false;
-		boolean isPerlFile = true;
+		boolean isPerlFile = false;
+		
+		// Check if resource exists
+		if(!resource.exists()) {
+			return;
+		}
 
 		// Only decorate Perl sources or projects
 		IEditorDescriptor defaultEditorDescriptor = PerlEditorPlugin

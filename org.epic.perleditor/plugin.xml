@@ -209,7 +209,7 @@
 	<!-- Popup Menu menu -->
       <viewerContribution
             targetID="#PerlEditorContext"
-            id="org.epic.perleditor.PerlDocPopup">
+            id="org.epic.perleditor.PerlEditorPopup">
          <menu
                label="&amp;Perldoc"
                path="additions"
@@ -246,13 +246,30 @@
                menubarPath="PerlDocPopupMenu/PerlDocGroup"
                id="org.epic.perleditor.popupmenus.PerlDocAction.Module">
          </action>
+            <!-- SUBMENU: Refactor Menu -->
+         <menu
+               label="Re&amp;factor"
+               path="additions"
+               id="PerlRefactorPopupMenu">
+            <separator
+                  name="PerlRefactorGroup">
+            </separator>
+         </menu>
+         <!-- Extract Subroutine -->
+         <action
+               label="&amp;Extract Subroutine"
+               class="org.epic.perleditor.popupmenus.refactor.ExtractSubroutineAction"
+               menubarPath="PerlRefactorPopupMenu/PerlRefactorGroup"
+               id="org.epic.perleditor.refactor.ExtractSubroutine">
+        </action>
+               
          <!-- SUBMENU: Source Menu -->
          <menu
                label="&amp;Source"
                path="additions"
                id="PerlSourcePopupMenu">
             <separator
-                  name="PerlDocGroup">
+                  name="PerlSourceGroup">
             </separator>
          </menu>
          <!-- Validate syntax -->
@@ -287,6 +304,7 @@
                menubarPath="PerlSourcePopupMenu/PerlSourceGroup"
                id="org.epic.perleditor.Comment">
          </action>
+         
          <!-- Open Declaration -->
          <menu
                label="&amp;OpenDeclaration"

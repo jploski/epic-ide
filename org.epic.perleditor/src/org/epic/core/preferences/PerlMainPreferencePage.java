@@ -20,6 +20,7 @@ public class PerlMainPreferencePage
 
 	private Text executableText;
 	private Button warningsCheckBox;
+	private Button taintCheckBox;
 	private Scale syntaxCheckInterval;
 	private Combo interpreterTypeCombo;
 	private Label syntaxIntervalSecondsLabel;
@@ -102,7 +103,7 @@ public class PerlMainPreferencePage
 					
 
 		
-
+		// Warning preference
 		data = new GridData(GridData.FILL_HORIZONTAL);
 		data.grabExcessHorizontalSpace = true;
 		warningsCheckBox = new Button(top, SWT.CHECK);
@@ -111,8 +112,16 @@ public class PerlMainPreferencePage
 			PerlEditorPlugin.getDefault().getWarningsPreference());
 		warningsCheckBox.setLayoutData(data);
 		
+		// Taint check preference
+		data = new GridData(GridData.FILL_HORIZONTAL);
+		data.grabExcessHorizontalSpace = true;
+		taintCheckBox = new Button(top, SWT.CHECK);
+		taintCheckBox.setText("Enable taint mode");
+		taintCheckBox.setSelection(
+			PerlEditorPlugin.getDefault().getTaintPreference());
+		taintCheckBox.setLayoutData(data);
 		
-		//TEST
+		
 		
 		Composite syntaxIntervalComposite = new Composite(top, SWT.NULL);
 
@@ -147,7 +156,6 @@ public class PerlMainPreferencePage
 			
 		
 		syntaxIntervalComposite.setLayoutData(data);
-		//TEST end
 
 		return new Composite(parent, SWT.NULL);
 	}
@@ -172,6 +180,8 @@ public class PerlMainPreferencePage
 			
 		warningsCheckBox.setSelection(
 			PerlEditorPlugin.getDefault().getDefaultWarningsPreference());
+		taintCheckBox.setSelection(
+					PerlEditorPlugin.getDefault().getDefaultTaintPreference());
 		interpreterTypeCombo.setText(PerlEditorPlugin.INTERPRETER_TYPE_STANDARD);
 
 		syntaxIntervalSecondsLabel.setText(PerlEditorPlugin.SYNTAX_VALIDATION_INTERVAL_DEFAULT + " seconds");
@@ -188,6 +198,8 @@ public class PerlMainPreferencePage
 			executableText.getText());
 		PerlEditorPlugin.getDefault().setWarningsPreference(
 			warningsCheckBox.getSelection());
+		PerlEditorPlugin.getDefault().setTaintPreference(
+					taintCheckBox.getSelection());
 			
 		PerlEditorPlugin.getDefault().getPreferenceStore().setValue(PerlEditorPlugin.INTERPRETER_TYPE_PREFERENCE, interpreterTypeCombo.getText());
 		

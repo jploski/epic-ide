@@ -24,7 +24,9 @@ public class PerlEditorPlugin extends AbstractUIPlugin {
 	private static final String PERL_EXECUTABLE_DEFAULT = "perl";
 	
 	public static final String WARNINGS_PREFERENCE = "SHOW_WARNINGS";
+	public static final String TAINT_MODE_PREFERENCE = "USE_TAINT_MODE";
 	private static final boolean WARNINGS_DEFAULT = true;
+	private static final boolean TAINT_MODE_DEFAULT = false;
 	
 	
 	public static final String INTERPRETER_TYPE_PREFERENCE ="INTERPRETER_TYPE";
@@ -133,9 +135,23 @@ public class PerlEditorPlugin extends AbstractUIPlugin {
 		return WARNINGS_DEFAULT;
 	}
 	
-	public void setWarningsPreference(boolean value) {
-		getPreferenceStore().setValue(WARNINGS_PREFERENCE, value==true?"1":"0");
+	public void setTaintPreference(boolean value) {
+		getPreferenceStore().setValue(TAINT_MODE_PREFERENCE, value==true?"1":"0");
 	}
+	
+	public boolean getTaintPreference() {
+			String value = getPreferenceStore().getString(TAINT_MODE_PREFERENCE);
+		
+			return value.equals("1")?true:false;
+		}
+	
+		public boolean getDefaultTaintPreference() {
+			return TAINT_MODE_DEFAULT;
+		}
+	
+		public void setWarningsPreference(boolean value) {
+			getPreferenceStore().setValue(WARNINGS_PREFERENCE, value==true?"1":"0");
+		}
 	
 	public static String getPluginId() {
 			return getDefault().getDescriptor().getUniqueIdentifier();

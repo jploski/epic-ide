@@ -165,6 +165,10 @@ public class PerlSyntaxValidationThread extends Thread {
 			if(PerlEditorPlugin.getDefault().getWarningsPreference()) {
 				cmdList.add("-w");
 			}
+			
+			if(PerlEditorPlugin.getDefault().getTaintPreference()) {
+				cmdList.add("-T");
+			}
 
 			String[] cmdParams =
 				(String[]) cmdList.toArray(new String[cmdList.size()]);

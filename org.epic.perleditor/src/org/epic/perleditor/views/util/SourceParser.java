@@ -228,6 +228,9 @@ public static List getElements(String text, String regexp, String preFix,
 				}
 				//no other possibility left for linesep, right?
 			}
+			
+			char[] textChar = text.toCharArray(); 
+			
 			// Remove POD and comments
 			if ((flags&DELETE_POD) == DELETE_POD) {
 				REMatch[] matches;			
@@ -238,8 +241,10 @@ public static List getElements(String text, String regexp, String preFix,
 				matches = reg.getAllMatches(text);
 				
 				for(int i=0; i < matches.length; i++) {
-					text = replaceComment(matches[i], text, lineSep);		
+					replaceComment(matches[i], textChar, lineSep);		
 				}
+				
+				
 			}
 			
 			if ((flags&DELETE_COMMENT) == DELETE_COMMENT) {
@@ -247,12 +252,16 @@ public static List getElements(String text, String regexp, String preFix,
 				// Remove comments
 				reg = new RE("^\\s*(#.*)$", RE.REG_MULTILINE, lineSep);
 				matches = reg.getAllMatches(text);
+				
 				for(int i=0; i < matches.length; i++) {
-					text = replaceComment(matches[i], text, lineSep);
+					replaceComment(matches[i], textChar, lineSep);
 				}
 				
+				
 			}
-
+			
+			text = new String(textChar);
+	
 			reg = new RE(regexp, RE.REG_MULTILINE, lineSep);
 			REMatch[] matches = reg.getAllMatches(text);
 			for (int i = 0; i < matches.length; i++) {
@@ -294,23 +303,39 @@ public static List getElements(String text, String regexp, String preFix,
 	 * @param reSyntax
 	 * @return
 	 */
-	private static String replaceComment(REMatch match, String text, RESyntax reSyntax) {
-		String tmpText1 = text.substring(0, match.getStartIndex());
-		String tmpText2 = text.length() - 1 > match.getEndIndex() ? text
-				.substring(match.getEndIndex() + 1) : "";
-				
-		int offset = text.length() - tmpText1.length() - tmpText2.length()
-				- reSyntax.getLineSeparator().length();
-		if (offset > 0) {
-			//we have some POD-comments here, which we now
-			//replace with the same amount of chars as the text
-			StringBuffer nls = new StringBuffer();
-			nls.append('#'); //First character a Comment
-			nls.setLength(offset); //last character a Remark
-			nls.append(reSyntax.getLineSeparator());
-			text = tmpText1 + nls + tmpText2;
+	private static void replaceComment(REMatch match, char text[], RESyntax reSyntax) {
+//		String tmpText1 = text.substring(0, match.getStartIndex());
+//		String tmpText2 = text.length() - 1 > match.getEndIndex() ? text
+//				.substring(match.getEndIndex() + 1) : "";
+		
+		int start = match.getStartIndex();
+		int end = match.getEndIndex();
+		int lineSepLength = reSyntax.getLineSeparator().length();
+		System.out.println("++++++S: " + start + " E: " + end + " LS: " +lineSepLength + "TOTAL: " + text.length);
+		for(int i=start; i<=end-lineSepLength; i++) {
+			text[i] = '#';
 		}
 		
-		return text;
+		char[] lineSepChar = reSyntax.getLineSeparator().toCharArray();
+		for(int i=0; i<lineSepChar.length; i++) {
+			text[end-lineSepLength+i] = lineSepChar[i];
+		}
+		//text.replace(start, end - lineSepLength, "#");
+		//text.replace(start, end - lineSepLength, "#");
+		//text.replace(end - lineSepLength, end, reSyntax.getLineSeparator());
+				
+//		int offset = text.length() - tmpText1.length() - tmpText2.length()
+//				- reSyntax.getLineSeparator().length();
+//		if (offset > 0) {
+//			//we have some POD-comments here, which we now
+//			//replace with the same amount of chars as the text
+//			StringBuffer nls = new StringBuffer();
+//			nls.append('#'); //First character a Comment
+//			nls.setLength(offset); //last character a Remark
+//			nls.append(reSyntax.getLineSeparator());
+//			text = tmpText1 + nls + tmpText2;
+//		}
+//		
+//		return text;
 	}
 }

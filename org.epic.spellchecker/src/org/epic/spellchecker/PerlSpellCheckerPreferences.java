@@ -10,7 +10,7 @@ import com.swabunga.spell.engine.Configuration;
 
 public class PerlSpellCheckerPreferences extends SpellCheckerPreferences {
 
-	protected static final String PAGEID = "org.epic.spellchecker.preferencePage"; //$NON-NLS-1$
+	protected static final String PAGEID = "org.epic.spellchecker.preferencePerlPropertiesSpellCheckerPreferencePage"; //$NON-NLS-1$
 
 	public static final String CHECKPOD = "checkPod";
 	public static final String CHECKCOMMENTS = "checkComments";

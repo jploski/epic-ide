@@ -22,6 +22,11 @@ public class PerlParserSimple extends antlr.LLkParser       implements AddTokenT
 	org.eclipse.debug.core.model.IDebugElement mDebugger;
 	int mScope;
 	
+	public void printConsole(String fString)
+	{
+		//System.out.println(fString);
+	}
+	
 	public void setVarList( java.util.ArrayList fVarList )
 	{
 		mVarList = fVarList;	
@@ -108,7 +113,7 @@ public void appendName(String fVal)
 		if( mVarStack.empty() )
 			mVarList.add(var);
 			try{
-	 System.out.println("::::Finelizing Var "+ var.getName());
+	 printConsole("::::Finelizing Var "+ var.getName());
 			} catch(Exception e) {};
 	}
 
@@ -141,37 +146,37 @@ public PerlParserSimple(ParserSharedInputState state) {
 		
 		try {      // for error handling
 			{
-			_loop1147:
+			_loop523:
 			do {
 				if ((LA(1)==NL)) {
 					match(NL);
 				}
 				else {
-					break _loop1147;
+					break _loop523;
 				}
 				
 			} while (true);
 			}
 			{
-			_loop1151:
+			_loop527:
 			do {
 				if ((_tokenSet_0.member(LA(1)))) {
 					namedVar();
 					{
-					_loop1150:
+					_loop526:
 					do {
 						if ((LA(1)==NL)) {
 							match(NL);
 						}
 						else {
-							break _loop1150;
+							break _loop526;
 						}
 						
 					} while (true);
 					}
 				}
 				else {
-					break _loop1151;
+					break _loop527;
 				}
 				
 			} while (true);
@@ -231,12 +236,12 @@ public PerlParserSimple(ParserSharedInputState state) {
 		try {      // for error handling
 			name = LT(1);
 			match(SCALAR_NAME);
-			addVar(name.getText(),"Scalar");System.out.println("++++SCALAR:"+name.getText()+"\n");
+			addVar(name.getText(),"Scalar");printConsole("++++SCALAR:"+name.getText()+"\n");
 			{
 			if ((LA(1)==EQ) && (_tokenSet_3.member(LA(2))) && (LA(3)==NL||LA(3)==ADR||LA(3)==PURE_NAME)) {
 				match(EQ);
 				value();
-				finalizeVar();System.out.println("----SCALAR:"+name.getText()+"\n");
+				finalizeVar();printConsole("----SCALAR:"+name.getText()+"\n");
 			}
 			else if ((LA(1)==EQ) && (LA(2)==PURE_NAME) && (LA(3)==EQ)) {
 				match(EQ);
@@ -245,7 +250,7 @@ public PerlParserSimple(ParserSharedInputState state) {
 				match(EQ);
 				appendName("="+pn2.getText());
 				refs();
-				finalizeVar();System.out.println("----SCALAR:"+name.getText()+"\n");
+				finalizeVar();printConsole("----SCALAR:"+name.getText()+"\n");
 			}
 			else {
 				throw new NoViableAltException(LT(1), getFilename());
@@ -267,7 +272,7 @@ public PerlParserSimple(ParserSharedInputState state) {
 		try {      // for error handling
 			name = LT(1);
 			match(ARRAY_NAME);
-			addVar(name.getText(),"Array");System.out.println("++++ARRAY:"+name.getText()+"\n");
+			addVar(name.getText(),"Array");printConsole("++++ARRAY:"+name.getText()+"\n");
 			match(EQ);
 			match(PAREN_OP);
 			match(NL);
@@ -288,7 +293,7 @@ public PerlParserSimple(ParserSharedInputState state) {
 			}
 			}
 			}
-			finalizeVar(); System.out.println("---- ARRAY:"+name.getText()+"\n");
+			finalizeVar(); printConsole("---- ARRAY:"+name.getText()+"\n");
 			match(PAREN_CL);
 		}
 		catch (RecognitionException ex) {
@@ -305,7 +310,7 @@ public PerlParserSimple(ParserSharedInputState state) {
 		try {      // for error handling
 			name = LT(1);
 			match(HASH_NAME);
-			addVar(name.getText(),"Hash");System.out.println("++++HASH:"+name.getText()+"\n");
+			addVar(name.getText(),"Hash");printConsole("++++HASH:"+name.getText()+"\n");
 			match(EQ);
 			match(PAREN_OP);
 			match(NL);
@@ -326,7 +331,7 @@ public PerlParserSimple(ParserSharedInputState state) {
 			}
 			}
 			}
-			finalizeVar();System.out.println("----HASH:"+name.getText()+"\n");
+			finalizeVar();printConsole("----HASH:"+name.getText()+"\n");
 			match(PAREN_CL);
 		}
 		catch (RecognitionException ex) {
@@ -346,12 +351,12 @@ public PerlParserSimple(ParserSharedInputState state) {
 			match(PAREN_OP);
 			name = LT(1);
 			match(PURE_NAME);
-			addVar(name.getText(),"FileHandle");System.out.println("++++FH:"+name.getText()+"\n");
+			addVar(name.getText(),"FileHandle");printConsole("++++FH:"+name.getText()+"\n");
 			match(PAREN_CL);
 			match(KEY_ASSIGN);
 			val = LT(1);
 			match(FILE_NO);
-			setVal(val.getText(),"FileHandle"); finalizeVar();System.out.println("++++FNO_SYMB:"+val.getText()+"\n");
+			setVal(val.getText(),"FileHandle"); finalizeVar();printConsole("++++FNO_SYMB:"+val.getText()+"\n");
 		}
 		catch (RecognitionException ex) {
 			reportError(ex);
@@ -367,13 +372,13 @@ public PerlParserSimple(ParserSharedInputState state) {
 			if ((LA(1)==INDENT_START) && (LA(2)==NUMBER||LA(2)==INDENT_END)) {
 				match(INDENT_START);
 				{
-				_loop1159:
+				_loop535:
 				do {
 					if ((LA(1)==NUMBER)) {
 						arrayEntry();
 					}
 					else {
-						break _loop1159;
+						break _loop535;
 					}
 					
 				} while (true);
@@ -408,7 +413,7 @@ public PerlParserSimple(ParserSharedInputState state) {
 			name = LT(1);
 			match(ADR);
 			match(NL);
-			addVar("Array->"+name.getText()," ");System.out.println("++++ARRAYREF:"+name.getText()+"\n");
+			addVar("Array->"+name.getText()," ");printConsole("++++ARRAYREF:"+name.getText()+"\n");
 			{
 			switch ( LA(1)) {
 			case INDENT_START:
@@ -434,7 +439,7 @@ public PerlParserSimple(ParserSharedInputState state) {
 			}
 			}
 			}
-			finalizeVar();System.out.println("----ARRAYREF:"+name.getText()+"\n");
+			finalizeVar();printConsole("----ARRAYREF:"+name.getText()+"\n");
 		}
 		catch (RecognitionException ex) {
 			reportError(ex);
@@ -450,7 +455,7 @@ public PerlParserSimple(ParserSharedInputState state) {
 		try {      // for error handling
 			start = LT(1);
 			match(NUMBER);
-			addVar("["+start.getText()+"]",null);System.out.println("INDEX:"+start.getText());
+			addVar("["+start.getText()+"]",null);printConsole("INDEX:"+start.getText());
 			value();
 			finalizeVar();
 		}
@@ -483,7 +488,7 @@ public PerlParserSimple(ParserSharedInputState state) {
 					p2 = LT(1);
 					match(PURE_NAME);
 					}
-					appendVal(" "+p2.getText());System.out.println(" "+p2.getText());
+					appendVal(" "+p2.getText());printConsole(" "+p2.getText());
 					break;
 				}
 				case NL:
@@ -496,7 +501,7 @@ public PerlParserSimple(ParserSharedInputState state) {
 				}
 				}
 				}
-				System.out.println("\n");
+				printConsole("\n");
 				match(NL);
 				break;
 			}
@@ -514,7 +519,7 @@ public PerlParserSimple(ParserSharedInputState state) {
 			{
 				s = LT(1);
 				match(STRING);
-				setVal(s.getText(),"Scalar");System.out.println(" VAL:"+s.getText()+"\n");
+				setVal(s.getText(),"Scalar");printConsole(" VAL:"+s.getText()+"\n");
 				match(NL);
 				break;
 			}
@@ -522,7 +527,7 @@ public PerlParserSimple(ParserSharedInputState state) {
 			{
 				n = LT(1);
 				match(NUMBER);
-				setVal(n.getText(),"Scalar");System.out.println(" VAL_NUM:"+n.getText()+"\n");
+				setVal(n.getText(),"Scalar");printConsole(" VAL_NUM:"+n.getText()+"\n");
 				match(NL);
 				break;
 			}
@@ -546,13 +551,13 @@ public PerlParserSimple(ParserSharedInputState state) {
 			if ((LA(1)==INDENT_START) && (LA(2)==INDENT_END||LA(2)==STRING)) {
 				match(INDENT_START);
 				{
-				_loop1167:
+				_loop543:
 				do {
 					if ((LA(1)==STRING)) {
 						hashEntry();
 					}
 					else {
-						break _loop1167;
+						break _loop543;
 					}
 					
 				} while (true);
@@ -587,7 +592,7 @@ public PerlParserSimple(ParserSharedInputState state) {
 			name = LT(1);
 			match(ADR);
 			match(NL);
-			addVar("Hash->"+name.getText()," ");System.out.println("++++HASHREF:"+name.getText()+"\n");
+			addVar("Hash->"+name.getText()," ");printConsole("++++HASHREF:"+name.getText()+"\n");
 			{
 			switch ( LA(1)) {
 			case INDENT_START:
@@ -613,7 +618,7 @@ public PerlParserSimple(ParserSharedInputState state) {
 			}
 			}
 			}
-			finalizeVar();System.out.println("---HASHREF:"+name.getText()+"\n");
+			finalizeVar();printConsole("---HASHREF:"+name.getText()+"\n");
 		}
 		catch (RecognitionException ex) {
 			reportError(ex);
@@ -629,9 +634,9 @@ public PerlParserSimple(ParserSharedInputState state) {
 		try {      // for error handling
 			start = LT(1);
 			match(STRING);
-			System.out.println("H["+start.getColumn()+"]");
+			printConsole("H["+start.getColumn()+"]");
 			match(KEY_ASSIGN);
-			addVar("\'"+start.getText()+"\'","");System.out.println("KEY:"+start.getText());
+			addVar("\'"+start.getText()+"\'","");printConsole("KEY:"+start.getText());
 			value();
 			finalizeVar();
 		}
@@ -700,12 +705,12 @@ public PerlParserSimple(ParserSharedInputState state) {
 			match(SCALAR_REF);
 			name = LT(1);
 			match(ADR);
-			addVar("Scalar->"+name.getText()," ");System.out.println("++++SCALARREF:"+name.getText()+"\n");
+			addVar("Scalar->"+name.getText()," ");printConsole("++++SCALARREF:"+name.getText()+"\n");
 			match(NL);
 			match(INDENT_START);
 			match(REF_SYMB);
 			value();
-			finalizeVar();System.out.println("----SCALARREF:"+name.getText()+"\n");
+			finalizeVar();printConsole("----SCALARREF:"+name.getText()+"\n");
 			match(INDENT_END);
 		}
 		catch (RecognitionException ex) {
@@ -727,7 +732,7 @@ public PerlParserSimple(ParserSharedInputState state) {
 			match(CODE_REF);
 			name = LT(1);
 			match(ADR);
-			addVar("Code->"+name.getText()," ");setVal(name.getText(),"CodeRef");System.out.println("++++CODEREF:"+name.getText()+"\n");
+			addVar("Code->"+name.getText()," ");setVal(name.getText(),"CodeRef");printConsole("++++CODEREF:"+name.getText()+"\n");
 			match(NL);
 			match(INDENT_START);
 			match(REF_SYMB);
@@ -754,7 +759,7 @@ public PerlParserSimple(ParserSharedInputState state) {
 			}
 			}
 			{
-			_loop1178:
+			_loop554:
 			do {
 				switch ( LA(1)) {
 				case PURE_NAME:
@@ -786,13 +791,13 @@ public PerlParserSimple(ParserSharedInputState state) {
 				}
 				default:
 				{
-					break _loop1178;
+					break _loop554;
 				}
 				}
 			} while (true);
 			}
 			match(NL);
-			finalizeVar();System.out.println("----CodeREF:"+name.getText()+"\n");
+			finalizeVar();printConsole("----CodeREF:"+name.getText()+"\n");
 			match(INDENT_END);
 		}
 		catch (RecognitionException ex) {
@@ -810,12 +815,12 @@ public PerlParserSimple(ParserSharedInputState state) {
 			match(REF);
 			name = LT(1);
 			match(ADR);
-			System.out.println("++++REF_SYMB:"+name.getText()+"\n");
+			printConsole("++++REF_SYMB:"+name.getText()+"\n");
 			match(NL);
 			match(INDENT_START);
 			match(REF_SYMB);
 			value();
-			System.out.println("----REF_SYMB:"+name.getText()+"\n");
+			printConsole("----REF_SYMB:"+name.getText()+"\n");
 			match(INDENT_END);
 		}
 		catch (RecognitionException ex) {
@@ -832,7 +837,7 @@ public PerlParserSimple(ParserSharedInputState state) {
 		try {      // for error handling
 			name = LT(1);
 			match(FILE_REF);
-			addVar("->"+name.getText(),"FileHandleRef");System.out.println("++++FRef:"+name.getText()+"\n");
+			addVar("->"+name.getText(),"FileHandleRef");printConsole("++++FRef:"+name.getText()+"\n");
 			match(NL);
 			{
 			switch ( LA(1)) {

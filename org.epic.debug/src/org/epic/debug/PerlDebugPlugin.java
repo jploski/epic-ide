@@ -43,6 +43,7 @@ public class PerlDebugPlugin extends AbstractUIPlugin {
 		mBreakPointmanager = new PerlBreakpointManager( DebugPlugin.getDefault());
 	}
 
+
 	void createEnvArrays()
 	{
 		Process proc = null;

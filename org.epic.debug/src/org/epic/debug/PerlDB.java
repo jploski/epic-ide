@@ -39,7 +39,10 @@ import org.epic.perleditor.PerlEditorPlugin;
  * Window>Preferences>Java>Code Generation>Code and Comments
  */
 public class PerlDB	implements IDebugElement {
-
+/*****************CGI-Test*************************/
+	private boolean debug_cgi = false; 
+/*************************************************/
+	
 	private DebugTarget mTarget;
 	private CommandThread mCommandThread;
 	private ServerSocket mServerSocket;
@@ -283,12 +286,19 @@ public class PerlDB	implements IDebugElement {
 		try{
 				//Runtime.getRuntime().
 			//	exec("perl -d "+startfile,PerlDebugPlugin.getDebugEnv(), new File(mWorkingDir.toString()));
-
-			mProcess= Runtime.getRuntime().exec(
-			cmdParams,
-			PerlDebugPlugin.getDebugEnv(),
-			new File(mWorkingDir.toString()));
 			
+			/***** CGI Quick Hack****///
+			if( debug_cgi )
+			{
+				mProcess= Runtime.getRuntime().exec("perl -d");
+			}
+			else
+			{
+				mProcess= Runtime.getRuntime().exec(
+				cmdParams,
+				PerlDebugPlugin.getDebugEnv(),
+				new File(mWorkingDir.toString()));
+			}
 			
 			}catch (Exception e)
 				{ System.out.println(e);
@@ -300,7 +310,7 @@ public class PerlDB	implements IDebugElement {
 	try{			
 		synchronized(this)
 		{
-		for( int x=0; (x < 100) && (mClientSocket == null) ; ++x)
+		for( int x=0; ((x < 100) || debug_cgi) && (mClientSocket == null) ; ++x)
 		{
 			System.out.println("Waiting for connect (Try "+x+" of 100)\n");
 				 wait(100);
@@ -625,7 +635,15 @@ public class PerlDB	implements IDebugElement {
 		debugEvents[0]=event;
 		DebugPlugin.getDefault().fireDebugEventSet(debugEvents); 
 	}
-
+	public void generateDebugTermEvent()
+	{
+			DebugEvent event = null;
+		
+			event = new DebugEvent(mThreads[0], DebugEvent.TERMINATE, DebugEvent.STEP_END);
+			DebugEvent debugEvents[] = new DebugEvent[1];
+			debugEvents[0]=event;
+			DebugPlugin.getDefault().fireDebugEventSet(debugEvents); 
+		}
 
 
 
@@ -655,7 +673,7 @@ public class PerlDB	implements IDebugElement {
 	
 			currentOutput = debugOutput.toString();
 	
-			System.out.println("\nCurrent DEBUGOUTPUT:\n"+currentOutput+"\n");
+			//System.out.println("\nCurrent DEBUGOUTPUT:\n"+currentOutput+"\n");
 			if( hasSessionTerminated(currentOutput) )
 				{ finished = mSessionTerminated; break;}
 			if(hasCommandTerminated(currentOutput))
@@ -756,10 +774,22 @@ public class PerlDB	implements IDebugElement {
 			{ 
 				mCurrentSubCommand = mCommandNone;
 				mCurrentCommand = mCommandNone;
+				mIsCommandRunning = false;
+				mIsCommandFinished = false;
+				
+				try {
+					mCurrentCommandDest=mThreads[0];
+					mDebugIn.println("q\n");
+				} catch (RuntimeException e) {
+					e.printStackTrace();
+				}
+				mCurrentSubCommand = mCommandNone;
+				mCurrentCommand = mCommandNone;
 				generateDebugEvent(mCommandTerminate, false, mCurrentCommandDest);
 				shutdown();
 				mIsCommandRunning = false;
 				mIsCommandFinished = false;
+				generateDebugTermEvent();
 				PerlDebugPlugin.getPerlBreakPointmanager().removeDebugger(this);
 			}
 			

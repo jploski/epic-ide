@@ -37,6 +37,11 @@ tokens
 	org.eclipse.debug.core.model.IDebugElement mDebugger;
 	int mScope;
 	
+	public void printConsole(String fString)
+	{
+		//System.out.println(fString);
+	}
+	
 	public void setVarList( java.util.ArrayList fVarList )
 	{
 		mVarList = fVarList;	
@@ -123,41 +128,41 @@ public void appendName(String fVal)
 		if( mVarStack.empty() )
 			mVarList.add(var);
 			try{
-	 System.out.println("::::Finelizing Var "+ var.getName());
+	 printConsole("::::Finelizing Var "+ var.getName());
 			} catch(Exception e) {};
 	}
 
 }
 
-//topLevel: (NL)*( namedVar (NL)* )* {System.out.println("1\n");}{System.out.println("2\n");} INDENT_START {System.out.println("3\n");}PURE_NAME {System.out.println("4\n");}NL {System.out.println("5\n");}INDENT_END {System.out.println("6\n");}EOF;
+//topLevel: (NL)*( namedVar (NL)* )* {printConsole("1\n");}{printConsole("2\n");} INDENT_START {printConsole("3\n");}PURE_NAME {printConsole("4\n");}NL {printConsole("5\n");}INDENT_END {printConsole("6\n");}EOF;
 topLevel: (NL)*( namedVar (NL)* )* EOF;
 namedVar: namedScalar | namedArray | namedHash | fileHandle;
 
-namedArray: name:ARRAY_NAME{addVar(name.getText(),"Array");System.out.println("++++ARRAY:"+name.getText()+"\n");} EQ PAREN_OP NL (arrayEntries)? {finalizeVar(); System.out.println("---- ARRAY:"+name.getText()+"\n");} PAREN_CL;
-arrayReference: ARRAY_REF name:ADR NL {addVar("Array->"+name.getText()," ");System.out.println("++++ARRAYREF:"+name.getText()+"\n");}(arrayEntries)? {finalizeVar();System.out.println("----ARRAYREF:"+name.getText()+"\n");};
+namedArray: name:ARRAY_NAME{addVar(name.getText(),"Array");printConsole("++++ARRAY:"+name.getText()+"\n");} EQ PAREN_OP NL (arrayEntries)? {finalizeVar(); printConsole("---- ARRAY:"+name.getText()+"\n");} PAREN_CL;
+arrayReference: ARRAY_REF name:ADR NL {addVar("Array->"+name.getText()," ");printConsole("++++ARRAYREF:"+name.getText()+"\n");}(arrayEntries)? {finalizeVar();printConsole("----ARRAYREF:"+name.getText()+"\n");};
 arrayEntries:  INDENT_START (arrayEntry)* INDENT_END
 			| INDENT_START REF_SYMB PURE_NAME NL INDENT_END;
-arrayEntry: start:NUMBER {addVar("["+start.getText()+"]",null);System.out.println("INDEX:"+start.getText());} value {finalizeVar();};
+arrayEntry: start:NUMBER {addVar("["+start.getText()+"]",null);printConsole("INDEX:"+start.getText());} value {finalizeVar();};
 
 
 
-namedHash: name:HASH_NAME{addVar(name.getText(),"Hash");System.out.println("++++HASH:"+name.getText()+"\n");} EQ PAREN_OP NL (hashEntries)? {finalizeVar();System.out.println("----HASH:"+name.getText()+"\n");}PAREN_CL;
-hashReference: HASH_REF name:ADR NL {addVar("Hash->"+name.getText()," ");System.out.println("++++HASHREF:"+name.getText()+"\n");}(hashEntries)?{finalizeVar();System.out.println("---HASHREF:"+name.getText()+"\n");};
+namedHash: name:HASH_NAME{addVar(name.getText(),"Hash");printConsole("++++HASH:"+name.getText()+"\n");} EQ PAREN_OP NL (hashEntries)? {finalizeVar();printConsole("----HASH:"+name.getText()+"\n");}PAREN_CL;
+hashReference: HASH_REF name:ADR NL {addVar("Hash->"+name.getText()," ");printConsole("++++HASHREF:"+name.getText()+"\n");}(hashEntries)?{finalizeVar();printConsole("---HASHREF:"+name.getText()+"\n");};
 hashEntries:  	INDENT_START (hashEntry)* INDENT_END 
 							| INDENT_START REF_SYMB PURE_NAME NL INDENT_END ;
-hashEntry:  start:STRING{System.out.println("H["+start.getColumn()+"]");}  KEY_ASSIGN {addVar("\'"+start.getText()+"\'","");System.out.println("KEY:"+start.getText());}value {finalizeVar();};
+hashEntry:  start:STRING{printConsole("H["+start.getColumn()+"]");}  KEY_ASSIGN {addVar("\'"+start.getText()+"\'","");printConsole("KEY:"+start.getText());}value {finalizeVar();};
 
-namedScalar: name:SCALAR_NAME{addVar(name.getText(),"Scalar");System.out.println("++++SCALAR:"+name.getText()+"\n");} ( EQ value {finalizeVar();System.out.println("----SCALAR:"+name.getText()+"\n");} | EQ pn2:PURE_NAME EQ {appendName("="+pn2.getText());} refs {finalizeVar();System.out.println("----SCALAR:"+name.getText()+"\n");});
-scalarRef: SCALAR_REF name:ADR{addVar("Scalar->"+name.getText()," ");System.out.println("++++SCALARREF:"+name.getText()+"\n");} NL INDENT_START REF_SYMB value {finalizeVar();System.out.println("----SCALARREF:"+name.getText()+"\n");}INDENT_END;
+namedScalar: name:SCALAR_NAME{addVar(name.getText(),"Scalar");printConsole("++++SCALAR:"+name.getText()+"\n");} ( EQ value {finalizeVar();printConsole("----SCALAR:"+name.getText()+"\n");} | EQ pn2:PURE_NAME EQ {appendName("="+pn2.getText());} refs {finalizeVar();printConsole("----SCALAR:"+name.getText()+"\n");});
+scalarRef: SCALAR_REF name:ADR{addVar("Scalar->"+name.getText()," ");printConsole("++++SCALARREF:"+name.getText()+"\n");} NL INDENT_START REF_SYMB value {finalizeVar();printConsole("----SCALARREF:"+name.getText()+"\n");}INDENT_END;
 
-codeRef: CODE_REF name:ADR{addVar("Code->"+name.getText()," ");setVal(name.getText(),"CodeRef");System.out.println("++++CODEREF:"+name.getText()+"\n");} NL INDENT_START REF_SYMB (a:MODULE_NAME{appendVal(a.getText());})? (( b:PURE_NAME {appendVal(b.getText());}) | (c:NUMBER{appendVal(c.getText());}) | (d:ADR{appendVal(d.getText());}))* NL{finalizeVar();System.out.println("----CodeREF:"+name.getText()+"\n");}INDENT_END;
+codeRef: CODE_REF name:ADR{addVar("Code->"+name.getText()," ");setVal(name.getText(),"CodeRef");printConsole("++++CODEREF:"+name.getText()+"\n");} NL INDENT_START REF_SYMB (a:MODULE_NAME{appendVal(a.getText());})? (( b:PURE_NAME {appendVal(b.getText());}) | (c:NUMBER{appendVal(c.getText());}) | (d:ADR{appendVal(d.getText());}))* NL{finalizeVar();printConsole("----CodeREF:"+name.getText()+"\n");}INDENT_END;
 
-ref: REF name:ADR{System.out.println("++++REF_SYMB:"+name.getText()+"\n");} NL INDENT_START REF_SYMB value {System.out.println("----REF_SYMB:"+name.getText()+"\n");}INDENT_END;
+ref: REF name:ADR{printConsole("++++REF_SYMB:"+name.getText()+"\n");} NL INDENT_START REF_SYMB value {printConsole("----REF_SYMB:"+name.getText()+"\n");}INDENT_END;
 
-fileHandle: FILE_HANDLE PAREN_OP name:PURE_NAME{addVar(name.getText(),"FileHandle");System.out.println("++++FH:"+name.getText()+"\n");} PAREN_CL KEY_ASSIGN val:FILE_NO{setVal(val.getText(),"FileHandle"); finalizeVar();System.out.println("++++FNO_SYMB:"+val.getText()+"\n");};
-fileHandleRef: name:FILE_REF{addVar("->"+name.getText(),"FileHandleRef");System.out.println("++++FRef:"+name.getText()+"\n");}  NL (INDENT_START fileHandle NL INDENT_END)? {finalizeVar();};
+fileHandle: FILE_HANDLE PAREN_OP name:PURE_NAME{addVar(name.getText(),"FileHandle");printConsole("++++FH:"+name.getText()+"\n");} PAREN_CL KEY_ASSIGN val:FILE_NO{setVal(val.getText(),"FileHandle"); finalizeVar();printConsole("++++FNO_SYMB:"+val.getText()+"\n");};
+fileHandleRef: name:FILE_REF{addVar("->"+name.getText(),"FileHandleRef");printConsole("++++FRef:"+name.getText()+"\n");}  NL (INDENT_START fileHandle NL INDENT_END)? {finalizeVar();};
 
-value: p:PURE_NAME{setVal(p.getText(),"");System.out.print(" VAL:"+p.getText());} ((p2:PURE_NAME){appendVal(" "+p2.getText());System.out.println(" "+p2.getText());})? {System.out.println("\n");}NL  | refs | s:STRING{setVal(s.getText(),"Scalar");System.out.println(" VAL:"+s.getText()+"\n");} NL | n:NUMBER{setVal(n.getText(),"Scalar");System.out.println(" VAL_NUM:"+n.getText()+"\n");}NL ;
+value: p:PURE_NAME{setVal(p.getText(),"");System.out.print(" VAL:"+p.getText());} ((p2:PURE_NAME){appendVal(" "+p2.getText());printConsole(" "+p2.getText());})? {printConsole("\n");}NL  | refs | s:STRING{setVal(s.getText(),"Scalar");printConsole(" VAL:"+s.getText()+"\n");} NL | n:NUMBER{setVal(n.getText(),"Scalar");printConsole(" VAL_NUM:"+n.getText()+"\n");}NL ;
 refs:  (hashReference | arrayReference | scalarRef | codeRef | ref | fileHandleRef);
 //refs: (PURE_NAME EQ)? (hashReference | arrayReference | scalarRef | codeRef | ref | fileHandleRef);
 // ----------------------------------------------------------------------------
@@ -220,7 +225,7 @@ WS:
 	    else
 	    {
 	    	int new_col =   text.length()-_begin;
-	    	//System.out.println("§§§Indent: "+new_col+"§§§§§\n");
+	    	//printConsole("§§§Indent: "+new_col+"§§§§§\n");
 	    	if( new_col == mCurrentIndent)
 	    		$setType(Token.SKIP);
     		if( new_col > mCurrentIndent)

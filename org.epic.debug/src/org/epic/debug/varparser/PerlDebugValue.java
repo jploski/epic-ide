@@ -63,7 +63,7 @@ public class PerlDebugValue implements IValue {
 		int ret =0;
 	  try{
 	  	
-		System.out.println("-*-Comparing Value"+fValOrg.mValue+"/"+mValue);
+		//System.out.println("-*-Comparing Value"+fValOrg.mValue+"/"+mValue);
 			if( ((mValue == null) && (fValOrg.getValueString()!= null))
 				|| ! mValue.equals(fValOrg.getValueString()) )
 			 	{

@@ -1,261 +1,173 @@
-<html><head><META http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Working with the Perl Editor</title><meta content="DocBook XSL Stylesheets V1.65.1" name="generator"><link rel="home" href="index.html" title="  EPIC - User's Guide"><link rel="up" href="index.html" title="  EPIC - User's Guide"><link rel="previous" href="ar01s03.html" title="Perl Projects"><link rel="next" href="ar01s05.html" title="
-
-RegExp Plugin"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table summary="Navigation header" width="100%"><tr><th align="center" colspan="3">Working with the Perl Editor</th></tr><tr><td align="left" width="20%"><a accesskey="p" href="ar01s03.html">Prev</a>&nbsp;</td><th align="center" width="60%">&nbsp;</th><td align="right" width="20%">&nbsp;<a accesskey="n" href="ar01s05.html">Next</a></td></tr></table><hr></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="N10190"></a>Working with the Perl Editor</h2></div></div><div></div></div><div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="N10194"></a>Syntax Check</h3></div></div><div></div></div><p>
-EPIC performs on the fly syntax check of Perl source
-files. In order for the Syntax Check to work the Perl Interpreter has
-to be set up correctly (see <span class="emphasis"><em>Setting up Preferences</em></span>). 
+<html><head><META http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Eclipse Basics</title><meta content="DocBook XSL Stylesheets V1.65.1" name="generator"><link rel="home" href="index.html" title="  EPIC - User's Guide"><link rel="up" href="index.html" title="  EPIC - User's Guide"><link rel="previous" href="ar01s03.html" title="Perl Projects"><link rel="next" href="ar01s05.html" title="Working with the Perl Editor"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table summary="Navigation header" width="100%"><tr><th align="center" colspan="3">Eclipse Basics</th></tr><tr><td align="left" width="20%"><a accesskey="p" href="ar01s03.html">Prev</a>&nbsp;</td><th align="center" width="60%">&nbsp;</th><td align="right" width="20%">&nbsp;<a accesskey="n" href="ar01s05.html">Next</a></td></tr></table><hr></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="N101DE"></a>Eclipse Basics</h2></div></div><div></div></div><div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="N101E2"></a>Perspectives</h3></div></div><div></div></div><p>
+Each Workbench window contains one or more
+perspectives. A perspective defines the initial set and layout of views
+in the Workbench window. Within the window, each perspective shares the
+same set of editors. Each perspective provides a set of capabilities
+aimed at accomplishing a specific type of task or works with specific
+types of resources.&nbsp;For example, the Java perspective combines
+views that you would commonly use while editing Java source files,
+while the Debug perspective contains the views that you would use while
+debugging Java programs. As you work in the Workbench, you will
+probably switch perspectives frequently.
+      </p><p>
+Perspectives control what appears in
+certain menus and toolbars. They define visible <span class="emphasis"><em>action sets</em></span>,
+which you can change to customize a perspective. You can save a
+perspective that you build in this manner, making your own custom
+perspective that you can open again later.&nbsp;&nbsp;
+      </p><p>
+You can set your Workbench preferences to
+open perspectives in the same window or in a new window.
       </p><p>
 
-The Syntax Check is performed after a defined idle period, after the
-user has stopped typing. This idle period can be configured in the
-preferences.
+The main perspectives relevant for developing Perl applications are
       </p><p>
-When an error/warning has been found the editor
-displays the apropriate icon in the annotation ruler (the gray bar on
-the left side of the editor), underlines the error in the source and
-insterts a marker into the<span class="emphasis"><em> Problems View</em></span> window (if visible).
+        <div class="informalfigure"><div class="mediaobject"><img src="images/perl_perspective_symbol.gif"></div></div>
+ : This is the main view for
+coding&nbsp; Perl
+scripts
       </p><p>
+        <div class="informalfigure"><div class="mediaobject"><img src="images/debug_perspective_symbol.gif"></div></div>
+ : Provides the main
+functionally for
+debugging
+and executing Perl scripts. For details see <a href="ar01s06.html#dbdoclet.id.Debug_Perspective">Debug
+Perspective</a> .
       </p><p>
-        <div class="informalfigure"><div class="mediaobject"><img src="images/syntax_check_1.gif"></div></div>
-
+      </p></div><div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="N1020B"></a>Views</h3></div></div><div></div></div><p>
+Views support editors and provide
+alternative presentations as well as ways to navigate the information
+in your Workbench.&nbsp; For example, the Navigator view displays
+projects and other resources that you are working with.
       </p><p>
+Views also have their own menus. To open
+the menu for a view, click the icon at the left end of the view's title
+bar. Some views also have their own toolbars. The actions represented
+by buttons on view toolbars only affect the items within that
+view.&nbsp;
       </p><p>
+A view might appear by itself, or stacked
+with other views in a tabbed notebook.&nbsp;You can change the layout
+of a perspective by opening and closing views and by docking them in
+different positions in the Workbench window. 
       </p><p>
-      </p></div><div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="N101B6"></a>Explain Errors and Warnings</h3></div></div><div></div></div><p>
-
-In addition to display warnings and errors the editor is capable of
-explaining Erros and Warnings.
-      </p><p>
-
-To get an Error/Warning explanation right-click the Error/Warning icon
-and select Explain <span class="emphasis"><em>Errors/Warnings</em></span> from the dropdown menu.
-      </p><p>
-      </p><p>
-        <div class="informalfigure"><div class="mediaobject"><img src="images/explain_1.gif"></div></div>
-
-      </p><p>
-      </p><p>
-
-The explanation(s) will be displayed in the <span class="emphasis"><em>Explan Errors/Warnings
-View</em></span>.
-      </p><p>
-      </p><p>
-        <div class="informalfigure"><div class="mediaobject"><img src="images/explain_2.gif"></div></div>
-
-      </p><p>
-      </p><p>
-      </p><p>
-      </p></div><div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="N101E6"></a>Perldoc</h3></div></div><div></div></div><p>
-
-To retrieve perldoc information select a keyword or text and choose one
-of the perldoc options from the context menu.
-      </p><p>
-
-If nothing is selected an input box will pop up.
-      </p><p>
-      </p><p>
-        <div class="informalfigure"><div class="mediaobject"><img src="images/perldoc_1.gif"></div></div>
-
-      </p><p>
-      </p><p>
-
-If a perldoc entry is found it is displayed inside the <span class="emphasis"><em>Perldoc View</em></span>.
-      </p><p>
-      </p><p>
-        <div class="informalfigure"><div class="mediaobject"><img src="images/perldoc_2.gif"></div></div>
-
-      </p><p>
-      </p><p>
-        <span class="bold"><b>NOTE:</b></span> Perldoc has to be installed available in the system PATH,
-otherwise this feature will not work.
-      </p><p>
-      </p><p>
-      </p></div><div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="N10219"></a>Quick Reference</h3></div></div><div></div></div><p>
-
-Apart from Perldoc support a quick reference feature is available. This
-feature has the advantage that no perldoc has to be installed on the
-system but does not provide as many information as perldoc.
-      </p><p>
-
-To view the Quick Reference select a keyword and move the mouse pointer
-over the selection.
-      </p><p>
-
-A tooltip with a short description of the keyword should appear.
-      </p><p>
-      </p><p>
-        <div class="informalfigure"><div class="mediaobject"><img src="images/quick_reference_1.gif"></div></div>
-
-      </p><p>
-      </p><p>
-      </p><p>
-      </p></div><div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="N10235"></a>Code Assist</h3></div></div><div></div></div><p>
-
-Code Assist features try to assist the user during source code editing.
-      </p><p>
-      </p><p>
-        <span class="bold"><b>NOTE:</b></span> The features currently implemented in EPIC may not be
-fully funcional but will be improved in the future.
-      </p><p>
-      </p><p>
-      </p><div class="sect3" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="N10247"></a>Variable Inspection</h4></div></div><div></div></div><p>
-
-When pressing one of he auto completion characters <span class="emphasis"><em>$ @ % </em></span>the
-editor displays all defined variables in a list. From the list the user
-can select the variable that should be inserted in the source code.
+      </p></div><div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="N10217"></a>Using Perspectives
+      </h3></div></div><div></div></div><p>
+      </p><div class="sect3" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="N1021D"></a>Switching between perspectives</h4></div></div><div></div></div><p>
+Open perspectives are represented by icons on the shortcut bar (the
+toolbar at the left of the Workbench window). When you have more than
+one perspective open, you can switch between them by clicking the icons
+on the shortcut bar.
         </p><p>
+        </p></div><div class="sect3" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="N10225"></a>Opening perspectives</h4></div></div><div></div></div><p>
+Perspectives provide combinations of views and editors that are
+suited to performing a particular set of tasks. For example, you would
+normally open the Debug perspective to debug a Java program. 
         </p><p>
-          <div class="informalfigure"><div class="mediaobject"><img src="images/variable_inspection_1.gif"></div></div>
-
+To open a new perspective:
+        </p><div class="orderedlist"><ol type="1"><li><p>
+ Click the <span class="bold"><b>Open Perspective</b></span> button on the shortcut bar on
+the left side of the Workbench window. (This provides the same function
+as the <span class="bold"><b>Window &gt; Open Perspective</b></span> menu on the menu bar.) 
+            </p></li><li><p>
+ To see a complete list of perspectives, select <span class="bold"><b>Other</b></span> from
+the drop-down menu. 
+            </p></li><li><p>
+ Select the perspective that you want to open. 
+            </p></li></ol></div><p>
+When the perspective opens, the title bar of the window it is in
+changes to display the name of the perspective. In addition, an icon is
+added to the shortcut bar, allowing you to quickly switch back to that
+perspective from other perspectives in the same window. 
         </p><p>
+By default, a perspective will open in the same window. If you would
+rather it opened in a new window, change the setting in <span class="bold"><b>Window &gt;
+Preferences &gt; Workbench &gt; Perspectives</b></span>.
         </p><p>
-        </p></div><div class="sect3" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="N10260"></a>Module Inspection</h4></div></div><div></div></div><p>
-
-The editor tries to display methods available in modules when the auto
-completion characters <span class="emphasis"><em>&gt; </em></span>or<span class="emphasis"><em></em></span><span class="emphasis"><em>:</em></span> are pressed.
+        </p></div><div class="sect3" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="N1024F"></a>Configuring perspectives</h4></div></div><div></div></div><p>
+In addition to configuring the layout of your perspective you can
+also control several other key aspects of a perspective. These include:
         </p><p>
+        </p><div class="itemizedlist"><ul type="disc"><li><p>
+ The options available on the <span class="bold"><b>File &gt; New</b></span> submenu. 
+            </p></li><li><p>
+ The options available on the <span class="bold"><b>Window &gt; Open Perspective</b></span>
+submenu. 
+            </p></li><li><p>
+ The options available on the <span class="bold"><b>Window &gt; Show View</b></span>
+submenu. 
+            </p></li><li><p>
+ Action sets (buttons and menu options) that show up on the
+toolbar and menu bar. 
+            </p></li></ul></div><p>
+To configure a perspective:
+        </p><div class="orderedlist"><ol type="1"><li><p>
+ Switch to the perspective that you want to configure. 
+            </p></li><li><p>
+ Select <span class="bold"><b>Window &gt; Customize Perspective</b></span>. 
+            </p></li><li><p>
+ Expand the item that you want to customize. 
+            </p></li><li><p>
+ Use the check boxes to select which elements you want to see on
+drop-down menus in the selected perspective. Items you do not select
+will still be accessible by clicking the <span class="bold"><b>Other</b></span> menu option. 
+            </p></li><li><p>
+ Click <span class="bold"><b>OK</b></span>.
+            </p><p>
+            </p></li></ol></div></div><div class="sect3" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="N10292"></a>Saving a user defined perspective</h4></div></div><div></div></div><p>
+If you have modified a perspective by adding, deleting, or moving
+(docking) views, you can save your changes for future use. 
+        </p><div class="orderedlist"><ol type="1"><li><p>
+ Switch to the perspective that you want to save. 
+            </p></li><li><p>
+ Click <span class="bold"><b>Window &gt; Save Perspective As</b></span>. 
+            </p></li><li><p>
+ Type a new name for the perspective into the <span class="bold"><b>Name</b></span> field. 
+            </p></li><li><p>
+ Click <span class="bold"><b>OK</b></span>. 
+            </p></li></ol></div><p>
+        </p></div><div class="sect3" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="N102B5"></a>Resetting perspectives</h4></div></div><div></div></div><p>
+To restore a perspective to its original layout:
+        </p><div class="orderedlist"><ol type="1"><li><p>
+ Click <span class="bold"><b>Window &gt; Preferences</b></span>. 
+            </p></li><li><p>
+ Expand <span class="bold"><b>Workbench</b></span> and choose <span class="bold"><b>Perspectives</b></span>. 
+            </p></li><li><p>
+ From the <span class="bold"><b>Available perspectives</b></span> list, select the
+perspective you want to restore. 
+            </p></li><li><p>
+ Click <span class="bold"><b>Reset</b></span>. 
+            </p></li><li><p>
+ Click <span class="bold"><b>OK</b></span>.
+            </p></li></ol></div></div></div><div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="N102E5"></a>Using views</h3></div></div><div></div></div><div class="sect3" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="N102E9"></a>Opening views</h4></div></div><div></div></div><p>
+Perspectives offer pre-defined combinations of views and editors. To
+open a view that is not included in the current perspective, select <span class="bold"><b>Window
+&gt; Show View</b></span> from the main menu bar. 
         </p><p>
+You can create <span class="emphasis"><em>fast views</em></span> to provide a shortcut to views
+that you use often. 
         </p><p>
-          <div class="informalfigure"><div class="mediaobject"><img src="images/module_inspection_1.gif"></div></div>
-
-        </p><p>
-        </p><p>
-          <span class="bold"><b>
-
-NOTE:</b></span>
-        </p><p>
-Currently the
-Indirect&nbsp; Object Invocation is not recognized by the code assist.
-        </p><p>
-        </p><p>
-
-This code block will not work:
-        </p><p>
-        </p><p>
-$smtp = new Net::SMTP;[no content assist]
-        </p><p>
-
-$smtp-&gt;
-        </p><p>
-        </p><p>
-This one will
-work:
-        </p><p>
-        </p><p>
-$smtp =
-Net::SMTP-&gt;new(.....);[content assist]
-        </p><p>
-
-$smtp-&gt;
-        </p><p>
-        </p><p>
-        </p><p>
-        </p></div></div><div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="N1029F"></a>Templates</h3></div></div><div></div></div><p>
-
-Templates allow for easy insertion of peredefined text segments. In
-addition to normal text these segments can also include pre-defined
-variables that are included at runtime as well as variables that are
-specified by the user when the template is inserted.
-      </p><p>
-      </p><p>
-      </p><div class="sect3" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="N102A9"></a>Defining Templates</h4></div></div><div></div></div><p>
-
-Templates are defined in the EPIC Preferences (<span class="bold"><b>Window &gt;
-Preferences...)</b></span>.
-        </p><p>
-
-To define a new template press the <span class="bold"><b>New...</b></span> button.
-        </p><p>
-        </p><p>
-        </p><p>
-          <div class="informalfigure"><div class="mediaobject"><img src="images/templates_2.gif"></div></div>
-
-        </p><p>
-        </p><p>
-        </p><p>
-
-To insert pre-defined variables press the <span class="bold"><b>Insert Variable...</b></span>
-button.
-        </p><p>
-        </p><p>
-          <div class="informalfigure"><div class="mediaobject"><img src="images/templates_3.gif"></div></div>
-
-        </p><p>
-        </p><p>
-In addition to pre-defined variables the user can
-specify own variables the form <span class="emphasis"><em>${varname}</em></span> which can be edited
-when the template is inserted. When the first variable is inserted
-variables with the same name will automatically be changed.
-        </p><p>
-        </p><p>
-        </p></div><div class="sect3" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="N102E8"></a>Using Templates</h4></div></div><div></div></div><p>
-
-Templates are invoked by typing some characters and pressing <span class="emphasis"><em><span class="bold"><b>Ctrl+Space</b></span></em></span>.
-        </p><p>
-
-Templates matching the typed characters will be displayed in a list. A
-preview is also available.
-        </p><p>
-        </p><p>
-          <div class="informalfigure"><div class="mediaobject"><img src="images/templates_1.gif"></div></div>
-
-        </p><p>
-        </p><p>
-
-If the template contains user defined variables the user can press the <span class="emphasis"><em><span class="bold"><b>TAB</b></span></em></span>
-key to jump to the next variable after the template has been inserted.
-        </p><p>
-        </p><p>
-          <div class="informalfigure"><div class="mediaobject"><img src="images/templates_4.gif"></div></div>
-
-        </p><p>
-        </p><p>
-        </p></div></div><div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="N1031A"></a>Source Formatter</h3></div></div><div></div></div><p>
-
-EPIC uses perltidy for source code formatting (perltidy is included in
-the EPIC package).
-      </p><p>
-
-To format the source code select S<span class="bold"><b>ource &gt; Format</b></span> from the
-Eclipse menu.
-      </p><p>
-      </p><p>
-
-Perltidy settings can be changed in the<span class="emphasis"><em> Source Formatter</em></span>
-preference page.
-      </p><p>
-      </p><p>
-        <span class="bold"><b>NOTE:</b></span> Source formatting might take a while if the source code
-has a log of lines.
-      </p><p>
-      </p><p>
-      </p></div><div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="N10339"></a>HTML Export</h3></div></div><div></div></div><p>
-
-To export select Source &gt; Export &gt; HTML from the Eclipse menu and
-specify an output file.
-      </p><p>
-      </p><p>
-
-HTML export settings can be changed in the<span class="emphasis"><em> Source Formatter</em></span>
-preference page.
-      </p><p>
-      </p><p>
-      </p></div><div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="N1034A"></a>Outline View</h3></div></div><div></div></div><p>
-
-The Outline View displays modules ans subroutines. By clicking on the
-module/subroutine name the editor will jump to the appropreate position
-in the source code.
-      </p><p>
-
-Subroutines named <span class="emphasis"><em>new</em></span> will get a different icon.
-      </p><p>
-      </p><p>
-        <div class="informalfigure"><div class="mediaobject"><img src="images/outline_view_1.gif"></div></div>
-
-      </p><p>
-      </p><p>
-      </p><p>
-      </p><p>
-      </p></div></div><div class="navfooter"><hr><table summary="Navigation footer" width="100%"><tr><td align="left" width="40%"><a accesskey="p" href="ar01s03.html">Prev</a>&nbsp;</td><td align="center" width="20%"><a accesskey="u" href="index.html">Up</a></td><td align="right" width="40%">&nbsp;<a accesskey="n" href="ar01s05.html">Next</a></td></tr><tr><td valign="top" align="left" width="40%">Perl Projects&nbsp;</td><td align="center" width="20%"><a accesskey="h" href="index.html">Home</a></td><td valign="top" align="right" width="40%">&nbsp;
-
-RegExp Plugin</td></tr></table></div></body></html>
+After adding a view to the current perspective, you may wish to save
+your new layout by clicking <span class="bold"><b>Window &gt; Save Perspective As</b></span>. 
+        </p></div><div class="sect3" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="N102FE"></a>Moving and docking views</h4></div></div><div></div></div><p>
+To change the location of a view in the current perspective: 
+        </p><div class="orderedlist"><ol type="1"><li><p>
+ Drag the view by its title bar. Do not release the left mouse
+button yet. 
+            </p></li><li><p>
+ As you move the view around the Workbench, the mouse pointer
+changes to one of the <span class="emphasis"><em>drop cursors</em></span> shown in the table below.
+The drop cursor indicates where the view will be docked if you release
+the left mouse button. To see the drop cursor change, drag the view
+over the left, right, top, or bottom border of another view or editor. 
+            </p></li><li><p>
+ When the view is in the location that you want, relative to the
+view or editor area underneath the drop cursor, release the left mouse
+button. 
+            </p></li><li><p>
+ (Optional) If you want to save your changes, select <span class="bold"><b>Window
+&gt; Save Perspective As</b></span> from the main menu bar. 
+            </p></li><li><p>
+ Note that a group of stacked views can be dragged using the empty
+space to the right of the view tabs.
+            </p></li></ol></div></div></div></div><div class="navfooter"><hr><table summary="Navigation footer" width="100%"><tr><td align="left" width="40%"><a accesskey="p" href="ar01s03.html">Prev</a>&nbsp;</td><td align="center" width="20%"><a accesskey="u" href="index.html">Up</a></td><td align="right" width="40%">&nbsp;<a accesskey="n" href="ar01s05.html">Next</a></td></tr><tr><td valign="top" align="left" width="40%">Perl Projects&nbsp;</td><td align="center" width="20%"><a accesskey="h" href="index.html">Home</a></td><td valign="top" align="right" width="40%">&nbsp;Working with the Perl Editor</td></tr></table></div></body></html>

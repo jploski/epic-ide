@@ -1,6 +1,6 @@
 <html><head><META http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Setting up Preferences
     </title><meta content="DocBook XSL Stylesheets V1.65.1" name="generator"><link rel="home" href="index.html" title="  EPIC - User's Guide"><link rel="up" href="index.html" title="  EPIC - User's Guide"><link rel="previous" href="index.html" title="  EPIC - User's Guide"><link rel="next" href="ar01s03.html" title="Perl Projects"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table summary="Navigation header" width="100%"><tr><th align="center" colspan="3">Setting up Preferences
-    </th></tr><tr><td align="left" width="20%"><a accesskey="p" href="index.html">Prev</a>&nbsp;</td><th align="center" width="60%">&nbsp;</th><td align="right" width="20%">&nbsp;<a accesskey="n" href="ar01s03.html">Next</a></td></tr></table><hr></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="N100A2"></a>Setting up Preferences
+    </th></tr><tr><td align="left" width="20%"><a accesskey="p" href="index.html">Prev</a>&nbsp;</td><th align="center" width="60%">&nbsp;</th><td align="right" width="20%">&nbsp;<a accesskey="n" href="ar01s03.html">Next</a></td></tr></table><hr></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="N100A8"></a>Setting up Preferences
     </h2></div></div><div></div></div><p>
 
 EPIC preferences can be accessed via <span class="bold"><b>Window &gt; Preferences...</b></span>
@@ -11,7 +11,7 @@ from the Eclipse Menu.
 
     </p><p>
     </p><p>
-    </p><div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="N100BC"></a>General Preferences</h3></div></div><div></div></div><p>
+    </p><div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="N100C2"></a><a name="dbdoclet.id.General_Preferences"></a>General Preferences</h3></div></div><div></div></div><p>
 
 Click on <span class="emphasis"><em>Perl EPIC </em></span>to open the General Preferences page.
       </p><p>
@@ -29,7 +29,7 @@ Apart from the standard interpreter type, the tye can be switched to <span class
 In this case the @INC path is mapped to be Cygwin compliant.
       </p><p>
       </p><p>
-      </p></div><div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="N100D2"></a>Code Assist</h3></div></div><div></div></div><p>
+      </p></div><div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="N100DA"></a>Code Assist</h3></div></div><div></div></div><p>
 
 On the Code Assist Preference Page the auto completion trigger
 characters are defined. Normally it should not be necessary these
@@ -45,7 +45,7 @@ deselect the <span class="emphasis"><em>Inspect Variables</em></span> checkbox.
 
       </p><p>
       </p><p>
-      </p></div><div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="N100F0"></a>Editor</h3></div></div><div></div></div><p>
+      </p></div><div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="N100F8"></a>Editor</h3></div></div><div></div></div><p>
 
 These options define the appearance of the Perl Editor , the colouring
 of the Perl source code and how Annotations are displayed.
@@ -55,7 +55,7 @@ of the Perl source code and how Annotations are displayed.
 
       </p><p>
       </p><p>
-      </p></div><div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="N10106"></a>Source Formatter</h3></div></div><div></div></div><p>
+      </p></div><div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="N1010E"></a>Source Formatter</h3></div></div><div></div></div><p>
 
 EPIC uses PerlTidy to format source code. The Source Formatter
 Preference allow to specify perltidy command line parameters. To get a
@@ -71,7 +71,7 @@ options from the popup menu.
 Interpreter Preferences have to be setup correctly (see above).
       </p><p>
       </p><p>
-      </p></div><div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="N10127"></a>Templates</h3></div></div><div></div></div><p>
+      </p></div><div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="N1012F"></a>Templates</h3></div></div><div></div></div><p>
 
 Templates are a powerful tool to insert pre defined code snippets while
 working with the&nbsp; Perl Editor.
@@ -87,6 +87,33 @@ import and export of Templates.
       </p><p>
 
 On export Templates are stored in XML format.
+      </p><p>
+      </p><p>
+      </p><p>
+      </p></div><div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="N10150"></a>Setting up the Debugger</h3></div></div><div></div></div><p>
+
+Setting up the debugger requires two steps:
+      </p><p>
+        <div class="orderedlist"><ol type="1"><li><p>
+              <a href="ar01s02.html#dbdoclet.id.General_Preferences">Define the Perl interpreter to use</a>
+            </p></li><li><p>
+ Install the PadWalker Perl module
+            </p><p>
+
+Download the PadWalker module from <a href="http://www.cpan.org/" target="_top">CPAN</a>&nbsp;
+(<a href="http://search.cpan.org/%7Erobin/PadWalker-0.10/" target="_top">PadWalker
+0.10</a>) and install as described in the installation notes or use the
+installation manager provided with your Perl installation (e.g. PPM for
+ActiveState installations).
+            </p><p>
+
+If you are using ActiveState 5.8.x on Windows system you can download a
+pre-compiled PadWalker module from the <a href="http://e-p-i-c.sourceforge.net/" target="_top">EPIC homepage</a> as the
+version provided by ActiveState doesn't seem to work for Perl 5.8.x
+(but it does for 5.6.x).
+            </p><p>
+            </p></li></ol></div>
+
       </p><p>
       </p><p>
       </p></div></div><div class="navfooter"><hr><table summary="Navigation footer" width="100%"><tr><td align="left" width="40%"><a accesskey="p" href="index.html">Prev</a>&nbsp;</td><td align="center" width="20%"><a accesskey="u" href="index.html">Up</a></td><td align="right" width="40%">&nbsp;<a accesskey="n" href="ar01s03.html">Next</a></td></tr><tr><td valign="top" align="left" width="40%">  EPIC - User's Guide&nbsp;</td><td align="center" width="20%"><a accesskey="h" href="index.html">Home</a></td><td valign="top" align="right" width="40%">&nbsp;Perl Projects</td></tr></table></div></body></html>

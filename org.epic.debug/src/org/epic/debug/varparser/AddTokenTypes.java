@@ -23,11 +23,11 @@ public interface AddTokenTypes {
 	int EQ = 21;
 	int PAREN_CL = 22;
 	int ADR = 23;
-	int REF_SYMB = 24;
-	int PURE_NAME = 25;
-	int STRING = 26;
-	int KEY_ASSIGN = 27;
-	int PAREN_OP = 28;
+	int STRING = 24;
+	int KEY_ASSIGN = 25;
+	int REF_SYMB = 26;
+	int PAREN_OP = 27;
+	int PURE_NAME = 28;
 	int FILE_REF = 29;
 	int PREFIXED_NAME = 30;
 	int PURE_NAME_CHAR = 31;

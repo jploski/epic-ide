@@ -66,8 +66,7 @@ public class PerlDB implements IDebugElement, ITerminate {
 	private Object mCurrentCommandDest;
 
 	private final static String EMPTY_STRING = "";
-	//private static final String mDBinitPerl = "{$| = 1; my $old = select
-	// STDERR; $|=1;select $old;}\n";
+	private static final String mDBinitFlush = "{$| = 1; my $old = select STDERR; $|=1;select $old;}\n";
 	private static final String mDBinitPerl_5_8 = "o frame=2";
 	private static final String mDBinitPerl_5_6 = "O frame=2";
 	private final static String mPadwalkerError = "PadWalker module not found - please install";
@@ -277,6 +276,8 @@ public class PerlDB implements IDebugElement, ITerminate {
 				command = mDBinitPerl_5_6;
 			}
 			startCommand(mCommandExecuteCode, command, false, this);
+			startCommand(mCommandExecuteCode, mDBinitFlush, false, this);
+			
 			//		/****************test only*****/
 			//		getLaunch().setAttribute(PerlLaunchConfigurationConstants.ATTR_DEBUG_IO_PORT,"4041");
 			//		getLaunch().setAttribute(PerlLaunchConfigurationConstants.ATTR_DEBUG_ERROR_PORT,"4042");

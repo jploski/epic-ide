@@ -153,16 +153,16 @@ public class Adder
        PerlParser par = new PerlParser (lex);
 	
 		Token tok;
-//      while(true)
-//      {
-//      	tok =lex.nextToken();
-//      	System.out.println(tok.toString()+" L:"+ tok.getLine() +" C:" + tok.getColumn()+"\n");
-//      	 if (tok.getType() == 1) break;
-//      }
+      while(true)
+      {
+      	tok =lex.nextToken();
+      	System.out.println(tok.toString()+" L:"+ tok.getLine() +" C:" + tok.getColumn()+"\n");
+      	 if (tok.getType() == 1) break;
+      }
 
         //parse the file
         par.mVarList = new ArrayList();
-       par.topLevel();
+    //   par.topLevel();
 		System.out.println( "Error:"+ par.hasError());
         }
 }

@@ -144,18 +144,20 @@ public void appendName(String fVal)
 topLevel: (NL)*( namedVar (NL)* )* EOF;
 namedVar: namedScalar | namedArray | namedHash | fileHandle;
 
-namedArray: name:ARRAY_NAME{addVar(name.getText(),"Array");printConsole("++++ARRAY:"+name.getText()+"\n");} name_noeq EQ val_noponl NL( (arrayEntries)?  PAREN_CL)? {finalizeVar(); printConsole("---- ARRAY:"+name.getText()+"\n");};
+namedArray: name:ARRAY_NAME{addVar(name.getText(),"Array");printConsole("++++ARRAY:"+name.getText()+"\n");} name_noeq EQ val_noponl NL( (arrayEntries)?   PAREN_CL)? {finalizeVar(); printConsole("---- ARRAY:"+name.getText()+"\n");};
+
 arrayReference: ARRAY_REF name:ADR (~NL)* NL {addVar("Array->"+name.getText()," ");printConsole("++++ARRAYREF:"+name.getText()+"\n");}(arrayEntries)? {finalizeVar();printConsole("----ARRAYREF:"+name.getText()+"\n");};
-arrayEntries:  INDENT_START (arrayEntry)* INDENT_END
-			| INDENT_START REF_SYMB PURE_NAME NL INDENT_END;
+arrayEntries: (INDENT_START ~NUMBER)=> INDENT_START  val_nonl NL INDENT_END
+			|  INDENT_START (arrayEntry)* INDENT_END;
 arrayEntry: start:NUMBER {addVar("["+start.getText()+"]",null);printConsole("INDEX:"+start.getText());} val_nonl NL{finalizeVar();};
 
 
 
 namedHash: name:HASH_NAME{addVar(name.getText(),"Hash");printConsole("++++HASH:"+name.getText()+"\n");} name_noeq EQ val_noponl NL( (hashEntries) PAREN_CL)?  {finalizeVar();printConsole("----HASH:"+name.getText()+"\n");};
 hashReference: HASH_REF name:ADR (~NL)* NL {addVar("Hash->"+name.getText()," ");printConsole("++++HASHREF:"+name.getText()+"\n");}(hashEntries)?{finalizeVar();printConsole("---HASHREF:"+name.getText()+"\n");};
-hashEntries:  	INDENT_START (hashEntry)* INDENT_END 
-							| INDENT_START REF_SYMB PURE_NAME NL INDENT_END ;
+hashEntries:  	(INDENT_START STRING)=> INDENT_START (hashEntry)* INDENT_END
+				|  INDENT_START  val_nonl NL INDENT_END;
+						
 hashEntry:  start:STRING{addVar(start.getText(),"");printConsole("H["+start.getColumn()+"]");}name_noka KEY_ASSIGN{printConsole("KEY:"+start.getText());}value {finalizeVar();};
 
 namedScalar: name:SCALAR_NAME{addVar(name.getText(),"Scalar");printConsole("++++SCALAR:"+name.getText()+"\n");} EQ value {finalizeVar();printConsole("----SCALAR:"+name.getText()+"\n");};

@@ -1,5 +1,3 @@
-$port = 80
-$socket = IO::Socket::INET=GLOB(0x1ed6234)
-   -> *Symbol::GEN1
-         FileHandle({*Symbol::GEN1}) => fileno(5)
-$server = 'www.postdirekt.de'
+ @perfNumber = (
+       empty array
+  ) 

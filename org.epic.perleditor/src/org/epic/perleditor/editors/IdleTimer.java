@@ -61,14 +61,19 @@ public class IdleTimer extends Thread {
 
 			if (!changedSinceLastRun) {
 
-				Invoker invoker = null;
-				for (int i = 0; i < listeners.size(); i++) {
-					invoker =
-						new Invoker(
-							listeners.get(i),
-							sourceViewer,
-							this.previousHashCode);
-					display.syncExec(invoker);
+				Invoker invoker;
+				invoker = null;
+				try {
+					for (int i = 0; i < listeners.size(); i++) {
+						invoker =
+							new Invoker(
+								listeners.get(i),
+								sourceViewer,
+								this.previousHashCode);
+						display.syncExec(invoker);
+					}
+				} catch (Exception ex) {
+					// This might happen if display is no longer available
 				}
 
 				// Get hash from last invoker

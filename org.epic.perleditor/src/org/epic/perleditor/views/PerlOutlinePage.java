@@ -1,5 +1,7 @@
 package org.epic.perleditor.views;
 
+import java.util.List;
+
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.swt.widgets.Composite;
@@ -44,6 +46,7 @@ public class PerlOutlinePage
 		viewer.expandAll();
 
 	}
+	
 
 	public SourceElement getInitalInput() {
 		SourceElement root = new SourceElement();
@@ -59,12 +62,7 @@ public class PerlOutlinePage
 //				"{",
 //				"=;"));
 
-		subroutines.addSubroutines(
-			SourceParser.getElements(
-				input.getTextWidget().getText(),
-				"^[\\s]*sub\\s+([^\\n\\r{]+)",
-				"", "",
-				true));
+		subroutines.addSubroutines(getSubList());
 				
 //		modules.addModules(
 //			parser.getElements(
@@ -73,16 +71,35 @@ public class PerlOutlinePage
 //				";",
 //				"=>$"));
 
-		modules.addModules(
-				SourceParser.getElements(
-					input.getTextWidget().getText(),
-					"^[\\s]*use\\s+([^a-z][^\\n;]+)",
-					"", "",
-					true));
+		modules.addModules(getModList());
 		root.add(modules);
 		root.add(subroutines);
 
 		return root;
+	}
+	
+	public List getSubList() {
+		return getSubList(input.getTextWidget().getText());
+	}
+	
+	public List getSubList(String text) {
+		return SourceParser.getElements(
+				text,
+				"^[\\s]*sub\\s+([^\\n\\r{]+)",
+				"", "",
+				true);
+	}
+	
+	public List getModList() {
+		return getModList(input.getTextWidget().getText());
+	}
+	
+	public List getModList(String text) {
+		return SourceParser.getElements(
+					text,
+					"^[\\s]*use\\s+([^a-z][^\\n;]+)",
+					"", "",
+					true);
 	}
 	
 	public void dispose()  {
@@ -95,7 +112,7 @@ public class PerlOutlinePage
 			super.dispose();
 		}
 
-	public void update() {
+	public void update(List subList, List modList) {
 		// Update only if input has changed
 		int hashCode = input.getTextWidget().getText().hashCode();
 
@@ -116,12 +133,7 @@ public class PerlOutlinePage
 //				"{",
 //				"=;"));
 
-		subroutines.addSubroutines(
-				SourceParser.getElements(
-					input.getTextWidget().getText(),
-					"^[\\s]*sub\\s+([^\\n\\r{]+)",
-					"", "",
-					true));
+		subroutines.addSubroutines(subList);
 
 //		modules.addModules(
 //			parser.getElements(
@@ -130,12 +142,7 @@ public class PerlOutlinePage
 //				";",
 //				"=>$"));
 
-		modules.addModules(
-				SourceParser.getElements(
-					input.getTextWidget().getText(),
-					"^[\\s]*use\\s+([^a-z][^\\n;]+)",
-					"", "",
-					true));
+		modules.addModules(modList);
 
 		getTreeViewer().refresh(subroutines, false);
 		getTreeViewer().refresh(modules, false);
@@ -150,15 +157,21 @@ public class PerlOutlinePage
 	 * @see org.epic.perleditor.editors.IdleTimerListener#onEditorIdle(org.eclipse.jface.text.source.ISourceViewer)
 	 */
 	public synchronized void onEditorIdle(ISourceViewer viewer) {
+		updateThread.setSourceCode(input.getTextWidget().getText());
 		updateThread.releaseLock();
 	}
 
 	class UpdateThread extends Thread {
 		private Object lock = new Object();
+		private String sourceCode;
 		Display display;
 
 		public UpdateThread(Display display) {
 			this.display = display;
+		}
+		
+		public void setSourceCode(String source) {
+			sourceCode = source;
 		}
 
 		public void run() {
@@ -168,7 +181,7 @@ public class PerlOutlinePage
 						this.lock.wait();
 					}
 
-					display.syncExec(new Invoker());
+					display.syncExec(new Invoker(getSubList(sourceCode), getModList(sourceCode)));
 
 				}
 			} catch (InterruptedException e) {
@@ -184,9 +197,16 @@ public class PerlOutlinePage
 	}
 
 	class Invoker implements Runnable {
+		List subList;
+		List modList;
+		
+		public Invoker(List subList, List modList) {
+			this.subList = subList;
+			this.modList = modList;
+		}
 
 		public void run() {
-			update();
+			update(subList, modList);
 		}
 
 	}

@@ -236,7 +236,7 @@ public class PerlEditor
 		super.doSave(monitor);
 
 		if (page != null) {
-			page.update();
+			page.update(page.getSubList(), page.getModList());
 		}
 
 		if (fValidationThread != null) {
@@ -256,7 +256,7 @@ public class PerlEditor
 		super.doSaveAs();
 
 		if (page != null) {
-			page.update();
+			page.update(page.getSubList(), page.getModList());
 		}
 
 		if (fValidationThread != null) {
@@ -344,7 +344,7 @@ public class PerlEditor
 
 	public void updateOutline() {
 		if (page != null) {
-			page.update();
+			page.update(page.getSubList(), page.getModList());
 		}
 
 	}

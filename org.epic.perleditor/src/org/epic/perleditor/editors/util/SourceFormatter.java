@@ -2,7 +2,6 @@ package org.epic.perleditor.editors.util;
 
 import java.io.*;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
 
@@ -47,9 +46,8 @@ public class SourceFormatter {
   
             List  perlParamList =PerlExecutableUtilities.getPerlExecutableCommandLine();
             
-            // Use only perl executable (first element)
-            List cmdList = new ArrayList();
-            cmdList.add((String) PerlExecutableUtilities.getPerlExecutableCommandLine().get(0));
+            // Get perl executable plus arguments
+            List cmdList = PerlExecutableUtilities.getPerlExecutableCommandLine();
             
             cmdList.add("perltidy");
             

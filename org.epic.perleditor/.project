@@ -3,6 +3,8 @@
 	<name>org.epic.perleditor</name>
 	<comment></comment>
 	<projects>
+		<project>org.epic.debug</project>
+		<project>org.epic.ext.cbg.editor</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

@@ -61,6 +61,11 @@
             class="org.epic.perleditor.preferences.PerlEditorPreferencePage"
             id="org.epic.perleditor.preferences.EpicPerlEditorPreferencePage">
       </page>
+      <page id="org.epic.perleditor.preferences.EpicPerlTemplatesPreferencePage"
+		name="Templates"
+		category="org.epic.core.preferences.PerlMainPreferencePage"
+		class="org.epic.perleditor.templates.preferences.TemplatePreferencePage">
+   		</page>
    </extension>
    <extension
          point="org.eclipse.ui.perspectives">

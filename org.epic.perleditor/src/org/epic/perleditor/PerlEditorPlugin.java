@@ -6,6 +6,7 @@ import org.eclipse.core.runtime.*;
 import org.eclipse.core.resources.*;
 import java.util.*;
 
+import org.epic.perleditor.editors.PerlDocumentProvider;
 import org.epic.perleditor.preferences.PreferenceConstants;
 
 /**
@@ -30,6 +31,8 @@ public class PerlEditorPlugin extends AbstractUIPlugin {
 	
 	public static final String SYNTAX_VALIDATION_INTERVAL_PREFERENCE="SYNTAX_VALIDATION_INTERVAL";
 	public static final int SYNTAX_VALIDATION_INTERVAL_DEFAULT = 2;
+	
+	private PerlDocumentProvider fDocumentProvider;
 	
 	/**
 	 * The constructor.
@@ -128,5 +131,15 @@ public class PerlEditorPlugin extends AbstractUIPlugin {
 	
 	public void setWarningsPreference(boolean value) {
 		getPreferenceStore().setValue(WARNINGS_PREFERENCE, value==true?"1":"0");
+	}
+	
+	public static String getPluginId() {
+			return getDefault().getDescriptor().getUniqueIdentifier();
+	}
+
+	public synchronized PerlDocumentProvider getDocumentProvider() {
+			if (fDocumentProvider == null)
+			  fDocumentProvider= new PerlDocumentProvider();
+			return fDocumentProvider;
 	}
 }

@@ -17,6 +17,10 @@ public class PerlImages
    public static final ImageDescriptor ICON_MODULE;
    public static final ImageDescriptor ICON_MODULE_NODE;
    public static final ImageDescriptor NEW_PROJECT_WIZARD;
+   public static final ImageDescriptor IMG_OBJS_ERROR;
+	  public static final ImageDescriptor IMG_OBJS_WARNING;
+	  public static final ImageDescriptor IMG_OBJS_INFO;
+	  public static final ImageDescriptor IMG_OBJS_TEMPLATE;
 
    static
    {
@@ -28,6 +32,10 @@ public class PerlImages
       ICON_MODULE = createImageDescriptor(iconPath + "module.gif");
       ICON_MODULE_NODE = createImageDescriptor(iconPath + "module_node.gif");
 	  NEW_PROJECT_WIZARD = createImageDescriptor(iconPath + "new_wizard.gif");
+	  IMG_OBJS_ERROR = createImageDescriptor(iconPath + "error_obj.gif");
+	  IMG_OBJS_WARNING = createImageDescriptor(iconPath + "warning_obj.gif");
+      IMG_OBJS_INFO = createImageDescriptor(iconPath + "info_obj.gif");
+      IMG_OBJS_TEMPLATE = createImageDescriptor(iconPath + "template_obj.gif");
    }
 
   

@@ -24,6 +24,12 @@ import gnu.regexp.REMatch;
 
 import org.epic.perleditor.editors.PerlImages;
 import org.epic.perleditor.editors.util.PerlExecutableUtilities;
+import org.epic.perleditor.templates.ContextType;
+import org.epic.perleditor.templates.ContextTypeRegistry;
+import org.epic.perleditor.templates.TemplateEngine;
+import org.epic.perleditor.templates.perl.IPerlCompletionProposal;
+import org.epic.perleditor.templates.perl.PerlCompletionProposalComparator;
+import org.epic.perleditor.templates.perl.SubroutineEngine;
 
 /**
  * Perl completion processor.
@@ -70,11 +76,23 @@ public class PerlCompletionProcessor implements IContentAssistProcessor {
 	protected IContextInformationValidator fValidator = new Validator();
 	private TextEditor fTextEditor = null;
 
+	private TemplateEngine fTemplateEngine;
+	private PerlCompletionProposalComparator fComparator;
+
+	private String lastClassName;
+	private List lastClassList;
+
 	/*
 	 * Constructor
 	 */
 	public PerlCompletionProcessor(TextEditor textEditor) {
 		fTextEditor = textEditor;
+
+		ContextType contextType = ContextTypeRegistry.getInstance().getContextType("perl"); //$NON-NLS-1$
+		if (contextType != null)
+			fTemplateEngine = new TemplateEngine(contextType);
+
+		fComparator = new PerlCompletionProposalComparator();
 	}
 	/* 
 	 * Method declared on IContentAssistProcessor
@@ -85,45 +103,34 @@ public class PerlCompletionProcessor implements IContentAssistProcessor {
 
 		String className = getClassName(viewer, documentOffset);
 
-		if (className == null) {
-			return null;
-		}
+		if (className != null) {
 
-		List proposals = getProposalsForClassname(viewer, className);
+			List proposals = getProposalsForClassname(viewer, className);
 
-		ICompletionProposal[] result =
-			new ICompletionProposal[proposals.size()];
+			ICompletionProposal[] result =
+				new ICompletionProposal[proposals.size()];
 
-		for (int i = 0; i < proposals.size(); i++) {
-			String proposal = (String) proposals.get(i);
-
-			Display display = ((TextViewer) viewer).getControl().getDisplay();
-
-			if (proposal.endsWith("()")) {
-				Image image =
-					new Image(
-						display,
-						PerlImages.ICON_SUBROUTINE.getImageData());
-				result[i] =
-					new CompletionProposal(
-						proposal,
-						documentOffset,
-						0,
-						proposal.length() - 1,
-						image,
-						null,
-						null,
-						null);
-			} else {
-				result[i] =
-					new CompletionProposal(
-						proposal,
-						documentOffset,
-						0,
-						proposal.length());
+			IPerlCompletionProposal[] subroutineResults =
+				new IPerlCompletionProposal[0];
+			SubroutineEngine subroutineEngine;
+			ContextType contextType = ContextTypeRegistry.getInstance().getContextType("perl"); //$NON-NLS-1$
+			if (contextType != null) {
+				subroutineEngine = new SubroutineEngine(contextType);
+				subroutineEngine.complete(
+					viewer,
+					documentOffset,
+					(String[]) proposals.toArray(new String[0]));
+				subroutineResults = subroutineEngine.getResults();
 			}
+			return subroutineResults;
+		} else {
+			fTemplateEngine.reset();
+			fTemplateEngine.complete(viewer, documentOffset);
+			return sort(fTemplateEngine.getResults());
 		}
-		return result;
+
+		//return result;
+		//return subroutineResults;
 	}
 
 	/* 
@@ -177,6 +184,27 @@ public class PerlCompletionProcessor implements IContentAssistProcessor {
 
 		try {
 			IDocument document = viewer.getDocument();
+
+			// Calculate documentOffset
+			String specialChars = "_"; // "_" can be contained in classname
+
+			while (((documentOffset != 0)
+				&& Character.isUnicodeIdentifierPart(
+					document.getChar(documentOffset - 1)))
+				|| ((documentOffset != 0)
+					&& specialChars.indexOf(document.getChar(documentOffset - 1))
+						!= (-1))) {
+				documentOffset--;
+			}
+
+			if (((documentOffset != 0)
+				&& Character.isUnicodeIdentifierStart(
+					document.getChar(documentOffset - 1)))
+				|| ((documentOffset != 0)
+					&& specialChars.indexOf(document.getChar(documentOffset - 1))
+						!= (-1))) {
+				documentOffset--;
+			}
 
 			String text = document.get(0, documentOffset);
 			if (!text.endsWith("->") && !text.endsWith("::")) {
@@ -271,8 +299,6 @@ public class PerlCompletionProcessor implements IContentAssistProcessor {
 
 		try {
 
-			
-
 			//			Construct command line parameters
 			List cmdList =
 				PerlExecutableUtilities.getPerlExecutableCommandLine(
@@ -280,39 +306,43 @@ public class PerlCompletionProcessor implements IContentAssistProcessor {
 
 			String[] cmdParams =
 				(String[]) cmdList.toArray(new String[cmdList.size()]);
-				
-            //Get working directory -- Fixes Bug: 736631
-			String workingDir =
-				 ((IFileEditorInput) fTextEditor.getEditorInput())
-							 .getFile()
-							 .getLocation()
-							 .makeAbsolute()
-							 .removeLastSegments(1)
-							 .toString();
 
-            /*
-             * Due to Java Bug #4763384 sleep for a very small amount of time
-             * immediately after starting the subprocess
-             */
-			Process proc = Runtime.getRuntime().exec(cmdParams, null, new File(workingDir));
+			//Get working directory -- Fixes Bug: 736631
+			String workingDir =
+				((IFileEditorInput) fTextEditor.getEditorInput())
+					.getFile()
+					.getLocation()
+					.makeAbsolute()
+					.removeLastSegments(1)
+					.toString();
+
+			/*
+			 * Due to Java Bug #4763384 sleep for a very small amount of time
+			 * immediately after starting the subprocess
+			 */
+			Process proc =
+				Runtime.getRuntime().exec(
+					cmdParams,
+					null,
+					new File(workingDir));
 			Thread.sleep(1);
 
-            proc.getErrorStream().close();
-            InputStream in = proc.getInputStream();
-            OutputStream out = proc.getOutputStream();
-            //TODO which charset?
-            Writer outw = new OutputStreamWriter(out);
+			proc.getErrorStream().close();
+			InputStream in = proc.getInputStream();
+			OutputStream out = proc.getOutputStream();
+			//TODO which charset?
+			Writer outw = new OutputStreamWriter(out);
 
 			try {
-                outw.write(perlCode);
-                outw.write(0x1a);  //this should avoid problem with Win98
-                outw.flush();
-			} catch(IOException ex) {
+				outw.write(perlCode);
+				outw.write(0x1a); //this should avoid problem with Win98
+				outw.flush();
+			} catch (IOException ex) {
 				ex.printStackTrace();
-            }
-            out.close();
-            
-			String content =  PerlExecutableUtilities.readStringFromStream(in);
+			}
+			out.close();
+
+			String content = PerlExecutableUtilities.readStringFromStream(in);
 			in.close();
 
 			String line;
@@ -330,7 +360,7 @@ public class PerlCompletionProcessor implements IContentAssistProcessor {
 			ex.printStackTrace();
 		} finally {
 			try {
-			
+
 			} catch (Exception ex) {
 				ex.printStackTrace();
 			}
@@ -338,5 +368,13 @@ public class PerlCompletionProcessor implements IContentAssistProcessor {
 
 		return result;
 
+	}
+
+	/**
+	* Order the given proposals.
+	*/
+	private IPerlCompletionProposal[] sort(IPerlCompletionProposal[] proposals) {
+		Arrays.sort(proposals, fComparator);
+		return proposals;
 	}
 }

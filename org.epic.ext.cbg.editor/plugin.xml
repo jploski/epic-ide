@@ -8,7 +8,6 @@
 
    <runtime>
       <library name="perleditor.jar" />
-      <library name="colorer.jar" />
       <library name="gnu-regexp-1.1.4.jar" />
       <library name="jdom.jar" />
       <!-- JEdit text Editor libs (Syntax Coloring by Chris Grindstaf) -->
@@ -21,8 +20,8 @@
    <requires>
       <import plugin="org.eclipse.ui"/>
       <import plugin="org.eclipse.core.resources"/>
+      <import plugin="org.apache.xerces"/>
       <import plugin="org.epic.ext.cbg.editor"/>
-      <import plugin="net.sf.colorer"/>
    </requires>
 
 
@@ -32,8 +31,8 @@
 	    name="Epic Perl Editor"
             icon="icons/epic.gif"
             extensions="pl, ipl, pm, cgi"
-            contributorClass="org.epic.ext.unsupported.colorer.PerlActionContributor"
-	    class="org.epic.ext.unsupported.colorer.PerlEditor"
+            contributorClass="org.epic.perleditor.editors.PerlActionContributor"
+            class="org.epic.perleditor.editors.PerlEditor"
             id="org.epic.perleditor.editors.PerlEditor">
       </editor>
    </extension>
@@ -56,7 +55,7 @@
 	<page id="org.epic.perleditor.preferences.EpicPerlEditorPreferencePage"
 		name="Editor"
 		category="org.epic.core.preferences.PerlMainPreferencePage"
-		class="org.epic.ext.unsupported.colorer.PerlEditorPreferencePage">
+		class="org.epic.perleditor.preferences.PerlEditorPreferencePage">
    		</page>
    	</extension>
 

@@ -1,0 +1,29 @@
+#!/usr/bin/perl
+
+=head1
+Sample Perl script
+=cut
+
+
+$BSD = -f '/vmunix';
+
+$_ = $0;
+if ($_ =~ /KILL$/) {
+    if ($#ARGV >= 0) {
+	$_ .= ' ' . shift;
+    }
+    else {
+	$_ .= ' appl';
+    }
+}
+
+$ENV{'IFS'} = '' if $ENV{'IFS'};        # plug sh security hole
+$applbin = '/appl/bin';
+$ENV{'PATH'} = "$applbin:/bin:/usr/bin:/usr/local/bin";
+
+if (/xyz/) {
+    do killsys('xyz');
+}
+
+__END__
+Invalid data section

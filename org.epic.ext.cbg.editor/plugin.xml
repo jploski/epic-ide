@@ -21,6 +21,8 @@
       <import plugin="org.eclipse.jface.text"/>
       <import plugin="org.eclipse.core.resources"/>
       <import plugin="org.eclipse.ui"/>
+      <import plugin="org.eclipse.jface"/>
+      <import plugin="org.junit"/>
    </requires>
 
 
@@ -28,8 +30,6 @@
          id="cbg.editor"
          name="ColoringEditor"
          point="org.eclipse.ui.editors">
-
    </extension>
-
 
 </plugin>

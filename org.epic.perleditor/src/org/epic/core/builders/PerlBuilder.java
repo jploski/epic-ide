@@ -57,6 +57,16 @@ public class PerlBuilder extends IncrementalProjectBuilder
 			//fullBuild(monitor);
 		} else
 		{
+			// Add folders to successResources
+			if(getProject().hasNature(Constants.PERL_NATURE_ID)) {
+				FolderVisitor folderVisitor = new FolderVisitor();
+				try {
+					getProject().accept(folderVisitor);
+				} catch (CoreException e1) {
+					e1.printStackTrace();
+				}
+			}
+			
 			IResourceDelta delta = getDelta(getProject());
 			if (delta == null)
 			{
@@ -154,6 +164,20 @@ class BuildFullVisitor implements IResourceVisitor
 			PerlDecoratorManager.addSuccessResources(resource);
 		}
 
+		return true;
+	}
+}
+
+class FolderVisitor implements IResourceVisitor {
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.core.resources.IResourceVisitor#visit(org.eclipse.core.resources.IResource)
+	 */
+	public boolean visit(IResource resource) throws CoreException {
+		if(resource.getType() == IResource.FOLDER) {
+			PerlDecoratorManager.addSuccessResources(resource);
+		}
 		return true;
 	}
 }

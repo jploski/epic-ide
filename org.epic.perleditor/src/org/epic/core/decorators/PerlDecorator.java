@@ -26,25 +26,23 @@ import org.epic.perleditor.PerlEditorPlugin;
 
 /**
  * @author luelljoc
- *
+ * 
  * To change the template for this generated type comment go to
  * Window&gt;Preferences&gt;Java&gt;Code Generation&gt;Code and Comments
  */
-public class PerlDecorator
-	extends LabelProvider
-	implements ILightweightLabelDecorator {
+public class PerlDecorator extends LabelProvider
+		implements
+			ILightweightLabelDecorator {
 
-	private static final String PERL_EDITOR_ID =
-		"org.epic.perleditor.editors.PerlEditor";
+	private static final String PERL_EDITOR_ID = "org.epic.perleditor.editors.PerlEditor";
 	private static final String EMB_PERL_FILE_EXTENSION = "epl";
-	private static final String PERL_NATURE_ID =
-		"org.epic.perleditor.perlnature";
+	private static final String PERL_NATURE_ID = "org.epic.perleditor.perlnature";
 
 	public static int NO_ERROR = -1;
 
 	// Define images
-	static final URL BASE_URL =
-		PerlEditorPlugin.getDefault().getDescriptor().getInstallURL();
+	static final URL BASE_URL = PerlEditorPlugin.getDefault().getDescriptor()
+			.getInstallURL();
 	public static final ImageDescriptor ICON_ERROR;
 	public static final ImageDescriptor ICON_WARNING;
 	static {
@@ -53,20 +51,21 @@ public class PerlDecorator
 		ICON_WARNING = createImageDescriptor(iconPath + "warning_co.gif");
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.jface.viewers.ILightweightLabelDecorator#decorate(java.lang.Object, org.eclipse.jface.viewers.IDecoration)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.jface.viewers.ILightweightLabelDecorator#decorate(java.lang.Object,
+	 *      org.eclipse.jface.viewers.IDecoration)
 	 */
 	public void decorate(Object element, IDecoration decoration) {
 		IResource resource = getResource(element);
 		boolean isPerlProject = false;
+		boolean isPerlFolder = false;
 		boolean isPerlFile = true;
 
 		// Only decorate Perl sources or projects
-		IEditorDescriptor defaultEditorDescriptor =
-			PerlEditorPlugin
-				.getDefault()
-				.getWorkbench()
-				.getEditorRegistry()
+		IEditorDescriptor defaultEditorDescriptor = PerlEditorPlugin
+				.getDefault().getWorkbench().getEditorRegistry()
 				.getDefaultEditor(resource.getFullPath().toString());
 
 		try {
@@ -78,21 +77,32 @@ public class PerlDecorator
 		} catch (CoreException e) {
 			e.printStackTrace();
 		}
+		
+		try {
+			if (resource.getType() == IResource.FOLDER) {
+				if (resource.getProject().hasNature(PERL_NATURE_ID)) {
+					isPerlFolder = true;
+				}
+			}
+		} catch (CoreException e) {
+			e.printStackTrace();
+		}
 
 		if (!isPerlProject && defaultEditorDescriptor != null) {
 			if (!defaultEditorDescriptor.getId().equals(PERL_EDITOR_ID)
-				|| resource.getFileExtension().equals(EMB_PERL_FILE_EXTENSION)) {
+					|| resource.getFileExtension().equals(
+							EMB_PERL_FILE_EXTENSION)) {
 				return;
-			}
-			else {
+			} else {
 				isPerlFile = true;
 			}
 		}
 
-		if (isPerlProject) {
+		if (isPerlProject || isPerlFolder) {
 			PerlProjectVisitor projectVisitor = new PerlProjectVisitor();
 			try {
-				resource.getProject().accept(projectVisitor);
+				//resource.getProject().accept(projectVisitor);
+				resource.accept(projectVisitor);
 			} catch (CoreException e1) {
 				e1.printStackTrace();
 			}
@@ -103,43 +113,40 @@ public class PerlDecorator
 				decoration.addOverlay(ICON_ERROR);
 			} else if (state == IMarker.SEVERITY_WARNING) {
 				decoration.addOverlay(ICON_WARNING);
-				}
-			} else if(isPerlFile){
-				try {
-					if (resource.findMarkers(IMarker.PROBLEM, true, 1).length
-						> 0) {
-						int state = PerlDecorator.getDecoratorMarker(resource);
-
-						if (state == IMarker.SEVERITY_ERROR) {
-							decoration.addOverlay(ICON_ERROR);
-						} else if (state == IMarker.SEVERITY_WARNING) {
-							decoration.addOverlay(ICON_WARNING);
-						}
-					}
-				} catch (CoreException e1) {
-					e1.printStackTrace();
-				}
 			}
-		
+		} else if (isPerlFile) {
+			try {
+				if (resource.findMarkers(IMarker.PROBLEM, true, 1).length > 0) {
+					int state = PerlDecorator.getDecoratorMarker(resource);
+
+					if (state == IMarker.SEVERITY_ERROR) {
+						decoration.addOverlay(ICON_ERROR);
+					} else if (state == IMarker.SEVERITY_WARNING) {
+						decoration.addOverlay(ICON_WARNING);
+					}
+				}
+			} catch (CoreException e1) {
+				e1.printStackTrace();
+			}
+		}
 
 		PerlDecoratorManager.removeResource(resource);
 	}
-
 	public static PerlDecorator getPerlDecorator() {
-		IDecoratorManager decoratorManager =
-			PerlEditorPlugin.getDefault().getWorkbench().getDecoratorManager();
+		IDecoratorManager decoratorManager = PerlEditorPlugin.getDefault()
+				.getWorkbench().getDecoratorManager();
 
 		if (decoratorManager
-			.getEnabled("org.epic.core.decorators.PerlDecorator")) {
-			return (PerlDecorator) decoratorManager.getBaseLabelProvider(
-				"org.epic.core.decorators.PerlDecorator");
+				.getEnabled("org.epic.core.decorators.PerlDecorator")) {
+			return (PerlDecorator) decoratorManager
+					.getBaseLabelProvider("org.epic.core.decorators.PerlDecorator");
 		}
 		return null;
 	}
 
 	public void fireLabelEvent(final LabelProviderChangedEvent event) {
 		// We need to get the thread of execution to fire the label provider
-		// changed event , else WSWB complains of thread exception. 
+		// changed event , else WSWB complains of thread exception.
 		Display.getDefault().asyncExec(new Runnable() {
 			public void run() {
 				fireLabelProviderChanged(event);
@@ -152,8 +159,8 @@ public class PerlDecorator
 			return (IResource) object;
 		}
 		if (object instanceof IAdaptable) {
-			return (IResource) ((IAdaptable) object).getAdapter(
-				IResource.class);
+			return (IResource) ((IAdaptable) object)
+					.getAdapter(IResource.class);
 		}
 		return null;
 	}
@@ -174,9 +181,8 @@ public class PerlDecorator
 		try {
 			IMarker[] markers = resource.findMarkers(IMarker.PROBLEM, true, 1);
 			for (int i = 0; i < markers.length; i++) {
-				int severity =
-					((Integer) markers[i].getAttribute(IMarker.SEVERITY))
-						.intValue();
+				int severity = ((Integer) markers[i]
+						.getAttribute(IMarker.SEVERITY)).intValue();
 				if (severity == IMarker.SEVERITY_ERROR) {
 					state = IMarker.SEVERITY_ERROR;
 					break;
@@ -196,7 +202,9 @@ public class PerlDecorator
 class PerlProjectVisitor implements IResourceVisitor {
 
 	private int state = PerlDecorator.NO_ERROR;
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.core.resources.IResourceVisitor#visit(org.eclipse.core.resources.IResource)
 	 */
 	public boolean visit(IResource resource) throws CoreException {

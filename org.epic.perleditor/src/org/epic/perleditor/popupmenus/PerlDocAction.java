@@ -39,11 +39,13 @@ public class PerlDocAction
 	}
 
 	protected Control createContents(Composite parent) {
+		Text t = new Text(parent, SWT.MULTI | SWT.V_SCROLL | SWT.H_SCROLL);
+		t.setText(content);
+		
 		getShell().setBounds(WINDOW_OFFSET_X, WINDOW_OFFSET_Y, WINDOW_WIDTH, WINDOW_HEIGHT);
 		getShell().setText(title);
 		getShell().setImage(PerlImages.ICON_EDITOR.createImage());
-		Text t = new Text(parent, SWT.MULTI | SWT.V_SCROLL | SWT.H_SCROLL);
-		t.setText(content);
+		
 		return t;
 	}
 

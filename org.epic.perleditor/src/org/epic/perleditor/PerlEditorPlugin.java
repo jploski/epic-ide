@@ -2,7 +2,7 @@ package org.epic.perleditor;
 
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.ui.plugin.*;
-import org.eclipse.core.runtime.*;
+//import org.eclipse.core.runtime.*;
 import org.eclipse.core.resources.*;
 import java.util.*;
 
@@ -41,8 +41,9 @@ public class PerlEditorPlugin extends AbstractUIPlugin {
 	/**
 	 * The constructor.
 	 */
-	public PerlEditorPlugin(IPluginDescriptor descriptor) {
-		super(descriptor);
+	//public PerlEditorPlugin(IPluginDescriptor descriptor) {
+	public PerlEditorPlugin() {
+		//super(descriptor);
 		plugin = this;
 		try {
 			resourceBundle= ResourceBundle.getBundle("org.epic.perleditor.PerlEditorPluginResources");

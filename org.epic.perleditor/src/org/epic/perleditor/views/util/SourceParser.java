@@ -13,7 +13,6 @@ import org.epic.perleditor.views.model.Model;
 
 import gnu.regexp.RE;
 import gnu.regexp.REMatch;
-import gnu.regexp.RESyntax;
 
 public class SourceParser {
 	public static final String FUNCTION = "sub ";
@@ -200,64 +199,30 @@ public class SourceParser {
 		String preFix,
 		String postFix,
 		boolean deleteComments) {
-	  	return getElements(text,regexp,preFix,postFix,deleteComments,true);
-	}
-	
-	/**
-	 * Gets elements from sourcecode by using regular expressions.
-	 * @param text
-	 * @param regexp
-	 * @param preFix
-	 * @param postFix
-	 * @param deleteComments
-	 * @param posWordOnly   (postioning for word-only or for complete line)
-	 * @return
-	 */
-	public static List getElements(
-		String text,
-		String regexp,
-		String preFix,
-		String postFix,
-		boolean deleteComments,
-		boolean posWordOnly) {
 		List results = new ArrayList();
 
 		Document docOrg = new Document(text);
 		try {
 			RE reg;
-
-			// support all types of linebreaks on all platforms
-			//TODO it would be fine to have user-option to set for the project the line-separator
-			/* we assume a clever Linebreak-handling! 
-			 * (i.e. if the line-break could be found => the whole file consists of this kind of line-break 
-			 * 
-			 * otherwise, it would be a Preference-setting! (which is currently not available)
-			 * 
-			 *reason for this, is that you can edit on a Windows-system Unix-files, which are treated 
-			 *within Eclipse with Unix-separtors!
-			 *and the effect is an incorrect positioning!
-			 */
 			
-			RESyntax lineSep=new RESyntax(RESyntax.RE_SYNTAX_PERL5);
-			if (text.indexOf(System.getProperty("line.separator")) == -1) {
-			  if (text.indexOf("\r\n") > 0) {
-			    lineSep.setLineSeparator("\r\n");
-			  } else if (text.indexOf("\n") > 0) {
-			    lineSep.setLineSeparator("\n");
-			  } else if(text.indexOf("\r") > 0) {
-			    lineSep.setLineSeparator("\r");
-			  }
-			  //no other possibility left for linesep, right?
-			}
+			String systemLineSep = System.getProperty("line.separator");
+			
+			
 
 			// Remove POD and comments
 			if (deleteComments) {
+				
+				// support all types of linebreaks on all platforms
+				reg = new RE(regexp, RE.REG_MULTILINE);
+				text = replaceLineSeparator(text, systemLineSep);
+				
 				// Remove POD
-				reg = new RE("^(=.*)(("+ lineSep.getLineSeparator() +".*)+?)(" + lineSep.getLineSeparator() + "=cut)$", RE.REG_MULTILINE, lineSep);
+				reg = new RE("^(=.*)((" + systemLineSep + ".*)+?)(" + systemLineSep + "=cut)$", RE.REG_MULTILINE);
+				//text = reg.substituteAll(text, "");		
 				
 				REMatch match;
 				while((match = reg.getMatch(text)) != null ) {
-					int newlines = match.toString().split(lineSep.getLineSeparator()).length;
+					int newlines = match.toString().split(systemLineSep).length;
 					char[] nls= new char[newlines];
 					for(int x =0; x < newlines; ++x)
 						nls[x]='\n';
@@ -268,18 +233,19 @@ public class SourceParser {
 				}
 
 				// Remove comments
-				reg = new RE("[" + lineSep.getLineSeparator() + ");]\\s*(#.*)$");
-				text = reg.substituteAll(text, lineSep.getLineSeparator());
+				reg = new RE("[" + systemLineSep + ");]\\s*(#.*)$");
+				text = reg.substituteAll(text, systemLineSep);
 			}
 			
-			reg = new RE(regexp, RE.REG_MULTILINE,lineSep);
+			// support all types of linebreaks on all platforms
+			reg = new RE(regexp, RE.REG_MULTILINE);
+			text = replaceLineSeparator(text, systemLineSep);
 			REMatch[] matches = reg.getAllMatches(text);
 
 			for (int i = 0; i < matches.length; i++) {
 				String match = null;
 				int start;
 				int end;
-				
 				if (reg.getNumSubs() > 0) {
 					match = matches[i].toString(1);
 					start = matches[i].getStartIndex(1);
@@ -293,23 +259,12 @@ public class SourceParser {
 				end -= match.length() - match.trim().length();
 				match = match.trim();
 				
-				Model func;
-				if (posWordOnly) {
-				  /*
-				   * the following lines is for matching the word only =>
-				   * is required for Subs and Packages as well for Open Declaration
-				   */
-				  func = new Model(preFix + match + postFix, start, end - start);
-				} else {
-					/*
-					 * the following line is for matching the whole line of the regexp. =>
-					 * required for ??? problems with ???
-					 */
-					Document doc = new Document(text);
-					int line = doc.getLineOfOffset(start);
-					
-					func = new Model(preFix + match + postFix, docOrg.getLineOffset(line), docOrg.getLineLength(line)-1);
-				}
+				Document doc = new Document(text);
+				int line = doc.getLineOfOffset(start);
+				
+				Model func =
+					new Model(preFix + match + postFix, docOrg.getLineOffset(line), docOrg.getLineLength(line)-1);
+					//new Model(preFix + match + postFix, start, end - start);
 				results.add(func);
 			}
 		} catch (Exception e) {
@@ -317,6 +272,17 @@ public class SourceParser {
 		}
 
 		return results;
+	}
+
+	/**
+	 * @param text
+	 * @return
+	 */
+	private static String replaceLineSeparator(String text, String separator) {
+		text =text.replaceAll("\r\n","\n");
+		text =text.replaceAll("\r","\n");
+		text =text.replaceAll("\n",separator);
+		return text;
 	}
 
 }

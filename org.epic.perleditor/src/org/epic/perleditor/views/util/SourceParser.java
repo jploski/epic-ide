@@ -209,16 +209,18 @@ public class SourceParser {
 			if (deleteComments) {
 				// Remove POD
 				reg = new RE("^(=.*)((\\n.*)+?)(\\n=cut)$", RE.REG_MULTILINE);
-				//text = reg.substituteAll(text, "");
-				REMatch[] matches = reg.getAllMatches(text);
-				for(int i=0; i < matches.length; i++) {
-					REMatch match = matches[i];
+				//text = reg.substituteAll(text, "");		
+				
+				REMatch match;
+				while((match = reg.getMatch(text)) != null ) {
 					int newlines = match.toString().split("\n").length;
 					char[] nls= new char[newlines];
 					for(int x =0; x < newlines; ++x)
 						nls[x]='\n';
-						
-					match.substituteInto(new String(nls));
+					
+					String tmpText1 = text.substring(0, match.getStartIndex());
+					String tmpText2 = text.length()-1 > match.getEndIndex() ? text.substring(match.getEndIndex()+1) : "";
+					text = tmpText1 + match.substituteInto(new String(nls)) + tmpText2;
 				}
 
 				// Remove comments

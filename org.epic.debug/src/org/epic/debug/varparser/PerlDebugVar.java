@@ -63,7 +63,7 @@ public class PerlDebugVar implements IVariable {
 	{
 		try{
 		
-		System.out.println("-*-Comparing Var"+fVarOrg.getName()+"/"+getName());
+		//System.out.println("-*-Comparing Var"+fVarOrg.getName()+"/"+getName());
 		if( ! getName().equals(fVarOrg.getName()) )
 		 {
 		 	System.err.println("*****Error****:Comparing Variables with different Names");

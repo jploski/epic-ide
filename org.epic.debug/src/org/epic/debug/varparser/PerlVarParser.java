@@ -134,9 +134,10 @@ public class PerlVarParser
 		try{
 		// Construct the lexer
 		PerlBaseLexer lex = new PerlLexer ( new StringReader( fText ) );
-        
+		lex.mIgnoreWS=true;
 		// construct the parser
 		par = new PerlParser (lex);
+		par.setLex(lex);
 		par.setDebugger(mDebugger);
 		par.setScope(fScope);
 		par.setVarList(fVarList);

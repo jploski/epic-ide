@@ -679,8 +679,8 @@ public class PerlDB implements IDebugElement, ITerminate {
 				debugOutput.append(buf, 0, count);
 			currentOutput = debugOutput.toString();
 
-			System.out.println("\nCurrent DEBUGOUTPUT:\n" + currentOutput
-					+ "\n");
+//			System.out.println("\nCurrent DEBUGOUTPUT:\n" + currentOutput
+//					+ "\n");
 			if (count == -1 || hasSessionTerminated(currentOutput)) {
 				finished = SESSION_TERMINATED;
 				break;
@@ -1506,7 +1506,7 @@ public class PerlDB implements IDebugElement, ITerminate {
 					.getEndIndex(2));
 			var = evaluateStatement(mThreads[0], "p \"" + var + "\"");
 			text = evaluateStatement(mThreads[0], "p \"" + text + "\"");
-			System.out.println("\n" + var + ":" + text + "\n");
+			//System.out.println("\n" + var + ":" + text + "\n");
 			fRegexp.append(text);
 			fArg.append(var);
 		} catch (REException e2) {

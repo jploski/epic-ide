@@ -21,7 +21,12 @@ public class PerlParserSimple extends antlr.LLkParser       implements AddTokenT
 	java.util.ArrayList mVarList = null; //new java.util.ArrayList();
 	org.eclipse.debug.core.model.IDebugElement mDebugger;
 	int mScope;
-	
+	PerlBaseLexer mLex;
+
+	public void setLex(PerlBaseLexer fLex)
+	{
+		mLex = fLex;
+	}
 	public void printConsole(String fString)
 	{
 		//System.out.println(fString);
@@ -146,37 +151,37 @@ public PerlParserSimple(ParserSharedInputState state) {
 		
 		try {      // for error handling
 			{
-			_loop3:
+			_loop2670:
 			do {
 				if ((LA(1)==NL)) {
 					match(NL);
 				}
 				else {
-					break _loop3;
+					break _loop2670;
 				}
 				
 			} while (true);
 			}
 			{
-			_loop7:
+			_loop2674:
 			do {
 				if ((_tokenSet_0.member(LA(1)))) {
 					namedVar();
 					{
-					_loop6:
+					_loop2673:
 					do {
 						if ((LA(1)==NL)) {
 							match(NL);
 						}
 						else {
-							break _loop6;
+							break _loop2673;
 						}
 						
 					} while (true);
 					}
 				}
 				else {
-					break _loop7;
+					break _loop2674;
 				}
 				
 			} while (true);
@@ -184,9 +189,13 @@ public PerlParserSimple(ParserSharedInputState state) {
 			match(Token.EOF_TYPE);
 		}
 		catch (RecognitionException ex) {
-			reportError(ex);
-			consume();
-			consumeUntil(_tokenSet_1);
+			if (inputState.guessing==0) {
+				reportError(ex);
+				consume();
+				consumeUntil(_tokenSet_1);
+			} else {
+			  throw ex;
+			}
 		}
 	}
 	
@@ -222,46 +231,40 @@ public PerlParserSimple(ParserSharedInputState state) {
 			}
 		}
 		catch (RecognitionException ex) {
-			reportError(ex);
-			consume();
-			consumeUntil(_tokenSet_2);
+			if (inputState.guessing==0) {
+				reportError(ex);
+				consume();
+				consumeUntil(_tokenSet_2);
+			} else {
+			  throw ex;
+			}
 		}
 	}
 	
 	public final void namedScalar() throws RecognitionException, TokenStreamException {
 		
 		Token  name = null;
-		Token  pn2 = null;
 		
 		try {      // for error handling
 			name = LT(1);
 			match(SCALAR_NAME);
-			addVar(name.getText(),"Scalar");printConsole("++++SCALAR:"+name.getText()+"\n");
-			{
-			if ((LA(1)==EQ) && (_tokenSet_3.member(LA(2))) && (_tokenSet_4.member(LA(3)))) {
-				match(EQ);
-				value();
+			if ( inputState.guessing==0 ) {
+				addVar(name.getText(),"Scalar");printConsole("++++SCALAR:"+name.getText()+"\n");
+			}
+			match(EQ);
+			value();
+			if ( inputState.guessing==0 ) {
 				finalizeVar();printConsole("----SCALAR:"+name.getText()+"\n");
-			}
-			else if ((LA(1)==EQ) && (LA(2)==PURE_NAME) && (LA(3)==EQ)) {
-				match(EQ);
-				pn2 = LT(1);
-				match(PURE_NAME);
-				match(EQ);
-				appendName("="+pn2.getText());
-				refs();
-				finalizeVar();printConsole("----SCALAR:"+name.getText()+"\n");
-			}
-			else {
-				throw new NoViableAltException(LT(1), getFilename());
-			}
-			
 			}
 		}
 		catch (RecognitionException ex) {
-			reportError(ex);
-			consume();
-			consumeUntil(_tokenSet_2);
+			if (inputState.guessing==0) {
+				reportError(ex);
+				consume();
+				consumeUntil(_tokenSet_2);
+			} else {
+			  throw ex;
+			}
 		}
 	}
 	
@@ -272,18 +275,44 @@ public PerlParserSimple(ParserSharedInputState state) {
 		try {      // for error handling
 			name = LT(1);
 			match(ARRAY_NAME);
-			addVar(name.getText(),"Array");printConsole("++++ARRAY:"+name.getText()+"\n");
+			if ( inputState.guessing==0 ) {
+				addVar(name.getText(),"Array");printConsole("++++ARRAY:"+name.getText()+"\n");
+			}
+			name_noeq();
 			match(EQ);
-			match(PAREN_OP);
+			val_noponl();
 			match(NL);
 			{
 			switch ( LA(1)) {
 			case INDENT_START:
+			case PAREN_CL:
 			{
-				arrayEntries();
+				{
+				switch ( LA(1)) {
+				case INDENT_START:
+				{
+					arrayEntries();
+					break;
+				}
+				case PAREN_CL:
+				{
+					break;
+				}
+				default:
+				{
+					throw new NoViableAltException(LT(1), getFilename());
+				}
+				}
+				}
+				match(PAREN_CL);
 				break;
 			}
-			case PAREN_CL:
+			case EOF:
+			case ARRAY_NAME:
+			case SCALAR_NAME:
+			case HASH_NAME:
+			case FILE_HANDLE:
+			case NL:
 			{
 				break;
 			}
@@ -293,13 +322,18 @@ public PerlParserSimple(ParserSharedInputState state) {
 			}
 			}
 			}
-			finalizeVar(); printConsole("---- ARRAY:"+name.getText()+"\n");
-			match(PAREN_CL);
+			if ( inputState.guessing==0 ) {
+				finalizeVar(); printConsole("---- ARRAY:"+name.getText()+"\n");
+			}
 		}
 		catch (RecognitionException ex) {
-			reportError(ex);
-			consume();
-			consumeUntil(_tokenSet_2);
+			if (inputState.guessing==0) {
+				reportError(ex);
+				consume();
+				consumeUntil(_tokenSet_2);
+			} else {
+			  throw ex;
+			}
 		}
 	}
 	
@@ -310,18 +344,29 @@ public PerlParserSimple(ParserSharedInputState state) {
 		try {      // for error handling
 			name = LT(1);
 			match(HASH_NAME);
-			addVar(name.getText(),"Hash");printConsole("++++HASH:"+name.getText()+"\n");
+			if ( inputState.guessing==0 ) {
+				addVar(name.getText(),"Hash");printConsole("++++HASH:"+name.getText()+"\n");
+			}
+			name_noeq();
 			match(EQ);
-			match(PAREN_OP);
+			val_noponl();
 			match(NL);
 			{
 			switch ( LA(1)) {
 			case INDENT_START:
 			{
+				{
 				hashEntries();
+				}
+				match(PAREN_CL);
 				break;
 			}
-			case PAREN_CL:
+			case EOF:
+			case ARRAY_NAME:
+			case SCALAR_NAME:
+			case HASH_NAME:
+			case FILE_HANDLE:
+			case NL:
 			{
 				break;
 			}
@@ -331,13 +376,18 @@ public PerlParserSimple(ParserSharedInputState state) {
 			}
 			}
 			}
-			finalizeVar();printConsole("----HASH:"+name.getText()+"\n");
-			match(PAREN_CL);
+			if ( inputState.guessing==0 ) {
+				finalizeVar();printConsole("----HASH:"+name.getText()+"\n");
+			}
 		}
 		catch (RecognitionException ex) {
-			reportError(ex);
-			consume();
-			consumeUntil(_tokenSet_2);
+			if (inputState.guessing==0) {
+				reportError(ex);
+				consume();
+				consumeUntil(_tokenSet_2);
+			} else {
+			  throw ex;
+			}
 		}
 	}
 	
@@ -351,17 +401,138 @@ public PerlParserSimple(ParserSharedInputState state) {
 			match(PAREN_OP);
 			name = LT(1);
 			match(PURE_NAME);
-			addVar(name.getText(),"FileHandle");printConsole("++++FH:"+name.getText()+"\n");
+			if ( inputState.guessing==0 ) {
+				addVar(name.getText(),"FileHandle");printConsole("++++FH:"+name.getText()+"\n");
+			}
 			match(PAREN_CL);
 			match(KEY_ASSIGN);
 			val = LT(1);
 			match(FILE_NO);
-			setVal(val.getText(),"FileHandle"); finalizeVar();printConsole("++++FNO_SYMB:"+val.getText()+"\n");
+			if ( inputState.guessing==0 ) {
+				setVal(val.getText(),"FileHandle"); finalizeVar();printConsole("++++FNO_SYMB:"+val.getText()+"\n");
+			}
 		}
 		catch (RecognitionException ex) {
-			reportError(ex);
-			consume();
-			consumeUntil(_tokenSet_2);
+			if (inputState.guessing==0) {
+				reportError(ex);
+				consume();
+				consumeUntil(_tokenSet_2);
+			} else {
+			  throw ex;
+			}
+		}
+	}
+	
+	public final void name_noeq() throws RecognitionException, TokenStreamException {
+		
+		Token  n = null;
+		
+		try {      // for error handling
+			{
+			_loop2738:
+			do {
+				if ((_tokenSet_3.member(LA(1)))) {
+					n = LT(1);
+					matchNot(EQ);
+					if ( inputState.guessing==0 ) {
+						appendName(n.getText());
+					}
+				}
+				else {
+					break _loop2738;
+				}
+				
+			} while (true);
+			}
+		}
+		catch (RecognitionException ex) {
+			if (inputState.guessing==0) {
+				reportError(ex);
+				consume();
+				consumeUntil(_tokenSet_4);
+			} else {
+			  throw ex;
+			}
+		}
+	}
+	
+	public final void val_noponl() throws RecognitionException, TokenStreamException {
+		
+		Token  n = null;
+		
+		try {      // for error handling
+			if ( inputState.guessing==0 ) {
+				mLex.mIgnoreWS=false;
+			}
+			{
+			_loop2735:
+			do {
+				switch ( LA(1)) {
+				case ARRAY_NAME:
+				case SCALAR_NAME:
+				case HASH_NAME:
+				case MODULE_NAME:
+				case ARRAY_REF:
+				case SCALAR_REF:
+				case HASH_REF:
+				case CODE_REF:
+				case GLOB:
+				case REF:
+				case NUMBER:
+				case SEPARATOR:
+				case INDENT_START:
+				case INDENT_END:
+				case FILE_HANDLE:
+				case FILE_NO:
+				case EQ:
+				case PAREN_CL:
+				case ADR:
+				case REF_SYMB:
+				case PURE_NAME:
+				case STRING:
+				case KEY_ASSIGN:
+				case FILE_REF:
+				case PREFIXED_NAME:
+				case PURE_NAME_CHAR:
+				case FIRST_PURE_NAME_CHAR:
+				case STRING1:
+				case STRING2:
+				case WS:
+				case CHAR_ESC:
+				{
+					{
+					n = LT(1);
+					match(_tokenSet_5);
+					}
+					if ( inputState.guessing==0 ) {
+						appendVal(n.getText());
+					}
+					break;
+				}
+				case PAREN_OP:
+				{
+					match(PAREN_OP);
+					break;
+				}
+				default:
+				{
+					break _loop2735;
+				}
+				}
+			} while (true);
+			}
+			if ( inputState.guessing==0 ) {
+				mLex.mIgnoreWS=true;
+			}
+		}
+		catch (RecognitionException ex) {
+			if (inputState.guessing==0) {
+				reportError(ex);
+				consume();
+				consumeUntil(_tokenSet_6);
+			} else {
+			  throw ex;
+			}
 		}
 	}
 	
@@ -372,13 +543,13 @@ public PerlParserSimple(ParserSharedInputState state) {
 			if ((LA(1)==INDENT_START) && (LA(2)==NUMBER||LA(2)==INDENT_END)) {
 				match(INDENT_START);
 				{
-				_loop15:
+				_loop2685:
 				do {
 					if ((LA(1)==NUMBER)) {
 						arrayEntry();
 					}
 					else {
-						break _loop15;
+						break _loop2685;
 					}
 					
 				} while (true);
@@ -398,9 +569,13 @@ public PerlParserSimple(ParserSharedInputState state) {
 			
 		}
 		catch (RecognitionException ex) {
-			reportError(ex);
-			consume();
-			consumeUntil(_tokenSet_5);
+			if (inputState.guessing==0) {
+				reportError(ex);
+				consume();
+				consumeUntil(_tokenSet_7);
+			} else {
+			  throw ex;
+			}
 		}
 	}
 	
@@ -412,8 +587,22 @@ public PerlParserSimple(ParserSharedInputState state) {
 			match(ARRAY_REF);
 			name = LT(1);
 			match(ADR);
+			{
+			_loop2681:
+			do {
+				if ((_tokenSet_8.member(LA(1)))) {
+					matchNot(NL);
+				}
+				else {
+					break _loop2681;
+				}
+				
+			} while (true);
+			}
 			match(NL);
-			addVar("Array->"+name.getText()," ");printConsole("++++ARRAYREF:"+name.getText()+"\n");
+			if ( inputState.guessing==0 ) {
+				addVar("Array->"+name.getText()," ");printConsole("++++ARRAYREF:"+name.getText()+"\n");
+			}
 			{
 			switch ( LA(1)) {
 			case INDENT_START:
@@ -425,7 +614,6 @@ public PerlParserSimple(ParserSharedInputState state) {
 			case ARRAY_NAME:
 			case SCALAR_NAME:
 			case HASH_NAME:
-			case NUMBER:
 			case INDENT_END:
 			case FILE_HANDLE:
 			case NL:
@@ -439,12 +627,18 @@ public PerlParserSimple(ParserSharedInputState state) {
 			}
 			}
 			}
-			finalizeVar();printConsole("----ARRAYREF:"+name.getText()+"\n");
+			if ( inputState.guessing==0 ) {
+				finalizeVar();printConsole("----ARRAYREF:"+name.getText()+"\n");
+			}
 		}
 		catch (RecognitionException ex) {
-			reportError(ex);
-			consume();
-			consumeUntil(_tokenSet_6);
+			if (inputState.guessing==0) {
+				reportError(ex);
+				consume();
+				consumeUntil(_tokenSet_9);
+			} else {
+			  throw ex;
+			}
 		}
 	}
 	
@@ -455,99 +649,62 @@ public PerlParserSimple(ParserSharedInputState state) {
 		try {      // for error handling
 			start = LT(1);
 			match(NUMBER);
-			addVar("["+start.getText()+"]",null);printConsole("INDEX:"+start.getText());
-			value();
-			finalizeVar();
+			if ( inputState.guessing==0 ) {
+				addVar("["+start.getText()+"]",null);printConsole("INDEX:"+start.getText());
+			}
+			val_nonl();
+			match(NL);
+			if ( inputState.guessing==0 ) {
+				finalizeVar();
+			}
 		}
 		catch (RecognitionException ex) {
-			reportError(ex);
-			consume();
-			consumeUntil(_tokenSet_7);
+			if (inputState.guessing==0) {
+				reportError(ex);
+				consume();
+				consumeUntil(_tokenSet_10);
+			} else {
+			  throw ex;
+			}
 		}
 	}
 	
-	public final void value() throws RecognitionException, TokenStreamException {
+	public final void val_nonl() throws RecognitionException, TokenStreamException {
 		
-		Token  p = null;
-		Token  p2 = null;
-		Token  s = null;
 		Token  n = null;
 		
 		try {      // for error handling
-			switch ( LA(1)) {
-			case PURE_NAME:
+			if ( inputState.guessing==0 ) {
+				mLex.mIgnoreWS=false;
+			}
 			{
-				p = LT(1);
-				match(PURE_NAME);
-				setVal(p.getText(),"");System.out.print(" VAL:"+p.getText());
-				{
-				switch ( LA(1)) {
-				case PURE_NAME:
-				{
-					{
-					p2 = LT(1);
-					match(PURE_NAME);
+			_loop2731:
+			do {
+				if ((_tokenSet_8.member(LA(1)))) {
+					n = LT(1);
+					matchNot(NL);
+					if ( inputState.guessing==0 ) {
+						appendVal(n.getText());
 					}
-					appendVal(" "+p2.getText());printConsole(" "+p2.getText());
-					break;
 				}
-				case NL:
-				{
-					break;
+				else {
+					break _loop2731;
 				}
-				default:
-				{
-					throw new NoViableAltException(LT(1), getFilename());
-				}
-				}
-				}
-				printConsole("\n");
-				match(NL);
-				break;
+				
+			} while (true);
 			}
-			case ARRAY_REF:
-			case SCALAR_REF:
-			case HASH_REF:
-			case CODE_REF:
-			case GLOB:
-			case REF:
-			case FILE_REF:
-			{
-				refs();
-				break;
-			}
-			case STRING:
-			{
-				s = LT(1);
-				match(STRING);
-				setVal(s.getText(),"Scalar");printConsole(" VAL:"+s.getText()+"\n");
-				match(NL);
-				break;
-			}
-			case NUMBER:
-			{
-				n = LT(1);
-				match(NUMBER);
-				setVal(n.getText(),"Scalar");printConsole(" VAL_NUM:"+n.getText()+"\n");
-				match(NL);
-				break;
-			}
-			case NL:
-			{
-				match(NL);
-				setVal("undef","Scalar");
-				break;
-			}
-			default:
-			{
-				throw new NoViableAltException(LT(1), getFilename());
-			}
+			if ( inputState.guessing==0 ) {
+				mLex.mIgnoreWS=true;
 			}
 		}
 		catch (RecognitionException ex) {
-			reportError(ex);
-			consume();
-			consumeUntil(_tokenSet_6);
+			if (inputState.guessing==0) {
+				reportError(ex);
+				consume();
+				consumeUntil(_tokenSet_6);
+			} else {
+			  throw ex;
+			}
 		}
 	}
 	
@@ -558,13 +715,13 @@ public PerlParserSimple(ParserSharedInputState state) {
 			if ((LA(1)==INDENT_START) && (LA(2)==INDENT_END||LA(2)==STRING)) {
 				match(INDENT_START);
 				{
-				_loop23:
+				_loop2696:
 				do {
 					if ((LA(1)==STRING)) {
 						hashEntry();
 					}
 					else {
-						break _loop23;
+						break _loop2696;
 					}
 					
 				} while (true);
@@ -584,9 +741,13 @@ public PerlParserSimple(ParserSharedInputState state) {
 			
 		}
 		catch (RecognitionException ex) {
-			reportError(ex);
-			consume();
-			consumeUntil(_tokenSet_5);
+			if (inputState.guessing==0) {
+				reportError(ex);
+				consume();
+				consumeUntil(_tokenSet_7);
+			} else {
+			  throw ex;
+			}
 		}
 	}
 	
@@ -598,8 +759,22 @@ public PerlParserSimple(ParserSharedInputState state) {
 			match(HASH_REF);
 			name = LT(1);
 			match(ADR);
+			{
+			_loop2692:
+			do {
+				if ((_tokenSet_8.member(LA(1)))) {
+					matchNot(NL);
+				}
+				else {
+					break _loop2692;
+				}
+				
+			} while (true);
+			}
 			match(NL);
-			addVar("Hash->"+name.getText()," ");printConsole("++++HASHREF:"+name.getText()+"\n");
+			if ( inputState.guessing==0 ) {
+				addVar("Hash->"+name.getText()," ");printConsole("++++HASHREF:"+name.getText()+"\n");
+			}
 			{
 			switch ( LA(1)) {
 			case INDENT_START:
@@ -611,7 +786,6 @@ public PerlParserSimple(ParserSharedInputState state) {
 			case ARRAY_NAME:
 			case SCALAR_NAME:
 			case HASH_NAME:
-			case NUMBER:
 			case INDENT_END:
 			case FILE_HANDLE:
 			case NL:
@@ -625,12 +799,18 @@ public PerlParserSimple(ParserSharedInputState state) {
 			}
 			}
 			}
-			finalizeVar();printConsole("---HASHREF:"+name.getText()+"\n");
+			if ( inputState.guessing==0 ) {
+				finalizeVar();printConsole("---HASHREF:"+name.getText()+"\n");
+			}
 		}
 		catch (RecognitionException ex) {
-			reportError(ex);
-			consume();
-			consumeUntil(_tokenSet_6);
+			if (inputState.guessing==0) {
+				reportError(ex);
+				consume();
+				consumeUntil(_tokenSet_9);
+			} else {
+			  throw ex;
+			}
 		}
 	}
 	
@@ -641,16 +821,583 @@ public PerlParserSimple(ParserSharedInputState state) {
 		try {      // for error handling
 			start = LT(1);
 			match(STRING);
-			printConsole("H["+start.getColumn()+"]");
+			if ( inputState.guessing==0 ) {
+				addVar(start.getText(),"");printConsole("H["+start.getColumn()+"]");
+			}
+			name_noka();
 			match(KEY_ASSIGN);
-			addVar("\'"+start.getText()+"\'","");printConsole("KEY:"+start.getText());
+			if ( inputState.guessing==0 ) {
+				printConsole("KEY:"+start.getText());
+			}
 			value();
-			finalizeVar();
+			if ( inputState.guessing==0 ) {
+				finalizeVar();
+			}
 		}
 		catch (RecognitionException ex) {
-			reportError(ex);
-			consume();
-			consumeUntil(_tokenSet_8);
+			if (inputState.guessing==0) {
+				reportError(ex);
+				consume();
+				consumeUntil(_tokenSet_11);
+			} else {
+			  throw ex;
+			}
+		}
+	}
+	
+	public final void name_noka() throws RecognitionException, TokenStreamException {
+		
+		Token  n = null;
+		
+		try {      // for error handling
+			{
+			_loop2741:
+			do {
+				if ((_tokenSet_12.member(LA(1)))) {
+					n = LT(1);
+					matchNot(KEY_ASSIGN);
+					if ( inputState.guessing==0 ) {
+						appendName(n.getText());
+					}
+				}
+				else {
+					break _loop2741;
+				}
+				
+			} while (true);
+			}
+		}
+		catch (RecognitionException ex) {
+			if (inputState.guessing==0) {
+				reportError(ex);
+				consume();
+				consumeUntil(_tokenSet_13);
+			} else {
+			  throw ex;
+			}
+		}
+	}
+	
+	public final void value() throws RecognitionException, TokenStreamException {
+		
+		Token  s = null;
+		Token  n = null;
+		Token  m = null;
+		
+		try {      // for error handling
+			boolean synPredMatched2709 = false;
+			if (((_tokenSet_14.member(LA(1))) && (LA(2)==NL||LA(2)==ADR) && (_tokenSet_15.member(LA(3))))) {
+				int _m2709 = mark();
+				synPredMatched2709 = true;
+				inputState.guessing++;
+				try {
+					{
+					switch ( LA(1)) {
+					case HASH_REF:
+					{
+						match(HASH_REF);
+						break;
+					}
+					case SCALAR_REF:
+					{
+						match(SCALAR_REF);
+						break;
+					}
+					case CODE_REF:
+					{
+						match(CODE_REF);
+						break;
+					}
+					case REF:
+					{
+						match(REF);
+						break;
+					}
+					case FILE_REF:
+					{
+						match(FILE_REF);
+						break;
+					}
+					case GLOB:
+					{
+						match(GLOB);
+						break;
+					}
+					default:
+					{
+						throw new NoViableAltException(LT(1), getFilename());
+					}
+					}
+					}
+				}
+				catch (RecognitionException pe) {
+					synPredMatched2709 = false;
+				}
+				rewind(_m2709);
+				inputState.guessing--;
+			}
+			if ( synPredMatched2709 ) {
+				refs();
+			}
+			else {
+				boolean synPredMatched2711 = false;
+				if (((LA(1)==STRING) && (LA(2)==NL) && (_tokenSet_9.member(LA(3))))) {
+					int _m2711 = mark();
+					synPredMatched2711 = true;
+					inputState.guessing++;
+					try {
+						{
+						match(STRING);
+						match(NL);
+						}
+					}
+					catch (RecognitionException pe) {
+						synPredMatched2711 = false;
+					}
+					rewind(_m2711);
+					inputState.guessing--;
+				}
+				if ( synPredMatched2711 ) {
+					s = LT(1);
+					match(STRING);
+					if ( inputState.guessing==0 ) {
+						setVal(s.getText(),"Scalar");printConsole(" VAL:"+s.getText()+"\n");
+					}
+					match(NL);
+				}
+				else {
+					boolean synPredMatched2713 = false;
+					if (((LA(1)==NUMBER) && (LA(2)==NL) && (_tokenSet_9.member(LA(3))))) {
+						int _m2713 = mark();
+						synPredMatched2713 = true;
+						inputState.guessing++;
+						try {
+							{
+							match(NUMBER);
+							match(NL);
+							}
+						}
+						catch (RecognitionException pe) {
+							synPredMatched2713 = false;
+						}
+						rewind(_m2713);
+						inputState.guessing--;
+					}
+					if ( synPredMatched2713 ) {
+						n = LT(1);
+						match(NUMBER);
+						if ( inputState.guessing==0 ) {
+							setVal(n.getText(),"Scalar");printConsole(" VAL_NUM:"+n.getText()+"\n");
+						}
+						match(NL);
+					}
+					else {
+						boolean synPredMatched2715 = false;
+						if (((LA(1)==FILE_HANDLE) && (LA(2)==PAREN_OP) && (LA(3)==PURE_NAME))) {
+							int _m2715 = mark();
+							synPredMatched2715 = true;
+							inputState.guessing++;
+							try {
+								{
+								match(FILE_HANDLE);
+								}
+							}
+							catch (RecognitionException pe) {
+								synPredMatched2715 = false;
+							}
+							rewind(_m2715);
+							inputState.guessing--;
+						}
+						if ( synPredMatched2715 ) {
+							fileHandle();
+							match(NL);
+						}
+						else {
+							boolean synPredMatched2717 = false;
+							if (((LA(1)==NL) && (_tokenSet_9.member(LA(2))) && (_tokenSet_15.member(LA(3))))) {
+								int _m2717 = mark();
+								synPredMatched2717 = true;
+								inputState.guessing++;
+								try {
+									{
+									match(NL);
+									}
+								}
+								catch (RecognitionException pe) {
+									synPredMatched2717 = false;
+								}
+								rewind(_m2717);
+								inputState.guessing--;
+							}
+							if ( synPredMatched2717 ) {
+								match(NL);
+								if ( inputState.guessing==0 ) {
+									setVal("undef","Scalar");
+								}
+							}
+							else {
+								boolean synPredMatched2720 = false;
+								if (((_tokenSet_16.member(LA(1))) && (_tokenSet_8.member(LA(2))) && ((LA(3) >= ARRAY_NAME && LA(3) <= CHAR_ESC)))) {
+									int _m2720 = mark();
+									synPredMatched2720 = true;
+									inputState.guessing++;
+									try {
+										{
+										{
+										match(_tokenSet_16);
+										}
+										match(EQ);
+										}
+									}
+									catch (RecognitionException pe) {
+										synPredMatched2720 = false;
+									}
+									rewind(_m2720);
+									inputState.guessing--;
+								}
+								if ( synPredMatched2720 ) {
+									if ( inputState.guessing==0 ) {
+										mLex.mIgnoreWS=false;
+									}
+									{
+									int _cnt2723=0;
+									_loop2723:
+									do {
+										if ((_tokenSet_16.member(LA(1)))) {
+											{
+											m = LT(1);
+											match(_tokenSet_16);
+											}
+											if ( inputState.guessing==0 ) {
+												appendVal(m.getText());
+											}
+										}
+										else {
+											if ( _cnt2723>=1 ) { break _loop2723; } else {throw new NoViableAltException(LT(1), getFilename());}
+										}
+										
+										_cnt2723++;
+									} while (true);
+									}
+									if ( inputState.guessing==0 ) {
+										mLex.mIgnoreWS=true;
+									}
+									match(EQ);
+									{
+									boolean synPredMatched2726 = false;
+									if (((_tokenSet_14.member(LA(1))) && (LA(2)==NL||LA(2)==ADR) && (_tokenSet_15.member(LA(3))))) {
+										int _m2726 = mark();
+										synPredMatched2726 = true;
+										inputState.guessing++;
+										try {
+											{
+											switch ( LA(1)) {
+											case HASH_REF:
+											{
+												match(HASH_REF);
+												break;
+											}
+											case SCALAR_REF:
+											{
+												match(SCALAR_REF);
+												break;
+											}
+											case CODE_REF:
+											{
+												match(CODE_REF);
+												break;
+											}
+											case REF:
+											{
+												match(REF);
+												break;
+											}
+											case FILE_REF:
+											{
+												match(FILE_REF);
+												break;
+											}
+											case GLOB:
+											{
+												match(GLOB);
+												break;
+											}
+											default:
+											{
+												throw new NoViableAltException(LT(1), getFilename());
+											}
+											}
+											}
+										}
+										catch (RecognitionException pe) {
+											synPredMatched2726 = false;
+										}
+										rewind(_m2726);
+										inputState.guessing--;
+									}
+									if ( synPredMatched2726 ) {
+										refs();
+									}
+									else if (((LA(1) >= ARRAY_NAME && LA(1) <= CHAR_ESC)) && (_tokenSet_15.member(LA(2))) && (_tokenSet_15.member(LA(3)))) {
+										val_nonl();
+										match(NL);
+									}
+									else {
+										throw new NoViableAltException(LT(1), getFilename());
+									}
+									
+									}
+								}
+								else if (((LA(1) >= ARRAY_NAME && LA(1) <= CHAR_ESC)) && (_tokenSet_15.member(LA(2))) && (_tokenSet_15.member(LA(3)))) {
+									val_nonl();
+									match(NL);
+								}
+								else {
+									throw new NoViableAltException(LT(1), getFilename());
+								}
+								}}}}}
+							}
+							catch (RecognitionException ex) {
+								if (inputState.guessing==0) {
+									reportError(ex);
+									consume();
+									consumeUntil(_tokenSet_9);
+								} else {
+								  throw ex;
+								}
+							}
+						}
+						
+	public final void scalarRef() throws RecognitionException, TokenStreamException {
+		
+		Token  name = null;
+		
+		try {      // for error handling
+			match(SCALAR_REF);
+			name = LT(1);
+			match(ADR);
+			if ( inputState.guessing==0 ) {
+				addVar("Scalar->"+name.getText()," ");printConsole("++++SCALARREF:"+name.getText()+"\n");
+			}
+			match(NL);
+			match(INDENT_START);
+			match(REF_SYMB);
+			value();
+			if ( inputState.guessing==0 ) {
+				finalizeVar();printConsole("----SCALARREF:"+name.getText()+"\n");
+			}
+			match(INDENT_END);
+		}
+		catch (RecognitionException ex) {
+			if (inputState.guessing==0) {
+				reportError(ex);
+				consume();
+				consumeUntil(_tokenSet_9);
+			} else {
+			  throw ex;
+			}
+		}
+	}
+	
+	public final void codeRef() throws RecognitionException, TokenStreamException {
+		
+		Token  name = null;
+		
+		try {      // for error handling
+			match(CODE_REF);
+			name = LT(1);
+			match(ADR);
+			if ( inputState.guessing==0 ) {
+				addVar("Code->"+name.getText()," ");setVal(name.getText(),"CodeRef");printConsole("++++CODEREF:"+name.getText()+"\n");
+			}
+			match(NL);
+			match(INDENT_START);
+			match(REF_SYMB);
+			val_nonl();
+			if ( inputState.guessing==0 ) {
+				finalizeVar();printConsole("----CodeREF:"+name.getText()+"\n");
+			}
+			match(NL);
+			match(INDENT_END);
+		}
+		catch (RecognitionException ex) {
+			if (inputState.guessing==0) {
+				reportError(ex);
+				consume();
+				consumeUntil(_tokenSet_9);
+			} else {
+			  throw ex;
+			}
+		}
+	}
+	
+	public final void ref() throws RecognitionException, TokenStreamException {
+		
+		Token  name = null;
+		
+		try {      // for error handling
+			match(REF);
+			name = LT(1);
+			match(ADR);
+			if ( inputState.guessing==0 ) {
+				printConsole("++++REF_SYMB:"+name.getText()+"\n");
+			}
+			match(NL);
+			match(INDENT_START);
+			match(REF_SYMB);
+			value();
+			if ( inputState.guessing==0 ) {
+				printConsole("----REF_SYMB:"+name.getText()+"\n");
+			}
+			match(INDENT_END);
+		}
+		catch (RecognitionException ex) {
+			if (inputState.guessing==0) {
+				reportError(ex);
+				consume();
+				consumeUntil(_tokenSet_9);
+			} else {
+			  throw ex;
+			}
+		}
+	}
+	
+	public final void fileHandleRef() throws RecognitionException, TokenStreamException {
+		
+		Token  name = null;
+		
+		try {      // for error handling
+			name = LT(1);
+			match(FILE_REF);
+			if ( inputState.guessing==0 ) {
+				addVar("->"+name.getText(),"FileHandleRef");printConsole("++++FRef:"+name.getText()+"\n");
+			}
+			match(NL);
+			{
+			switch ( LA(1)) {
+			case INDENT_START:
+			{
+				match(INDENT_START);
+				fileHandle();
+				match(NL);
+				match(INDENT_END);
+				break;
+			}
+			case EOF:
+			case ARRAY_NAME:
+			case SCALAR_NAME:
+			case HASH_NAME:
+			case INDENT_END:
+			case FILE_HANDLE:
+			case NL:
+			case STRING:
+			{
+				break;
+			}
+			default:
+			{
+				throw new NoViableAltException(LT(1), getFilename());
+			}
+			}
+			}
+			if ( inputState.guessing==0 ) {
+				finalizeVar();
+			}
+		}
+		catch (RecognitionException ex) {
+			if (inputState.guessing==0) {
+				reportError(ex);
+				consume();
+				consumeUntil(_tokenSet_9);
+			} else {
+			  throw ex;
+			}
+		}
+	}
+	
+	public final void globRef() throws RecognitionException, TokenStreamException {
+		
+		Token  name = null;
+		
+		try {      // for error handling
+			match(GLOB);
+			name = LT(1);
+			match(ADR);
+			if ( inputState.guessing==0 ) {
+				addVar("GLOB->"+name.getText()," ");printConsole("++++Glob_SYMB:"+name.getText()+"\n");
+			}
+			name_nonl();
+			match(NL);
+			match(INDENT_START);
+			match(REF_SYMB);
+			name_nonl();
+			match(NL);
+			{
+			switch ( LA(1)) {
+			case INDENT_START:
+			{
+				match(INDENT_START);
+				val_nonl();
+				match(NL);
+				match(INDENT_END);
+				break;
+			}
+			case INDENT_END:
+			{
+				break;
+			}
+			default:
+			{
+				throw new NoViableAltException(LT(1), getFilename());
+			}
+			}
+			}
+			match(INDENT_END);
+			if ( inputState.guessing==0 ) {
+				finalizeVar();printConsole("----Glob_SYMB:"+name.getText()+"\n");
+			}
+		}
+		catch (RecognitionException ex) {
+			if (inputState.guessing==0) {
+				reportError(ex);
+				consume();
+				consumeUntil(_tokenSet_9);
+			} else {
+			  throw ex;
+			}
+		}
+	}
+	
+	public final void name_nonl() throws RecognitionException, TokenStreamException {
+		
+		Token  n = null;
+		
+		try {      // for error handling
+			{
+			_loop2744:
+			do {
+				if ((_tokenSet_8.member(LA(1)))) {
+					n = LT(1);
+					matchNot(NL);
+					if ( inputState.guessing==0 ) {
+						appendName(n.getText());
+					}
+				}
+				else {
+					break _loop2744;
+				}
+				
+			} while (true);
+			}
+		}
+		catch (RecognitionException ex) {
+			if (inputState.guessing==0) {
+				reportError(ex);
+				consume();
+				consumeUntil(_tokenSet_6);
+			} else {
+			  throw ex;
+			}
 		}
 	}
 	
@@ -703,264 +1450,13 @@ public PerlParserSimple(ParserSharedInputState state) {
 			}
 		}
 		catch (RecognitionException ex) {
-			reportError(ex);
-			consume();
-			consumeUntil(_tokenSet_6);
-		}
-	}
-	
-	public final void scalarRef() throws RecognitionException, TokenStreamException {
-		
-		Token  name = null;
-		
-		try {      // for error handling
-			match(SCALAR_REF);
-			name = LT(1);
-			match(ADR);
-			addVar("Scalar->"+name.getText()," ");printConsole("++++SCALARREF:"+name.getText()+"\n");
-			match(NL);
-			match(INDENT_START);
-			match(REF_SYMB);
-			value();
-			finalizeVar();printConsole("----SCALARREF:"+name.getText()+"\n");
-			match(INDENT_END);
-		}
-		catch (RecognitionException ex) {
-			reportError(ex);
-			consume();
-			consumeUntil(_tokenSet_6);
-		}
-	}
-	
-	public final void codeRef() throws RecognitionException, TokenStreamException {
-		
-		Token  name = null;
-		Token  a = null;
-		Token  b = null;
-		Token  c = null;
-		Token  d = null;
-		
-		try {      // for error handling
-			match(CODE_REF);
-			name = LT(1);
-			match(ADR);
-			addVar("Code->"+name.getText()," ");setVal(name.getText(),"CodeRef");printConsole("++++CODEREF:"+name.getText()+"\n");
-			match(NL);
-			match(INDENT_START);
-			match(REF_SYMB);
-			{
-			switch ( LA(1)) {
-			case MODULE_NAME:
-			{
-				a = LT(1);
-				match(MODULE_NAME);
-				appendVal(a.getText());
-				break;
+			if (inputState.guessing==0) {
+				reportError(ex);
+				consume();
+				consumeUntil(_tokenSet_9);
+			} else {
+			  throw ex;
 			}
-			case NUMBER:
-			case NL:
-			case ADR:
-			case PURE_NAME:
-			{
-				break;
-			}
-			default:
-			{
-				throw new NoViableAltException(LT(1), getFilename());
-			}
-			}
-			}
-			{
-			_loop34:
-			do {
-				switch ( LA(1)) {
-				case PURE_NAME:
-				{
-					{
-					b = LT(1);
-					match(PURE_NAME);
-					appendVal(b.getText());
-					}
-					break;
-				}
-				case NUMBER:
-				{
-					{
-					c = LT(1);
-					match(NUMBER);
-					appendVal(c.getText());
-					}
-					break;
-				}
-				case ADR:
-				{
-					{
-					d = LT(1);
-					match(ADR);
-					appendVal(d.getText());
-					}
-					break;
-				}
-				default:
-				{
-					break _loop34;
-				}
-				}
-			} while (true);
-			}
-			match(NL);
-			finalizeVar();printConsole("----CodeREF:"+name.getText()+"\n");
-			match(INDENT_END);
-		}
-		catch (RecognitionException ex) {
-			reportError(ex);
-			consume();
-			consumeUntil(_tokenSet_6);
-		}
-	}
-	
-	public final void ref() throws RecognitionException, TokenStreamException {
-		
-		Token  name = null;
-		
-		try {      // for error handling
-			match(REF);
-			name = LT(1);
-			match(ADR);
-			printConsole("++++REF_SYMB:"+name.getText()+"\n");
-			match(NL);
-			match(INDENT_START);
-			match(REF_SYMB);
-			value();
-			printConsole("----REF_SYMB:"+name.getText()+"\n");
-			match(INDENT_END);
-		}
-		catch (RecognitionException ex) {
-			reportError(ex);
-			consume();
-			consumeUntil(_tokenSet_6);
-		}
-	}
-	
-	public final void fileHandleRef() throws RecognitionException, TokenStreamException {
-		
-		Token  name = null;
-		
-		try {      // for error handling
-			name = LT(1);
-			match(FILE_REF);
-			addVar("->"+name.getText(),"FileHandleRef");printConsole("++++FRef:"+name.getText()+"\n");
-			match(NL);
-			{
-			switch ( LA(1)) {
-			case INDENT_START:
-			{
-				match(INDENT_START);
-				fileHandle();
-				match(NL);
-				match(INDENT_END);
-				break;
-			}
-			case EOF:
-			case ARRAY_NAME:
-			case SCALAR_NAME:
-			case HASH_NAME:
-			case NUMBER:
-			case INDENT_END:
-			case FILE_HANDLE:
-			case NL:
-			case STRING:
-			{
-				break;
-			}
-			default:
-			{
-				throw new NoViableAltException(LT(1), getFilename());
-			}
-			}
-			}
-			finalizeVar();
-		}
-		catch (RecognitionException ex) {
-			reportError(ex);
-			consume();
-			consumeUntil(_tokenSet_6);
-		}
-	}
-	
-	public final void globRef() throws RecognitionException, TokenStreamException {
-		
-		Token  name = null;
-		
-		try {      // for error handling
-			match(GLOB);
-			name = LT(1);
-			match(ADR);
-			addVar("GLOB->"+name.getText()," ");printConsole("++++Glob_SYMB:"+name.getText()+"\n");
-			match(NL);
-			match(INDENT_START);
-			match(REF_SYMB);
-			{
-			switch ( LA(1)) {
-			case FILE_REF:
-			{
-				match(FILE_REF);
-				break;
-			}
-			case PURE_NAME:
-			{
-				match(PURE_NAME);
-				break;
-			}
-			case NL:
-			{
-				break;
-			}
-			default:
-			{
-				throw new NoViableAltException(LT(1), getFilename());
-			}
-			}
-			}
-			match(NL);
-			match(INDENT_START);
-			{
-			switch ( LA(1)) {
-			case FILE_HANDLE:
-			{
-				fileHandle();
-				break;
-			}
-			case ARRAY_REF:
-			case SCALAR_REF:
-			case HASH_REF:
-			case CODE_REF:
-			case GLOB:
-			case REF:
-			case NUMBER:
-			case NL:
-			case PURE_NAME:
-			case STRING:
-			case FILE_REF:
-			{
-				value();
-				break;
-			}
-			default:
-			{
-				throw new NoViableAltException(LT(1), getFilename());
-			}
-			}
-			}
-			match(NL);
-			match(INDENT_END);
-			match(INDENT_END);
-			finalizeVar();printConsole("----Glob_SYMB:"+name.getText()+"\n");
-		}
-		catch (RecognitionException ex) {
-			reportError(ex);
-			consume();
-			consumeUntil(_tokenSet_6);
 		}
 	}
 	
@@ -988,13 +1484,13 @@ public PerlParserSimple(ParserSharedInputState state) {
 		"FILE_NO",
 		"NL",
 		"EQ",
-		"PAREN_OP",
 		"PAREN_CL",
 		"ADR",
 		"REF_SYMB",
 		"PURE_NAME",
 		"STRING",
 		"KEY_ASSIGN",
+		"PAREN_OP",
 		"FILE_REF",
 		"PREFIXED_NAME",
 		"PURE_NAME_CHAR",
@@ -1021,34 +1517,74 @@ public PerlParserSimple(ParserSharedInputState state) {
 	}
 	public static final BitSet _tokenSet_2 = new BitSet(mk_tokenSet_2());
 	private static final long[] mk_tokenSet_3() {
-		long[] data = { 739278592L, 0L};
+		long[] data = { 137436856304L, 0L, 0L, 0L};
 		return data;
 	}
 	public static final BitSet _tokenSet_3 = new BitSet(mk_tokenSet_3());
 	private static final long[] mk_tokenSet_4() {
-		long[] data = { 85196914L, 0L};
+		long[] data = { 2097152L, 0L};
 		return data;
 	}
 	public static final BitSet _tokenSet_4 = new BitSet(mk_tokenSet_4());
 	private static final long[] mk_tokenSet_5() {
-		long[] data = { 144064626L, 0L};
+		long[] data = { 137169469424L, 0L, 0L, 0L};
 		return data;
 	}
 	public static final BitSet _tokenSet_5 = new BitSet(mk_tokenSet_5());
 	private static final long[] mk_tokenSet_6() {
-		long[] data = { 135676018L, 0L};
+		long[] data = { 1048576L, 0L};
 		return data;
 	}
 	public static final BitSet _tokenSet_6 = new BitSet(mk_tokenSet_6());
 	private static final long[] mk_tokenSet_7() {
-		long[] data = { 147456L, 0L};
+		long[] data = { 72745074L, 0L};
 		return data;
 	}
 	public static final BitSet _tokenSet_7 = new BitSet(mk_tokenSet_7());
 	private static final long[] mk_tokenSet_8() {
-		long[] data = { 134348800L, 0L};
+		long[] data = { 137437904880L, 0L, 0L, 0L};
 		return data;
 	}
 	public static final BitSet _tokenSet_8 = new BitSet(mk_tokenSet_8());
+	private static final long[] mk_tokenSet_9() {
+		long[] data = { 68550770L, 0L};
+		return data;
+	}
+	public static final BitSet _tokenSet_9 = new BitSet(mk_tokenSet_9());
+	private static final long[] mk_tokenSet_10() {
+		long[] data = { 147456L, 0L};
+		return data;
+	}
+	public static final BitSet _tokenSet_10 = new BitSet(mk_tokenSet_10());
+	private static final long[] mk_tokenSet_11() {
+		long[] data = { 67239936L, 0L};
+		return data;
+	}
+	public static final BitSet _tokenSet_11 = new BitSet(mk_tokenSet_11());
+	private static final long[] mk_tokenSet_12() {
+		long[] data = { 137304735728L, 0L, 0L, 0L};
+		return data;
+	}
+	public static final BitSet _tokenSet_12 = new BitSet(mk_tokenSet_12());
+	private static final long[] mk_tokenSet_13() {
+		long[] data = { 134217728L, 0L};
+		return data;
+	}
+	public static final BitSet _tokenSet_13 = new BitSet(mk_tokenSet_13());
+	private static final long[] mk_tokenSet_14() {
+		long[] data = { 536887040L, 0L};
+		return data;
+	}
+	public static final BitSet _tokenSet_14 = new BitSet(mk_tokenSet_14());
+	private static final long[] mk_tokenSet_15() {
+		long[] data = { 137438953458L, 0L, 0L, 0L};
+		return data;
+	}
+	public static final BitSet _tokenSet_15 = new BitSet(mk_tokenSet_15());
+	private static final long[] mk_tokenSet_16() {
+		long[] data = { 137435807728L, 0L, 0L, 0L};
+		return data;
+	}
+	public static final BitSet _tokenSet_16 = new BitSet(mk_tokenSet_16());
 	
 	}

@@ -107,19 +107,7 @@
             id="org.epic.debug.perldebugger.perl">
       </debugModelPresentation>
    </extension>
-   <extension
-         point="org.eclipse.ui.popupMenus">
-      <viewerContribution
-            targetID="#PerlRulerContext"
-            id="org.epic.debug.RulerPopupActions">
-         <action
-               label="Add Remove Breakpoint"
-               class="org.epic.debug.ManageBreakpointRulerActionDelegate"
-               menubarPath="debug"
-               id="org.epic.ManageBreakpointRulerActionDelegate">
-         </action>
-      </viewerContribution>
-   </extension>
+  
    <extension
          point="org.eclipse.ui.popupMenus">
       <viewerContribution
@@ -130,6 +118,19 @@
                class="org.epic.debug.ManageRegExpBreakpointRulerActionDelegate"
                menubarPath="debug"
                id="org.epic.ManageRegExpBreakpointRulerActionDelegate">
+         </action>
+      </viewerContribution>
+   </extension>
+    <extension
+         point="org.eclipse.ui.popupMenus">
+      <viewerContribution
+            targetID="#PerlRulerContext"
+            id="org.epic.debug.RulerPopupActions">
+         <action
+               label="Add Remove Breakpoint"
+               class="org.epic.debug.ManageBreakpointRulerActionDelegate"
+               menubarPath="debug"
+               id="org.epic.ManageBreakpointRulerActionDelegate">
          </action>
       </viewerContribution>
    </extension>

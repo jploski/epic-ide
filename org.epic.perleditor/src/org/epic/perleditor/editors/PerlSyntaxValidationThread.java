@@ -139,7 +139,6 @@ public class PerlSyntaxValidationThread extends Thread implements IdleTimerListe
 				(IResource) ((IAdaptable) input).getAdapter(IResource.class);
 				
 			PerlValidator.validate(resource, text);
-			PerlValidator.parseTasks(resource, text);
 		} catch (Exception e) {
 			e.printStackTrace();
 			if (proc != null) {

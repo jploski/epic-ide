@@ -91,6 +91,7 @@ public class PerlEditor
 	private PerlContentOutlinePage fOutlinePage;
 	protected PerlOutlinePage page;
 	protected PerlSyntaxValidationThread fValidationThread = null;
+	protected PerlToDoMarkerThread fTodoMarkerThread = null;
 	protected CompositeRuler ruler;
 	protected LineNumberRulerColumn numberRuler;
 	private boolean lineRulerActive = false;
@@ -177,24 +178,31 @@ public class PerlEditor
 
 		if (fValidationThread == null && isPerlMode()) {
 			fValidationThread =
-				new PerlSyntaxValidationThread(this, getSourceViewer());
+				new PerlSyntaxValidationThread(this, getSourceViewer());				
 			//Thread defaults
 			fValidationThread.start();
 		}
-
+		
 		if (fValidationThread != null) {
-			fValidationThread.setText(
-				getSourceViewer().getTextWidget().getText());
-		}
-
-		setEditorForegroundColor();
+					fValidationThread.setText(
+						getSourceViewer().getTextWidget().getText());
+				}						
+				
+	  // set up the ToDoMarkerThread
+	  if ((fTodoMarkerThread == null) && isPerlMode()) {
+	  	fTodoMarkerThread = new PerlToDoMarkerThread(this, getSourceViewer());
+	  	fTodoMarkerThread.start();
+	  }
+	  
+  	setEditorForegroundColor();
 
 		// Setup idle timer
 		idleTimer = new IdleTimer(this.getSourceViewer(), Display.getCurrent());
-		idleTimer.start();
+		idleTimer.start();		
 
 		// Register the validation thread
 		this.registerIdleListener(fValidationThread);
+		this.registerIdleListener(fTodoMarkerThread);
 
 	}
 

@@ -1,5 +1,9 @@
 Eclipse Perl Integration: Perl Editor Plugin
 
+Version 0.1.0 - 02-June-2004
+		* moved TODO parser into it´s own thread
+		* parseTasks() does not delete foreign tasks anymore
+
 Version 0.1.0 - 26-May-2004
 		* added TODO marker in Perl Editor
 

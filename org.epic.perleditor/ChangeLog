@@ -1,6 +1,11 @@
 Eclipse Perl Integration:
 
 		Debugger
+		* check for errors in scripts before running/debugging
+		* Fixed bug [1113326] show STDERROR stream in CGI console window
+		* Fixed bug [1113336] Unable to set Perl include path in CGI debug mode
+		* Fixed bug [1114090] NPE in CGITarget.startBrowser
+		* Double-klicking on a breakpoint in the breakpoints view opens the corresponding file
 		* Displaying of variables re-coded.
 		  - This should remove all known bugs (" Error Parsing Debugger Variables")
 		  - significant improvement in speed

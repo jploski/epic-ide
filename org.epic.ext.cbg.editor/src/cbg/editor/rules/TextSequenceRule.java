@@ -70,13 +70,6 @@ public class TextSequenceRule extends Object implements IPredicateRule {/**
 		fColumn= column;
 	}
 	
-	/*
-	 * @see IRule#evaluate
-	 */
-	public IToken evaluate(ICharacterScanner scanner) {
-		return evaluate(scanner, false);
-	}
-	
 	/**
 	 * Returns the characters in the buffer to the scanner.
 	 *
@@ -86,14 +79,23 @@ public class TextSequenceRule extends Object implements IPredicateRule {/**
 		for (int i= fBuffer.length() - 1; i >= 0; i--)
 			scanner.unread();
 	}
-	public IToken evaluate(ICharacterScanner scanner, boolean resume) {
+	
+  /* (non-Javadoc)
+   * @see org.eclipse.jface.text.rules.IPredicateRule#evaluate(org.eclipse.jface.text.rules.ICharacterScanner, boolean)
+   */
+  public IToken evaluate(ICharacterScanner scanner, boolean resume) {
+    // TODO Auto-generated method stub
+    return evaluate(scanner, false);
+  }
+
+	public IToken evaluate(ICharacterScanner scanner) {
 		if (fColumn == UNDEFINED)
-			return doEvaluate(scanner, resume);
+			return doEvaluateFinally(scanner);
 		
 		int c = scanner.read();
 		scanner.unread();
 		if (c == word[0])
-			return (fColumn == scanner.getColumn() ? doEvaluate(scanner, resume) : Token.UNDEFINED);
+			return (fColumn == scanner.getColumn() ? doEvaluateFinally(scanner) : Token.UNDEFINED);
 		else
 			return Token.UNDEFINED;	
 	}
@@ -107,25 +109,33 @@ public class TextSequenceRule extends Object implements IPredicateRule {/**
 		return doEvaluate(scanner, false);
 	}
 
+	protected IToken doEvaluate(ICharacterScanner scanner, boolean resume) {
+	  return doEvaluateFinally(scanner);
+	}
+	
 	/**
 	 * Same code as in ExtendePatternRule
 	 */
-	protected IToken doEvaluate(ICharacterScanner scanner, boolean resume) {
-	  myStepCounter = 0;
-	  boolean continueCheck=true;
+	private final IToken doEvaluateFinally(ICharacterScanner scanner) {
+	  //boolean continueCheck=true;
 	  
-	  if (((ColoringPartitionScanner) scanner).getOffset() > 0) {
-      scanner.unread();
-      curScannerChar = (char) scanner.read();
-      if (isNotSequenceWhitespace && !whiteSpace.isWhitespace(curScannerChar)) {
-        //we do not check anything, since the leading char before this is not
-        //whitespace or equivalent
-        //BUT only if the current char is not already a Whitespace!!!
-        continueCheck = false;
-      }
+	  if (isNotSequenceWhitespace) {
+	    if (((ColoringPartitionScanner) scanner).getOffset() > 0) {
+	      scanner.unread();
+	      curScannerChar = (char) scanner.read();
+	      if (!whiteSpace.isWhitespace(curScannerChar)) {
+	        //we do not check anything, since the leading char before this is not
+	        //whitespace or equivalent
+	        //BUT only if the current char is not already a Whitespace!!!
+	        //for speed improvements we return immediately
+	        // continueCheck = false;
+	        return Token.UNDEFINED; 
+	      }
+	    }
 	  }
 	  
-	  if (continueCheck) {
+	  myStepCounter = 0;
+
 	    if (isExistingGroup) {
 	      if (forwardStartSequenceDetected(scanner)) {
 	  	    curScannerChar= (char) scanner.read();
@@ -159,9 +169,10 @@ public class TextSequenceRule extends Object implements IPredicateRule {/**
 	        }
 	      }
 	    }
-	  }
 	  
-	  unwindScanner(scanner);
+	  if (myStepCounter != 0) {  
+	    unwindScanner(scanner);
+	  }
 	  return Token.UNDEFINED;
 	}	
 	
@@ -250,5 +261,4 @@ public class TextSequenceRule extends Object implements IPredicateRule {/**
         scanner.unread();
     }
   }
-
 }

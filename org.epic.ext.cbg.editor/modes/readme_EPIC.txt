@@ -18,6 +18,7 @@ Added Keywords effect mainly the SPAN-Type where additional Keywords specifiy th
 7) REQUIRE_BEFORE_DELIMITER_CHAR= (any Characters)
 8) REQUIRE_AFTER_DELIMITER_CHAR= (any Characters resp. special Literals: :LINEFEED:)
 9) DELIMITER_TAG_CHARS= (default = empty)
+10)OPTIONAL_MODIFIER = (default = empty)
 
 In detail:
 
@@ -39,15 +40,15 @@ This option overrules the next optional parameters.
 
 The Tag starts with the first non-Whitespace character after the specified (=found) BEGIN resp. GROUP and will be taken untill the first Whitespace occurs resp. EOF *OR* if the DELIMITER_MAX_CHAR is exceeded.
 
-e.g. m+t+a+; 
+e.g. m+t+a+;
 
 the Tag 'm' is found out of the GROUP-List, next it takes the first non-Whitespace char after 'm', i.e. '+' and here it takes 1 char => the delimiter is '+'.
 
-5) DELIMITER_MAX_CHAR: The parameter specifies the length of the Tag. 
+5) DELIMITER_MAX_CHAR: The parameter specifies the length of the Tag.
 
 This paramter has ONLY effect on DYNAMIC_TAGGING=TRUE, in any other case it is ignored.
 
-6) NO_OF_MULTIPLE_ENDTAG: Specifies how many times the Tag should be used. 
+6) NO_OF_MULTIPLE_ENDTAG: Specifies how many times the Tag should be used.
 
 This property could be used independent of the setting DYNAMIC_TAGGING.
 
@@ -60,9 +61,15 @@ The usage is especially for the HERE-Documents in Perl where '<<' specifies the 
 Pleaze note the lazyiness of the implementor (LeO): Currently it is only considered one Character only. If there is any kind of requirement to expand it to two or more tags, please feel free to adapt the code correspondigly.
 
 
-9) DELIMITER_TAG_CHARS: Specifies if the Delimiter consists of Alphanumeric-Characters or not. This parameter makes only sense, for Dynamic-Tagging, otherwise it is ignored.
+9) DELIMITER_TAG_CHARS: Specifies what the Delimiter could consists of (any kind of combination is allowed):
 
-If not set, then the Delimiter-Tag can only consists of alphanumeric-characters.
-If set with any kind of content, the Delimiter-Tag could be any character, including non-alphanumeric-characters!
+- ":NONSCALAR:" => Delimiter is not a Scalar. If it is one => the Token is rejected. (Check on Scalar is done: First character of the Delimiter is '$')
+- ":LETTER_OR_DIGITS:" => Delimiter contains ONLY letters or digits. All others characters are rejected, if not otherwise specified. If the Delimiter is empty and the Token not already rejected => a normal LineFeed is assumed as Line-Feed.
+- ":NO_WHITESPACE_BEFORE_DELIM:" => reject the Token if after before Delimiter is whitepace
+- ":ALLOW_ESCAPE:" => Delimiter could consist as well of Escape-characters.
+- ":NONINTEGER:" => Delimiter does not contain an Integer, if it contains one => the Token is rejected
 
-Note: For further extension it could be used for other specific chars. Then the sources have to be adapted.
+
+10) OPTIONAL_MODIFIER: After the last delimiter additional modifiers could be specified.
+
+It is only checked, if the character after the last delimiter is contained in OPTIONAL_MODIFIER. If yes, it will be treated as well as a Token. Otherwise, the Token is finished.

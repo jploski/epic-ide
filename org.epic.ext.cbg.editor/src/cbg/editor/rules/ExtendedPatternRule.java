@@ -26,16 +26,20 @@ public class ExtendedPatternRule extends PatternRule {
   private int myStepCounter = 0;
   private int noMultipleEndTag;
   private boolean requireEndTag, requireBeforeWhitespace, requireAfterWhitespace; 
-	private final String optinalModifiers;
+	private final String optinalModifiers, rejectDelimWithFirstChar;
   private char curScannerChar;
   private final char EOFChar= (char) ICharacterScanner.EOF;
   private int noDynamicDelimiterChars=0;
-  private final String countDelimterChars, requireBeforeTag, requireAfterTag, dynamicEndTerminate;
+  private final String requireBeforeTag, requireAfterTag, dynamicEndTerminate;
   private boolean continueCheck = true;
+  private final boolean ignoreDelimAsLetterOrDigit, rquDelimAsNonInteger,  rquDelimNonEscape;
+  private final boolean ignoreEscape;
+  private final boolean acceptWhiteSpaceBefore, transformEmptyDelimiter;
 	private IWhitespaceDetector whiteSpace;
   
 	public ExtendedPatternRule(String startSequence, String endSequence, IToken token, 
-	       char escapeCharacter, boolean breaksOnEOL, int noMaxChar, String[] groupContent, 
+	       char escapeCharacter, boolean breaksOnEOL, int noMaxChar, String rejectDelimWithFirstChar, 
+	       String[] groupContent, 
 	       boolean bracketMatch, int noMultipleEndTag, boolean requireEndTag, 
 	       boolean CaseInSensitive, boolean isDynamicTagging,
 	       String countDelimterChars, String beforeTag, String afterTag,
@@ -81,12 +85,54 @@ public class ExtendedPatternRule extends PatternRule {
 	    isCaseInSensitive = false; //case-sensitive is nonsense with dynamic Tags 
 	  }
 	  
-	  this.countDelimterChars = countDelimterChars; //Programmers lazyness: we check only if content will exists!!!
+	  if (countDelimterChars.length() == 0) {
+	    ignoreDelimAsLetterOrDigit = false;
+	    rquDelimAsNonInteger = false;
+	    rquDelimNonEscape = false;
+	    transformEmptyDelimiter = false;
+	    acceptWhiteSpaceBefore = true;
+	    ignoreEscape = false;
+	  } else {
+	    //works
+	    if (countDelimterChars.indexOf(":NONINTEGER:") >= 0) {
+	      rquDelimAsNonInteger = true;
+	    } else {
+	      rquDelimAsNonInteger = false;
+	    }
+	    //should work
+	    if (countDelimterChars.indexOf(":NO_LETTER_OR_DIGITS:") >= 0) {
+	      ignoreDelimAsLetterOrDigit = true;
+	    } else {
+	      ignoreDelimAsLetterOrDigit = false;
+	    }
+	    //works
+	    if (countDelimterChars.indexOf(":ESCAPE_AND_DELIM_AS_ONE:") >= 0) {
+	      rquDelimNonEscape = true;
+	      ignoreEscape = false;
+	    } else {
+	      rquDelimNonEscape = false;
+	      ignoreEscape = false;
+	    }
+	    //works
+	    if (countDelimterChars.indexOf(":EMPTY_AS_LINEFEED:") >= 0) {
+	      transformEmptyDelimiter = true; 
+	    } else {
+	      transformEmptyDelimiter = false;
+	    }
+	    //works
+	    if (countDelimterChars.indexOf(":NO_WHITESPACE_BEFORE_DELIM:") >= 0) {
+	      acceptWhiteSpaceBefore = false;
+	    } else {
+	      acceptWhiteSpaceBefore = true;
+	    }
+	  }
+
 	  this.requireBeforeTag = beforeTag;
 	  this.requireAfterTag = afterTag;
 	  this.requireBeforeWhitespace = requireBeforeWhitespace ;
 	  this.requireAfterWhitespace = requireAfterWhitespace;
 	  this.optinalModifiers = optinalModifiers;
+	  this.rejectDelimWithFirstChar = rejectDelimWithFirstChar;
 
 		if (isCaseInSensitive) {
 		  //rewrite the values for caseInSensitive!!!
@@ -108,16 +154,9 @@ public class ExtendedPatternRule extends PatternRule {
 	  IToken myResultToken=Token.UNDEFINED;
 	  myStepCounter = 0;
 	  if (resume) {
-	    if (isBracketMatch || isMultiple) {
-	      //we have to search back to the beginning of the partion and then start the scanning!!!  
-	      unwindToStartToken(scanner);
-	    } else {
-	      if (endSequenceDetected(scanner)) {
-	        return fToken;
-	      } else {
-	        continueCheck = false;
-	      }
-	    }
+	    //we have to search back to the beginning of the partion and then start the scanning!!!
+	    //in case the end of the partion has been shifted to a point before the current position.
+	    unwindToStartToken(scanner);
 	  } else {
 	    if (isDynamicTagging || requireBeforeWhitespace) {
 	      if (((ColoringPartitionScanner) scanner).getOffset() > 0) {
@@ -127,7 +166,9 @@ public class ExtendedPatternRule extends PatternRule {
 	          //we do not check anything, since the leading char before this is not
 	          //whitespace or equivalent, so we could assume a single keyword for 
 	          //dynamic tagging!!!
-	          continueCheck = false;
+	          //for speed improvements we return immediately
+	          // continueCheck = false;
+	          return myResultToken; 
 	        }
 	      }
 	    }
@@ -135,19 +176,8 @@ public class ExtendedPatternRule extends PatternRule {
 	  if (continueCheck) {
 	    if (isExistingGroup) {
 	      if (forwardStartSequenceDetected(scanner)) {
-	        if (endCheck(scanner, resume)) {
-	          if (optinalModifiers.length() > 0) {
-	            /*
-	             * We have already found the char, we only search forward for optional
-	             * modifiers
-	             */
-	        	  curScannerChar = (char) scanner.read();
-	        	  while (curScannerChar != EOFChar 
-	        	        && optinalModifiers.indexOf( curScannerChar ) >=0) {
-	        	    curScannerChar = (char) scanner.read();
-	        	  }
-	        	  scanner.unread() ;
-	          }
+	        if (endCheck(scanner, resume) && myStepCounter > 0) {
+	          includeOptionalModifiers(scanner);
             return fToken;
 	        }
 	      }
@@ -160,7 +190,8 @@ public class ExtendedPatternRule extends PatternRule {
 	      }
 	      if (curScannerChar == fStartSequence[0]) {
 	        if (sequenceDetected(scanner, fStartSequence, fBreaksOnEOF)) {
-	          if (endCheck(scanner, resume)) {
+	          if (endCheck(scanner, resume) && myStepCounter > 0) {
+		          includeOptionalModifiers(scanner);
 	            return fToken;
 	          }
 	        }
@@ -172,6 +203,27 @@ public class ExtendedPatternRule extends PatternRule {
 	}
 	
 	/**
+	 * Mark as well optional Modifiers after a tag
+	 * Assumption: The tag was found, otherwise this method makes no sense at all
+	 * 
+   * @param scanner
+   */
+  private void includeOptionalModifiers(ICharacterScanner scanner) {
+    if (optinalModifiers.length() > 0) {
+      /*
+       * We have already found the char, we only search forward for optional
+       * modifiers
+       */
+      curScannerChar = (char) scanner.read();
+      while (curScannerChar != EOFChar 
+            && optinalModifiers.indexOf( curScannerChar ) >=0) {
+        curScannerChar = (char) scanner.read();
+      }
+      scanner.unread() ;
+    }
+  }
+
+  /**
 	 * This method is mainly for simple handling of the doEvaluate-issue
 	 */
 	private final boolean endCheck(ICharacterScanner scanner, boolean resume) {
@@ -217,9 +269,15 @@ public class ExtendedPatternRule extends PatternRule {
 	  curScannerChar = (char) scanner.read();
 	  myStepCounter++;
 	  int thisCounter = noDynamicDelimiterChars;
+	  //skip over the Whitespaces in front of the Delim
 	  while (Character.isWhitespace(curScannerChar) && curScannerChar != EOFChar) {
-	    curScannerChar = (char) scanner.read();
-	    myStepCounter++;
+	    if (acceptWhiteSpaceBefore) {
+	      curScannerChar = (char) scanner.read();
+	      myStepCounter++;
+	    } else {
+		    fEndSequence="".toCharArray();
+	      return false;
+	    }
 	  }
 	  if (requireBeforeTag.length() > 0) {
 	    if (requireBeforeTag.charAt(0) !=curScannerChar) {
@@ -230,14 +288,23 @@ public class ExtendedPatternRule extends PatternRule {
 	      myStepCounter++;
 	    }
 	  }
+	  
+	  //if we have existing Delims with starting chars to reject, lets test 
+	  if (rejectDelimWithFirstChar.length() > 0) {
+	    if (rejectDelimWithFirstChar.indexOf(curScannerChar) >=0 ) {
+	      fEndSequence = "".toCharArray();
+	      return false;
+	    }
+	  }
+	    
 	  boolean previousCharWasEscape=false;
 	  while (--thisCounter >= 0 &&
 	         !Character.isWhitespace(curScannerChar) && 
-	         !(countDelimterChars.length() == 0 
+	         !(ignoreDelimAsLetterOrDigit 
 	            && Character.isLetterOrDigit(curScannerChar)) &&
 	         curScannerChar != EOFChar
 	        ) {
-	    if (curScannerChar == fEscapeCharacter) {
+	    if (curScannerChar == fEscapeCharacter && rquDelimNonEscape) {
 	      previousCharWasEscape = true;
 	    } else if (dynamicEndTerminate.indexOf(curScannerChar) < 0) {
 	      if (previousCharWasEscape) {
@@ -266,12 +333,24 @@ public class ExtendedPatternRule extends PatternRule {
 	  if (previousCharWasEscape) {
 	    tmpEnd.append(fEscapeCharacter);
 	  }
-	  
+
 	  scanner.unread();
 	  myStepCounter--;
-	  if (tmpEnd.length() == 0 && countDelimterChars.length() > 0 ) {
+	  if (tmpEnd.length() == 0 && transformEmptyDelimiter ) {
 	    //Transform the empty string only if countDelimterChars 
 	    tmpEnd.append(((ColoringPartitionScanner) scanner).getCurrentLineDelimiter());
+	  }
+
+	  //should we reject any kind of Integer-Delimiters?
+	  if (rquDelimAsNonInteger) {
+	    try {
+	      Integer.parseInt(tmpEnd + "");
+		    fEndSequence="".toCharArray();
+		    return false;
+	    }
+	    catch (NumberFormatException e) {
+        // TODO: handle exception
+      }
 	  }
 	  
 	  if (requireAfterTag.length() > 0) {
@@ -415,7 +494,7 @@ public class ExtendedPatternRule extends PatternRule {
 		char[][] delimiters= scanner.getLegalLineDelimiters();
 		while ((curScannerChar=(char) scanner.read()) != EOFChar) {
 		  myStepCounter++;
-			if (curScannerChar == fEscapeCharacter) {
+			if (curScannerChar == fEscapeCharacter && ignoreEscape) {
 				// Skip the escaped character.
 			  curScannerChar=(char) scanner.read();
 				if (curScannerChar == EOFChar) {
@@ -457,7 +536,7 @@ public class ExtendedPatternRule extends PatternRule {
 		char[] lineDelimiter=((ColoringPartitionScanner) scanner).getCurrentLineDelimiter().toCharArray(); 
 		boolean previousWasEscapeCharacter = false;	
 		while (curScannerChar != EOFChar) {
-			if (curScannerChar == fEscapeCharacter) {
+			if (curScannerChar == fEscapeCharacter && ignoreEscape) {
 				// Skip the escaped character.
 				curScannerChar = (char) scanner.read();
 				if (curScannerChar == EOFChar) {

@@ -147,7 +147,7 @@ public class ModeReader {
 		String countDelimterChars = spanElement.attributeValue("DELIMITER_TAG_CHARS");
 		if (countDelimterChars == null)
 		  countDelimterChars = "";
-		boolean requireBeforeWhitespace = bool(spanElement, "REQUIRE_WHITESPACE_BEFORE", false);		boolean requireAfterWhitespace = bool(spanElement, "REQUIRE_WHITESPACE_AFTER", false);		String optinalModifiers= spanElement.attributeValue("OPTIONAL_MODIFIER");		if (optinalModifiers == null) {		  optinalModifiers ="";		}
+		boolean requireBeforeWhitespace = bool(spanElement, "REQUIRE_WHITESPACE_BEFORE", false);		boolean requireAfterWhitespace = bool(spanElement, "REQUIRE_WHITESPACE_AFTER", false);		String optinalModifiers= spanElement.attributeValue("OPTIONAL_MODIFIER");		if (optinalModifiers == null) {		  optinalModifiers ="";		}		String rejectDelimWithFirstChar = spanElement.attributeValue("REJECT_DELIM_WITH_FIRST_CHAR");		if (rejectDelimWithFirstChar == null) {		  rejectDelimWithFirstChar = "";		}
 		String delegate = spanElement.attributeValue("DELEGATE");
 	  begin ="";
 		if (spanElement.element("BEGIN") != null) {
@@ -170,7 +170,7 @@ public class ModeReader {
 		String[] myGroupContent=readGroupContent(spanElement, true); //so the 'begin is modified properly
 		listener.newSpan(type, begin, end, atLineStart, excludeMatch, noLineBreak, 
 		                 noWordBreak, matchBracket, noMultipleEndTag, 
-		                 requireEndTag, dynamicTagging, noMaxChar, 
+		                 requireEndTag, dynamicTagging, noMaxChar, rejectDelimWithFirstChar,  
 		                 myGroupContent, countDelimterChars, beforeTag, afterTag, 
 		                 delegate, requireBeforeWhitespace, requireAfterWhitespace, optinalModifiers);
 	}

@@ -36,13 +36,13 @@ public class Mode {
 		public void newSpan(String type, String begin, String end, boolean atLineStart, boolean excludeMatch, boolean noLineBreak, boolean noWordBreak,
 		                    boolean matchBracket, int noMultipleEndTag, 
 		                	  boolean requireEndTag,
-		                		boolean dynamicTagging, int noMaxChar, String[] groupContent,
+		                		boolean dynamicTagging, int noMaxChar, String rejectDelimWithFirstChar , String[] groupContent,
 		                		String countDelimterChars, String beforeTag, String afterTag,
 		                    String delegate, boolean  requireBeforeWhitespace, boolean requireAfterWhitespace, 		                		String optinalModifiers) {
 			currentRule.add(Type.newSpan(type, begin, end, atLineStart, excludeMatch, noLineBreak, noWordBreak, 
 			                             matchBracket, noMultipleEndTag, 
 			                             requireEndTag, 
-			                             dynamicTagging, noMaxChar, groupContent,
+			                             dynamicTagging, noMaxChar, rejectDelimWithFirstChar, groupContent,
 			                             countDelimterChars, beforeTag, afterTag, 
 			                             delegate,   requireBeforeWhitespace,  requireAfterWhitespace, 			                         		 optinalModifiers));
 		}

@@ -9,7 +9,7 @@ public interface SyntaxListener {
 		boolean excludeMatch, boolean noLineBreak, boolean noWordBreak, 
 		boolean matchBracket, int noMultipleEndTag, 
 	  boolean requireEndTag,
-		boolean dynamicTagging, int noMaxChar, String[] groupContent, 
+		boolean dynamicTagging, int noMaxChar, String rejectDelimWithFirstChar, String[] groupContent, 
 		String countDelimterChars, String beforeTag, String afterTag,
 		String delegate, boolean  requireBeforeWhitespace, boolean requireAfterWhitespace, 		String optinalModifiers);
 	void newKeywords(KeywordMap keywords);

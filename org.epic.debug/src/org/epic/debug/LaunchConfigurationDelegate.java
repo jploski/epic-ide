@@ -7,6 +7,8 @@ import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchManager;
 import org.eclipse.debug.core.model.ILaunchConfigurationDelegate;
+import org.epic.core.Constants;
+import org.epic.core.Perspective;
 
 /**
  * @author ruehl
@@ -86,6 +88,9 @@ public class LaunchConfigurationDelegate
 			};
 
 			start.start();
+			
+			// Switch to Debug Perspective
+			Perspective.switchPerspective(Constants.DEBUG_PERSPECTIVE_ID);
 
 			//			mTarget.start();
 			//			mLaunch.addDebugTarget(mTarget);
@@ -103,6 +108,8 @@ public class LaunchConfigurationDelegate
 						.getDebuger()
 						.generateDebugInitEvent();
 				}
+				// Switch to Debug Perspective
+				Perspective.switchPerspective(Constants.DEBUG_PERSPECTIVE_ID);
 			} else
 			{
 				mTarget = new RunTarget(launch);

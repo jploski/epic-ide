@@ -1,12 +1,17 @@
 // $ANTLR : "add.g" -> "PerlParserSimple.java"$
  package org.epic.debug.varparser; 
-import antlr.NoViableAltException;
-import antlr.ParserSharedInputState;
-import antlr.RecognitionException;
-import antlr.Token;
 import antlr.TokenBuffer;
-import antlr.TokenStream;
 import antlr.TokenStreamException;
+import antlr.TokenStreamIOException;
+import antlr.ANTLRException;
+import antlr.LLkParser;
+import antlr.Token;
+import antlr.TokenStream;
+import antlr.RecognitionException;
+import antlr.NoViableAltException;
+import antlr.MismatchedTokenException;
+import antlr.SemanticException;
+import antlr.ParserSharedInputState;
 import antlr.collections.impl.BitSet;
 
 public class PerlParserSimple extends antlr.LLkParser       implements AddTokenTypes
@@ -141,37 +146,37 @@ public PerlParserSimple(ParserSharedInputState state) {
 		
 		try {      // for error handling
 			{
-			_loop114:
+			_loop3:
 			do {
 				if ((LA(1)==NL)) {
 					match(NL);
 				}
 				else {
-					break _loop114;
+					break _loop3;
 				}
 				
 			} while (true);
 			}
 			{
-			_loop118:
+			_loop7:
 			do {
 				if ((_tokenSet_0.member(LA(1)))) {
 					namedVar();
 					{
-					_loop117:
+					_loop6:
 					do {
 						if ((LA(1)==NL)) {
 							match(NL);
 						}
 						else {
-							break _loop117;
+							break _loop6;
 						}
 						
 					} while (true);
 					}
 				}
 				else {
-					break _loop118;
+					break _loop7;
 				}
 				
 			} while (true);
@@ -367,13 +372,13 @@ public PerlParserSimple(ParserSharedInputState state) {
 			if ((LA(1)==INDENT_START) && (LA(2)==NUMBER||LA(2)==INDENT_END)) {
 				match(INDENT_START);
 				{
-				_loop126:
+				_loop15:
 				do {
 					if ((LA(1)==NUMBER)) {
 						arrayEntry();
 					}
 					else {
-						break _loop126;
+						break _loop15;
 					}
 					
 				} while (true);
@@ -552,13 +557,13 @@ public PerlParserSimple(ParserSharedInputState state) {
 			if ((LA(1)==INDENT_START) && (LA(2)==INDENT_END||LA(2)==STRING)) {
 				match(INDENT_START);
 				{
-				_loop134:
+				_loop23:
 				do {
 					if ((LA(1)==STRING)) {
 						hashEntry();
 					}
 					else {
-						break _loop134;
+						break _loop23;
 					}
 					
 				} while (true);
@@ -760,7 +765,7 @@ public PerlParserSimple(ParserSharedInputState state) {
 			}
 			}
 			{
-			_loop145:
+			_loop34:
 			do {
 				switch ( LA(1)) {
 				case PURE_NAME:
@@ -792,7 +797,7 @@ public PerlParserSimple(ParserSharedInputState state) {
 				}
 				default:
 				{
-					break _loop145;
+					break _loop34;
 				}
 				}
 			} while (true);

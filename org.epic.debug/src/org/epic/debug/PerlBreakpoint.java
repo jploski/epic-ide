@@ -102,9 +102,9 @@ public abstract class PerlBreakpoint extends Breakpoint {
 	
 	
 	
-	public Iterator getDebugerIterator()
+	public Object[] getDebuggers()
 	{
-		return( mDebuger.iterator());
+		return(  mDebuger.toArray());
 	}
 	
 	public void addInstallation(PerlDB fDb)

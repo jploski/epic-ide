@@ -58,6 +58,7 @@ public class PerlBreakpointManager implements IBreakpointListener {
 			// TODO Auto-generated catch block
 			
 			e1.printStackTrace();
+		}
 			for( Iterator i = mDebuggerInstances.iterator(); i.hasNext();)
 			{
 				db = (PerlDB) i.next();
@@ -65,7 +66,7 @@ public class PerlBreakpointManager implements IBreakpointListener {
 				bp.addDebuger(db);
 			}
 		
-		}
+		
 
 		try {
 			bp.getMarker().setAttribute(PerlBreakpoint.IS_INSTALLED,true);
@@ -85,10 +86,12 @@ public class PerlBreakpointManager implements IBreakpointListener {
 		if( ! ( fBreakpoint instanceof PerlBreakpoint)  )
 						return;
 		bp = (PerlBreakpoint)fBreakpoint;
-								
-		for( Iterator i = bp.getDebugerIterator(); i.hasNext();)
+		
+		Object[] debuggers = bp.getDebuggers();
+		
+		for( int x = 0; x < debuggers.length; ++x)
 		{
-			db = (PerlDB) i.next();
+			db = (PerlDB) debuggers[x];
 			db.removeBreakpoint(bp);
 			bp.removeDebuger(db);
 		}

@@ -1,5 +1,11 @@
 Eclipse Perl Integration: Perl Editor Plugin
 
+Version 0.1.0 alpha  - 
+		* Support for non Perl files (eg. EmbPerl) add. The source menu has been
+		  disabled, because it makes no sense (and would currupt the content) for
+		  these files.
+		* The -frm option has been removed from the HTML export preferences.
+
 Version 0.1.0 alpha  - 05-November-2003
 		* Taint mode added
 

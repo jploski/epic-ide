@@ -66,8 +66,26 @@ public class PerlDB implements IDebugElement, ITerminate
 
 	private final static String EMPTY_STRING = "";
 	//private static final String mDBinitPerl =	"{$| = 1;  my $old = select STDERR; $|=1;select $old;}\n";
-	private static final String mDBinitPerl = "o frame=2";
-
+	private static final String mDBinitPerl_5_8 = "o frame=2";
+	private static final String mDBinitPerl_5_6 = "O frame=2";
+	private static final String mLovalVarCommand_5_6 = 
+//		 	  ";{eval { require PadWalker; PadWalker->VERSION(0.08) }or &warn(\"PadWalker module not found - please install\\n\");\\\n"+
+//		 	  "do 'dumpvar_epic.pl' unless defined &main::dumpvar_epic;\\\n"+
+//		 	  "defined &main::dumpvar_epic or print $DB::OUT \"dumpvar_epic.pl not available.\\n\";\\\n"+
+//		 	  "my $h = eval { PadWalker::peek_my(2) };\\\n"+
+//		 	  "my @vars = split (' ','');\\\n"+
+//		 	 "$@ and $@ =~ s/ at .*//, &warn($@);\\\n"+
+//		 	 "my $savout = select($DB::OUT);\\\n"+
+//		 	 "dumpvar_epic::dumplex(\\\n"+
+//		 	 "$_,\\\n"+
+//		 	 "$h->{$_},\\\n"+
+//		 	 "defined $option{dumpDepth} ? $option{dumpDepth} : -1,\\\n"+
+//		 	 "@vars\\\n"+
+//		 	 ") for sort keys %$h;\\\n"+
+//		 	 "select($savout);\\\n"+
+//		 	"};"; 
+	";{eval { require PadWalker; PadWalker->VERSION(0.08) }or &warn(\"PadWalker module not found - please install\\n\");do 'dumpvar_epic.pl' unless defined &main::dumpvar_epic;defined &main::dumpvar_epic or print $DB::OUT \"dumpvar_epic.pl not available.\\n\";my $h = eval { PadWalker::peek_my(2) };my @vars = split (' ','');$@ and $@ =~ s/ at .*//, &warn($@);my $savout = select($DB::OUT);dumpvar_epic::dumplex($_,$h->{$_},defined $option{dumpDepth} ? $option{dumpDepth} : -1,@vars) for sort keys %$h;select($savout);};\n";
+	
 	private PerlDebugThread[] mThreads;
 
 	final static int mCanResume = 1;
@@ -108,7 +126,7 @@ public class PerlDB implements IDebugElement, ITerminate
 	private RE mReStackTrace;
 	private RE mReEnterFrame;
 	private RE mReExitFrame;
-
+	
 	private IP_Position mStartIP;
 	private PerlVarParser mVarParser = new PerlVarParser(this);
 
@@ -128,6 +146,7 @@ public class PerlDB implements IDebugElement, ITerminate
 	private org.epic.debug.util.PathMapper mPathMapper;
 	StringBuffer mRegExp = new StringBuffer();
 			StringBuffer mText = new StringBuffer();
+			private String mPerlVersion;
 	private class CommandThread extends Thread
 	{
 
@@ -196,7 +215,7 @@ public class PerlDB implements IDebugElement, ITerminate
 	{
 
 		IPath path;
-
+		String command;
 		mTarget = fTarget;
 		mCurrentCommand = mCommandNone;
 		mCurrentSubCommand = mCommandNone;
@@ -288,7 +307,16 @@ public class PerlDB implements IDebugElement, ITerminate
 
 		if (!isTerminated(this))
 		{
-			startCommand(mCommandExecuteCode, mDBinitPerl, false, this);
+			String version = getPerlVersion();
+			
+			mPerlVersion ="5.8";
+			command = mDBinitPerl_5_8;
+			if( version.startsWith("5.6.") )
+			{
+				mPerlVersion ="5.6";
+				command = mDBinitPerl_5_6;
+			}
+			startCommand(mCommandExecuteCode, command, false, this);
 			//		/****************test only*****/
 			//		getLaunch().setAttribute(PerlLaunchConfigurationConstants.ATTR_DEBUG_IO_PORT,"4041");
 			//		getLaunch().setAttribute(PerlLaunchConfigurationConstants.ATTR_DEBUG_ERROR_PORT,"4042");
@@ -297,7 +325,7 @@ public class PerlDB implements IDebugElement, ITerminate
 			//		mTarget.setProcess(p);
 			/***********************************/
 			PerlDebugPlugin.getPerlBreakPointmanager().addDebugger(this);
-
+					
 			updateStackFrames(null);
 			generateDebugInitEvent();
 		} else
@@ -435,18 +463,35 @@ public class PerlDB implements IDebugElement, ITerminate
 		return (startCommand(fCommand, null, true, fThread));
 	}
 
+	public String getPerlVersion()
+	{
+		return(evaluateStatement(mThreads[0],"printf $DB::OUT \"%vd\", $^V;\n",false));
+	
+	}
+	
 	public String evaluateStatement(Object fThread, String fText)
+	{
+		return evaluateStatement(fThread, fText,true);
+	}
+	
+	public String evaluateStatement(Object fThread, String fText, boolean fUpdateVars)
 	{
 		
 		String res;
+		int command = mCommandEvaluateCode;
 		
+		if(!fUpdateVars)
+			command = mCommandExecuteCode;
+		
+	
+			
 		if( mIsCommandRunning )
 		{
-			startSubCommand(mCommandEvaluateCode, fText, false);
+			startSubCommand(command, fText, false);
 		}
 		else
 		{
-			startCommand(mCommandEvaluateCode, fText, false, fThread);
+			startCommand(command, fText, false, fThread);
 		}
 		
 		res = mDebugOutput;
@@ -1234,10 +1279,18 @@ public class PerlDB implements IDebugElement, ITerminate
 	{
 		IVariable[] lVars;
 		ArrayList lVarList;
+		String command;
+		String command_local = "y ";
 
-		startSubCommand(mCommandExecuteCode, "o frame=0 ", false);
+		command = "o frame=0\n";
+		if(mPerlVersion.startsWith("5.6"))
+		{
+			command = "O frame=0\n";
+			command_local =mLovalVarCommand_5_6;
+		}
+		startSubCommand(mCommandExecuteCode,command, false);
 		if (ShowLocalVariableActionDelegate.getPreferenceValue())
-			startSubCommand(mCommandExecuteCode, "y ", false);
+			startSubCommand(mCommandExecuteCode, command_local, false);
 
 		System.out.println(
 			"\n\n\n\n\n\n\n\n\n********Local Vars:" + mDebugSubCommandOutput);
@@ -1245,9 +1298,14 @@ public class PerlDB implements IDebugElement, ITerminate
 			mVarParser.parseVars(
 				mDebugSubCommandOutput,
 				PerlDebugVar.IS_LOCAL_SCOPE);
-		startSubCommand(mCommandExecuteCode, "o frame=2", false);
+		command = "o frame=2\n";
+		if(mPerlVersion.startsWith("5.6"))
+			command = "O frame=2\n";
+		
+		startSubCommand(mCommandExecuteCode, command, false);
 		startSubCommand(mCommandExecuteCode, "X ", false);
-
+		
+		
 		System.out.println(
 			"\n\n\n\n\n\n\n\n\n********Global Vars:" + mDebugSubCommandOutput);
 		mVarParser.parseVars(

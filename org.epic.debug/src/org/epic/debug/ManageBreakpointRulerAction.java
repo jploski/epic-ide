@@ -221,7 +221,7 @@ public class ManageBreakpointRulerAction extends Action implements IUpdate {
  void createBreakPoint(int fLine) throws DebugException, CoreException
  {
  	
-	new PerlLineBreakpoint(getResource(), fLine + 1);
+	new PerlLineBreakpoint(getResource(), fLine);
  	
  }
 	

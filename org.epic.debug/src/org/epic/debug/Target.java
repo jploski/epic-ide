@@ -98,7 +98,7 @@ public abstract class Target implements IDebugTarget
 		return mLaunch;
 	}
 
-	public String getPlugInDir()
+	static public String getPlugInDir()
 	{
 		URL installURL =
 			PerlDebugPlugin.getDefault().getDescriptor().getInstallURL();
@@ -195,7 +195,7 @@ public abstract class Target implements IDebugTarget
 				"Could not start Debug Process (Erroror assambling command line !",
 				e);
 		}
-
+		fCmdList.add("-I"+CGITarget.getPlugInDir());
 		if (mLaunch.getLaunchMode().equals(ILaunchManager.DEBUG_MODE))
 		{
 			fCmdList.add("-d");

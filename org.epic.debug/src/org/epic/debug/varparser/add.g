@@ -142,7 +142,7 @@ namedArray: name:ARRAY_NAME{addVar(name.getText(),"Array");printConsole("++++ARR
 arrayReference: ARRAY_REF name:ADR NL {addVar("Array->"+name.getText()," ");printConsole("++++ARRAYREF:"+name.getText()+"\n");}(arrayEntries)? {finalizeVar();printConsole("----ARRAYREF:"+name.getText()+"\n");};
 arrayEntries:  INDENT_START (arrayEntry)* INDENT_END
 			| INDENT_START REF_SYMB PURE_NAME NL INDENT_END;
-arrayEntry: start:NUMBER {addVar("["+start.getText()+"]",null);printConsole("INDEX:"+start.getText());} value {finalizeVar();};
+arrayEntry: start:NUMBER {addVar("["+start.getText()+"]",null);printConsole("INDEX:"+start.getText());} (value | NL) {finalizeVar();};
 
 
 

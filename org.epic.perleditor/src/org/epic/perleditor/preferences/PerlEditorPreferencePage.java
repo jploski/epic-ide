@@ -961,16 +961,9 @@ public class PerlEditorPreferencePage extends PreferencePage implements IWorkben
 	 * @see PreferencePage#performOk()
 	 */
 	public boolean performOk() {
-
-//    PerlEditorPlugin.getDefault().getLog().log(new Status(
-//        IStatus.ERROR,PerlEditorPlugin.getDefault().getDescriptor().getUniqueIdentifier(),
-//        IStatus.ERROR, "LeO OK Button",null));
-		//fJavaEditorHoverConfigurationBlock.performOk();
 		fOverlayStore.propagate();
 		PerlEditorPlugin.getDefault().savePluginPreferences();
-//		PerlEditorPlugin.getDefault().getLog().log(new Status(
-//        IStatus.ERROR,PerlEditorPlugin.getDefault().getDescriptor().getUniqueIdentifier(),
-//        IStatus.ERROR, "LeO OK Button 2",null));
+
 		return true;
 	}
 	

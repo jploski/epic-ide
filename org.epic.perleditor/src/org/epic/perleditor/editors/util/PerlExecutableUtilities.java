@@ -189,5 +189,6 @@ public class PerlExecutableUtilities {
         //TODO which charset?
         Writer w = new OutputStreamWriter(stream);
         w.write(t);
+        w.flush();
     }
 }

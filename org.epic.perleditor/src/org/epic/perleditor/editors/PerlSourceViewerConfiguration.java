@@ -115,6 +115,7 @@ public class PerlSourceViewerConfiguration
 		 	}
 		 	
 			assistant.enableAutoActivation(true);
+			assistant.enableAutoInsert(true);
 			assistant.setAutoActivationDelay(500);
 			assistant.setProposalPopupOrientation(ContentAssistant.PROPOSAL_OVERLAY);
 			assistant.setContextInformationPopupOrientation(ContentAssistant.CONTEXT_INFO_ABOVE);

@@ -11,6 +11,12 @@ Eclipse Perl Integration:
 		* Fixed bug: [ 996351 ] NullPointer exception during Launch (problems if path to Perl executable has spaces) 
 		
 		Editor:
+		* Additional preference for Brackets and Quoting
+		* Proper Handling of HERE-Documents
+		* Fixed bug: [ 1077441 ] Source formatter does not make tabs 4 column wide
+		* [ 1077441 ] perlTidy: Better handling in rare case of invalid positioning
+		* [ 1081462 ] Option for Enabling and Disabling AutoType-Feature of Quotes and Brackets
+		* Added support for regular expressions and HERE-Documents
 		* Perldoc View has been reimplemented (Accessible via Shift+Ctrl/Control+H)
 		* Added New Perl File Wizard
 		* Implemented Feature Request: [ 1047906 ] Validate source on request, not continuously

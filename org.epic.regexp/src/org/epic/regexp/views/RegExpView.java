@@ -264,12 +264,11 @@ public class RegExpView extends ViewPart {
 		matchText.setLayoutData(data);
 		matchText.addFocusListener(new focusListener());
 
-		/* Does not work :-(
-		matchText.setKeyBinding(SWT.CTRL | 'x', ST.CUT);
-		matchText.setKeyBinding(SWT.CTRL | 'c', ST.COPY);
-		matchText.setKeyBinding(SWT.CTRL | 'v', ST.PASTE);
-		matchText.setKeyBinding(SWT.CTRL | 'b', ST.DELETE_PREVIOUS);
-		*/
+		//set the actions for the global action handler
+		IActionBars bars = getViewSite().getActionBars();
+		bars.setGlobalActionHandler(IWorkbenchActionConstants.CUT, cutAction);
+		bars.setGlobalActionHandler(IWorkbenchActionConstants.COPY, copyAction);
+		bars.setGlobalActionHandler(IWorkbenchActionConstants.PASTE, pasteAction);
 
 		hookContextMenu();
 

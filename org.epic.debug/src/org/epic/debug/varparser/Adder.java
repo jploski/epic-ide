@@ -3,7 +3,6 @@ import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.Reader;
-import java.util.ArrayList;
 
 import antlr.InputBuffer;
 import antlr.LexerSharedInputState;

@@ -198,6 +198,7 @@ public class LaunchConfigurationCGIBrowserTab
 		}
 
 		customBrowserPath.setText(attrBrowserPath);
+		setEnabledCustomBrowserPath();
 
 	}
 
@@ -346,7 +347,7 @@ public class LaunchConfigurationCGIBrowserTab
 			if (items[i].getChecked())
 			{
 				boolean enabled =
-					(HelpPlugin.PLUGIN_ID + ".custombrowser").equals(
+					(HelpPlugin.PLUGIN_ID + ".base.custombrowser").equals(
 						BrowserManager
 							.getInstance()
 							.getBrowserDescriptors()[i]

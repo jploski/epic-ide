@@ -92,12 +92,14 @@ public class PerlLineBreakpoint extends PerlBreakpoint implements ILineBreakpoin
 	public void addLineBreakpointAttributes(Map attributes, String modelIdentifier, boolean enabled, int lineNumber, int charStart, int charEnd) {
 			//addBreakPointAttributes(attributes);
 			attributes.put(IBreakpoint.ID, modelIdentifier);
-			attributes.put(IBreakpoint.ENABLED, new Boolean(enabled));
 			attributes.put(IMarker.LINE_NUMBER, new Integer(lineNumber));
 			attributes.put(IMarker.CHAR_START, new Integer(-1));
 			attributes.put(IMarker.CHAR_END, new Integer(-1));
 			attributes.put(PerlBreakpoint.INVALID_POS, new Boolean(false));
 			attributes.put(IBreakpoint.PERSISTED, Boolean.TRUE);
+		    attributes.put(IBreakpoint.ENABLED, Boolean.TRUE);
+		    attributes.put(IBreakpoint.REGISTERED, Boolean.FALSE);
+		    
 		}
 		
 	public int getLineNumber()

@@ -1,17 +1,12 @@
 // $ANTLR : "add.g" -> "PerlParserSimple.java"$
  package org.epic.debug.varparser; 
-import antlr.TokenBuffer;
-import antlr.TokenStreamException;
-import antlr.TokenStreamIOException;
-import antlr.ANTLRException;
-import antlr.LLkParser;
-import antlr.Token;
-import antlr.TokenStream;
-import antlr.RecognitionException;
 import antlr.NoViableAltException;
-import antlr.MismatchedTokenException;
-import antlr.SemanticException;
 import antlr.ParserSharedInputState;
+import antlr.RecognitionException;
+import antlr.Token;
+import antlr.TokenBuffer;
+import antlr.TokenStream;
+import antlr.TokenStreamException;
 import antlr.collections.impl.BitSet;
 
 public class PerlParserSimple extends antlr.LLkParser       implements AddTokenTypes
@@ -24,7 +19,7 @@ public class PerlParserSimple extends antlr.LLkParser       implements AddTokenT
 	
 	public void printConsole(String fString)
 	{
-		System.out.println(fString);
+		//System.out.println(fString);
 	}
 	
 	public void setVarList( java.util.ArrayList fVarList )

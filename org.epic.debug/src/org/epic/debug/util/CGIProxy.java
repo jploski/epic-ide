@@ -307,7 +307,7 @@ public class CGIProxy extends PlatformObject implements IProcess, ITerminate
 	{
 		try
 		{
-			mWaitThread.join(1000);
+			mWaitThread.join(30000);
 		} catch (InterruptedException e)
 		{
 			// TODO Auto-generated catch block

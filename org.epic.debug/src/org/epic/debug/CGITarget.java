@@ -37,7 +37,8 @@ import org.epic.perleditor.editors.util.PerlExecutableUtilities;
  */
 public class CGITarget extends DebugTarget implements IDebugEventSetListener
 {
-
+	private int mWeberverPort;
+	
 	private boolean mDebug;
 
 	private ArrayList cgiEnv;
@@ -176,7 +177,9 @@ public class CGITarget extends DebugTarget implements IDebugEventSetListener
 				+ "cgi.executable="
 				+ PerlExecutableUtilities.getPerlExecutableCommandLine().get(0)
 				+ "\n"
-				+ "cgi.suffix="+cgiFileExtension);
+				+ "cgi.suffix="+cgiFileExtension
+				+"\n"
+				+ "cgi.DebugInclude="+" -I"+getPlugInDir());
 		
 		if (mDebug)
 		{
@@ -269,8 +272,16 @@ public class CGITarget extends DebugTarget implements IDebugEventSetListener
 
 		mLaunch.addProcess(mCGIProxy);
 		fireCreationEvent(mCGIProxy);
-
-		startBrowser(webServerPort);
+		
+		mWeberverPort = webServerPort;
+		DebugPlugin.getDefault().asyncExec(new Runnable()
+				{
+					public void run()
+					{
+						startBrowser(mWeberverPort);
+					}
+				});
+		
 		/* start console-proxy*/
 		return true;
 

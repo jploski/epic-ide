@@ -1,5 +1,10 @@
 package org.epic.debug;
 
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.ResourceBundle;
+
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.ILaunch;
@@ -8,6 +13,7 @@ import org.eclipse.debug.core.model.IRegisterGroup;
 import org.eclipse.debug.core.model.IStackFrame;
 import org.eclipse.debug.core.model.IThread;
 import org.eclipse.debug.core.model.IVariable;
+import org.epic.debug.varparser.PerlDebugVar;
 
 /**
  * @author ruehl
@@ -26,8 +32,18 @@ public class StackFrame implements IStackFrame {
 	private PerlDebugThread mThread;
 	private int mIP_Line;
 	private IPath mIP_Path;
+	private ArrayList mVarsOrg;
+	static HashMap mPerlInternalVars;
 
+static{
+	ResourceBundle rb = 
+	ResourceBundle.getBundle("org.epic.debug.perlIntVars");
+	Enumeration e = rb.getKeys();
+	mPerlInternalVars = new HashMap();
+	while( e.hasMoreElements())
+		mPerlInternalVars.put(e.nextElement(),"1");
 
+}
 
    public StackFrame(PerlDebugThread fThread) {
 		super();
@@ -52,10 +68,59 @@ public class StackFrame implements IStackFrame {
 		return mVars;
 	}
 
-	public void setVariables(IVariable[] fVars) throws DebugException {
-			mVars = fVars;
+	public void updateVars() {
+		ArrayList vars= (ArrayList) mVarsOrg.clone();
+		
+		String lVarname = null;
+		PerlDebugVar var = null;
+		
+		for (int i = 0; i < vars.size(); i++) {
+			{
+				try {
+					var = (PerlDebugVar) vars.get(i);
+					lVarname = var.getName();
+				} catch (DebugException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				if (var.isGlobalScope()
+						&& mPerlInternalVars.containsKey(lVarname)
+						&&  !ShowPerlInternalVariableActionDelegate.getPreferenceValue()
+				) 
+				{
+					vars.remove(i);
+					--i;
+				}
+				
+				if (var.isGlobalScope()
+						&& !mPerlInternalVars.containsKey(lVarname)
+						&&  !ShowGlobalVariableActionDelegate.getPreferenceValue()
+				) 
+				{
+					vars.remove(i);
+					--i;
+				}
+			}
+
 		}
-	/**
+		
+		try {
+			mVars= ((PerlDebugVar[]) vars.toArray(new PerlDebugVar[vars.size()]));
+		} catch (Exception e) {
+		};
+	}
+
+	
+	public void setVariables(PerlDebugVar[] fVars)
+	{
+		mVars = fVars;
+	}
+	
+	public void setVariables(ArrayList fVars) throws DebugException {
+		mVarsOrg = fVars;
+		updateVars();
+	}
+		/**
 	 * @see org.eclipse.debug.core.model.IStackFrame#hasVariables()
 	 */
 	public boolean hasVariables() throws DebugException {

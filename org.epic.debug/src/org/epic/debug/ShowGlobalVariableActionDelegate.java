@@ -9,11 +9,11 @@ import org.eclipse.ui.IViewPart;
 /**
  *
  */
-public class ShowLocalVariableActionDelegate implements IViewActionDelegate, org.eclipse.ui.IActionDelegate2{
+public class ShowGlobalVariableActionDelegate implements IViewActionDelegate, org.eclipse.ui.IActionDelegate2{
 
 	static private IAction fAction;
 
-	public ShowLocalVariableActionDelegate() {
+	public ShowGlobalVariableActionDelegate() {
 		super();
 	}
 

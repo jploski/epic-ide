@@ -9,11 +9,11 @@ import org.eclipse.ui.IViewPart;
 /**
  *
  */
-public class ShowLocalVariableActionDelegate implements IViewActionDelegate, org.eclipse.ui.IActionDelegate2{
+public class ShowPerlInternalVariableActionDelegate implements IViewActionDelegate, org.eclipse.ui.IActionDelegate2{
 
 	static private IAction fAction;
 
-	public ShowLocalVariableActionDelegate() {
+	public ShowPerlInternalVariableActionDelegate() {
 		super();
 	}
 
@@ -64,7 +64,7 @@ public class ShowLocalVariableActionDelegate implements IViewActionDelegate, org
 	 * @return boolean
 	 */
 	static public  boolean getPreferenceValue() {
-		if( fAction == null) return (true);
+		if( fAction == null) return (false);
 		return( fAction.isChecked() );
 	}
 

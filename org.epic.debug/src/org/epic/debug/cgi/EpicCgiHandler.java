@@ -80,6 +80,7 @@ import sunlabs.brazil.server.Server;
 public class EpicCgiHandler implements Handler
 {
 	private boolean mDebug;
+	private String mDebugInclude;
 	private PrintWriter mInWriter;
 	private PrintWriter mOutWriter;
 	private PrintWriter mErrorWriter;
@@ -104,6 +105,7 @@ public class EpicCgiHandler implements Handler
 	private Socket mInSocket;
 	private Socket mOutSocket;
 	private Socket mErrorSocket;
+	
 
 	/**
 	 * construct table of CGI environment variables that need special handling
@@ -146,6 +148,10 @@ public class EpicCgiHandler implements Handler
 				propsPrefix + "Debug",
 				null).equalsIgnoreCase(
 				"true");
+		mDebugInclude =
+			server.props.getProperty(
+				propsPrefix + "DebugInclude",
+				null);
 		//System.out.println("**************Ports: "+portIn+" "+portOut+" "+portError+"\n");
 		try
 		{
@@ -278,15 +284,15 @@ public class EpicCgiHandler implements Handler
 		if (mDebug)
 			reduceComSize = 0;
 		else
-			reduceComSize = 1;
+			reduceComSize = 2;
 
 		if (query.indexOf("=") == -1)
 		{ // need args
-			command = new String[4 - reduceComSize];
-			command[3 - reduceComSize] = query; // XXX this is wrong
+			command = new String[5 - reduceComSize];
+			command[4 - reduceComSize] = query; // XXX this is wrong
 		} else
 		{ // no args
-			command = new String[3 - reduceComSize];
+			command = new String[4 - reduceComSize];
 		}
 
 		//Get Perl executable and generate comand array
@@ -294,8 +300,9 @@ public class EpicCgiHandler implements Handler
 			request.props.getProperty(propsPrefix + EXECUTABLE, "perl");
 		if (mDebug)
 		{
-			command[1] = "-d"; // Add debug switch
-			command[2] = name.getAbsolutePath();
+			command[1] = mDebugInclude;
+			command[2] = "-d"; // Add debug switch
+			command[3] = name.getAbsolutePath();
 		} else
 		{
 			command[1] = name.getAbsolutePath();

@@ -4,6 +4,7 @@
  * To change the template for this generated file go to
  * Window>Preferences>Java>Code Generation>Code and Comments
  */
+
 package org.epic.debug;
 
 import java.util.HashSet;
@@ -14,6 +15,7 @@ import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.debug.core.model.Breakpoint;
+import org.eclipse.debug.core.model.IBreakpoint;
 
 
 
@@ -70,7 +72,8 @@ public abstract class PerlBreakpoint extends Breakpoint {
 
 	public boolean isInstalled()
 	{
-		return( getMarker().getAttribute(IS_INSTALLED,false) );
+		return( mInstallations.size() > 0);
+		//return( getMarker().getAttribute(IS_INSTALLED,false) );
 	}
 	
 	public void setIsNoValidBreakpointPosition( boolean fVal)
@@ -113,7 +116,7 @@ public abstract class PerlBreakpoint extends Breakpoint {
 		{	
 			try
 			{
-				getMarker().setAttribute(IS_INSTALLED,true);
+			//	getMarker().setAttribute(IS_INSTALLED,true);
 			}catch ( Exception e){PerlDebugPlugin.log(e);}
 		}
 			
@@ -128,7 +131,7 @@ public abstract class PerlBreakpoint extends Breakpoint {
 			{	
 				try
 				{
-					getMarker().setAttribute(IS_INSTALLED,false);
+			//		getMarker().setAttribute(IS_INSTALLED,false);
 				}catch ( Exception e){PerlDebugPlugin.log(e);}
 			}
 		
@@ -139,6 +142,7 @@ public abstract class PerlBreakpoint extends Breakpoint {
 			 * @see IBreakpoint#setMarker(IMarker)
 			 */
 			public void setMarker(IMarker marker) throws CoreException {
+				marker.setAttribute(IS_INSTALLED,false);
 				super.setMarker(marker);
 //				if( mResourcePath == null )
 //				{
@@ -147,6 +151,7 @@ public abstract class PerlBreakpoint extends Breakpoint {
 //						mResourcePath =  new Path( marker.getAttribute(RESOURCE_PATH,pathString));
 //				}
 				//configureAtStartup();
+				
 			}
 			
 //	void addBreakPointAttributes(Map attributes)
@@ -154,4 +159,5 @@ public abstract class PerlBreakpoint extends Breakpoint {
 //		attributes.put(RESOURCE_PATH,mResourcePath.toString());
 //
 //	}
+			
 }

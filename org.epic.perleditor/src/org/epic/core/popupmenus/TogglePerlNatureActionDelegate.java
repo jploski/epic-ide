@@ -9,12 +9,12 @@ package org.epic.core.popupmenus;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.IAction;
-import org.eclipse.jface.dialogs.MessageDialog;
+//import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IWorkbenchPart;
-import org.eclipse.ui.views.navigator.IResourceNavigator;
+//import org.eclipse.ui.views.navigator.IResourceNavigator;
 import org.epic.core.Constants;
 import org.epic.core.util.NatureUtilities;
 
@@ -37,7 +37,7 @@ public class TogglePerlNatureActionDelegate implements IObjectActionDelegate {
 	 */
 	public void setActivePart(IAction action, IWorkbenchPart targetPart) {
 		this.part = targetPart;
-		IResourceNavigator nav = (IResourceNavigator) part;
+		//IResourceNavigator nav = (IResourceNavigator) part;
 		IStructuredSelection sel = (IStructuredSelection) part.getSite()
 				.getSelectionProvider().getSelection();
 		Object firstElement = sel.getFirstElement();

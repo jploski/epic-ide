@@ -106,7 +106,7 @@ public class Perspective implements IPerspectiveFactory {
 		PerspectiveDescriptor rtPerspectiveDesc = (PerspectiveDescriptor) reg
 				.findPerspectiveWithId(perspectiveId);
 		
-		if (window != null || rtPerspectiveDesc == null) {
+		if (window != null && rtPerspectiveDesc != null) {
 			IWorkbenchPage page = window.getActivePage();
 			page.setPerspective(rtPerspectiveDesc);
 			return true;

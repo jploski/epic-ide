@@ -1,6 +1,6 @@
 Eclipse Perl Integration: Perl Editor Plugin
 
-Version 0.1.0 alpha  - 
+Version 0.1.0 alpha  - 27-November-2003
 		* Fixed template preference bug: null pointer exception when editing template
 
 Version 0.1.0 alpha  - 25-November-2003

@@ -5,6 +5,8 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.plugin.*;
 //import org.eclipse.core.runtime.*;
 import org.eclipse.core.resources.*;
+import org.eclipse.team.core.IFileTypeInfo;
+import org.eclipse.team.core.Team;
 import java.util.*;
 
 import org.epic.perleditor.editors.PerlDocumentProvider;
@@ -51,6 +53,28 @@ public class PerlEditorPlugin extends AbstractUIPlugin {
 		} catch (MissingResourceException x) {
 			resourceBundle = null;
 		}
+		
+		// Set team file extensions
+		String[] perlTypes = {"pl", "pm"};
+		IFileTypeInfo[] fileTypes = Team.getAllTypes();
+		
+		int newTypesLength = fileTypes.length + perlTypes.length;
+		String[] extensions = new String[newTypesLength];
+		int[] types = new int[newTypesLength];
+		
+		int i;
+		for(i=0; i < fileTypes.length; i++) {
+			extensions[i] = fileTypes[i].getExtension();
+			types[i] = fileTypes[i].getType();
+		}
+		
+		// Add Perl extensions to the list as ASCII
+		for(;i < newTypesLength; i++) {
+			extensions[i] = perlTypes[i - fileTypes.length];
+			types[i] =Team.TEXT;
+		}
+			
+		Team.setAllTypes(extensions, types);
 	}
 
 	/**

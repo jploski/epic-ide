@@ -36,6 +36,7 @@ import org.eclipse.jface.text.ITextOperationTarget;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IFileEditorInput;
+import org.eclipse.ui.IStorageEditorInput;
 import org.eclipse.ui.editors.text.TextEditorPreferenceConstants;
 import org.eclipse.ui.texteditor.AnnotationPreference;
 import org.eclipse.ui.texteditor.ContentAssistAction;
@@ -68,6 +69,8 @@ import java.util.Map;
 import java.util.HashMap;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
+
+import cbg.editor.ColoringSourceViewerConfiguration;
 
 /**
  * Perl specific text editor.
@@ -231,6 +234,13 @@ public class PerlEditor
 	public void doSetInput(IEditorInput input) throws CoreException {
 
 		super.doSetInput(input);
+		
+		// Set coloring editor mode
+		// NOTE: we have to set the cbg colorer mode, because it is needed in PerlSourceViewerConfiguration !
+		 if (input instanceof IStorageEditorInput) {
+				 String filename = ((IStorageEditorInput) input).getStorage().getName();
+				 ((ColoringSourceViewerConfiguration) getSourceViewerConfiguration()).setFilename(filename);
+		 }
 
 	}
 

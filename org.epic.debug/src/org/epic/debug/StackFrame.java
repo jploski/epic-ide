@@ -100,6 +100,14 @@ static{
 					vars.remove(i);
 					--i;
 				}
+				
+				if (var.isLocalScope()
+						&&  !ShowLocalVariableActionDelegate.getPreferenceValue()
+				) 
+				{
+					vars.remove(i);
+					--i;
+				}
 			}
 
 		}

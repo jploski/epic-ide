@@ -30,6 +30,7 @@ tokens
 	  INDENT_END;
 	  FILE_HANDLE;
 	  FILE_NO;
+	  WS;
 }
 
 {
@@ -37,11 +38,17 @@ tokens
 	java.util.ArrayList mVarList = null; //new java.util.ArrayList();
 	org.eclipse.debug.core.model.IDebugElement mDebugger;
 	int mScope;
-	PerlBaseLexer mLex;
+	PerlLexer mLex;
+	antlr.TokenStreamHiddenTokenFilter mFilter;
 
-	public void setLex(PerlBaseLexer fLex)
+	public void setLex(PerlLexer fLex)
 	{
 		mLex = fLex;
+	}
+	
+	public void setFilter(antlr.TokenStreamHiddenTokenFilter fFilter)
+	{
+		mFilter = fFilter;
 	}
 	public void printConsole(String fString)
 	{
@@ -112,6 +119,13 @@ public void appendVal(String fVal)
 
 }
 
+public void appendVal(Token tok) {
+    antlr.CommonHiddenStreamToken t = (antlr.CommonHiddenStreamToken)tok;
+    //appendVal(t.getText());
+    for ( ; t!=null ; t=mFilter.getHiddenAfter(t) ) {
+        appendVal(t.getText());
+    }
+}
 public void appendName(String fVal)
 {
 		try{
@@ -177,7 +191,7 @@ value: 		(HASH_REF | SCALAR_REF | CODE_REF | REF | FILE_REF | GLOB )=> refs
 		|	(NUMBER NL)=>n:NUMBER{setVal(n.getText(),"Scalar");printConsole(" VAL_NUM:"+n.getText()+"\n");}NL 
 		| 	(FILE_HANDLE)=>fileHandle NL
 		|	(NL)=> NL{setVal("undef","Scalar");}
-		|	(~(NL|EQ) EQ)=> {mLex.mIgnoreWS=false;}(m:~(NL|EQ){appendVal(m.getText());})+{mLex.mIgnoreWS=true;} 
+		|	(~(NL|EQ) EQ)=> (m:~(NL|EQ){appendVal(m.getText());})+
 			EQ  
 			((HASH_REF | SCALAR_REF | CODE_REF | REF | FILE_REF | GLOB )=> refs|val_nonl NL)
 		|	val_nonl NL;
@@ -189,8 +203,8 @@ value: 		(HASH_REF | SCALAR_REF | CODE_REF | REF | FILE_REF | GLOB )=> refs
 //value_none: (NL)=> NL{setVal("undef","Scalar");};
 refs:  (hashReference | arrayReference | scalarRef | codeRef | ref | fileHandleRef | globRef);
 //val_nonl: {mLex.mIgnoreWS=false;}(n:~NL{appendVal(n.getText());})*{mLex.mIgnoreWS=true;};
-val_nonl: {mLex.mIgnoreWS=false;}(n:~NL{appendVal(n.getText());})*{mLex.mIgnoreWS=true;};
-val_noponl: {mLex.mIgnoreWS=false;}(n:~(NL|PAREN_OP){appendVal(n.getText());}| PAREN_OP)*{mLex.mIgnoreWS=true;};
+val_nonl: (n:~NL{appendVal(n);})*;
+val_noponl:(n:~(NL|PAREN_OP){appendVal(n);}| PAREN_OP)*;
 
 
 name_noeq: (n:~EQ{appendName(n.getText());})*;
@@ -217,7 +231,7 @@ options
 	int mCurrentIndentLevels=0;
 	int mIndentEndToSend =0;
 	java.util.Stack mIndentStack = new java.util.Stack();
-	boolean mIgnoreWS;
+	
 }
 
 //protected PREFIXED_NAME:	(~('\n' | ' ' | '\t' |'='))+;
@@ -258,8 +272,9 @@ WS:
     {
     	if(  makeToken(WS).getColumn() != 1)
     	{
-    		if(mIgnoreWS)$setType(Token.SKIP);
-    		else $setType(PURE_NAME);
+    		//if(mIgnoreWS)$setType(Token.SKIP);
+    		//else 
+    		//$setType(PURE_NAME);
     	}
 	    else
 	    {

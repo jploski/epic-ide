@@ -11,6 +11,7 @@ import antlr.LexerSharedInputState;
 import antlr.RecognitionException;
 import antlr.Token;
 import antlr.TokenStreamException;
+import antlr.TokenStreamHiddenTokenFilter;
 
 /**
  * The main for this example. It accepts the name of a file as a commandline
@@ -25,98 +26,8 @@ public class PerlVarParser
 	private PerlParser par;
 	private PerlDB mDebugger;
 	private int mScope;
+	public TokenStreamHiddenTokenFilter mFilter;
 	   
-    public static class PerlLexer extends PerlBaseLexer
-    {
-	private static int mNormal = 0;
-	private static int mEndIndent = 1;
-	
-	private int mState;
-	private Token mDelayedTok;
-	private int mCurrentPos;
-	
-	 
-	public PerlLexer(InputStream in) {
-			super(in);
-		}
-	public PerlLexer(Reader in) {
-	super(in);
-	init();
-	}
-	public PerlLexer(InputBuffer ib) {
-	super(ib);
-	init();
-	}
-	
-	public PerlLexer(LexerSharedInputState state) {
-	super(state);
-	init();
-	}
-
-	private void  init()
-	{
-		mState = mNormal;
-		mDelayedTok = null;
-		mCurrentPos = 0;
-	}
-		
-	public Token nextToken() throws TokenStreamException {
-		Token tok;
-
-		
-		if( mDelayedTok != null)
-		{
-			if( (mCurrentIndentLevels > 0) 
-				&& ((Integer)mIndentStack.peek()).intValue()> mCurrentPos)
-				{
-				tok = new Token(INDENT_END);
-				 mCurrentIndentLevels--;
-				 mIndentStack.pop();
-				// System.out.println("*****IndentEnd\n");
-				}	
-			else
-				{
-					tok = mDelayedTok;
-					mCurrentIndent = mCurrentPos;
-					mDelayedTok = null;	
-				}
-		}
-		else
-		{
-			tok = super.nextToken();
-			mCurrentPos = tok.getColumn();
-			if(tok.getType()== NL)
-			{ 
-				mCurrentPos++;
-				mCurrentPos --;
-			}
-			if( 
-				(tok.getType()!= NL
-					|| ( (tok.getType()== NL) && (mCurrentPos == 1) )
-				)
-				&& (tok.getType()!= INDENT_START)
-				&& (mCurrentIndentLevels > 0) 
-				&& ((Integer)mIndentStack.peek()).intValue()> mCurrentPos)
-			{
-				mDelayedTok=tok;
-				tok = new Token(INDENT_END);
-				mCurrentIndentLevels--;
-				mIndentStack.pop();
-				//System.out.println("*****IndentEnd\n");
-			}
-			
-			}
-			
-			return(tok);
-		} 
-		
-
-		
-		
-	
-    }
-    
-    
     public PerlVarParser( PerlDB fDebugger)
     {
       mDebugger = fDebugger;
@@ -132,12 +43,28 @@ public class PerlVarParser
     	boolean hasErrors=false;
     	fText = fText+ System.getProperty("line.separator");
 		try{
-		// Construct the lexer
-		PerlBaseLexer lex = new PerlLexer ( new StringReader( fText ) );
-		lex.mIgnoreWS=true;
+			
+			 //		  Construct the lexer
+			PerlLexer lex = new PerlLexer ( new StringReader( fText ) );
+
+			// use nonstandard token object
+		    	lex.setTokenObjectClass("antlr.CommonHiddenStreamToken");
+
+			// create the filter
+		    	mFilter = new TokenStreamHiddenTokenFilter(lex);
+		    	mFilter.hide(PerlLexer.WS); // hide not discard
+		    	
+
+			// run parser attached to filtered token stream
+		    //	TestParser parser = new TestParser(filter);
+		    //	parser.slist(); // Parse the input statements
+			
+					
+	
 		// construct the parser
-		par = new PerlParser (lex);
+		par = new PerlParser (mFilter);
 		par.setLex(lex);
+		par.setFilter(mFilter);
 		par.setDebugger(mDebugger);
 		par.setScope(fScope);
 		par.setVarList(fVarList);
@@ -145,6 +72,7 @@ public class PerlVarParser
 		try
 		{
 			par.topLevel();
+			
 		} catch (TokenStreamException e1)
 		{
 			// TODO Auto-generated catch block

@@ -8,6 +8,7 @@ package org.epic.perleditor.editors.util;
 
 import java.util.List;
 import java.util.ArrayList;
+import java.util.StringTokenizer;
 import java.io.*;
 
 import org.eclipse.ui.IFileEditorInput;
@@ -76,53 +77,31 @@ public class PerlExecutableUtilities {
 
 		List cmdList = new ArrayList();
 		cmdList.add(perlExe.trim());
-
-		// Support Include Path in executable command line
-		int index;
-		while ((index = perlParams.indexOf("-I")) != -1) {
-
-			//Check for next include path
-			int next = perlParams.indexOf("-I", index + 1);
-
-			String param;
-
-			if (next != -1) {
-				param = perlParams.substring(index, next).trim();
-				perlParams = perlParams.substring(next);
-			} else {
-				param = perlParams.substring(index).trim();
-				perlParams = "";
-			}
-
-			param.trim();
-
-			cmdList.add(param);
-
+		
+	   // Handle additional parameters
+	   // Not 100% bullet proof but should work in most cases
+	   StringTokenizer st = new StringTokenizer(perlParams, " ", true);
+ 
+			 String tmpParam = "";
+	   while (st.hasMoreTokens()) {
+		String token = st.nextToken();
+   
+		if(token.equals(" ") && tmpParam.length() == 0) {
+		 continue;
 		}
-		/*
-			if (perlParams.length() > 0) {
-				cmdList.add(perlParams.trim());
-			}
-			*/
-
-        /*  Shouldn't be necessary any more, when working directory is specified in exec() and
-         *  perl file content is passed via stdin.
-         */
-         /*
-		if (textEditor != null) {
-			String currentPath =
-				((IFileEditorInput) textEditor.getEditorInput())
-					.getFile()
-					.getLocation()
-					.makeAbsolute()
-					.removeLastSegments(1)
-					.toString();
-			currentPath = preparePath(currentPath);
-
-			cmdList.add("-I");
-			cmdList.add(currentPath);
+   
+		if(tmpParam.length()>0 && token.startsWith("-")) {
+		 cmdList.add(tmpParam.trim());
+		 tmpParam = token;
 		}
-		*/
+		else {
+		 tmpParam += token;
+		}
+	   }
+  
+	   if(tmpParam.length() > 0) {
+		cmdList.add(tmpParam.trim());
+	   }
 
 		// Add other project include paths
 		if(project != null) {

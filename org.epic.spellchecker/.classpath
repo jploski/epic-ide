@@ -25,12 +25,13 @@
         path="ECLIPSE_HOME/plugins/org.eclipse.core.resources_2.1.0/resources.jar" sourcepath="ORG_ECLIPSE_PLATFORM_SOURCE_SRC/org.eclipse.core.resources_2.1.0/resourcessrc.zip"/>
     <classpathentry kind="var"
         path="ECLIPSE_HOME/plugins/org.eclipse.help_2.1.0/help.jar" sourcepath="ORG_ECLIPSE_PLATFORM_SOURCE_SRC/org.eclipse.help_2.1.0/helpsrc.zip"/>
-    <classpathentry kind="var" path="ECLIPSE_HOME/plugins/com.bdaum.SpellChecker_1.1.1/SpellChecker.jar"/>
-    <classpathentry kind="var" path="ECLIPSE_HOME/plugins/com.bdaum.SpellChecker_1.1.1/jazzy-core.jar"/>
+    <classpathentry kind="var" path="ECLIPSE_HOME/plugins/com.bdaum.SpellChecker_2.0.0/SpellChecker.jar"/>
+    <classpathentry kind="var" path="ECLIPSE_HOME/plugins/com.bdaum.SpellChecker.NLsupport_2.0.0.1/nlSpellChecker.jar"/>
     <classpathentry kind="var"
         path="ECLIPSE_HOME/plugins/org.eclipse.core.boot_2.1.0/boot.jar" sourcepath="ORG_ECLIPSE_PLATFORM_SOURCE_SRC/org.eclipse.core.boot_2.1.0/bootsrc.zip"/>
     <classpathentry kind="var"
         path="ECLIPSE_HOME/plugins/org.eclipse.core.runtime_2.1.0/runtime.jar" sourcepath="ORG_ECLIPSE_PLATFORM_SOURCE_SRC/org.eclipse.core.runtime_2.1.0/runtimesrc.zip"/>
     <classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+    <classpathentry kind="var" path="ECLIPSE_HOME"/>
     <classpathentry kind="output" path="bin"/>
 </classpath>

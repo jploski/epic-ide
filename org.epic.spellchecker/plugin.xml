@@ -22,18 +22,13 @@
    <extension
          point="org.eclipse.ui.preferencePages">
       <page
-            name="Perl"
+            name="Spell Perl"
             category="com.bdaum.SpellChecker.preferences.defaultPreferences"
             class="org.epic.spellchecker.PerlSpellCheckerPreferencePage"
             id="org.epic.spellchecker.preferencePage">
       </page>
    </extension>
-   <extension
-         point="org.eclipse.help.toc">
-      <toc
-            file="toc.xml">
-      </toc>
-   </extension>
+
    <extension
          point="org.eclipse.help.contexts">
       <contexts
@@ -51,6 +46,37 @@
             class="org.epic.spellchecker.PerlWordTokenizer"
             id="org.epic.spellchecker.PerlWordTokenizer">
       </tokenizer>
+   </extension>
+<!-- NEW -->
+   <extension
+         id="org.epic.spellchecker.properties.java"
+         name="SpellChecker Perl Properties"
+         point="org.eclipse.ui.propertyPages">
+      <page
+            objectClass="org.eclipse.core.resources.IProject"
+            adaptable="true"
+            name="Spell Perl"
+            class="org.epic.spellchecker.PerlSpellCheckerPreferencePage"
+            id="org.epic.spellchecker.Perl.propertyPage.project">
+         <filter
+               name="nature"
+               value="org.epic.perleditor.perlnature">
+         </filter>
+      </page>
+   </extension>
+
+    <extension
+         point="org.eclipse.help.toc">
+      <toc
+            file="toc.xml">
+      </toc>
+   </extension>
+
+   <extension
+         point="org.eclipse.help.contexts">
+      <contexts
+            file="contexts.xml">
+      </contexts>
    </extension>
 
 </plugin>

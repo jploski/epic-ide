@@ -25,7 +25,7 @@ public class PerlSpellCheckerPreferencePage
 	 *                                         #getPreferenceHelpContextID()
 	 */
 	protected String getPreferenceHelpContextID() {
-		return "com.bdaum.SpellChecker.Java.java_preferences_context";
+		return "org.epic.spellchecker.preferences_context";
 	}
 
 	/**
@@ -58,4 +58,12 @@ public class PerlSpellCheckerPreferencePage
 				"Check String &Literals",
 				composite));
 	}
+	
+	/**
+		 * Returns a qualifier for the project settings - new in 1.2
+		 * @return - the qualifier (plug-in id)
+		 */
+		public String getPageId() {
+			return  PerlSpellCheckerPreferences.PAGEID;
+		}
 }

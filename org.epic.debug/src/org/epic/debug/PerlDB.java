@@ -146,7 +146,11 @@ public class PerlDB implements IDebugElement, ITerminate {
 		}
 
 	}
-
+	public boolean mStopVarUpdate;
+	private String mVarLocalString;
+	private String mVarGlobalString;
+	private VarUpdateThread mVarUpdateThread;
+	private StackFrame mStackFrameOrg;
 	private class IP_Position {
 		int IP_Line;
 		IPath IP_Path;
@@ -200,7 +204,7 @@ public class PerlDB implements IDebugElement, ITerminate {
 		mCurrentSubCommand = mCommandNone;
 
 		mIsSessionTerminated = false;
-
+		mStopVarUpdate = false;
 		mDebugIn = null;
 		mDebugOut = null;
 		mDebugOutput = null;
@@ -282,7 +286,7 @@ public class PerlDB implements IDebugElement, ITerminate {
 			/** ******************************** */
 			PerlDebugPlugin.getPerlBreakPointmanager().addDebugger(this);
 
-			updateStackFrames(null);
+			updateStackFramesInit(null);
 			generateDebugInitEvent();
 		} else
 			generateDebugTermEvent();
@@ -423,15 +427,16 @@ public class PerlDB implements IDebugElement, ITerminate {
 		if (!fUpdateVars)
 			command = mCommandExecuteCode;
 
-		if (mIsCommandRunning) {
-			startSubCommand(command, fText, false);
-			res = mDebugSubCommandOutput;
-		} else {
-			startCommand(command, fText, false, fThread);
+//		if (mIsCommandRunning) {
+//			startSubCommand(command, fText, false);
+//			res = mDebugSubCommandOutput;
+//		} else {
+			boolean erg = startCommand(command, fText, false, fThread);
+			if(! erg ) return (null);
 			res = mDebugOutput;
-		}
+	//	}
 
-		
+		if(res == null ) return (null);
 		int index_n = res.lastIndexOf("\n");
 		int index_r = res.lastIndexOf("\r");
 
@@ -449,7 +454,7 @@ public class PerlDB implements IDebugElement, ITerminate {
 		String result = res.substring(0, index);
 		return (result);
 	}
-	public boolean startCommand(int fCommand, String fCode, boolean fSpawn,
+	synchronized public boolean startCommand(int fCommand, String fCode, boolean fSpawn,
 			Object fThread) {
 		if (mIsCommandRunning)
 			return (false);
@@ -460,6 +465,12 @@ public class PerlDB implements IDebugElement, ITerminate {
 		mCurrentSubCommand = mCommandNone;
 		mIsCommandRunning = true;
 		mIsCommandFinished = false;
+		
+		if( isStepCommand(fCommand))
+		{
+			mStopVarUpdate = true;
+			System.err.println("!!!!Stop");
+		}
 		return (startPerlDebugCommand(fCode, fSpawn));
 	}
 
@@ -476,6 +487,8 @@ public class PerlDB implements IDebugElement, ITerminate {
 	private boolean startPerlDebugCommand(String fCode, boolean fSpawn) {
 		int command;
 		boolean isSubCommand;
+		
+		
 
 		if (!isSubCommand()) {
 			command = mCurrentCommand;
@@ -667,8 +680,7 @@ public class PerlDB implements IDebugElement, ITerminate {
 				debugOutput.append(buf, 0, count);
 			currentOutput = debugOutput.toString();
 
-			//System.out.println("\nCurrent
-			// DEBUGOUTPUT:\n"+currentOutput+"\n");
+			System.out.println("\nCurrent DEBUGOUTPUT:\n"+currentOutput+"\n");
 			if (count == -1 || hasSessionTerminated(currentOutput)) {
 				finished = SESSION_TERMINATED;
 				break;
@@ -760,6 +772,17 @@ public class PerlDB implements IDebugElement, ITerminate {
 		if (mCurrentSubCommand == mCommandNone) {
 			mIsCommandRunning = false;
 			mIsCommandFinished = true;
+			switch(mCurrentCommand){
+			case mCommandStepInto :
+			case mCommandStepOver :
+			case mCommandStepReturn :
+			case mCommandResume :
+			case mCommandSuspend :
+			case mCommandTerminate :
+			case mCommandEvaluateCode :
+				updateStackFramesInit(fOutput);
+				break;
+		}
 			generateDebugEvent(PerlDB.this.mCurrentCommand, false,
 					mCurrentCommandDest);
 			mDebugOutput = fOutput;
@@ -777,6 +800,7 @@ public class PerlDB implements IDebugElement, ITerminate {
 	}
 
 	private void abortSession() {
+		mStopVarUpdate = true;
 		mIsSessionTerminated = true;
 		mCurrentSubCommand = mCommandNone;
 		mCurrentCommand = mCommandNone;
@@ -926,7 +950,7 @@ public class PerlDB implements IDebugElement, ITerminate {
 			case mCommandSuspend :
 			case mCommandTerminate :
 			case mCommandEvaluateCode :
-				updateStackFrames(fOutputString);
+			//	updateStackFramesInit(fOutputString);
 				break;
 			case mCommandClearOutput :
 				break;
@@ -938,35 +962,38 @@ public class PerlDB implements IDebugElement, ITerminate {
 		return (true);
 	}
 
-	private void updateStackFrames(String fOutputString) {
+	private void updateStackFramesFinish(String fOutputString) {
 		PerlDebugValue val;
-		startSubCommand(mCommandExecuteCode, "T", false);
-		mDebugSubCommandOutput = mDebugSubCommandOutput
-				.replaceAll("\n", "\r\n");
-		REMatch[] matches = mReStackTrace.getAllMatches(mDebugSubCommandOutput);
-		StackFrame[] frames = new StackFrame[matches.length + 1];
-		frames[0] = new StackFrame(mThreads[0]);
-		setCurrent_IP_Position(frames[0]);
-		setVarList(frames[0]);
+	
+		
 		PerlDebugVar var_new, var_org;
 		PerlDebugVar[] orgStackFrameVars, newStackFrameVars;
-
 		try {
-			if (mThreads[0].getStackFrames() != null
+			if(mThreads[0].getStackFrames() == null)
+				return;
+		} catch (DebugException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		StackFrame frame = this.mStackFrameOrg;
+		try {
+			if (frame != null
 					&& ((StackFrame) mThreads[0].getStackFrames()[0])
-							.get_IP_Path().equals(frames[0].get_IP_Path())) {
+							.get_IP_Path().equals(frame.get_IP_Path())) {
 				orgStackFrameVars = null;
 				newStackFrameVars = null;
-
-				orgStackFrameVars = (PerlDebugVar[]) mThreads[0]
-						.getStackFrames()[0].getVariables();
-				newStackFrameVars = (PerlDebugVar[]) frames[0].getVariables();
+				
+				orgStackFrameVars = (PerlDebugVar[]) frame.getVariables();
+				newStackFrameVars = (PerlDebugVar[]) mThreads[0]
+																.getStackFrames()[0].getVariables();
 
 				boolean found;
 				boolean checkLocals = isRequireCompareLocals(fOutputString);
 				for (int new_pos = 0; new_pos < newStackFrameVars.length; ++new_pos) {
 					found = false;
 					var_new = newStackFrameVars[new_pos];
+					if( orgStackFrameVars != null)
 					for (int org_pos = 0; (org_pos < orgStackFrameVars.length)
 							&& !found; ++org_pos) {
 						var_org = orgStackFrameVars[org_pos];
@@ -990,6 +1017,39 @@ public class PerlDB implements IDebugElement, ITerminate {
 			e1.printStackTrace();
 		}
 
+		
+	}
+
+	
+	
+	
+	private void updateStackFramesInit(String fOutputString) {
+		PerlDebugValue val;
+		String erg;
+		
+		//setVarStrings();
+		boolean ret = startSubCommand(mCommandExecuteCode, "T", false);
+		erg = mDebugSubCommandOutput
+		.replaceAll("\n", "\r\n");
+		if( ! ret )
+			return;
+		
+		
+		try {
+			if( mThreads[0].getStackFrames() != null)
+				mStackFrameOrg = (StackFrame) mThreads[0].getStackFrames()[0];
+			else
+				mStackFrameOrg = null;
+		} catch (DebugException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
+		
+		REMatch[] matches = mReStackTrace.getAllMatches(erg);
+		StackFrame[] frames = new StackFrame[matches.length + 1];
+		frames[0] = new StackFrame(mThreads[0]);
+		setCurrent_IP_Position(frames[0]);
 		for (int pos = 0; pos < matches.length; ++pos) {
 			PerlDebugVar[] vars = new PerlDebugVar[2];
 
@@ -1027,8 +1087,31 @@ public class PerlDB implements IDebugElement, ITerminate {
 			}
 		}
 		mThreads[0].setStackFrames(frames);
+		
+		
+		if( mVarUpdateThread != null )
+			try {
+				mVarUpdateThread.join();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		
+		
+		if( mVarUpdateThread != null )
+			try {
+				mVarUpdateThread.join();
+			} catch (InterruptedException e2) {
+				// TODO Auto-generated catch block
+				e2.printStackTrace();
+			}
+		mStopVarUpdate = false;
+		
+		mVarUpdateThread = new VarUpdateThread(fOutputString);
+		mVarUpdateThread.setPriority(Thread.MIN_PRIORITY);
+		mVarUpdateThread.start();
+		
 	}
-
 	private IP_Position getCurrent_IP_Position() {
 		int line;
 		IPath file;
@@ -1069,20 +1152,21 @@ public class PerlDB implements IDebugElement, ITerminate {
 		fFrame.set_IP_Path(pos.get_IP_Path());
 
 	}
-
-	private void setVarList(StackFrame fFrame) {
-		IVariable[] lVars;
-		ArrayList lVarList = null;
-		String command;
+	
+	private void setVarStrings() {
+				String command;
 		String command_local = "y ";
 		String result;
+		boolean ret;
 		
 		command = "o frame=0\n";
 		if (mPerlVersion.startsWith("5.6")) {
 			command = "O frame=0\n";
 			command_local = mLovalVarCommand_5_6;
 		}
-		startSubCommand(mCommandExecuteCode, command, false);
+		ret = startCommand(mCommandExecuteCode, command, false,mThreads[0]);
+		if( ! ret || this.mStopVarUpdate)
+			return;
 		if (ShowLocalVariableActionDelegate.getPreferenceValue()) {
 			result = evaluateStatement(mThreads[0], command_local, false);
 			//startSubCommand(mCommandExecuteCode, command_local, false);
@@ -1093,30 +1177,57 @@ public class PerlDB implements IDebugElement, ITerminate {
 						.errorDialog("***Error displaying Local Variables****\nInstall Padawalker on your Perl system or disable displaying of local variables");
 				mLocalVarsAvailable = false;
 			} else {
-
-				//System.out.println("\n\n\n\n\n\n\n\n\n********Local Vars:"
-				//		+ mDebugSubCommandOutput);
-				lVarList = mVarParser.parseVars(result,
-						PerlDebugVar.IS_LOCAL_SCOPE);
-			}
+						mVarLocalString = result;
+					}
 			}
 		}
 		command = "o frame=2\n";
 		if (mPerlVersion.startsWith("5.6"))
 			command = "O frame=2\n";
 
-		startSubCommand(mCommandExecuteCode, command, false);
+		ret = startCommand(mCommandExecuteCode, command, false,mThreads);
+		if( ! ret || this.mStopVarUpdate)
+			return;
 		result = evaluateStatement(mThreads[0],  "X ", false);
-		//startSubCommand(mCommandExecuteCode, "X ", false);
+		
+		mVarGlobalString = result;
 
-		//System.out.println("\n\n\n\n\n\n\n\n\n********Global Vars:"
-		//		+ mDebugSubCommandOutput);
-				if (lVarList != null)
-			mVarParser.parseVars(result,
+	}
+
+
+	private void setVarList(StackFrame fFrame) {
+		IVariable[] lVars;
+		ArrayList lVarList = null;
+		
+		if( fFrame == null ) return;
+		if( mStopVarUpdate == true)
+			return;
+		
+		if(mVarLocalString != null)
+    	lVarList = mVarParser.parseVars(mVarLocalString,
+						PerlDebugVar.IS_LOCAL_SCOPE);
+		if( mStopVarUpdate == true)
+			
+			if( mStopVarUpdate == true)
+			{
+				System.err.println("Exit Local+++++++++++++++++");
+				return;
+			}
+		
+		if (lVarList != null)
+			mVarParser.parseVars(mVarGlobalString,
 					PerlDebugVar.IS_GLOBAL_SCOPE, lVarList);
 		else
-			lVarList = mVarParser.parseVars(result,
+			lVarList = mVarParser.parseVars(mVarGlobalString,
 					PerlDebugVar.IS_GLOBAL_SCOPE);
+		
+		if( mStopVarUpdate == true)
+			if( mStopVarUpdate == true)
+			{
+				System.err.println("Exit Global+++++++++++++++++");
+				return;
+			}
+		
 	try {
 			//	removeUnwantedVars(lVarList);
 			fFrame.setVariables(lVarList);
@@ -1440,4 +1551,69 @@ public class PerlDB implements IDebugElement, ITerminate {
 			db.generateDebugEvalEvent();
 		}
 	}
-}
+	
+	public class VarUpdateThread extends Thread
+	{
+		private String mString;
+
+		public VarUpdateThread(String fString)
+		{
+			mString = fString;
+		}
+		
+		
+		public void run()
+		{
+			
+			StackFrame frame = null;
+			System.err.println("Start+++++++++++++++++"+mIsCommandFinished);
+			try {
+				for( int x =0; (x < 5) && !mStopVarUpdate; x++)
+					sleep(100);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			System.err.println("Start 0+++++++++++++++++"+mIsCommandFinished);
+			
+			if( mStopVarUpdate == true)
+			{
+				System.err.println("Exit 0+++++++++++++++++"+mIsCommandFinished);
+				return;
+			}
+			
+			setVarStrings();
+			try {
+				if( mThreads[0].getStackFrames() == null )
+					return;
+				frame = (StackFrame) mThreads[0].getStackFrames()[0];
+			} catch (DebugException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			
+			System.err.println("Start 1+++++++++++++++++"+mIsCommandFinished);
+			
+			if( mStopVarUpdate == true)
+			{
+				System.err.println("Exit 1+++++++++++++++++"+mIsCommandFinished);
+				return;
+			}
+			setVarList(frame);
+			System.err.println("Start 2+++++++++++++++++"+mIsCommandFinished);
+			if( mStopVarUpdate == true)
+			{
+				System.err.println("Exit 2+++++++++++++++++"+mIsCommandFinished);
+				return;
+			}
+			updateStackFramesFinish(mString);
+			System.err.println("Start 3+++++++++++++++++"+mIsCommandFinished);
+			if( mStopVarUpdate == true)
+				return;
+			generateDebugEvalEvent();
+		}
+		
+		}
+	}
+	;

@@ -1,0 +1,1 @@
+<plugin provider-name="Example provider" version="1.0" id="com.example.help" name="DocBook Online Help Sample"><extension point="org.eclipse.help.toc"><toc primary="true" file="toc.xml"></toc></extension></plugin>

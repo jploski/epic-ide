@@ -1,0 +1,992 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <meta content="text/html; charset=ISO-8859-1"
+ http-equiv="content-type">
+  <title>EPIC - User's Guide</title>
+</head>
+<body>
+<h1>Plug-in Installation<br>
+</h1>
+<h2>Prerequisits</h2>
+<h3>Eclipse</h3>
+Before installing the EPIC plug-in Eclipse version 3.0 or higher has to
+be installed.<br>
+Eclipse comes in two flavours. The <i>SDK</i> version contains Java
+IDE components and is much larger than the <i>Platform</i> version. If
+you only want to use Eclipse as Perl IDE the Platform version is
+sufficient. If you are in Perl and Java coding, use the SDK version.<br>
+<br>
+Eclipse can be downloaded from <a href="http://www.eclipse.org">www.eclipse.org</a>.<br>
+<br>
+<h3>Perl</h3>
+In order to have all EPIC features like Syntax Check, Souce Formatting
+etc. a perl interpreter is neede. In principle any Perl interpreter can
+be used. To use debugging within eclipse Perl version 5.8.0 or higher
+an a workin PadWalker module is needed.<br>
+Most *nix/Linux installations will provide Perl interpreters out of the
+box.<br>
+For Window, Perl can be downloaded from <a
+ href="http://www.activestate.com">www.activestate.com</a>.<br>
+<br>
+<h2>Installation<br>
+</h2>
+The installation is done by using the Eclipse Update Manager. The
+Update Manager connects to an EPIC Update Site
+[http://e-p-i-c.sourceforge.net/updates]. The Update Site can also be
+stored locally if no Internet connection is available and can be
+downloaded form the <a href="http://e-p-i-c.sourceforge.net">EPIC
+project page</a>.<br>
+<br>
+After starting Eclipse, select <b>Help &gt; Software and Updates &gt;
+Find and Install...</b> from the menu.<br>
+<br>
+<div align="center"><img src="images/updates_1.gif"
+ alt="Find and Install..." width="308" height="157"><br>
+<br>
+</div>
+<br>
+Select <b>Search for new features to install</b> an press <b>Next</b>.<br>
+<br>
+Press the <b>Add Update Site...</b> button for a remote installation
+via HTTP or the <b>Add Local Site...</b> button if the Update Site is
+available locally.<br>
+When installing EPIC from remote enter any desired <i>Name</i> and the
+<i>URL </i> <i><b>http://e-p-i-c.sf.net/updates</b></i>.<br>
+<br>
+<div align="center"><img src="images/updates_2.gif"
+ alt="Add Update Site..." width="350" height="123"><br>
+<br>
+</div>
+<br>
+Tick the newly created site and press the <b>Next</b> button.<br>
+Follow the instructions of the install wizard. The waring about the
+installation of an unsigned feature can be ignored.<br>
+After installation Eclipse has to be restarted.<br>
+<br>
+Now the EPIC installation should be complete.<br>
+<br>
+<h1>Setting up Preferences<br>
+</h1>
+EPIC preferences can be accessed via <b>Window &gt; Preferences...</b>
+from the Eclipse Menu.<br>
+<br>
+<div align="center"><img height="362" width="595" alt="Preferences..."
+ src="images/preferences_1.gif"><br>
+</div>
+<br>
+<h2><a name="General_Preferences"></a>General Preferences</h2>
+Click on <i>Perl EPIC </i>to open the General Preferences page.<br>
+General preferences include the location of the Perl interpreter, the
+option to enable warnings, taint mode and the interval of the source
+validation.<br>
+The validation interval indicated when to start validation after the
+editor is idle.<br>
+Apart from the standard interpreter type, the tye can be switched to <i>Cygwin</i>.
+In this case the @INC path is mapped to be Cygwin compliant.<br>
+<br>
+<h2>Code Assist</h2>
+On the Code Assist Preference Page the auto completion trigger
+characters are defined. Normally it should not be necessary these
+values.<br>
+By default the editor suggests a list of already used variables when
+the characters <i>$ @ %</i> are typed. To switch this feature off,
+deselect the <i>Inspect Variables</i> checkbox.<br>
+<br>
+<div align="center"><img height="376" width="468"
+ alt="Code Assist Preferences" src="images/preferences_5.gif"><br>
+<br>
+<div align="left">
+<h2>Editor</h2>
+These options define the appearance of the Perl Editor , the colouring
+of the Perl source code and how Annotations are displayed.<br>
+<br>
+<div align="center"><img src="images/preferences_2.gif"
+ alt="Editor Preferences" width="424" height="532"><br>
+<br>
+</div>
+<h2>Source Formatter</h2>
+EPIC uses PerlTidy to format source code. The Source Formatter
+Preference allow to specify perltidy command line parameters. To get a
+description of available parameters, press the Help key and select <i>PerlTidy</i>
+options from the popup menu.<br>
+<br>
+<div align="center"><img src="images/preferences_3.gif"
+ alt="Source Formatter Preferences" width="422" height="164"><br>
+</div>
+<br>
+<b>NOTE:</b> In order for PerlTidy to work correctly the Perl
+Interpreter Preferences have to be setup correctly (see above).<br>
+<br>
+<h2>Templates</h2>
+Templates are a powerful tool to insert pre defined code snippets while
+working with the&nbsp; Perl Editor.<br>
+<br>
+<div align="center"><img src="images/preferences_4.gif"
+ alt="Template Preferences" width="540" height="510"><br>
+<br>
+<div align="left">How Templates are use is covered in <i>Working with
+the Perl Editor</i>. The Templates Preference page allows the creation,
+import and export of Templates.<br>
+On export Templates are stored in XML format.<br>
+<br>
+<br>
+<h2>Setting up the Debugger</h2>
+Setting up the debugger requires two steps:<br>
+<ol>
+  <li><a href="#General_Preferences">Define the Perl interpreter to use</a>
+  </li>
+  <li>Install the PadWalker Perl module<br>
+Download the PadWalker module from <a href="http://www.cpan.org/">CPAN</a>&nbsp;
+(<a href="http://search.cpan.org/%7Erobin/PadWalker-0.10/">PadWalker
+0.10</a>) and install as described in the installation notes or use the
+installation manager provided with your Perl installation (e.g. PPM for
+ActiveState installations).<br>
+If you are using ActiveState 5.8.x on Windows system you can download a
+pre-compiled PadWalker module from the <a
+ href="http://e-p-i-c.sourceforge.net/">EPIC homepage</a> as the
+version provided by ActiveState doesn't seem to work for Perl 5.8.x
+(but it does for 5.6.x).<br>
+  </li>
+</ol>
+<br>
+<br>
+<h1>Perl Projects</h1>
+<h2>Creating a Project</h2>
+Perl projects are created (like any other Project) by selecting <b>File
+&gt; New &gt; Project...</b> from the Eclipse menu.<br>
+<br>
+<div align="center"><img src="images/project_1.gif"
+ alt="Creating a Project" width="397" height="388"><br>
+<br>
+<div align="left">After following the instructions of the wizard the
+Perl Project will be created. In the Navigator the Perl folder icon <img
+ src="images/project_icon.gif" alt="Project Icon" width="20" height="20">
+is assigned to Perl Project.<br>
+<br>
+<h2>Perl Include Path</h2>
+To expand the Per Include Path (@INC) right click on the project icon
+and select <b>Properties...<br>
+<br>
+</b>
+<div align="center"><img height="399" width="562"
+ alt="@INC Path Settings" src="images/include_path_1.gif"><br>
+</div>
+<br>
+<h2><a name="Converting_an_existing_Project"></a>Converting an existing
+Project</h2>
+To add the Perl Nature to an existing Project, select the Project in
+the Navigator and select <i>Add Perl Nature</i> from the dropdown menu.<br>
+<br>
+</div>
+</div>
+<div align="center"><img src="images/nature_1.gif"
+ alt="Change Perl Nature" width="192" height="196"><br>
+<br>
+<div align="left">To remove a Perl Nature form a project, select a non
+Perl project and selet <i>Remove Perl Nature</i> form the popup menu.<br>
+<br>
+<h1>Eclipse Basics<span style="font-weight: bold;"></span></h1>
+<h2>Perspectives</h2>
+<p label="Type" class="Para">Each Workbench window contains one or more
+perspectives. A perspective defines the initial set and layout of views
+in the Workbench window. Within the window, each perspective shares the
+same set of editors. Each perspective provides a set of capabilities
+aimed at accomplishing a specific type of task or works with specific
+types of resources.&nbsp;For example, the Java perspective combines
+views that you would commonly use while editing Java source files,
+while the Debug perspective contains the views that you would use while
+debugging Java programs. As you work in the Workbench, you will
+probably switch perspectives frequently.</p>
+<p label="Type" class="Para">Perspectives control what appears in
+certain menus and toolbars. They define visible <i>action sets</i>,
+which you can change to customize a perspective. You can save a
+perspective that you build in this manner, making your own custom
+perspective that you can open again later.&nbsp;&nbsp;</p>
+<p label="Type" class="Para">You can set your Workbench preferences to
+open perspectives in the same window or in a new window.</p>
+The main perspectives relevant for developing Perl applications are<br>
+<img height="17" width="36" alt=""
+ src="images/perl_perspective_symbol.gif"> : This is the main view for
+coding&nbsp; Perl
+scripts<br>
+<img height="18" width="51" alt=""
+ src="images/debug_perspective_symbol.gif"> : Provides the main
+functionally for
+debugging
+and executing Perl scripts. For details see <a
+ href="#Debug_Perspective">Debug
+Perspective</a> .<br>
+<h2>Views</h2>
+<p label="Type" class="Para">Views support editors and provide
+alternative presentations as well as ways to navigate the information
+in your Workbench.&nbsp; For example, the Navigator view displays
+projects and other resources that you are working with.</p>
+<p label="Type" class="Para">Views also have their own menus. To open
+the menu for a view, click the icon at the left end of the view's title
+bar. Some views also have their own toolbars. The actions represented
+by buttons on view toolbars only affect the items within that
+view.&nbsp;</p>
+<p label="Type" class="Para">A view might appear by itself, or stacked
+with other views in a tabbed notebook.&nbsp;You can change the layout
+of a perspective by opening and closing views and by docking them in
+different positions in the Workbench window. <br>
+</p>
+<br>
+<h2>Using Perspectives<br>
+</h2>
+<p><span style="font-weight: bold;"></span> </p>
+<h3>Switching between perspectives</h3>
+<p>Open perspectives are represented by icons on the shortcut bar (the
+toolbar at the left of the Workbench window). When you have more than
+one perspective open, you can switch between them by clicking the icons
+on the shortcut bar.<br>
+</p>
+<h3>Opening perspectives</h3>
+<p>Perspectives provide combinations of views and editors that are
+suited to performing a particular set of tasks. For example, you would
+normally open the Debug perspective to debug a Java program. </p>
+<p>To open a new perspective:</p>
+<ol>
+  <li>Click the <b>Open Perspective</b> button on the shortcut bar on
+the left side of the Workbench window. (This provides the same function
+as the <b>Window &gt; Open Perspective</b> menu on the menu bar.) </li>
+  <li>To see a complete list of perspectives, select <b>Other</b> from
+the drop-down menu. </li>
+  <li>Select the perspective that you want to open. </li>
+</ol>
+<p>When the perspective opens, the title bar of the window it is in
+changes to display the name of the perspective. In addition, an icon is
+added to the shortcut bar, allowing you to quickly switch back to that
+perspective from other perspectives in the same window. </p>
+<p>By default, a perspective will open in the same window. If you would
+rather it opened in a new window, change the setting in <b>Window &gt;
+Preferences &gt; Workbench &gt; Perspectives</b>.<br>
+</p>
+<h3>Configuring perspectives</h3>
+<p>In addition to configuring the layout of your perspective you can
+also control several other key aspects of a perspective. These include:<br>
+</p>
+<ul>
+  <li>The options available on the <b>File &gt; New</b> submenu. </li>
+  <li>The options available on the <b>Window &gt; Open Perspective</b>
+submenu. </li>
+  <li>The options available on the <b>Window &gt; Show View</b>
+submenu. </li>
+  <li>Action sets (buttons and menu options) that show up on the
+toolbar and menu bar. </li>
+</ul>
+<p>To configure a perspective:</p>
+<ol>
+  <li>Switch to the perspective that you want to configure. </li>
+  <li>Select <b>Window &gt; Customize Perspective</b>. </li>
+  <li>Expand the item that you want to customize. </li>
+  <li>Use the check boxes to select which elements you want to see on
+drop-down menus in the selected perspective. Items you do not select
+will still be accessible by clicking the <b>Other</b> menu option. </li>
+  <li>Click <b>OK</b>.<br>
+  </li>
+</ol>
+<h3>Saving a user defined perspective</h3>
+<p>If you have modified a perspective by adding, deleting, or moving
+(docking) views, you can save your changes for future use. </p>
+<ol>
+  <li>Switch to the perspective that you want to save. </li>
+  <li>Click <b>Window &gt; Save Perspective As</b>. </li>
+  <li>Type a new name for the perspective into the <b>Name</b> field. </li>
+  <li>Click <b>OK</b>. </li>
+</ol>
+<p> </p>
+<h3>Resetting perspectives</h3>
+<p>To restore a perspective to its original layout:</p>
+<ol>
+  <li>Click <b>Window &gt; Preferences</b>. </li>
+  <li>Expand <b>Workbench</b> and choose <b>Perspectives</b>. </li>
+  <li>From the <b>Available perspectives</b> list, select the
+perspective you want to restore. </li>
+  <li>Click <b>Reset</b>. </li>
+  <li>Click <b>OK</b>.</li>
+</ol>
+<br>
+<h2>Using views</h2>
+<h3>Opening views</h3>
+<p>Perspectives offer pre-defined combinations of views and editors. To
+open a view that is not included in the current perspective, select <b>Window
+&gt; Show View</b> from the main menu bar. </p>
+<p>You can create <i>fast views</i> to provide a shortcut to views
+that you use often. </p>
+<p>After adding a view to the current perspective, you may wish to save
+your new layout by clicking <b>Window &gt; Save Perspective As</b>. </p>
+<h3>Moving and docking views</h3>
+<p>To change the location of a view in the current perspective: </p>
+<ol>
+  <li>Drag the view by its title bar. Do not release the left mouse
+button yet. </li>
+  <li>As you move the view around the Workbench, the mouse pointer
+changes to one of the <i>drop cursors</i> shown in the table below.
+The drop cursor indicates where the view will be docked if you release
+the left mouse button. To see the drop cursor change, drag the view
+over the left, right, top, or bottom border of another view or editor. </li>
+  <li>When the view is in the location that you want, relative to the
+view or editor area underneath the drop cursor, release the left mouse
+button. </li>
+  <li>(Optional) If you want to save your changes, select <b>Window
+&gt; Save Perspective As</b> from the main menu bar. </li>
+  <li>Note that a group of stacked views can be dragged using the empty
+space to the right of the view tabs.</li>
+</ol>
+<h1>Working with the Perl Editor</h1>
+<h2>Syntax Check</h2>
+</div>
+<div align="left">EPIC performs on the fly syntax check of Perl source
+files. In order for the Syntax Check to work the Perl Interpreter has
+to be set up correctly (see <i>Setting up Preferences</i>). <br>
+The Syntax Check is performed after a defined idle period, after the
+user has stopped typing. This idle period can be configured in the
+preferences.<br>
+<div align="left">When an error/warning has been found the editor
+displays the apropriate icon in the annotation ruler (the gray bar on
+the left side of the editor), underlines the error in the source and
+insterts a marker into the<i> Problems View</i> window (if visible).<br>
+<br>
+</div>
+<div align="center"><img height="428" width="597" alt="Syntax Check"
+ src="images/syntax_check_1.gif"><br>
+<br>
+<div align="left"><br>
+</div>
+<div align="left">
+<h2>Explain Errors and Warnings</h2>
+In addition to display warnings and errors the editor is capable of
+explaining Erros and Warnings.<br>
+To get an Error/Warning explanation right-click the Error/Warning icon
+and select Explain <i>Errors/Warnings</i> from the dropdown menu.<br>
+<br>
+<div align="center"><img height="157" width="272"
+ alt="Explaint Errors/Warnings popup" src="images/explain_1.gif"><br>
+</div>
+<br>
+The explanation(s) will be displayed in the <i>Explain Errors/Warnings
+View</i>.<br>
+<br>
+<div align="center"><img height="250" width="447"
+ alt="Explain Warnings/Errors" src="images/explain_2.gif"><br>
+</div>
+<br>
+<br>
+<h2>Perldoc</h2>
+To retrieve perldoc information select a keyword or text and choose one
+of the perldoc options from the context menu.<br>
+If nothing is selected an input box will pop up.<br>
+<br>
+<div align="center"><img src="images/perldoc_1.gif"
+ alt="Perldoc Context Menu" width="425" height="170"><br>
+</div>
+<br>
+If a perldoc entry is found it is displayed inside the <i>Perldoc View</i>.<br>
+<br>
+<div align="center"><img src="images/perldoc_2.gif" alt="Perldoc View"
+ width="445" height="250"><br>
+</div>
+<br>
+<b>NOTE:</b> Perldoc has to be installed available in the system PATH,
+otherwise this feature will not work.<br>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<br>
+<h2>Quick Reference</h2>
+Apart from Perldoc support a quick reference feature is available. This
+feature has the advantage that no perldoc has to be installed on the
+system but does not provide as many information as perldoc.<br>
+To view the Quick Reference select a keyword and move the mouse pointer
+over the selection.<br>
+A tooltip with a short description of the keyword should appear.<br>
+<br>
+<div align="center"><img src="images/quick_reference_1.gif"
+ alt="Quick Reference" width="584" height="150"><br>
+</div>
+<br>
+<br>
+<h2>Code Assist</h2>
+Code Assist features try to assist the user during source code editing.<br>
+<br>
+<b>NOTE:</b> The features currently implemented in EPIC may not be
+fully funcional but will be improved in the future.<br>
+<br>
+<h3>Variable Inspection</h3>
+When pressing one of he auto completion characters <i>$ @ % </i>the
+editor displays all defined variables in a list. From the list the user
+can select the variable that should be inserted in the source code.<br>
+<br>
+<div align="center"><img height="100" width="330"
+ alt="Variable Inspection" src="images/variable_inspection_1.gif"><br>
+</div>
+<br>
+<h3>Module Inspection</h3>
+The editor tries to display methods available in modules when the auto
+completion characters <i>&gt; </i>or<i> </i><i>:</i> are pressed.<br>
+<br>
+<br>
+<div align="center"><img height="277" width="391"
+ alt="Module Inspection" src="images/module_inspection_1.gif"><br>
+<br>
+</div>
+<b><br>
+NOTE:</b><br>
+Currently the
+Indirect&nbsp; Object Invocation is not recognized by the code assist.<br>
+<br>
+This code block will not work:<br>
+<br>
+<font face="arial,helvetica,geneva" size="-1"><big><font
+ face="Courier New, Courier, monospace">$smtp = new Net::SMTP;<br>
+$smtp-&gt;</font></big>[no content assist]<br>
+</font> <br>
+<font face="arial,helvetica,geneva" size="-1">This one will
+work:<br>
+</font> <br>
+<font face="arial,helvetica,geneva" size="-1"><big><font
+ face="Courier New, Courier, monospace">$smtp =
+Net::SMTP-&gt;new(.....);<br>
+$smtp-&gt;</font></big>[content assist]</font><br>
+<br>
+<br>
+<h2>TODO Markers</h2>
+<i>TODO Markers</i> are a very convenient way to add a todos to the
+Eclipse task list.<br>
+A TODO marker is generated when a <code><b>#TODO any</b> text</code>
+is found in the Perl source code.<br>
+On deletion of the <code>#TODO</code> comment, the <i>TODO Marker</i>
+is also deleted.<br>
+<br>
+<div align="center"><img height="533" width="611" alt="TODO Marker"
+ src="images/todo_markers_1.gif"><br>
+</div>
+<br>
+<br>
+<h2>Templates</h2>
+Templates allow for easy insertion of peredefined text segments. In
+addition to normal text these segments can also include pre-defined
+variables that are included at runtime as well as variables that are
+specified by the user when the template is inserted.<br>
+<br>
+<h3>Defining Templates</h3>
+Templates are defined in the EPIC Preferences (<b>Window &gt;
+Preferences...)</b>.<br>
+To define a new template press the <b>New...</b> button.<br>
+<br>
+<br>
+<div align="center"><img height="291" width="463" alt="Template Dialog"
+ src="images/templates_2.gif"><br>
+</div>
+<br>
+<br>
+To insert pre-defined variables press the <b>Insert Variable...</b>
+button.<br>
+<br>
+<div align="center"><img height="239" width="319"
+ alt="Predefined Variables" src="images/templates_3.gif"><br>
+<br>
+<div align="left">In addition to pre-defined variables the user can
+specify own variables the form <i>${varname}</i> which can be edited
+when the template is inserted. When the first variable is inserted
+variables with the same name will automatically be changed.<br>
+<br>
+</div>
+</div>
+<h3>Using Templates</h3>
+Templates are invoked by typing some characters and pressing <i><b>Ctrl+Space</b></i>.<br>
+Templates matching the typed characters will be displayed in a list. A
+preview is also available.<br>
+<br>
+<div align="center"><img height="281" width="678"
+ alt="Template Selection" src="images/templates_1.gif"><br>
+</div>
+<br>
+If the template contains user defined variables the user can press the <i><b>TAB</b></i>
+key to jump to the next variable after the template has been inserted.<br>
+<br>
+<div align="center"><img height="97" width="320" alt="User Variables"
+ src="images/templates_4.gif"><br>
+</div>
+<br>
+<h2>Source Formatter</h2>
+EPIC uses perltidy for source code formatting (perltidy is included in
+the EPIC package).<br>
+To format the source code select S<b>ource &gt; Format</b> from the
+Eclipse menu.<br>
+<br>
+Perltidy settings can be changed in the<i> Source Formatter</i>
+preference page.<br>
+<br>
+<b>NOTE:</b> Source formatting might take a while if the source code
+has a lot of lines.<br>
+<br>
+<h2>HTML Export</h2>
+To export select Source &gt; Export &gt; HTML from the Eclipse menu and
+specify an output file.<br>
+<br>
+HTML export settings can be changed in the<i> Source Formatter</i>
+preference page.<br>
+<br>
+<b>NOTE:</b> For HTML export to work a working <i>Source Formatter</i>
+is needed.<br>
+<br>
+<h2>Outline View</h2>
+The Outline View displays modules ans subroutines. By clicking on the
+module/subroutine name the editor will jump to the appropreate position
+in the source code.<br>
+Subroutines named <i>new</i> will get a different icon.<br>
+<br>
+<div align="center"><img height="242" width="286" alt="Outline View"
+ src="images/outline_view_1.gif"><br>
+<div align="left"><br>
+</div>
+</div>
+<br>
+<h1>Using the Perl Debugger</h1>
+<h2>Launching Perl Programs<br>
+</h2>
+You may launch your Perl programs from the workbench.&nbsp; The
+programs may be launched in either run or debug mode.
+<ul>
+  <li>In run mode, the program executes, but the execution may not be
+suspended or examined. </li>
+  <li>In debug mode, execution may be suspended and resumed, variables
+may be inspected, and expressions may be evaluated. </li>
+</ul>
+The environment a Perl program is to be executed in is defined via
+"Launch Configurations". A launch configuration defines <br>
+<ul>
+  <li>if the program is to be executed in a CGI or normal Perl
+environment</li>
+  <li>the host the program is to be executed on<br>
+  </li>
+  <li>the program to execute</li>
+  <li>execution parameters to pass</li>
+  <li>environment variables (for CGI environment)</li>
+  <li>configuration data&nbsp; for the WEB server used to provide the
+CGI framework</li>
+</ul>
+<h3>Launching Perl programs in run mode</h3>
+<img src="images/run_diag.gif" alt="" width="622" height="557"><br>
+<br>
+<ol>
+  <li>Select Menu-&gt;Run</li>
+  <li>Within the dialog appearing <br>
+select the configuration type:<br>
+Perl(local): Run a Perl script on the local machine<br>
+Perl-CGI(local): Run Perl programs in a CGI environment<br>
+Perl(remote): Run Perl script on a remote machine<br>
+and press the new button to create a new launch configuration.<br>
+  </li>
+  <li>Adjust&nbsp; launch configuration attributes. For details see <a
+ href="#Configuring_Launch_Configurations">Configuring
+Launch Configurations </a>&nbsp; . <a
+ href="#Configuring_Launch_Configurations"><br>
+    </a></li>
+  <li>Press the "Run" Button</li>
+</ol>
+This executes the program. The programs console output will&nbsp; be
+shown in the console window. The console window also accepts keyboard
+input to be passed to the program.<br>
+<br>
+If you switch to the debug view you have additional controll over the
+execution of the program. For details see <a href="#Debug_View">Debug
+View</a> .<br>
+<br>
+<h3>Launching Perl Programs in debug mode</h3>
+<img src="images/debug_dialog.gif" alt="" width="638" height="509"><br>
+<br>
+Before debugging a program you may want to set break points to stop
+program execution at certain source code locations. For details see <a
+ href="l#Setting_Break_Points">Setting Break
+Points</a> . <br>
+<ol>
+  <li>Select Menu-&gt;Debug</li>
+  <li>Within the dialog appearing <br>
+select the configuration type:<br>
+Perl(local): Run a Perl script on the local machine<br>
+Perl-CGI(local): Run Perl programs in a CGI environment<br>
+Perl(remote): Run Perl script on a remote machine<br>
+and press the new button to create a new launch configuration.<br>
+  </li>
+  <li>Adjust&nbsp; launch configuration attributes. For details see
+&nbsp;&nbsp;
+. <a href="#Configuring_Launch_Configurations"><br>
+    </a></li>
+  <li>Press the "Debug" Button</li>
+</ol>
+If you switch to the debug view you have additional control over the
+execution of the program. For details see <a href="#Debug_View">Debug
+View</a> .<br>
+<h3>Re-launching a Perl Program </h3>
+<p>The workbench keeps a history of each launched and debugged program.
+To relaunch a program, do one of the following: </p>
+<ul>
+  <li>Select a previous launch from <strong>Run</strong> or <strong>Debug</strong>
+button pull-down menus. </li>
+  <li>From the menu bar, select <strong>Run</strong> &gt; <strong>Run
+History</strong> or <strong>Run</strong> &gt; <strong>Debug History</strong>
+and select a previous launch from these sub-menus. </li>
+  <li>In the Debug view, select a process that you want to relaunch,
+and select <strong>Relaunch</strong> from the process's pop-up menu. </li>
+</ul>
+<p>To relaunch the most recent launch, do one of the following: </p>
+<ul>
+  <li>Click the <strong>Run</strong> or <strong>Debug</strong>
+buttons (without using the button pull-down menu). </li>
+  <li>Select <strong>Run</strong> &gt; <strong>Run Last Launched</strong>
+(<kbd>Ctrl+F11</kbd>), or <strong>Run</strong> &gt; <strong>Debug
+Last Launched</strong> (<kbd>F11</kbd>) from the workbench menu bar.<br>
+  </li>
+</ul>
+<h2><a name="Configuring_Launch_Configurations"></a>Configuring Launch
+Configurations</h2>
+<h3>Perl(local): Running a Perl script on the local machine</h3>
+<img src="images/Debug_Local.gif" alt="" width="641" height="517"><br>
+<br>
+<ol>
+  <li>Enter the name for the launch configuration in they "Name" field.</li>
+  <li>In the "Configuration" tab<br>
+    <b>"Project" field</b>: select the project to debug<br>
+Note: Only Perl projects (projects associated with a Perl nature) will
+be shown. If the project you require isn't shown see <a
+ href="#Converting_an_existing_Project">Converting an existing
+Project&nbsp;</a> for adding a Perl nature to your project<br>
+    <b>"File to execute" field</b>: select the Perl file to execute<br>
+Note: Only files associated with the Perl editor will be shown. See <font
+ color="#ff0000">&lt;Associating Files with the Perl
+editor<b>&gt;</b></font><br>
+    <b>"Commadline Parameters"</b> field: Enter commandline parameters
+to
+pass to to select perl script</li>
+  <li>Press the "Apply" button</li>
+</ol>
+<h3>Perl-CGI(local): Run Perl programms in a CGI environment</h3>
+<img src="images/debug_cgi.gif" alt="" width="638" height="517"><br>
+<ol>
+  <li>Enter the name for the launch configuration in they "Name" field.</li>
+  <ol>
+  </ol>
+  <li>In the "Web Server" tab<br>
+    <b>"HTML Root Directory" Field</b>: Enter the base directory that
+contains all HTML files or use the "Browse" button to select the
+appropriate directory.<br>
+    <b>"HTML Startup File" Field</b>: Enter the file name to be shown
+in
+the Browser after startup or use&nbsp; the "Browse" button to select
+this file.<br>
+    <b>"CGI Root Directory" Field</b>: Enter the base directory that
+contains all CGI files or use the "Browse" button to select the
+appropriate directory. <b>"Extension for CGI files" Field:</b> this is
+a comma separated list of
+file extensions (each starting with a&nbsp; "." each) used&nbsp; for
+CGI&nbsp; files in the project.</li>
+  <li>In the "CGI Environment" tab<br>
+CGI-Script Environment Variables Field: Sorted&nbsp; list of environemt
+vailables to be set&nbsp; for CGI scripts to be excuted. Use the
+following syntax to specify environment variables: <span
+ style="font-style: italic;">name=value.</span> </li>
+  <li>In the "Browser" tab<br>
+There are two possible settings:<br>
+    <b>Select "Custom Browser":<br>
+    </b>specify the path to the browser executable and add the required
+commandline parameters. Use "%1" as a place holder for the HTML to open
+be opend.<br>
+    <b>Select "Default System Browser":<br>
+    </b>to use the browser defined as default browser by yoor OS
+preferences.</li>
+  <li>Press the "Apply" button</li>
+</ol>
+<br>
+<h3>Perl(remote): Run Perl script on a remote machine</h3>
+----Not yet implemented----<br>
+<h2><a name="Break_Points"></a> Break Points</h2>
+The Perl debugger supports <b>line break points </b>and <b>regular
+expression breakpoints</b>. Both types of&nbsp; breakpoints are set on
+an executable line of a program. If enabled they suspend thread
+execution before
+that line of code is executed. Regular expression breakpoints
+additionally extract the regular expression contained in the line of
+code they are associated with und enable you to debug the regular
+expression within the <a href="#RegExp_Plugin">RegEx-Plugin</a>. <br>
+The following symbols are used to indicate breakpoints :<br>
+<table cellpadding="2" cellspacing="2" border="2" width="50%">
+  <tbody>
+    <tr>
+      <td valign="top" align="center" bgcolor="#cccccc">Status <br>
+      </td>
+      <td valign="top" align="center" bgcolor="#cccccc">Line <br>
+Break Point<br>
+      </td>
+      <td valign="top" align="center" bgcolor="#cccccc">Regular
+Expression<br>
+&nbsp;Break Point<br>
+      </td>
+    </tr>
+    <tr>
+      <td valign="top">Enabled<br>
+      </td>
+      <td valign="top" align="center"><img src="images/line_bp_en.gif"
+ alt="" width="16" height="12"><br>
+      </td>
+      <td valign="top" align="center"><img src="images/rx_bp_en.gif"
+ alt="" width="17" height="16"><br>
+      </td>
+    </tr>
+    <tr>
+      <td valign="top">Disabled<br>
+      </td>
+      <td valign="top" align="center"><img src="images/line_bp_dis.gif"
+ alt="" width="12" height="13"><br>
+      </td>
+      <td valign="top" align="center"><img src="images/rx_bp_dis.gif"
+ alt="" width="17" height="15"><br>
+      </td>
+    </tr>
+    <tr>
+      <td valign="top">Registred with debugger<br>
+      </td>
+      <td valign="top" align="center"><img src="images/line_bp_inst.gif"
+ alt="" width="16" height="14"><br>
+      </td>
+      <td valign="top" align="center"><img src="images/rx_bp_inst.gif"
+ alt="" width="15" height="15"><br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<br>
+<b>Note: <br>
+Regular Expressions Break Points are sill experimental and will at the
+moment only work for expressions of the type:<br>
+</b><i>Expr1 =~ &lt;delim&gt;regexp&lt;delim&gt;modifier;</i><b><i><br>
+</i>Modifiers are ignored.</b><i><br>
+</i>
+<h3>Setting Break Points</h3>
+<ol>
+  <li>In the editor area, open the file where you want to add the
+breakpoint with the Perl editor.&nbsp; </li>
+  <li>&nbsp;Directly to the left of the line where you want to add the
+breakpoint, open the marker bar (vertical ruler) pop-up menu and select
+    <strong>Add Breakpoint <b>or Add RegExp Breakpoint</b>.</strong> </li>
+</ol>
+<p>While the breakpoint is enabled, thread execution suspends before
+that line of code is executed.<br>
+</p>
+<p><br>
+</p>
+<h3>Enabling or&nbsp; Disabling&nbsp; Break Points</h3>
+Open the debug view, open the <a href="#Breakpoint_View">breakpoint
+view</a><a href="#Breakpoint_View">&nbsp;
+</a>and use the check box in
+front of the break point to enable or disable the break point.<br>
+<br>
+<h3>Removing Break Points</h3>
+There are two posible ways for removing a&nbsp; breakpoint:<br>
+<ol>
+  <li>Right klick on the breakpoint symbol in marker the bar (vertical
+ruler) of the editor pop-up menu and select Remove Breakpoint.</li>
+  <li>Open the debug view, open the breakpoint window (if this window
+is not visible see <a href="#Adding_and_removing_Views">Adding
+and
+Removing views</a> ), right-klick the breakpoint you want to remove and
+select <span style="font-weight: bold;">Remove</span>.<br>
+  </li>
+</ol>
+<h2><a name="Debug_Perspective"></a>Views in the Debug Perspective</h2>
+<h3>Debug View</h3>
+<img src="images/Debug_view.gif" alt="" width="503" height="216"><br>
+This view allows you to manage the debugging or running of a program in
+the workbench. It displays the stack frame for the suspended threads
+for each target you are debugging. Each thread in your program appears
+as a node in the tree. It displays the process for each target you are
+running.
+<p>If the thread is suspended, its stack frames are shown as child
+elements.<br>
+</p>
+<br>
+<h3>Variable View</h3>
+<img src="images/variables_view.gif" alt="Variables View" width="502"
+ height="342"><br>
+<br>
+When stack frame is selected, you can see the visible variables in that
+stack frame in the Variables view.
+<p> The Variables view shows the value of primitive types.&nbsp;
+Complex variables can be examined by expanding them to show their
+members.<br>
+</p>
+<p>Global variables (including Perl internal variables) are marked with
+an <img src="images/local_var.gif" alt="" width="16" height="15">
+icon, global variables with an <img src="images/global_var.gif" alt=""
+ width="15" height="13"> icon.<br>
+If the value of a variable has changed since the lasr execution it is
+displayed in red.<br>
+If changes in inner levels of complex&nbsp; variables have changed the
+path to the changed variables is indicated via a delta Symbol:</p>
+<p><img src="images/var_delta_complex.gif" alt="" width="332"
+ height="94"><br>
+</p>
+This makes it possible to see these kind of changes even if complex
+variables are collapsed.<br>
+<h3>Customizing the Variables View</h3>
+You can customize the presentation with the configuration menue.<br>
+<h4> Show detail pane</h4>
+To show the detail pane select&nbsp; "Vertical View Orientation" or
+"Horizontal View Orientation" .&nbsp; Select "Variables View Only" to
+disable it.<br>
+The details pane shows the <em>toString</em> for selected objects. For
+primitive variables, it shows the value.<br>
+<h4>Select Variables to display</h4>
+The variables view allows to to sellect the following types of
+variables for displaying by checking the corresponding menue entry:<br>
+<ul>
+  <li>Perl internal Variables<br>
+these are variables provided by the Perl internterpreter like $_, %INC
+etc. .<br>
+  </li>
+  <li>Global Variables<br>
+Variables vissible from everery where in your program.</li>
+  <li>Local variables<br>
+more correctly called "lexical" variables in Perl. Variables declared
+with <i>my</i> .<br>
+To show local variables you need to <a href="#Setting_up_the_Debugger">install
+the Perl PadWalker module</a>. The PadWalkers module has some <a
+ href="#Problems_showing_Local_Variables">problems</a>
+which influence
+viewing of local variables.<br>
+  </li>
+</ul>
+<h3><a name="Breakpoint_View"></a>Breakpoint View</h3>
+<img src="images/breakpoint_view.gif" alt="" width="502" height="219"><br>
+<br>
+The breakpoint views shows all breakpoints, their state (see <a
+ href="#Break_Points">Break
+Points</a>) and location. <br>
+By selecting one ore more break points and invoking the context menue
+you can enable, disable or remove these break points.<br>
+<h3>Perl Expression View</h3>
+<img src="images/perl_expr_view.gif" alt="" width="363" height="161"><br>
+<br>
+The Perl Expression View allows you to execute any valid Perl code
+within the current context of the program executed in debug mode.<br>
+<br>
+<ol>
+  <li>Open the Perl Debug View&nbsp; (Window-&gt;Open
+View-&gt;Other-&gt;Epic-&gt;Perl Expression View)</li>
+  <li>Enter the code top execute</li>
+  <li>Press the <img src="images/perl_expr_run.gif" alt="" width="18"
+ height="20"> symbol<br>
+  </li>
+</ol>
+<h2>Stepping through the execution of a Perl program </h2>
+<p>When a thread is suspended, the step controls can be used to step
+through the execution of the program line-by-line. If a breakpoint is
+encountered while performing a step operation,&nbsp; the execution will
+suspend at the breakpoint and the step operation is ended. </p>
+<h3>Step over </h3>
+<ol>
+  <li>Select a stack frame in the Debug view. The current line of
+execution in that stack frame is highlighted in the editor in the Debug
+perspective. </li>
+  <li>Click the <strong>Step Over</strong> button (<img
+ src="images/step_over.gif" alt="" width="20" height="19">)
+in the
+Debug view
+toolbar, or press the <kbd>F6</kbd> key. The currently-selected line
+is executed and suspends on the next executable line. </li>
+</ol>
+<h3>Step into </h3>
+<ol>
+  <li>Select a stack frame in the Debug view. The current line of
+execution in the selected frame is highlighted in the editor in the
+Debug perspective. </li>
+  <li>Click the <strong>Step Into</strong> (<img
+ src="images/step_into.gif" alt="" width="23" height="19">) button in
+the Debug view
+toolbar, or press the <kbd>F5</kbd> key. The next expression on the
+currently-selected line to be executed is invoked, and execution
+suspends at the next executable line in the method that is invoked. </li>
+</ol>
+<h3>Run to return </h3>
+<ol>
+  <li>Select a stack frame in the Debug view. The current line of
+execution in the selected frame is highlighted in the editor in the
+Debug perspective. </li>
+  <li>Click the <strong>Run to Return</strong> button (<img height="19"
+ width="23" alt="" src="images/step_out.gif">)
+in the Debug
+view toolbar or press the <kbd>F7</kbd> key. Execution resumes until
+the next return statement in the current method is executed, and
+execution suspends on the next executable line. </li>
+</ol>
+<h1><a name="RegExp_Plugin"></a>RegExp Plugin</h1>
+<h2>Enabling the RegExp View</h2>
+To display the R<i>egExp View</i> select <b>Window &gt; Show View..
+&gt; Other...</b> from the Eclipse menu and select the <i>RegExp View</i>
+from the list.<br>
+<br>
+<br>
+<div align="center"><img src="images/show_view_1.gif"
+ alt="Show View RegExp" width="200" height="109"></div>
+<br>
+<h2>Using the RegExp Plugin</h2>
+The RegExp plugin is a small tool to debug Regular Expressions.<br>
+<br>
+<div align="center"><img src="images/regexp_1.gif" alt="RegExp View"
+ width="299" height="320"><br>
+<br>
+<br>
+</div>
+To check if a Regular Expression is valid, press the run <img
+ height="16" width="16" alt="Run" src="images/run.gif"> icon. If the
+Regular Expression matches the text i t will be signaled by a green
+icon.<br>
+If the Regular Expression contain brackets the resulting string will be
+coloured.<br>
+<br>
+<h2>Debugging Regular Expressions</h2>
+<font size="-1" face="arial,helvetica,geneva">The Single Step
+feature allows for a step by step inspection of the regular expression.<br>
+If no sub expressons (...) are defined by the user the <i>RegExp
+Plug-in
+</i>tries to use logical blocks for matching, otherwise the already
+existing
+subexpressions are used.</font> <br>
+<br>
+<font size="-1" face="arial,helvetica,geneva">The folowing
+buttons are provided:</font>
+<blockquote> <font size="-1" face="arial,helvetica,geneva"><img
+ height="16" width="16" alt="" src="images/debug_stop.gif">&nbsp;Reset
+(clears all colour markers)<br>
+  <img height="16" width="16" alt="" src="images/debug_forward.gif">&nbsp;Step
+forward<br>
+  <img height="16" width="16" alt="" src="images/debug_back.gif">&nbsp;Step
+backward</font></blockquote>
+<br>
+<h1>Known Bugs &amp; Problems</h1>
+<h2>Debugger</h2>
+<h4><a name="Problems_showing_Local_Variables"></a>Problems showing
+Local Variables</h4>
+The EPIC debugger uses the PadWalker to show local (or lexical)
+variables. PadWalker&nbsp; 0.10 does not display the values for lexical
+variables declared on&nbsp; top-level (outside of functions and blocks)
+correctly if used in debugger mode . To get around this problem put
+your code within a function:<br>
+<br>
+dummy();<br>
+<br>
+sub dummy<br>
+{<br>
+&nbsp;&nbsp;&nbsp; &lt;YOUR CODE&gt;<br>
+}<br>
+<br>
+</div>
+</div>
+</body>
+</html>

@@ -1,5 +1,11 @@
 Eclipse Perl Integration: Perl Editor Plugin
 
+Version 0.1.0 - 07-May-2004
+		* Enhanced Error/Warning detection in Perl Editor
+		* @INC path property error fixed
+		* Fixed bug: [ 926062 ] Outline view doesn't support perldoc entries
+		* Fixed bug: [ 934799 ] Outline view subroutines contain invalid char
+
 Version 0.1.0 - 27-March-2004
 		* Enhanced Module/Subroutine detection in outline view
 		* Performance improvement of Outline View

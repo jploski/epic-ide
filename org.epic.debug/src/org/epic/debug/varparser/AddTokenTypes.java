@@ -28,11 +28,12 @@ public interface AddTokenTypes {
 	int STRING = 26;
 	int KEY_ASSIGN = 27;
 	int FILE_REF = 28;
-	int PREFIXED_NAME = 29;
-	int PURE_NAME_CHAR = 30;
-	int FIRST_PURE_NAME_CHAR = 31;
-	int STRING1 = 32;
-	int STRING2 = 33;
-	int WS = 34;
-	int CHAR_ESC = 35;
+	int GLOB = 29;
+	int PREFIXED_NAME = 30;
+	int PURE_NAME_CHAR = 31;
+	int FIRST_PURE_NAME_CHAR = 32;
+	int STRING1 = 33;
+	int STRING2 = 34;
+	int WS = 35;
+	int CHAR_ESC = 36;
 }

@@ -882,6 +882,44 @@ public PerlParserSimple(ParserSharedInputState state) {
 		}
 	}
 	
+	public final void globRef() throws RecognitionException, TokenStreamException {
+		
+		Token  name = null;
+		
+		try {      // for error handling
+			name = LT(1);
+			match(GLOB);
+			addVar("->"+name.getText(),"FileHandleRef");printConsole("++++FRef:"+name.getText()+"\n");
+			match(NL);
+			{
+			switch ( LA(1)) {
+			case INDENT_START:
+			{
+				match(INDENT_START);
+				fileHandle();
+				match(NL);
+				match(INDENT_END);
+				break;
+			}
+			case EOF:
+			{
+				break;
+			}
+			default:
+			{
+				throw new NoViableAltException(LT(1), getFilename());
+			}
+			}
+			}
+			finalizeVar();
+		}
+		catch (RecognitionException ex) {
+			reportError(ex);
+			consume();
+			consumeUntil(_tokenSet_1);
+		}
+	}
+	
 	
 	public static final String[] _tokenNames = {
 		"<0>",
@@ -913,6 +951,7 @@ public PerlParserSimple(ParserSharedInputState state) {
 		"STRING",
 		"KEY_ASSIGN",
 		"FILE_REF",
+		"GLOB",
 		"PREFIXED_NAME",
 		"PURE_NAME_CHAR",
 		"FIRST_PURE_NAME_CHAR",

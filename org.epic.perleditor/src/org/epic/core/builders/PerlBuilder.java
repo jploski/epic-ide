@@ -17,10 +17,9 @@ import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.viewers.LabelProviderChangedEvent;
-import org.eclipse.ui.IEditorDescriptor;
+import org.epic.core.Constants;
 import org.epic.core.decorators.PerlDecorator;
 import org.epic.core.decorators.PerlDecoratorManager;
-import org.epic.perleditor.PerlEditorPlugin;
 import org.epic.perleditor.editors.util.PerlValidator;
 
 /**
@@ -119,35 +118,16 @@ public class PerlBuilder extends IncrementalProjectBuilder
 class BuildDeltaVisitor implements IResourceDeltaVisitor
 {
 
-	private final String PERL_EDITOR_ID =
-		"org.epic.perleditor.editors.PerlEditor";
-	private static final String EMB_PERL_FILE_EXTENSION = "epl";
-	private static final String PERL_NATURE_ID =
-		"org.epic.perleditor.perlnature";
-
 	/* (non-Javadoc)
 	 * @see org.eclipse.core.resources.IResourceDeltaVisitor#visit(org.eclipse.core.resources.IResourceDelta)
 	 */
 	public boolean visit(IResourceDelta delta) throws CoreException
-	{
-
-		//		Only decorate Perl sources or projects
-		IEditorDescriptor defaultEditorDescriptor =
-			PerlEditorPlugin
-				.getDefault()
-				.getWorkbench()
-				.getEditorRegistry()
-				.getDefaultEditor(delta.getResource().getFullPath().toString());
-
-		if (defaultEditorDescriptor.getId().equals(PERL_EDITOR_ID)
-			&& !delta.getResource().getFileExtension().equals(
-				EMB_PERL_FILE_EXTENSION))
-		{
+	{	    
 			switch (delta.getKind())
 			{
 				case IResourceDelta.CHANGED :
 					if (PerlValidator.validate(delta.getResource())
-						|| delta.getResource().getType() == IResource.PROJECT)
+						|| (delta.getResource().getType() == IResource.PROJECT && delta.getResource().getProject().hasNature(Constants.PERL_NATURE_ID)))
 					{
 						PerlDecoratorManager.addSuccessResources(
 							delta.getResource());
@@ -155,7 +135,7 @@ class BuildDeltaVisitor implements IResourceDeltaVisitor
 					break;
 			}
 
-		}
+		
 		return true;
 	}
 }
@@ -169,7 +149,7 @@ class BuildFullVisitor implements IResourceVisitor
 	public boolean visit(IResource resource) throws CoreException
 	{
 		if (PerlValidator.validate(resource)
-			|| resource.getType() == IResource.PROJECT)
+			|| (resource.getType() == IResource.PROJECT && resource.getProject().hasNature(Constants.PERL_NATURE_ID)))
 		{
 			PerlDecoratorManager.addSuccessResources(resource);
 		}

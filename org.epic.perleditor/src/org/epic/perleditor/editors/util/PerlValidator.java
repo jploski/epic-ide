@@ -31,6 +31,7 @@ import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.jface.text.Document;
 import org.eclipse.ui.IEditorDescriptor;
+import org.epic.core.Constants;
 import org.epic.perleditor.PerlEditorPlugin;
 import org.epic.perleditor.editors.AddEditorMarker;
 
@@ -41,10 +42,6 @@ import org.epic.perleditor.editors.AddEditorMarker;
  * Window&gt;Preferences&gt;Java&gt;Code Generation&gt;Code and Comments
  */
 public class PerlValidator {
-
-	private static final String PERL_EDITOR_ID =
-		"org.epic.perleditor.editors.PerlEditor";
-	private static final String EMB_PERL_FILE_EXTENSION = "epl";
 
 	private static final String PERL_CMD_EXT = "-c";
 	private static final String PERL_ERROR_INDICATOR = " at - line ";
@@ -109,8 +106,8 @@ public class PerlValidator {
 				return false;
 			}
 
-			if (!defaultEditorDescriptor.getId().equals(PERL_EDITOR_ID)
-				|| resource.getFileExtension().equals(EMB_PERL_FILE_EXTENSION)) {
+			if (!defaultEditorDescriptor.getId().equals(Constants.PERL_EDITOR_ID)
+				|| resource.getFileExtension().equals(Constants.EMB_PERL_FILE_EXTENSION)) {
 				return false;
 			}
 

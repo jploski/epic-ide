@@ -44,6 +44,12 @@ public class SourceElement extends Model {
 	public void addSubroutines(List subs) {
 		for(int i = 0; i < subs.size(); i++) {
 			Model model = (Model) subs.get(i);
+			
+			// Throw away subroutine prototypes
+			if(model.getName().trim().endsWith(";")) {
+				continue;
+			}
+			
 			Subroutine subroutine = new Subroutine(model.getName(), model.getStart(), model.getLength());
 			addSubroutine(subroutine);
 		}

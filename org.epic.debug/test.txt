@@ -1,363 +1,163 @@
- $/ = '
-  '
-  FileHandle(stderr) => fileno(2)
-  %SIG = (
-     'ABRT' => undef
-     'ALRM' => undef
-     'BUS' => CODE(0x81dd688)
-        -> &CODE(0x81dd688) in ???
-     'CHLD' => undef
-     'CLD' => undef
-     'CONT' => undef
-     'FPE' => 'IGNORE'
-     'HUP' => undef
-     'ILL' => undef
-     'INT' => CODE(0x81beeb4)
-        -> &DB::catch in 0
-     'IO' => undef
-     'IOT' => undef
-     'KILL' => undef
-     'NUM32' => undef
-     'NUM34' => undef
-     'NUM35' => undef
-     'NUM36' => undef
-     'NUM37' => undef
-     'NUM38' => undef
-     'NUM39' => undef
-     'NUM40' => undef
-     'NUM41' => undef
-     'NUM42' => undef
-     'NUM43' => undef
-     'NUM44' => undef
-     'NUM45' => undef
-     'NUM46' => undef
-     'NUM47' => undef
-     'NUM48' => undef
-     'NUM49' => undef
-     'NUM50' => undef
-     'NUM51' => undef
-     'NUM52' => undef
-     'NUM53' => undef
-     'NUM54' => undef
-     'NUM55' => undef
-     'NUM56' => undef
-     'NUM57' => undef
-     'NUM58' => undef
-     'NUM59' => undef
-     'NUM60' => undef
-     'NUM61' => undef
-     'NUM62' => undef
-     'NUM63' => undef
-     'PIPE' => undef
-     'POLL' => undef
-     'PROF' => undef
-     'PWR' => undef
-     'QUIT' => undef
-     'RTMAX' => undef
-     'RTMIN' => undef
-     'SEGV' => CODE(0x81dd688)
-        -> &DB::diesignal in 0
-     'STKFLT' => undef
-     'STOP' => undef
-     'SYS' => undef
-     'TERM' => undef
-     'TRAP' => undef
-     'TSTP' => undef
-     'TTIN' => undef
-     'TTOU' => undef
-     'UNUSED' => undef
-     'URG' => undef
-     'USR1' => undef
-     'USR2' => undef
-     'VTALRM' => undef
-     'WINCH' => undef
-     'XCPU' => undef
-     'XFSZ' => undef
-     '__DIE__' => CODE(0x81e176c)
-        -> &DB::dbdie in 0
-     '__WARN__' => CODE(0x81e15c8)
-        -> &DB::dbwarn in 0
-  )
-  $^L = "\cL"
-  $^ = 'GEN0_TOP'
-  $$ = 23356
-  $\ = ''
-  $- = 0
-  @- = (
-     0  empty slot
-     1  empty slot
-     2  empty slot
-  )
-  $! = 'Invalid argument'
-  %! = (
-     'E2BIG' => 0
-     'EACCES' => 0
-     'EADDRINUSE' => 0
-     'EADDRNOTAVAIL' => 0
-     'EADV' => 0
-     'EAFNOSUPPORT' => 0
-     'EAGAIN' => 0
-     'EALREADY' => 0
-     'EBADE' => 0
-     'EBADF' => 0
-     'EBADFD' => 0
-     'EBADMSG' => 0
-     'EBADR' => 0
-     'EBADRQC' => 0
-     'EBADSLT' => 0
-     'EBFONT' => 0
-     'EBUSY' => 0
-     'ECANCELED' => 0
-     'ECHILD' => 0
-     'ECHRNG' => 0
-     'ECOMM' => 0
-     'ECONNABORTED' => 0
-     'ECONNREFUSED' => 0
-     'ECONNRESET' => 0
-     'EDEADLK' => 0
-     'EDEADLOCK' => 0
-     'EDESTADDRREQ' => 0
-     'EDOM' => 0
-     'EDOTDOT' => 0
-     'EDQUOT' => 0
-     'EEXIST' => 0
-     'EFAULT' => 0
-     'EFBIG' => 0
-     'EHOSTDOWN' => 0
-     'EHOSTUNREACH' => 0
-     'EIDRM' => 0
-     'EILSEQ' => 0
-     'EINPROGRESS' => 0
-     'EINTR' => 0
-     'EINVAL' => 22
-     'EIO' => 0
-     'EISCONN' => 0
-     'EISDIR' => 0
-     'EISNAM' => 0
-     'EL2HLT' => 0
-     'EL2NSYNC' => 0
-     'EL3HLT' => 0
-     'EL3RST' => 0
-     'ELIBACC' => 0
-     'ELIBBAD' => 0
-     'ELIBEXEC' => 0
-     'ELIBMAX' => 0
-     'ELIBSCN' => 0
-     'ELNRNG' => 0
-     'ELOOP' => 0
-     'EMEDIUMTYPE' => 0
-     'EMFILE' => 0
-     'EMLINK' => 0
-     'EMSGSIZE' => 0
-     'EMULTIHOP' => 0
-     'ENAMETOOLONG' => 0
-     'ENAVAIL' => 0
-     'ENETDOWN' => 0
-     'ENETRESET' => 0
-     'ENETUNREACH' => 0
-     'ENFILE' => 0
-     'ENOANO' => 0
-     'ENOBUFS' => 0
-     'ENOCSI' => 0
-     'ENODATA' => 0
-     'ENODEV' => 0
-     'ENOENT' => 0
-     'ENOEXEC' => 0
-     'ENOLCK' => 0
-     'ENOLINK' => 0
-     'ENOMEDIUM' => 0
-     'ENOMEM' => 0
-     'ENOMSG' => 0
-     'ENONET' => 0
-     'ENOPKG' => 0
-     'ENOPROTOOPT' => 0
-     'ENOSPC' => 0
-     'ENOSR' => 0
-     'ENOSTR' => 0
-     'ENOSYS' => 0
-     'ENOTBLK' => 0
-     'ENOTCONN' => 0
-     'ENOTDIR' => 0
-     'ENOTEMPTY' => 0
-     'ENOTNAM' => 0
-     'ENOTSOCK' => 0
-     'ENOTSUP' => 0
-     'ENOTTY' => 0
-     'ENOTUNIQ' => 0
-     'ENXIO' => 0
-     'EOPNOTSUPP' => 0
-     'EOVERFLOW' => 0
-     'EPERM' => 0
-     'EPFNOSUPPORT' => 0
-     'EPIPE' => 0
-     'EPROTO' => 0
-     'EPROTONOSUPPORT' => 0
-     'EPROTOTYPE' => 0
-     'ERANGE' => 0
-     'EREMCHG' => 0
-     'EREMOTE' => 0
-     'EREMOTEIO' => 0
-     'ERESTART' => 0
-     'EROFS' => 0
-     'ESHUTDOWN' => 0
-     'ESOCKTNOSUPPORT' => 0
-     'ESPIPE' => 0
-     'ESRCH' => 0
-     'ESRMNT' => 0
-     'ESTALE' => 0
-     'ESTRPIPE' => 0
-     'ETIME' => 0
-     'ETIMEDOUT' => 0
-     'ETOOMANYREFS' => 0
-     'ETXTBSY' => 0
-     'EUCLEAN' => 0
-     'EUNATCH' => 0
-     'EUSERS' => 0
-     'EWOULDBLOCK' => 0
-     'EXDEV' => 0
-     'EXFULL' => 0
-  )
-  $^X = '/usr/bin/perl5.8.3'
-  $^UNICODE = 0
-  $^V = "\cE\cH\cC"
-  $= = 60
-  $2 = ''
-  $^WARNING_BITS = "\c@\c@\c@\c@\c@\c@\c@\c@\c@\c@\c@\c@"
-  FileHandle(stdin) => fileno(0)
-  @ARGV = (
-     0  'bar_right'
-  )
-  @INC = (
-     0  '/cmiss_perl/lib'
-     1  '/home/glenn/cmiss/cmiss_perl/lib'
-     2  '/usr/lib/perl5/5.8.3/i386-linux-thread-multi'
-     3  '/usr/lib/perl5/5.8.3'
-     4  '/usr/lib/perl5/site_perl/5.8.3/i386-linux-thread-multi'
-     5  '/usr/lib/perl5/site_perl/5.8.3'
-     6  '/usr/lib/perl5/site_perl/5.8.0/i386-linux-thread-multi'
-     7  '/usr/lib/perl5/site_perl/5.8.0'
-     8  '/usr/lib/perl5/site_perl'
-     9  '/usr/lib/perl5/vendor_perl/5.8.3/i386-linux-thread-multi'
-     10  '/usr/lib/perl5/vendor_perl/5.8.3'
-     11  '/usr/lib/perl5/vendor_perl/5.8.2/i386-linux-thread-multi'
-     12  '/usr/lib/perl5/vendor_perl/5.8.2'
-     13  '/usr/lib/perl5/vendor_perl/5.8.1/i386-linux-thread-multi'
-     14  '/usr/lib/perl5/vendor_perl/5.8.1'
-     15  '/usr/lib/perl5/vendor_perl/5.8.0/i386-linux-thread-multi'
-     16  '/usr/lib/perl5/vendor_perl/5.8.0'
-     17  '/usr/lib/perl5/vendor_perl'
-     18  '.'
-  )
-  %INC = (
-     '/usr/lib/perl5/5.8.3/i386-linux-thread-multi/auto/POSIX/autosplit.ix' => '/usr/lib/perl5/5.8.3/i386-linux-thread-multi/auto/POSIX/autosplit.ix'
-     '/usr/lib/perl5/5.8.3/i386-linux-thread-multi/auto/POSIX/load_imports.al' => '/usr/lib/perl5/5.8.3/i386-linux-thread-multi/auto/POSIX/load_imports.al'
-     '/usr/lib/perl5/vendor_perl/5.8.3/i386-linux-thread-multi/auto/Term/ReadLine/Gnu/XS/autosplit.ix' => '/usr/lib/perl5/vendor_perl/5.8.3/i386-linux-thread-multi/auto/Term/ReadLine/Gnu/XS/autosplit.ix'
-     'AutoLoader.pm' => '/usr/lib/perl5/5.8.3/AutoLoader.pm'
-     'Carp.pm' => '/usr/lib/perl5/5.8.3/Carp.pm'
-     'Carp/Heavy.pm' => '/usr/lib/perl5/5.8.3/Carp/Heavy.pm'
-     'CmUtils/Exporter.pm' => '/home/glenn/cmiss/cmiss_perl/lib/CmUtils/Exporter.pm'
-     'CmUtils/File/Ipelem.pm' => '/home/glenn/cmiss/cmiss_perl/lib/CmUtils/File/Ipelem.pm'
-     'CmUtils/File/Ipnode.pm' => '/home/glenn/cmiss/cmiss_perl/lib/CmUtils/File/Ipnode.pm'
-     'CmUtils/File/Utils.pm' => '/home/glenn/cmiss/cmiss_perl/lib/CmUtils/File/Utils.pm'
-     'CmUtils/Objects/Component.pm' => '/home/glenn/cmiss/cmiss_perl/lib/CmUtils/Objects/Component.pm'
-     'CmUtils/Objects/Element.pm' => '/home/glenn/cmiss/cmiss_perl/lib/CmUtils/Objects/Element.pm'
-     'CmUtils/Objects/ElementGroup.pm' => '/home/glenn/cmiss/cmiss_perl/lib/CmUtils/Objects/ElementGroup.pm'
-     'CmUtils/Objects/Field.pm' => '/home/glenn/cmiss/cmiss_perl/lib/CmUtils/Objects/Field.pm'
-     'CmUtils/Objects/FieldSet.pm' => '/home/glenn/cmiss/cmiss_perl/lib/CmUtils/Objects/FieldSet.pm'
-     'CmUtils/Objects/Node.pm' => '/home/glenn/cmiss/cmiss_perl/lib/CmUtils/Objects/Node.pm'
-     'CmUtils/Objects/NodeGroup.pm' => '/home/glenn/cmiss/cmiss_perl/lib/CmUtils/Objects/NodeGroup.pm'
-     'CmUtils/Pod/Text/Colour.pm' => '/home/glenn/cmiss/cmiss_perl/lib/CmUtils/Pod/Text/Colour.pm'
-     'CmUtils/Pod/Usage.pm' => '/home/glenn/cmiss/cmiss_perl/lib/CmUtils/Pod/Usage.pm'
-     'CmUtils/Utils.pm' => '/home/glenn/cmiss/cmiss_perl/lib/CmUtils/Utils.pm'
-     'CmUtils/debug.pm' => '/home/glenn/cmiss/cmiss_perl/lib/CmUtils/debug.pm'
-     'Config.pm' => '/usr/lib/perl5/5.8.3/i386-linux-thread-multi/Config.pm'
-     'Cwd.pm' => '/usr/lib/perl5/5.8.3/i386-linux-thread-multi/Cwd.pm'
-     'Data/Dumper.pm' => '/usr/lib/perl5/5.8.3/i386-linux-thread-multi/Data/Dumper.pm'
-     'Devel/Peek.pm' => '/usr/lib/perl5/5.8.3/i386-linux-thread-multi/Devel/Peek.pm'
-     'DynaLoader.pm' => '/usr/lib/perl5/5.8.3/i386-linux-thread-multi/DynaLoader.pm'
-     'Errno.pm' => '/usr/lib/perl5/5.8.3/i386-linux-thread-multi/Errno.pm'
-     'Exporter.pm' => '/usr/lib/perl5/5.8.3/Exporter.pm'
-     'Exporter/Heavy.pm' => '/usr/lib/perl5/5.8.3/Exporter/Heavy.pm'
-     'File/Basename.pm' => '/usr/lib/perl5/5.8.3/File/Basename.pm'
-     'File/Find.pm' => '/usr/lib/perl5/5.8.3/File/Find.pm'
-     'File/Spec.pm' => '/usr/lib/perl5/5.8.3/File/Spec.pm'
-     'File/Spec/Unix.pm' => '/usr/lib/perl5/5.8.3/File/Spec/Unix.pm'
-     'IO.pm' => '/usr/lib/perl5/5.8.3/i386-linux-thread-multi/IO.pm'
-     'IO/Handle.pm' => '/usr/lib/perl5/5.8.3/i386-linux-thread-multi/IO/Handle.pm'
-     'IO/Select.pm' => '/usr/lib/perl5/5.8.3/i386-linux-thread-multi/IO/Select.pm'
-     'IO/Socket.pm' => '/usr/lib/perl5/5.8.3/i386-linux-thread-multi/IO/Socket.pm'
-     'IO/Socket/INET.pm' => '/usr/lib/perl5/5.8.3/IO/Socket/INET.pm'
-     'IO/Socket/UNIX.pm' => '/usr/lib/perl5/5.8.3/IO/Socket/UNIX.pm'
-     'List/Util.pm' => '/usr/lib/perl5/5.8.3/List/Util.pm'
-     'POSIX.pm' => '/usr/lib/perl5/5.8.3/i386-linux-thread-multi/POSIX.pm'
-     'Pod/Find.pm' => '/usr/lib/perl5/5.8.3/Pod/Find.pm'
-     'Pod/InputObjects.pm' => '/usr/lib/perl5/5.8.3/Pod/InputObjects.pm'
-     'Pod/ParseLink.pm' => '/usr/lib/perl5/5.8.3/Pod/ParseLink.pm'
-     'Pod/Parser.pm' => '/usr/lib/perl5/5.8.3/Pod/Parser.pm'
-     'Pod/Select.pm' => '/usr/lib/perl5/5.8.3/Pod/Select.pm'
-     'Pod/Text.pm' => '/usr/lib/perl5/5.8.3/Pod/Text.pm'
-     'Scalar/Util.pm' => '/usr/lib/perl5/5.8.3/Scalar/Util.pm'
-     'SelectSaver.pm' => '/usr/lib/perl5/5.8.3/SelectSaver.pm'
-     'Socket.pm' => '/usr/lib/perl5/5.8.3/i386-linux-thread-multi/Socket.pm'
-     'Symbol.pm' => '/usr/lib/perl5/5.8.3/Symbol.pm'
-     'Term/ANSIColor.pm' => '/usr/lib/perl5/5.8.3/Term/ANSIColor.pm'
-     'Term/Cap.pm' => '/usr/lib/perl5/5.8.3/Term/Cap.pm'
-     'Term/ReadLine.pm' => '/usr/lib/perl5/5.8.3/Term/ReadLine.pm'
-     'Term/ReadLine/Gnu.pm' => '/usr/lib/perl5/vendor_perl/5.8.3/i386-linux-thread-multi/Term/ReadLine/Gnu.pm'
-     'Term/ReadLine/Gnu/XS.pm' => '/usr/lib/perl5/vendor_perl/5.8.3/i386-linux-thread-multi/Term/ReadLine/Gnu/XS.pm'
-     'XSLoader.pm' => '/usr/lib/perl5/5.8.3/i386-linux-thread-multi/XSLoader.pm'
-     'bytes.pm' => '/usr/lib/perl5/5.8.3/bytes.pm'
-     'dumpvar.pl' => '/usr/lib/perl5/5.8.3/dumpvar.pl'
-     'lib.pm' => '/usr/lib/perl5/5.8.3/i386-linux-thread-multi/lib.pm'
-     'overload.pm' => '/usr/lib/perl5/5.8.3/overload.pm'
-     'perl5db.pl' => '/usr/lib/perl5/5.8.3/perl5db.pl'
-     're.pm' => '/usr/lib/perl5/5.8.3/i386-linux-thread-multi/re.pm'
-     'strict.pm' => '/usr/lib/perl5/5.8.3/strict.pm'
-     'vars.pm' => '/usr/lib/perl5/5.8.3/vars.pm'
-     'warnings.pm' => '/usr/lib/perl5/5.8.3/warnings.pm'
-     'warnings/register.pm' => '/usr/lib/perl5/5.8.3/warnings/register.pm'
-  )
-  $? = 0
-  $: = ' 
-  -'
-  $0 = 'swapxi.pl'
-  $^S = 1
-  $@ = ''
-  $] = 5.008003
-  $^D = 0
-  FileHandle(STDERR) => fileno(2)
-  $, = ''
-  $" = ' '
-  $^F = 2
-  FileHandle(stdout) => fileno(1)
-  $| = 1
-  $^A = ''
-  $~ = 'GEN0'
-  $^TAINT = 0
-  $^O = 'linux'
-  $% = 0
-  @_ = (
-     0  0
-     1  '_'
-     2  *main::_
-     3  0
-     4  '-1'
-  )
-  $+ = ''
-  @+ = (
-     0  empty slot
-     1  empty slot
-     2  empty slot
-  )
-  FileHandle(STDIN) => fileno(0)
-  $1 = 'main'
-  $< = 501
-  %ENV = (
-     'PERLDB_OPTS' => 'RemotePort=192.168.1.111:5000 DumpReused ReadLine=0'
-     'PERLDB_PIDS' => 23356
-  )
-  $^E = 'Invalid argument'
-  $^H = 256
-  $; = "\c\"
-  FileHandle(STDOUT) => fileno(1)
-  $^W = 0
+$^A = ''
+$^D = 0
+$^E = ''
+FileHandle(STDIN) => fileno(0)
+$^H = 256
+$^L = "\cL"
+$^O = 'MSWin32'
+$^S = 1
+$^V = "\cE\cF\cA"
+$^W = 0
+$^X = 'C:\\Perl\\bin\\perl.exe'
+%SIG = (
+   'ABRT' => undef
+   'ALRM' => undef
+   'BREAK' => undef
+   'BUS' => CODE(0x1deee68)
+      -> &DB::diesignal in 0
+   'CHLD' => undef
+   'CLD' => undef
+   'CONT' => undef
+   'FPE' => undef
+   'ILL' => undef
+   'INT' => CODE(0x1e09968)
+      -> &DB::catch in 0
+   'KILL' => undef
+   'NUM01' => undef
+   'NUM05' => undef
+   'NUM06' => undef
+   'NUM07' => undef
+   'NUM10' => undef
+   'NUM12' => undef
+   'NUM16' => undef
+   'NUM17' => undef
+   'NUM18' => undef
+   'NUM19' => undef
+   'NUM24' => undef
+   'PIPE' => undef
+   'QUIT' => undef
+   'SEGV' => CODE(0x1deee68)
+      -> &DB::diesignal in 0
+   'STOP' => undef
+   'TERM' => undef
+   '__DIE__' => ''
+   '__WARN__' => ''
+)
+$! = ''
+$" = ' '
+$$ = 1500
+$% = 0
+$, = ''
+$- = 0
+@- = (
+   0  empty slot
+   1  empty slot
+   2  empty slot
+)
+$/ = '
+'
+$0 = 'F:/Eclipse_2_1_2_Temp/eclipse/workspace/bbc/t.pl'
+$1 = 'main'
+$2 = ''
+FileHandle(STDERR) => fileno(2)
+$: = ' 
+-'
+$< = 0
+$= = 60
+$? = 0
+$@ = ''
+$port = 80
+$socket = IO::Socket::INET=GLOB(0x2571c40)
+   -> 
+         FileHandle({*Symbol::GEN1}) => fileno(3)
+$\ = ''
+$] = 5.006001
+$^ = 'GEN0_TOP'
+@_ = (
+   0  0
+   1  '_'
+   2  
+)
+$| = 1
+FileHandle(STDOUT) => fileno(1)
+$~ = 'GEN0'
+$base_URL = 'http://www.postdirekt.de'
+FileHandle(stderr) => fileno(2)
+@INC = (
+   0  'F:/eclipse_3/eclipse/workspace/org.epic.debug/'
+   1  'C:/Perl/lib'
+   2  'C:/Perl/site/lib'
+   3  '.'
+)
+%INC = (
+   'AutoLoader.pm' => 'C:/Perl/lib/AutoLoader.pm'
+   'Carp.pm' => 'C:/Perl/lib/Carp.pm'
+   'Carp/Heavy.pm' => 'C:/Perl/lib/Carp/Heavy.pm'
+   'Config.pm' => 'C:/Perl/lib/Config.pm'
+   'Devel/Peek.pm' => 'C:/Perl/lib/Devel/Peek.pm'
+   'DynaLoader.pm' => 'C:/Perl/lib/DynaLoader.pm'
+   'Errno.pm' => 'C:/Perl/lib/Errno.pm'
+   'Exporter.pm' => 'C:/Perl/lib/Exporter.pm'
+   'Exporter/Heavy.pm' => 'C:/Perl/lib/Exporter/Heavy.pm'
+   'IO.pm' => 'C:/Perl/lib/IO.pm'
+   'IO/Handle.pm' => 'C:/Perl/lib/IO/Handle.pm'
+   'IO/Socket.pm' => 'C:/Perl/lib/IO/Socket.pm'
+   'IO/Socket/INET.pm' => 'C:/Perl/lib/IO/Socket/INET.pm'
+   'IO/Socket/UNIX.pm' => 'C:/Perl/lib/IO/Socket/UNIX.pm'
+   'PadWalker.pm' => 'C:/Perl/site/lib/PadWalker.pm'
+   'SelectSaver.pm' => 'C:/Perl/lib/SelectSaver.pm'
+   'Socket.pm' => 'C:/Perl/lib/Socket.pm'
+   'Symbol.pm' => 'C:/Perl/lib/Symbol.pm'
+   'Term/Cap.pm' => 'C:/Perl/lib/Term/Cap.pm'
+   'Term/ReadLine.pm' => 'C:/Perl/lib/Term/ReadLine.pm'
+   'XSLoader.pm' => 'C:/Perl/lib/XSLoader.pm'
+   'dumpvar.pl' => 'C:/Perl/lib/dumpvar.pl'
+   'dumpvar_epic.pl' => 'F:/eclipse_3/eclipse/workspace/org.epic.debug//dumpvar_epic.pl'
+   'perl5db.pl' => 'C:/Perl/lib/perl5db.pl'
+   'strict.pm' => 'C:/Perl/lib/strict.pm'
+   'vars.pm' => 'C:/Perl/lib/vars.pm'
+   'warnings.pm' => 'C:/Perl/lib/warnings.pm'
+   'warnings/register.pm' => 'C:/Perl/lib/warnings/register.pm'
+)
+$pass = 'xxx'
+$^WARNING_BITS = "\c@\c@\c@\c@\c@\c@\c@\c@\c@\c@\c@\c@"
+FileHandle(stdout) => fileno(1)
+$file_list_URL = 'http://www.postdirekt.de/cgi-bin/autransfer/autransfer?user=xxx&passwd=xxx'
+$server = 'www.postdirekt.de'
+%ENV = (
+   'ALLUSERSPROFILE' => 'C:\\Dokumente und Einstellungen\\All Users'
+   'APPDATA' => 'C:\\Dokumente und Einstellungen\\ST\\Anwendungsdaten'
+   'COMMONPROGRAMFILES' => 'C:\\Programme\\Gemeinsame Dateien'
+   'COMPUTERNAME' => 'PC-WIN1'
+   'COMSPEC' => 'C:\\WINNT\\system32\\cmd.exe'
+   'CYGWIN' => 'tty'
+   'HOMEDRIVE' => 'C:'
+   'HOMEPATH' => '\\'
+   'INCLUDE' => 'C:\\Programme\\Microsoft Visual Studio\\VC98\\include'
+   'LIB' => 'C:\\Programme\\Microsoft Visual Studio\\VC98\\lib'
+   'LOGONSERVER' => '\\\\PC-WIN1'
+   'MSDEVDIR' => 'C:\\Programme\\Microsoft Visual Studio\\Common\\MSDev98'
+   'NUMBER_OF_PROCESSORS' => 1
+   'OS' => 'Windows_NT'
+   'OS2LIBPATH' => 'C:\\WINNT\\system32\\os2\\dll;'
+   'PATH' => 'C:\\Perl\\bin\\;C:\\watcom\\BINNT;C:\\watcom\\BINW;C:\\Perl\\bin\\;C:\\WINNT\\system32;C:\\WINNT;C:\\WINNT\\System32\\Wbem;C:\\lcc\\bin;C:\\cygwin\\bin;C:\\Programme\\proton\\proton32de;C:\\Programme\\gogo;C:\\j2sdk1.4.1_06\\bin;c:\\lcc\\bin;C:\\Programme\\Microsoft Visual Studio\\Common\\MSDev98\\Bin;C:\\Programme\\Microsoft Visual Studio\\Common\\Tools\\WinNT;C:\\Programme\\Microsoft Visual Studio\\Common\\Tools;C:\\Programme\\Microsoft Visual Studio\\VC98\\bin'
+   'PATHEXT' => '.COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JS;.JSE;.WSF;.WSH'
+   'PERLDB_OPTS' => 'RemotePort=192.168.1.11:5000 DumpReused ReadLine=0'
+   'PROCESSOR_ARCHITECTURE' => 'x86'
+   'PROCESSOR_IDENTIFIER' => 'x86 Family 6 Model 4 Stepping 2, AuthenticAMD'
+   'PROCESSOR_LEVEL' => 6
+   'PROCESSOR_REVISION' => 0402
+   'PROGRAMFILES' => 'C:\\Programme'
+   'SYSTEMDRIVE' => 'C:'
+   'SYSTEMROOT' => 'C:\\WINNT'
+   'TEMP' => 'C:\\DOKUME~1\\ST\\LOKALE~1\\Temp'
+   'TMP' => 'C:\\DOKUME~1\\ST\\LOKALE~1\\Temp'
+   'USERDOMAIN' => 'PC-WIN1'
+   'USERNAME' => 'ST'
+   'USERPROFILE' => 'C:\\Dokumente und Einstellungen\\ST'
+   'WINDIR' => 'C:\\WINNT'
+)
+$file_match_pattern = '.'
+$out_dir = '.'
+FileHandle(stdin) => fileno(0)
+$user = 'xxx'

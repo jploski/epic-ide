@@ -24,7 +24,7 @@ public class PerlParserSimple extends antlr.LLkParser       implements AddTokenT
 	
 	public void printConsole(String fString)
 	{
-		//System.out.println(fString);
+		System.out.println(fString);
 	}
 	
 	public void setVarList( java.util.ArrayList fVarList )
@@ -146,37 +146,37 @@ public PerlParserSimple(ParserSharedInputState state) {
 		
 		try {      // for error handling
 			{
-			_loop116:
+			_loop916:
 			do {
 				if ((LA(1)==NL)) {
 					match(NL);
 				}
 				else {
-					break _loop116;
+					break _loop916;
 				}
 				
 			} while (true);
 			}
 			{
-			_loop120:
+			_loop920:
 			do {
 				if ((_tokenSet_0.member(LA(1)))) {
 					namedVar();
 					{
-					_loop119:
+					_loop919:
 					do {
 						if ((LA(1)==NL)) {
 							match(NL);
 						}
 						else {
-							break _loop119;
+							break _loop919;
 						}
 						
 					} while (true);
 					}
 				}
 				else {
-					break _loop120;
+					break _loop920;
 				}
 				
 			} while (true);
@@ -372,13 +372,13 @@ public PerlParserSimple(ParserSharedInputState state) {
 			if ((LA(1)==INDENT_START) && (LA(2)==NUMBER||LA(2)==INDENT_END)) {
 				match(INDENT_START);
 				{
-				_loop128:
+				_loop928:
 				do {
 					if ((LA(1)==NUMBER)) {
 						arrayEntry();
 					}
 					else {
-						break _loop128;
+						break _loop928;
 					}
 					
 				} while (true);
@@ -509,9 +509,9 @@ public PerlParserSimple(ParserSharedInputState state) {
 			case SCALAR_REF:
 			case HASH_REF:
 			case CODE_REF:
+			case GLOB:
 			case REF:
 			case FILE_REF:
-			case GLOB:
 			{
 				refs();
 				break;
@@ -558,13 +558,13 @@ public PerlParserSimple(ParserSharedInputState state) {
 			if ((LA(1)==INDENT_START) && (LA(2)==INDENT_END||LA(2)==STRING)) {
 				match(INDENT_START);
 				{
-				_loop136:
+				_loop936:
 				do {
 					if ((LA(1)==STRING)) {
 						hashEntry();
 					}
 					else {
-						break _loop136;
+						break _loop936;
 					}
 					
 				} while (true);
@@ -771,7 +771,7 @@ public PerlParserSimple(ParserSharedInputState state) {
 			}
 			}
 			{
-			_loop147:
+			_loop947:
 			do {
 				switch ( LA(1)) {
 				case PURE_NAME:
@@ -803,7 +803,7 @@ public PerlParserSimple(ParserSharedInputState state) {
 				}
 				default:
 				{
-					break _loop147;
+					break _loop947;
 				}
 				}
 			} while (true);
@@ -893,30 +893,35 @@ public PerlParserSimple(ParserSharedInputState state) {
 		Token  name = null;
 		
 		try {      // for error handling
-			name = LT(1);
 			match(GLOB);
-			addVar("->"+name.getText(),"FileHandleRef");printConsole("++++FRef:"+name.getText()+"\n");
+			name = LT(1);
+			match(ADR);
+			addVar("GLOB->"+name.getText()," ");printConsole("++++Glob_SYMB:"+name.getText()+"\n");
 			match(NL);
+			match(INDENT_START);
+			match(REF_SYMB);
+			match(NL);
+			match(INDENT_START);
 			{
 			switch ( LA(1)) {
-			case INDENT_START:
+			case FILE_HANDLE:
 			{
-				match(INDENT_START);
 				fileHandle();
-				match(NL);
-				match(INDENT_END);
 				break;
 			}
-			case EOF:
-			case ARRAY_NAME:
-			case SCALAR_NAME:
-			case HASH_NAME:
+			case ARRAY_REF:
+			case SCALAR_REF:
+			case HASH_REF:
+			case CODE_REF:
+			case GLOB:
+			case REF:
 			case NUMBER:
-			case INDENT_END:
-			case FILE_HANDLE:
 			case NL:
+			case PURE_NAME:
 			case STRING:
+			case FILE_REF:
 			{
+				value();
 				break;
 			}
 			default:
@@ -925,7 +930,10 @@ public PerlParserSimple(ParserSharedInputState state) {
 			}
 			}
 			}
-			finalizeVar();
+			match(NL);
+			match(INDENT_END);
+			match(INDENT_END);
+			finalizeVar();printConsole("----Glob_SYMB:"+name.getText()+"\n");
 		}
 		catch (RecognitionException ex) {
 			reportError(ex);
@@ -948,6 +956,7 @@ public PerlParserSimple(ParserSharedInputState state) {
 		"SCALAR_REF",
 		"HASH_REF",
 		"CODE_REF",
+		"GLOB",
 		"REF",
 		"NUMBER",
 		"SEPARATOR",
@@ -965,7 +974,6 @@ public PerlParserSimple(ParserSharedInputState state) {
 		"STRING",
 		"KEY_ASSIGN",
 		"FILE_REF",
-		"GLOB",
 		"PREFIXED_NAME",
 		"PURE_NAME_CHAR",
 		"FIRST_PURE_NAME_CHAR",
@@ -976,7 +984,7 @@ public PerlParserSimple(ParserSharedInputState state) {
 	};
 	
 	private static final long[] mk_tokenSet_0() {
-		long[] data = { 131184L, 0L};
+		long[] data = { 262256L, 0L};
 		return data;
 	}
 	public static final BitSet _tokenSet_0 = new BitSet(mk_tokenSet_0());
@@ -986,37 +994,37 @@ public PerlParserSimple(ParserSharedInputState state) {
 	}
 	public static final BitSet _tokenSet_1 = new BitSet(mk_tokenSet_1());
 	private static final long[] mk_tokenSet_2() {
-		long[] data = { 655474L, 0L};
+		long[] data = { 1310834L, 0L};
 		return data;
 	}
 	public static final BitSet _tokenSet_2 = new BitSet(mk_tokenSet_2());
 	private static final long[] mk_tokenSet_3() {
-		long[] data = { 906510080L, 0L};
+		long[] data = { 739278592L, 0L};
 		return data;
 	}
 	public static final BitSet _tokenSet_3 = new BitSet(mk_tokenSet_3());
 	private static final long[] mk_tokenSet_4() {
-		long[] data = { 42598514L, 0L};
+		long[] data = { 85196914L, 0L};
 		return data;
 	}
 	public static final BitSet _tokenSet_4 = new BitSet(mk_tokenSet_4());
 	private static final long[] mk_tokenSet_5() {
-		long[] data = { 72032370L, 0L};
+		long[] data = { 144064626L, 0L};
 		return data;
 	}
 	public static final BitSet _tokenSet_5 = new BitSet(mk_tokenSet_5());
 	private static final long[] mk_tokenSet_6() {
-		long[] data = { 67838066L, 0L};
+		long[] data = { 135676018L, 0L};
 		return data;
 	}
 	public static final BitSet _tokenSet_6 = new BitSet(mk_tokenSet_6());
 	private static final long[] mk_tokenSet_7() {
-		long[] data = { 73728L, 0L};
+		long[] data = { 147456L, 0L};
 		return data;
 	}
 	public static final BitSet _tokenSet_7 = new BitSet(mk_tokenSet_7());
 	private static final long[] mk_tokenSet_8() {
-		long[] data = { 67174400L, 0L};
+		long[] data = { 134348800L, 0L};
 		return data;
 	}
 	public static final BitSet _tokenSet_8 = new BitSet(mk_tokenSet_8());

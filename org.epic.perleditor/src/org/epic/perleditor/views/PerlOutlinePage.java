@@ -104,7 +104,7 @@ public class PerlOutlinePage
 //					true);
 		return SourceParser.getElements(
 				text,
-				"^[\\s]*use\\s+([^\\s]*[A-Z]+[^;\\s\\n]*)",
+				"^[\\s]*use\\s+([^\\s]*[A-Z]+[^;\\s\\n\\r]*)",
 				"", "",
 				true);
 	}

@@ -473,12 +473,19 @@
             class="org.epic.perleditor.views.ExplainErrorsView"
             id="org.epic.perleditor.views.ExplainErrorsView">
       </view>
-            <view
+      <view
             name="PerlDoc"
             icon="icons/book.gif"
             category="org.epic.views"
             class="org.epic.perleditor.views.PerlDocView"
             id="org.epic.perleditor.views.PerlDocView">
+      </view>
+      <view
+            name="EPIC Web Browser"
+            icon="icons/epic_cgi.gif"
+            category="org.epic.views"
+            class="org.epic.core.views.browser.BrowserView"
+            id="org.epic.core.views.browser.BrowserView">
       </view>
    </extension>
 

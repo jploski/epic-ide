@@ -22,18 +22,22 @@ import org.eclipse.debug.core.model.IProcess;
 import org.eclipse.help.browser.IBrowser;
 import org.eclipse.help.internal.browser.BrowserDescriptor;
 import org.eclipse.help.internal.browser.BrowserManager;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.PartInitException;
+import org.epic.core.views.browser.BrowserView;
 import org.epic.debug.cgi.CustomBrowser;
 import org.epic.debug.util.CGIProxy;
 import org.epic.debug.util.RemotePort;
 import org.epic.perleditor.editors.util.PerlExecutableUtilities;
+import org.epic.regexp.views.RegExpView;
 
 /**
  * @author ruehl
- *
+ * 
  * To change this generated comment edit the template variable "typecomment":
- * Window>Preferences>Java>Templates.
- * To enable and disable the creation of type comments go to
- * Window>Preferences>Java>Code Generation.
+ * Window>Preferences>Java>Templates. To enable and disable the creation of type
+ * comments go to Window>Preferences>Java>Code Generation.
  */
 public class CGITarget extends DebugTarget implements IDebugEventSetListener
 {
@@ -60,8 +64,8 @@ public class CGITarget extends DebugTarget implements IDebugEventSetListener
 	}
 
 	/**
-		 * Constructor for DebugTarget.
-		 */
+	 * Constructor for DebugTarget.
+	 */
 	public CGITarget(ILaunch launch)
 	{
 		super(launch);
@@ -155,8 +159,8 @@ public class CGITarget extends DebugTarget implements IDebugEventSetListener
 		mCGIProxy = new CGIProxy(mLaunch, "CGI-Process", brazilProps);
 		int webServerPort = RemotePort.findFreePort();
 
-		/* start web-server*/
-		/* create config file*/
+		/* start web-server */
+		/* create config file */
 
 		brazilProps.append(
 			"\ncgi.Debug="
@@ -282,13 +286,13 @@ public class CGITarget extends DebugTarget implements IDebugEventSetListener
 					}
 				});
 		
-		/* start console-proxy*/
+		/* start console-proxy */
 		return true;
 
 	}
 	/**
-		 * Fire a debug event marking the creation of this element.
-		 */
+	 * Fire a debug event marking the creation of this element.
+	 */
 	private void fireCreationEvent(Object fSource)
 	{
 		fireEvent(new DebugEvent(fSource, DebugEvent.CREATE));
@@ -326,6 +330,32 @@ public class CGITarget extends DebugTarget implements IDebugEventSetListener
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
+		
+		if( browserID.equals(BrowserView.ID_BROWSER) )
+		{
+			//show view
+			Shell shell = PerlDebugPlugin.getActiveWorkbenchShell();
+			if (shell != null) {
+				shell.getDisplay().syncExec(new Runnable() {
+					public void run() {
+						BrowserView view = null;
+						IWorkbenchPage activePage = PerlDebugPlugin
+								.getWorkbenchWindow().getActivePage();
+						try {
+							view = (BrowserView) activePage
+									.showView(BrowserView.ID_BROWSER);
+						} catch (PartInitException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						view.setUrl("http://localhost:" + mWeberverPort + "/");
+						}
+
+				});
+
+			}
+			return;
+		}
 		BrowserDescriptor[] browserDescr =
 			BrowserManager.getInstance().getBrowserDescriptors();
 		BrowserDescriptor descr;
@@ -362,7 +392,7 @@ public class CGITarget extends DebugTarget implements IDebugEventSetListener
 
 	boolean startSession()
 	{
-		/* start debugger*/
+		/* start debugger */
 		if (connectDebugger(false) != RemotePort.mWaitOK)
 			return false;
 		return true;

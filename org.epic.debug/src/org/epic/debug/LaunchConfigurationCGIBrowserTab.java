@@ -45,6 +45,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
+import org.epic.core.views.browser.BrowserView;
 import org.epic.debug.cgi.CustomBrowser;
 
 
@@ -156,8 +157,12 @@ public class LaunchConfigurationCGIBrowserTab
 //				item.setChecked(false);
 			item.setGrayed(aDescs.length == 1);
 		}
-
+		TableItem item = new TableItem(browsersTable, SWT.NONE);
+		item.setText("Built in Browser");
+		item.setGrayed(aDescs.length == 1);
+		
 		createCustomBrowserPathPart(mainComposite);
+		
 		
 		 
 		
@@ -191,12 +196,16 @@ public class LaunchConfigurationCGIBrowserTab
 		BrowserDescriptor[] browsers =
 			BrowserManager.getInstance().getBrowserDescriptors();
 
+		if( attrBrowserID.equals(BrowserView.ID_BROWSER) )
+			items[items.length-1].setChecked(true);
+		
 		for (int i = 0; i < browsers.length; i++)
 		{
 			if (browsers[i].getID().equals(attrBrowserID))
 				items[i].setChecked(true);
 		}
-
+		
+		
 		customBrowserPath.setText(attrBrowserPath);
 		setEnabledCustomBrowserPath();
 
@@ -214,11 +223,16 @@ public class LaunchConfigurationCGIBrowserTab
 	{
 
 		TableItem[] items = browsersTable.getItems();
+		
 		for (int i = 0; i < items.length; i++)
 		{
 			if (items[i].getChecked())
 			{
-				String browserID =
+				String browserID;
+				if( i == items.length-1 )
+					browserID = BrowserView.ID_BROWSER;
+				else					
+					browserID =
 					BrowserManager
 						.getInstance()
 						.getBrowserDescriptors()[i]
@@ -241,10 +255,14 @@ public class LaunchConfigurationCGIBrowserTab
 	{
 
 		TableItem[] items = browsersTable.getItems();
+		
+		if( items[items.length-1].getChecked() )
+			return(BrowserView.ID_BROWSER);
 		for (int i = 0; i < items.length; i++)
 		{
 			if (items[i].getChecked())
 			{
+				
 				String browserID =
 					BrowserManager
 						.getInstance()
@@ -342,7 +360,7 @@ public class LaunchConfigurationCGIBrowserTab
 	private void setEnabledCustomBrowserPath()
 	{
 		TableItem[] items = browsersTable.getItems();
-		for (int i = 0; i < items.length; i++)
+		for (int i = 0; i < items.length-1; i++)
 		{
 			if (items[i].getChecked())
 			{

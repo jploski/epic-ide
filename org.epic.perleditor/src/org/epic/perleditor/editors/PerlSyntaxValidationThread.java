@@ -139,6 +139,7 @@ public class PerlSyntaxValidationThread extends Thread {
         }
         catch (InterruptedException e)
         {
+            //everything is fine, and this thread will terminate
             e.printStackTrace();
         }
 	}

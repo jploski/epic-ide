@@ -12,6 +12,7 @@ import org.eclipse.debug.core.ILaunchManager;
 import org.eclipse.debug.core.model.IDebugTarget;
 import org.eclipse.debug.core.model.IProcess;
 import org.eclipse.debug.core.DebugPlugin;
+import org.epic.debug.util.ExecutionArguments;
 import org.epic.perleditor.PerlEditorPlugin;
 import org.epic.perleditor.editors.util.PerlExecutableUtilities;
 
@@ -85,12 +86,15 @@ public abstract class Target implements IDebugTarget {
 		{
 			String startfile = null;
 			String prjName = null;
+			String progParams = null;
 			mProcessName ="Perl-Interpreter";
 			try {
 				 startfile = mLaunch.getLaunchConfiguration().getAttribute(PerlLaunchConfigurationConstants.ATTR_STARTUP_FILE
 										, EMPTY_STRING);
 				 prjName =  mLaunch.getLaunchConfiguration().getAttribute(PerlLaunchConfigurationConstants.ATTR_PROJECT_NAME
 										, EMPTY_STRING);
+				progParams = mLaunch.getLaunchConfiguration().getAttribute(PerlLaunchConfigurationConstants.ATTR_PROGRAM_PARAMETERS										, EMPTY_STRING);
+										
 			} catch (Exception ce) {PerlDebugPlugin.log(ce);}
 			IProject prj = PerlDebugPlugin.getWorkspace().getRoot().getProject(prjName);
 		
@@ -119,6 +123,11 @@ public abstract class Target implements IDebugTarget {
 			}
 		
 			fCmdList.add(startfile);
+			if( progParams.length() > 0)
+			{
+				 ExecutionArguments exArgs = new ExecutionArguments(progParams);
+				 fCmdList.addAll(exArgs.getProgramArgumentsL());
+			}
 			String[] cmdParams =
 			(String[]) fCmdList.toArray(new String[fCmdList.size()]);
 

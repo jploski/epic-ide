@@ -20,4 +20,5 @@ public final static String ATTR_STARTUP_FILE = "ATTR_STARTUP_FILE";
 public final static String ATTR_AUTO_RECONNECT = "ATTR_AUTO_RECONNECT";
 public final static String ATTR_START_LOCAL = "ATTR_START_LOCAL";
 public final static String ATTR_START_REMOTE = "ATTR_START_REMOTE";
+public final static String ATTR_PROGRAM_PARAMETERS = "ATTR_PROGRAM_PARAMETERS";
 }

@@ -43,6 +43,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IEditorDescriptor;
 //import org.eclipse.swt.widgets.Shell;
 //import org.eclipse.swt.widgets.Text;
@@ -67,8 +68,10 @@ public class LaunchConfigurationMainTab
 
 	// Project UI widgets
 	protected Label fProjLabel;
+	protected Label fParamLabel;
 	protected Combo fProjText;
 	protected Button fProjButton;
+	protected Text fParamText;
 
 	// Main class UI widgets
 	protected Label fMainLabel;
@@ -115,8 +118,8 @@ public class LaunchConfigurationMainTab
 		gd.horizontalSpan = 2;
 		fProjLabel.setLayoutData(gd);
 		fProjLabel.setFont(font);
-
-		//fProjText = new Text(projComp, SWT.SINGLE | SWT.BORDER);
+		
+		//fParamText = new Text(projComp, SWT.SINGLE | SWT.BORDER);
 		fProjText = new Combo(projComp, SWT.SINGLE | SWT.BORDER | SWT.READ_ONLY);
 		gd = new GridData(GridData.FILL_HORIZONTAL);
 		fProjText.setLayoutData(gd);
@@ -166,6 +169,35 @@ public class LaunchConfigurationMainTab
 				updateLaunchConfigurationDialog();
 			}
 		});
+		
+		createVerticalSpacer(comp, 2);
+		Composite paramComp = new Composite(comp, SWT.NONE);
+		GridLayout paramLayout = new GridLayout();
+		paramLayout.numColumns = 2;
+		paramLayout.marginHeight = 0;
+		paramLayout.marginWidth = 0;
+		paramComp.setLayout(paramLayout);
+		gd = new GridData(GridData.FILL_HORIZONTAL);
+		paramComp.setLayoutData(gd);
+		paramComp.setFont(font);
+
+		fParamLabel = new Label(paramComp, SWT.NONE);
+		fParamLabel.setText("Commandline Parameters:"); //$NON-NLS-1$
+		gd = new GridData();
+		gd.horizontalSpan = 2;
+		fParamLabel.setLayoutData(gd);
+		fParamLabel.setFont(font);
+		
+		fParamText = new Text(paramComp, SWT.SINGLE | SWT.BORDER);
+		
+		gd = new GridData(GridData.FILL_HORIZONTAL);
+		fParamText.setLayoutData(gd);
+		fParamText.setFont(font);
+		fParamText.addModifyListener(new ModifyListener() {
+					public void modifyText(ModifyEvent evt) {
+						updateLaunchConfigurationDialog();
+					}
+				});
 
 	/*	fSearchButton = createPushButton(mainComp,LauncherMessages.getString("JavaMainTab.Searc&h_5"), null); //$NON-NLS-1$
 		fSearchButton.addSelectionListener(new SelectionAdapter() {
@@ -201,6 +233,7 @@ public class LaunchConfigurationMainTab
 		updateProjectFromConfig(config);
 		fMainText.setItems(getPerlFiles());
 		updateMainTypeFromConfig(config);
+		updateParamsFromConfig(config);
 	}
 
 	protected void updateProjectFromConfig(ILaunchConfiguration config) {
@@ -211,6 +244,16 @@ public class LaunchConfigurationMainTab
 			PerlDebugPlugin.log(ce);
 		}
 		fProjText.setText(projectName);
+	}
+	
+protected void updateParamsFromConfig(ILaunchConfiguration config) {
+		String params = ""; //$NON-NLS-1$
+		try {
+			params = config.getAttribute(PerlLaunchConfigurationConstants.ATTR_PROGRAM_PARAMETERS, EMPTY_STRING);
+		} catch (CoreException ce) {
+			PerlDebugPlugin.log(ce);
+		}
+		fParamText.setText(params);
 	}
 
 	protected void updateMainTypeFromConfig(ILaunchConfiguration config) {
@@ -230,6 +273,7 @@ public class LaunchConfigurationMainTab
 	public void performApply(ILaunchConfigurationWorkingCopy config) {
 		config.setAttribute(PerlLaunchConfigurationConstants.ATTR_PROJECT_NAME, (String)fProjText.getText());
 		config.setAttribute(PerlLaunchConfigurationConstants.ATTR_STARTUP_FILE, (String)fMainText.getText());
+		config.setAttribute(PerlLaunchConfigurationConstants.ATTR_PROGRAM_PARAMETERS, (String)fParamText.getText());
 	}
 
 	/**
@@ -383,7 +427,11 @@ public class LaunchConfigurationMainTab
 			config.setAttribute(PerlLaunchConfigurationConstants.ATTR_PROJECT_NAME, ""); //$NON-NLS-1$
 	//	}
 	//	initializeMainTypeAndName(javaElement, config);
+	
 	config.setAttribute(PerlLaunchConfigurationConstants.ATTR_STARTUP_FILE, "");
+	config.setAttribute(PerlLaunchConfigurationConstants.ATTR_PROGRAM_PARAMETERS, "");
+	
+	
 	}
 
 	/**

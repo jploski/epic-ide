@@ -5,7 +5,6 @@ import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.model.IBreakpoint;
 import org.eclipse.debug.core.model.IMemoryBlock;
-import org.eclipse.debug.core.model.IProcess;
 import org.eclipse.debug.core.model.IThread;
 
 /**

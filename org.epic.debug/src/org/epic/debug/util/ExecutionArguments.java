@@ -62,6 +62,9 @@ public class ExecutionArguments {
 		return parseArguments(fProgramArgs);
 	}
 
+	public List getProgramArgumentsL() {
+			return parseArgumentsL(fProgramArgs);
+		}
 	private static class ArgumentParser {
 		private String fArgs;
 		private int fIndex= 0;
@@ -71,7 +74,17 @@ public class ExecutionArguments {
 			fArgs= args;
 		}
 
-		public String[] parseArguments() {
+		public String[] parseArguments()
+		{
+			List  v;
+			v = parseArgumentsL();
+			
+			String[] result= new String[v.size()];
+		    v.toArray(result);
+		    return result;
+		}
+		
+		public List parseArgumentsL() {
 			List v= new ArrayList();
 
 			ch= getNext();
@@ -86,9 +99,9 @@ public class ExecutionArguments {
 				}
 			}
 
-			String[] result= new String[v.size()];
-			v.toArray(result);
-			return result;
+			//String[] result= new String[v.size()];
+			//v.toArray(result);
+			return v;
 		}
 
 		private int getNext() {
@@ -162,4 +175,13 @@ public class ExecutionArguments {
 
 		return res;
 	}
+	
+	private static List parseArgumentsL(String args) {
+			if (args == null)
+				return new ArrayList();
+			ArgumentParser parser= new ArgumentParser(args);
+			List res= parser.parseArgumentsL();
+
+			return res;
+		}
 }

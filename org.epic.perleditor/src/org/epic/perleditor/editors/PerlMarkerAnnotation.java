@@ -105,7 +105,7 @@ public class PerlMarkerAnnotation extends MarkerAnnotation {
 						fType= AnnotationType.BOOKMARK;
 
 				} catch(CoreException e) {
-					PerlDebugPlugin.log(e);
+					//PerlDebugPlugin.log(e);
 				}
 			}
 			super.initialize();

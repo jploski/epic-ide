@@ -5,10 +5,10 @@
       version="0.2.0"
       provider-name="Epic Project"
       plugin="org.epic.perleditor"
-      os="aix,hpux,linux,macosx,qnx,solaris,win32"
-      ws="carbon,gtk,motif,photon,win32"
+      os=""
+      ws=""
       nl="en_GB,en_US"
-      arch="PA_RISC,ppc,sparc,x86"
+      arch=""
       image="icons/epic_install.jpg">
 
    <description>

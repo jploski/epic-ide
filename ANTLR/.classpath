@@ -16,5 +16,6 @@
     <classpathentry kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.ui.workbench_2.1.1/workbench.jar"/>
     <classpathentry kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.jface_2.1.1/jface.jar"/>
     <classpathentry kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.jface.text_2.1.0/jfacetext.jar"/>
+    <classpathentry kind="lib" path="/org.epic.debug/gnu-regexp-1.1.4.jar"/>
     <classpathentry kind="output" path="Bin"/>
 </classpath>

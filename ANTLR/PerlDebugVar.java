@@ -22,7 +22,46 @@ public class PerlDebugVar implements IVariable {
 
 	private IDebugElement mDebugger;
 	private String mName;
-	private PerlDebugValue mValue;  
+	private PerlDebugValue mValue;
+	private int mHasChanged;
+	private boolean mHideImage;
+	  
+	
+	public boolean getHideImage()
+	{
+		return mHideImage;
+	}
+	public boolean calculateChangeFlags(PerlDebugVar fVarOrg)
+	{
+		try{
+		
+		System.out.println("-*-Comparing Var"+fVarOrg.getName()+"/"+getName());
+		if( ! getName().equals(fVarOrg.getName()) )
+		 {
+		 	System.err.println("*****Error****:Comparing Variables with different Names");
+		 	return false;
+		 }
+		 
+	    int ret = mValue.calculateChangeFlags(fVarOrg.getPdValue());
+	    
+	    System.out.println(PerlDebugValue.changeFlagsToString(ret));
+	    setChangeFlags(ret,false);
+	    
+	    return( ret != PerlDebugValue.mValueUnchanged );
+	    	 
+	    } catch( Exception e ){System.out.println(e);}
+		
+		return false;	
+	}
+	
+	public void setChangeFlags(int fVal, boolean fRecourse)
+	{
+		mHasChanged = fVal;
+		
+		if( fRecourse )
+			mValue.setChangeFlags(fVal, fRecourse);
+	}
+	
 	/**
 	 * 
 	 */
@@ -31,7 +70,16 @@ public class PerlDebugVar implements IVariable {
 		mDebugger = fDebugger;
 		mName = null;
 		mValue = null;
+		mHideImage = false;
 	}
+	
+	public PerlDebugVar(IDebugElement fDebugger, boolean fHide) {
+			super();
+			mDebugger = fDebugger;
+			mName = null;
+			mValue = null;
+			mHideImage = fHide;
+		}
 
 	/* (non-Javadoc)
 	 * @see org.eclipse.debug.core.model.IVariable#getValue()
@@ -74,9 +122,13 @@ public class PerlDebugVar implements IVariable {
 	 * @see org.eclipse.debug.core.model.IVariable#hasValueChanged()
 	 */
 	public boolean hasValueChanged() throws DebugException {
-		return false;
+		return ( (mHasChanged & PerlDebugValue.mValueHasChanged) > 0);
 	}
 
+	public boolean isTainted() throws DebugException {
+			return ( (mHasChanged & PerlDebugValue.mIsTainted) > 0);
+		}
+ 
 	/* (non-Javadoc)
 	 * @see org.eclipse.debug.core.model.IDebugElement#getModelIdentifier()
 	 */

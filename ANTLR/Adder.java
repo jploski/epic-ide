@@ -1,17 +1,16 @@
-import java.io.FileInputStream;
+import gnu.regexp.RE;
+import gnu.regexp.REException;
+import gnu.regexp.REMatch;
+import gnu.regexp.RESyntax;
+
 import java.io.DataInputStream;
-import java.io.Reader;
+import java.io.FileInputStream;
 import java.io.InputStream;
+import java.io.Reader;
+
 import antlr.InputBuffer;
-import antlr.Token;
-/*import antlr.RecognitionException;
-import antlr.NoViableAltForCharException;
-import antlr.MismatchedCharException;
-import antlr.TokenStream;
-import antlr.ANTLRHashString;*/
 import antlr.LexerSharedInputState;
-/*import antlr.collections.impl.BitSet;
-import antlr.SemanticException;*/
+import antlr.Token;
 import antlr.TokenStreamException;
 import cbg.editor.Modes;
 /**
@@ -122,7 +121,29 @@ public class Adder
         throws Exception
     {
         
+        //***************************************
+        String name ="c:/Perl/Nix/Tm";
+	
+		name = name.replaceAll("/","_");
         Object x = Modes.getModeFor("C:\\Perl\\lib\\Time\\localtime.pm");
+        
+		RE mReStackTrace=null;
+		try{
+			mReStackTrace = new RE("^(.)\\s+=\\s+(.*)called from .* \\`([^\\']+)\\'\\s*line (\\d+)\\s*$",RE.REG_MULTILINE, RESyntax.RE_SYNTAX_PERL5); 
+		//mReStackTrace = new RE("^(.)\\s+=\\s+(.*)called from .* \\`([^\\']+)\\'\\s*line (\\d+)\\s*$",RE.REG_MULTILINE, RESyntax.RE_SYNTAX_PERL5);
+				
+				} catch (REException e){ new InstantiationException("Couldn't RegEX");};
+
+		//REMatch[] matches = mReStackTrace.getAllMatches("$ = main::infested called from file `Ambulation.pm' line 10\n");
+		REMatch[] matches = mReStackTrace.getAllMatches("$ = main::infested called from file `Ambulation.pm' line 10\r\n@ = Ambulation::legs(1, 2, 3, 4) called from file `camel_flea' line 7\r\n$ = main::pests('bactrian', 4) called from file `camel_flea' line 4");
+		for( int pos = 0; pos < matches.length; ++pos)
+		{
+			System.out.println("Called Function: "+matches[pos].toString(2));
+			System.out.println("Return Type: "+matches[pos].toString(1));	
+			System.out.println("Caled From:  "+matches[pos].toString(3)+"["+matches[pos].toString(4)+"]");
+		}
+		
+        //*******************************************
         // the name of the file to read
         String fileName = "F:/eclipse_2.1/eclipse/workspace/ANTLR/test.dat";
 

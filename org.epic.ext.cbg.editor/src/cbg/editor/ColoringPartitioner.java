@@ -25,8 +25,8 @@ public class ColoringPartitioner extends DefaultPartitioner {
 			int endOffset = offset + length;
 			
 			//TODO Changed for EPIC (Not available in Eclipse 2.1)
-			//Position[] category = fDocument.getPositions(getManagingPositionCategories()[0]);
-			Position[] category = fDocument.getPositions(CONTENT_TYPES_CATEGORY);
+			Position[] category = fDocument.getPositions(getManagingPositionCategories()[0]);
+			//Position[] category = fDocument.getPositions(CONTENT_TYPES_CATEGORY);
 			TypedPosition previous = null, current = null;
 			int start, end, gapOffset;
 			Position gap = null;
@@ -36,8 +36,8 @@ public class ColoringPartitioner extends DefaultPartitioner {
 				if(gapOffset > current.getOffset()) {
 					if(current != null) {
 						//TODO Changed for EPIC (Not available in Eclipse 2.1)
-						//fDocument.removePosition(getManagingPositionCategories()[0], current);
-						fDocument.removePosition(CONTENT_TYPES_CATEGORY, current);
+						fDocument.removePosition(getManagingPositionCategories()[0], current);
+						//fDocument.removePosition(CONTENT_TYPES_CATEGORY, current);
 					}
 					continue;
 				} else {

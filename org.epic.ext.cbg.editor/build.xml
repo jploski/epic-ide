@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="org.epic.perleditor" default="build.jars" basedir=".">
+<project name="org.epic.ext.cbg.editor" default="build.jars" basedir=".">
 
 	<property name="bootclasspath" value=""/>
 	<property name="basews" value="${ws}"/>
@@ -18,7 +18,7 @@
 			<isset property="buildTempFolder"/>
 		</condition>
 		<property name="pluginTemp" value="${basedir}"/>
-		<condition property="build.result.folder" value="${pluginTemp}/org.epic.perleditor">
+		<condition property="build.result.folder" value="${pluginTemp}/org.epic.ext.cbg.editor">
 			<isset property="buildTempFolder"/>
 		</condition>
 		<property name="build.result.folder" value="${basedir}"/>
@@ -30,26 +30,26 @@
 		<property name="build.compiler" value="org.eclipse.jdt.core.JDTCompilerAdapter"/>
 	</target>
 
-	<target name="build.update.jar" depends="init" description="Build the plug-in: org.epic.perleditor for an update site.">
+	<target name="build.update.jar" depends="init" description="Build the plug-in: org.epic.ext.cbg.editor for an update site.">
 		<delete dir="${temp.folder}"/>
 		<mkdir dir="${temp.folder}"/>
 		<antcall target="build.jars"/>
 		<antcall target="gather.bin.parts">
 			<param name="destination.temp.folder" value="${temp.folder}/"/>
 		</antcall>
-		<zip zipfile="${plugin.destination}/org.epic.perleditor_0.1.1.jar" basedir="${temp.folder}/org.epic.perleditor_0.1.1" filesonly="false" whenempty="skip" update="false"/>
+		<zip zipfile="${plugin.destination}/org.epic.ext.cbg.editor_0.3.0.jar" basedir="${temp.folder}/org.epic.ext.cbg.editor_0.3.0" filesonly="false" whenempty="skip" update="false"/>
 		<delete dir="${temp.folder}"/>
 	</target>
 
-	<target name="perleditor.jar" depends="init" unless="perleditor.jar" description="Create jar: perleditor.jar.">
-		<delete dir="${temp.folder}/perleditor.jar.bin"/>
-		<mkdir dir="${temp.folder}/perleditor.jar.bin"/>
+	<target name="editor.jar" depends="init" unless="editor.jar" description="Create jar: editor.jar.">
+		<delete dir="${temp.folder}/editor.jar.bin"/>
+		<mkdir dir="${temp.folder}/editor.jar.bin"/>
 		<!-- compile the source code -->
-		<javac destdir="${temp.folder}/perleditor.jar.bin" failonerror="${javacFailOnError}" verbose="${javacVerbose}" debug="${javacDebugInfo}" includeAntRuntime="no" bootclasspath="${bootclasspath}" source="${javacSource}" target="${javacTarget}"		>
+		<javac destdir="${temp.folder}/editor.jar.bin" failonerror="${javacFailOnError}" verbose="${javacVerbose}" debug="${javacDebugInfo}" includeAntRuntime="no" bootclasspath="${bootclasspath}" source="${javacSource}" target="${javacTarget}"		>
 			<compilerarg line="${compilerArg}"/>
 			<classpath>
-				<pathelement path="../../plugins/org.eclipse.jface.text_3.0.0/bin"/>
-				<pathelement path="../../plugins/org.eclipse.jface.text_3.0.0/jfacetext.jar"/>
+				<pathelement path="../../plugins/org.eclipse.core.runtime.compatibility_3.0.0/bin"/>
+				<pathelement path="../../plugins/org.eclipse.core.runtime.compatibility_3.0.0/compatibility.jar"/>
 				<pathelement path="../../plugins/org.eclipse.core.runtime_3.0.0/bin"/>
 				<pathelement path="../../plugins/org.eclipse.core.runtime_3.0.0/runtime.jar"/>
 				<pathelement path="../../plugins/org.eclipse.osgi_3.0.0/bin"/>
@@ -59,8 +59,14 @@
 				<pathelement path="../../plugins/org.eclipse.osgi_3.0.0/resolver.jar"/>
 				<pathelement path="../../plugins/org.eclipse.osgi_3.0.0/defaultAdaptor.jar"/>
 				<pathelement path="../../plugins/org.eclipse.osgi_3.0.0/eclipseAdaptor.jar"/>
-				<pathelement path="../../plugins/org.eclipse.text_3.0.0/bin"/>
-				<pathelement path="../../plugins/org.eclipse.text_3.0.0/text.jar"/>
+				<pathelement path="../../plugins/org.eclipse.update.configurator_3.0.0/bin"/>
+				<pathelement path="../../plugins/org.eclipse.update.configurator_3.0.0/configurator.jar"/>
+				<pathelement path="../../plugins/org.eclipse.ui.views_3.0.0/bin"/>
+				<pathelement path="../../plugins/org.eclipse.ui.views_3.0.0/views.jar"/>
+				<pathelement path="../../plugins/org.eclipse.help_3.0.0/bin"/>
+				<pathelement path="../../plugins/org.eclipse.help_3.0.0/help.jar"/>
+				<pathelement path="../../plugins/org.eclipse.ui_3.0.0/bin"/>
+				<pathelement path="../../plugins/org.eclipse.ui_3.0.0/ui.jar"/>
 				<pathelement path="../../plugins/org.eclipse.swt_3.0.0/bin"/>
 				<pathelement path="../../plugins/org.eclipse.swt_3.0.0/ws/${basews}/swt.jar"/>
 				<pathelement path="../../plugins/org.eclipse.swt.gtk_3.0.0/ws/${basews}/swt.jar"/>
@@ -69,10 +75,6 @@
 				<pathelement path="../../plugins/org.eclipse.swt.gtk_3.0.0/ws/gtk/swt-pi.jar"/>
 				<pathelement path="../../plugins/org.eclipse.jface_3.0.0/bin"/>
 				<pathelement path="../../plugins/org.eclipse.jface_3.0.0/jface.jar"/>
-				<pathelement path="../../plugins/org.eclipse.ui_3.0.0/bin"/>
-				<pathelement path="../../plugins/org.eclipse.ui_3.0.0/ui.jar"/>
-				<pathelement path="../../plugins/org.eclipse.help_3.0.0/bin"/>
-				<pathelement path="../../plugins/org.eclipse.help_3.0.0/help.jar"/>
 				<pathelement path="../../plugins/org.eclipse.ui.workbench_3.0.0/bin"/>
 				<pathelement path="../../plugins/org.eclipse.ui.workbench_3.0.0/compatibility.jar"/>
 				<pathelement path="../../plugins/org.eclipse.ui.workbench_3.0.0/workbench.jar"/>
@@ -80,19 +82,13 @@
 				<pathelement path="../../plugins/org.eclipse.ui.workbench.compatibility_3.0.0/workbench.jar"/>
 				<pathelement path="../../plugins/org.eclipse.core.expressions_3.0.0/bin"/>
 				<pathelement path="../../plugins/org.eclipse.core.expressions_3.0.0/expressions.jar"/>
+				<pathelement path="../../plugins/org.eclipse.jface.text_3.0.0/bin"/>
+				<pathelement path="../../plugins/org.eclipse.jface.text_3.0.0/jfacetext.jar"/>
+				<pathelement path="../../plugins/org.eclipse.text_3.0.0/bin"/>
+				<pathelement path="../../plugins/org.eclipse.text_3.0.0/text.jar"/>
 				<pathelement path="../../plugins/org.eclipse.core.resources_3.0.0/bin"/>
 				<pathelement path="../../plugins/org.eclipse.core.resources_3.0.0/resources.jar"/>
 				<pathelement path="../../plugins/org.eclipse.core.resources.linux_3.0.0/resources.jar"/>
-				<pathelement path="../../plugins/org.eclipse.core.runtime.compatibility_3.0.0/bin"/>
-				<pathelement path="../../plugins/org.eclipse.core.runtime.compatibility_3.0.0/compatibility.jar"/>
-				<pathelement path="../../plugins/org.eclipse.update.configurator_3.0.0/bin"/>
-				<pathelement path="../../plugins/org.eclipse.update.configurator_3.0.0/configurator.jar"/>
-				<pathelement path="${build.result.folder}/../org.epic.ext.cbg.editor/bin"/>
-				<pathelement path="${build.result.folder}/../org.epic.ext.cbg.editor/editor.jar"/>
-				<pathelement path="../org.epic.ext.cbg.editor/libs/dom4j-mini.jar"/>
-				<pathelement path="../org.epic.ext.cbg.editor/libs/regexp-1.2-mini.jar"/>
-				<pathelement path="../../plugins/org.eclipse.ui.views_3.0.0/bin"/>
-				<pathelement path="../../plugins/org.eclipse.ui.views_3.0.0/views.jar"/>
 				<pathelement path="../../plugins/org.eclipse.ui.editors_3.0.0/bin"/>
 				<pathelement path="../../plugins/org.eclipse.ui.editors_3.0.0/editors.jar"/>
 				<pathelement path="../../plugins/org.eclipse.ui.ide_3.0.0/bin"/>
@@ -115,52 +111,44 @@
 				<pathelement path="../../plugins/org.eclipse.ui.workbench.texteditor_3.0.0/texteditor.jar"/>
 				<pathelement path="../../plugins/org.eclipse.core.filebuffers_3.0.0/bin"/>
 				<pathelement path="../../plugins/org.eclipse.core.filebuffers_3.0.0/filebuffers.jar"/>
-				<pathelement path="../../plugins/org.eclipse.debug.core_3.0.0/bin"/>
-				<pathelement path="../../plugins/org.eclipse.debug.core_3.0.0/dtcore.jar"/>
-				<pathelement path="../../plugins/org.eclipse.core.variables_3.0.0/bin"/>
-				<pathelement path="../../plugins/org.eclipse.core.variables_3.0.0/variables.jar"/>
-				<pathelement path="../../plugins/org.eclipse.debug.ui_3.0.0/bin"/>
-				<pathelement path="../../plugins/org.eclipse.debug.ui_3.0.0/dtui.jar"/>
-				<pathelement path="../../plugins/org.eclipse.ui.console_3.0.0/bin"/>
-				<pathelement path="../../plugins/org.eclipse.ui.console_3.0.0/console.jar"/>
-				<pathelement path="${build.result.folder}/gnu-regexp-1.1.4.jar"/>
-				<pathelement path="${build.result.folder}/jdom.jar"/>
+				<pathelement path="${build.result.folder}/libs/dom4j-mini.jar"/>
+				<pathelement path="${build.result.folder}/libs/regexp-1.2-mini.jar"/>
 			</classpath>
 			<src path="src/"			/>
 			</javac>
 		<!-- Copy necessary resources -->
-		<copy todir="${temp.folder}/perleditor.jar.bin" failonerror="true">
+		<copy todir="${temp.folder}/editor.jar.bin" failonerror="true">
 			<fileset dir="src/" excludes="**/*.java"			/>
 		</copy>
 		<mkdir dir="${build.result.folder}"/>
-		<jar jarfile="${build.result.folder}/perleditor.jar" basedir="${temp.folder}/perleditor.jar.bin"/>
-		<delete dir="${temp.folder}/perleditor.jar.bin"/>
+		<jar jarfile="${build.result.folder}/editor.jar" basedir="${temp.folder}/editor.jar.bin"/>
+		<delete dir="${temp.folder}/editor.jar.bin"/>
 	</target>
 
-	<target name="perleditorsrc.zip" depends="init" unless="perleditorsrc.zip">
+	<target name="editorsrc.zip" depends="init" unless="editorsrc.zip">
 		<mkdir dir="${build.result.folder}"/>
-		<zip zipfile="${build.result.folder}/perleditorsrc.zip" filesonly="false" whenempty="skip" update="false">
+		<zip zipfile="${build.result.folder}/editorsrc.zip" filesonly="false" whenempty="skip" update="false">
 			<fileset dir="src/" includes="**/*.java"			/>
 		</zip>
 	</target>
 
-	<target name="build.jars" depends="init" description="Build all the jars for the plug-in: org.epic.perleditor.">
-		<available property="perleditor.jar" file="${build.result.folder}/perleditor.jar"/>
-		<antcall target="perleditor.jar"/>
+	<target name="build.jars" depends="init" description="Build all the jars for the plug-in: org.epic.ext.cbg.editor.">
+		<available property="editor.jar" file="${build.result.folder}/editor.jar"/>
+		<antcall target="editor.jar"/>
 	</target>
 
 	<target name="build.sources" depends="init">
-		<available property="perleditorsrc.zip" file="${build.result.folder}/perleditorsrc.zip"/>
-		<antcall target="perleditorsrc.zip"/>
+		<available property="editorsrc.zip" file="${build.result.folder}/editorsrc.zip"/>
+		<antcall target="editorsrc.zip"/>
 	</target>
 
 	<target name="gather.bin.parts" depends="init" if="destination.temp.folder">
-		<mkdir dir="${destination.temp.folder}/org.epic.perleditor_0.1.1"/>
-		<copy todir="${destination.temp.folder}/org.epic.perleditor_0.1.1" failonerror="true">
-			<fileset dir="${build.result.folder}" includes="perleditor.jar"			/>
+		<mkdir dir="${destination.temp.folder}/org.epic.ext.cbg.editor_0.3.0"/>
+		<copy todir="${destination.temp.folder}/org.epic.ext.cbg.editor_0.3.0" failonerror="true">
+			<fileset dir="${build.result.folder}" includes="editor.jar"			/>
 		</copy>
-		<copy todir="${destination.temp.folder}/org.epic.perleditor_0.1.1" failonerror="true">
-			<fileset dir="${basedir}" includes="plugin.xml,HelpContexts.xml,HelpToc.xml,ChangeLog,*.jar,perleditor.jar,icons/,perlutils/,html/,about.ini,about.html,epicAbout.jpg"			/>
+		<copy todir="${destination.temp.folder}/org.epic.ext.cbg.editor_0.3.0" failonerror="true">
+			<fileset dir="${basedir}" includes="plugin.xml,changes.txt,credit.txt,TODO.txt,*.jar,editor.jar,modes/,libs/jars.extra.classpath = libs/dom4j-mini.jar,libs/regexp-1.2-mini.jar,libs/dom4j-mini.jar"			/>
 		</copy>
 	</target>
 
@@ -168,29 +156,29 @@
 	</target>
 
 	<target name="gather.sources" depends="init" if="destination.temp.folder">
-		<mkdir dir="${destination.temp.folder}/org.epic.perleditor_0.1.1"/>
-		<copy file="${build.result.folder}/perleditorsrc.zip" todir="${destination.temp.folder}/org.epic.perleditor_0.1.1" failonerror="false"/>
+		<mkdir dir="${destination.temp.folder}/org.epic.ext.cbg.editor_0.3.0"/>
+		<copy file="${build.result.folder}/editorsrc.zip" todir="${destination.temp.folder}/org.epic.ext.cbg.editor_0.3.0" failonerror="false"/>
 	</target>
 
 	<target name="gather.logs" depends="init" if="destination.temp.folder">
-		<mkdir dir="${destination.temp.folder}/org.epic.perleditor_0.1.1"/>
-		<copy file="${temp.folder}/perleditor.jar.bin.log" todir="${destination.temp.folder}/org.epic.perleditor_0.1.1" failonerror="false"/>
+		<mkdir dir="${destination.temp.folder}/org.epic.ext.cbg.editor_0.3.0"/>
+		<copy file="${temp.folder}/editor.jar.bin.log" todir="${destination.temp.folder}/org.epic.ext.cbg.editor_0.3.0" failonerror="false"/>
 	</target>
 
-	<target name="clean" depends="init" description="Clean the plug-in: org.epic.perleditor of all the zips, jars and logs created.">
-		<delete file="${build.result.folder}/perleditor.jar"/>
-		<delete file="${build.result.folder}/perleditorsrc.zip"/>
-		<delete file="${plugin.destination}/org.epic.perleditor_0.1.1.jar"/>
-		<delete file="${plugin.destination}/org.epic.perleditor_0.1.1.zip"/>
+	<target name="clean" depends="init" description="Clean the plug-in: org.epic.ext.cbg.editor of all the zips, jars and logs created.">
+		<delete file="${build.result.folder}/editor.jar"/>
+		<delete file="${build.result.folder}/editorsrc.zip"/>
+		<delete file="${plugin.destination}/org.epic.ext.cbg.editor_0.3.0.jar"/>
+		<delete file="${plugin.destination}/org.epic.ext.cbg.editor_0.3.0.zip"/>
 		<delete dir="${temp.folder}"/>
 	</target>
 
 	<target name="refresh" depends="init" if="eclipse.running" description="Refresh this folder.">
-		<eclipse.convertPath fileSystemPath="/home/luelljoc/eclipse-test/3.0_M9/eclipse/workspace/org.epic.perleditor" property="resourcePath"/>
+		<eclipse.convertPath fileSystemPath="/home/luelljoc/eclipse-test/3.0_M9/eclipse/workspace/org.epic.ext.cbg.editor" property="resourcePath"/>
 		<eclipse.refreshLocal resource="${resourcePath}" depth="infinite"/>
 	</target>
 
-	<target name="zip.plugin" depends="init" description="Create a zip containing all the elements for the plug-in: org.epic.perleditor.">
+	<target name="zip.plugin" depends="init" description="Create a zip containing all the elements for the plug-in: org.epic.ext.cbg.editor.">
 		<delete dir="${temp.folder}"/>
 		<mkdir dir="${temp.folder}"/>
 		<antcall target="build.jars"/>
@@ -204,7 +192,7 @@
 		<delete>
 			<fileset dir="${temp.folder}" includes="**/*.bin.log"			/>
 		</delete>
-		<zip zipfile="${plugin.destination}/org.epic.perleditor_0.1.1.zip" basedir="${temp.folder}" filesonly="true" whenempty="skip" update="false"/>
+		<zip zipfile="${plugin.destination}/org.epic.ext.cbg.editor_0.3.0.zip" basedir="${temp.folder}" filesonly="true" whenempty="skip" update="false"/>
 		<delete dir="${temp.folder}"/>
 	</target>
 

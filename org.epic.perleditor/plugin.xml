@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
 <plugin
    id="org.epic.perleditor"
-   name="Epic Plugin"
+   name="Perl Editor Plug-in"
    version="0.1.1"
    provider-name="Epic Project"
    class="org.epic.perleditor.PerlEditorPlugin">
@@ -12,10 +13,10 @@
          <packages prefixes="org.epic"/>
       </library>
       <library name="gnu-regexp-1.1.4.jar">
-         <packages prefixes="gnu.regexp"/>
+         <export name="*"/>
       </library>
       <library name="jdom.jar">
-         <packages prefixes="org.jdom"/>
+         <export name="*"/>
       </library>
    </runtime>
    <requires>
@@ -25,9 +26,11 @@
       <import plugin="org.epic.ext.cbg.editor"/>
       <import plugin="org.eclipse.debug.core"/>
       <import plugin="org.eclipse.debug.ui"/>
-      <import plugin="org.apache.xerces"/>
       <import plugin="org.eclipse.ui.editors"/>
       <import plugin="org.eclipse.ui.workbench.texteditor"/>
+      <import plugin="org.eclipse.core.runtime"/>
+      <import plugin="org.eclipse.ui.ide"/>
+      <import plugin="org.eclipse.ui.views"/>
    </requires>
 
 
@@ -136,7 +139,7 @@
       </runtime>
    </extension>
    <extension
-         point="org.eclipse.ui.projectNatureImages">
+         point="org.eclipse.ui.ide.projectNatureImages">
       <image
             icon="icons/project_link_folder.gif"
             natureId="org.epic.perleditor.perlinkexternalfilesnature"
@@ -157,7 +160,7 @@
    </extension>
 <!-- Builder END -->
    <extension
-         point="org.eclipse.ui.projectNatureImages">
+         point="org.eclipse.ui.ide.projectNatureImages">
       <image
             icon="icons/project_folder.gif"
             natureId="org.epic.perleditor.perlnature"
@@ -426,29 +429,7 @@
             file="HelpContexts.xml">
       </contexts>
    </extension>
-   <extension
-         point="org.eclipse.ui.popupMenus">
-      <viewerContribution
-            targetID="#PerlRulerContext"
-            id="org.eclipse.jdt.ui.CompilationUnitEditorPopupActions">
-         <action
-               label="Add &amp;Task"
-               helpContextId="org.eclipse.ui.AddTask_action_context"
-               tooltip="Add Task..."
-               class="org.eclipse.ui.texteditor.TaskRulerAction"
-               menubarPath="add"
-               id="org.eclipse.ui.texteditor.TaskRulerAction">
-         </action>
-         <action
-               label="Add Boo&amp;kmark"
-               helpContextId="org.eclipse.ui.bookmark_action_context"
-               tooltip="Add Bookmark..."
-               class="org.eclipse.ui.texteditor.BookmarkRulerAction"
-               menubarPath="add"
-               id="org.eclipse.ui.texteditor.BookmarkRulerAction">
-         </action>
-      </viewerContribution>
-   </extension>
+  
    <extension
          point="org.eclipse.ui.views">
       <category

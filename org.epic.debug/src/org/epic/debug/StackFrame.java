@@ -9,7 +9,7 @@ import org.eclipse.debug.core.model.IThread;
 import org.eclipse.debug.core.model.IVariable;
 import org.eclipse.core.runtime.IPath;
 
-/**
+/**---
  * @author ruehl
  *
  * To change this generated comment edit the template variable "typecomment":

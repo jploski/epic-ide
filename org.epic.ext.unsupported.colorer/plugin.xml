@@ -59,12 +59,18 @@
 		name="Editor"
 		category="org.epic.core.preferences.PerlMainPreferencePage"
 		class="org.epic.ext.unsupported.colorer.PerlEditorPreferencePage">
-   		</page>
-   		<page id="org.epic.perleditor.preferences.EpicPerlTemplatesPreferencePage"
+   	</page>
+   	<page id="org.epic.perleditor.preferences.EpicPerlTemplatesPreferencePage"
 		name="Templates"
 		category="org.epic.core.preferences.PerlMainPreferencePage"
 		class="org.epic.perleditor.templates.preferences.TemplatePreferencePage">
-   		</page>
+   	</page>
+  		<page id="org.epic.perleditor.preferences.SourceFormatterPreferencePage"
+  			name="Source Formatter"
+  			category="org.epic.core.preferences.PerlMainPreferencePage"
+ 			class="org.epic.perleditor.preferences.SourceFormatterPreferencePage">
+     	</page>
+   		
    	</extension>
 
 	<extension

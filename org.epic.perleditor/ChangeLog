@@ -10,6 +10,7 @@ Eclipse Perl Integration:
 		* Fixed bug: [ 996351 ] NullPointer exception during Launch (problems if path to Perl executable has spaces) 
 		
 		Editor:
+		* Added Source menu to Editor context popup menu (has to be extended)
 		* Added Validate Syntax to Edit menu
 		* Added Open SUB Declaration [ 810926 ]: Finds the selected (resp. current position) SUB locally, require and packages
 		* Fixed bug: Better handling when editing across Platform (line-separator issue in the Outline View)

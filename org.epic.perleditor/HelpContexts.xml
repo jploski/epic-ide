@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<contexts>
+  <context id="preferencesSourceFormatter_context">
+    <description>Source Formatter help topics</description>
+    <topic href="html/preferences/sourceformatter/perltidy.html"  label="PerlTidy options"/>
+  </context>
+</contexts>
+

@@ -130,6 +130,42 @@ the Perl Editor</i>. The Templates Preference page allows the creation,
 import and export of Templates.<br>
 On export Templates are stored in XML format.<br>
 <br>
+<font color="#000000"><br>
+</font>
+<h2><font><font color="#000000"><a
+ name="Associating_Files_with_the_Perl_editor"></a>Associating Files
+with the Perl
+editor</font></font></h2>
+Eclipse file extension are associated with an editor. If another
+plug-in is installed the EPIC Perl Editor might not be used as standard
+editor when opening *.pl, *.pm or *.cgi files.<br>
+To associate these file extensions with the Perl Editor choose <b>Window
+&gt; Preferences</b> from the Eclipse menu and select <b>Workbench
+&gt; File Associations</b>.<br>
+<br>
+If the Perl extensions are missing they can be created by pressing the <b>Add...</b>
+button.<br>
+Select the Perl Editor from the list and press the <b>Default</b>
+button.<br>
+<br>
+<div align="center"><img height="500" width="537"
+ alt="File Associations" src="images/file_associations_1.gif"><br>
+</div>
+<br>
+<br>
+<h2>CVS Setup</h2>
+On default Eclipse stores Perl files as binary when they are added to
+the CVS repository.<br>
+To store Perl files as text (ASCII) select <b>Window &gt;
+Preferences...</b> from the Eclipse menu and modify the <b>Team &gt;
+File Content</b> settins.<br>
+Add your Perl extensions (pl, pm etc.) by pressing the <b>Add...</b>
+button and specify <i>ASCII</i> in the <i>Contents</i> column.<br>
+<br>
+<div align="center"><img height="393" width="525" alt="CVS File Content"
+ src="images/cvs_file_content_1.gif"><br>
+</div>
+<br>
 <br>
 <h2>Setting up the Debugger</h2>
 Setting up the debugger requires two steps:<br>
@@ -169,7 +205,7 @@ To expand the Per Include Path (@INC) right click on the project icon
 and select <b>Properties...<br>
 <br>
 </b>
-<div align="center"><img height="399" width="562"
+<div align="center"><img height="346" width="516"
  alt="@INC Path Settings" src="images/include_path_1.gif"><br>
 </div>
 <br>
@@ -463,7 +499,7 @@ is found in the Perl source code.<br>
 On deletion of the <code>#TODO</code> comment, the <i>TODO Marker</i>
 is also deleted.<br>
 <br>
-<div align="center"><img height="533" width="611" alt="TODO Marker"
+<div align="center"><img height="483" width="608" alt="TODO Marker"
  src="images/todo_markers_1.gif"><br>
 </div>
 <br>
@@ -659,9 +695,10 @@ be shown. If the project you require isn't shown see <a
  href="#Converting_an_existing_Project">Converting an existing
 Project&nbsp;</a> for adding a Perl nature to your project<br>
     <b>"File to execute" field</b>: select the Perl file to execute<br>
-Note: Only files associated with the Perl editor will be shown. See <font
- color="#ff0000">&lt;Associating Files with the Perl
-editor<b>&gt;</b></font><br>
+Note: Only files associated with the Perl editor will be shown. See <a
+ href="#Associating_Files_with_the_Perl_editor">Associating Files with
+the Perl
+editor</a><br>
     <b>"Commadline Parameters"</b> field: Enter commandline parameters
 to
 pass to to select perl script</li>

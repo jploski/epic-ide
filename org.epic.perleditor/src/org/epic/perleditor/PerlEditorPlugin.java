@@ -17,8 +17,8 @@ public class PerlEditorPlugin extends AbstractUIPlugin {
 	//Resource bundle.
 	private ResourceBundle resourceBundle;
 	
-	public static final String PERl_EXECUTABLE_PREFERENCE = "PERL_EXECUTABLE";
-	private static final String PERl_EXECUTABLE_DEFAULT = "perl";
+	public static final String PERL_EXECUTABLE_PREFERENCE = "PERL_EXECUTABLE";
+	private static final String PERL_EXECUTABLE_DEFAULT = "perl";
 	
 	public static final String WARNINGS_PREFERENCE = "SHOW_WARNINGS";
 	private static final boolean WARNINGS_DEFAULT = true;
@@ -27,6 +27,9 @@ public class PerlEditorPlugin extends AbstractUIPlugin {
 	public static final String INTERPRETER_TYPE_PREFERENCE ="INTERPRETER_TYPE";
 	public static final String INTERPRETER_TYPE_STANDARD = "Standard";
 	public static final String INTERPRETER_TYPE_CYGWIN = "Cygwin";
+	
+	public static final String SYNTAX_VALIDATION_INTERVAL_PREFERENCE="SYNTAX_VALIDATION_INTERVAL";
+	public static final int SYNTAX_VALIDATION_INTERVAL_DEFAULT = 2;
 	
 	/**
 	 * The constructor.
@@ -83,9 +86,10 @@ public class PerlEditorPlugin extends AbstractUIPlugin {
 	 * @param store the preference store to fill
 	 */
 	protected void initializeDefaultPreferences(IPreferenceStore store) {
-		store.setDefault(PERl_EXECUTABLE_PREFERENCE, PERl_EXECUTABLE_DEFAULT);
+		store.setDefault(PERL_EXECUTABLE_PREFERENCE, PERL_EXECUTABLE_DEFAULT);
 		PreferenceConstants.initializeDefaultValues(store);
 		store.setDefault(INTERPRETER_TYPE_PREFERENCE, INTERPRETER_TYPE_STANDARD);
+		store.setDefault(SYNTAX_VALIDATION_INTERVAL_PREFERENCE, SYNTAX_VALIDATION_INTERVAL_DEFAULT);
 
 	}
 	
@@ -95,11 +99,11 @@ public class PerlEditorPlugin extends AbstractUIPlugin {
 	 * @return String[]
 	 */
 	public String getExecutablePreference() {
-		return getPreferenceStore().getString(PERl_EXECUTABLE_PREFERENCE);
+		return getPreferenceStore().getString(PERL_EXECUTABLE_PREFERENCE);
 	}
 	
 	public String getDefaultExecutablePreference() {
-		return PERl_EXECUTABLE_DEFAULT;
+		return PERL_EXECUTABLE_DEFAULT;
 	}
 	
 	/**
@@ -109,7 +113,7 @@ public class PerlEditorPlugin extends AbstractUIPlugin {
 	 */
 	public void setExecutablePreference(String value) {
 		
-		getPreferenceStore().setValue(PERl_EXECUTABLE_PREFERENCE, value);
+		getPreferenceStore().setValue(PERL_EXECUTABLE_PREFERENCE, value);
 	}
 	
 	public boolean getWarningsPreference() {

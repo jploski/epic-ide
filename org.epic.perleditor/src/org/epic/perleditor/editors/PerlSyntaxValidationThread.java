@@ -49,7 +49,7 @@ public class PerlSyntaxValidationThread extends Thread {
 
 	private int previousHashCode = 0;
 	// Defaults
-	private int validationInterval = 2000; //millis
+	//private int validationInterval = 2000; //millis <-- No longer used
 	private int waitForTermination = 400; // millis
 	private int maxErrorsShown = 10;
 
@@ -82,6 +82,7 @@ public class PerlSyntaxValidationThread extends Thread {
 		return text;
 	}
 
+/* No longer used
 	public void setInterval(int millis) {
 		this.validationInterval = millis;
 	}
@@ -89,6 +90,7 @@ public class PerlSyntaxValidationThread extends Thread {
 	public int getInterval() {
 		return validationInterval;
 	}
+*/
 
 	public void setErrorsShown(int number) {
 		this.maxErrorsShown = number;
@@ -120,7 +122,7 @@ public class PerlSyntaxValidationThread extends Thread {
 				this.previousText = this.text;
 				this.isActive = false;
 
-				Thread.sleep(validationInterval);
+				Thread.sleep(PerlEditorPlugin.getDefault().getPreferenceStore().getInt(PerlEditorPlugin.SYNTAX_VALIDATION_INTERVAL_PREFERENCE) * 1000);
 
 			} catch (Exception e) {
 				e.printStackTrace();

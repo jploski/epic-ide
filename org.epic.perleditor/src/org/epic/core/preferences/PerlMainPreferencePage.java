@@ -20,7 +20,9 @@ public class PerlMainPreferencePage
 
 	private Text executableText;
 	private Button warningsCheckBox;
+	private Scale syntaxCheckInterval;
 	private Combo interpreterTypeCombo;
+	private Label syntaxIntervalSecondsLabel;
 	private Composite fParent;
 	private String[] intepreterTypes = {PerlEditorPlugin.INTERPRETER_TYPE_STANDARD,PerlEditorPlugin.INTERPRETER_TYPE_CYGWIN};
 
@@ -108,6 +110,44 @@ public class PerlMainPreferencePage
 		warningsCheckBox.setSelection(
 			PerlEditorPlugin.getDefault().getWarningsPreference());
 		warningsCheckBox.setLayoutData(data);
+		
+		
+		//TEST
+		
+		Composite syntaxIntervalComposite = new Composite(top, SWT.NULL);
+
+		GridLayout syncIntervalLayout = new GridLayout();
+		syncIntervalLayout.numColumns = 3;
+		syntaxIntervalComposite.setLayout(syncIntervalLayout);
+		data =
+			new GridData(
+				GridData.FILL_BOTH | GridData.VERTICAL_ALIGN_BEGINNING);
+		syntaxIntervalComposite.setLayoutData(data);
+
+	    
+
+		Label syncIntevalLabel = new Label(syntaxIntervalComposite, SWT.NONE);
+		syncIntevalLabel.setText("Syntax check interval:");
+	
+		syntaxCheckInterval = new Scale(syntaxIntervalComposite, SWT.HORIZONTAL);
+		syntaxCheckInterval.setMinimum(1);
+		syntaxCheckInterval.setMaximum(60);
+		syntaxCheckInterval.setIncrement(1);
+		
+		syntaxIntervalSecondsLabel = new Label(syntaxIntervalComposite, SWT.NONE);
+		int interval = PerlEditorPlugin.getDefault().getPreferenceStore().getInt(PerlEditorPlugin.SYNTAX_VALIDATION_INTERVAL_PREFERENCE) ;
+		syntaxIntervalSecondsLabel.setText(interval + " seconds ");
+		syntaxCheckInterval.setSelection(interval);
+		
+		syntaxCheckInterval.addListener (SWT.Selection, new Listener () {
+						public void handleEvent (Event event) {
+							syntaxIntervalSecondsLabel.setText(syntaxCheckInterval.getSelection() + " seconds");
+						}
+				});
+			
+		
+		syntaxIntervalComposite.setLayoutData(data);
+		//TEST end
 
 		return new Composite(parent, SWT.NULL);
 	}
@@ -129,9 +169,13 @@ public class PerlMainPreferencePage
 	protected void performDefaults() {
 		executableText.setText(
 			PerlEditorPlugin.getDefault().getDefaultExecutablePreference());
+			
 		warningsCheckBox.setSelection(
 			PerlEditorPlugin.getDefault().getDefaultWarningsPreference());
 		interpreterTypeCombo.setText(PerlEditorPlugin.INTERPRETER_TYPE_STANDARD);
+
+		syntaxIntervalSecondsLabel.setText(PerlEditorPlugin.SYNTAX_VALIDATION_INTERVAL_DEFAULT + " seconds");
+		syntaxCheckInterval.setSelection(PerlEditorPlugin.SYNTAX_VALIDATION_INTERVAL_DEFAULT);
 	    
 		//colorEditor.loadDefault();
 	}
@@ -144,7 +188,10 @@ public class PerlMainPreferencePage
 			executableText.getText());
 		PerlEditorPlugin.getDefault().setWarningsPreference(
 			warningsCheckBox.getSelection());
+			
 		PerlEditorPlugin.getDefault().getPreferenceStore().setValue(PerlEditorPlugin.INTERPRETER_TYPE_PREFERENCE, interpreterTypeCombo.getText());
+		
+		PerlEditorPlugin.getDefault().getPreferenceStore().setValue(PerlEditorPlugin.SYNTAX_VALIDATION_INTERVAL_PREFERENCE, syntaxCheckInterval.getSelection());
 		return super.performOk();
 	}
 }

@@ -101,6 +101,10 @@ public class PerlExecutableUtilities {
 			}
 			*/
 
+        /*  Shouldn't be necessary any more, when working directory is specified in exec() and
+         *  perl file content is passed via stdin.
+         */
+         /*
 		if (textEditor != null) {
 			String currentPath =
 				((IFileEditorInput) textEditor.getEditorInput())
@@ -114,6 +118,7 @@ public class PerlExecutableUtilities {
 			cmdList.add("-I");
 			cmdList.add(currentPath);
 		}
+		*/
 
 		// Add other project include paths
 		XMLUtilities xmlUtil = new XMLUtilities();

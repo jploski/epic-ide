@@ -80,12 +80,8 @@
 			<END>}</END>
 		</SPAN>
 
-                <MARK_FOLLOWING TYPE="KEYWORD2">$#</MARK_FOLLOWING>
-                <!-- !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-		EPIC - REMOVED because it break the syntax colouring, if the Color Editor
-		     handles this correctly this could be re-enabled ! 
+        <MARK_FOLLOWING TYPE="KEYWORD2">$#</MARK_FOLLOWING>
 		<MARK_FOLLOWING TYPE="KEYWORD2">$</MARK_FOLLOWING>
-		!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! -->
 
 		<SPAN TYPE="KEYWORD2" NO_LINE_BREAK="TRUE" DELEGATE="VARIABLE">
 			<BEGIN>@{</BEGIN>

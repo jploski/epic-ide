@@ -45,7 +45,8 @@ public class PerlExecutableUtilities {
 
  	public static String getPerlExecPath()
  	{
- 		return (String)getPerlExecutableCommandLine().get(0);
+ 		/* replace '\\' by '/' due to problems with Brazil*/
+ 		return (String)getPerlExecutableCommandLine().get(0).toString().replace('\\','/');
  	}
 	public static List getPerlExecutableCommandLine(
 		TextEditor textEditor,

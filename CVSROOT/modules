@@ -24,3 +24,12 @@
 # character to interpose another module into the current module.  This
 # can be useful for creating a module that consists of many directories
 # spread out over the entire source repository.
+
+ANTLR 								ANTLR/
+org.epic.debugger 					org.epic.debugger/
+org.epic.ext.cbg.editor 			org.epic.ext.cbg.editor/
+org.epic.ext.unsupported.colorer	org.epic.ext.unsupported.colorer/
+org.epic.perleditor					org.epic.perleditor/
+org.epic.regexp						org.epic.regexp/
+org.epic.spellchecker				org.epic.spellchecker/
+

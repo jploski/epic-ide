@@ -8,9 +8,9 @@ public class StringReaderThread extends Thread
 {
     private final Object lock = new Object();
     
-    private Reader r;
-    private String s;
-    private IOException e;
+    private Reader reader;
+    private String result;
+    private IOException exception;
     
     public StringReaderThread()
     {
@@ -27,12 +27,12 @@ public class StringReaderThread extends Thread
     {
         synchronized (this.lock)
         {
-            if (this.r!=null)
+            if (this.reader!=null)
                 throw new RuntimeException("already in use");
                 
-            this.r = r;
-            this.s = null;
-            this.e = null;
+            this.reader = r;
+            this.result = null;
+            this.exception = null;
             
             this.lock.notify();
         }
@@ -42,13 +42,13 @@ public class StringReaderThread extends Thread
     {
         synchronized (this.lock)
         {
-            while (this.r!=null)
+            while (this.reader!=null)
                 this.lock.wait();
             
-            if (this.e!=null)
-                throw this.e;
-            if (this.s!=null)
-                return this.s;
+            if (this.exception!=null)
+                throw this.exception;
+            if (this.result!=null)
+                return this.result;
             
             throw new RuntimeException("no result");
         }
@@ -63,10 +63,10 @@ public class StringReaderThread extends Thread
                 Reader r;
                 synchronized (this.lock)
                 {
-                    while (this.r==null)
+                    while (this.reader==null)
                         this.lock.wait();
                     
-                    r = this.r;
+                    r = this.reader;
                 }
                 
                 StringBuffer sb = new StringBuffer();
@@ -90,9 +90,9 @@ public class StringReaderThread extends Thread
 
                 synchronized (this.lock)
                 {
-                    this.r = null;
-                    this.s = sb.toString();
-                    this.e = e;                    
+                    this.reader = null;
+                    this.result = sb.toString();
+                    this.exception = e;                    
                     this.lock.notifyAll();
                 }
             }

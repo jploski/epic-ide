@@ -7,7 +7,9 @@
    class="org.epic.perleditor.PerlEditorPlugin">
 
    <runtime>
-      <library name="perleditor.jar" />
+      <library name="perleditor.jar">
+         <export name="*"/>
+      </library>
       <library name="colorer.jar" />
       <library name="gnu-regexp-1.1.4.jar" />
       <library name="jdom.jar" />
@@ -25,6 +27,11 @@
       <import plugin="org.eclipse.core.resources"/>
       <import plugin="org.epic.ext.cbg.editor"/>
       <import plugin="net.sf.colorer"/>
+     <import plugin="org.eclipse.debug.core"/>
+      <import plugin="org.eclipse.debug.ui"/>
+      <import plugin="org.apache.xerces"/>
+      <import plugin="org.eclipse.ui.editors"/>
+      <import plugin="org.eclipse.ui.workbench.texteditor"/>
    </requires>
 
 

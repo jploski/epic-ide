@@ -9,7 +9,7 @@
    <runtime>
       <library name="perleditor.jar">
          <export name="*"/>
-         <packages prefixes="org.epic.core,org.epic.perleditor"/>
+         <packages prefixes="org.epic"/>
       </library>
       <library name="gnu-regexp-1.1.4.jar">
          <packages prefixes="gnu.regexp"/>

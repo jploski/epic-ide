@@ -685,6 +685,12 @@ public class PerlEditor extends TextEditor implements
 		if (event.getProperty().equals("PERL_EXECUTABLE")) {
 			return;
 		}
+		
+		if(getSourceViewerConfiguration() != null && fSourceViewer != null) {
+			((PerlSourceViewerConfiguration) getSourceViewerConfiguration()).adaptToPreferenceChange(event);
+			fSourceViewer.refresh();
+		}
+		
 		setEditorForegroundColor();
 
 	}

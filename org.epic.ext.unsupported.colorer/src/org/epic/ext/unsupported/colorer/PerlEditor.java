@@ -103,6 +103,8 @@ public class PerlEditor
 	public PerlEditor() {
 		super();
 		
+		setDocumentProvider(new PerlDocumentProvider());
+		
 		// TODO Added to support Colorer Plugin
 		setSourceViewerConfiguration(new PerlSourceViewerConfiguration(PerlEditorPlugin.getDefault().getPreferenceStore(), this));
 		//setDocumentProvider(new ColoringDocumentProvider());

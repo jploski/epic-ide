@@ -7,7 +7,7 @@
 
 <MODES>
 <MODE NAME="perl"		FILE="perl.xml"
-				FILE_NAME_GLOB="*.{pl,pm,ipl,cgi,PL,PM,IPL,CGI}"
+				FILE_NAME_GLOB="*"
 				FIRST_LINE_GLOB="#!/*perl*" />
 </MODES>
 

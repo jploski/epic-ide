@@ -246,6 +246,21 @@
                menubarPath="PelDocPopupMenu/PerlDocGroup"
                id="org.epic.perleditor.popupmenus.PerlDocAction.Module">
          </action>
+         <menu
+               label="&amp;OpenDeclaration"
+               path="additions"
+               id="DeclarationPopUp">
+            <separator 
+               name="PerlOpenDecGroup">
+            </separator>
+         </menu>
+         <action
+               label="Open SUB Declaration"
+               icon="icons/open-source.gif"
+               class="org.epic.perleditor.popupmenus.OpenDeclaration"
+               tooltip="Open Declaration for SUBs only, defined locally, in files or in packages!"
+               menubarPath="DeclarationPopUp"
+               id="org.epic.perleditor.popupmenus.PerlDocAction.ModuleNew"/>
       </viewerContribution>
    </extension>
 <!-- Associate menus with PerlEditor -->
@@ -324,6 +339,15 @@
                menubarPath="org.epic.perleditor.source.menu/editGroup"
                id="org.epic.perleditor.Comment">
          </action>
+<!-- Open declaration -->
+         <action
+               label="Open &amp;Declaration"
+               definitionId="org.epic.perleditor.openDeclaration"
+               class="org.epic.perleditor.popupmenus.OpenDeclaration"
+               menubarPath="additions"
+               id="org.epic.perleditor.openDeclaration">
+         </action>
+         
       </actionSet>
    </extension>
    <extension
@@ -417,6 +441,14 @@
             command="org.epic.perleditor.formatsource"
             configuration="org.eclipse.ui.defaultAcceleratorConfiguration">
       </keyBinding>
+      <command
+            description="Opens the SUBs declaration"
+            name="EPIC.openDeclaration"
+            id="org.epic.perleditor.openDeclaration"/>
+      <keyBinding
+            string="Ctrl+Q"
+            command="org.epic.perleditor.openDeclaration"
+            configuration="org.eclipse.ui.defaultAcceleratorConfiguration"/>
    </extension>
 <!--             So to not have equal markers for the same thing we use BOTTOM_LEFT.            -->
 <!--             But on some occasions the Java Builder seems to check Perl projecs as well.    -->

@@ -480,10 +480,11 @@ public class PerlEditor extends TextEditor implements
 
 	}
 	
-	public void setFocus(){
-	  super.setFocus();
-	  revalidateSyntax(true);
-	}
+	/* Disabled for the time being. Will be re-enabled if necessary */
+//	public void setFocus(){
+//	  super.setFocus();
+//	  revalidateSyntax(true);
+//	}
 	
 	/**
 	 * 

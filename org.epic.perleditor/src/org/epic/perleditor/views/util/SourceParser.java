@@ -207,7 +207,7 @@ public class SourceParser {
 			// Remove POD and comments
 			if (deleteComments) {
 				// Remove POD
-				reg = new RE("^(=.*)((\n.*)+)(=cut)$");
+				reg = new RE("^(=.*)((\\n.*)+?)(\\n=cut)$", RE.REG_MULTILINE);
 				text = reg.substituteAll(text, "");
 
 				// Remove comments

@@ -3,7 +3,24 @@
     <classpathentry kind="src" path="src/"/>
     <classpathentry kind="lib" path="gnu-regexp-1.1.4.jar"/>
     <classpathentry kind="lib" path="jdom.jar"/>
-    <classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
+    <classpathentry kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.jface.text_2.1.0/jfacetext.jar"/>
+    <classpathentry kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.text_2.1.0/text.jar"/>
+    <classpathentry kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.ui_2.1.1/ui.jar"/>
+    <classpathentry kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.swt.gtk_2.1.2/ws/gtk/swt.jar"/>
+    <classpathentry kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.swt.gtk_2.1.2/ws/gtk/swt-pi.jar"/>
+    <classpathentry kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.jface_2.1.1/jface.jar"/>
+    <classpathentry kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.ui.views_2.1.0/views.jar"/>
+    <classpathentry kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.ui.workbench_2.1.1/workbench.jar"/>
+    <classpathentry kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.ui.workbench.texteditor_2.1.0/texteditor.jar"/>
+    <classpathentry kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.ui.editors_2.1.0/editors.jar"/>
+    <classpathentry kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.core.resources_2.1.1/resources.jar"/>
+    <classpathentry kind="src" path="/org.epic.ext.cbg.editor"/>
+    <classpathentry kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.debug.core_2.1.2/dtcore.jar"/>
+    <classpathentry kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.debug.ui_2.1.1/dtui.jar"/>
+    <classpathentry kind="var" path="ECLIPSE_HOME/plugins/org.apache.xerces_4.0.13/xmlParserAPIs.jar"/>
+    <classpathentry kind="var" path="ECLIPSE_HOME/plugins/org.apache.xerces_4.0.13/xercesImpl.jar"/>
+    <classpathentry kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.core.boot_2.1.2/boot.jar"/>
+    <classpathentry kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.core.runtime_2.1.1/runtime.jar"/>
     <classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
     <classpathentry kind="output" path="bin"/>
 </classpath>

@@ -10,7 +10,7 @@ import org.eclipse.jface.text.source.ISourceViewer;
 import org.epic.perleditor.views.model.*;
 import org.epic.perleditor.views.util.*;
 import org.epic.perleditor.editors.IdleTimerListener;
-import org.epic.perleditor.editors.perl.PerlPartitionScanner;
+//import org.epic.perleditor.editors.perl.PerlPartitionScanner;
 
 public class PerlOutlinePage
 	extends ContentOutlinePage
@@ -50,21 +50,35 @@ public class PerlOutlinePage
 		modules = new SourceElement("Modules", SourceElement.MODULE_TYPE);
 		subroutines =
 			new SourceElement("Subroutines", SourceElement.SUBROUTINE_TYPE);
-		SourceParser parser = new SourceParser();
+		//SourceParser parser = new SourceParser();
+
+//		subroutines.addSubroutines(
+//			parser.getElements(
+//				input.getTextWidget().getText(),
+//				PerlPartitionScanner.TOKEN_SUBROUTINE,
+//				"{",
+//				"=;"));
 
 		subroutines.addSubroutines(
-			parser.getElements(
+			SourceParser.getElements(
 				input.getTextWidget().getText(),
-				PerlPartitionScanner.TOKEN_SUBROUTINE,
-				"{",
-				"=;"));
-		modules.addModules(
-			parser.getElements(
-				input.getTextWidget().getText(),
-				PerlPartitionScanner.TOKEN_MODULE,
-				";",
-				"=>$"));
+				"^[\\s]*(sub\\s+[^\\n{]+)",
+				"", "",
+				true));
+				
+//		modules.addModules(
+//			parser.getElements(
+//				input.getTextWidget().getText(),
+//				PerlPartitionScanner.TOKEN_MODULE,
+//				";",
+//				"=>$"));
 
+		modules.addModules(
+				SourceParser.getElements(
+					input.getTextWidget().getText(),
+					"^[\\s]*(use\\s+[^a-z][^\\n;]+)",
+					"", "",
+					true));
 		root.add(modules);
 		root.add(subroutines);
 
@@ -94,20 +108,35 @@ public class PerlOutlinePage
 		getControl().setRedraw(false);
 		subroutines.removeChildren();
 		modules.removeChildren();
-		SourceParser parser = new SourceParser();
+		//SourceParser parser = new SourceParser();
+//		subroutines.addSubroutines(
+//			parser.getElements(
+//				input.getTextWidget().getText(),
+//				PerlPartitionScanner.TOKEN_SUBROUTINE,
+//				"{",
+//				"=;"));
+
 		subroutines.addSubroutines(
-			parser.getElements(
-				input.getTextWidget().getText(),
-				PerlPartitionScanner.TOKEN_SUBROUTINE,
-				"{",
-				"=;"));
+				SourceParser.getElements(
+					input.getTextWidget().getText(),
+					"^[\\s]*(sub\\s+[^\\n{]+)",
+					"", "",
+					true));
+
+//		modules.addModules(
+//			parser.getElements(
+//				input.getTextWidget().getText(),
+//				PerlPartitionScanner.TOKEN_MODULE,
+//				";",
+//				"=>$"));
 
 		modules.addModules(
-			parser.getElements(
-				input.getTextWidget().getText(),
-				PerlPartitionScanner.TOKEN_MODULE,
-				";",
-				"=>$"));
+				SourceParser.getElements(
+					input.getTextWidget().getText(),
+					"^[\\s]*(use\\s+[^a-z][^\\n;]+)",
+					"", "",
+					true));
+
 		getTreeViewer().refresh(subroutines, false);
 		getTreeViewer().refresh(modules, false);
 

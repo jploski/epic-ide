@@ -159,11 +159,17 @@ public class PerlEditor
 			//Thread defaults
 			fValidationThread.start();
 			
-			// Always check syntax when editor is opened
-			fValidationThread.onEditorIdle(getSourceViewer());
 		}
 
 		if (fValidationThread != null) {
+			try {
+				// Give the validation thread time for initialization
+				// TODO Find better solution
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			// Always check syntax when editor is opened
 			fValidationThread.setText(
 				getSourceViewer().getTextWidget().getText());
 		}

@@ -290,7 +290,12 @@ public class PerlCompletionProcessor implements IContentAssistProcessor {
 							 .removeLastSegments(1)
 							 .toString();
 
+            /*
+             * Due to Java Bug #4763384 sleep for a very small amount of time
+             * immediately after starting the subprocess
+             */
 			Process proc = Runtime.getRuntime().exec(cmdParams, null, new File(workingDir));
+			Thread.sleep(1);
 
 			InputStream in = proc.getInputStream();
 			

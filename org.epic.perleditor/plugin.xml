@@ -411,7 +411,15 @@
 				   class="org.eclipse.ui.texteditor.BookmarkRulerAction">
 		  		</action>
 		 </viewerContribution>
-</extension>
+  </extension>
+
+  <extension
+         point="org.eclipse.ui.views">
+      <category
+            name="EPIC"
+            id="org.epic.views">
+      </category>
+  </extension>
  
 
 </plugin>

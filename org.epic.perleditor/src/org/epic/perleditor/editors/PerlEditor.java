@@ -68,6 +68,7 @@ public class PerlEditor
 	private PerlContentOutlinePage fOutlinePage;
 	protected PerlOutlinePage page;
 	protected PerlSyntaxValidationThread fValidationThread = null;
+	protected PerlToDoMarkerThread fTodoMarkerThread = null;
 	protected CompositeRuler ruler;
 	protected LineNumberRulerColumn numberRuler;
 	private boolean lineRulerActive = false;
@@ -166,6 +167,12 @@ public class PerlEditor
 			fValidationThread.setText(
 				getSourceViewer().getTextWidget().getText());
 		}
+		
+		//set up the ToDoMarkerThread
+		if ((fTodoMarkerThread == null) && isPerlMode()) {
+			fTodoMarkerThread = new PerlToDoMarkerThread(this, getSourceViewer());
+			fTodoMarkerThread.start();
+		}
 
 		setEditorForegroundColor();
 
@@ -175,6 +182,7 @@ public class PerlEditor
 
 		// Register the validation thread
 		this.registerIdleListener(fValidationThread);
+		this.registerIdleListener(fTodoMarkerThread);
 
 	}
 

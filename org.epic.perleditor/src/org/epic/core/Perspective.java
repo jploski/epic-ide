@@ -104,7 +104,7 @@ public class Perspective implements IPerspectiveFactory {
 		IPerspectiveRegistry reg = WorkbenchPlugin.getDefault()
 				.getPerspectiveRegistry();
 		PerspectiveDescriptor rtPerspectiveDesc = (PerspectiveDescriptor) reg
-				.findPerspectiveWithId("org.eclipse.debug.ui.DebugPerspective");
+				.findPerspectiveWithId(perspectiveId);
 		
 		if (window != null || rtPerspectiveDesc == null) {
 			IWorkbenchPage page = window.getActivePage();

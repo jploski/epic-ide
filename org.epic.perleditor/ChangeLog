@@ -21,6 +21,7 @@ Eclipse Perl Integration:
 		* Fixed bug: [ 996351 ] NullPointer exception during Launch (problems if path to Perl executable has spaces)
 
 		Editor:
+		* Module Degel::Refactor updated to version 0.03
 		* Added support for regular expressions and HERE-Documents
 		* Fixed bug: [ 1077441 ] Source formatter does not make tabs 4 column wide
 		* [ 1077441 ] perlTidy: Better handling in rare case of invalid positioning

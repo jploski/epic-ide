@@ -96,7 +96,7 @@ public class DebugTarget extends Target {
 	 * @see org.eclipse.debug.core.model.ITerminate#canTerminate()
 	 */
 	public boolean canTerminate() {
-		return true;
+		return ! isTerminated();
 	}
 
 	/**

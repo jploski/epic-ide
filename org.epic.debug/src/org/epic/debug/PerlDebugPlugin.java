@@ -10,6 +10,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.debug.core.DebugPlugin
 ;
+import org.epic.debug.util.LogWriter;
 import org.epic.perleditor.editors.util.PerlExecutableUtilities;
 
 
@@ -18,6 +19,10 @@ import org.epic.perleditor.editors.util.PerlExecutableUtilities;
  * The main plugin class to be used in the desktop.
  */
 public class PerlDebugPlugin extends AbstractUIPlugin {
+	
+	final private static int mScreenLogLevel = 0;
+	final private static int mLogLevel = Status.WARNING;
+	
 	//The shared instance.
 	private static PerlDebugPlugin plugin;
 	//Resource bundle.
@@ -44,9 +49,66 @@ public class PerlDebugPlugin extends AbstractUIPlugin {
 		createEnvArrays();
 		mBreakPointmanager = new PerlBreakpointManager( DebugPlugin.getDefault());
 		mDebugger = new ArrayList();
+		
+		getLog().addLogListener(new LogWriter( new File(getStateLocation()+File.separator+".log"),mLogLevel));
+		getLog().addLogListener(new LogWriter(System.err, mScreenLogLevel));
+	//	log(new Status(IStatus.INFO, getUniqueIdentifier(), 150, "Plugin Started", null));
+	//	log(new Status(IStatus.WARNING, getUniqueIdentifier(), 150, "Plugin Started", null)); 
 	}
 
-
+	public void logOK(String fText, Exception fException)
+	{
+		log(IStatus.OK,fText,fException);
+	}
+	
+	public void logOK(String fText)
+	{
+		log(IStatus.OK,fText,null);
+	}
+	
+	public void logInfo(String fText, Exception fException)
+		{
+			log(IStatus.INFO,fText,fException);
+		}
+	
+	public void logInfo(String fText)
+		{
+			log(IStatus.INFO,fText,null);
+		}
+	
+	
+	
+	public void logWarning(String fText, Exception fException)
+		{
+			log(IStatus.WARNING,fText,fException);
+		}
+	
+		public void logWarning(String fText)
+		{
+			log(IStatus.WARNING,fText,null);
+		}
+	
+	
+	
+	public void logError(String fText, Exception fException)
+		{
+			log(IStatus.ERROR,fText,fException);
+		}
+	
+		public void loglogError(String fText)
+		{
+			log(IStatus.ERROR,fText,null);
+		}
+	
+	
+	
+	
+	
+	
+	private void log(int fSeverity, String fText, Exception fException)
+	{
+		log(new Status(fSeverity, getUniqueIdentifier(), 0, fText, fException));	
+	}
 	void createEnvArrays()
 	{
 		Process proc = null;
@@ -65,7 +127,7 @@ public class PerlDebugPlugin extends AbstractUIPlugin {
 		while ((count = in.read(buffer)) > 0) {
 			content.append(new String(buffer));
 		}
-		
+	
 		env = content.toString();
 		in.close();
 		} catch(Exception e){};
@@ -131,8 +193,11 @@ public class PerlDebugPlugin extends AbstractUIPlugin {
 		 *
 		 * @param status status to log
 		 */
-		public static void log(IStatus status) {
+		private static void log(IStatus status) {
 			getDefault().getLog().log(status);
+			Throwable e = status.getException();
+			if(e != null)
+				e.printStackTrace();
 		}
 		
 	/**
@@ -158,7 +223,7 @@ public class PerlDebugPlugin extends AbstractUIPlugin {
 		}
 		
 	public static void log(Throwable e) {
-			log(new Status(IStatus.ERROR, getUniqueIdentifier(), 150, "Internal Error", e));  //$NON-NLS-1$
+			log(new Status(IStatus.ERROR, getUniqueIdentifier(), 0, "Debug Error", e));  //$NON-NLS-1$
 		}
 			
 	public static void errorDialog(String message, IStatus status) {

@@ -9,8 +9,8 @@ package org.epic.debug;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.model.IDebugElement;
 import org.eclipse.debug.core.model.IDebugTarget;
+import org.eclipse.debug.core.model.ITerminate;
 import org.eclipse.debug.core.model.IThread;
-import org.eclipse.core.resources.IProject;
 import java.net.*;
 import java.io.*;
 import gnu.regexp.*;
@@ -22,9 +22,10 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.IPath;
 import java.util.*;
 import org.eclipse.debug.core.model.IVariable;
+import org.epic.debug.util.DebuggerProxy;
 import org.epic.debug.util.PathMapperCygwin;
+import org.epic.debug.util.RemotePort;
 import org.epic.debug.varparser.*;
-import org.epic.perleditor.editors.util.PerlExecutableUtilities;
 import org.epic.perleditor.PerlEditorPlugin;
 
 
@@ -38,15 +39,14 @@ import org.epic.perleditor.PerlEditorPlugin;
  * To change the template for this generated type comment go to
  * Window>Preferences>Java>Code Generation>Code and Comments
  */
-public class PerlDB	implements IDebugElement {
+public class PerlDB	implements IDebugElement, ITerminate {
 /*****************CGI-Test*************************/
 	private boolean debug_cgi = false; 
 /*************************************************/
 	
 	private Target mTarget;
 	private CommandThread mCommandThread;
-	private ServerSocket mServerSocket;
-	private Socket mClientSocket;
+	private RemotePort mRemotePort;
 	private Process mProcess;
 	private int mCurrentCommand;
 	/* NO debugging meassages are created for sub-commands*/
@@ -126,6 +126,7 @@ public class PerlDB	implements IDebugElement {
 		
 				
 	}
+	
 	private class IP_Position
 	{
 		int IP_Line;
@@ -171,7 +172,7 @@ public class PerlDB	implements IDebugElement {
 		}
 
 	}
-		 		
+	 		
 	public PerlDB(DebugTarget fTarget) throws InstantiationException
 	{
 		
@@ -212,36 +213,12 @@ public class PerlDB	implements IDebugElement {
 		mReEnterFrame = new RE("^\\s*entering",0, RESyntax.RE_SYNTAX_PERL5);
 		mReExitFrame  = new RE("^\\s*exited",0, RESyntax.RE_SYNTAX_PERL5);
 		} catch (REException e){ new InstantiationException("Couldn't RegEX");};
-		String env[] = new String[1];
 		
+			
+			
+		mRemotePort = new RemotePort(4444);
+		mRemotePort.startConnect();
 								
-		mServerSocket = null ;
-				try {
-					mServerSocket = new ServerSocket(4444);
-				} catch (IOException e) {
-					throw new InstantiationException("Couldn't listen to Debug-Port");
-				}
-		
-				mClientSocket = null;
-				
-				Thread connect = 
-				new Thread() 
-				{ 
-					public void run()
-					{
-						try {
-							System.out.println("Trying to Accept");
-						mClientSocket = mServerSocket.accept();
-						System.out.println("Accept !!!!!!!\n");
-							} catch (IOException e) {
-							System.out.println("Accept failed: 4444");
-							}
-					}
-				};
-				
-				connect.start();
-		String nix[] = PerlDebugPlugin.getDebugEnv();
-		
 		try{
 				//Runtime.getRuntime().
 			//	exec("perl -d "+startfile,PerlDebugPlugin.getDebugEnv(), new File(mWorkingDir.toString()));
@@ -255,6 +232,7 @@ public class PerlDB	implements IDebugElement {
 			{
 				
 				mProcess= mTarget.startPerlProcess();
+								
 				mWorkingDir =  mTarget.getWorkingDir();
 				
 			}
@@ -266,29 +244,19 @@ public class PerlDB	implements IDebugElement {
 				
 	//DebugPlugin.newProcess(getLaunch(),mProcess,"Echo-Process");
 	((PerlDebugPlugin)PerlDebugPlugin.getDefault()).registerDebugger(this);
-	try{			
-		synchronized(this)
-		{
-		for( int x=0; ((x < 100) || debug_cgi) && (mClientSocket == null) ; ++x)
-		{
-			System.out.println("Waiting for connect (Try "+x+" of 100)\n");
-				 wait(100);
-		}
-		}
-	
-		if( mClientSocket == null)
+			
+			
+		
+		if( ! mRemotePort.waitForConnect(true) )
 		{ 
 			shutdown();
 			throw new InstantiationException("Couldn't connect to Debugger");		
 		}
 		
-		mDebugIn = new PrintWriter(mClientSocket.getOutputStream(), true);
-		mDebugOut = new BufferedReader(
-				new InputStreamReader( mClientSocket.getInputStream())
-				);
-		}catch(IOException e){throw new InstantiationException("Failing establish Communication with Debug Process  !!!");}
-		 catch(InterruptedException e){throw new InstantiationException("Failing establish Communication with Debug Process  !!!");}
+		mDebugIn = mRemotePort.getWriteStream();
+		mDebugOut = mRemotePort.getReadStream();
 		 
+	
 		mPathMapper = null;
 		String interpreterType =
 		PerlEditorPlugin.getDefault().getPreferenceStore().getString(
@@ -299,16 +267,27 @@ public class PerlDB	implements IDebugElement {
 			mPathMapper = new PathMapperCygwin();
 		}
 		
+		
 		startCommand(mCommandClearOutput,null,false, this);
+		
 		if( ! isTerminated(this) )
 		{
 		startCommand(mCommandExecuteCode,mDBinitPerl,false, this);
+//		/****************test only*****/
+//		getLaunch().setAttribute(PerlLaunchConfigurationConstants.ATTR_DEBUG_IO_PORT,"4041");
+//		getLaunch().setAttribute(PerlLaunchConfigurationConstants.ATTR_DEBUG_ERROR_PORT,"4042");
+//		DebuggerProxy p = new DebuggerProxy(this, "Proxy");
+//		getLaunch().addProcess(p);
+//		mTarget.setProcess(p);
+		/***********************************/
 		PerlDebugPlugin.getPerlBreakPointmanager().addDebugger(this);
+		
 		updateStackFrames(null);
 		generateDebugInitEvent();
 		}
 		else
-			generateDebugTermEvent();
+				generateDebugTermEvent();
+				
 			
 	}
 	/* (non-Javadoc)
@@ -384,14 +363,28 @@ public class PerlDB	implements IDebugElement {
 		startCommand(mCommandStepReturn, fDest);
 	}
 
-		public boolean canTerminate(Object fDest) {
-		return true;
+	public boolean canTerminate()
+	{
+		return canTerminate(null);
+	}
+	
+	public boolean canTerminate(Object fDest) {
+		return ! isTerminated();
 	}
 
+	public boolean isTerminated() {
+			return isTerminated(null);
+		}
 	public boolean isTerminated(Object fDest) {
 		return (mProcess == null);
 	}
 
+	
+	public void terminate()
+	{
+		terminate(null);	
+	}
+	
 	public void terminate(Object fDest) {
 		abortSession();
 
@@ -518,14 +511,10 @@ public class PerlDB	implements IDebugElement {
 	
 	void shutdown(boolean fUnregister)
 	{
-		try{
-			if( mDebugIn != null) mDebugIn.close();
-			if( mDebugOut != null) mDebugOut.close();
-			if( mProcess != null) mProcess.destroy();
-			if( mServerSocket != null) mServerSocket.close();
-		}catch( Exception e){};
+		mRemotePort.shutdown();
 		mProcess.destroy();
 		mProcess = null;
+		generateTargetTermEvent();
 		if( fUnregister )
 		((PerlDebugPlugin)PerlDebugPlugin.getDefault()).unregisterDebugger(this);
 	}
@@ -617,6 +606,15 @@ public class PerlDB	implements IDebugElement {
 			DebugPlugin.getDefault().fireDebugEventSet(debugEvents); 
 		}
 
+	public void generateTargetTermEvent()
+		{
+				DebugEvent event = null;
+		
+				event = new DebugEvent(mTarget, DebugEvent.TERMINATE, DebugEvent.STEP_END);
+				DebugEvent debugEvents[] = new DebugEvent[1];
+				debugEvents[0]=event;
+				DebugPlugin.getDefault().fireDebugEventSet(debugEvents); 
+			}
 
 
 	private boolean waitForCommandToFinish()
@@ -791,7 +789,7 @@ public class PerlDB	implements IDebugElement {
 		return mThreads; 
 	}
 	
-	public Process getProcess()
+	public Process getDebugProcess()
 	{ 
 		return mProcess; 
 	}
@@ -1200,5 +1198,54 @@ protected void finalize()throws Throwable
 		shutdown();
 		super.finalize();
 	}
+	
+public void redirectIO(int fPort)
+{
+	String ip= null;
+	
+	try {
+		ip = InetAddress.getLocalHost().getHostAddress();
+	} catch (UnknownHostException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
+	
+	String command = 
+		"require IO::Socket; {my $OUT;"+		"$OUT = new IO::Socket::INET("+
+        "Timeout  => \'10\',"+
+        "PeerAddr => \'"+ip+":"+fPort+"\',"+
+        "Proto    => 'tcp',);"+
+        "STDOUT->fdopen($OUT,\"w\");"+
+		"STDIN->fdopen($OUT,\"r\");}";
+	
+	startCommand(mCommandExecuteCode,command,false, this);			
+		
+        
+			
+}
+
+public void redirectError(int fPort)
+{
+	String ip= null;
+	
+	try {
+		ip = InetAddress.getLocalHost().getHostAddress();
+	} catch (UnknownHostException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
+	
+	String command = 
+		"require IO::Socket; {my $OUT;"+
+		"$OUT = new IO::Socket::INET("+
+		"Timeout  => \'10\',"+
+		"PeerAddr => \'"+ip+":"+fPort+"\',"+
+		"Proto    => 'tcp',);"+
+		"STDERR->fdopen($OUT,\"w\");}";
+	
+	startCommand(mCommandExecuteCode,command,false, this);			  
+			
+}
 
 }
+

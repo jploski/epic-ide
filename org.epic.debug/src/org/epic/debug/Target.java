@@ -55,6 +55,10 @@ public abstract class Target implements IDebugTarget {
 		return mProcess;
 	}
 	
+	public void setProcess( IProcess fProcess)
+	{
+		mProcess = fProcess;
+	}
 	
 	
 	
@@ -64,6 +68,7 @@ public abstract class Target implements IDebugTarget {
 	 * @see org.eclipse.debug.core.model.IDebugTarget#getName()
 	 */
 	public String getName() throws DebugException {
+		
 		return (mProcessName);
 	}
 
@@ -142,6 +147,10 @@ public abstract class Target implements IDebugTarget {
 			}
 			
 				//	if( ! isTerminated())
+				
+				
+				
+				/**************org***/
 				mProcess = DebugPlugin.newProcess(mLaunch,mJavaProcess,mProcessName);
 				
 				return(mJavaProcess);
@@ -150,5 +159,6 @@ public abstract class Target implements IDebugTarget {
 		
 	IPath getWorkingDir()
 	{ return mWorkinkDir;}
+	
 	
 }

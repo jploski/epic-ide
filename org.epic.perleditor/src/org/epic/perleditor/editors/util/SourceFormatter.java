@@ -5,7 +5,10 @@ import java.net.URL;
 import java.util.List;
 
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.epic.perleditor.PerlEditorPlugin;
+import org.epic.perleditor.preferences.PreferenceConstants;
+import org.epic.perleditor.preferences.SourceFormatterPreferences;
 
 import gnu.regexp.RE;
 import gnu.regexp.REMatch;
@@ -14,23 +17,54 @@ import gnu.regexp.REException;
 public class SourceFormatter {
 	public String doConversion(String text) {
 
+       IPreferenceStore store = PerlEditorPlugin.getDefault().getPreferenceStore();
+       
+	   int tabWidth = store.getInt(PreferenceConstants.EDITOR_TAB_WIDTH);
+	   int pageSize = store.getInt(PreferenceConstants.EDITOR_PRINT_MARGIN_COLUMN);
+	   boolean useTabs = store.getBoolean(PreferenceConstants.SPACES_INSTEAD_OF_TABS) ? false:true;
+	   
+	   boolean cuddleElse = store.getBoolean(SourceFormatterPreferences.CUDDLED_ELSE);
+	   boolean bracesLeft = store.getBoolean(SourceFormatterPreferences.BRACES_LEFT);
+	   boolean lineUpParentheses = store.getBoolean(SourceFormatterPreferences.LINE_UP_WITH_PARENTHESES);
+	   
+	   int containerTightnessBraces = store.getInt(SourceFormatterPreferences.CONTAINER_TIGHTNESS_BRACES);
+	   int containerTightnessParentheses = store.getInt(SourceFormatterPreferences.CONTAINER_TIGHTNESS_PARENTHESES);
+	   int containerTightnessSquareBrackets = store.getInt(SourceFormatterPreferences.CONTAINER_TIGHTNESS_SQUARE_BRACKETS);
+	   
+
 		String formattedText = null;
-		try {
-			String perlTidyPath =
-				PerlEditorPlugin
-					.getDefault()
-					.getDescriptor()
-					.getInstallURL()
-					.getFile()
-					+ "perl";
-					
+		try {		
 			URL installURL = PerlEditorPlugin.getDefault().getDescriptor().getInstallURL();
 			URL perlTidyURL = Platform.resolve(new URL(installURL,"perlutils/perltidy"));
-System.out.println("PATH: " + perlTidyURL.getPath());			
+		
 		    String perlBin = PerlEditorPlugin.getDefault().getExecutablePreference().trim();
   
             List  cmdList =PerlExecutableUtilities.getPerlExecutableCommandLine();
             cmdList.add("perltidy");
+            
+            /* Add additional parameters */
+            cmdList.add("-i=" + tabWidth);
+			cmdList.add("-l=" + pageSize);
+			cmdList.add("-bt=" + containerTightnessBraces);
+			cmdList.add("-pt=" + containerTightnessParentheses);
+			cmdList.add("-sbt=" + containerTightnessSquareBrackets);
+			
+			if(useTabs) {
+				cmdList.add("-et=" + tabWidth);
+			}
+			
+			if(cuddleElse) {
+				cmdList.add("-ce");
+			}
+			
+			if(bracesLeft) {
+				cmdList.add("-bl");
+			}
+			
+			if(lineUpParentheses) {
+				 cmdList.add("-lp");
+			}
+			
             
 			String[] cmdParams = (String[]) cmdList.toArray(new String[cmdList.size()]);
 

@@ -21,12 +21,12 @@
       <import plugin="org.eclipse.jface.text"/>
       <import plugin="org.eclipse.text"/>
       <import plugin="org.eclipse.ui.editors"/>
-      <import plugin="org.epic.ext.cbg.editor"/>
       <import plugin="org.eclipse.ui.workbench.texteditor"/>
       <import plugin="org.eclipse.ui.workbench"/>
       <import plugin="org.eclipse.ui"/>
-      <import plugin="org.epic.perleditor"/>
       <import plugin="org.eclipse.core.resources"/>
+      <import plugin="org.epic.perleditor"/>
+      <import plugin="org.epic.ext.cbg.editor"/>
    </requires>
 
 

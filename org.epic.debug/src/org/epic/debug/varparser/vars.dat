@@ -1,0 +1,76 @@
+
+
+
+
+
+@asd = (
+   0  SCALAR(0x1e20814)
+      -> 'hallo'
+)
+
+@timeSlots = (
+   0  HASH(0x1d299b8)
+      'Chanel' => 'BBC7'
+      'Days' => HASH(0x15db76c)
+         'Friday' => 1
+         'Monday' => 2
+         'Thursday' => 3
+         'Tuesday' => 4
+         'Wednesday' => 5
+      'Operation' => 'Copy'
+      'Prefix' => 'r7_1'
+      'Time' => '10:00'
+   1  HASH(0x1d29988)
+      'Chanel' => 'BBC7'
+      'Days' => HASH(0x15db76c)
+         -> REUSED_ADDRESS
+      'Operation' => 'Copy'
+      'Prefix' => 'r7_1'
+      'Time' => '11:00'
+)
+
+
+$ab = ARRAY(0x1e20808)
+   0  SCALAR(0x1e20814)
+      -> 'hallo'
+$? = 0
+$0 = 'bbc.pl'
+
+
+%day_groups_weekends = (
+   'Saturday' => 1
+   'Sunday' => 1
+   '__WARN__' => CODE(0x1b7ca2c)
+   -> &DB::dbwarn in 0
+)
+
+
+
+$tm = Time::tm=ARRAY(0x1df6b04)
+   0  30
+   1  58
+   2  16
+   3  7
+   4  5
+   5  103
+   6  6
+   7  157
+   8  1
+
+@a = (
+   0  REF(0x1a54ebc)
+      -> Time::tm=ARRAY(0x1df6b04)
+         -> REUSED_ADDRESS
+   1  Time::tm=ARRAY(0x1df6b04)
+      -> REUSED_ADDRESS
+)
+
+FileHandle(stdout) => fileno(1)
+
+@a = (
+   0  REF(0x1a5b6cc)
+      -> Time::tm=ARRAY(0x1d354b4)
+         -> REUSED_ADDRESS
+   1  *main::STDIN
+         FileHandle({*main::STDIN}) => fileno(0)
+)

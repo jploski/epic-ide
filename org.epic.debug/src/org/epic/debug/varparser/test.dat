@@ -1,0 +1,18 @@
+$tm = Time::tm=ARRAY(0x1ee41f0)
+   0  58
+   1  45
+   2  7
+   3  7
+   4  1
+   5  104
+   6  6
+   7  37
+   8  0
+$- = 0
+@- = (
+   0  empty slot
+   1  empty slot
+   2  empty slot
+)
+$! = ''
+  DB<184>

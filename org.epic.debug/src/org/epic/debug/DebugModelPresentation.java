@@ -21,7 +21,7 @@ import org.eclipse.ui.IEditorRegistry;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.IEditorDescriptor;
 import org.epic.core.util.FileUtilities;
-import PerlDebugVar;
+import org.epic.debug.varparser.*;
 /**
  * @author ruehl
  *

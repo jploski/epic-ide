@@ -1,0 +1,162 @@
+
+$/ = '
+'
+FileHandle(stderr) => fileno(2)
+%SIG = (
+   'ABRT' => undef
+   'ALRM' => undef
+   'BREAK' => undef
+   'BUS' => CODE(0x1c0a92c)
+      -> &CODE(0x1c0a92c) in ???
+   'CHLD' => undef
+   'CLD' => undef
+   'CONT' => undef
+   'FPE' => undef
+   'HUP' => undef
+   'ILL' => undef
+   'INT' => CODE(0x1be75f0)
+      -> &DB::catch in 0
+   'KILL' => undef
+   'NUM05' => undef
+   'NUM06' => undef
+   'NUM07' => undef
+   'NUM10' => undef
+   'NUM12' => undef
+   'NUM16' => undef
+   'NUM17' => undef
+   'NUM18' => undef
+   'NUM19' => undef
+   'NUM24' => undef
+   'PIPE' => undef
+   'QUIT' => undef
+   'SEGV' => CODE(0x1c0a92c)
+      -> REUSED_ADDRESS
+   'STOP' => undef
+   'TERM' => undef
+   '__DIE__' => CODE(0x1c0f868)
+      -> &DB::dbdie in 0
+   '__WARN__' => CODE(0x1c0f6c4)
+      -> &DB::dbwarn in 0
+)
+$^L = "\cL"
+$^ = 'GEN0_TOP'
+$$ = 948
+$\ = ''
+$- = 0
+@- = (
+   0  empty slot
+   1  empty slot
+   2  empty slot
+)
+$! = 'Bad file descriptor'
+$^X = 'C:\\Perl\\bin\\perl.exe'
+$^UNICODE = 0
+$^V = "\cE\cH\cB"
+$= = 60
+$2 = ''
+$^WARNING_BITS = "\c@\c@\c@\c@\c@\c@\c@\c@\c@\c@\c@\c@"
+FileHandle(stdin) => fileno(0)
+@INC = (
+   0  'C:/Perl/lib'
+   1  'C:/Perl/site/lib'
+   2  '.'
+)
+%INC = (
+   'Carp.pm' => 'C:/Perl/lib/Carp.pm'
+   'Carp/Heavy.pm' => 'C:/Perl/lib/Carp/Heavy.pm'
+   'Class/Struct.pm' => 'C:/Perl/lib/Class/Struct.pm'
+   'Config.pm' => 'C:/Perl/lib/Config.pm'
+   'Devel/Peek.pm' => 'C:/Perl/lib/Devel/Peek.pm'
+   'Errno.pm' => 'C:/Perl/lib/Errno.pm'
+   'Exporter.pm' => 'C:/Perl/lib/Exporter.pm'
+   'Exporter/Heavy.pm' => 'C:/Perl/lib/Exporter/Heavy.pm'
+   'IO.pm' => 'C:/Perl/lib/IO.pm'
+   'IO/Handle.pm' => 'C:/Perl/lib/IO/Handle.pm'
+   'IO/Socket.pm' => 'C:/Perl/lib/IO/Socket.pm'
+   'IO/Socket/INET.pm' => 'C:/Perl/lib/IO/Socket/INET.pm'
+   'IO/Socket/UNIX.pm' => 'C:/Perl/lib/IO/Socket/UNIX.pm'
+   'SelectSaver.pm' => 'C:/Perl/lib/SelectSaver.pm'
+   'Socket.pm' => 'C:/Perl/lib/Socket.pm'
+   'Symbol.pm' => 'C:/Perl/lib/Symbol.pm'
+   'Term/Cap.pm' => 'C:/Perl/lib/Term/Cap.pm'
+   'Term/ReadLine.pm' => 'C:/Perl/lib/Term/ReadLine.pm'
+   'Time/localtime.pm' => 'C:/Perl/lib/Time/localtime.pm'
+   'Time/tm.pm' => 'C:/Perl/lib/Time/tm.pm'
+   'XSLoader.pm' => 'C:/Perl/lib/XSLoader.pm'
+   'dumpvar.pl' => 'C:/Perl/lib/dumpvar.pl'
+   'perl5db.pl' => 'C:/Perl/lib/perl5db.pl'
+   'strict.pm' => 'C:/Perl/lib/strict.pm'
+   'vars.pm' => 'C:/Perl/lib/vars.pm'
+   'warnings.pm' => 'C:/Perl/lib/warnings.pm'
+   'warnings/register.pm' => 'C:/Perl/lib/warnings/register.pm'
+)
+$? = 0
+$: = ' 
+-'
+$0 = 'F:\\eclipse_2.1\\eclipse\\runtime-workspace\\test\\bbc.pl'
+$^S = 1
+$@ = ''
+$] = 5.008002
+$^D = 0
+FileHandle(STDERR) => fileno(2)
+$, = ''
+$" = ' '
+$^F = 2
+FileHandle(stdout) => fileno(1)
+$| = 1
+$^A = ''
+$~ = 'GEN0'
+$^TAINT = 0
+$^O = 'MSWin32'
+$% = 0
+@_ = (
+   0  0
+   1  '_'
+   2  *main::_
+   3  0
+   4  '-1'
+)
+$+ = ''
+@+ = (
+   0  empty slot
+   1  empty slot
+   2  empty slot
+)
+FileHandle(STDIN) => fileno(0)
+$1 = 'main'
+$< = 0
+%ENV = (
+   'ALLUSERSPROFILE' => 'C:\\Dokumente und Einstellungen\\All Users'
+   'APPDATA' => 'C:\\Dokumente und Einstellungen\\ST\\Anwendungsdaten'
+   'COMMONPROGRAMFILES' => 'C:\\Programme\\Gemeinsame Dateien'
+   'COMPUTERNAME' => 'PC-WIN1'
+   'COMSPEC' => 'C:\\WINNT\\system32\\cmd.exe'
+   'HOMEDRIVE' => 'C:'
+   'HOMEPATH' => '\\'
+   'LOGONSERVER' => '\\\\PC-WIN1'
+   'NUMBER_OF_PROCESSORS' => 1
+   'OS' => 'Windows_NT'
+   'OS2LIBPATH' => 'C:\\WINNT\\system32\\os2\\dll;'
+   'PATH' => 'c:\\programme\\imagemagick-5.5.7-q8;C:\\Perl\\bin\\;C:\\WINNT\\system32;C:\\WINNT;C:\\WINNT\\System32\\Wbem'
+   'PATHEXT' => '.COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JS;.JSE;.WSF;.WSH'
+   'PERLDB_OPTS' => 'RemotePort=localhost:4444'
+   'PERLDB_PIDS' => 948
+   'PROCESSOR_ARCHITECTURE' => 'x86'
+   'PROCESSOR_IDENTIFIER' => 'x86 Family 6 Model 4 Stepping 2, AuthenticAMD'
+   'PROCESSOR_LEVEL' => 6
+   'PROCESSOR_REVISION' => 0402
+   'PROGRAMFILES' => 'C:\\Programme'
+   'SYSTEMDRIVE' => 'C:'
+   'SYSTEMROOT' => 'C:\\WINNT'
+   'TEMP' => 'C:\\DOKUME~1\\ST\\LOKALE~1\\Temp'
+   'TMP' => 'C:\\DOKUME~1\\ST\\LOKALE~1\\Temp'
+   'USERDOMAIN' => 'PC-WIN1'
+   'USERNAME' => 'ST'
+   'USERPROFILE' => 'C:\\Dokumente und Einstellungen\\ST'
+   'WINDIR' => 'C:\\WINNT'
+)
+$^E = ''
+$^H = 256
+FileHandle(STDOUT) => fileno(1)
+$^W = 0
+

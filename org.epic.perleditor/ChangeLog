@@ -1,7 +1,7 @@
-Eclipse Perl Integration: 
+Eclipse Perl Integration:
 
 		Debugger
-		* Displaying of variables re-coded. 
+		* Displaying of variables re-coded.
 		  - This should remove all known bugs (" Error Parsing Debugger Variables")
 		  - significant improvement in speed
 		* Remote Debugging implemented
@@ -18,15 +18,13 @@ Eclipse Perl Integration:
 		* Support displaying of empty arrays and hashes
 		* Fixed bug: [ 996461 ] Debugger crashes Perl (termination procedere)
 		* Fixed bug: [ 996581 ] run configuration dialogue forgets filename
-		* Fixed bug: [ 996351 ] NullPointer exception during Launch (problems if path to Perl executable has spaces) 
-		
+		* Fixed bug: [ 996351 ] NullPointer exception during Launch (problems if path to Perl executable has spaces)
+
 		Editor:
-		* Additional preference for Brackets and Quoting
-		* Proper Handling of HERE-Documents
+		* Added support for regular expressions and HERE-Documents
 		* Fixed bug: [ 1077441 ] Source formatter does not make tabs 4 column wide
 		* [ 1077441 ] perlTidy: Better handling in rare case of invalid positioning
 		* [ 1081462 ] Option for Enabling and Disabling AutoType-Feature of Quotes and Brackets
-		* Added support for regular expressions and HERE-Documents
 		* Perldoc View has been reimplemented (Accessible via Shift+Ctrl/Control+H)
 		* Added New Perl File Wizard
 		* Implemented Feature Request: [ 1047906 ] Validate source on request, not continuously
@@ -84,7 +82,7 @@ Version 0.1.0 - 27-March-2004
 		* Small keybinding bug for uncomment action fixed (Ctrl+\)
 
 Version 0.1.0 alpha  - 13-December-2003
-		* HTML Export Command added to plugin.xml (Export/HTML entry was not 
+		* HTML Export Command added to plugin.xml (Export/HTML entry was not
 		   visible in Source menu)
 		* Fixed compatibility issues with Eclipse 3.0 M5
 		* Idle timer implemented, should improve performance
@@ -131,10 +129,10 @@ Version 0.1.0 alpha  - 08-October-2003
 		* Template Perl interpreter variable added
 		* Content assist/templating dropdown enhanced (type-ahead  find)
 		* Comment/uncomment added.
-		
+
 Version 0.1.0 alpha  - 13-September-2003
         * Compatibility version to work with Eclipse 2.1 and 3.0 RC builds.
-        * Basic Perldoc support has been added (popup menu) 
+        * Basic Perldoc support has been added (popup menu)
         * Bug fix: Perl doesn't read the whole program from STDIN in all cases
         * Bug fix: XML encoding correctly set to UTF-8
         * Improved SyntaxValidationThread.

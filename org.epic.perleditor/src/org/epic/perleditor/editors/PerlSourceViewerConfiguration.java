@@ -19,6 +19,7 @@ import org.epic.perleditor.editors.perl.PerlDoubleClickSelector;
 import org.eclipse.ui.editors.text.TextEditor;
 
 import org.epic.perleditor.editors.util.PerlColorProvider;
+import org.epic.perleditor.editors.util.PreferenceUtil;
 
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.epic.perleditor.preferences.PreferenceConstants;
@@ -153,7 +154,8 @@ public class PerlSourceViewerConfiguration
 		 * Method declared on SourceViewerConfiguration
 		 */
 		public String[] getIndentPrefixes(ISourceViewer sourceViewer, String contentType) {
-			return new String[] { "\t", "    " }; //$NON-NLS-1$ //$NON-NLS-2$
+			//return new String[] { "\t", "    " }; //$NON-NLS-1$ //$NON-NLS-2$
+			return new String[] {PreferenceUtil.getTab()};
 		}
 
 		/* 

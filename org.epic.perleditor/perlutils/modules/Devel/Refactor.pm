@@ -1,6 +1,5 @@
 package Devel::Refactor;
 
-use 5.008;
 use strict;
 use warnings;
 
@@ -25,7 +24,7 @@ our @EXPORT = qw(
 	
 );
 
-our $VERSION = '0.02';
+our $VERSION = '0.03';
 
 our $DEBUG = 0;
 # Preloaded methods go here.
@@ -51,6 +50,7 @@ sub new() {
         array_vars      => {},
         hash_vars       => {},
         local_scalars   => {},
+        loop_scalars    => {},
         local_arrays    => {},
         local_hashes    => {},
         parms           => [],
@@ -121,16 +121,22 @@ sub _parse_local_vars {
 
     my $reg;
     my $reg2;
+    my $reg3;   # To find loops variables declared in for and foreach
 
     # figure out which are declared in the snippet
     foreach my $var ( keys %{ $self->{scalar_vars} } ) {
         $reg  = "\\s*my\\s*\\$var\\s*[=;\(]";
         $reg2 = "\\s*my\\s*\\(.*?\\$var.*?\\)";
+        $reg3 = "(?:for|foreach)\\s+my\\s*\\$var\\s*\\(";
 
         if ( $var =~ /(?:\$\d+$|\$[ab]$)/ ) {
             $self->{local_scalars}->{$var}++;
         } elsif ( $self->{code_snippet} =~ /$reg|$reg2/ ) {
             $self->{local_scalars}->{$var}++;
+            # skip loop variables
+            if ( $self->{code_snippet} =~ /$reg3/ ) {
+                $self->{loop_scalars}->{$var}++;
+            }
         }
     }
     foreach my $var ( keys %{ $self->{array_vars}} ) {
@@ -186,6 +192,8 @@ sub _transform_snippet {
         if ( !defined( $self->{local_scalars}->{$parm} ) ) {
             push @{$self->{parms}}, $parm;
         } else {
+            # Don't return loop variables
+            next if grep $parm eq $_, keys %{$self->{loop_scalars}};
             push @{$self->{retvals}}, $parm if ( $parm !~ /\$\d+$/ );
         }
     }
@@ -205,7 +213,7 @@ sub _transform_snippet {
 
                         
         } else {
-            push @{$self->{retvals}}, $parm;
+            push @{$self->{retvals}}, "\\$parm"; # \@array
         }
     }
     foreach my $parm ( keys %{ $self->{hash_vars} }  ) {
@@ -222,7 +230,7 @@ sub _transform_snippet {
 
             $self->{code_snippet} =~ s/$reg/$parm\-\>\{/g;
         } else {
-            push @{$self->{retvals}}, $parm;
+            push @{$self->{retvals}}, "\\$parm";  # \%hash
         }
     }
     my $retval;
@@ -240,7 +248,7 @@ sub _transform_snippet {
     $retval .= join '', map {($tmp = $_) =~ tr/%@/$/; "    my $tmp = shift;\n" } @{$self->{parms}};
     $retval .= "\n" . $self->{code_snippet};
     $retval .= "\n    return (";
-    $retval .= join ', ', map {my $tmp; ($tmp = $_) =~ s/[\@\%](.*)/\$$1/; $tmp} sort @{$self->{retvals}};
+    $retval .= join ', ', sort @{$self->{retvals}};
     $retval .= ");\n";
     $retval .= "}\n";
 
@@ -341,7 +349,7 @@ new sub name is prompted for via STDIN.
 
 =head1 AUTHOR
 
-Scott Sotka, E<lt>ssotka@barracudanetworks.com<gt>
+Scott Sotka, E<lt>ssotka@barracudanetworks.comE<gt>
 
 =head1 COPYRIGHT AND LICENSE
 

@@ -3,6 +3,7 @@
     <classpathentry kind="src" path="src/"/>
     <classpathentry kind="lib" path="gnu-regexp-1.1.4.jar"/>
     <classpathentry kind="lib" path="antlr.jar"/>
+    <classpathentry kind="lib" path="brazil_mini.jar"/>
     <classpathentry kind="var" path="ECLIPSE_HOME/plugins/org.apache.xerces_4.0.13/xmlParserAPIs.jar"/>
     <classpathentry kind="var" path="ECLIPSE_HOME/plugins/org.apache.xerces_4.0.13/xercesImpl.jar"/>
     <classpathentry kind="var"

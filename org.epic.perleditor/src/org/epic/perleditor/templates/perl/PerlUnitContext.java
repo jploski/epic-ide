@@ -46,10 +46,11 @@ public class PerlUnitContext extends DocumentTemplateContext {
   */
   public boolean canEvaluate(Template template) {
     // return fForceEvaluation || 
-    // TODO changed
-    //return template.matches(getKey(), getContextType().getName());
-	String prefix = getKey();
-	return (prefix.length() == 0) || template.matches(getKey(), getContextType().getName());
+    return template.matches(getKey(), getContextType().getName());
+    
+	// Testing: if nothing is specified, return all templates
+	//String prefix = getKey();
+	//return (prefix.length() == 0) || template.matches(getKey(), getContextType().getName());
   }
 
   /**
@@ -62,9 +63,10 @@ public class PerlUnitContext extends DocumentTemplateContext {
     return
     //      fEnabled &&
     //      fContextTypeName.equals(contextTypeName) &&
-    // TODO changed!
-      //(prefix.length() != 0) && identifier.toLowerCase().startsWith(prefix.toLowerCase());
-	(prefix.length() == 0) || identifier.toLowerCase().startsWith(prefix.toLowerCase());
+   (prefix.length() != 0) && identifier.toLowerCase().startsWith(prefix.toLowerCase());
+   
+    // Testing: if nothing is specified, return all templates
+	//(prefix.length() == 0) || identifier.toLowerCase().startsWith(prefix.toLowerCase());
   }
 
   /*

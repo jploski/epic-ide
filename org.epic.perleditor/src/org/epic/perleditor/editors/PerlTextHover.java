@@ -8,6 +8,8 @@ import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.ITextHover;
 import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.text.Region;
+
+import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
 import org.eclipse.jface.text.source.IAnnotationHover;
@@ -36,9 +38,15 @@ public class PerlTextHover implements ITextHover {
 							ResourceBundle.getBundle(
 								"org.epic.perleditor.editors.quickreference");
 
-						if (text.length() > 0 && rb.getString(text) != null) {
-							textRes = splitMessage(rb.getString(text));
-					
+						// Check if only a word (without spaces or tabs) has been selected
+						if (text.length() > 0 && text.indexOf(" ") == -1 && text.indexOf("\t") == -1) {
+							try {
+								String value = rb.getString(text);
+								textRes = splitMessage(value);
+							}
+							catch(MissingResourceException e) {
+								// Can happen if key does not exist
+							}
 
 						}
 						else {		
@@ -47,7 +55,9 @@ public class PerlTextHover implements ITextHover {
 						     int line = textViewer.getDocument().getLineOfOffset(hoverRegion.getOffset());
 						     textRes = markerAnnotation.getHoverInfo((ISourceViewer) textViewer, line);
 						}
-					} catch (Exception e) {
+					}
+					catch (MissingResourceException e) {
+						// Properties file not available
 						e.printStackTrace();
 					}
 				}

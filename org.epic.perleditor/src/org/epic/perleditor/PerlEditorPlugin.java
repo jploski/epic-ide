@@ -1,6 +1,7 @@
 package org.epic.perleditor;
 
 import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.plugin.*;
 //import org.eclipse.core.runtime.*;
 import org.eclipse.core.resources.*;
@@ -84,6 +85,14 @@ public class PerlEditorPlugin extends AbstractUIPlugin {
 	 */
 	public ResourceBundle getResourceBundle() {
 		return resourceBundle;
+	}
+	
+	public static IWorkbenchWindow getWorkbenchWindow()
+	{
+		IWorkbenchWindow window = getDefault().getWorkbench().getActiveWorkbenchWindow();
+		if (window == null)
+					window = getDefault().getWorkbench().getWorkbenchWindows()[0];
+		return window;
 	}
 	
 

@@ -1,14 +1,16 @@
 Eclipse Perl Integration: Perl Editor Plugin
 
-Version 0.1.0 - 04-June-2004
+Version 0.2.1 - 04-June-2004
 		* moved TODO parser into it?s own thread
 		* parseTasks() does not delete foreign tasks anymore
 		* toogle Perl Nature added to navigator popup menu
+		* Explain Errors/Warnings popup action
+		* Moved Perldoc so separate view
 
-Version 0.1.0 - 26-May-2004
+Version 0.2.1 - 26-May-2004
 		* added TODO marker in Perl Editor
 
-Version 0.1.0 - 07-May-2004
+Version 0.2.0 - 07-May-2004
 		* Enhanced Error/Warning detection in Perl Editor
 		* @INC path property error fixed
 		* Fixed bug: [ 926062 ] Outline view doesn't support perldoc entries

@@ -192,6 +192,19 @@
   	 		menubarPath="epicNAvPopup"
   	 		id="org.epic.core.togglePerlNature.action" /> 
   	  </objectContribution>
+	   <!-- Explain Errors/Warnings popup menu entry -->
+  	   <viewerContribution
+            targetID="#PerlRulerContext"
+            id="org.epic.perleditor.ExplainRulerPopupActions">
+         <action
+               label="Explain Errors/Warnings"
+               icon="icons/light_bulb.gif"
+               class="org.epic.perleditor.popupmenus.ExplainErrorsRulerActionDelegate"
+               menubarPath="explain"
+               id="org.epic.perleditor.popupmenus.ExplainErrorsRulerActionDelegate">
+         </action>
+      </viewerContribution>
+
 	<!-- Perdoc menu -->
       <viewerContribution
             targetID="#PerlDocEditorContext"
@@ -227,7 +240,7 @@
          </action>
          <action
                label="Module/Program Documentation"
-               icon="icons/module_node.gif"
+               icon="icons/book.gif"
                class="org.epic.perleditor.popupmenus.PerlDocAction"
                menubarPath="PelDocPopupMenu/PerlDocGroup"
                id="org.epic.perleditor.popupmenus.PerlDocAction.Module">
@@ -445,6 +458,24 @@
             name="EPIC"
             id="org.epic.views">
       </category>
+   </extension>
+   
+    <extension
+         point="org.eclipse.ui.views">
+      <view
+            name="Explain Errors/Warnings"
+            icon="icons/light_bulb.gif"
+            category="org.epic.views"
+            class="org.epic.perleditor.views.ExplainErrorsView"
+            id="org.epic.perleditor.views.ExplainErrorsView">
+      </view>
+            <view
+            name="PerlDoc"
+            icon="icons/book.gif"
+            category="org.epic.views"
+            class="org.epic.perleditor.views.PerlDocView"
+            id="org.epic.perleditor.views.PerlDocView">
+      </view>
    </extension>
 
 </plugin>

@@ -19,4 +19,7 @@ public class Constants
 	public static final String EMB_PERL_FILE_EXTENSION = "epl";
 	public static final String PERL_NATURE_ID =
 		"org.epic.perleditor.perlnature";
+	
+	public static final String MARKER_ATTR_PERL_ERROR_EXPLANATION =
+		"org.epic.marker.printfPerlErrorMessage";
 }

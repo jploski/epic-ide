@@ -219,7 +219,7 @@ public class PerlValidator {
 			// DEBUG END
 
 			String line = null;
-			String perlDiag = null;
+			String perlPrintfErrorMessage = null;
 			List lines = new ArrayList();
 			int index;
 
@@ -250,7 +250,7 @@ public class PerlValidator {
 			// Otherwise lower line number will appear at the end of the list
 			for (int i = lines.size() - 1; i >= 0; i--) {
 				line = (String) lines.get(i);
-				perlDiag = "";
+				perlPrintfErrorMessage = "";
 
 				// Delete filename from error message
 				StringBuffer lineSb = new StringBuffer(line);
@@ -317,8 +317,7 @@ public class PerlValidator {
 								isWarning = true;
 							}
 
-							// Not used at the moment
-							perlDiag = value;
+							perlPrintfErrorMessage = (String) value;
 							break;
 						}
 
@@ -334,18 +333,10 @@ public class PerlValidator {
 							new Integer(IMarker.SEVERITY_ERROR));
 					}
 
-					String diag = "";
-//TODO add diagnostics
-//					if (perlDiag.length() > 0) {
-//						diag = "\n" + perlDiag;
-//						RE re = new RE("\\n");
-//						diag = re.substituteAll(diag, "\n     ");
-////						re = new RE("^\\(.*?\\)");
-////						diag = re.substituteAll(diag, "");
-//						diag += "\n";
-//					}
+                    // Add generic Perl error message to marker
+					attributes.put(Constants.MARKER_ATTR_PERL_ERROR_EXPLANATION, perlPrintfErrorMessage);
 
-					attributes.put(IMarker.MESSAGE, line + diag);
+					attributes.put(IMarker.MESSAGE, line);
 
 					attributes.put(
 						IMarker.LINE_NUMBER,

@@ -5,6 +5,8 @@ import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IFileEditorInput;
+import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.editors.text.TextEditor;
 import org.eclipse.ui.texteditor.ITextEditor;
 
@@ -13,15 +15,17 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.window.*;
 import org.eclipse.swt.widgets.*;
 import org.eclipse.swt.*;
+import org.epic.perleditor.PerlEditorPlugin;
 import org.epic.perleditor.editors.util.PerlExecutableUtilities;
 
 import org.epic.perleditor.editors.PerlImages;
+import org.epic.perleditor.views.ExplainErrorsView;
+import org.epic.perleditor.views.PerlDocView;
 
 import java.util.List;
 import java.io.*;
 
 public class PerlDocAction
-	extends ApplicationWindow
 	implements org.eclipse.ui.IEditorActionDelegate {
 
 	private ITextEditor fTextEditor;
@@ -29,24 +33,13 @@ public class PerlDocAction
 	private String content;
 	private String title;
 	
-	final static int WINDOW_WIDTH  = 500;
-	final static int WINDOW_HEIGHT = 500;
-	final static int WINDOW_OFFSET_X = 200;
-	final static int WINDOW_OFFSET_Y = 100;
+	private Shell shell;
 
 	public PerlDocAction() {
-		super(null);
-	}
-
-	protected Control createContents(Composite parent) {
-		Text t = new Text(parent, SWT.MULTI | SWT.V_SCROLL | SWT.H_SCROLL);
-		t.setText(content);
-		
-		getShell().setBounds(WINDOW_OFFSET_X, WINDOW_OFFSET_Y, WINDOW_WIDTH, WINDOW_HEIGHT);
-		getShell().setText(title);
-		getShell().setImage(PerlImages.ICON_EDITOR.createImage());
-		
-		return t;
+		shell =
+			PerlEditorPlugin
+				.getWorkbenchWindow().getShell();
+				
 	}
 
 	/* (non-Javadoc)
@@ -74,7 +67,7 @@ public class PerlDocAction
 		if (selection.length() == 0) {
 			InputDialog inputDialog =
 				new InputDialog(
-					getShell(),
+					shell,
 					PopupMessages.getString("PerlDoc.search.title") + " (" + action.getText() + ")", 
 					PopupMessages.getString("PerlDoc.search.message"),
 					"",
@@ -107,16 +100,26 @@ public class PerlDocAction
 
 		if (content.length() == 0) {
 			MessageDialog.openInformation(
-				getShell(),
+				shell,
 				PopupMessages.getString("NoDocumentation.title"),
 				PopupMessages.getString("NoDocumentation.message"));
-			return;
-		} else {
-			this.close();
-			this.setBlockOnOpen(true);
-			this.open();
 		}
-
+		else {
+			PerlDocView view = null;
+			IWorkbenchPage activePage =
+				PerlEditorPlugin
+					.getWorkbenchWindow()
+					.getActivePage();
+			try
+			{
+			view = (PerlDocView)	activePage.showView(
+					"org.epic.perleditor.views.PerlDocView");
+			} catch (PartInitException e)
+			{
+				e.printStackTrace();
+			}
+			view.setText(content);
+		}
 	}
 
 	/* (non-Javadoc)

@@ -3,7 +3,8 @@ open(DIAG, "perldoc -u perldiag |") || die "$!\n";
 while(<DIAG>) { $diag .= $_; }
 close(DIAG);
 
-while($diag =~ /=item(.*?)\n\n(.*?)\n\n/gs) {
+#while($diag =~ /=item(.*?)\n\n(.*?)\n\n/gs) {
+while($diag =~ /item(.*?)\n\n(.*?)\n=/gs) {
   $count++;
   $message = $1;
   $desc = $2;

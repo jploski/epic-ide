@@ -106,7 +106,14 @@ public class PerlSourceViewerConfiguration
 		public IContentAssistant getContentAssistant(ISourceViewer sourceViewer) {
 
 			ContentAssistant assistant= new ContentAssistant();
-			assistant.setContentAssistProcessor(new PerlCompletionProcessor(fTextEditor), IDocument.DEFAULT_CONTENT_TYPE);
+			
+			//assistant.setContentAssistProcessor(new PerlCompletionProcessor(fTextEditor), IDocument.DEFAULT_CONTENT_TYPE);
+			// Enable content assist for all content types
+		 	String[] contentTypes = this.getConfiguredContentTypes(sourceViewer);
+		 	for (int i=0; i < contentTypes.length; i++) {
+		 		assistant.setContentAssistProcessor(new PerlCompletionProcessor(fTextEditor), contentTypes[i]);
+		 	}
+		 	
 			assistant.enableAutoActivation(true);
 			assistant.setAutoActivationDelay(500);
 			assistant.setProposalPopupOrientation(ContentAssistant.PROPOSAL_OVERLAY);

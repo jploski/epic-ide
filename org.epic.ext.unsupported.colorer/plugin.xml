@@ -69,6 +69,11 @@
   			category="org.epic.core.preferences.PerlMainPreferencePage"
  			class="org.epic.perleditor.preferences.SourceFormatterPreferencePage">
      	</page>
+     	<page id="org.epic.perleditor.preferences.CodeAssistPreferencePage"
+  			name="Code Assist"
+  			category="org.epic.core.preferences.PerlMainPreferencePage"
+ 			 class="org.epic.perleditor.preferences.CodeAssistPreferencePage">
+     	</page>
    		
    	</extension>
 

@@ -3,7 +3,7 @@
 
 	<target name="init">
 		<property name="feature" value="org.epic.feature.main"/>
-		<property name="feature.version.suffix" value="_0.1.0"/>
+		<property name="feature.version.suffix" value="_0.2.0"/>
 		<property name="feature.full.name" value="${feature}${feature.version.suffix}"/>
 		<property name="feature.temp.folder" value="${basedir}/feature.temp.folder"/>
 		<property name="feature.destination" value="${basedir}"/>
@@ -125,7 +125,7 @@
 	</target>
 
 	<target name="refresh" depends="init" if="eclipse.running">
-		<eclipse.convertPath fileSystemPath="/home/luelljoc/eclipse/workspace/org.epic.feature.main" property="resourcePath"/>
+		<eclipse.convertPath fileSystemPath="F:\eclipse_test\eclipse\workspace\org.epic.feature.main" property="resourcePath"/>
 		<eclipse.refreshLocal resource="${resourcePath}" depth="infinite"/>
 		<antcall target="all.children">
 			<param name="target" value="refresh"/>

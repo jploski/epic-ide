@@ -227,18 +227,6 @@ litigation.
    </url>
 
    <plugin
-         id="org.epic.regexp"
-         download-size="0"
-         install-size="0"
-         version="0.1.1"/>
-
-   <plugin
-         id="org.epic.ext.cbg.editor"
-         download-size="0"
-         install-size="0"
-         version="0.3.0"/>
-
-   <plugin
          id="org.epic.perleditor"
          download-size="0"
          install-size="0"
@@ -249,5 +237,17 @@ litigation.
          download-size="0"
          install-size="0"
          version="0.1.0"/>
+
+   <plugin
+         id="org.epic.regexp"
+         download-size="0"
+         install-size="0"
+         version="0.1.1"/>
+
+   <plugin
+         id="org.epic.ext.cbg.editor"
+         download-size="0"
+         install-size="0"
+         version="0.3.0"/>
 
 </feature>

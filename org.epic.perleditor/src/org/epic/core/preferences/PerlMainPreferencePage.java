@@ -157,17 +157,19 @@ public class PerlMainPreferencePage
 	
 		syntaxCheckInterval = new Scale(syntaxIntervalComposite, SWT.HORIZONTAL);
 		syntaxCheckInterval.setMinimum(1);
-		syntaxCheckInterval.setMaximum(3000);
+		syntaxCheckInterval.setMaximum(10000);
 		syntaxCheckInterval.setIncrement(100);
 		
 		syntaxIntervalSecondsLabel = new Label(syntaxIntervalComposite, SWT.NONE);
 		int interval = PerlEditorPlugin.getDefault().getPreferenceStore().getInt(PerlEditorPlugin.SYNTAX_VALIDATION_INTERVAL_PREFERENCE) ;
-		syntaxIntervalSecondsLabel.setText(interval + " milliseconds" + "   ");
+		float intervalDisplay = Math.round(interval/10f)/100f;
+		syntaxIntervalSecondsLabel.setText(intervalDisplay + " seconds  ");
 		syntaxCheckInterval.setSelection(interval);
 		
 		syntaxCheckInterval.addListener (SWT.Selection, new Listener () {
 						public void handleEvent (Event event) {
-							syntaxIntervalSecondsLabel.setText(syntaxCheckInterval.getSelection() + " milliseconds" + "   ");
+						  float intervalDisplay = Math.round(syntaxCheckInterval.getSelection()/10f)/100f;
+						  syntaxIntervalSecondsLabel.setText(intervalDisplay + " seconds  ");
 						}
 				});
 			

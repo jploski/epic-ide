@@ -193,7 +193,6 @@
 			<GROUP>fileno</GROUP>
 			<GROUP>flock</GROUP>
 			<GROUP>fork</GROUP>
-			<GROUP>format</GROUP>
 			<GROUP>formline</GROUP>
 			<GROUP>getc</GROUP>
 			<GROUP>getgrent</GROUP>
@@ -336,19 +335,36 @@
 	</SEQ>
 	<SEQ TYPE="OPERATOR">x</SEQ>
 
+		<SPAN TYPE="LITERAL2" 
+			REQUIRE_WHITESPACE_BEFORE ="TRUE" 
+			REQUIRE_WHITESPACE_AFTER ="TRUE" >
+			<BEGIN>format</BEGIN>
+			<END>.</END>
+		</SPAN>
+
 		<!-- RegExps -->
 		<SPAN TYPE="LITERAL2" NO_LINE_BREAK="FALSE" 
-              DYNAMIC_TAGGING="TRUE" DELIMITER_MAX_CHAR="1">
+              DYNAMIC_TAGGING="TRUE" DELIMITER_MAX_CHAR="1" 
+              OPTIONAL_MODIFIER = "cgimosx">
 			<GROUP>m</GROUP>
 			<END>\</END>
 		</SPAN> 
 
 		<SPAN TYPE="LITERAL2" NO_LINE_BREAK="FALSE" NO_OF_MULTIPLE_ENDTAG="2" 
-              DYNAMIC_TAGGING="TRUE" DELIMITER_MAX_CHAR="1">
+              DYNAMIC_TAGGING="TRUE" DELIMITER_MAX_CHAR="1"
+              OPTIONAL_MODIFIER = "egimosx">
 			<GROUP>s</GROUP>
+			<END>\</END>
+		</SPAN> 
+
+		<SPAN TYPE="LITERAL2" NO_LINE_BREAK="FALSE" NO_OF_MULTIPLE_ENDTAG="2" 
+              DYNAMIC_TAGGING="TRUE" DELIMITER_MAX_CHAR="1"
+              OPTIONAL_MODIFIER = "cds">
+			<GROUP>y</GROUP>
 			<GROUP>tr</GROUP>
 			<END>\</END>
 		</SPAN> 
+
 		<!-- Quotes not RegExps  -->
 		<SPAN TYPE="LITERAL2" NO_LINE_BREAK="FALSE" 
               DYNAMIC_TAGGING="TRUE" DELIMITER_MAX_CHAR="1">
@@ -372,6 +388,8 @@
 
 		<SEQ TYPE="OPERATOR">/</SEQ>
 
+
+		<SEQ TYPE="DIGIT">@&lt;&lt;</SEQ>   <!-- To avoid inproper Marks -->
 		<!-- HERE Documents with different flavours-->
 		<SPAN TYPE="LITERAL2" NO_LINE_BREAK="FALSE" 
               DYNAMIC_TAGGING="TRUE" DELIMITER_MAX_CHAR="999"
@@ -408,7 +426,7 @@
 			<END>;,</END>
 		</SPAN>
 
-		<!-- Operators with '>' sign -->
+		<!-- Operators with '<' sign -->
 		<SEQ TYPE="OPERATOR">&lt;=</SEQ>
 		<SEQ TYPE="OPERATOR">&lt;</SEQ>
 

@@ -6,8 +6,8 @@ package cbg.editor.rules;
  * specify the usage of this class more precesily.
  * 
  * @author LeO
- * @version .2
- * @change Dec, 12, 2004
+ * @version .3
+ * @change Feb, 04, 2005
  * TODO ????
  */
 
@@ -25,7 +25,8 @@ public class ExtendedPatternRule extends PatternRule {
   private boolean isExistingGroup, isBracketMatch, isMultiple, isCaseInSensitive, isDynamicTagging;
   private int myStepCounter = 0;
   private int noMultipleEndTag;
-  private boolean requireEndTag;
+  private boolean requireEndTag, requireBeforeWhitespace, requireAfterWhitespace; 
+	private final String optinalModifiers;
   private char curScannerChar;
   private final char EOFChar= (char) ICharacterScanner.EOF;
   private int noDynamicDelimiterChars=0;
@@ -38,6 +39,8 @@ public class ExtendedPatternRule extends PatternRule {
 	       boolean bracketMatch, int noMultipleEndTag, boolean requireEndTag, 
 	       boolean CaseInSensitive, boolean isDynamicTagging,
 	       String countDelimterChars, String beforeTag, String afterTag,
+	       boolean  requireBeforeWhitespace, boolean requireAfterWhitespace, 
+	   		String optinalModifiers,
 	       IWhitespaceDetector whiteSpace) {
 	  //the last parameter makes a default handling, 
 	  //i.e. if the End-Tag is missing => mark till the end of File
@@ -81,6 +84,9 @@ public class ExtendedPatternRule extends PatternRule {
 	  this.countDelimterChars = countDelimterChars; //Programmers lazyness: we check only if content will exists!!!
 	  this.requireBeforeTag = beforeTag;
 	  this.requireAfterTag = afterTag;
+	  this.requireBeforeWhitespace = requireBeforeWhitespace ;
+	  this.requireAfterWhitespace = requireAfterWhitespace;
+	  this.optinalModifiers = optinalModifiers;
 
 		if (isCaseInSensitive) {
 		  //rewrite the values for caseInSensitive!!!
@@ -113,7 +119,7 @@ public class ExtendedPatternRule extends PatternRule {
 	      }
 	    }
 	  } else {
-	    if (isDynamicTagging) {
+	    if (isDynamicTagging || requireBeforeWhitespace) {
 	      if (((ColoringPartitionScanner) scanner).getOffset() > 0) {
 	        scanner.unread();
 	        curScannerChar = (char) scanner.read();
@@ -130,7 +136,19 @@ public class ExtendedPatternRule extends PatternRule {
 	    if (isExistingGroup) {
 	      if (forwardStartSequenceDetected(scanner)) {
 	        if (endCheck(scanner, resume)) {
-	          return fToken;
+	          if (optinalModifiers.length() > 0) {
+	            /*
+	             * We have already found the char, we only search forward for optional
+	             * modifiers
+	             */
+	        	  curScannerChar = (char) scanner.read();
+	        	  while (curScannerChar != EOFChar 
+	        	        && optinalModifiers.indexOf( curScannerChar ) >=0) {
+	        	    curScannerChar = (char) scanner.read();
+	        	  }
+	        	  scanner.unread() ;
+	          }
+            return fToken;
 	        }
 	      }
 	    } else {
@@ -153,10 +171,19 @@ public class ExtendedPatternRule extends PatternRule {
 	  return myResultToken;
 	}
 	
-	/*
+	/**
 	 * This method is mainly for simple handling of the doEvaluate-issue
 	 */
 	private final boolean endCheck(ICharacterScanner scanner, boolean resume) {
+    //we have also to check if after the found Start-tag it is required to have Whitespace
+    if (requireAfterWhitespace) {
+      curScannerChar = (char) scanner.read();
+      scanner.unread();
+      if (curScannerChar == EOFChar || !whiteSpace.isWhitespace(curScannerChar)) {
+        return false;
+      } 
+    }
+
     boolean myIsBracketMatch=isBracketMatch;
     if (isDynamicTagging) {
       myIsBracketMatch = retrieveDynamicEndTag(scanner);

@@ -60,11 +60,15 @@ public class ColoringEditorTools {
 				}
 				
 				if (span.matchBracket() || span.noMultipleEndTag() > 1 || span.requireEndTag() 
-				    || span.getGroupContent() != null || checkCase || span.dynamicTagging()) {
+				    || span.getGroupContent() != null || checkCase || span.dynamicTagging() 
+				    || span.getRequireAfterWhitespace() || span.getRequireBeforeWhitespace()) {
 				  pat = new ExtendedPatternRule(span.getStart(), span.getEnd(), 
 				      defaultToken, mode.getDefaultRuleSet().getEscape(), span.noLineBreak(), span.noMaxChar(), span.getGroupContent()
 				      , span.matchBracket(), span.noMultipleEndTag(), span.requireEndTag(), ignoreCase, span.dynamicTagging(),
-				      span.getCountDelimterChars(), span.getBeforeTag(), span.getAfterTag(),myWhitespaceDetector);
+				      span.getCountDelimterChars(), span.getBeforeTag(), span.getAfterTag(),
+				      span.getRequireBeforeWhitespace() , span.getRequireAfterWhitespace(),
+				      span.optinalModifiers(), 
+				      myWhitespaceDetector);
 				} else {
 				  //the last parameter makes a default handling, 
 				  //i.e. if the End-Tag is missing => mark till the end of File

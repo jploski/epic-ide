@@ -229,12 +229,6 @@ litigation.
          version="0.1.2"/>
 
    <plugin
-         id="org.epic.debug"
-         download-size="0"
-         install-size="0"
-         version="0.2.0"/>
-
-   <plugin
          id="org.epic.ext.cbg.editor"
          download-size="0"
          install-size="0"
@@ -245,5 +239,11 @@ litigation.
          download-size="0"
          install-size="0"
          version="0.1.2"/>
+
+   <plugin
+         id="org.epic.debug"
+         download-size="0"
+         install-size="0"
+         version="0.2.0"/>
 
 </feature>

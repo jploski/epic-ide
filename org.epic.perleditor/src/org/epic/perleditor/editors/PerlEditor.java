@@ -52,6 +52,7 @@ import org.epic.perleditor.views.model.Module;
 import org.epic.perleditor.views.model.Subroutine;
 
 import cbg.editor.ColoringSourceViewerConfiguration;
+import cbg.editor.EditorPlugin;
 //import java.util.Map;
 //import java.util.HashMap;
 //import org.eclipse.swt.graphics.Color;
@@ -685,26 +686,42 @@ public class PerlEditor extends TextEditor implements
 		if (event.getProperty().equals("PERL_EXECUTABLE")) {
 			return;
 		}
-		
-		if(getSourceViewerConfiguration() != null && fSourceViewer != null) {
-			((PerlSourceViewerConfiguration) getSourceViewerConfiguration()).adaptToPreferenceChange(event);
-			fSourceViewer.refresh();
-		}
-		
+
+		PerlSourceViewerConfiguration viewerConfiguration = (PerlSourceViewerConfiguration) this
+				.getSourceViewerConfiguration();
+		viewerConfiguration.adaptToPreferenceChange(event);
+
 		setEditorForegroundColor();
 
 	}
-	
+
 	public void createPartControl(Composite parent) {
 		super.createPartControl(parent);
 		ProjectionViewer viewer = (ProjectionViewer) getSourceViewer();
-		projectionSupport = new ProjectionSupport(viewer, getAnnotationAccess(), getSharedColors());
-		projectionSupport.addSummarizableAnnotationType("org.eclipse.ui.workbench.texteditor.error");
-		projectionSupport.addSummarizableAnnotationType("org.eclipse.ui.workbench.texteditor.warning");
-		
+		projectionSupport = new ProjectionSupport(viewer,
+				getAnnotationAccess(), getSharedColors());
+		projectionSupport
+				.addSummarizableAnnotationType("org.eclipse.ui.workbench.texteditor.error");
+		projectionSupport
+				.addSummarizableAnnotationType("org.eclipse.ui.workbench.texteditor.warning");
+
 		projectionSupport.install();
-		
+
 		viewer.doOperation(ProjectionViewer.TOGGLE);
+	}
+	
+	protected boolean affectsTextPresentation(PropertyChangeEvent event) {
+		return PerlEditorPlugin.getDefault().getEditorTools()
+				.affectsTextPresentation(event);
+	}
+
+	protected void handlePreferenceStoreChanged(PropertyChangeEvent event) {
+		if (getSourceViewer() == null
+				|| getSourceViewer().getTextWidget() == null)
+			return;
+
+		super.handlePreferenceStoreChanged(event);
+
 	}
 
 	public ISourceViewer getViewer() {
@@ -863,4 +880,5 @@ public class PerlEditor extends TextEditor implements
 			return -1;
 		}
 	}
+
 }

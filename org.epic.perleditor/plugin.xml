@@ -315,6 +315,14 @@
                menubarPath="org.epic.perleditor.source.menu/export/group1"
                id="org.epic.perleditor.HtmlExport">
          </action>
+<!-- Validate syntax -->
+         <action
+               definitionId="org.epic.perleditor.validatesyntax"
+               label="&amp;Validate Syntax"
+               retarget="true"
+               menubarPath="org.epic.perleditor.source.menu/editGroup"
+               id="org.epic.perleditor.ValidateSyntax">
+         </action>
 <!-- Format source action -->
          <action
                definitionId="org.epic.perleditor.formatsource"
@@ -421,6 +429,12 @@
             name="HTML Export"
             description="HTML Export"
             id="org.epic.perleditor.htmlexport">
+      </command>
+<!--Validate Syntax -->
+      <command
+            name="Validate Syntax"
+            description="Validate Syntax"
+            id="org.epic.perleditor.validatesyntax">
       </command>
 <!--Format source -->
       <command

@@ -7,6 +7,7 @@ import org.eclipse.ui.editors.text.TextEditorActionContributor;
 
 import org.epic.perleditor.actions.ExportHtmlSourceAction;
 import org.epic.perleditor.actions.FormatSourceAction;
+import org.epic.perleditor.actions.ValidateSourceAction;
 
 
 /**
@@ -16,6 +17,7 @@ public class PerlActionContributor extends TextEditorActionContributor {
 
 	protected FormatSourceAction formatSourceAction;
 	protected ExportHtmlSourceAction htmExportAction;
+	protected ValidateSourceAction validateSourceAction;
 
 	/**
 	 * Default constructor.
@@ -24,6 +26,7 @@ public class PerlActionContributor extends TextEditorActionContributor {
 		super();
 		formatSourceAction = new FormatSourceAction();
 		htmExportAction = new ExportHtmlSourceAction();
+		validateSourceAction = new ValidateSourceAction();
 		//formatSourceAction.setActionDefinitionId("org.epic.perledior.formatsource");
 	}
 
@@ -61,6 +64,7 @@ public class PerlActionContributor extends TextEditorActionContributor {
 				if(editor.isPerlMode()) {
 					bars.setGlobalActionHandler("org.epic.perleditor.FormatSource", formatSourceAction);
 					bars.setGlobalActionHandler("org.epic.perleditor.HtmlExport", htmExportAction);
+					bars.setGlobalActionHandler("org.epic.perleditor.ValidateSyntax", validateSourceAction);
 				}
 				else {
 					bars.setGlobalActionHandler("org.epic.perleditor.FormatSource", null);

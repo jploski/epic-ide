@@ -63,7 +63,7 @@ public class IdleTimer extends Thread {
 				PerlEditorPlugin.getDefault().getPreferenceStore().getLong(
 					PerlEditorPlugin.SYNTAX_VALIDATION_INTERVAL_PREFERENCE);
 
-			if (!changedSinceLastRun) {
+			if (changedSinceLastRun) {
 
 				Invoker invoker;
 				invoker = null;

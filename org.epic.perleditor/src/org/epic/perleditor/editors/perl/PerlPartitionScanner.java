@@ -101,15 +101,19 @@ public class PerlPartitionScanner extends RuleBasedPartitionScanner {
 		// Add rule for strings and character constants.
 		rules.add(new SingleLineRule("\"", "\"", Token.UNDEFINED, '\\'));
 		rules.add(new SingleLineRule("'", "'", Token.UNDEFINED, '\\'));
+		
 		// Add rules for multi-line pod comments.
-		MultiLineRule podRule1 = new MultiLineRule("=", "\n=cut\n", pod);
+		//MultiLineRule podRule1 = new MultiLineRule("=", "\n=cut\n", pod);
+		/* This hopefully fixes bug [ e-p-i-c-Bugs-778262 ] =cut breaks Outline/subroutine list */
+		MultiLineRule podRule1 = new MultiLineRule("=", "\n=", pod);
 		podRule1.setColumnConstraint(0);
 		rules.add(podRule1);
 		
+		/*
 		MultiLineRule podRule2 = new MultiLineRule("=", "\n=pod\n", pod);
 		podRule2.setColumnConstraint(0);
 		rules.add(podRule2);
-		
+		*/
 
 		// Handle __END__ statement
 		rules.add(new PatternRule("__END__", "",  multilineComment, '\\', false, true));

@@ -25,5 +25,5 @@
 # or
 #DEFAULT (echo ""; id; echo %{sVv}; date; cat) >> $CVSROOT/CVSROOT/commitlog
 
-DEFAULT $CVSROOT/CVSROOT/syncmail -u %{sVv} e-p-i-c-commits@lists.sf.net
+DEFAULT $CVSROOT/CVSROOT/syncmail2 -u %{sVv} e-p-i-c-commits@lists.sf.net
 

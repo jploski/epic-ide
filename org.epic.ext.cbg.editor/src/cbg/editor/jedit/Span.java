@@ -1,7 +1,7 @@
 package cbg.editor.jedit;
 
 public class Span extends TextSequence {
-	protected String begin, end, afterTag, beforeTag;
+	protected String begin, end, countDelimterChars, afterTag, beforeTag;
 	protected boolean noLineBreak, noWordBreak, excludeMatch, matchBracket;
 	protected boolean requireEndTag, dynamicTagging;
 	protected int noMultipleEndTag, noMaxChar;
@@ -53,7 +53,10 @@ public class Span extends TextSequence {
 	public final String[] getGroupContent() {
 	  return groupContent;
 	}
-		
+	
+	public final String getCountDelimterChars() {
+	  return countDelimterChars;
+	}
 	public final String getBeforeTag(){
 	  return beforeTag;
 	}

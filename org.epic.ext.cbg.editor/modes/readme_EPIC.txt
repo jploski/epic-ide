@@ -1,4 +1,11 @@
-Notes on the newly (Dec. 2004) implemented features of the XML-File.
+Notes on the newly (Jan. 2005) implemented features of the XML-File.
+
+For the SEQ-Type a new Keyword was introduced:
+
+GROUP
+
+If there exits an Group, any kind of Keyword is ignored!
+
 
 Added Keywords effect mainly the SPAN-Type where additional Keywords specifiy the context more prececisly. The Keywords are:
 
@@ -8,8 +15,9 @@ Added Keywords effect mainly the SPAN-Type where additional Keywords specifiy th
 4) DYNAMIC_TAGGING=TRUE/FALSE (default)
 5) DELIMITER_MAX_CHAR = (any given positive Number)
 6) NO_OF_MULTIPLE_ENDTAG= (any given positive Number)
-7) REQUIRE_BEFORE_TAG= (any Characters resp. special Literals: :LINEFEED: :WHITESPACE:)#
-8) REQUIRE_AFTER_TAG= (any Characters resp. special Literals: :LINEFEED: )
+7) REQUIRE_BEFORE_DELIMITER_CHAR= (any Characters)
+8) REQUIRE_AFTER_DELIMITER_CHAR= (any Characters resp. special Literals: :LINEFEED:)
+9) DELIMITER_TAG_CHARS= (default = empty)
 
 In detail:
 
@@ -31,43 +39,30 @@ This option overrules the next optional parameters.
 
 The Tag starts with the first non-Whitespace character after the specified (=found) BEGIN resp. GROUP and will be taken untill the first Whitespace occurs resp. EOF *OR* if the DELIMITER_MAX_CHAR is exceeded.
 
-e.g. m+t+a+;
+e.g. m+t+a+; 
 
 the Tag 'm' is found out of the GROUP-List, next it takes the first non-Whitespace char after 'm', i.e. '+' and here it takes 1 char => the delimiter is '+'.
 
-5) DELIMITER_MAX_CHAR: The parameter specifies the length of the Tag.
+5) DELIMITER_MAX_CHAR: The parameter specifies the length of the Tag. 
 
 This paramter has ONLY effect on DYNAMIC_TAGGING=TRUE, in any other case it is ignored.
 
-6) NO_OF_MULTIPLE_ENDTAG: Specifies how many times the Tag should be used.
+6) NO_OF_MULTIPLE_ENDTAG: Specifies how many times the Tag should be used. 
 
 This property could be used independent of the setting DYNAMIC_TAGGING.
 
-7) REQUIRE_BEFORE_TAG: This specifies which characters are required in front when DYNAMIC_TAGGING=TRUE.
+7) REQUIRE_BEFORE_DELIMITER_CHAR: The character which is required before the Delimiter is retrieved. This parameter makes only sense, for Dynamic-Tagging, otherwise it is ignored.
 
-Note: The programmers lazyness (LeO) was too much, there it only checks, if there is content or not. If yes => Delimiter could be any
-If not => Delimter any non-whitespace + non-alphanummerical
+The usage is especially for the HERE-Documents in Perl where '<<' specifies the start of the HERE-docs but could start immediately with the Delimiter as well with the Delimiter under quotes. But then the quotes are not required to be immediately after '<<' could be as well filled with withspaces. Therefore we have as BEGIN the <<-sequence, and then the REQUIRE_BEFORE_DELIMITER_CHAR set with quotes.
 
-8) REQUIRE_AFTER_TAG: Similar to the Tag REQUIRE_BEFORE_TAG.
+8) REQUIRE_AFTER_DELIMITER_CHAR: requires the follow-up char(sequence) after the Delimiter. If the follow-up char cannot be found, it continues the search. The Linefeed are used in symbolical manner. That's the only time where symbolical charactes are used!
 
-BUT here pleaze note the lazyiness of the implementor (LeO): Currently it is only considered one Character only. If there is any kind of requirement to expand it to two or more tags, please feel free to adapt the code correspondigly.
+Pleaze note the lazyiness of the implementor (LeO): Currently it is only considered one Character only. If there is any kind of requirement to expand it to two or more tags, please feel free to adapt the code correspondigly.
 
 
-KNOWN BUGs:
+9) DELIMITER_TAG_CHARS: Specifies if the Delimiter consists of Alphanumeric-Characters or not. This parameter makes only sense, for Dynamic-Tagging, otherwise it is ignored.
 
-What not works:
+If not set, then the Delimiter-Tag can only consists of alphanumeric-characters.
+If set with any kind of content, the Delimiter-Tag could be any character, including non-alphanumeric-characters!
 
-- different delimitertypes for Brackets, e.g.
-
-s[a]{b}
-
-but what works is (as well as the other synthetic candies)
-
-s[a][b]
-
-- HERE Documents provide no stack as well the interpretation of \" is not performed. Additionally spaces could be interpreted differently then Perl does.
-
-- the trinary operator ?: is not provided (see also below)
-
-- the operator / could be used for divisions as well as matching operator. Not much effort to interpret the correct situation is done, except for match-operator it is required to have them in one line. Same applies for the operator ?
-
+Note: For further extension it could be used for other specific chars. Then the sources have to be adapted.

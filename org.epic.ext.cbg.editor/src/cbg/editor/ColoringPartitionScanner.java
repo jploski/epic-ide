@@ -118,5 +118,18 @@ public class ColoringPartitionScanner extends RuleBasedPartitionScanner {
 	public void moveTokenOffset(int delta) {
 		fTokenOffset = fTokenOffset + delta;
 	}
+	
+	public String getCurrentLineDelimiter() {
+	  try {
+      String myTemp=fDocument.getLineDelimiter(0);
+      if (myTemp == null) {
+        myTemp = System.getProperty("line.separator");
+      }
+      return myTemp;
+    } catch (BadLocationException e) {
+      // no LineFeed up till now => use as default the System-Properties
+      return System.getProperty("line.separator");
+    }
+	}
 
 }

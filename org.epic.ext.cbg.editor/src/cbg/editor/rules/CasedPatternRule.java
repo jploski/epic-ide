@@ -6,24 +6,39 @@ import org.eclipse.jface.text.rules.PatternRule;
 import org.eclipse.jface.text.rules.Token;
 
 public class CasedPatternRule extends PatternRule {
-	protected boolean ignoreCase;
-	
+  protected boolean ignoreCase;
+  protected boolean requireEndTag;
 	public CasedPatternRule(String startSequence, String endSequence, IToken token, char escapeCharacter, boolean breaksOnEOL) {
-		this(startSequence, endSequence, token, escapeCharacter, breaksOnEOL, false);
+		this (startSequence, endSequence, token, escapeCharacter, breaksOnEOL, false, false);
 	}
 
 	public CasedPatternRule(String startSequence, String endSequence, 
 		IToken token, char escapeCharacter, boolean breaksOnEOL, boolean ignoreCase) {
-		
+		this (startSequence, endSequence, token, escapeCharacter, breaksOnEOL, ignoreCase,false);
+
+	}
+	public CasedPatternRule(String startSequence, String endSequence, 
+		IToken token, char escapeCharacter, boolean breaksOnEOL, boolean ignoreCase,  boolean requireEndTag ) {
 		super((ignoreCase ? startSequence.toLowerCase() : startSequence), 
 			(endSequence == null ? null : (ignoreCase ? endSequence.toLowerCase() : endSequence)), 
 			token, escapeCharacter, breaksOnEOL);
-		this.ignoreCase = ignoreCase;
+		
+			String myStartSeq=startSequence.toLowerCase();
+			String myEndSeq=(endSequence == null ? null :  endSequence.toLowerCase());
+			this.requireEndTag = requireEndTag;
+			if (startSequence.equals(myStartSeq) && (endSequence == null || endSequence.equals(myEndSeq))) {
+		    this.ignoreCase = false;
+		  } else {
+		    this.ignoreCase = ignoreCase;
+		  }
 	}
+
 	/* Copied from my superclass and modified to support case sensitivity. */
 	protected IToken doEvaluate(ICharacterScanner scanner, boolean resume) {
-		if(!ignoreCase) return super.doEvaluate(scanner, resume);
-		if (resume) {
+	  if(!ignoreCase  && !requireEndTag) { 
+		  return super.doEvaluate(scanner, resume);
+		}
+	  if (resume) {
 			if (endSequenceDetected(scanner))
 				return fToken;
 		} else {
@@ -32,19 +47,21 @@ public class CasedPatternRule extends PatternRule {
 				if (sequenceDetected(scanner, fStartSequence, false)) {
 					if (endSequenceDetected(scanner))
 						return fToken;
+					}
 				}
 			}
-		}
-		scanner.unread();
+		scanner.unread() ;
 		return Token.UNDEFINED;
 	}
 
 	/* Copied from my superclass and modified to support case sensitivity. */
 	protected boolean endSequenceDetected(ICharacterScanner scanner) {
-		if(!ignoreCase) return super.endSequenceDetected(scanner);
+		if(!ignoreCase && !requireEndTag) return super.endSequenceDetected(scanner);
 		int c;
 		char[][] delimiters= scanner.getLegalLineDelimiters();
+		int count=0;
 		while ((c= scanner.read()) != ICharacterScanner.EOF) {
+		  count++;
 			if (c == fEscapeCharacter) {
 				// Skip the escaped character.
 				scanner.read();
@@ -56,13 +73,19 @@ public class CasedPatternRule extends PatternRule {
 			} else if (fBreaksOnEOL) {
 				// Check for end of line since it can be used to terminate the pattern.
 				for (int i= 0; i < delimiters.length; i++) {
-					if (c == delimiters[i][0] && sequenceDetected(scanner, delimiters[i], false))
-						return true;
+					if (c == delimiters[i][0] && sequenceDetected(scanner, delimiters[i], false)) {
+					  if (requireEndTag) {
+					    unreadScanner(scanner, count);
+					    return false;
+					  } else {
+							return true;
+					  }
+					}
 				}
 			}
 		}
 		scanner.unread();
-		return true;
+		return false;  //LeO: This has to be that way, cause the superclass use this code!!!
 	}
 
 	/* Copied from my superclass and modified to support case sensitivity. */
@@ -75,12 +98,21 @@ public class CasedPatternRule extends PatternRule {
 			} else if (c != sequence[i] || c != Character.toLowerCase((char)c)) {
 				// Non-matching character detected, rewind the scanner back to the start.
 				// Do not unread the first character.
-				scanner.unread();
-				for (int j= i-1; j > 0; j--)
-					scanner.unread();
-				return false;
+				unreadScanner(scanner, i);
+		    return false;
 			}
 		}
 		return true;
 	}
+
+	/**
+   * @param scanner
+   * @param i
+   * @return
+   */
+  private void unreadScanner(ICharacterScanner scanner, int i) {
+    scanner.unread();
+    for (int j= i-1; j > 0; j--)
+    	scanner.unread();
+  }
 }

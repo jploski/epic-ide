@@ -124,7 +124,12 @@ public class TextSequenceRule extends Object implements IPredicateRule {/**
 	  if (continueCheck) {
 	    if (isExistingGroup) {
 	      if (forwardStartSequenceDetected(scanner)) {
-	          return token;
+	  	    curScannerChar= (char) scanner.read();
+	  	    scanner.unread();
+	  	    if (whiteSpace.isWhitespace(curScannerChar)) {
+	  	      //We only return the token, if the Keyword has also an Whitespace-Ending!
+	  	      return token;
+	  	    }
 	      }
 	    } else {
 	      //check from the regular startSequence
@@ -135,7 +140,12 @@ public class TextSequenceRule extends Object implements IPredicateRule {/**
 	      }
 	      if (curScannerChar == word[0]) {
 	        if (sequenceDetected(scanner, word, true)) {
-	            return token;
+		  	    curScannerChar= (char) scanner.read();
+		  	    scanner.unread();
+		  	    if (whiteSpace.isWhitespace(curScannerChar)) {
+		  	      //We only return the token, if the Keyword has also an Whitespace-Ending!
+		  	      return token;
+		  	    }
 	        }
 	      }
 	    }

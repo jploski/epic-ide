@@ -64,7 +64,7 @@ public class ColoringEditorTools {
 				  pat = new ExtendedPatternRule(span.getStart(), span.getEnd(), 
 				      defaultToken, mode.getDefaultRuleSet().getEscape(), span.noLineBreak(), span.noMaxChar(), span.getGroupContent()
 				      , span.matchBracket(), span.noMultipleEndTag(), span.requireEndTag(), ignoreCase, span.dynamicTagging(),
-				      span.getBeforeTag(), span.getAfterTag(),myWhitespaceDetector);
+				      span.getCountDelimterChars(), span.getBeforeTag(), span.getAfterTag(),myWhitespaceDetector);
 				} else {
 				  //the last parameter makes a default handling, 
 				  //i.e. if the End-Tag is missing => mark till the end of File

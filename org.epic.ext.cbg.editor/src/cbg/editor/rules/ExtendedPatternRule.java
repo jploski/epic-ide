@@ -6,7 +6,7 @@ package cbg.editor.rules;
  * specify the usage of this class more precesily.
  * 
  * @author LeO
- * @version .1
+ * @version .2
  * @change Dec, 12, 2004
  * TODO ????
  */
@@ -29,7 +29,7 @@ public class ExtendedPatternRule extends PatternRule {
   private char curScannerChar;
   private final char EOFChar= (char) ICharacterScanner.EOF;
   private int noDynamicDelimiterChars=0;
-  private final String requireBeforeTag, requireAfterTag, dynamicIgnore;
+  private final String countDelimterChars, requireBeforeTag, requireAfterTag, dynamicEndTerminate;
   private boolean continueCheck = true;
 	private IWhitespaceDetector whiteSpace;
   
@@ -37,7 +37,7 @@ public class ExtendedPatternRule extends PatternRule {
 	       char escapeCharacter, boolean breaksOnEOL, int noMaxChar, String[] groupContent, 
 	       boolean bracketMatch, int noMultipleEndTag, boolean requireEndTag, 
 	       boolean CaseInSensitive, boolean isDynamicTagging,
-	       String beforeTag, String afterTag,
+	       String countDelimterChars, String beforeTag, String afterTag,
 	       IWhitespaceDetector whiteSpace) {
 	  //the last parameter makes a default handling, 
 	  //i.e. if the End-Tag is missing => mark till the end of File
@@ -72,13 +72,14 @@ public class ExtendedPatternRule extends PatternRule {
 		
 		isCaseInSensitive = CaseInSensitive;
 		//TODO check if it really required, i.e. lowercase = uppercase
-	  dynamicIgnore = endSequence;
+	  dynamicEndTerminate = endSequence;
 	  this.isDynamicTagging = isDynamicTagging;
 	  if (isDynamicTagging) {
 	    isCaseInSensitive = false; //case-sensitive is nonsense with dynamic Tags 
 	  }
 	  
-	  this.requireBeforeTag = beforeTag; //Programmers lazyness: we check only if content will exists!!!
+	  this.countDelimterChars = countDelimterChars; //Programmers lazyness: we check only if content will exists!!!
+	  this.requireBeforeTag = beforeTag;
 	  this.requireAfterTag = afterTag;
 
 		if (isCaseInSensitive) {
@@ -193,21 +194,67 @@ public class ExtendedPatternRule extends PatternRule {
 	    curScannerChar = (char) scanner.read();
 	    myStepCounter++;
 	  }
+	  if (requireBeforeTag.length() > 0) {
+	    if (requireBeforeTag.charAt(0) !=curScannerChar) {
+	      fEndSequence = "".toCharArray();
+	      return false;
+	    } else {
+	      curScannerChar = (char) scanner.read();
+	      myStepCounter++;
+	    }
+	  }
+	  boolean previousCharWasEscape=false;
 	  while (--thisCounter >= 0 &&
 	         !Character.isWhitespace(curScannerChar) && 
-	         !(requireBeforeTag.length() == 0 
+	         !(countDelimterChars.length() == 0 
 	            && Character.isLetterOrDigit(curScannerChar)) &&
 	         curScannerChar != EOFChar
 	        ) {
-	    if (dynamicIgnore.indexOf(curScannerChar) < 0) {
-	      tmpEnd.append(curScannerChar);
+	    if (curScannerChar == fEscapeCharacter) {
+	      previousCharWasEscape = true;
+	    } else if (dynamicEndTerminate.indexOf(curScannerChar) < 0) {
+	      if (previousCharWasEscape) {
+	        if (requireBeforeTag.length() == 0 || 
+	            requireBeforeTag.charAt(0) != curScannerChar) {
+	          //we only insert fEscape + curScannerChar when  
+	          //requireBeforeTag != curScannerChar (= the Escape marks the requireBeforeTag)
+	          tmpEnd.append(fEscapeCharacter);
+	        }
+	        tmpEnd.append(curScannerChar);
+	        previousCharWasEscape = false;
+	      } else {
+	        tmpEnd.append(curScannerChar);
+	      }
+	    } else if (previousCharWasEscape && requireBeforeTag.length() >0 
+	                 && requireBeforeTag.charAt(0) == curScannerChar) {
+        tmpEnd.append(curScannerChar);
+        previousCharWasEscape = false;
+	    } else {
+	      break;
 	    }
 	    curScannerChar = (char) scanner.read();
 	    myStepCounter++;
 	  }
 	  
+	  if (previousCharWasEscape) {
+	    tmpEnd.append(fEscapeCharacter);
+	  }
+	  
 	  scanner.unread();
 	  myStepCounter--;
+	  if (tmpEnd.length() == 0 && countDelimterChars.length() > 0 ) {
+	    //Transform the empty string only if countDelimterChars 
+	    tmpEnd.append(((ColoringPartitionScanner) scanner).getCurrentLineDelimiter());
+	  }
+	  
+	  if (requireAfterTag.length() > 0) {
+	    /* TODO 
+	     * currently we assume it is :LINEFEED: what should be appended after the Tag
+	     * IF for any reason it should be something else then :LINEFEED: it has to coded
+	     * here!
+	     */
+	    tmpEnd.append(((ColoringPartitionScanner) scanner).getCurrentLineDelimiter());
+	  }
 	  fEndSequence =  tmpEnd.toString().toCharArray();
 	  if (fEndSequence.length == 1) {
 	    if (fEndSequence[0] == '{') {
@@ -380,7 +427,8 @@ public class ExtendedPatternRule extends PatternRule {
     }
 		++myStepCounter;
 		
-		char[][] delimiters= scanner.getLegalLineDelimiters();
+	//	char[][] delimiters= scanner.getLegalLineDelimiters();
+		char[] lineDelimiter=((ColoringPartitionScanner) scanner).getCurrentLineDelimiter().toCharArray(); 
 		boolean previousWasEscapeCharacter = false;	
 		while (curScannerChar != EOFChar) {
 			if (curScannerChar == fEscapeCharacter) {
@@ -391,34 +439,15 @@ public class ExtendedPatternRule extends PatternRule {
 			} else if (fEndSequence.length > 0 && curScannerChar == fEndSequence[0]) {
 				// Check if the specified end sequence has been found.
 				if (sequenceDetected(scanner, fEndSequence, fBreaksOnEOF)) {
-				  if (isDynamicTagging && requireAfterTag.length() > 0) { 
-				    /* 
-				     * currently we only check for one character, i.e. LineFeed
-				     * this check is mainly done for the HERE-docs which terminates by
-				     * Linefeed. IFFF there is the need to check for more chars then 
-				     * only one, then a special treatement has to be applied for the
-				     * Linefeed issue, since different plattforms, differnt Linefeeds as
-				     * well with crossPlattform-editing, e.g. on Windows editing a Unix-File
-				     */
-				    curScannerChar = (char) scanner.read();
-				    scanner.unread();
-				    if (requireAfterTag.indexOf(curScannerChar) >= 0) {
-				      //TODO enhance the check to more than a one-char-check!
-				      return true;
-				    } else {
-				      //continue to read
-				    }
-				  } else {
-				    return true;
-				  }
+				  return true;
 				}
 			} else if (fBreaksOnEOL) {
 				// Check for end of line since it can be used to terminate the pattern.
-				for (int i= 0; i < delimiters.length; i++) {
-					if (curScannerChar == delimiters[i][0] && sequenceDetected(scanner, delimiters[i], fBreaksOnEOF)) {
+		//		for (int i= 0; i < delimiters.length; i++) {
+					if (curScannerChar == lineDelimiter[0] && sequenceDetected(scanner, lineDelimiter, fBreaksOnEOF)) {
 						if (!fEscapeContinuesLine || !previousWasEscapeCharacter)
 							return !requireEndTag;
-					}
+		//			}
 				}
 				 previousWasEscapeCharacter = false;
 			}

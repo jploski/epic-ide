@@ -36,7 +36,8 @@ public abstract class Type {
 		boolean atLineStart, boolean excludeMatch, boolean noLineBreak, 
 		boolean noWordBreak, boolean matchBracket, int noMultipleEndTag,  
 		boolean requireEndTag, boolean dynamicTagging, 
-	  int noMaxChar, String[] groupContent, String beforeTag, String afterTag,
+	  int noMaxChar, String[] groupContent, 
+	  String countDelimterChars, String beforeTag, String afterTag,
 		String delegate) {
 			
 		Span span = new Span();
@@ -54,6 +55,7 @@ public abstract class Type {
 		span.dynamicTagging = dynamicTagging;
 		span.noMaxChar = noMaxChar;
 		span.groupContent = groupContent;
+		span.countDelimterChars = countDelimterChars; 
 		span.beforeTag = beforeTag;
 		span.afterTag = afterTag;
 		

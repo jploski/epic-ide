@@ -37,13 +37,13 @@ public class Mode {
 		                    boolean matchBracket, int noMultipleEndTag, 
 		                	  boolean requireEndTag,
 		                		boolean dynamicTagging, int noMaxChar, String[] groupContent,
-		                		String beforeTag, String afterTag,
+		                		String countDelimterChars, String beforeTag, String afterTag,
 		                    String delegate) {
 			currentRule.add(Type.newSpan(type, begin, end, atLineStart, excludeMatch, noLineBreak, noWordBreak, 
 			                             matchBracket, noMultipleEndTag, 
 			                             requireEndTag, 
 			                             dynamicTagging, noMaxChar, groupContent,
-			                             beforeTag, afterTag, 
+			                             countDelimterChars, beforeTag, afterTag, 
 			                             delegate));
 		}
 	

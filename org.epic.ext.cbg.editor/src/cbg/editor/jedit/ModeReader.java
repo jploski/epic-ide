@@ -144,18 +144,10 @@ public class ModeReader {
 		if (noMaxChar < 1) {
 		  noMaxChar = 1;
 		}
-		String beforeTag = spanElement.attributeValue("DELIMITER_TAG_CHARS");
-		if (beforeTag == null)
-		  beforeTag = "";
+		String countDelimterChars = spanElement.attributeValue("DELIMITER_TAG_CHARS");
+		if (countDelimterChars == null)
+		  countDelimterChars = "";
 		
-		String afterTag = spanElement.attributeValue("REQUIRE_AFTER_TAG");
-		if (afterTag == null)
-		  afterTag = "";
-		if (afterTag.indexOf(":LINEFEED:") >= 0) {
-		  afterTag = afterTag.replaceAll(":LINEFEED:","");
-		  afterTag = afterTag.concat("\n\r");
-		}
-
 		String delegate = spanElement.attributeValue("DELEGATE");
 	  begin ="";
 		if (spanElement.element("BEGIN") != null) {
@@ -167,11 +159,19 @@ public class ModeReader {
 		  end ="";
 		}
 		
+		String beforeTag = spanElement.attributeValue("REQUIRE_BEFORE_DELIMITER_CHAR");
+		if (beforeTag == null)
+		  beforeTag = "";
+
+		String afterTag = spanElement.attributeValue("REQUIRE_AFTER_DELIMITER_CHAR");
+		if (afterTag == null)
+		  afterTag = "";
+
 		String[] myGroupContent=readGroupContent(spanElement, true); //so the 'begin is modified properly
 		listener.newSpan(type, begin, end, atLineStart, excludeMatch, noLineBreak, 
 		                 noWordBreak, matchBracket, noMultipleEndTag, 
 		                 requireEndTag, dynamicTagging, noMaxChar, 
-		                 myGroupContent, beforeTag, afterTag, 
+		                 myGroupContent, countDelimterChars, beforeTag, afterTag, 
 		                 delegate);
 	}
 

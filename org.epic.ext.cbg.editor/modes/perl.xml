@@ -78,31 +78,16 @@
 			<END>`</END>
 		</SPAN>
 
-		<!-- HERE Documents -->
-		<SPAN TYPE="LITERAL2" NO_LINE_BREAK="FALSE" 
-              DYNAMIC_TAGGING="TRUE" DELIMITER_MAX_CHAR="999"
-              DELIMITER_TAG_CHARS="ANY"
-              REQUIRE_AFTER_TAG=":LINEFEED:">
-			<BEGIN>&lt;&lt;</BEGIN>
-			<!--
-			<END>"'</END>
-			-->
-			<END>"'`;</END>
-		</SPAN>
-		
-
 		<!-- Operators -->
 		<SEQ TYPE="OPERATOR">|</SEQ>
 		<SEQ TYPE="OPERATOR">&amp;</SEQ>
 		<SEQ TYPE="OPERATOR">!</SEQ>
 		<SEQ TYPE="OPERATOR">&gt;</SEQ>
-		<SEQ TYPE="OPERATOR">&lt;</SEQ>
 		<SEQ TYPE="NULL">)</SEQ>
 		<SEQ TYPE="NULL">(</SEQ>
 		<SEQ TYPE="OPERATOR">=</SEQ>
 		<SEQ TYPE="OPERATOR">!</SEQ>
 		<SEQ TYPE="OPERATOR">&gt;=</SEQ>
-		<SEQ TYPE="OPERATOR">&lt;=</SEQ>
 		<SEQ TYPE="OPERATOR">+</SEQ>
 		<SEQ TYPE="OPERATOR">-</SEQ>
 		<SEQ TYPE="OPERATOR">*</SEQ>
@@ -380,15 +365,57 @@
 		</SPAN> 
 
 <!--    the normal Match at the End - should be checked if it works -->
-        <SPAN TYPE="LITERAL2" NO_LINE_BREAK="TRUE" REQUIRE_END_TAG="TRUE">
+    <SPAN TYPE="LITERAL2" NO_LINE_BREAK="TRUE" REQUIRE_END_TAG="TRUE">
 			<BEGIN>/</BEGIN>
 			<END>/</END>
 		</SPAN> 
 
 		<SEQ TYPE="OPERATOR">/</SEQ>
 
+		<!-- HERE Documents with different flavours-->
+		<SPAN TYPE="LITERAL2" NO_LINE_BREAK="FALSE" 
+              DYNAMIC_TAGGING="TRUE" DELIMITER_MAX_CHAR="999"
+              DELIMITER_TAG_CHARS="ANY"
+              REQUIRE_BEFORE_DELIMITER_CHAR='"'
+              REQUIRE_AFTER_DELIMITER_CHAR=":LINEFEED:">
+			<BEGIN>&lt;&lt;</BEGIN>
+			<END>"</END>
+		</SPAN>
+
+		<SPAN TYPE="LITERAL2" NO_LINE_BREAK="FALSE" 
+              DYNAMIC_TAGGING="TRUE" DELIMITER_MAX_CHAR="999"
+              DELIMITER_TAG_CHARS="ANY"
+              REQUIRE_BEFORE_DELIMITER_CHAR="'"
+              REQUIRE_AFTER_DELIMITER_CHAR=":LINEFEED:">
+			<BEGIN>&lt;&lt;</BEGIN>
+			<END>'</END>
+		</SPAN>
+
+		<SPAN TYPE="LITERAL2" NO_LINE_BREAK="FALSE" 
+              DYNAMIC_TAGGING="TRUE" DELIMITER_MAX_CHAR="999"
+              DELIMITER_TAG_CHARS="ANY"
+              REQUIRE_BEFORE_DELIMITER_CHAR='`'
+              REQUIRE_AFTER_DELIMITER_CHAR=":LINEFEED:">
+			<BEGIN>&lt;&lt;</BEGIN>
+			<END>`</END>
+		</SPAN>
+
+		<SPAN TYPE="LITERAL2" NO_LINE_BREAK="FALSE" 
+              DYNAMIC_TAGGING="TRUE" DELIMITER_MAX_CHAR="999"
+              DELIMITER_TAG_CHARS="ANY"
+              REQUIRE_AFTER_DELIMITER_CHAR=":LINEFEED:">
+			<BEGIN>&lt;&lt;</BEGIN>
+			<END>;,</END>
+		</SPAN>
+
+		<!-- Operators with '>' sign -->
+		<SEQ TYPE="OPERATOR">&lt;=</SEQ>
+		<SEQ TYPE="OPERATOR">&lt;</SEQ>
+
+
+
 <!--    the normal Match at the End - should be checked if it works -->
-        <SPAN TYPE="LITERAL2" NO_LINE_BREAK="TRUE" REQUIRE_END_TAG="TRUE">
+    <SPAN TYPE="LITERAL2" NO_LINE_BREAK="TRUE" REQUIRE_END_TAG="TRUE">
 			<BEGIN>?</BEGIN>
 			<END>?</END>
 		</SPAN> 

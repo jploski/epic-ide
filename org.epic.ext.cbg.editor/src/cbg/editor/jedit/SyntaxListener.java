@@ -10,7 +10,7 @@ public interface SyntaxListener {
 		boolean matchBracket, int noMultipleEndTag, 
 	  boolean requireEndTag,
 		boolean dynamicTagging, int noMaxChar, String[] groupContent, 
-		String beforeTag, String afterTag,
+		String countDelimterChars, String beforeTag, String afterTag,
 		String delegate);
 	void newKeywords(KeywordMap keywords);
 	void newTextSequence(String type, String text, String[] groupContent,  boolean atLineStart, boolean atWhitespaceEnd, 

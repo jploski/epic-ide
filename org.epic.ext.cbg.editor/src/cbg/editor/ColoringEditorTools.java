@@ -70,6 +70,8 @@ public class ColoringEditorTools {
 				 * the text sequence can not be recognized as a word add it
 				 * as a text sequence.				 */
 				if(isWordStart(text.getText().charAt(0))) return;
+				//TODO EPIC workaround -- Add Operators to whitespace characters
+				ColoringWhitespaceDetector.addWhiteSpaceChar(text.getText());
 				rules.add(new TextSequenceRule(text.getText(), token, ignoreCase));
 			}
 			public void acceptEolSpan(EOLSpan eolSpan) {

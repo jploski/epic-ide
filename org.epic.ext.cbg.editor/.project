@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>org.epic.ext.cbg.editor</name>
+	<name>org.epic.ext.unsupported.colorer</name>
 	<comment></comment>
 	<projects>
+		<project>org.epic.perleditor</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

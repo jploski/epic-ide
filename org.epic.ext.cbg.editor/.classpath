@@ -31,8 +31,8 @@
     <classpathentry kind="var" path="ECLIPSE_HOME/plugins/org.epic.perleditor_0.1.0/gnu-regexp-1.1.4.jar"/>
     <classpathentry kind="var" path="ECLIPSE_HOME/plugins/org.epic.perleditor_0.1.0/jdom.jar"/>
     <classpathentry kind="var" path="ECLIPSE_HOME/plugins/org.epic.ext.cbg.editor_0.2.8/editor.jar"/>
-    <classpathentry kind="var" path="ECLIPSE_HOME/plugins/org.epic.ext.cbg.editor_0.2.8/libs/dom4j-mini.jar"/>
-    <classpathentry kind="var" path="ECLIPSE_HOME/plugins/org.epic.ext.cbg.editor_0.2.8/libs/regexp-1.2-mini.jar"/>
-    <classpathentry kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.jdt.junit_2.1.0/junitsupport.jar"/>
+    <classpathentry kind="var"
+        path="ECLIPSE_HOME/plugins/net.sf.colorer_0.4.0/colorer.jar" sourcepath="ECLIPSE_HOME/plugins/net.sf.colorer_0.4.0/src.zip"/>
+    <classpathentry kind="src" path="/org.epic.perleditor"/>
     <classpathentry kind="output" path="bin"/>
 </classpath>

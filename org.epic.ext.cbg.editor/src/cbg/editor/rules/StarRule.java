@@ -217,8 +217,11 @@ public class StarRule implements IPredicateRule {
 		if (atWhitepsaceEnd) {
 			c = scanner.read();
 			scanner.unread();
-			if (whiteDetector.isWhitespace((char) c) || c == ICharacterScanner.EOF)
+			//TODO EPIC specific SHOULD BE REMOVED if it works correct in ColorEditor
+			if (whiteDetector.isWhitespace((char) c) || c == ICharacterScanner.EOF) {
+				scanner.unread(); // <-- EPIC: Rewind scanner if whitespace character
 				return true;
+			}
 			for (int j = read - 1; j > 0; j--)
 				scanner.unread();
 			return false;

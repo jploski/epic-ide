@@ -140,8 +140,8 @@ public class PerlMainPreferencePage
 	
 		syntaxCheckInterval = new Scale(syntaxIntervalComposite, SWT.HORIZONTAL);
 		syntaxCheckInterval.setMinimum(1);
-		syntaxCheckInterval.setMaximum(1000);
-		syntaxCheckInterval.setIncrement(10);
+		syntaxCheckInterval.setMaximum(3000);
+		syntaxCheckInterval.setIncrement(100);
 		
 		syntaxIntervalSecondsLabel = new Label(syntaxIntervalComposite, SWT.NONE);
 		int interval = PerlEditorPlugin.getDefault().getPreferenceStore().getInt(PerlEditorPlugin.SYNTAX_VALIDATION_INTERVAL_PREFERENCE) ;

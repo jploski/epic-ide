@@ -77,9 +77,10 @@ public class LaunchConfigurationDelegate
 					if (!mTarget.isTerminated())
 					{
 						mLaunch.addDebugTarget(mTarget);
-						((DebugTarget) mTarget)
-							.getDebuger()
-							.generateDebugInitEvent();
+						PerlDB db = ((DebugTarget) mTarget)
+						.getDebuger();
+						if( db != null )					
+						 db.generateDebugInitEvent();
 					}
 				};
 			};

@@ -39,16 +39,16 @@
          name="Epic Perl Debugger"
          point="org.eclipse.debug.core.launchConfigurationTypes">
       <launchConfigurationType
-            name="DebugPerl"
+            name="Perl Local"
             delegate="org.epic.debug.LaunchConfigurationDelegate"
             modes="run,debug"
             public="true"
             id="org.epic.debug.launchConfigurationPerl">
       </launchConfigurationType>
       <launchConfigurationType
-            name="DebugPerlCGI"
+            name="Perl CGI"
             delegate="org.epic.debug.LaunchConfigurationDelegate"
-            modes="debug"
+            modes="run,debug"
             public="true"
             id="org.epic.debug.launchConfigurationPerlCGI">
       </launchConfigurationType>

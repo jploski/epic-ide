@@ -17,6 +17,7 @@ import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.IDebugEventSetListener;
 import org.eclipse.debug.core.ILaunch;
+import org.eclipse.debug.core.ILaunchManager;
 import org.eclipse.debug.core.model.IProcess;
 import org.eclipse.help.browser.IBrowser;
 import org.eclipse.help.internal.browser.BrowserDescriptor;
@@ -36,6 +37,8 @@ import org.epic.perleditor.editors.util.PerlExecutableUtilities;
  */
 public class CGITarget extends DebugTarget implements IDebugEventSetListener
 {
+
+	private boolean mDebug;
 
 	private ArrayList cgiEnv;
 
@@ -61,7 +64,11 @@ public class CGITarget extends DebugTarget implements IDebugEventSetListener
 	public CGITarget(ILaunch launch)
 	{
 		super(launch);
-		mProcessName = "CGI Perl Debugger";
+		mDebug = launch.getLaunchMode().equals(ILaunchManager.DEBUG_MODE);
+		if (mDebug)
+			mProcessName = "CGI Perl Debugger";
+		else
+			mProcessName = "CGI Perl";
 		DebugPlugin.getDefault().addDebugEventListener(this);
 	}
 
@@ -72,8 +79,12 @@ public class CGITarget extends DebugTarget implements IDebugEventSetListener
 		if (!startTarget())
 			terminate();
 
-		if (!startSession())
-			terminate();
+		if (mDebug)
+		{
+
+			if (!startSession())
+				terminate();
+		}
 	}
 
 	boolean startTarget()
@@ -82,11 +93,13 @@ public class CGITarget extends DebugTarget implements IDebugEventSetListener
 		String htmlRootDir = null;
 		String htmlRootFile = null;
 		String cgiRootDir = null;
-		mDebugPort = new RemotePort();
-		mDebugPort.startConnect();
-		if (mDebugPort == null)
-			return false;
-
+		if (mDebug)
+		{
+			mDebugPort = new RemotePort();
+			mDebugPort.startConnect();
+			if (mDebugPort == null)
+				return false;
+		}
 		try
 		{
 			htmlRootDir =
@@ -129,19 +142,23 @@ public class CGITarget extends DebugTarget implements IDebugEventSetListener
 				.setDevice(null)
 				.removeFirstSegments(htmlDirPath.segments().length)
 				.toString();
-				
+
 		StringBuffer brazilProps = new StringBuffer();
 		mCGIProxy = new CGIProxy(mLaunch, "CGI-Process", brazilProps);
 		int webServerPort = RemotePort.findFreePort();
-		
+
 		/* start web-server*/
 		/* create config file*/
-		
+
 		brazilProps.append(
-			"\nroot="
+			"\ncgi.Debug="
+				+ mDebug
+				+ "\n"
+				+ "root="
 				+ htmlRootDir
 				+ "\n"
-				+ "port="+webServerPort
+				+ "port="
+				+ webServerPort
 				+ "\n"
 				+ "cgi.root="
 				+ cgiRootDir
@@ -150,11 +167,15 @@ public class CGITarget extends DebugTarget implements IDebugEventSetListener
 				+ htmlRootFileRel
 				+ "\n"
 				+ "cgi.executable="
-				+ PerlExecutableUtilities.getPerlExecutableCommandLine().get(0)
-				+ "\n"
-				+ "cgi.ENV_"
-				+ PerlDebugPlugin.getPerlDebugEnv(this));
+				+ PerlExecutableUtilities.getPerlExecutableCommandLine().get(0));
+		
+		if (mDebug)
+		{
 
+			brazilProps.append(
+				"\n" + "cgi.ENV_" + PerlDebugPlugin.getPerlDebugEnv(this));
+		}
+		
 		if (cgiEnv != null)
 			for (Iterator iter = cgiEnv.iterator(); iter.hasNext();)
 			{
@@ -162,7 +183,6 @@ public class CGITarget extends DebugTarget implements IDebugEventSetListener
 				brazilProps.append("\n" + "cgi.ENV_" + element);
 			}
 
-		
 		File templ =
 			new File(getPlugInDir() + File.separator + "brazil_cgi_templ.cfg");
 		File dest =
@@ -207,12 +227,12 @@ public class CGITarget extends DebugTarget implements IDebugEventSetListener
 
 		try
 		{
-//			String params = " ";
-//			for (int x = 0; x < cmdParams.length; ++x)
-//				params = params + " " + cmdParams[x];
-//
-//			PerlDebugPlugin.getDefault().logError(
-//				"CMDline:" + params + "\n" + workingDir);
+			//			String params = " ";
+			//			for (int x = 0; x < cmdParams.length; ++x)
+			//				params = params + " " + cmdParams[x];
+			//
+			//			PerlDebugPlugin.getDefault().logError(
+			//				"CMDline:" + params + "\n" + workingDir);
 			//Startup Brazil
 			mBrazilProcess =
 				Runtime.getRuntime().exec(cmdParams, null, workingDir);
@@ -310,7 +330,7 @@ public class CGITarget extends DebugTarget implements IDebugEventSetListener
 
 		try
 		{
-			mBrowser.displayURL("http://localhost:"+fPort+"/");
+			mBrowser.displayURL("http://localhost:" + fPort + "/");
 		} catch (Exception e)
 		{
 			PerlDebugPlugin.getDefault().logError(

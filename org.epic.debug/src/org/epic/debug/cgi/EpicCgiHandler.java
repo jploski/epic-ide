@@ -79,6 +79,7 @@ import sunlabs.brazil.server.Server;
 
 public class EpicCgiHandler implements Handler
 {
+	private boolean mDebug;
 	private PrintWriter mInWriter;
 	private PrintWriter mOutWriter;
 	private PrintWriter mErrorWriter;
@@ -134,6 +135,7 @@ public class EpicCgiHandler implements Handler
 		int portIn = Integer.parseInt(server.props.getProperty(propsPrefix+"InPort",null));
 		int portOut = Integer.parseInt(server.props.getProperty(propsPrefix+"OutPort",null));
 		int portError = Integer.parseInt(server.props.getProperty(propsPrefix+"ErrorPort",null));
+		mDebug = server.props.getProperty(propsPrefix+"Debug",null).equalsIgnoreCase("true");
 		//System.out.println("**************Ports: "+portIn+" "+portOut+" "+portError+"\n");
 		try
 		{
@@ -156,7 +158,7 @@ public class EpicCgiHandler implements Handler
 		}
 //		mInWriter.println("IN*****************");
 //		mOutWriter.println("Out*****************");
-//		mErrorWriter.println("Error*****************");
+//		mErrorWriter.println("Debug*****************"+mDebug+"\n");
 		return true;
 	}
 
@@ -248,20 +250,35 @@ public class EpicCgiHandler implements Handler
 
 		String query = request.query;
 
+		int reduceComSize;
+		if( mDebug )
+			reduceComSize = 0;
+		else
+			reduceComSize = 1;
+		
 		if (query.indexOf("=") == -1)
 		{ // need args
-			command = new String[4];
-			command[3] = query; // XXX this is wrong
+			command = new String[4-reduceComSize];
+			command[3-reduceComSize] = query; // XXX this is wrong
 		} else
 		{ // no args
-			command = new String[3];
+			command = new String[3-reduceComSize];
 		}
 
 		//Get Perl executable and generate comand array
 		command[0] =
 			request.props.getProperty(propsPrefix + EXECUTABLE, "perl");
-		command[1] = "-d"; // Add debug switch
-		command[2] = name.getAbsolutePath();
+		if( mDebug )
+		{
+			command[1] = "-d"; // Add debug switch
+			command[2] = name.getAbsolutePath();
+		}
+		else
+		{
+			command[1] = name.getAbsolutePath();
+		} 
+			
+		
 		request.log(
 			Server.LOG_DIAGNOSTIC,
 			propsPrefix + " command= " + command[0]);

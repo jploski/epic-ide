@@ -35,9 +35,7 @@
     <classpathentry kind="var"
         path="ECLIPSE_HOME/plugins/org.eclipse.core.resources_2.1.1/resources.jar" sourcepath="ORG_ECLIPSE_PLATFORM_SOURCE_SRC/org.eclipse.core.resources_2.1.1/resourcessrc.zip"/>
     <classpathentry kind="src" path="/org.epic.perleditor"/>
-    <classpathentry kind="var" path="ECLIPSE_HOME/plugins/org.epic.ext.cbg.editor_0.3.0/editor.jar"/>
-    <classpathentry kind="var" path="ECLIPSE_HOME/plugins/org.epic.ext.cbg.editor_0.3.0/libs/dom4j-mini.jar"/>
-    <classpathentry kind="var" path="ECLIPSE_HOME/plugins/org.epic.ext.cbg.editor_0.3.0/libs/regexp-1.2-mini.jar"/>
+    <classpathentry kind="src" path="/org.epic.ext.cbg.editor"/>
     <classpathentry kind="var"
         path="ECLIPSE_HOME/plugins/org.eclipse.help_2.1.2/help.jar" sourcepath="ORG_ECLIPSE_PLATFORM_SOURCE_SRC/org.eclipse.help_2.1.2/helpsrc.zip"/>
     <classpathentry kind="var"

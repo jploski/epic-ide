@@ -126,6 +126,8 @@ public class DebugTarget extends Target
 	 */
 	public IThread[] getThreads() throws DebugException
 	{
+		if( mPerlDB == null)
+			return null;
 		return mPerlDB.getThreads();
 	}
 
@@ -193,6 +195,9 @@ public class DebugTarget extends Target
 
 	public boolean canResume()
 	{
+		if( mPerlDB == null)
+		 return false;
+		 
 		return mPerlDB.canResume(this);
 	}
 
@@ -201,6 +206,8 @@ public class DebugTarget extends Target
 	 */
 	public boolean canSuspend()
 	{
+		if( mPerlDB == null)
+				 return false;
 		return mPerlDB.canSuspend(this);
 	}
 
@@ -209,6 +216,8 @@ public class DebugTarget extends Target
 	 */
 	public boolean isSuspended()
 	{
+		if( mPerlDB == null)
+				 return false;
 		return mPerlDB.isSuspended(this);
 	}
 

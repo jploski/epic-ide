@@ -672,6 +672,37 @@ The editor supports folding of POD comments and subroutines.<br>
 <br>
 Source Folding can be disabled in the Editor Preference page.<br>
 <br>
+<h2>Refactoring</h2>
+<h3>Extract Subroutine</h3>
+Extraction of subroutines is supported by the use of the CPAN
+Devel::Refactor module.<br>
+To extract a subroutine mark the code to extract and select <b>Refactor&gt;Extract
+Subroutine</b> from the popup menu.<br>
+<br>
+<div align="center"><img height="313" width="513"
+ alt="Extract Subroutine Selection"
+ src="images/extract_subroutine_1.gif"><br>
+</div>
+<br>
+In the popup menu insert the name of the new subroutine and press <b>Enter</b>.<br>
+<br>
+<div align="center"><img height="157" width="395"
+ alt="Extract Subroutine Dialog" src="images/extract_subroutine_2.gif"><br>
+</div>
+<br>
+The new subroutine will be placed at the end of the Perl script (before
+<i>__END__</i> section) and the selection will be replaced with the
+subroutine call.<br>
+<br>
+<div align="center"><img height="178" width="358"
+ alt="Extract Subroutine Result" src="images/extract_subroutine_3.gif"><br>
+</div>
+<br>
+<b>NOTE:</b> The extraction might not work properly at the moment
+because the Devel::Refactor module is in an early stage of development.
+With upcoming versions of the module this function should become more
+reliable.<br>
+<br>
 <h2>HTML Export</h2>
 To export select Source &gt; Export &gt; HTML from the Eclipse menu and
 specify an output file.<br>

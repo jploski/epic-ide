@@ -121,6 +121,7 @@ public class PerlSourceViewerConfiguration
 			assistant.setContextInformationPopupOrientation(ContentAssistant.CONTEXT_INFO_ABOVE);
 			assistant.setContextInformationPopupBackground(PerlColorProvider.getColor(new RGB(150, 150, 0)));
 			assistant.setProposalSelectorBackground(PerlColorProvider.getColor(new RGB(254, 241, 233)));
+			assistant.setInformationControlCreator(getInformationControlCreator(sourceViewer));
   
 			return assistant;
 		}

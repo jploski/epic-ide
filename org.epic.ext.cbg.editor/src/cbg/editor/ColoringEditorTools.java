@@ -85,9 +85,12 @@ public class ColoringEditorTools {
 				 * i.e. $t='x' will be also correctly recognized as $t ='x'
 				 */
 				  myWhitespaceDetector.addWhiteSpaceChar(text.getText());
+					rules.add(new TextSequenceRule(text.getText(), text.groupContent(),  token, 
+					         ignoreCase, myWhitespaceDetector, false));
+				} else {
+				  rules.add(new TextSequenceRule(text.getText(), text.groupContent(),  token, 
+				         ignoreCase, myWhitespaceDetector, true));
 				}
-				rules.add(new TextSequenceRule(text.getText(), text.groupContent(),  token, 
-				         ignoreCase, myWhitespaceDetector));
 			}
 			public void acceptEolSpan(EOLSpan eolSpan) {
 				rules.add(new EndOfLineRule(eolSpan.getText(), token, ignoreCase));

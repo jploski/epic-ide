@@ -35,10 +35,12 @@ public class TextSequenceRule extends Object implements IPredicateRule {/**
   private int myStepCounter = 0;
   private final char EOFChar= (char) ICharacterScanner.EOF;
 	private IWhitespaceDetector whiteSpace;
+	private boolean isNotSequenceWhitespace;
 
 
 	public TextSequenceRule(String wordToMatch, String[] groupContent, IToken token, 
-	                        boolean ignoreCase, IWhitespaceDetector whiteSpace) {
+	                        boolean ignoreCase, IWhitespaceDetector whiteSpace,
+	                        boolean isNotSequenceWhitespace) {
 		this.token = token;
 		word = (ignoreCase ? wordToMatch.toLowerCase().toCharArray() : wordToMatch.toCharArray());
 		this.isCaseInSensitive = ignoreCase;
@@ -50,6 +52,7 @@ public class TextSequenceRule extends Object implements IPredicateRule {/**
 		  isExistingGroup = true;
 		}
 		this.whiteSpace= whiteSpace;
+		this.isNotSequenceWhitespace = isNotSequenceWhitespace;
 
 	}
 	
@@ -114,9 +117,10 @@ public class TextSequenceRule extends Object implements IPredicateRule {/**
 	  if (((ColoringPartitionScanner) scanner).getOffset() > 0) {
       scanner.unread();
       curScannerChar = (char) scanner.read();
-      if (!whiteSpace.isWhitespace(curScannerChar)) {
+      if (isNotSequenceWhitespace && !whiteSpace.isWhitespace(curScannerChar)) {
         //we do not check anything, since the leading char before this is not
         //whitespace or equivalent
+        //BUT only if the current char is not already a Whitespace!!!
         continueCheck = false;
       }
 	  }
@@ -126,8 +130,11 @@ public class TextSequenceRule extends Object implements IPredicateRule {/**
 	      if (forwardStartSequenceDetected(scanner)) {
 	  	    curScannerChar= (char) scanner.read();
 	  	    scanner.unread();
-	  	    if (whiteSpace.isWhitespace(curScannerChar)) {
-	  	      //We only return the token, if the Keyword has also an Whitespace-Ending!
+	  	    if (!isNotSequenceWhitespace || whiteSpace.isWhitespace(curScannerChar)) {
+	  	      /* We only return the token,
+	  	       * - either the Sequence is Whitespace 
+	  	       * - or the Keyword has also an Whitespace-Ending! 
+	  	       */
 	  	      return token;
 	  	    }
 	      }
@@ -142,8 +149,11 @@ public class TextSequenceRule extends Object implements IPredicateRule {/**
 	        if (sequenceDetected(scanner, word, true)) {
 		  	    curScannerChar= (char) scanner.read();
 		  	    scanner.unread();
-		  	    if (whiteSpace.isWhitespace(curScannerChar)) {
-		  	      //We only return the token, if the Keyword has also an Whitespace-Ending!
+		  	    if (!isNotSequenceWhitespace || whiteSpace.isWhitespace(curScannerChar)) {
+		  	      /* We only return the token,
+		  	       * - either the Sequence is Whitespace 
+		  	       * - or the Keyword has also an Whitespace-Ending! 
+		  	       */
 		  	      return token;
 		  	    }
 	        }

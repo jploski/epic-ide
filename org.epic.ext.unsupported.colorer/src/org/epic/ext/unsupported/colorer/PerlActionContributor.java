@@ -12,7 +12,10 @@ import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.editors.text.TextEditorActionContributor;
+import org.eclipse.ui.texteditor.ITextEditorActionDefinitionIds;
+import org.eclipse.ui.texteditor.RetargetTextEditorAction;
 import org.eclipse.swt.SWT;
+import org.epic.perleditor.editors.PerlEditorMessages;
 
 
 
@@ -22,6 +25,7 @@ import org.eclipse.swt.SWT;
 public class PerlActionContributor extends TextEditorActionContributor {
 
 	protected FormatSourceAction formatSourceAction;
+	protected RetargetTextEditorAction fContentAssist;
 
 	/**
 	 * Default constructor.
@@ -32,6 +36,9 @@ public class PerlActionContributor extends TextEditorActionContributor {
         // Somehow the key bindings don't work in RC2
         formatSourceAction = new FormatSourceAction("&Format\tCtrl+Shift+F");
         formatSourceAction.setAccelerator(SWT.CTRL | SWT.SHIFT | 'F');
+        
+		fContentAssist = new RetargetTextEditorAction(PerlEditorMessages.getResourceBundle(), "ContentAssistProposal.");
+		fContentAssist.setActionDefinitionId(ITextEditorActionDefinitionIds.CONTENT_ASSIST_PROPOSALS);
 	
 	}
 	
@@ -45,6 +52,7 @@ public class PerlActionContributor extends TextEditorActionContributor {
 		IMenuManager sourceMenu = new MenuManager("&Source");
 		menuManager.insertAfter(editMenu.getId(), sourceMenu);
 		sourceMenu.add(formatSourceAction);
+		sourceMenu.add(fContentAssist);
 		
 	}
 	
@@ -57,6 +65,7 @@ public class PerlActionContributor extends TextEditorActionContributor {
 			editor = (PerlEditor) part;
 			
 	    formatSourceAction.setEditor(editor);
+		fContentAssist.setAction(getAction(editor, "ContentAssist"));
 
 	}
 	

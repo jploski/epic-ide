@@ -27,6 +27,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.IStorageEditorInput;
+import org.eclipse.ui.editors.text.ILocationProvider;
 import org.eclipse.ui.editors.text.TextEditor;
 import org.eclipse.ui.internal.ViewerActionBuilder;
 import org.eclipse.ui.texteditor.ContentAssistAction;
@@ -48,10 +49,7 @@ import cbg.editor.ColoringSourceViewerConfiguration;
 //import java.util.HashMap;
 //import org.eclipse.swt.graphics.Color;
 
-/* Eclipse 3.0 extension (uncomment when using Eclipse 3)
-import org.eclipse.ui.editors.text.ILocationProvider;
 import org.epic.core.util.FileUtilities;
-*/
 
 
 /**
@@ -275,14 +273,14 @@ public class PerlEditor
 
 	public void doSetInput(IEditorInput input) throws CoreException {
 
-		/* Eclipse 3.0 extension (uncomment when using Eclipse 3)
+		/* Map external files into workspace (epic-links) */
 		if (input instanceof ILocationProvider) {
 			ILocationProvider l =
 				(ILocationProvider) input.getAdapter(ILocationProvider.class);
 			if (l != null)
-				input = getFileEditorInput(l.getPath(l).makeAbsolute());
+				input = FileUtilities.getFileEditorInput(l.getPath(l).makeAbsolute());
 		}
-		*/
+	
 
 		super.doSetInput(input);
 

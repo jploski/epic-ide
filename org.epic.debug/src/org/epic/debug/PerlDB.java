@@ -802,7 +802,7 @@ public class PerlDB	implements IDebugElement {
 				}
 				mCurrentSubCommand = mCommandNone;
 				mCurrentCommand = mCommandNone;
-				generateDebugEvent(mCommandTerminate, false, mCurrentCommandDest);
+				generateDebugTermEvent();
 				shutdown();
 				mIsCommandRunning = false;
 				mIsCommandFinished = false;
@@ -949,7 +949,12 @@ public class PerlDB	implements IDebugElement {
 			vars[0].setValue(val);
 			vars[1].setName("Return Type");
 			val = new PerlDebugValue(mThreads[0]);
-			val.setValue(matches[pos].toString(1));
+			String retType;
+			retType = matches[pos].toString(1);
+			if( retType.equals(".")) retType = "void";
+			if( retType.equals("@")) retType = "list";
+			if( retType.equals("$")) retType = "scalar";
+			val.setValue(retType);
 			vars[1].setValue(val);
 						
 			frames[pos+1] = new StackFrame(mThreads[0]);

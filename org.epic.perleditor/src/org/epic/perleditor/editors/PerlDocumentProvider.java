@@ -11,6 +11,8 @@ import org.eclipse.jface.text.IDocumentPartitioner;
 import org.eclipse.jface.text.rules.DefaultPartitioner;
 import org.eclipse.ui.editors.text.FileDocumentProvider;
 import org.epic.perleditor.editors.perl.PerlPartitionScanner;
+import org.eclipse.jface.text.source.IAnnotationModel;
+import org.eclipse.ui.IFileEditorInput;
 
 /** 
  * The JavaDocumentProvider provides the IDocuments used by java editors.
@@ -54,4 +56,13 @@ public class PerlDocumentProvider extends FileDocumentProvider {
 			fgScanner= new PerlPartitionScanner();
 		return fgScanner;
 	}
+
+	/**
+		 * Replaces createAnnotionModel of the super class.
+		 */
+		protected IAnnotationModel createAnnotationModel(Object element) throws CoreException {
+			IFileEditorInput input= (IFileEditorInput) element;
+			return new PerlSourceAnnotationModel(input);
+		}
+
 }

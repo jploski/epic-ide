@@ -311,7 +311,44 @@ The editor supports folding of POD comments and subroutines.
 Source Folding can be disabled in the Editor Preference page.
       </p><p>
       </p><p>
-      </p></div><div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="N10632"></a>HTML Export</h3></div></div><div></div></div><p>
+      </p></div><div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="N10632"></a>Refactoring</h3></div></div><div></div></div><div class="sect3" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="N10636"></a>Extract Subroutine</h4></div></div><div></div></div><p>
+
+Extraction of subroutines is supported by the use of the CPAN
+Devel::Refactor module.
+        </p><p>
+
+To extract a subroutine mark the code to extract and select <span class="bold"><b>Refactor&gt;Extract
+Subroutine</b></span> from the popup menu.
+        </p><p>
+        </p><p>
+          <div class="informalfigure"><div class="mediaobject"><img src="images/extract_subroutine_1.gif"></div></div>
+
+        </p><p>
+        </p><p>
+
+In the popup menu insert the name of the new subroutine and press <span class="bold"><b>Enter</b></span>.
+        </p><p>
+        </p><p>
+          <div class="informalfigure"><div class="mediaobject"><img src="images/extract_subroutine_2.gif"></div></div>
+
+        </p><p>
+        </p><p>
+
+The new subroutine will be placed at the end of the Perl script (before <span class="emphasis"><em>__END__</em></span> section) and the selection will be replaced with the
+subroutine call.
+        </p><p>
+        </p><p>
+          <div class="informalfigure"><div class="mediaobject"><img src="images/extract_subroutine_3.gif"></div></div>
+
+        </p><p>
+        </p><p>
+          <span class="bold"><b>NOTE:</b></span> The extraction might not work properly at the moment
+because the Devel::Refactor module is in an early stage of development.
+With upcoming versions of the module this function should become more
+reliable.
+        </p><p>
+        </p><p>
+        </p></div></div><div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="N10681"></a>HTML Export</h3></div></div><div></div></div><p>
 
 To export select Source &gt; Export &gt; HTML from the Eclipse menu and
 specify an output file.
@@ -326,7 +363,7 @@ preference page.
 is needed.
       </p><p>
       </p><p>
-      </p></div><div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="N1064E"></a>Outline View</h3></div></div><div></div></div><p>
+      </p></div><div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="N1069D"></a>Outline View</h3></div></div><div></div></div><p>
 
 The Outline View displays modules and subroutines. By clicking on the
 module/subroutine name the editor will jump to the appropriate position

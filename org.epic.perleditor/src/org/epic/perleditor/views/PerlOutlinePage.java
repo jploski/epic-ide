@@ -135,12 +135,10 @@ public class PerlOutlinePage
 		public void run() {
 			try {
 				while (!Thread.interrupted()) {
-					System.out.println("OUTLINE - WAIT");
 					synchronized (this.lock) {
 						this.lock.wait();
 					}
 
-					System.out.println("OUTLINE - RESUME");
 					display.syncExec(new Invoker());
 
 				}

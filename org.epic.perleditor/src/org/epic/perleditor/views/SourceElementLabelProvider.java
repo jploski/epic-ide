@@ -1,5 +1,8 @@
 package  org.epic.perleditor.views;
 
+import gnu.regexp.RE;
+import gnu.regexp.REException;
+
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
@@ -25,6 +28,16 @@ public class SourceElementLabelProvider extends LabelProvider {
 		ImageDescriptor descriptor = null;
 		Image image = null;
 		
+		RE matchNew = null;
+
+				try {
+					matchNew = new RE("^new[\\s\\)]");
+				} catch (REException e) {
+					e.printStackTrace();
+					return (null);
+				}
+		
+			
 		
 		if(element instanceof SourceElement) {
 			if(((SourceElement)element).getType() == SourceElement.SUBROUTINE_TYPE) {
@@ -39,9 +52,11 @@ public class SourceElementLabelProvider extends LabelProvider {
 		else if(element instanceof Subroutine) {
 			//descriptor = PerlImages.ICON_SUBROUTINE;
 			String name = ((Subroutine)element).getName();
-			if(name != null && name.equals("new")) {
-				return imageConstructor;
-			}
+			if (name != null
+						&& ((matchNew.getAllMatches(name).length > 0)
+							|| name.equals("new"))) {
+						return imageConstructor;
+					}
 			return imageSub;
 		}
 		else if(element instanceof Module) {

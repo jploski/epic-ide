@@ -35,11 +35,6 @@ public class SourceFormatter {
 				String prefix = "";
 				for (int i = 0; i < indent; i++) {
 					prefix += PreferenceUtil.getIndent();
-					/*
-					for (int j = 0; j < tabs; j++) {
-						prefix += " ";
-					}
-					*/
 				}
 				
 

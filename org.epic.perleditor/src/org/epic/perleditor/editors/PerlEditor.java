@@ -254,7 +254,7 @@ public class PerlEditor
 				fAnnotationAccess,
 				VERTICAL_RULER_WIDTH,
 				sharedColors);
-		//ISourceViewer viewer = super.createSourceViewer(parent, ruler, styles);
+		
 		SourceViewer viewer =
 			new PerlSourceViewer(parent, ruler, fOverviewRuler, true, styles);
 		viewer.showAnnotations(true);
@@ -263,32 +263,7 @@ public class PerlEditor
 		return viewer;
 	}
 
-	/*
-	 * @see org.eclipse.ui.texteditor.AbstractTextEditor#createSourceViewer(Composite, IVerticalRuler, int)
-	 * @since 2.1
-	 */
-	/*
-	protected ISourceViewer createSourceViewer(Composite parent, IVerticalRuler ruler, int styles) {
 	
-		fAnnotationAccess= createAnnotationAccess();
-		ISharedTextColors sharedColors= EditorsPlugin.getDefault().getSharedTextColors();
-	
-		fOverviewRuler= new OverviewRuler(fAnnotationAccess, VERTICAL_RULER_WIDTH, sharedColors);
-	
-		Iterator e= fAnnotationPreferences.getAnnotationPreferences().iterator();
-		while (e.hasNext()) {
-			AnnotationPreference preference= (AnnotationPreference) e.next();
-			if (preference.contributesToHeader())
-				fOverviewRuler.addHeaderAnnotationType(preference.getAnnotationType());
-		}
-	
-		ISourceViewer sourceViewer= new PerlSourceViewer(parent, ruler, fOverviewRuler, isOverviewRulerVisible(), styles);
-		fSourceViewerDecorationSupport= new SourceViewerDecorationSupport(sourceViewer, fOverviewRuler, fAnnotationAccess, sharedColors);
-		configureSourceViewerDecorationSupport();
-	
-		return sourceViewer;
-	}
-	*/
 	/*
 		protected IVerticalRuler createVerticalRuler() {
 			ruler = new CompositeRuler();

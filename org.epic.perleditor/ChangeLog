@@ -2,7 +2,7 @@ Eclipse Perl Integration: Perl Editor Plugin
 
 Version 0.1.0 - 27-March-2004
 		* Enhanced Module/Subroutine detection in outline view
-		* Performance improvement of outline view
+		* Performance improvement of Outline View
 		* Added Perleditor specific RulerContextMenu (necessary for debugger)
 		* Different icon for new() in Outline (Feature Request 850033)
 		* Perl project builder and Navigator markers added

@@ -33,8 +33,8 @@ public class PerlEditorPlugin extends AbstractUIPlugin {
 	public static final String INTERPRETER_TYPE_STANDARD = "Standard";
 	public static final String INTERPRETER_TYPE_CYGWIN = "Cygwin";
 	
-	public static final String SYNTAX_VALIDATION_INTERVAL_PREFERENCE="SYNTAX_VALIDATION_INTERVAL";
-	public static final int SYNTAX_VALIDATION_INTERVAL_DEFAULT = 2;
+	public static final String SYNTAX_VALIDATION_INTERVAL_PREFERENCE="SYNTAX_VALIDATION_IDLE_INTERVAL";
+	public static final int SYNTAX_VALIDATION_INTERVAL_DEFAULT = 400;
 	
 	private PerlDocumentProvider fDocumentProvider;
 	

@@ -89,6 +89,7 @@ public class PerlEditor
 	protected CompositeRuler ruler;
 	protected LineNumberRulerColumn numberRuler;
 	private boolean lineRulerActive = false;
+	private IdleTimer idleTimer;
 
 	/**
 	 * Default constructor();
@@ -154,6 +155,15 @@ public class PerlEditor
 		}
 		fValidationThread.setText(getSourceViewer().getTextWidget().getText());
 		
+		
+		// Setup idle timer
+		idleTimer = new IdleTimer(this.getSourceViewer(), Display.getCurrent());
+		idleTimer.start();
+		
+		// Register the validation thread
+		this.registerIdleListener(fValidationThread);
+
+		
 	}
 
 	/** The <code>PerlEditor</code> implementation of this 
@@ -169,6 +179,11 @@ public class PerlEditor
 
 			resource.deleteMarkers(IMarker.PROBLEM, true, 1);
 			fValidationThread.dispose();
+			
+			if(idleTimer != null) {
+				idleTimer.dispose();
+			}
+			
 			super.dispose();
 		} catch (Exception ex) {
 			ex.printStackTrace();
@@ -267,6 +282,9 @@ public class PerlEditor
 
 			if (input instanceof IFileEditorInput) {
 				page = new PerlOutlinePage(getSourceViewer());
+				
+				this.registerIdleListener(page);
+				
 				page.addSelectionChangedListener(this);
 				return page;
 			}
@@ -387,11 +405,11 @@ public class PerlEditor
 
 	protected void handleCursorPositionChanged() {
 		super.handleCursorPositionChanged();
-		revalidateSyntax(false);
-	
-		if (page != null) {
-			page.update();
-		}
+//		revalidateSyntax(false);
+//	
+//		if (page != null) {
+//			page.update();
+//		}
 	}
 	
 
@@ -422,6 +440,11 @@ public class PerlEditor
 	public ISourceViewer getViewer() {
 		return getSourceViewer();
 	}
+	
+	public boolean registerIdleListener(Object obj) {
+		return idleTimer.addListener(obj);
+	}
+
 	
 	//	TODO For Eclipse 3.0 compatibility
 	/**

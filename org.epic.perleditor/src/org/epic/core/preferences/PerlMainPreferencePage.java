@@ -136,16 +136,16 @@ public class PerlMainPreferencePage
 	    
 
 		Label syncIntevalLabel = new Label(syntaxIntervalComposite, SWT.NONE);
-		syncIntevalLabel.setText("Syntax check interval:");
+		syncIntevalLabel.setText("Validate source when idle for ");
 	
 		syntaxCheckInterval = new Scale(syntaxIntervalComposite, SWT.HORIZONTAL);
 		syntaxCheckInterval.setMinimum(1);
-		syntaxCheckInterval.setMaximum(60);
-		syntaxCheckInterval.setIncrement(1);
+		syntaxCheckInterval.setMaximum(1000);
+		syntaxCheckInterval.setIncrement(10);
 		
 		syntaxIntervalSecondsLabel = new Label(syntaxIntervalComposite, SWT.NONE);
 		int interval = PerlEditorPlugin.getDefault().getPreferenceStore().getInt(PerlEditorPlugin.SYNTAX_VALIDATION_INTERVAL_PREFERENCE) ;
-		syntaxIntervalSecondsLabel.setText(interval + " seconds" + "   ");
+		syntaxIntervalSecondsLabel.setText(interval + " milliseconds" + "   ");
 		syntaxCheckInterval.setSelection(interval);
 		
 		syntaxCheckInterval.addListener (SWT.Selection, new Listener () {

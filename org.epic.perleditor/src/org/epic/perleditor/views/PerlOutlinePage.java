@@ -8,6 +8,7 @@ import org.eclipse.jface.text.source.ISourceViewer;
 
 import org.epic.perleditor.views.model.*;
 import org.epic.perleditor.views.util.*;
+import org.epic.perleditor.editors.IdleTimerListener;
 import org.epic.perleditor.editors.perl.PerlPartitionScanner;
 
 /**
@@ -17,7 +18,7 @@ import org.epic.perleditor.editors.perl.PerlPartitionScanner;
  *         Window>Preferences>Java>Templates. To enable and disable the creation of type comments
  *         go to Window>Preferences>Java>Code Generation.
  */
-public class PerlOutlinePage extends ContentOutlinePage {
+public class PerlOutlinePage extends ContentOutlinePage implements IdleTimerListener {
 
 	protected ISourceViewer input;
 	protected int lastHashCode = 0;
@@ -104,6 +105,14 @@ public class PerlOutlinePage extends ContentOutlinePage {
 		//getTreeViewer().expandAll();
 		
 		getControl().setRedraw(true);
+	}
+
+
+	/* (non-Javadoc)
+	 * @see org.epic.perleditor.editors.IdleTimerListener#onEditorIdle(org.eclipse.jface.text.source.ISourceViewer)
+	 */
+	public void onEditorIdle(ISourceViewer viewer) {
+		this.update();
 	}
 
 }

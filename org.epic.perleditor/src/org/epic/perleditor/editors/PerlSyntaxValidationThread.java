@@ -28,6 +28,7 @@ import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.text.source.ISourceViewer;
+import org.eclipse.jface.text.source.SourceViewer;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.editors.text.TextEditor;
@@ -35,7 +36,7 @@ import org.epic.perleditor.PerlEditorPlugin;
 import org.epic.perleditor.editors.util.PerlExecutableUtilities;
 import org.epic.perleditor.editors.util.StringReaderThread;
 
-public class PerlSyntaxValidationThread extends Thread {
+public class PerlSyntaxValidationThread extends Thread implements IdleTimerListener {
 	private static final String PERL_CMD_EXT = "-c";
 	private static final String PERL_ERROR_INDICATOR = " at - line ";
 	//private static final int READ_BUFFER_SIZE = 128;
@@ -89,6 +90,7 @@ public class PerlSyntaxValidationThread extends Thread {
                 }
     
                 this.lock1.notifyAll();
+                this.validateSyntax(text);
             }
         }
 	}
@@ -108,42 +110,42 @@ public class PerlSyntaxValidationThread extends Thread {
 	}
 
 	public void run() {
-        try
-        {
-    		while (!Thread.interrupted())
-            {
-                String text;
-                synchronized (this.lock1)
-                {
-                    while (!this.modified)
-                        this.lock1.wait();
-
-                    this.force = false;
-                    this.modified = false;
-                    text = this.code;
-                }
-
-    			try
-                {
-    				this.validateSyntax(text);
-    			}
-                catch (Exception e) {
-    				e.printStackTrace();
-    			}                
-
-                long i = 1000L*PerlEditorPlugin.getDefault().getPreferenceStore().getInt(PerlEditorPlugin.SYNTAX_VALIDATION_INTERVAL_PREFERENCE);
-                synchronized (this.lock2)
-                {
-                    if (!this.force)
-                        this.lock2.wait(i);
-                }
-    		}
-        }
-        catch (InterruptedException e)
-        {
-            //everything is fine, and this thread will terminate
-            e.printStackTrace();
-        }
+//        try
+//        {
+//    		while (!Thread.interrupted())
+//            {
+//                String text;
+//                synchronized (this.lock1)
+//                {
+//                    while (!this.modified)
+//                        this.lock1.wait();
+//
+//                    this.force = false;
+//                    this.modified = false;
+//                    text = this.code;
+//                }
+//
+//    			try
+//                {
+//    				this.validateSyntax(text);
+//    			}
+//                catch (Exception e) {
+//    				e.printStackTrace();
+//    			}                
+//
+//                long i = 1000L*PerlEditorPlugin.getDefault().getPreferenceStore().getInt(PerlEditorPlugin.SYNTAX_VALIDATION_INTERVAL_PREFERENCE);
+//                synchronized (this.lock2)
+//                {
+//                    if (!this.force)
+//                        this.lock2.wait(i);
+//                }
+//    		}
+//        }
+//        catch (InterruptedException e)
+//        {
+//            //everything is fine, and this thread will terminate
+//            e.printStackTrace();
+//        }
 	}
 
 	private boolean validateSyntax(String text) {
@@ -465,5 +467,12 @@ public class PerlSyntaxValidationThread extends Thread {
 	private IResource getResource() {
 		IEditorInput input = fTextEditor.getEditorInput();
 		return (IResource) ((IAdaptable) input).getAdapter(IResource.class);
+	}
+
+	/* (non-Javadoc)
+	 * @see org.epic.perleditor.editors.IdleTimerListener#onEditorIdle(org.eclipse.jface.text.source.ISourceViewer)
+	 */
+	public void onEditorIdle(ISourceViewer viewer) {
+		this.setText(((SourceViewer) viewer).getTextWidget().getText());
 	}
 }

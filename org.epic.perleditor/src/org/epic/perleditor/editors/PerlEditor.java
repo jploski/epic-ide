@@ -90,6 +90,7 @@ public class PerlEditor
 	private boolean lineRulerActive = false;
 	private SourceViewer fSourceViewer;
 	private IDocumentProvider fDocumentProvider;
+	private IdleTimer idleTimer;
 	
 	private final static String PERL_MODE = "perl";
 
@@ -166,6 +167,13 @@ public class PerlEditor
 		}
 
 		setEditorForegroundColor();
+		
+		// Setup idle timer
+		idleTimer = new IdleTimer(this.getSourceViewer(), Display.getCurrent());
+		idleTimer.start();
+		
+		// Register the validation thread
+		this.registerIdleListener(fValidationThread);
 
 	}
 
@@ -184,6 +192,10 @@ public class PerlEditor
 			
 			if(fValidationThread != null) {
 				fValidationThread.dispose();
+			}
+			
+			if(idleTimer != null) {
+				idleTimer.dispose();
 			}
 			
 			super.dispose();
@@ -282,6 +294,9 @@ public class PerlEditor
 
 			if (input instanceof IFileEditorInput) {
 				page = new PerlOutlinePage(getSourceViewer());
+				
+				this.registerIdleListener(page);
+				
 				page.addSelectionChangedListener(this);
 				return page;
 			}
@@ -401,11 +416,11 @@ public class PerlEditor
 
 	protected void handleCursorPositionChanged() {
 		super.handleCursorPositionChanged();
-		revalidateSyntax(false);
-
-		if (page != null) {
-			page.update();
-		}
+//		revalidateSyntax(false);
+//
+//		if (page != null) {
+//			page.update();
+//		}
 	}
 
 	/*
@@ -451,6 +466,11 @@ public class PerlEditor
 			String modeName = ((PerlSourceViewerConfiguration)getSourceViewerConfiguration()).getMode().getDisplayName();
 			return modeName;
 		}
+		
+		
+	public boolean registerIdleListener(Object obj) {
+		return idleTimer.addListener(obj);
+	}
 
 	private void setEditorForegroundColor() {
 		// Set text editor forground colour

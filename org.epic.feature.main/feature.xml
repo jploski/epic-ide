@@ -232,7 +232,7 @@ litigation.
          id="org.epic.debug"
          download-size="0"
          install-size="0"
-         version="0.1.0"/>
+         version="0.2.0"/>
 
    <plugin
          id="org.epic.ext.cbg.editor"

@@ -3,6 +3,7 @@ package org.epic.perleditor.editors.util;
 import java.io.*;
 import java.net.URL;
 import java.util.List;
+import java.util.StringTokenizer;
 
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -26,45 +27,54 @@ public class SourceFormatter {
 	   boolean cuddleElse = store.getBoolean(SourceFormatterPreferences.CUDDLED_ELSE);
 	   boolean bracesLeft = store.getBoolean(SourceFormatterPreferences.BRACES_LEFT);
 	   boolean lineUpParentheses = store.getBoolean(SourceFormatterPreferences.LINE_UP_WITH_PARENTHESES);
+	   boolean swallowOptionalBlankLines = store.getBoolean(SourceFormatterPreferences.SWALLOW_OPTIONAL_BLANK_LINES);
 	   
-	   int containerTightnessBraces = store.getInt(SourceFormatterPreferences.CONTAINER_TIGHTNESS_BRACES);
-	   int containerTightnessParentheses = store.getInt(SourceFormatterPreferences.CONTAINER_TIGHTNESS_PARENTHESES);
-	   int containerTightnessSquareBrackets = store.getInt(SourceFormatterPreferences.CONTAINER_TIGHTNESS_SQUARE_BRACKETS);
+//	   int containerTightnessBraces = store.getInt(SourceFormatterPreferences.CONTAINER_TIGHTNESS_BRACES);
+//	   int containerTightnessParentheses = store.getInt(SourceFormatterPreferences.CONTAINER_TIGHTNESS_PARENTHESES);
+//	   int containerTightnessSquareBrackets = store.getInt(SourceFormatterPreferences.CONTAINER_TIGHTNESS_SQUARE_BRACKETS);
 	   
 
 		String formattedText = null;
 		try {		
 			URL installURL = PerlEditorPlugin.getDefault().getDescriptor().getInstallURL();
 			URL perlTidyURL = Platform.resolve(new URL(installURL,"perlutils/perltidy"));
-		
-		    String perlBin = PerlEditorPlugin.getDefault().getExecutablePreference().trim();
   
             List  cmdList =PerlExecutableUtilities.getPerlExecutableCommandLine();
             cmdList.add("perltidy");
             
             /* Add additional parameters */
-            cmdList.add("-i=" + tabWidth);
-			cmdList.add("-l=" + pageSize);
-			cmdList.add("-bt=" + containerTightnessBraces);
-			cmdList.add("-pt=" + containerTightnessParentheses);
-			cmdList.add("-sbt=" + containerTightnessSquareBrackets);
+            cmdList.add("--indent-columns=" + tabWidth);
+			cmdList.add("--maximum-line-length=" + pageSize);
+//			cmdList.add("--brace-tightness=" + containerTightnessBraces);
+//			cmdList.add("--paren-tightness=" + containerTightnessParentheses);
+//			cmdList.add("--square-bracket-tightness=" + containerTightnessSquareBrackets);
 			
 			if(useTabs) {
-				cmdList.add("-et=" + tabWidth);
+				cmdList.add("--entab-leading-whitespace=" + tabWidth);
 			}
 			
 			if(cuddleElse) {
-				cmdList.add("-ce");
+				cmdList.add("--cuddled-else");
 			}
 			
 			if(bracesLeft) {
-				cmdList.add("-bl");
+				cmdList.add("--opening-brace-on-new-line");
 			}
 			
 			if(lineUpParentheses) {
-				 cmdList.add("-lp");
+				 cmdList.add("--line-up-parentheses");
+			}
+
+			if(swallowOptionalBlankLines) {
+				 cmdList.add("--swallow-optional-blank-lines");
 			}
 			
+			
+			// Read additional options
+			StringTokenizer st = new StringTokenizer(store.getString(SourceFormatterPreferences.PERLTIDY_OPTIONS));
+			 while (st.hasMoreTokens()) {
+				cmdList.add(st.nextToken());
+			 }
             
 			String[] cmdParams = (String[]) cmdList.toArray(new String[cmdList.size()]);
 

@@ -16,7 +16,6 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.IEditorDescriptor;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorRegistry;
-import org.eclipse.ui.IStorageEditorInput;
 import org.eclipse.ui.PlatformUI;
 import org.epic.core.util.FileUtilities;
 import org.epic.debug.varparser.PerlDebugVar;

@@ -8,7 +8,6 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.epic.debug.PerlDB;
 import org.epic.debug.PerlDebugPlugin;
-import org.epic.debug.RemoteTarget;
 
 /*
  * Created on 19.03.2004

@@ -1,6 +1,7 @@
 package org.epic.regexp.views;
 
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.part.*;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.jface.action.*;
@@ -19,7 +20,6 @@ import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.events.FocusEvent;
 import org.epic.regexp.RegExpPlugin;
 
-import java.awt.MenuItem;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -289,10 +289,9 @@ public class RegExpView extends ViewPart {
 
 		//set the actions for the global action handler
 		IActionBars bars = getViewSite().getActionBars();
-		bars.setGlobalActionHandler(IWorkbenchActionConstants.CUT, cutAction);
-		bars.setGlobalActionHandler(IWorkbenchActionConstants.COPY, copyAction);
-		bars.setGlobalActionHandler(IWorkbenchActionConstants.PASTE,
-				pasteAction);
+		bars.setGlobalActionHandler(ActionFactory.CUT.getId(), cutAction);
+		bars.setGlobalActionHandler(ActionFactory.COPY.getId(), copyAction);
+		bars.setGlobalActionHandler(ActionFactory.PASTE.getId(), pasteAction);
 
 		hookContextMenu();
 

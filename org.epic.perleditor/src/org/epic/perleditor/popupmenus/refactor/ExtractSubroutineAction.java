@@ -27,7 +27,6 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorPart;
-import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 import org.eclipse.ui.editors.text.TextEditor;
@@ -201,8 +200,7 @@ public class ExtractSubroutineAction extends Action implements
 			String[] cmdParams = (String[]) cmdList.toArray(new String[cmdList
 					.size()]);
 
-			URL installURL = PerlEditorPlugin.getDefault().getDescriptor()
-					.getInstallURL();
+			URL installURL = PerlEditorPlugin.getDefault().getBundle().getEntry("/");
 			URL perlModulesURL = Platform.resolve(new URL(installURL,
 					"perlutils/modules"));
 

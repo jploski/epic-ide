@@ -23,10 +23,10 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import org.eclipse.core.boot.BootLoader;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.ILogListener;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Platform;
 /**
  * A log writer that writes log entries.
  * See PlatformLogReader for reading logs back into memory.
@@ -155,13 +155,13 @@ protected void writeHeader() throws IOException {
 	}
 
 	// The Bootloader has some information that we might be interested in.
-	write("BootLoader constants: OS=" + BootLoader.getOS());//$NON-NLS-1$
-	write(", ARCH=" + BootLoader.getOSArch());//$NON-NLS-1$
-	write(", WS=" + BootLoader.getWS());//$NON-NLS-1$
-	writeln(", NL=" + BootLoader.getNL());//$NON-NLS-1$
+	write("BootLoader constants: OS=" + Platform.getOS());//$NON-NLS-1$
+	write(", ARCH=" + Platform.getOSArch());//$NON-NLS-1$
+	write(", WS=" + Platform.getWS());//$NON-NLS-1$
+	writeln(", NL=" + Platform.getNL());//$NON-NLS-1$
 
 	// Add the command-line arguments used to envoke the EPIC.
-	String[] args = BootLoader.getCommandLineArgs();
+	String[] args = Platform.getCommandLineArgs();
 	if (args != null && args.length > 0) {
 		write("Command-line arguments:");//$NON-NLS-1$
 		for (int i=0; i<args.length; i++) {

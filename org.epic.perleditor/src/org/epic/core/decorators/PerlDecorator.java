@@ -41,8 +41,7 @@ public class PerlDecorator extends LabelProvider
 	public static int NO_ERROR = -1;
 
 	// Define images
-	static final URL BASE_URL = PerlEditorPlugin.getDefault().getDescriptor()
-			.getInstallURL();
+	static final URL BASE_URL = PerlEditorPlugin.getDefault().getBundle().getEntry("/");
 	public static final ImageDescriptor ICON_ERROR;
 	public static final ImageDescriptor ICON_WARNING;
 	static {

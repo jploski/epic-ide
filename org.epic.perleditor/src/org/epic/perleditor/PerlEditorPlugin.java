@@ -253,7 +253,7 @@ public class PerlEditorPlugin extends AbstractUIPlugin {
 	}
 
 	public static String getPluginId() {
-		return getDefault().getDescriptor().getUniqueIdentifier();
+		return getDefault().getBundle().getSymbolicName();
 	}
 
 	public synchronized PerlDocumentProvider getDocumentProvider() {

@@ -148,7 +148,7 @@ public class ColoringEditorTools {
 	 */
 	public static File getFile(String filename) throws IOException {
 		if(EditorPlugin.getDefault() != null) {
-			URL installURL = EditorPlugin.getDefault().getDescriptor().getInstallURL();
+			URL installURL = EditorPlugin.getDefault().getBundle().getEntry("/");
 			URL mode = Platform.resolve(new URL(installURL, filename));
 			return new File(mode.getFile());
 		} else {

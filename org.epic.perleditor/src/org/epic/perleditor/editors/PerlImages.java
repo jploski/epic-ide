@@ -10,7 +10,7 @@ import java.net.URL;
 
 public class PerlImages
 {
-   static final URL BASE_URL = PerlEditorPlugin.getDefault().getDescriptor().getInstallURL();
+   static final URL BASE_URL = PerlEditorPlugin.getDefault().getBundle().getEntry("/");
    public static final ImageDescriptor ICON_EDITOR;
    public static final ImageDescriptor ICON_SUBROUTINE;
    public static final ImageDescriptor ICON_SUBROUTINE_NODE;

@@ -1,15 +1,10 @@
 package org.epic.debug.varparser;
-import java.io.InputStream;
-import java.io.Reader;
 import java.io.StringReader;
 
 import org.epic.debug.PerlDB;
 import org.epic.debug.PerlDebugPlugin;
 
-import antlr.InputBuffer;
-import antlr.LexerSharedInputState;
 import antlr.RecognitionException;
-import antlr.Token;
 import antlr.TokenStreamException;
 import antlr.TokenStreamHiddenTokenFilter;
 

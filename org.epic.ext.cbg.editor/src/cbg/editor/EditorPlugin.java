@@ -84,7 +84,7 @@ public class EditorPlugin extends AbstractUIPlugin {
 	public static ImageDescriptor getImageDescriptor(String imageName) {
 		String iconPath = "icons/";
 		try {
-			URL installURL = getDefault().getDescriptor().getInstallURL();
+			URL installURL = getDefault().getBundle().getEntry("/");
 			URL url = new URL(installURL, iconPath + imageName);
 			return ImageDescriptor.createFromURL(url);
 		} catch (MalformedURLException e) {
@@ -117,7 +117,7 @@ public class EditorPlugin extends AbstractUIPlugin {
 	}
 	public static void logError(String message, Exception exception) {
 		if(getDefault() == null) return;
-		getDefault().getLog().log(new Status(IStatus.ERROR, getDefault().getDescriptor().getLabel(), 
+		getDefault().getLog().log(new Status(IStatus.ERROR, (String) getDefault().getBundle().getHeaders().get(org.osgi.framework.Constants.BUNDLE_NAME), 
 			IStatus.OK, message, exception));
 	}
 }

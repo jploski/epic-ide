@@ -1,7 +1,5 @@
 package org.epic.perleditor.preferences;
 
-import java.util.ArrayList;
-
 import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.ListEditor;
@@ -9,7 +7,6 @@ import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
 import org.epic.perleditor.PerlEditorPlugin;
-import org.epic.perleditor.popupmenus.PopupMessages;
 
 /**
  * @author ptraeder

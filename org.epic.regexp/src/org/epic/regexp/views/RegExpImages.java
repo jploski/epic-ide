@@ -15,7 +15,7 @@ import java.net.URL;
  */
 public class RegExpImages
 {
-   static final URL BASE_URL = RegExpPlugin.getDefault().getDescriptor().getInstallURL();
+   static final URL BASE_URL = RegExpPlugin.getDefault().getBundle().getEntry("/");
    static final String iconPath = "icons/";
    
    public static final ImageDescriptor ICON_VIEW = createImageDescriptor(iconPath + "rx.gif");

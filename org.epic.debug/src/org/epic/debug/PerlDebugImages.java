@@ -26,7 +26,7 @@ public class PerlDebugImages {
 
 
 
-   static final URL BASE_URL = PerlDebugPlugin.getDefault().getDescriptor().getInstallURL();
+   static final URL BASE_URL = PerlDebugPlugin.getDefault().getBundle().getEntry("/");
  
    static final String iconPath = "icons/";
    

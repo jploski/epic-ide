@@ -2,7 +2,6 @@ package org.epic.perleditor.editors;
 
 import org.eclipse.jface.text.source.IOverviewRuler;
 import org.eclipse.jface.text.source.IVerticalRuler;
-import org.eclipse.jface.text.source.SourceViewer;
 import org.eclipse.jface.text.source.projection.ProjectionViewer;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.jface.text.BadLocationException;

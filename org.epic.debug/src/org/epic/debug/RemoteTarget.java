@@ -6,10 +6,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
@@ -25,23 +21,10 @@ import org.eclipse.debug.core.IDebugEventSetListener;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchManager;
 import org.eclipse.debug.core.model.IProcess;
-import org.eclipse.help.browser.IBrowser;
-import org.eclipse.help.internal.browser.BrowserDescriptor;
-import org.eclipse.help.internal.browser.BrowserManager;
-import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.IWorkbenchPage;
-import org.eclipse.ui.PartInitException;
-import org.epic.core.views.browser.BrowserView;
-import org.epic.debug.cgi.CustomBrowser;
-import org.epic.debug.util.CGIProxy;
 import org.epic.debug.util.DebuggerProxy;
 import org.epic.debug.util.PathMapper;
-import org.epic.debug.util.PathMapperCygwin;
 import org.epic.debug.util.PathMapping;
 import org.epic.debug.util.RemotePort;
-import org.epic.perleditor.PerlEditorPlugin;
-import org.epic.perleditor.editors.util.PerlExecutableUtilities;
-import org.epic.regexp.views.RegExpView;
 
 /**
  * @author ruehl

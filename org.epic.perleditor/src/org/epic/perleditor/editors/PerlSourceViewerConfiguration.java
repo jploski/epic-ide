@@ -1,7 +1,5 @@
 package org.epic.perleditor.editors;
 
-import java.util.HashMap;
-
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.jface.text.DefaultAutoIndentStrategy;
 import org.eclipse.jface.text.IAutoIndentStrategy;

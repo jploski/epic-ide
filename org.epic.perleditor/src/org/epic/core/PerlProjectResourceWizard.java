@@ -363,7 +363,7 @@ public class PerlProjectResourceWizard
 		// Retrieve the new project open perspective preference setting
 		String perspSetting =
 			uiPlugin.getPreferenceStore().getString(
-				IWorkbenchPreferenceConstants.PROJECT_OPEN_NEW_PERSPECTIVE);
+					org.eclipse.ui.ide.IDE.Preferences.PROJECT_OPEN_NEW_PERSPECTIVE);
 
 		// Return if do not switch perspective setting
 		if (perspSetting

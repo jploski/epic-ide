@@ -7,8 +7,6 @@ import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchManager;
-import org.eclipse.debug.core.Launch;
-import org.eclipse.debug.core.model.ILaunchConfigurationDelegate;
 import org.epic.core.Constants;
 import org.epic.core.Perspective;
 

@@ -9,8 +9,6 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.help.WorkbenchHelp;
 import org.epic.perleditor.PerlEditorPlugin;
 import org.epic.perleditor.editors.PerlEditor;
-import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.jface.util.PropertyChangeEvent;
 
 /**
  * @author ptraeder

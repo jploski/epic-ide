@@ -31,7 +31,6 @@ import org.epic.debug.cgi.CustomBrowser;
 import org.epic.debug.util.CGIProxy;
 import org.epic.debug.util.RemotePort;
 import org.epic.perleditor.editors.util.PerlExecutableUtilities;
-import org.epic.regexp.views.RegExpView;
 
 /**
  * @author ruehl

@@ -14,7 +14,7 @@ package org.epic.debug.util;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.core.boot.BootLoader;
+import org.eclipse.core.runtime.Platform;
 
 /**
  * The execution arguments for running a Java VM. The execution arguments are
@@ -119,7 +119,7 @@ public class ExecutionArguments {
 					if (ch != '"') {           // Only escape double quotes
 						buf.append('\\');
 					} else {
-						if (BootLoader.getOS().equals(BootLoader.OS_WIN32)) {
+						if (Platform.getOS().equals(Platform.OS_WIN32)) {
 							// @see Bug 26870. Windows requires an extra escape for embedded strings
 							buf.append('\\');
 						}

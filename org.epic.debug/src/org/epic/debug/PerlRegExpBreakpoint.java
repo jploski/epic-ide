@@ -11,30 +11,14 @@ import gnu.regexp.REException;
 import gnu.regexp.REMatch;
 import gnu.regexp.RESyntax;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
 import java.util.Map;
 
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.DebugException;
 import org.eclipse.jface.text.BadLocationException;
-import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.IEditorPart;
-import org.eclipse.ui.IWorkbench;
-import org.eclipse.ui.IWorkbenchPage;
-import org.eclipse.ui.IWorkbenchWindow;
-import org.eclipse.ui.PartInitException;
-import org.eclipse.ui.editors.text.TextEditor;
-import org.eclipse.ui.part.FileEditorInput;
-import org.epic.regexp.views.RegExpView;
 
 /**
  * @author ruehl

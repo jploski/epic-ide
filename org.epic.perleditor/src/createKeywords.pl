@@ -28,12 +28,5 @@ while($text =~ /[0-9]{2}\.[0-9]\.[0-9]{2,3}\. ([^\n]+)\n(.*?)\n([A-Z].*?\.)/smg)
     
     print "$out\n";
   
-    print  <<LA; 
- This is my example heredoc. Here, the word 'my' would 
- be colored and the word use would be colored as well 
- because the syntax coloring interprets them as 
- functions and not as part of a string. 
-LA
- 
      
 }

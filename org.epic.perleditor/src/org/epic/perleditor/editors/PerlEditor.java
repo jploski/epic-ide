@@ -153,7 +153,9 @@ public class PerlEditor
 
 		if (fValidationThread == null && isPerlMode()) {
 			fValidationThread =
-				new PerlSyntaxValidationThread(this, getSourceViewer());
+				new PerlSyntaxValidationThread(this, getSourceViewer());	
+			// Set thread priority to minimal
+			fValidationThread.setPriority(Thread.MIN_PRIORITY);
 			//Thread defaults
 			fValidationThread.start();
 			

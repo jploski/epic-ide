@@ -306,7 +306,7 @@ public class PerlDB	implements IDebugElement {
 				}
 				
 	//DebugPlugin.newProcess(getLaunch(),mProcess,"Echo-Process");
-	
+	((PerlDebugPlugin)PerlDebugPlugin.getDefault()).registerDebugger(this);
 	try{			
 		synchronized(this)
 		{
@@ -341,10 +341,16 @@ public class PerlDB	implements IDebugElement {
 		}
 		
 		startCommand(mCommandClearOutput,null,false, this);
+		if( ! isTerminated(this) )
+		{
 		startCommand(mCommandExecuteCode,mDBinitPerl,false, this);
 		PerlDebugPlugin.getPerlBreakPointmanager().addDebugger(this);
 		updateStackFrames(null);
 		generateDebugInitEvent();
+		}
+		else
+			generateDebugTermEvent();
+			
 	}
 	/* (non-Javadoc)
 	 * @see org.eclipse.debug.core.model.IDebugElement#getModelIdentifier()
@@ -546,7 +552,12 @@ public class PerlDB	implements IDebugElement {
 			return( waitForCommandToFinish() );
 	}
 	
-	private void shutdown()
+	void shutdown()
+	{
+		shutdown(true);	
+	}
+	
+	void shutdown(boolean fUnregister)
 	{
 		try{
 			if( mDebugIn != null) mDebugIn.close();
@@ -556,6 +567,8 @@ public class PerlDB	implements IDebugElement {
 		}catch( Exception e){};
 		mProcess.destroy();
 		mProcess = null;
+		if( fUnregister )
+		((PerlDebugPlugin)PerlDebugPlugin.getDefault()).unregisterDebugger(this);
 	}
 	
 	void generateDebugEvent(int fCommand, boolean fStart, Object fCommandDest)
@@ -670,14 +683,18 @@ public class PerlDB	implements IDebugElement {
 				{ abortSession(); throw new RuntimeException("Terminating Debug Session due to IO-Error !");}
 	
 			if(count > 0) debugOutput.append(buf,0,count);
-	
-			currentOutput = debugOutput.toString();
+				currentOutput = debugOutput.toString();
+			
 	
 			//System.out.println("\nCurrent DEBUGOUTPUT:\n"+currentOutput+"\n");
 			if( hasSessionTerminated(currentOutput) )
 				{ finished = mSessionTerminated; break;}
-			if(hasCommandTerminated(currentOutput))
-				{ finished = mCommandFinished; break;} 
+			else
+				if(hasCommandTerminated(currentOutput))
+					{ finished = mCommandFinished; break;}
+				else
+					if( count < 0) 	{ finished = mSessionTerminated; break;}
+		   
 		}
 		
 		if( finished == mSessionTerminated)

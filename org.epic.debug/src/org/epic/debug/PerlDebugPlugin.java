@@ -25,6 +25,7 @@ public class PerlDebugPlugin extends AbstractUIPlugin {
 	private static String mSystemEnv[];
 	private static String mDebugEnv[];
 	private static PerlBreakpointManager mBreakPointmanager;
+	private ArrayList mDebugger;
 	
 	private static PerlImageDescriptorRegistry defaultPerlImageDescriptorRegistry = new PerlImageDescriptorRegistry();
 	private final static String mDebugOptions = "PERLDB_OPTS=RemotePort=localhost:4444 DumpReused ReadLine=0";// frame=2";
@@ -41,6 +42,7 @@ public class PerlDebugPlugin extends AbstractUIPlugin {
 		}
 		createEnvArrays();
 		mBreakPointmanager = new PerlBreakpointManager( DebugPlugin.getDefault());
+		mDebugger = new ArrayList();
 	}
 
 
@@ -198,4 +200,26 @@ public class PerlDebugPlugin extends AbstractUIPlugin {
 		{
 			 		return(mBreakPointmanager);
 		}
+	
+	public void registerDebugger(PerlDB fDebug)
+	{
+		mDebugger.add(fDebug);
+	}
+	
+	public void unregisterDebugger(PerlDB fDebug)
+	{
+			mDebugger.remove(fDebug);
+	}
+	
+	public void shutdown()
+	{
+		PerlDB db;
+		Iterator i=  mDebugger.iterator();
+		while(i.hasNext())
+		{
+			db = (PerlDB) i.next();
+			if( db != null)
+				db.shutdown(false);
+		}
+	}
 }

@@ -42,7 +42,8 @@ public class DebugTarget implements IDebugTarget {
 		}catch (Exception e){System.out.println("Failing to create DB-Process: "+e+" !!!");}
 
 		//mThreads[0]= new PerlDebugThread("Hallo",mLaunch,this);
-		mProcess = DebugPlugin.newProcess(launch,mPerlDB.getProcess(),"Perl-Debugger");
+		if( ! mPerlDB.isTerminated(mPerlDB))
+			mProcess = DebugPlugin.newProcess(launch,mPerlDB.getProcess(),"Perl-Debugger");
 	}
 	/**
 	 * @see org.eclipse.debug.core.model.IDebugTarget#getProcess()
@@ -124,37 +125,40 @@ public class DebugTarget implements IDebugTarget {
 	 * @see org.eclipse.debug.core.model.ITerminate#terminate()
 	 */
 	public void terminate() throws DebugException {
+		mPerlDB.terminate(this);
 	}
 
 
 	public boolean canResume() {
-		return true;
+		return false;//mPerlDB.canResume(this);
 	}
 
 	/**
 	 * @see org.eclipse.debug.core.model.ISuspendResume#canSuspend()
 	 */
 	public boolean canSuspend() {
-		return false;
+		return mPerlDB.canSuspend(this);
 	}
 
 	/**
 	 * @see org.eclipse.debug.core.model.ISuspendResume#isSuspended()
 	 */
 	public boolean isSuspended() {
-		return false;
+		return mPerlDB.isSuspended(this);
 	}
 
 	/**
 	 * @see org.eclipse.debug.core.model.ISuspendResume#resume()
 	 */
 	public void resume() throws DebugException {
+		 mPerlDB.resume(this);
 	}
 
 	/**
 	 * @see org.eclipse.debug.core.model.ISuspendResume#suspend()
 	 */
 	public void suspend() throws DebugException {
+		mPerlDB.suspend(this);
 	}
 
 	/**

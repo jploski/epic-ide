@@ -3,7 +3,7 @@
 <plugin
    id="org.epic.regexp"
    name="Regexp Plug-in"
-   version="0.1.2"
+   version="0.1.3"
    provider-name="Epic Project"
    class="org.epic.regexp.RegExpPlugin">
 

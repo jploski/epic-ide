@@ -11,6 +11,8 @@ Eclipse Perl Integration:
 		* Fixed bug: [ 996351 ] NullPointer exception during Launch (problems if path to Perl executable has spaces) 
 		
 		Editor:
+		* Perldoc View has been reimplemented (Accessible via Shift+Ctrl/Control+H)
+		* Added New Perl File Wizard
 		* Implemented Feature Request: [ 1047906 ] Validate source on request, not continuously
 		* Added Jump Matching Bracket
 		* Added Bracket Matching

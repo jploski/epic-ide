@@ -91,7 +91,7 @@ public class PerlEditor
 	private SourceViewer fSourceViewer;
 	private IDocumentProvider fDocumentProvider;
 	
-	private final static String PERL_MODE = "Perl";
+	private final static String PERL_MODE = "perl";
 
 	/**
 	 * Default constructor();
@@ -440,7 +440,7 @@ public class PerlEditor
 	 * @return true if in perl mode, otherwise false
 	 */
 	public boolean isPerlMode() {
-		return getModeName().equals(PERL_MODE);
+		return getModeName().toLowerCase().equals(PERL_MODE);
 	}
 	
 	/**

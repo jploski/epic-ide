@@ -297,7 +297,8 @@
             </separator>
          </menu>
          <action
-               label="Open SUB Declaration (F3)"
+         	   definitionId="org.epic.perleditor.openDeclaration"
+               label="Open SUB Declaration"
                icon="icons/open-source.gif"
                class="org.epic.perleditor.popupmenus.OpenDeclaration"
                tooltip="Open Declaration for SUBs only, defined locally, in files or in packages!"
@@ -392,10 +393,11 @@
 <!-- Open declaration -->
          <action
                label="Open &amp;Declaration"
+               retarget="true"
+               icon="icons/open-source.gif"
                definitionId="org.epic.perleditor.openDeclaration"
-               class="org.epic.perleditor.popupmenus.OpenDeclaration"
-               menubarPath="additions"
-               id="org.epic.perleditor.openDeclaration">
+               menubarPath="navigate/additions"
+               id="org.epic.perleditor.popupmenus.OpenSubAction">
          </action>
          
       </actionSet>

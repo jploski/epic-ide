@@ -168,10 +168,10 @@ names are convenient for keyboard input, while the long names are
 self-documenting and therefore useful in scripts.  It is customary to
 use two leading dashes for long names, but one may be used.</P>
 <P>Most parameters which serve as on/off flags can be negated with a
-leading ``n'' (for the short name) or a leading ``no'' or ``no-'' (for the long
-name).  For example, the flag to have perl check syntax using <STRONG>perl -c</STRONG>
-is <STRONG>-syn</STRONG> or <STRONG>--check-syntax</STRONG>.  The flag to skip this is
-<STRONG>-nsyn</STRONG> or <STRONG>--nocheck-syntax</STRONG> or <STRONG>--no-check-syntax</STRONG>.</P>
+leading ``n'' (for the short name) or a leading ``no'' or ``no-'' (for the
+long name).  For example, the flag to outdent long quotes is is <STRONG>-olq</STRONG>
+or <STRONG>--outdent-long-quotes</STRONG>.  The flag to skip this is <STRONG>-nolq</STRONG>
+or <STRONG>--nooutdent-long-quotes</STRONG> or <STRONG>--no-outdent-long-quotes</STRONG>.</P>
 <P>Options may not be bundled together.  In other words, options <STRONG>-q</STRONG> and
 <STRONG>-g</STRONG> may NOT be entered as <STRONG>-qg</STRONG>.</P>
 <P>Option names may be terminated early as long as they are uniquely identified.
@@ -200,20 +200,17 @@ standard output device, so a special flag, <STRONG>-st</STRONG>, is required to
 request outputting to the standard output.  For example,
 <PRE>
   perltidy somefile.pl -st &gt;somefile.new.pl</PRE>
-<P>This option may only be used if there is just a single input file.  When
-this option is used, perltidy will have to create a temporary copy of
-the output file to feed to perl for syntax checking,
-unless allow syntax checking is disabled.  This file will be deleted
-when the job finishes.  The default is <STRONG>-nst</STRONG> or <STRONG>-nostandard-output</STRONG>.</P>
+<P>This option may only be used if there is just a single input file.  
+The default is <STRONG>-nst</STRONG> or <STRONG>-nostandard-output</STRONG>.</P>
 <P></P>
 <DT><STRONG><A NAME="item_%2Dse%2C_%2D%2Dstandard%2Derror%2Doutput"><STRONG>-se</STRONG>,    <STRONG>--standard-error-output</STRONG></A></STRONG><BR>
 <DD>
 If perltidy detects an error when processing file <EM>somefile.pl</EM>, its
 default behavior is to write error messages to file <EM>somefile.pl.ERR</EM>.
 Use <STRONG>-se</STRONG> to cause all error messages to be sent to the standard error
-output stream instead.  This directive may be negated with <STRONG>-nse</STRONG>. 
-Thus, you may place <STRONG>-se</STRONG> in a <EM>.perltidyrc</EM> and override it
-when desired with <STRONG>-nse</STRONG> on the command line.
+output stream instead.  This directive may be negated with <STRONG>-nse</STRONG>.
+Thus, you may place <STRONG>-se</STRONG> in a <EM>.perltidyrc</EM> and override it when
+desired with <STRONG>-nse</STRONG> on the command line.
 <P></P>
 <DT><STRONG><A NAME="item_%2Doext%3Dext%2C_%2D%2Doutput%2Dfile%2Dextension%3"><STRONG>-oext</STRONG>=ext,    <STRONG>--output-file-extension</STRONG>=ext</A></STRONG><BR>
 <DD>
@@ -254,8 +251,8 @@ default <EM>.bak</EM>.  See <A HREF="#specifying file extensions">Specifying Fil
 <P></P>
 <DT><STRONG><A NAME="item_%2Dw%2C_%2D%2Dwarning%2Doutput"><STRONG>-w</STRONG>,    <STRONG>--warning-output</STRONG></A></STRONG><BR>
 <DD>
-Setting <STRONG>-w</STRONG> causes perltidy to include any non-critical warning
-messages be reported as errors.  These include messages
+Setting <STRONG>-w</STRONG> causes any non-critical warning
+messages to be reported as errors.  These include messages
 about possible pod problems, possibly bad starting indentation level,
 and cautions about indirect object usage.  The default, <STRONG>-nw</STRONG> or
 <STRONG>--nowarning-output</STRONG>, is not to include these warnings.
@@ -370,26 +367,20 @@ option.
 <P></P></DL>
 <DT><STRONG><A NAME="item_%2Dsyn%2C_%2D%2Dcheck%2Dsyntax"><STRONG>-syn</STRONG>,   <STRONG>--check-syntax</STRONG></A></STRONG><BR>
 <DD>
-The purpose of this flag is to alert you to any situation in which the
-input file has good syntax but the output file has bad syntax, which
-implies an error by perltidy.
-<P>This flag causes perltidy to run <CODE>perl -c -T</CODE> to check syntax of input
-and output.  (To change the flags passed to perl, see the next item,
-<STRONG>-pscf</STRONG>).  The results are written to the <EM>.LOG</EM> file, which will be
-saved if an error is detected in the output script.  The output script
-is not checked if the input script has a syntax error.</P>
-<P>If Perl reports errors in the input file, they will not be reported in
+This flag causes perltidy to run <CODE>perl -c -T</CODE> to check syntax of input
+and output.  (To change the flags passed to perl, see the next
+item, <STRONG>-pscf</STRONG>).  The results are written to the <EM>.LOG</EM> file, which
+will be saved if an error is detected in the output script.  The output
+script is not checked if the input script has a syntax error.  Perltidy
+does its own checking, but this option employs perl to get a ``second
+opinion''.
+<P>If perl reports errors in the input file, they will not be reported in
 the error output unless the <STRONG>-warning-output</STRONG> flag is given.</P>
-<P>To skip syntax checking, use <STRONG>-nsyn</STRONG> or <STRONG>--nocheck-syntax</STRONG>.  Syntax
-checking is also deactivated by the <STRONG>--quiet</STRONG> flag, discussed above.</P>
-<P>The default is to do a syntax check on most operating systems.  An
-exception is Windows 9x/Me systems, which do not handle this well.
-Another exception is when the input or output streams are not connected
-to identifiable filenames.  In the past, copies of these streams were
-saved in temporary files, but this has caused too many portability
-problems.</P>
-<P><STRONG>Please note:</STRONG> Even if this type of syntax checking is deactivated,
-perltidy will still do extensive syntax checking on its own.</P>
+<P>The default is <STRONG>not</STRONG> to do this type of syntax checking (although
+perltidy will still do as much self-checking as possible).  The reason
+is that it causes all code in BEGIN blocks to be executed, for all
+modules being used, and this opens the door to security issues and
+infinite loops when running perltidy.</P>
 <P></P>
 <DT><STRONG><A NAME="item_%2Dpscf%3Ds%2C_%2Dperl%2Dsyntax%2Dcheck%2Dflags%3D"><STRONG>-pscf=s</STRONG>, <STRONG>-perl-syntax-check-flags=s</STRONG></A></STRONG><BR>
 <DD>
@@ -415,6 +406,26 @@ useful when perltidy is merely being used to help find a brace error in
 a large script).
 <P>Setting this flag is equivalent to setting <STRONG>--freeze-newlines</STRONG> and
 <STRONG>--freeze-whitespace</STRONG>.</P>
+<P></P>
+<DT><STRONG><A NAME="item_%2Dole%3Ds%2C_%2D%2Doutput%2Dline%2Dending%3Ds"><STRONG>-ole=s</STRONG>,  <STRONG>--output-line-ending=s</STRONG></A></STRONG><BR>
+<DD>
+where s=<CODE>win</CODE>, <CODE>dos</CODE>, <CODE>unix</CODE>, or <CODE>mac</CODE>.  This flag tells perltidy
+to output line endings for a specific system.  Normally,
+perltidy writes files with the line separator character of the host
+system.  The <CODE>win</CODE> and <CODE>dos</CODE> flags have an identical result.
+<STRONG>NOTE</STRONG>: This only works under unix-like systems and is ignored under
+other systems.
+<P></P>
+<DT><STRONG><A NAME="item_%2Dple%2C_%2D%2Dpreserve%2Dline%2Dendings"><STRONG>-ple</STRONG>,  <STRONG>--preserve-line-endings</STRONG></A></STRONG><BR>
+<DD>
+This flag tells perltidy to write its output files with the same line
+endings as the input file, if possible.  It should work for
+<STRONG>dos</STRONG>, <STRONG>unix</STRONG>, and <STRONG>mac</STRONG> line endings.  It will only work if perltidy
+input comes from a filename (rather than stdin, for example).  If
+perltidy has trouble determining the input file line ending, it will
+revert to the default behavior of using the line ending of the host system.
+<STRONG>NOTE</STRONG>: This only works under unix-like systems and is ignored under
+other systems.
 <P></P></DL>
 <P>
 <H2><A NAME="code indentation control">Code Indentation Control</A></H2>
@@ -432,7 +443,7 @@ a long line is broken.  The default is n=2, illustrated here:
  ( $max_index_to_go &gt;= 0 ) ? $levels_to_go[0] : $last_output_level;</PRE>
 <P>The value given to <STRONG>-ci</STRONG> is also used by some commands when a small
 space is required.  Examples are commands for outdenting labels,
-<STRONG>-ola</STRONG>, and control keywords, <STRONG>-ock</STRONG>.</P>
+<STRONG>-ola</STRONG>, and control keywords, <STRONG>-okw</STRONG>.</P>
 <P>When default values are not used, it is suggested that the value <STRONG>n</STRONG>
 given with <STRONG>-ci=n</STRONG> be no more than about one-half of the number of
 spaces assigned to a full indentation level on the <STRONG>-i=n</STRONG> command.</P>
@@ -466,7 +477,8 @@ hash.  With this option, the above list would become:</P>
                        'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
     );</PRE>
 <P>If the available line length (see <STRONG>-l=n</STRONG> ) does not permit this much 
-space, perltidy will use less.</P>
+space, perltidy will use less.   For alternate placement of the
+closing paren, see the next section.</P>
 <P>This option has no effect on code BLOCKS, such as if/then/else blocks,
 which always use whatever is specified with <STRONG>-i=n</STRONG>.  Also, the
 existence of line breaks and/or block comments between the opening and
@@ -481,17 +493,47 @@ perltidy to choose newlines will conflict with <STRONG>-lp</STRONG> and will cau
 the careful coordination of an arbitrary number of break points in
 hierarchical lists, and these flags may prevent that.</P>
 <P></P>
+<DT><STRONG><A NAME="item_%2Dcti%3Dn%2C_%2D%2Dclosing%2Dtoken%2Dindentation"><STRONG>-cti=n</STRONG>, <STRONG>--closing-token-indentation</STRONG></A></STRONG><BR>
+<DD>
+The <STRONG>-cti=n</STRONG> flag controls the indentation of a line beginning with 
+a <CODE>)</CODE>, <CODE>]</CODE>, or a non-block <CODE>}</CODE>.  Such a line receives:
+<PRE>
+ -cti = 0 no extra indentation (default)
+ -cti = 1 extra indentation such that the closing token
+        aligns with its opening token.
+ -cti = 2 one extra indentation level if the line looks like:
+        );  or  ];  or  };</PRE>
+<P>The flags <STRONG>-cti=1</STRONG> and <STRONG>-cti=2</STRONG> work well with the <STRONG>-lp</STRONG> flag (previous
+section).
+</P>
+<PRE>
+
+    # perltidy -lp -cti=1
+    @month_of_year = (
+                       'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+                       'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+                     );</PRE>
+<PRE>
+    # perltidy -lp -cti=2
+    @month_of_year = (
+                       'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+                       'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+                       );</PRE>
+<P>These flags are merely hints to the formatter and they may not always be
+followed.  In particular, if -lp is not being used, the indentation for
+<STRONG>cti=1</STRONG> is constrained to be no more than one indentation level.</P>
+<P>If desired, this control can be applied independently to each of the
+closing container token types.  In fact, <STRONG>-cti=n</STRONG> is merely an
+abbreviation for <STRONG>-cpi=n -csbi=n -cbi=n</STRONG>, where:  
+<STRONG>-cpi</STRONG> or <STRONG>-closing-paren-indentation</STRONG> controls <STRONG>)</STRONG>'s,
+<STRONG>-csbi</STRONG> or <STRONG>-closing-square-bracket-indentation</STRONG> controls <STRONG>]</STRONG>'s, 
+<STRONG>-cbi</STRONG> or <STRONG>-closing-brace-indentation</STRONG> controls non-block <STRONG>}</STRONG>'s.</P>
+<P></P>
 <DT><STRONG><A NAME="item_%2Dicp%2C_%2D%2Dindent%2Dclosing%2Dparen"><STRONG>-icp</STRONG>, <STRONG>--indent-closing-paren</STRONG></A></STRONG><BR>
 <DD>
-The <STRONG>-icp</STRONG> option leaves a list-termination line of the form <CODE>);</CODE>, <CODE>};</CODE>,
-or <CODE>];</CODE> indented with the same indentation as the previous line.  The
-previous example with <STRONG>-icp</STRONG> would give,
-<PRE>
-    # perltidy -icp:
-    @month_of_year = (
-        'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-        'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
-        );</PRE>
+The <STRONG>-icp</STRONG> flag is equivalent to
+<STRONG>-cti=2</STRONG>, described in the previous section.  The <STRONG>-nicp</STRONG> flag is
+equivalent <STRONG>-cti=0</STRONG>.  They are included for backwards compatability.
 <P></P>
 <DT><STRONG><A NAME="item_%2Dicb%2C_%2D%2Dindent%2Dclosing%2Dbrace"><STRONG>-icb</STRONG>, <STRONG>--indent-closing-brace</STRONG></A></STRONG><BR>
 <DD>
@@ -544,7 +586,7 @@ possible.  By default, these keywords are <CODE>redo</CODE>, <CODE>next</CODE>, 
 <CODE>goto</CODE>, and <CODE>return</CODE>.  The intention is to make these control keywords
 easier to see.  To change this list of keywords being outdented, see
 the next section.
-<P>For example, using <CODE>perltidy -ock</CODE> on the previous example gives:</P>
+<P>For example, using <CODE>perltidy -okw</CODE> on the previous example gives:</P>
 <PRE>
         my $i;
       LOOP: while ( $i = &lt;FOTOS&gt; ) {
@@ -2033,8 +2075,8 @@ dot is added, and the backup file will be <EM>somefile.pl~</EM>  .</P>
 <PRE>
     D anl asc aws b bbb bbc bbs bli boc bok bol bot syn ce csc 
     dac dbc dcsc dnl dws dp dpro dsm dsc ddf dln dop dsn dtt dwls dwrs 
-    f fll frm hsc html ibc icb icp iob isbc lp log lal x lsl pod bl 
-    sbl okw ola oll pvl q opt sbc sfs ssc sts se st sob 
+    f fll frm hsc html ibc icb icp iob isbc lp log lal x lsl ple pod bl 
+    sbl okw ola oll ple pvl q opt sbc sfs ssc sts se st sob 
     t tac tbc toc tp tsc tqw w</PRE>
 <P>Equivalently, the prefix 'no' or 'no-' on the corresponding long names may be
 used.</P>
@@ -2102,7 +2144,7 @@ purpose of this rule is to prevent generating confusing filenames such as
 <P>
 <HR>
 <H1><A NAME="version">VERSION</A></H1>
-<P>This man page documents perltidy version 20030726.</P>
+<P>This man page documents perltidy version 20031021.</P>
 <P>
 <HR>
 <H1><A NAME="credits">CREDITS</A></H1>

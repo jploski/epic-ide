@@ -144,10 +144,10 @@ self-documenting and therefore useful in scripts.  It is customary to
 use two leading dashes for long names, but one may be used.
 
 Most parameters which serve as on/off flags can be negated with a
-leading "n" (for the short name) or a leading "no" or "no-" (for the long
-name).  For example, the flag to have perl check syntax using B<perl -c>
-is B<-syn> or B<--check-syntax>.  The flag to skip this is
-B<-nsyn> or B<--nocheck-syntax> or B<--no-check-syntax>.
+leading "n" (for the short name) or a leading "no" or "no-" (for the
+long name).  For example, the flag to outdent long quotes is is B<-olq>
+or B<--outdent-long-quotes>.  The flag to skip this is B<-nolq>
+or B<--nooutdent-long-quotes> or B<--no-outdent-long-quotes>.
 
 Options may not be bundled together.  In other words, options B<-q> and
 B<-g> may NOT be entered as B<-qg>.
@@ -182,20 +182,17 @@ request outputting to the standard output.  For example,
 
   perltidy somefile.pl -st >somefile.new.pl
 
-This option may only be used if there is just a single input file.  When
-this option is used, perltidy will have to create a temporary copy of
-the output file to feed to perl for syntax checking,
-unless allow syntax checking is disabled.  This file will be deleted
-when the job finishes.  The default is B<-nst> or B<-nostandard-output>.
+This option may only be used if there is just a single input file.  
+The default is B<-nst> or B<-nostandard-output>.
 
 =item	B<-se>,    B<--standard-error-output>
 
 If perltidy detects an error when processing file F<somefile.pl>, its
 default behavior is to write error messages to file F<somefile.pl.ERR>.
 Use B<-se> to cause all error messages to be sent to the standard error
-output stream instead.  This directive may be negated with B<-nse>. 
-Thus, you may place B<-se> in a F<.perltidyrc> and override it
-when desired with B<-nse> on the command line.
+output stream instead.  This directive may be negated with B<-nse>.
+Thus, you may place B<-se> in a F<.perltidyrc> and override it when
+desired with B<-nse> on the command line.
 
 =item	B<-oext>=ext,    B<--output-file-extension>=ext  
 
@@ -240,8 +237,8 @@ default F<.bak>.  See L<Specifying File Extensions>.
 
 =item B<-w>,    B<--warning-output>             
 
-Setting B<-w> causes perltidy to include any non-critical warning
-messages be reported as errors.  These include messages
+Setting B<-w> causes any non-critical warning
+messages to be reported as errors.  These include messages
 about possible pod problems, possibly bad starting indentation level,
 and cautions about indirect object usage.  The default, B<-nw> or
 B<--nowarning-output>, is not to include these warnings.
@@ -370,31 +367,22 @@ option.
 
 =item B<-syn>,   B<--check-syntax>      
 
-The purpose of this flag is to alert you to any situation in which the
-input file has good syntax but the output file has bad syntax, which
-implies an error by perltidy.
-
 This flag causes perltidy to run C<perl -c -T> to check syntax of input
-and output.  (To change the flags passed to perl, see the next item,
-B<-pscf>).  The results are written to the F<.LOG> file, which will be
-saved if an error is detected in the output script.  The output script
-is not checked if the input script has a syntax error.  
+and output.  (To change the flags passed to perl, see the next
+item, B<-pscf>).  The results are written to the F<.LOG> file, which
+will be saved if an error is detected in the output script.  The output
+script is not checked if the input script has a syntax error.  Perltidy
+does its own checking, but this option employs perl to get a "second
+opinion".
 
-If Perl reports errors in the input file, they will not be reported in
+If perl reports errors in the input file, they will not be reported in
 the error output unless the B<-warning-output> flag is given. 
 
-To skip syntax checking, use B<-nsyn> or B<--nocheck-syntax>.  Syntax
-checking is also deactivated by the B<--quiet> flag, discussed above.
-
-The default is to do a syntax check on most operating systems.  An
-exception is Windows 9x/Me systems, which do not handle this well.
-Another exception is when the input or output streams are not connected
-to identifiable filenames.  In the past, copies of these streams were
-saved in temporary files, but this has caused too many portability
-problems.
-
-B<Please note:> Even if this type of syntax checking is deactivated,
-perltidy will still do extensive syntax checking on its own.
+The default is B<not> to do this type of syntax checking (although
+perltidy will still do as much self-checking as possible).  The reason
+is that it causes all code in BEGIN blocks to be executed, for all
+modules being used, and this opens the door to security issues and
+infinite loops when running perltidy.
 
 =item B<-pscf=s>, B<-perl-syntax-check-flags=s>
 
@@ -423,6 +411,26 @@ a large script).
 Setting this flag is equivalent to setting B<--freeze-newlines> and
 B<--freeze-whitespace>.
 
+=item B<-ole=s>,  B<--output-line-ending=s>
+
+where s=C<win>, C<dos>, C<unix>, or C<mac>.  This flag tells perltidy
+to output line endings for a specific system.  Normally,
+perltidy writes files with the line separator character of the host
+system.  The C<win> and C<dos> flags have an identical result.
+B<NOTE>: This only works under unix-like systems and is ignored under
+other systems.
+
+=item B<-ple>,  B<--preserve-line-endings>
+
+This flag tells perltidy to write its output files with the same line
+endings as the input file, if possible.  It should work for
+B<dos>, B<unix>, and B<mac> line endings.  It will only work if perltidy
+input comes from a filename (rather than stdin, for example).  If
+perltidy has trouble determining the input file line ending, it will
+revert to the default behavior of using the line ending of the host system.
+B<NOTE>: This only works under unix-like systems and is ignored under
+other systems.
+
 =back
 
 =head2 Code Indentation Control
@@ -444,7 +452,7 @@ The same example, with n=0, is a little harder to read:
 
 The value given to B<-ci> is also used by some commands when a small
 space is required.  Examples are commands for outdenting labels,
-B<-ola>, and control keywords, B<-ock>.  
+B<-ola>, and control keywords, B<-okw>.  
 
 When default values are not used, it is suggested that the value B<n>
 given with B<-ci=n> be no more than about one-half of the number of
@@ -481,7 +489,8 @@ hash.  With this option, the above list would become:
     );
 
 If the available line length (see B<-l=n> ) does not permit this much 
-space, perltidy will use less.  
+space, perltidy will use less.   For alternate placement of the
+closing paren, see the next section.
 
 This option has no effect on code BLOCKS, such as if/then/else blocks,
 which always use whatever is specified with B<-i=n>.  Also, the
@@ -499,17 +508,48 @@ B<-ndnl>.  The reason is that the B<-lp> indentation style can require
 the careful coordination of an arbitrary number of break points in
 hierarchical lists, and these flags may prevent that.
 
+=item B<-cti=n>, B<--closing-token-indentation>
+
+The B<-cti=n> flag controls the indentation of a line beginning with 
+a C<)>, C<]>, or a non-block C<}>.  Such a line receives:
+
+ -cti = 0 no extra indentation (default)
+ -cti = 1 extra indentation such that the closing token
+        aligns with its opening token.
+ -cti = 2 one extra indentation level if the line looks like:
+        );  or  ];  or  };
+
+The flags B<-cti=1> and B<-cti=2> work well with the B<-lp> flag (previous
+section).
+    
+    # perltidy -lp -cti=1
+    @month_of_year = (
+                       'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+                       'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+                     );
+
+    # perltidy -lp -cti=2
+    @month_of_year = (
+                       'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+                       'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+                       );
+
+These flags are merely hints to the formatter and they may not always be
+followed.  In particular, if -lp is not being used, the indentation for
+B<cti=1> is constrained to be no more than one indentation level.
+
+If desired, this control can be applied independently to each of the
+closing container token types.  In fact, B<-cti=n> is merely an
+abbreviation for B<-cpi=n -csbi=n -cbi=n>, where:  
+B<-cpi> or B<-closing-paren-indentation> controls B<)>'s,
+B<-csbi> or B<-closing-square-bracket-indentation> controls B<]>'s, 
+B<-cbi> or B<-closing-brace-indentation> controls non-block B<}>'s. 
+
 =item B<-icp>, B<--indent-closing-paren>
 
-The B<-icp> option leaves a list-termination line of the form C<);>, C<};>,
-or C<];> indented with the same indentation as the previous line.  The
-previous example with B<-icp> would give,
-
-    # perltidy -icp:
-    @month_of_year = (
-        'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-        'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
-        );
+The B<-icp> flag is equivalent to
+B<-cti=2>, described in the previous section.  The B<-nicp> flag is
+equivalent B<-cti=0>.  They are included for backwards compatability.
 
 =item B<-icb>, B<--indent-closing-brace>
 
@@ -566,7 +606,7 @@ C<goto>, and C<return>.  The intention is to make these control keywords
 easier to see.  To change this list of keywords being outdented, see
 the next section.
 
-For example, using C<perltidy -ock> on the previous example gives:
+For example, using C<perltidy -okw> on the previous example gives:
 
         my $i;
       LOOP: while ( $i = <FOTOS> ) {
@@ -2285,8 +2325,8 @@ The following list shows all short parameter names which allow a prefix
 
     D anl asc aws b bbb bbc bbs bli boc bok bol bot syn ce csc 
     dac dbc dcsc dnl dws dp dpro dsm dsc ddf dln dop dsn dtt dwls dwrs 
-    f fll frm hsc html ibc icb icp iob isbc lp log lal x lsl pod bl 
-    sbl okw ola oll pvl q opt sbc sfs ssc sts se st sob 
+    f fll frm hsc html ibc icb icp iob isbc lp log lal x lsl ple pod bl 
+    sbl okw ola oll ple pvl q opt sbc sfs ssc sts se st sob 
     t tac tbc toc tp tsc tqw w
 
 Equivalently, the prefix 'no' or 'no-' on the corresponding long names may be
@@ -2361,7 +2401,7 @@ perlstyle(1), Perl::Tidy(3)
 
 =head1 VERSION
 
-This man page documents perltidy version 20030726.
+This man page documents perltidy version 20031021.
 
 =head1 CREDITS
 

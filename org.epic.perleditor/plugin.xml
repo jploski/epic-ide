@@ -267,7 +267,7 @@
      </command>
      <keyBinding
          string="Ctrl+\"
-         scope="oorg.epic.perleditor.perlEditorScope"
+         scope="org.epic.perleditor.perlEditorScope"
          command="org.epic.perleditor.uncomment"
          configuration="org.eclipse.ui.defaultAcceleratorConfiguration">
       </keyBinding>

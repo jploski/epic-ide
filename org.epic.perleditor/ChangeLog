@@ -1,5 +1,11 @@
 Eclipse Perl Integration: Perl Editor Plugin
 
+Version 0.1.0 alpha  - 
+		* OverviewRuler summary view fixed in editor
+		* Corrected wrong idle timer label (seconds instead of milliseconds) in main preference page
+		* Perltidy has been updated (Version 20031021)
+		* Small keybinding bug for uncomment action fixed (Ctrl+\)
+
 Version 0.1.0 alpha  - 13-December-2003
 		* HTML Export Command added to plugin.xml (Export/HTML entry was not 
 		   visible in Source menu)
@@ -12,7 +18,7 @@ Version 0.1.0 alpha  - 27-November-2003
 Version 0.1.0 alpha  - 25-November-2003
 		* Fixed problems with Eclipse 3.0 Milestone 5
 		* Spaces or now inserted correctly when using "shift left/right" operation.
-		* Support for non Perl files (eg. EmbPerl) add. The source menu has been
+		* Support for non Perl files (eg. EmbPerl) added. The source menu has been
 		  disabled, because it makes no sense (and would currupt the content) for
 		  these files.
 		* The -frm option has been removed from the HTML export preferences.

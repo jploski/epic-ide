@@ -331,36 +331,50 @@ public class PerlEditor
 		Composite parent,
 		IVerticalRuler ruler,
 		int styles) {
+			fAnnotationAccess = createAnnotationAccess();
 
-		fAnnotationAccess = createAnnotationAccess();
-		ISharedTextColors sharedColors = new SharedTextColors();
+			ISharedTextColors sharedColors = new SharedTextColors();
 
-		fOverviewRuler =
-			new OverviewRuler(
-				fAnnotationAccess,
-				VERTICAL_RULER_WIDTH,
-				sharedColors);
-		fOverviewRuler.addHeaderAnnotationType(AnnotationType.WARNING);
-		fOverviewRuler.addHeaderAnnotationType(AnnotationType.ERROR);
+							fOverviewRuler =
+									new OverviewRuler(
+											fAnnotationAccess,
+											VERTICAL_RULER_WIDTH,
+											sharedColors);
 
-		ISourceViewer viewer =
-			new PerlSourceViewer(
-				parent,
-				ruler,
-				fOverviewRuler,
-				isOverviewRulerVisible(),
-				styles);
+							MarkerAnnotationPreferences fAnnotationPreferences =
+									new MarkerAnnotationPreferences();
 
-		fSourceViewerDecorationSupport =
-			new SourceViewerDecorationSupport(
-				viewer,
-				fOverviewRuler,
-				fAnnotationAccess,
-				sharedColors);
-		configureSourceViewerDecorationSupport();
+							Iterator e =
+									fAnnotationPreferences.getAnnotationPreferences().iterator();
 
-		return viewer;
+							while (e.hasNext()) {
 
+									AnnotationPreference preference = (AnnotationPreference) e.next();
+
+									if (preference.contributesToHeader())
+											fOverviewRuler.addHeaderAnnotationType(
+													preference.getAnnotationType());
+
+							}
+
+							ISourceViewer sourceViewer =
+									new PerlSourceViewer(
+											parent,
+											ruler,
+											fOverviewRuler,
+											isOverviewRulerVisible(),
+											styles);
+
+							fSourceViewerDecorationSupport =
+									new SourceViewerDecorationSupport(
+											sourceViewer,
+											fOverviewRuler,
+											fAnnotationAccess,
+											sharedColors);
+
+							configureSourceViewerDecorationSupport();
+
+							return sourceViewer;
 	}
 
 	/*

@@ -150,7 +150,7 @@ public class PerlMainPreferencePage
 		
 		syntaxCheckInterval.addListener (SWT.Selection, new Listener () {
 						public void handleEvent (Event event) {
-							syntaxIntervalSecondsLabel.setText(syntaxCheckInterval.getSelection() + " seconds");
+							syntaxIntervalSecondsLabel.setText(syntaxCheckInterval.getSelection() + " milliseconds" + "   ");
 						}
 				});
 			

@@ -1,6 +1,7 @@
 package org.epic.debug;
 
 import org.eclipse.debug.core.model.IValue;
+import org.eclipse.debug.core.model.IVariable;
 import org.eclipse.debug.ui.IDebugModelPresentation;
 import org.eclipse.debug.ui.IValueDetailListener;
 import org.eclipse.jface.viewers.ILabelProviderListener;
@@ -13,12 +14,14 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.debug.ui.DebugUITools;
 import org.eclipse.debug.ui.IDebugUIConstants;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.model.IBreakpoint;
 import org.eclipse.ui.IEditorRegistry;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.IEditorDescriptor;
 import org.epic.core.util.FileUtilities;
+import PerlDebugVar;
 /**
  * @author ruehl
  *
@@ -47,6 +50,15 @@ public class DebugModelPresentation implements IDebugModelPresentation {
 	 */
 	public Image getImage(Object element) {
 		
+		if ( element instanceof PerlDebugVar )
+		{
+			try {
+				if ( ((PerlDebugVar)element).getHideImage() )
+					return PerlDebugPlugin.getDefaultDesciptorImageRegistry().get( new PerlImageDescriptor(DebugUITools.getImageDescriptor(IDebugUIConstants.IMG_OBJS_BREAKPOINT_DISABLED), 0));;
+				if ( ((PerlDebugVar)element).isTainted() )
+					return PerlDebugPlugin.getDefaultDesciptorImageRegistry().get( PerlDebugImages.DESC_OBJS_CHANGED_DEBUG_VAR);
+			} catch (DebugException e) {e.printStackTrace();}
+		}
 		if (element instanceof IMarker) {
 			IBreakpoint bp = getBreakpoint((IMarker)element);
 			if (bp != null && bp instanceof PerlBreakpoint) {

@@ -49,7 +49,9 @@ public class PerlDebugImages {
 	public static final ImageDescriptor DESC_OBJS_UNCAUGHT_BREAKPOINT_DISABLED= createImageDescriptor(iconPath + "uncaught_ovr_disabled.gif");
 
 	public static final ImageDescriptor DESC_OBJS_CAUGHT_BREAKPOINT= createImageDescriptor(iconPath + "caught_ovr.gif");
-	public static final ImageDescriptor DESC_OBJS_CAUGHT_BREAKPOINT_DISABLED= createImageDescriptor(iconPath + "caught_ovr_disabled.gif");	
+	public static final ImageDescriptor DESC_OBJS_CAUGHT_BREAKPOINT_DISABLED= createImageDescriptor(iconPath + "caught_ovr_disabled.gif");
+	
+	public static final ImageDescriptor DESC_OBJS_CHANGED_DEBUG_VAR= createImageDescriptor(iconPath + "changedvariablevalue.gif");		
 	
 	/* Launchconfig*/
 	public static final ImageDescriptor DESC_OBJS_LaunchTabMain= createImageDescriptor(iconPath + "epic.gif");

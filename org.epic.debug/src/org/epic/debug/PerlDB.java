@@ -14,6 +14,8 @@ import org.eclipse.core.resources.IProject;
 import java.net.*;
 import java.io.*;
 import gnu.regexp.*;
+
+import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.DebugEvent;
 import org.eclipse.core.runtime.Path;
@@ -21,6 +23,8 @@ import org.eclipse.core.runtime.IPath;
 import java.util.*;
 import org.eclipse.debug.core.model.IVariable;
 import PerlVarParser;
+import PerlDebugVar;
+import PerlDebugValue;
 import org.epic.perleditor.editors.util.PerlExecutableUtilities;
 import org.epic.perleditor.PerlEditorPlugin;
 import cbg.editor.*;
@@ -86,7 +90,8 @@ public class PerlDB	implements IDebugElement {
 	private RE mRe_IP_Pos_Eval;
 	private RE mReSwitchFileFail;
 	private RE mReSetLineBreakpoint;
-
+	private RE mReStackTrace;
+				
 	private IP_Position mStartIP;
 	private PerlVarParser mVarParser = new PerlVarParser(this);
 		
@@ -237,6 +242,7 @@ public class PerlDB	implements IDebugElement {
 		mRe_IP_Pos_Eval =new RE("^[^\\(]*\\(eval\\s+\\d+\\)\\[(.*):(\\d+)\\]$",0, RESyntax.RE_SYNTAX_PERL5);
 		mReSwitchFileFail = new RE("^No file",0, RESyntax.RE_SYNTAX_PERL5);
 		mReSetLineBreakpoint = new RE("^\\s+DB<\\d+>",0, RESyntax.RE_SYNTAX_PERL5);
+		mReStackTrace = new RE("^(.)\\s+=\\s+(.*)called from .* \\`([^\\']+)\\'\\s*line (\\d+)\\s*$",RE.REG_MULTILINE, RESyntax.RE_SYNTAX_PERL5);
 		} catch (REException e){ new InstantiationException("Couldn't RegEX");};
 		String env[] = new String[1];
 		
@@ -812,12 +818,83 @@ public class PerlDB	implements IDebugElement {
 	
 	private void updateStackFrames()
 	{
-		StackFrame frame = new StackFrame(mThreads[0]);
-		setCurrent_IP_Position(frame);
-		setVarList(frame);
-		mThreads[0].setStrackFrame(frame);
+		PerlDebugValue val;
+		startSubCommand(mCommandExecuteCode,"T",false);
+		mDebugSubCommandOutput = mDebugSubCommandOutput.replaceAll("\n","\r\n");
+		REMatch[] matches = mReStackTrace.getAllMatches(mDebugSubCommandOutput);
+		StackFrame[] frames = new StackFrame[matches.length+1];
+		frames[0] = new StackFrame(mThreads[0]);
+		setCurrent_IP_Position(frames[0]);
+		setVarList(frames[0]);
+		PerlDebugVar var_new,var_org;
+		PerlDebugVar[] orgStackFrameVars, newStackFrameVars;
+		
+		
+		try {
+			if( mThreads[0].getStackFrames()!= null 
+			&& ((StackFrame)mThreads[0].getStackFrames()[0]).get_IP_Path().equals(frames[0].get_IP_Path())
+			)
+			{
+			orgStackFrameVars= null;
+			newStackFrameVars=null;
+			
+			orgStackFrameVars = (PerlDebugVar[]) mThreads[0].getStackFrames()[0].getVariables();
+			newStackFrameVars = (PerlDebugVar[])frames[0].getVariables();
+			
+			boolean found;
+				
+			for( int new_pos = 0; new_pos < newStackFrameVars.length; ++new_pos)
+			{
+				found = false;
+				var_new = newStackFrameVars[new_pos];
+				for( int org_pos = 0; (org_pos < orgStackFrameVars.length) && !found; ++org_pos)
+				{
+					var_org = orgStackFrameVars[org_pos];
+					if( var_org.getName().equals(var_new.getName() ) )
+					{
+						found = true;
+						var_new.calculateChangeFlags(var_org);
+					}
+				}
+				if ( !found )
+				{
+					var_new.setChangeFlags(PerlDebugValue.mValueHasChanged,true);
+				}
+			}	
+			}
+			
+		} catch (DebugException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
+		for( int pos = 0; pos < matches.length; ++pos)
+		{
+			PerlDebugVar[] vars = new PerlDebugVar[2];
+			
+			vars[0]= new PerlDebugVar(mThreads[0],true);
+			vars[1]= new PerlDebugVar(mThreads[0],true);
+			vars[0].setName("Called Function");
+			val = new PerlDebugValue(mThreads[0]);
+			val.setValue(matches[pos].toString(2));
+			try{
+
+			vars[0].setValue(val);
+			vars[1].setName("Return Type");
+			val = new PerlDebugValue(mThreads[0]);
+			val.setValue(matches[pos].toString(1));
+			vars[1].setValue(val);
+						
+			frames[pos+1] = new StackFrame(mThreads[0]);
+			frames[pos+1].set_IP_Line(Integer.parseInt(matches[pos].toString(4)));
+			frames[pos+1].set_IP_Path(getPathFor(matches[pos].toString(3)));
+			frames[pos+1].setVariables(vars);
+			} catch (Exception e){System.out.println(e);}
+		}		
+		mThreads[0].setStackFrames(frames);
 	}
 	
+
 	
 	private IP_Position getCurrent_IP_Position()
 		{
@@ -836,7 +913,7 @@ public class PerlDB	implements IDebugElement {
 				result = temp;
 			System.out.println( result.toString(1)+"!--:--!"+result.toString(2));	
 			line = Integer.parseInt(result.toString(2));
-			file = new Path(result.toString(1));
+			file = getPathFor(result.toString(1));
 			if( ! file.isAbsolute())
 			{
 				file = mWorkingDir.append(file);
@@ -848,7 +925,16 @@ public class PerlDB	implements IDebugElement {
 			return(pos);
 		 
 		}
-
+		
+ 	IPath getPathFor(String fFilename)
+ 	{
+		IPath file = new Path(fFilename);
+		if( ! file.isAbsolute())
+		{
+			file = mWorkingDir.append(file);
+		}
+		return(file);
+ }
 	private void setCurrent_IP_Position(StackFrame fFrame)
 	{
 		IP_Position pos;

@@ -25,7 +25,7 @@ public class PerlDebugThread implements IThread {
 	private ILaunch 		mLaunch;
 	private PerlDB			mPerlDB;
 	
-	private IStackFrame [] mFrames = new IStackFrame[1];  
+	private IStackFrame [] mFrames;  
 	
 	public PerlDebugThread() {
 		super();
@@ -36,7 +36,7 @@ public class PerlDebugThread implements IThread {
 		mName = name;
 		mDebugTarget = debugTarget;
 		mLaunch = launch;
-		mFrames[0] =null;
+		mFrames =null;
 		mPerlDB = fPerlDB;
 	}
 
@@ -47,9 +47,9 @@ public class PerlDebugThread implements IThread {
 		return mFrames;
 	}
 	
-	public void setStrackFrame(IStackFrame fFrame)
+	public void setStackFrames(IStackFrame[] fFrames)
 	{
-		mFrames[0]= fFrame;
+		mFrames = fFrames;
 	}
 	/**
 	 * @see org.eclipse.debug.core.model.IThread#hasStackFrames()

@@ -87,7 +87,7 @@ public class StackFrame implements IStackFrame {
 	 * @see org.eclipse.debug.core.model.IStackFrame#getName()
 	 */
 	public String getName() throws DebugException {
-		return "TopLevelStackFrame";
+		return (mIP_Path.lastSegment()+"[line: "+Integer.toString(mIP_Line)+"]");
 	}
 
 	/**

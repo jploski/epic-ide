@@ -118,7 +118,19 @@
 		</run>
 	</runtime>
    </extension>
-
+<!-- Builder START -->
+   <extension
+         id="perlbuilder"
+         name="Perl Auto Builder"
+         point="org.eclipse.core.resources.builders">
+      <builder
+            hasNature="true">
+         <run
+               class="org.epic.core.builders.PerlBuilder">
+         </run>
+      </builder>
+   </extension>
+<!-- Builder END -->
    <extension point="org.eclipse.ui.projectNatureImages">
 	<image
 		id="org.epic.core.perlProjectNatureImage"
@@ -339,7 +351,28 @@
          command="org.epic.perleditor.formatsource"
          configuration="org.eclipse.ui.defaultAcceleratorConfiguration">
       </keyBinding>
-  </extension> 
+  </extension>
+  <!-- Decorator extension START -->
+<!-- NOTE: According to the docs BOTTOM_LEFT should not be used, because JDT uses it. -->
+<!--             But on some occasions the Java Builder seems to check Perl projecs as well.    -->
+<!--             So to not have equal markers for the same thing we use BOTTOM_LEFT.            -->
+   <extension
+         point="org.eclipse.ui.decorators">
+      <decorator
+            lightweight="true"
+            objectClass="org.eclipse.core.resources.IResource"
+            location="BOTTOM_LEFT"
+            adaptable="true"
+            label="Perl"
+            state="true"
+            class="org.epic.core.decorators.PerlDecorator"
+            id="org.epic.core.decorators.PerlDecorator">
+         <description>
+            Perl Decorator
+         </description>
+      </decorator>
+   </extension>
+<!-- Decorator extension END -->
    <extension
          point="org.eclipse.help.toc">
       <toc

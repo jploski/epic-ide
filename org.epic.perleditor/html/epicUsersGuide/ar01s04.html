@@ -1,0 +1,261 @@
+<html><head><META http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Working with the Perl Editor</title><meta content="DocBook XSL Stylesheets V1.65.1" name="generator"><link rel="home" href="index.html" title="  EPIC - User's Guide"><link rel="up" href="index.html" title="  EPIC - User's Guide"><link rel="previous" href="ar01s03.html" title="Perl Projects"><link rel="next" href="ar01s05.html" title="
+
+RegExp Plugin"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table summary="Navigation header" width="100%"><tr><th align="center" colspan="3">Working with the Perl Editor</th></tr><tr><td align="left" width="20%"><a accesskey="p" href="ar01s03.html">Prev</a>&nbsp;</td><th align="center" width="60%">&nbsp;</th><td align="right" width="20%">&nbsp;<a accesskey="n" href="ar01s05.html">Next</a></td></tr></table><hr></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="N10190"></a>Working with the Perl Editor</h2></div></div><div></div></div><div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="N10194"></a>Syntax Check</h3></div></div><div></div></div><p>
+EPIC performs on the fly syntax check of Perl source
+files. In order for the Syntax Check to work the Perl Interpreter has
+to be set up correctly (see <span class="emphasis"><em>Setting up Preferences</em></span>). 
+      </p><p>
+
+The Syntax Check is performed after a defined idle period, after the
+user has stopped typing. This idle period can be configured in the
+preferences.
+      </p><p>
+When an error/warning has been found the editor
+displays the apropriate icon in the annotation ruler (the gray bar on
+the left side of the editor), underlines the error in the source and
+insterts a marker into the<span class="emphasis"><em> Problems View</em></span> window (if visible).
+      </p><p>
+      </p><p>
+        <div class="informalfigure"><div class="mediaobject"><img src="images/syntax_check_1.gif"></div></div>
+
+      </p><p>
+      </p><p>
+      </p><p>
+      </p></div><div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="N101B6"></a>Explain Errors and Warnings</h3></div></div><div></div></div><p>
+
+In addition to display warnings and errors the editor is capable of
+explaining Erros and Warnings.
+      </p><p>
+
+To get an Error/Warning explanation right-click the Error/Warning icon
+and select Explain <span class="emphasis"><em>Errors/Warnings</em></span> from the dropdown menu.
+      </p><p>
+      </p><p>
+        <div class="informalfigure"><div class="mediaobject"><img src="images/explain_1.gif"></div></div>
+
+      </p><p>
+      </p><p>
+
+The explanation(s) will be displayed in the <span class="emphasis"><em>Explan Errors/Warnings
+View</em></span>.
+      </p><p>
+      </p><p>
+        <div class="informalfigure"><div class="mediaobject"><img src="images/explain_2.gif"></div></div>
+
+      </p><p>
+      </p><p>
+      </p><p>
+      </p></div><div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="N101E6"></a>Perldoc</h3></div></div><div></div></div><p>
+
+To retrieve perldoc information select a keyword or text and choose one
+of the perldoc options from the context menu.
+      </p><p>
+
+If nothing is selected an input box will pop up.
+      </p><p>
+      </p><p>
+        <div class="informalfigure"><div class="mediaobject"><img src="images/perldoc_1.gif"></div></div>
+
+      </p><p>
+      </p><p>
+
+If a perldoc entry is found it is displayed inside the <span class="emphasis"><em>Perldoc View</em></span>.
+      </p><p>
+      </p><p>
+        <div class="informalfigure"><div class="mediaobject"><img src="images/perldoc_2.gif"></div></div>
+
+      </p><p>
+      </p><p>
+        <span class="bold"><b>NOTE:</b></span> Perldoc has to be installed available in the system PATH,
+otherwise this feature will not work.
+      </p><p>
+      </p><p>
+      </p></div><div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="N10219"></a>Quick Reference</h3></div></div><div></div></div><p>
+
+Apart from Perldoc support a quick reference feature is available. This
+feature has the advantage that no perldoc has to be installed on the
+system but does not provide as many information as perldoc.
+      </p><p>
+
+To view the Quick Reference select a keyword and move the mouse pointer
+over the selection.
+      </p><p>
+
+A tooltip with a short description of the keyword should appear.
+      </p><p>
+      </p><p>
+        <div class="informalfigure"><div class="mediaobject"><img src="images/quick_reference_1.gif"></div></div>
+
+      </p><p>
+      </p><p>
+      </p><p>
+      </p></div><div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="N10235"></a>Code Assist</h3></div></div><div></div></div><p>
+
+Code Assist features try to assist the user during source code editing.
+      </p><p>
+      </p><p>
+        <span class="bold"><b>NOTE:</b></span> The features currently implemented in EPIC may not be
+fully funcional but will be improved in the future.
+      </p><p>
+      </p><p>
+      </p><div class="sect3" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="N10247"></a>Variable Inspection</h4></div></div><div></div></div><p>
+
+When pressing one of he auto completion characters <span class="emphasis"><em>$ @ % </em></span>the
+editor displays all defined variables in a list. From the list the user
+can select the variable that should be inserted in the source code.
+        </p><p>
+        </p><p>
+          <div class="informalfigure"><div class="mediaobject"><img src="images/variable_inspection_1.gif"></div></div>
+
+        </p><p>
+        </p><p>
+        </p></div><div class="sect3" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="N10260"></a>Module Inspection</h4></div></div><div></div></div><p>
+
+The editor tries to display methods available in modules when the auto
+completion characters <span class="emphasis"><em>&gt; </em></span>or<span class="emphasis"><em></em></span><span class="emphasis"><em>:</em></span> are pressed.
+        </p><p>
+        </p><p>
+        </p><p>
+          <div class="informalfigure"><div class="mediaobject"><img src="images/module_inspection_1.gif"></div></div>
+
+        </p><p>
+        </p><p>
+          <span class="bold"><b>
+
+NOTE:</b></span>
+        </p><p>
+Currently the
+Indirect&nbsp; Object Invocation is not recognized by the code assist.
+        </p><p>
+        </p><p>
+
+This code block will not work:
+        </p><p>
+        </p><p>
+$smtp = new Net::SMTP;[no content assist]
+        </p><p>
+
+$smtp-&gt;
+        </p><p>
+        </p><p>
+This one will
+work:
+        </p><p>
+        </p><p>
+$smtp =
+Net::SMTP-&gt;new(.....);[content assist]
+        </p><p>
+
+$smtp-&gt;
+        </p><p>
+        </p><p>
+        </p><p>
+        </p></div></div><div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="N1029F"></a>Templates</h3></div></div><div></div></div><p>
+
+Templates allow for easy insertion of peredefined text segments. In
+addition to normal text these segments can also include pre-defined
+variables that are included at runtime as well as variables that are
+specified by the user when the template is inserted.
+      </p><p>
+      </p><p>
+      </p><div class="sect3" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="N102A9"></a>Defining Templates</h4></div></div><div></div></div><p>
+
+Templates are defined in the EPIC Preferences (<span class="bold"><b>Window &gt;
+Preferences...)</b></span>.
+        </p><p>
+
+To define a new template press the <span class="bold"><b>New...</b></span> button.
+        </p><p>
+        </p><p>
+        </p><p>
+          <div class="informalfigure"><div class="mediaobject"><img src="images/templates_2.gif"></div></div>
+
+        </p><p>
+        </p><p>
+        </p><p>
+
+To insert pre-defined variables press the <span class="bold"><b>Insert Variable...</b></span>
+button.
+        </p><p>
+        </p><p>
+          <div class="informalfigure"><div class="mediaobject"><img src="images/templates_3.gif"></div></div>
+
+        </p><p>
+        </p><p>
+In addition to pre-defined variables the user can
+specify own variables the form <span class="emphasis"><em>${varname}</em></span> which can be edited
+when the template is inserted. When the first variable is inserted
+variables with the same name will automatically be changed.
+        </p><p>
+        </p><p>
+        </p></div><div class="sect3" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="N102E8"></a>Using Templates</h4></div></div><div></div></div><p>
+
+Templates are invoked by typing some characters and pressing <span class="emphasis"><em><span class="bold"><b>Ctrl+Space</b></span></em></span>.
+        </p><p>
+
+Templates matching the typed characters will be displayed in a list. A
+preview is also available.
+        </p><p>
+        </p><p>
+          <div class="informalfigure"><div class="mediaobject"><img src="images/templates_1.gif"></div></div>
+
+        </p><p>
+        </p><p>
+
+If the template contains user defined variables the user can press the <span class="emphasis"><em><span class="bold"><b>TAB</b></span></em></span>
+key to jump to the next variable after the template has been inserted.
+        </p><p>
+        </p><p>
+          <div class="informalfigure"><div class="mediaobject"><img src="images/templates_4.gif"></div></div>
+
+        </p><p>
+        </p><p>
+        </p></div></div><div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="N1031A"></a>Source Formatter</h3></div></div><div></div></div><p>
+
+EPIC uses perltidy for source code formatting (perltidy is included in
+the EPIC package).
+      </p><p>
+
+To format the source code select S<span class="bold"><b>ource &gt; Format</b></span> from the
+Eclipse menu.
+      </p><p>
+      </p><p>
+
+Perltidy settings can be changed in the<span class="emphasis"><em> Source Formatter</em></span>
+preference page.
+      </p><p>
+      </p><p>
+        <span class="bold"><b>NOTE:</b></span> Source formatting might take a while if the source code
+has a log of lines.
+      </p><p>
+      </p><p>
+      </p></div><div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="N10339"></a>HTML Export</h3></div></div><div></div></div><p>
+
+To export select Source &gt; Export &gt; HTML from the Eclipse menu and
+specify an output file.
+      </p><p>
+      </p><p>
+
+HTML export settings can be changed in the<span class="emphasis"><em> Source Formatter</em></span>
+preference page.
+      </p><p>
+      </p><p>
+      </p></div><div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="N1034A"></a>Outline View</h3></div></div><div></div></div><p>
+
+The Outline View displays modules ans subroutines. By clicking on the
+module/subroutine name the editor will jump to the appropreate position
+in the source code.
+      </p><p>
+
+Subroutines named <span class="emphasis"><em>new</em></span> will get a different icon.
+      </p><p>
+      </p><p>
+        <div class="informalfigure"><div class="mediaobject"><img src="images/outline_view_1.gif"></div></div>
+
+      </p><p>
+      </p><p>
+      </p><p>
+      </p><p>
+      </p></div></div><div class="navfooter"><hr><table summary="Navigation footer" width="100%"><tr><td align="left" width="40%"><a accesskey="p" href="ar01s03.html">Prev</a>&nbsp;</td><td align="center" width="20%"><a accesskey="u" href="index.html">Up</a></td><td align="right" width="40%">&nbsp;<a accesskey="n" href="ar01s05.html">Next</a></td></tr><tr><td valign="top" align="left" width="40%">Perl Projects&nbsp;</td><td align="center" width="20%"><a accesskey="h" href="index.html">Home</a></td><td valign="top" align="right" width="40%">&nbsp;
+
+RegExp Plugin</td></tr></table></div></body></html>

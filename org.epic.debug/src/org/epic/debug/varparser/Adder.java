@@ -139,7 +139,7 @@ public class Adder
 		
         //*******************************************
         // the name of the file to read
-        String fileName = "F:\\eclipse_test\\eclipse\\workspace\\org.epic.debug\\test.txt";
+        String fileName = "F:\\eclipse_3\\eclipse\\workspace\\org.epic.debug\\test.txt";
 
         // construct the special shared input state that is needed
         // in order to annotate ExtentTokens properly
@@ -151,16 +151,16 @@ public class Adder
        PerlParser par = new PerlParser (lex);
 	
 		Token tok;
-//      while(true)
-//      {
-//      	tok =lex.nextToken();
-//      	System.out.println(tok.toString()+" L:"+ tok.getLine() +" C:" + tok.getColumn()+"\n");
-//      	 if (tok.getType() == 1) break;
-//      }
+      while(true)
+      {
+      	tok =lex.nextToken();
+      	System.out.println(tok.toString()+" L:"+ tok.getLine() +" C:" + tok.getColumn()+"\n");
+      	 if (tok.getType() == 1) break;
+      }
 
         //parse the file
-        par.mVarList = new ArrayList();
-        par.topLevel ();
+ //       par.mVarList = new ArrayList();
+//        par.topLevel ();
 //		System.out.println( "Error:"+ par.hasError());
            }
 }

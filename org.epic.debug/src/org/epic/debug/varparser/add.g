@@ -176,7 +176,7 @@ options
 {
     exportVocab = Add;
     testLiterals = false;
-    k = 3;
+    k = 4;
     charVocabulary = '\u0000'..'\uFFFE' ;
 }
 
@@ -261,7 +261,7 @@ protected CHAR_ESC:
     | 'r'
     | 't'
     | 'b'
-    | 'c'
+    | "c"('\u0000'..'\ufffe')
     | 'f'
     | '\"'
     | '\''

@@ -4,6 +4,9 @@ Eclipse Perl Integration:
 		* Fixed problem with Cygwin (Pathmapper error)
 		* Preserve spaces in variable values
 		* Support displaying of empty arrays and hashes
+		* Fixed bug: [ 996461 ] Debugger crashes Perl (termination procedere)
+		* Fixed bug: [ 996581 ] run configuration dialogue forgets filename
+		* Fixed bug: [ 996351 ] NullPointer exception during Launch (problems if path to Perl executable has spaces) 
 		
 		Editor:
 		* Fixed bug: [ 996612 ] ClassCastException on Perl project right-click

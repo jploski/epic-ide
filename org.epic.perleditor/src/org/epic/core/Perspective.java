@@ -93,32 +93,39 @@ public class Perspective implements IPerspectiveFactory {
 	/**
 	 * Switches to specified perspective
 	 * 
-	 * @param perspectiveId	ID of perspective
+	 * @param perspectiveId
+	 *            ID of perspective
 	 * @return <code>true</code> on succss otherwise <code>false</code>
 	 */
-	public static boolean switchPerspective(String perspectiveId) {
+	public static void switchPerspective(final String perspectiveId) {
+
 		final IWorkbench workBench = PerlEditorPlugin.getDefault()
 				.getWorkbench();
-		
-		IWorkbenchWindow window = workBench.getActiveWorkbenchWindow();
-		
-		// Make sure to get a window
-		if (window == null) {
-			window = workBench.getWorkbenchWindows()[0];
-		}
-		
+
 		Display display = workBench.getDisplay();
-		IPerspectiveRegistry reg = WorkbenchPlugin.getDefault()
-				.getPerspectiveRegistry();
-		PerspectiveDescriptor rtPerspectiveDesc = (PerspectiveDescriptor) reg
-				.findPerspectiveWithId(perspectiveId);
-		
-		if (window != null && rtPerspectiveDesc != null) {
-			IWorkbenchPage page = window.getActivePage();
-			page.setPerspective(rtPerspectiveDesc);
-			return true;
-		} else {
-			return false;
-		}
+
+		display.asyncExec(new Runnable() {
+			public void run() {
+
+				IWorkbenchWindow window = workBench.getActiveWorkbenchWindow();
+
+				// Make sure to get a window
+				if (window == null) {
+					window = workBench.getWorkbenchWindows()[0];
+				}
+
+				IPerspectiveRegistry reg = WorkbenchPlugin.getDefault()
+						.getPerspectiveRegistry();
+				PerspectiveDescriptor rtPerspectiveDesc = (PerspectiveDescriptor) reg
+						.findPerspectiveWithId(perspectiveId);
+
+				if (window != null && rtPerspectiveDesc != null) {
+					IWorkbenchPage page = window.getActivePage();
+					page.setPerspective(rtPerspectiveDesc);
+				}
+			}
+		});
+
 	}
+
 }

@@ -6,6 +6,8 @@ Eclipse Perl Integration:
 		* Support displaying of empty arrays and hashes
 		
 		Editor:
+		* Fixed bug: [ 996612 ] ClassCastException on Perl project right-click
+		  NOTE by luelljoc: Hope that it's working. Has to be tested.
 		* Fixed bug: [ 993782 ] no warnings displayed until first change is applied
 		  NOTE by luelljoc: Hope that it's working. Has to be tested.
 		* Fixed bug: [ 814986 ] Pragmas are not modules

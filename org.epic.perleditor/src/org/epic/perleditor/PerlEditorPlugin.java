@@ -13,6 +13,7 @@ import org.epic.perleditor.editors.PerlDocumentProvider;
 import org.epic.perleditor.preferences.CodeAssistPreferences;
 import org.epic.perleditor.preferences.PreferenceConstants;
 import org.epic.perleditor.preferences.SourceFormatterPreferences;
+import org.epic.perleditor.preferences.TaskTagPreferences;
 
 import cbg.editor.ColoringEditorTools;
 
@@ -152,13 +153,13 @@ public class PerlEditorPlugin extends AbstractUIPlugin {
 	protected void initializeDefaultPreferences(IPreferenceStore store) {
 		store.setDefault(PERL_EXECUTABLE_PREFERENCE, PERL_EXECUTABLE_DEFAULT);
 		PreferenceConstants.initializeDefaultValues(store);
-		store
-				.setDefault(INTERPRETER_TYPE_PREFERENCE,
+		store.setDefault(INTERPRETER_TYPE_PREFERENCE,
 						INTERPRETER_TYPE_STANDARD);
 		store.setDefault(SYNTAX_VALIDATION_INTERVAL_PREFERENCE,
 				SYNTAX_VALIDATION_INTERVAL_DEFAULT);
 		SourceFormatterPreferences.initializeDefaultValues(store);
 		CodeAssistPreferences.initializeDefaultValues(store);
+		TaskTagPreferences.initializeDefaults(store);
 	}
 
 	/**

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+    <classpathentry kind="src" path="src/"/>
+    <classpathentry kind="src" path="icons/"/>
+    <classpathentry kind="lib" path="gnu-regexp-1.1.4.jar"/>
+    <classpathentry kind="lib" path="antlr.jar"/>
+    <classpathentry kind="lib" path="perlvarparser.jar"/>
+    <classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
+    <classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+    <classpathentry kind="output" path="bin"/>
+</classpath>

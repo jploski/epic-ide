@@ -9,6 +9,7 @@ Eclipse Perl Integration:
 		* Fixed bug: [ 996351 ] NullPointer exception during Launch (problems if path to Perl executable has spaces) 
 		
 		Editor:
+		* Fixed bug: [ 993685 ] Outlinie/Modules lists modules in POD with PC line endings
 		* On double-click text selection also select @ and %. (Contributor: Danny Bud <Danny_Bud at bmc.com>)
 		* Fixed bug: [ 999542 ] ResourceException when file removed
 		* Fixed bug: [ 996612 ] ClassCastException on Perl project right-click

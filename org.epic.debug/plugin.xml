@@ -199,6 +199,46 @@
          </action>
       </viewContribution>
    </extension>
+   
+     <extension
+         point="org.eclipse.ui.viewActions">
+<!-- Contributions to Expression View Toolbar -->
+      <viewContribution
+            targetID="org.eclipse.debug.ui.VariableView"
+            id="org.epig.debug.showGlobalVariablesAction">
+         <action
+               label="Show Global Variables"
+               icon="icons/epic.gif"
+               tooltip="Show Global Variable"
+               state="true"
+               class="org.epic.debug.ShowGlobalVariableActionDelegate"
+               menubarPath="additions"
+               id="org.epig.debug.showLocalVariablesAction">
+         </action>
+      </viewContribution>
+   </extension>
+   
+     <extension
+         point="org.eclipse.ui.viewActions">
+<!-- Contributions to Expression View Toolbar -->
+      <viewContribution
+            targetID="org.eclipse.debug.ui.VariableView"
+            id="org.epig.debug.showPerlInternalVariablesAction">
+         <action
+               label="Show Perl internal Variables"
+               icon="icons/epic.gif"
+               tooltip="Show Perl Internal Variables"
+               state="false"
+               class="org.epic.debug.ShowPerlInternalVariableActionDelegate"
+               menubarPath="additions"
+               id="org.epig.debug.showLocalVariablesAction">
+         </action>
+      </viewContribution>
+   </extension>
+   
+   
+   
+   
    <extension
          point="org.eclipse.debug.ui.consoleColorProviders">
       <consoleColorProvider

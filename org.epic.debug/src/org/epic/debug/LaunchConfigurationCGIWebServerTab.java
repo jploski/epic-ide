@@ -185,7 +185,7 @@ public class LaunchConfigurationCGIWebServerTab
 		fHTMLRootFile =
 			new FileFieldEditor(
 				"Test",
-				"HTML Root File",
+				"HTML Startup File",
 				true,
 				htmlRootFileComp);
 		fHTMLRootFile.fillIntoGrid(htmlRootFileComp, 3);

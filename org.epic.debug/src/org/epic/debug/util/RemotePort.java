@@ -41,6 +41,7 @@ public class RemotePort
 	final static int mStartPortSearch = 5000;
 	final static int mEndPortSearch = 10000;
 
+
 	//	public RemotePort(int fPort)
 	//	{
 	//		reset();
@@ -113,15 +114,29 @@ public class RemotePort
 		{
 			int port = mServer.getLocalPort();
 			reset();
-			found = true;
-			try
+			found = false;
+			int count = 0;
+			do{
+			   	try
 					{
 						mServer = new ServerSocket(port);
+						found = true;
+						System.err.println("*****Reconnect ok***");
 					} catch (IOException e)
 					{
+						System.err.println("*****Reconnect failed***");
+						try
+						{
+							Thread.sleep(100);
+						} catch (InterruptedException e1)
+						{
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
 						found = false;
 					}
-
+			}while( ! found && count < 100);
+			
 		} else
 		{
 
@@ -139,20 +154,22 @@ public class RemotePort
 					found = false;
 				}
 			}
-
+		}
 			if (!found)
 			{
 				PerlDebugPlugin.log(
 					new InstantiationException("Couldn't not listen on server port ! No free port available!"));
 				return false;
 			}
-		}
+		
 		mClient = null;
 
 		mConnectionThread = new Thread()
 		{
 			public void run()
 			{
+				int port = mServer.getLocalPort();
+				
 				try
 				{
 					System.out.println(
@@ -165,7 +182,7 @@ public class RemotePort
 				} catch (IOException e)
 				{
 					System.out.println(
-						"Accept failed: " + mServer.getLocalPort());
+						"Accept failed: " + port);
 				}
 			}
 		};
@@ -177,10 +194,10 @@ public class RemotePort
 
 	public int waitForConnect(boolean fTimeOut)
 	{
-
+		int port =  mServer.getLocalPort();
 		try
 		{
-			synchronized (this)
+			//synchronized (this)
 			{
 				for (int x = 0;
 					((x < 1000) || (!fTimeOut)) && (mClient == null);
@@ -190,11 +207,13 @@ public class RemotePort
 						break;
 					System.out.println(
 						"Waiting for connect Port"
-							+ mServer.getLocalPort()
+							+ port
 							+ "(Try "
 							+ x
 							+ " of 100)\n");
-					wait(100);
+							
+					Thread.sleep(100);
+					
 				}
 			}
 

@@ -844,7 +844,8 @@ public class PerlDB implements IDebugElement, ITerminate
 		mIsCommandFinished = false;
 
 		boolean finished = false;
-
+		boolean skip = false;
+		
 		try
 		{
 			mCurrentCommandDest = mThreads[0];
@@ -852,6 +853,7 @@ public class PerlDB implements IDebugElement, ITerminate
 			mDebugIn.flush();
 		} catch (RuntimeException e)
 		{
+			skip = true;
 			PerlDebugPlugin.getDefault().logError(
 				"Could not terminate Perl Process",
 				e);
@@ -861,7 +863,7 @@ public class PerlDB implements IDebugElement, ITerminate
 	//	StringBuffer debugOutput=new StringBuffer();
 		char buf[] = new char[1000];
 		
-		
+		if( ! skip )
 		do
 		{
 			try
@@ -870,9 +872,11 @@ public class PerlDB implements IDebugElement, ITerminate
 	//		  System.out.println("Count: "+count+"\n");
 			} catch (IOException e)
 			{
-				PerlDebugPlugin.getDefault().logError(
-								"Test: Could not terminate Perl Process",
-								e);
+				skip = true;
+				break;
+//				PerlDebugPlugin.getDefault().logError(
+//								"Test: Could not terminate Perl Process",
+//								e);
 			}
 
 		//	if (count > 0)

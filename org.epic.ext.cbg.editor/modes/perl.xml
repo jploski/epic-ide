@@ -18,6 +18,7 @@
 
 		<!-- Rules added by EPIC - START -->
 		<!-- To get this working changes were made to ColoringEditorTools.java-->
+		<!-- <SEQ TYPE="LITERAL1">$</SEQ> -->
 		<SPAN TYPE="INVALID" NO_LINE_BREAK="TRUE">
 			<BEGIN>__END__</BEGIN>
 			<END>@EOF</END>
@@ -27,6 +28,7 @@
 			<BEGIN>__DATA__</BEGIN>
 			<END>@EOF</END>
 		</SPAN>
+		<MARK TYPE="KEYWORD2">$</MARK>
 		<!-- Rules added by EPIC - END -->
 
 
@@ -78,8 +80,12 @@
 			<END>}</END>
 		</SPAN>
 
-		<MARK_FOLLOWING TYPE="KEYWORD2">$#</MARK_FOLLOWING>
+                <MARK_FOLLOWING TYPE="KEYWORD2">$#</MARK_FOLLOWING>
+                <!-- !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+		EPIC - REMOVED because it break the syntax colouring, if the Color Editor
+		     handles this correctly this could be re-enabled ! 
 		<MARK_FOLLOWING TYPE="KEYWORD2">$</MARK_FOLLOWING>
+		!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! -->
 
 		<SPAN TYPE="KEYWORD2" NO_LINE_BREAK="TRUE" DELEGATE="VARIABLE">
 			<BEGIN>@{</BEGIN>
@@ -547,6 +553,7 @@
 		</SPAN>
 
 		<MARK_FOLLOWING TYPE="KEYWORD2">%</MARK_FOLLOWING>
+
 	</RULES>
 
 	<RULES SET="VARIABLE" DEFAULT="KEYWORD2" ESCAPE="\">

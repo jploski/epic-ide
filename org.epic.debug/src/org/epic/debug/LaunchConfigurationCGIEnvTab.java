@@ -19,18 +19,16 @@ package org.epic.debug;
 
 //import java.lang.reflect.InvocationTargetException;
 
-import java.io.File;
+import gnu.regexp.RE;
+import gnu.regexp.REException;
+
 import java.util.Map;
 
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.ui.AbstractLaunchConfigurationTab;
-import org.eclipse.jface.preference.DirectoryFieldEditor;
-import org.eclipse.jface.preference.FileFieldEditor;
-import org.eclipse.jface.preference.IntegerFieldEditor;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.swt.SWT;
@@ -41,8 +39,9 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
+import org.epic.debug.util.ListEditor;
 
-public class LaunchConfigurationCGIMainTab
+public class LaunchConfigurationCGIEnvTab
 	extends AbstractLaunchConfigurationTab
 	implements IPropertyChangeListener
 {
@@ -56,10 +55,9 @@ public class LaunchConfigurationCGIMainTab
 	 * @since 2.0
 	 */
 
-	private IntegerFieldEditor fDebugPort;
-	private DirectoryFieldEditor fCGIRootDir;
-	private DirectoryFieldEditor fHTMLRootDir;
-	private FileFieldEditor fHTMLRootFile;
+	private ListEditor fEnvVar;
+	//	private IntegerFieldEditor fWebserverPort;
+
 	// Project UI widgets
 	//	protected Label fProjLabel;
 	//protected Label fParamLabel;
@@ -74,11 +72,26 @@ public class LaunchConfigurationCGIMainTab
 	//  protected Button fSearchExternalJarsCheckButton;
 	//	protected Button fStopInMainCheckButton;
 
+	private RE mTestEnvVar;
+
 	protected static final String EMPTY_STRING = ""; //$NON-NLS-1$
 
 	private static final String PERL_NATURE_ID =
 		"org.epic.perleditor.perlnature";
 
+	public LaunchConfigurationCGIEnvTab()
+	{
+		super();
+		try
+		{
+			mTestEnvVar = new RE("^\\s*[^\\s]+\\s*=.*");
+		} catch (REException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	}
 	/**
 	 * @see org.eclipse.debug.ui.ILaunchConfigurationTab#createControl(Composite)
 	 */
@@ -103,41 +116,14 @@ public class LaunchConfigurationCGIMainTab
 		layout.marginWidth = 0;
 		gd = new GridData(GridData.FILL_HORIZONTAL);
 
-		Composite htmlRootDirComp = new Composite(comp, SWT.NONE);
-		htmlRootDirComp.setLayout(layout);
-		htmlRootDirComp.setLayoutData(gd);
-		htmlRootDirComp.setFont(font);
+		Composite envComp = new Composite(comp, SWT.NONE);
+		envComp.setLayout(layout);
+		envComp.setLayoutData(gd);
+		envComp.setFont(font);
 
-		fHTMLRootDir =
-			new DirectoryFieldEditor(
-				"Test",
-				"HTML Root Directory",
-				htmlRootDirComp);
-		fHTMLRootDir.fillIntoGrid(htmlRootDirComp, 3);
-		fHTMLRootDir.setPropertyChangeListener(this);
-
-		createVerticalSpacer(comp, 1);
-
-		layout = new GridLayout();
-		layout.numColumns = 1;
-		layout.marginHeight = 0;
-		layout.marginWidth = 0;
-		gd = new GridData(GridData.FILL_HORIZONTAL);
-
-		Composite htmlRootFileComp = new Composite(comp, SWT.NONE);
-		htmlRootFileComp.setLayout(layout);
-		htmlRootFileComp.setLayoutData(gd);
-		htmlRootFileComp.setFont(font);
-
-		fHTMLRootFile =
-			new FileFieldEditor(
-				"Test",
-				"HTML Root File",
-				true,
-				htmlRootFileComp);
-		fHTMLRootFile.fillIntoGrid(htmlRootFileComp, 3);
-		fHTMLRootFile.setPropertyChangeListener(this);
-
+		fEnvVar = new ListEditor("Envirement Variables", envComp, this);
+		fEnvVar.fillIntoGrid(envComp, 3);
+		fEnvVar.setPropertyChangeListener(this);
 		createVerticalSpacer(comp, 1);
 		layout = new GridLayout();
 		layout.numColumns = 1;
@@ -145,40 +131,7 @@ public class LaunchConfigurationCGIMainTab
 		layout.marginWidth = 0;
 		gd = new GridData(GridData.FILL_HORIZONTAL);
 
-		Composite cgiRootDirComp = new Composite(comp, SWT.NONE);
-		cgiRootDirComp.setLayout(layout);
-		cgiRootDirComp.setLayoutData(gd);
-		cgiRootDirComp.setFont(font);
-
-		fCGIRootDir =
-			new DirectoryFieldEditor(
-				"Test",
-				"CGI Root Directory",
-				cgiRootDirComp);
-		fCGIRootDir.fillIntoGrid(cgiRootDirComp, 3);
-
-		fCGIRootDir.setPropertyChangeListener(this);
-
-		createVerticalSpacer(comp, 1);
-
-		layout = new GridLayout();
-		layout.numColumns = 1;
-		layout.marginHeight = 0;
-		layout.marginWidth = 0;
-		gd = new GridData(GridData.FILL_HORIZONTAL);
-
-		Composite debugPortComp = new Composite(comp, SWT.NONE);
-		debugPortComp.setLayout(layout);
-		debugPortComp.setLayoutData(gd);
-		debugPortComp.setFont(font);
-
-		fDebugPort =
-			new IntegerFieldEditor("Test", "Debugger Port", debugPortComp);
-		fDebugPort.fillIntoGrid(debugPortComp, 2);
-		fDebugPort.setValidRange(1,Integer.MAX_VALUE);
-
-		fDebugPort.setValidateStrategy(IntegerFieldEditor.VALIDATE_ON_KEY_STROKE);
-		fDebugPort.setPropertyChangeListener(this);
+		
 	}
 
 	/**
@@ -192,32 +145,10 @@ public class LaunchConfigurationCGIMainTab
 
 	protected void updateParamsFromConfig(ILaunchConfiguration config)
 	{
-		try
-		{
-			fHTMLRootDir.setStringValue(
-				config.getAttribute(
-					PerlLaunchConfigurationConstants.ATTR_HTML_ROOT_DIR,
-					(String) null));
+		
+			fEnvVar.initilizeFrom(config);
 
-			fHTMLRootFile.setStringValue(
-				config.getAttribute(
-					PerlLaunchConfigurationConstants.ATTR_HTML_ROOT_FILE,
-					(String) null));
-			fCGIRootDir.setStringValue(
-				config.getAttribute(
-					PerlLaunchConfigurationConstants.ATTR_CGI_ROOT_DIR,
-					(String) null));
-
-			fDebugPort.setStringValue(
-					config.getAttribute(
-						PerlLaunchConfigurationConstants.ATTR_DEBUG_PORT,
-						(String)null));
-			
-			} catch (CoreException e)
-		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		
 	}
 
 	//	/**
@@ -225,22 +156,12 @@ public class LaunchConfigurationCGIMainTab
 	//	 */
 	public void performApply(ILaunchConfigurationWorkingCopy config)
 	{
+	
 		config.setAttribute(
-			PerlLaunchConfigurationConstants.ATTR_HTML_ROOT_DIR,
-			this.fHTMLRootDir.getStringValue());
-		config.setAttribute(
-			PerlLaunchConfigurationConstants.ATTR_HTML_ROOT_FILE,
-			this.fHTMLRootFile.getStringValue());
-		config.setAttribute(
-			PerlLaunchConfigurationConstants.ATTR_CGI_ROOT_DIR,
-			this.fCGIRootDir.getStringValue());
-		config.setAttribute(
-						PerlLaunchConfigurationConstants.ATTR_DEBUG_PORT,
-						fDebugPort.getStringValue());
-		config.setAttribute(
-				PerlLaunchConfigurationConstants.ATTR_DEBUG_CGI,
-							"OK");
+			PerlLaunchConfigurationConstants.ATTR_DEBUG_CGI,
+			"OK");
 
+		fEnvVar.doApply(config);
 
 	}
 
@@ -268,74 +189,16 @@ public class LaunchConfigurationCGIMainTab
 		setErrorMessage(null);
 		setMessage(null);
 
-		String value = fHTMLRootDir.getStringValue();
-
-		if (value == null)
+	
+		String[] items = this.fEnvVar.getItems();
+		for (int i = 0; i < items.length; i++)
 		{
-			setErrorMessage("HTML Root Directory is missing"); //$NON-NLS-1$
-			return false;
+			if( !mTestEnvVar.isMatch(items[i]))
+			{
+				setErrorMessage("Invalid Environment Variable Entry at Line "+(i+1) );
+				return false;
+			}
 		}
-
-		File file = new File(value);
-		if (!file.exists() || !file.isDirectory())
-		{
-			setErrorMessage("HTML Root Directory is invalid"); //$NON-NLS-1$
-			return false;
-		}
-
-		value = fHTMLRootFile.getStringValue();
-
-		if (value == null)
-		{
-			setErrorMessage("HTML Startup File is missing"); //$NON-NLS-1$
-			return false;
-		}
-
-		file = new File(value);
-		if (!file.exists() || !file.isFile())
-		{
-			setErrorMessage("HTML Startup File is invalid"); //$NON-NLS-1$
-			return false;
-		}
-
-		if (value.indexOf(fHTMLRootDir.getStringValue()) != 0)
-		{
-			setErrorMessage("HTML Startup File must be located within HTMT Root Directory (or one of its subfolders)"); //$NON-NLS-1$
-			return false;
-		}
-
-		value = fCGIRootDir.getStringValue();
-		if (value == null)
-		{
-			setErrorMessage("CGI Root Directory is missing"); //$NON-NLS-1$
-			return false;
-		}
-
-		file = new File(value);
-		if (!file.exists() || !file.isDirectory())
-		{
-			setErrorMessage("CGI Root Directory is invalid"); //$NON-NLS-1$
-			return false;
-		}
-
-		value = fDebugPort.getStringValue();
-				if (value == null )
-				{
-					setErrorMessage("Debug Port is missing"); //$NON-NLS-1$
-					return false;
-				}
-				else {
-					try{
-				
-					 Integer.parseInt(value);
-					}
-					 catch(Exception e)
-					 {
-						setErrorMessage("Debug Port is invalid"); //$NON-NLS-1$
-											return false;
-					 }
-				}
-
 		return true;
 	}
 
@@ -353,11 +216,11 @@ public class LaunchConfigurationCGIMainTab
 			PerlLaunchConfigurationConstants.ATTR_DEBUG_PORT,
 			PerlDebugPlugin.getDefaultDebugPort());
 		config.setAttribute(
-		PerlLaunchConfigurationConstants.ATTR_DEBUG_CGI,
-					"OK");
+			PerlLaunchConfigurationConstants.ATTR_DEBUG_CGI,
+			"OK");
 		config.setAttribute(
-				PerlLaunchConfigurationConstants.ATTR_CGI_ENV,
-							(Map)null);
+			PerlLaunchConfigurationConstants.ATTR_CGI_ENV,
+			(Map) null);
 
 	}
 
@@ -404,7 +267,7 @@ public class LaunchConfigurationCGIMainTab
 	 */
 	public String getName()
 	{
-		return "Configuration"; //$NON-NLS-1$
+		return "CGI Environment"; //$NON-NLS-1$
 	}
 
 	/**
@@ -414,7 +277,7 @@ public class LaunchConfigurationCGIMainTab
 	{
 		return (
 			PerlDebugPlugin.getDefaultDesciptorImageRegistry().get(
-				PerlDebugImages.DESC_OBJS_LaunchTabMain));
+				PerlDebugImages.DESC_OBJS_LaunchTabCGI));
 	}
 
 	/* (non-Javadoc)
@@ -422,17 +285,14 @@ public class LaunchConfigurationCGIMainTab
 	 */
 	public void propertyChange(PropertyChangeEvent event)
 	{
-		if (event.getSource() == fHTMLRootDir)
-		{
-			if (fHTMLRootFile
-				.getStringValue()
-				.indexOf(fHTMLRootDir.getStringValue())
-				!= 0)
-				fHTMLRootFile.setStringValue(fHTMLRootDir.getStringValue());
-		}
-
+		
 		updateLaunchConfigurationDialog();
 
+	}
+
+	public void update()
+	{
+		updateLaunchConfigurationDialog();
 	}
 
 }

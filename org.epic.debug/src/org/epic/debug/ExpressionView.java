@@ -6,6 +6,11 @@
  */
 package org.epic.debug;
 
+import gnu.regexp.RE;
+import gnu.regexp.RESyntax;
+
+import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.debug.ui.DebugUITools;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -15,9 +20,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.part.ViewPart;
-import org.eclipse.debug.ui.*;
-import org.eclipse.core.runtime.*;
-import gnu.regexp.*;
 
  
 		

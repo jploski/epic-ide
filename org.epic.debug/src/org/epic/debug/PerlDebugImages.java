@@ -14,9 +14,10 @@ package org.epic.debug;
  */
 
 
-import org.eclipse.jface.resource.ImageDescriptor;
 import java.net.MalformedURLException;
 import java.net.URL;
+
+import org.eclipse.jface.resource.ImageDescriptor;
 
 
 public class PerlDebugImages {

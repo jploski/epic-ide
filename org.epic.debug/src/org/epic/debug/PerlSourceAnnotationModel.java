@@ -6,10 +6,10 @@
  */
 package org.epic.debug;
 
-import org.eclipse.ui.texteditor.ResourceMarkerAnnotationModel;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.texteditor.MarkerAnnotation;
+import org.eclipse.ui.texteditor.ResourceMarkerAnnotationModel;
 
 /**
  * @author ruehl

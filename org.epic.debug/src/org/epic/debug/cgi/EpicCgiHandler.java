@@ -38,12 +38,11 @@ import java.io.PrintWriter;
 import java.lang.reflect.Method;
 import java.net.Socket;
 import java.net.UnknownHostException;
-//import java.net.InetAddress;
-//import java.net.Socket;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.StringTokenizer;
 import java.util.Vector;
+
 import sunlabs.brazil.server.Handler;
 import sunlabs.brazil.server.Request;
 import sunlabs.brazil.server.Server;

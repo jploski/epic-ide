@@ -6,11 +6,14 @@
  */
 package org.epic.debug;
 
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
+
 import org.eclipse.core.resources.IMarkerDelta;
+import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.IBreakpointListener;
 import org.eclipse.debug.core.model.IBreakpoint;
-import java.util.*;
-import org.eclipse.debug.core.DebugPlugin;
 
 
 /**

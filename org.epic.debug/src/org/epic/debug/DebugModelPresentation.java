@@ -1,25 +1,25 @@
 package org.epic.debug;
 
-import org.eclipse.debug.core.model.IValue;
-import org.eclipse.debug.ui.IDebugModelPresentation;
-import org.eclipse.debug.ui.IValueDetailListener;
-import org.eclipse.jface.viewers.ILabelProviderListener;
-import org.eclipse.swt.graphics.Image;
-import org.eclipse.ui.IEditorInput;
-import org.eclipse.ui.IStorageEditorInput;
-import org.eclipse.core.resources.*;
-import org.eclipse.core.runtime.IPath;
-import org.eclipse.debug.ui.DebugUITools;
-import org.eclipse.debug.ui.IDebugUIConstants;
+import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.model.IBreakpoint;
-import org.eclipse.ui.IEditorRegistry;
-import org.eclipse.ui.PlatformUI;
+import org.eclipse.debug.core.model.IValue;
+import org.eclipse.debug.ui.DebugUITools;
+import org.eclipse.debug.ui.IDebugModelPresentation;
+import org.eclipse.debug.ui.IDebugUIConstants;
+import org.eclipse.debug.ui.IValueDetailListener;
+import org.eclipse.jface.viewers.ILabelProviderListener;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.IEditorDescriptor;
+import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IEditorRegistry;
+import org.eclipse.ui.IStorageEditorInput;
+import org.eclipse.ui.PlatformUI;
 import org.epic.core.util.FileUtilities;
-import org.epic.debug.varparser.*;
+import org.epic.debug.varparser.PerlDebugVar;
 /**
  * @author ruehl
  *

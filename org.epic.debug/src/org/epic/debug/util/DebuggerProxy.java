@@ -11,7 +11,6 @@ package org.epic.debug.util;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-
 import org.eclipse.core.runtime.PlatformObject;
 import org.eclipse.debug.core.DebugEvent;
 import org.eclipse.debug.core.DebugException;
@@ -23,9 +22,7 @@ import org.eclipse.debug.core.model.IStreamMonitor;
 import org.eclipse.debug.core.model.IStreamsProxy;
 import org.eclipse.debug.core.model.ITerminate;
 import org.eclipse.debug.internal.core.InputStreamMonitor;
-
 import org.epic.debug.PerlDB;
-import org.epic.debug.PerlLaunchConfigurationConstants;
 
 
 

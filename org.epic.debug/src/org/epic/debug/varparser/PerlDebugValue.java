@@ -5,14 +5,14 @@
  * Window>Preferences>Java>Code Generation>Code and Comments
  */
 package org.epic.debug.varparser;
+import java.util.Iterator;
+
 import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.ILaunch;
+import org.eclipse.debug.core.model.IDebugElement;
 import org.eclipse.debug.core.model.IDebugTarget;
 import org.eclipse.debug.core.model.IValue;
 import org.eclipse.debug.core.model.IVariable;
-import org.eclipse.debug.core.model.IDebugElement;
-import org.eclipse.debug.core.model.IDebugElement;
-import java.util.*;
 
 /**
  * @author ST

@@ -23,46 +23,27 @@ import gnu.regexp.RE;
 import gnu.regexp.REException;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.IResourceVisitor;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
-//import org.eclipse.jface.viewers.ILabelProvider;
+import org.eclipse.debug.ui.AbstractLaunchConfigurationTab;
+import org.eclipse.jface.preference.DirectoryFieldEditor;
+import org.eclipse.jface.preference.FileFieldEditor;
+import org.eclipse.jface.util.IPropertyChangeListener;
+import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
-//import org.eclipse.swt.events.SelectionAdapter;
-//import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Text;
-import org.eclipse.ui.IEditorDescriptor;
-//import org.eclipse.swt.widgets.Shell;
-//import org.eclipse.swt.widgets.Text;
-//import org.eclipse.ui.dialogs.ElementListSelectionDialog;
-//import org.eclipse.ui.dialogs.SelectionDialog;
-//import org.eclipse.ui.help.WorkbenchHelp;
-import org.eclipse.debug.ui.AbstractLaunchConfigurationTab;
-import org.eclipse.jface.preference.DirectoryFieldEditor;
-import org.eclipse.jface.preference.FileFieldEditor;
-import org.eclipse.jface.preference.IntegerFieldEditor;
-import org.eclipse.jface.util.IPropertyChangeListener;
-import org.eclipse.jface.util.PropertyChangeEvent;
-import org.eclipse.core.resources.IProject;
-import org.epic.debug.util.ListEditor;
+//import org.epic.debug.util.ListEditor;
 
 public class LaunchConfigurationCGIWebServerTab
 	extends AbstractLaunchConfigurationTab
@@ -78,7 +59,7 @@ public class LaunchConfigurationCGIWebServerTab
 	 * @since 2.0
 	 */
 
-	private ListEditor fEnvVar;
+	//private ListEditor fEnvVar;
 	//	private IntegerFieldEditor fWebserverPort;
 	private DirectoryFieldEditor fCGIRootDir;
 	private DirectoryFieldEditor fHTMLRootDir;
@@ -141,20 +122,20 @@ public class LaunchConfigurationCGIWebServerTab
 		layout.marginWidth = 0;
 		gd = new GridData(GridData.FILL_HORIZONTAL);
 
-		Composite envComp = new Composite(comp, SWT.NONE);
-		envComp.setLayout(layout);
-		envComp.setLayoutData(gd);
-		envComp.setFont(font);
-
-		fEnvVar = new ListEditor("Envirement Variables", envComp, this);
-		fEnvVar.fillIntoGrid(envComp, 3);
-		fEnvVar.setPropertyChangeListener(this);
-		createVerticalSpacer(comp, 1);
-		layout = new GridLayout();
-		layout.numColumns = 1;
-		layout.marginHeight = 0;
-		layout.marginWidth = 0;
-		gd = new GridData(GridData.FILL_HORIZONTAL);
+//		Composite envComp = new Composite(comp, SWT.NONE);
+//		envComp.setLayout(layout);
+//		envComp.setLayoutData(gd);
+//		envComp.setFont(font);
+//
+//		fEnvVar = new ListEditor("Envirement Variables", envComp, this);
+//		fEnvVar.fillIntoGrid(envComp, 3);
+//		fEnvVar.setPropertyChangeListener(this);
+//		createVerticalSpacer(comp, 1);
+//		layout = new GridLayout();
+//		layout.numColumns = 1;
+//		layout.marginHeight = 0;
+//		layout.marginWidth = 0;
+//		gd = new GridData(GridData.FILL_HORIZONTAL);
 
 		Composite htmlRootDirComp = new Composite(comp, SWT.NONE);
 		htmlRootDirComp.setLayout(layout);
@@ -259,7 +240,7 @@ public class LaunchConfigurationCGIWebServerTab
 			//					config.getAttribute(
 			//						PerlLaunchConfigurationConstants.ATTR_DEBUG_PORT,
 			//						(String)null));
-			fEnvVar.initilizeFrom(config);
+		//	fEnvVar.initilizeFrom(config);
 
 		} catch (CoreException e)
 		{
@@ -289,7 +270,7 @@ public class LaunchConfigurationCGIWebServerTab
 			PerlLaunchConfigurationConstants.ATTR_DEBUG_CGI,
 			"OK");
 
-		fEnvVar.doApply(config);
+	//	fEnvVar.doApply(config);
 
 	}
 
@@ -368,15 +349,15 @@ public class LaunchConfigurationCGIWebServerTab
 		}
 		
 		
-		String[] items = this.fEnvVar.getItems();
-		for (int i = 0; i < items.length; i++)
-		{
-			if( !mTestEnvVar.isMatch(items[i]))
-			{
-				setErrorMessage("Invalid Environment Variable Entry at Line "+(i+1) );
-				return false;
-			}
-		}
+//		String[] items = this.fEnvVar.getItems();
+//		for (int i = 0; i < items.length; i++)
+//		{
+//			if( !mTestEnvVar.isMatch(items[i]))
+//			{
+//				setErrorMessage("Invalid Environment Variable Entry at Line "+(i+1) );
+//				return false;
+//			}
+//		}
 		return true;
 	}
 

@@ -6,27 +6,36 @@
  */
 package org.epic.debug;
 
+import gnu.regexp.RE;
+import gnu.regexp.REException;
+import gnu.regexp.REMatch;
+import gnu.regexp.RESyntax;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.Set;
+import java.util.StringTokenizer;
+
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
+import org.eclipse.debug.core.DebugEvent;
+import org.eclipse.debug.core.DebugException;
+import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.model.IDebugElement;
 import org.eclipse.debug.core.model.IDebugTarget;
 import org.eclipse.debug.core.model.ITerminate;
 import org.eclipse.debug.core.model.IThread;
-import java.net.*;
-import java.io.*;
-
-import gnu.regexp.*;
-
-import org.eclipse.debug.core.DebugException;
-import org.eclipse.debug.core.DebugPlugin;
-import org.eclipse.debug.core.DebugEvent;
-import org.eclipse.core.runtime.Path;
-import org.eclipse.core.runtime.IPath;
-import java.util.*;
 import org.eclipse.debug.core.model.IVariable;
-import org.epic.debug.util.DebuggerProxy;
 import org.epic.debug.util.PathMapperCygwin;
-import org.epic.debug.util.RemotePort;
-import org.epic.debug.varparser.*;
+import org.epic.debug.varparser.PerlDebugValue;
+import org.epic.debug.varparser.PerlDebugVar;
+import org.epic.debug.varparser.PerlVarParser;
 import org.epic.perleditor.PerlEditorPlugin;
 
 /**

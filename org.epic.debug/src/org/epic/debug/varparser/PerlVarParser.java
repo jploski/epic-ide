@@ -1,23 +1,16 @@
 package org.epic.debug.varparser;
-import java.io.Reader;
 import java.io.InputStream;
+import java.io.Reader;
 import java.io.StringReader;
-import antlr.InputBuffer;
-import antlr.RecognitionException;
-import antlr.Token;
-/*import antlr.RecognitionException;
-import antlr.NoViableAltForCharException;
-import antlr.MismatchedCharException;
-import antlr.TokenStream;
-import antlr.ANTLRHashString;*/
-import antlr.LexerSharedInputState;
-/*import antlr.collections.impl.BitSet;
-import antlr.SemanticException;*/
-import antlr.TokenStreamException;
+
 import org.epic.debug.PerlDB;
 import org.epic.debug.PerlDebugPlugin;
 
-import java.io.*;
+import antlr.InputBuffer;
+import antlr.LexerSharedInputState;
+import antlr.RecognitionException;
+import antlr.Token;
+import antlr.TokenStreamException;
 
 /**
  * The main for this example. It accepts the name of a file as a commandline

@@ -11,21 +11,16 @@
 
 package org.epic.debug;
 
-import org.eclipse.ui.texteditor.MarkerAnnotation;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.runtime.CoreException;
-
 import org.eclipse.debug.core.model.IBreakpoint;
-
-import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.widgets.Display;
-
-import org.eclipse.jface.resource.ImageRegistry;
-
-import org.eclipse.ui.texteditor.MarkerUtilities;
-
 import org.eclipse.debug.ui.DebugUITools;
 import org.eclipse.debug.ui.IDebugModelPresentation;
+import org.eclipse.jface.resource.ImageRegistry;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.texteditor.MarkerAnnotation;
+import org.eclipse.ui.texteditor.MarkerUtilities;
 
 
 

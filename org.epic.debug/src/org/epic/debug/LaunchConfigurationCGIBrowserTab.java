@@ -25,6 +25,10 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Preferences;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
+import org.eclipse.debug.ui.AbstractLaunchConfigurationTab;
+import org.eclipse.help.internal.HelpPlugin;
+import org.eclipse.help.internal.browser.BrowserDescriptor;
+import org.eclipse.help.internal.browser.BrowserManager;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
@@ -41,11 +45,6 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.debug.ui.AbstractLaunchConfigurationTab;
-import org.eclipse.help.internal.HelpPlugin;
-import org.eclipse.help.internal.browser.BrowserDescriptor;
-import org.eclipse.help.internal.browser.BrowserManager;
-import org.eclipse.jface.preference.FileFieldEditor;
 import org.epic.debug.cgi.CustomBrowser;
 
 

@@ -6,17 +6,10 @@
  */
 package org.epic.debug.cgi;
 
+import java.util.ArrayList;
+import java.util.StringTokenizer;
+
 import org.eclipse.help.browser.IBrowser;
-
-/**
- * @author ST
- *
- * To change the template for this generated type comment go to
- * Window&gt;Preferences&gt;Java&gt;Code Generation&gt;Code and Comments
- */
-
-import java.util.*;
-
 import org.eclipse.help.internal.HelpPlugin;
 import org.eclipse.help.internal.browser.StreamConsumer;
 import org.epic.debug.PerlDebugPlugin;

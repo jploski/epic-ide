@@ -1,9 +1,4 @@
 package org.epic.debug.varparser;
-import gnu.regexp.RE;
-import gnu.regexp.REException;
-import gnu.regexp.REMatch;
-import gnu.regexp.RESyntax;
-
 import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.io.InputStream;

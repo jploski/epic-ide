@@ -12,7 +12,12 @@ package org.epic.debug;
  * To change the template for this generated type comment go to
  * Window>Preferences>Java>Code Generation>Code and Comments
  */
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
+
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.debug.core.model.Breakpoint;
 

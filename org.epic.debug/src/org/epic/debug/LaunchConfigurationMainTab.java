@@ -22,6 +22,7 @@ package org.epic.debug;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceVisitor;
 import org.eclipse.core.resources.IWorkspaceRoot;
@@ -29,12 +30,10 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
-//import org.eclipse.jface.viewers.ILabelProvider;
+import org.eclipse.debug.ui.AbstractLaunchConfigurationTab;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
-//import org.eclipse.swt.events.SelectionAdapter;
-//import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
@@ -45,13 +44,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IEditorDescriptor;
-//import org.eclipse.swt.widgets.Shell;
-//import org.eclipse.swt.widgets.Text;
-//import org.eclipse.ui.dialogs.ElementListSelectionDialog;
-//import org.eclipse.ui.dialogs.SelectionDialog;
-//import org.eclipse.ui.help.WorkbenchHelp;
-import org.eclipse.debug.ui.AbstractLaunchConfigurationTab;
-import org.eclipse.core.resources.IProject;
 
 public class LaunchConfigurationMainTab extends AbstractLaunchConfigurationTab
 {

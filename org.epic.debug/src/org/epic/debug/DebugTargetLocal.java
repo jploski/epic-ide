@@ -1,19 +1,6 @@
 package org.epic.debug;
 
-import java.io.BufferedReader;
-import java.io.PrintWriter;
-
-import org.eclipse.core.resources.IMarkerDelta;
-
-import org.eclipse.debug.core.DebugEvent;
-import org.eclipse.debug.core.DebugException;
-import org.eclipse.debug.core.IDebugEventSetListener;
 import org.eclipse.debug.core.ILaunch;
-import org.eclipse.debug.core.Launch;
-
-import org.eclipse.debug.core.model.IBreakpoint;
-import org.eclipse.debug.core.model.IMemoryBlock;
-import org.eclipse.debug.core.model.IThread;
 import org.epic.debug.util.RemotePort;
 
 /**

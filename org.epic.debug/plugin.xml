@@ -137,7 +137,19 @@
             id="org.epic.debug.perldebugger.perl">
       </debugModelPresentation>
    </extension>
-  
+   <extension
+         point="org.eclipse.ui.popupMenus">
+      <viewerContribution
+            targetID="#PerlRulerContext"
+            id="org.epic.debug.RulerPopupActions">
+         <action
+               label="Breakpoint Properties"
+               class="org.epic.debug.ManageRegExpBreakpointRulerPropertyActionDelegate"
+               menubarPath="debug"
+               id="org.epic.ManageRegExpBreakpointRulerPropertyActionDelegate">
+         </action>
+      </viewerContribution>
+   </extension>
    <extension
          point="org.eclipse.ui.popupMenus">
       <viewerContribution
@@ -164,6 +176,7 @@
          </action>
       </viewerContribution>
    </extension>
+    
    <extension
          id="perlLineBreakpointMarker"
          point="org.eclipse.core.resources.markers">
@@ -191,6 +204,9 @@
       <super
             type="org.epic.debug.perlLineBreakpointMarker">
       </super>
+      <attribute name = "EPIC_SOURCE_LINE"/>
+      <attribute name = "EPIC_REG_EXP"/>
+      <attribute name = "EPIC_MATCH_TEXT"/>
       <persistent
             value="true">
       </persistent>

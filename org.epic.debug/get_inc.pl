@@ -1,0 +1,1 @@
+foreach $t(@INC) {print $t."\n";}

@@ -139,8 +139,8 @@ public class PerlDB implements IDebugElement, ITerminate {
 	private final static String mLineSeparator = System
 			.getProperty("line.separator");
 	private org.epic.debug.util.PathMapper mPathMapper;
-	StringBuffer mRegExp = new StringBuffer();
-	StringBuffer mText = new StringBuffer();
+	String mRegExp ;
+	String mText;
 	private String mPerlVersion;
 	private class CommandThread extends Thread {
 
@@ -899,10 +899,11 @@ public class PerlDB implements IDebugElement, ITerminate {
 
 		if (bp != null) {
 			if (bp instanceof PerlRegExpBreakpoint) {
-				mRegExp = new StringBuffer();
-				mText = new StringBuffer();
+				((PerlRegExpBreakpoint)(bp)).calculateRegExp();
+				mRegExp = ((PerlRegExpBreakpoint)(bp)).getRegExp();
+				mText = ((PerlRegExpBreakpoint)(bp)).getMatchText();
 
-				this.getRegExp(pos, mRegExp, mText);
+			
 				// show view
 				Shell shell = PerlDebugPlugin.getActiveWorkbenchShell();
 				if (shell != null) {
@@ -918,8 +919,8 @@ public class PerlDB implements IDebugElement, ITerminate {
 								// TODO Auto-generated catch block
 								e.printStackTrace();
 							}
-							view.setRegExpText(mRegExp.toString());
-							view.setMatchText(mText.toString());
+							view.setRegExpText(mRegExp);
+							view.setMatchText(mText);
 
 						}
 

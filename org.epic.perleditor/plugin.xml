@@ -183,7 +183,16 @@
 <!-- Perldoc Perl Editor popup menu definition -->
    <extension
          point="org.eclipse.ui.popupMenus">
-<!-- Perdoc menu -->
+	<!-- Toggle perl nature menu entry -->
+	  <objectContribution objectClass="org.eclipse.core.resources.IProject"
+	    id="org.epic.core.tooglePerlNature">
+  	 	<action label="Toggle Perl Nature"
+  	 		icon="icons/epic_project.gif"
+  	 		class="org.epic.core.popupmenus.TogglePerlNatureActionDelegate"
+  	 		menubarPath="epicNAvPopup"
+  	 		id="org.epic.core.togglePerlNature.action" /> 
+  	  </objectContribution>
+	<!-- Perdoc menu -->
       <viewerContribution
             targetID="#PerlDocEditorContext"
             id="org.epic.perleditor.PerlDocPopup">

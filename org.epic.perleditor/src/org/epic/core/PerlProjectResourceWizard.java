@@ -32,6 +32,7 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
 
 import org.eclipse.ui.wizards.newresource.BasicNewResourceWizard;
 
+import org.epic.core.util.NatureUtilities;
 import org.epic.perleditor.editors.PerlImages;
 
 /**
@@ -225,8 +226,7 @@ public class PerlProjectResourceWizard
 
 			projectHandle.open(new SubProgressMonitor(monitor, 1000));
 			
-			//TODO
-			addNature(projectHandle);
+			NatureUtilities.addNature(projectHandle, Constants.PERL_NATURE_ID);
 
 		} finally {
 			monitor.done();
@@ -479,17 +479,5 @@ public class PerlProjectResourceWizard
 		return false;
 	}
 
-	private void addNature(IProject project) {
-		try {
-			IProjectDescription description = project.getDescription();
-			String[] prevNatures = description.getNatureIds();
-			String[] newNatures = new String[prevNatures.length + 1];
-			System.arraycopy(prevNatures, 0, newNatures, 0, prevNatures.length);
-			newNatures[prevNatures.length] = "org.epic.perleditor.perlnature";
-			description.setNatureIds(newNatures);
-			project.setDescription(description, null);
-		} catch (CoreException e) {
-			e.printStackTrace();
-		}
-	}
+	
 }

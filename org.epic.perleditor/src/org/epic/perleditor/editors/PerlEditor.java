@@ -6,7 +6,11 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.debug.core.model.IProcess;
+import org.eclipse.debug.core.model.RuntimeProcess;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -25,7 +29,6 @@ import org.eclipse.jface.text.source.projection.ProjectionSupport;
 import org.eclipse.jface.text.source.projection.ProjectionViewer;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
-import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
@@ -92,7 +95,7 @@ public class PerlEditor extends TextEditor implements
 
 	private String lastCursorChar = "  ";
 
-	private int markDocPos = 0;
+	private int markDocPos = -1;
   private int doubleQuoteHash= 0;
   private int singleQuoteHash= 0;
   private int commentHash=0;
@@ -109,9 +112,11 @@ public class PerlEditor extends TextEditor implements
 
 	private final String matchBrakets = "{([<>])}";
 	
-	private ITextViewerExtension5 viewer;
+	private ITextViewerExtension5 viewerText5;
 	
-//	private SourceViewer fSourceViewer;
+	private ISourceViewer fSourceViewer;
+	
+	private IDocument document;
 
 //	private IDocumentProvider fDocumentProvider;
 
@@ -121,6 +126,7 @@ public class PerlEditor extends TextEditor implements
 
 	private ProjectionSupport projectionSupport;
 
+	int iZ=0;
 	/**
 	 * Default constructor();
 	 */
@@ -158,16 +164,15 @@ public class PerlEditor extends TextEditor implements
 				.setActionDefinitionId(ITextEditorActionDefinitionIds.CONTENT_ASSIST_PROPOSALS);
 		setAction("org.epic.perleditor.ContentAssist", action);
 
-
-
-
 		IDocumentProvider provider = getDocumentProvider();
-		IDocument document = provider.getDocument(getEditorInput());
-		getSourceViewer().setDocument(document);
+		document = provider.getDocument(getEditorInput());
+		fSourceViewer = getSourceViewer();
+		fSourceViewer.setDocument(document);
 
-
-//		fDocumentProvider = provider;//
-//		fSourceViewer = (SourceViewer) getSourceViewer();
+		
+//		fDocumentProvider = provider;
+//		fSourceViewer = (SourceViewer) getSourceViewer();
+
 		if (fValidationThread == null && isPerlMode()) {
 			fValidationThread = new PerlSyntaxValidationThread(this,
 					getSourceViewer());
@@ -175,7 +180,6 @@ public class PerlEditor extends TextEditor implements
 			fValidationThread.setPriority(Thread.MIN_PRIORITY);
 			//Thread defaults
 			fValidationThread.start();
-
 		}
 
 		if (fValidationThread != null) {
@@ -192,34 +196,34 @@ public class PerlEditor extends TextEditor implements
 //			fValidationThread.setText(getSourceViewer().getDocument().get());
 			fValidationThread.setText(document.get());
 		}
-		
-    calculateIgnoreTypeHash();  // to get the current HashCodes of Strings we should ignore
+
+		calculateIgnoreTypeHash();  // to get the current HashCodes of Strings we should ignore
 
 		//set up the ToDoMarkerThread
 		if ((fTodoMarkerThread == null) && isPerlMode()) {
 			fTodoMarkerThread = new PerlToDoMarkerThread(this,
-					getSourceViewer());
+			    fSourceViewer);
 			fTodoMarkerThread.start();
 		}
 
 		// set up the FoldingThread
 		if ((fFoldingThread == null) && isPerlMode()) {
-			fFoldingThread = new PerlFoldingThread(this, getSourceViewer());
+			fFoldingThread = new PerlFoldingThread(this, fSourceViewer);
 			fFoldingThread.start();
 		}
 
 		setEditorForegroundColor();
 
 		// Setup idle timer
-		idleTimer = new IdleTimer(this.getSourceViewer(), Display.getCurrent());
+		idleTimer = new IdleTimer(fSourceViewer, Display.getCurrent());
 		idleTimer.start();
 
 		// Register the validation thread
 		this.registerIdleListener(fValidationThread);
 		this.registerIdleListener(fTodoMarkerThread);
 		this.registerIdleListener(fFoldingThread);
-    lastTextLength = getSourceViewer().getTextWidget().getText().length();
-    lastHashCode = getSourceViewer().getTextWidget().getText().hashCode();
+    lastTextLength = fSourceViewer.getTextWidget().getText().length();
+    lastHashCode = fSourceViewer.getTextWidget().getText().hashCode();
 
 		newStyleRange.background = tempColorBack;
 		newStyleRange.foreground = tempColorFore;
@@ -228,7 +232,7 @@ public class PerlEditor extends TextEditor implements
 		
 	//	if (getSourceViewer() instanceof ITextViewerExtension5) {
 		  //should be, otherwise a lot of stuff would not work (Bracket Matching)
-		  viewer = (ITextViewerExtension5) getSourceViewer();
+		  viewerText5 = (ITextViewerExtension5) getSourceViewer();
 	//	}
 	}
 
@@ -360,7 +364,6 @@ public class PerlEditor extends TextEditor implements
 	}
 
 	public void rulerContextMenuAboutToShow(IMenuManager menu) {
-		System.out.println(menu.getId());
 		super.rulerContextMenuAboutToShow(menu);
 		ViewerActionBuilder builder = new ViewerActionBuilder();
 		builder.readViewerContributions("#PerlRulerContext",
@@ -490,6 +493,11 @@ public class PerlEditor extends TextEditor implements
 	public final void newCurosorPos() {
 	  handleCursorPositionChanged();
 	}
+	
+	public final void foldingUpdate() {
+	  fFoldingThread.updateFoldingAnnotations();
+	}
+	
 	protected void handleCursorPositionChanged() {
 		super.handleCursorPositionChanged();
 
@@ -528,7 +536,7 @@ public class PerlEditor extends TextEditor implements
         calculateIgnoreTypeHash();  // to get the current HashCodes of Strings we should ignore
         if (myText.getText().hashCode() != lastHashCode) {
           handleTextChange(myDocument, myText, cursorPosition, currentTextLength, sourceChar);
-					}
+        }
 
         //either the cursorPosition has been changed (last Event of Alt+ArrowUp/Down)
         //or the Del-Key was pressed  => Text-Length has been changed!
@@ -678,33 +686,33 @@ public class PerlEditor extends TextEditor implements
 	 * @param currentTextLength
 	 */
   private final void resetStyle(final IDocument myDoc, StyledText myText, int currentTextLength) {
-		int posChange = viewer.modelOffset2WidgetOffset(markDocPos);
+		int posChange = viewerText5.modelOffset2WidgetOffset(markDocPos);
 		if (posChange < 0) {
 		  //not displayable Position
 		  markDocPos = -1;
 		  return;
 		}
-		if (markDocPos >= myDoc.getLength()) {
-			//the last changed position is out of reach, i.e. something was
-			// deleted
-			posChange += currentTextLength - lastTextLength;
-    } else if (!newStyleRange.equals(myText.getStyleRangeAtOffset(posChange))) {
-			posChange += currentTextLength - lastTextLength;
+		try {
+		  if (markDocPos >= myDoc.getLength()) {
+		    //the last changed position is out of reach, i.e. something was
+		    // deleted
+		    posChange += currentTextLength - lastTextLength;
+		  } else if (!newStyleRange.equals(myText.getStyleRangeAtOffset(posChange))) {
+		    posChange += currentTextLength - lastTextLength;
+		  }
+		  if (posChange >= 0 && posChange <= currentTextLength) {
+		    if (newStyleRange.equals(myText.getStyleRangeAtOffset(posChange))) {
+		      myLastStyleRange.start = posChange;
+		      myText.setStyleRange(myLastStyleRange);
+		    }
+		    markDocPos = -1;
+		  }
+		  
+		} catch (Exception e) {
+		  // in the rare case we (=LeO) have done something wrong
+		  markDocPos = -1;
 		}
-		if (posChange >= 0 && posChange <= currentTextLength) {
-		  try {
-				if (newStyleRange.equals(myText.getStyleRangeAtOffset(posChange))) {
-					myLastStyleRange.start = posChange;
-					myText.setStyleRange(myLastStyleRange);
-				}
-				markDocPos = -1;
-		  } catch (Exception e) {
-        // illegal Position
-				markDocPos = -1;
-      }
-		}
-	}
-
+  }
 	/**
 	 * checks if checkChar should be inserted or not (input was done via
 	 * console)
@@ -766,7 +774,7 @@ public class PerlEditor extends TextEditor implements
 	 * @since Sep. 2004
 	 */
   private final void setStyleChar(int stylePosition, StyledText myText) {
-    int myStylePosition= viewer.modelOffset2WidgetOffset(stylePosition);
+    int myStylePosition= viewerText5.modelOffset2WidgetOffset(stylePosition);
     if (myStylePosition >= 0) {
       //we only handle viewable Positions
       if (myText.getStyleRangeAtOffset(myStylePosition) != null) {
@@ -801,19 +809,22 @@ public class PerlEditor extends TextEditor implements
 	}
 
 	public void createPartControl(Composite parent) {
-	  super.createPartControl(parent);
-		ProjectionViewer viewer = (ProjectionViewer) getSourceViewer();
-		
-		projectionSupport = new ProjectionSupport(viewer,
-				getAnnotationAccess(), getSharedColors());
-		projectionSupport
-				.addSummarizableAnnotationType("org.eclipse.ui.workbench.texteditor.error");
-		projectionSupport
-				.addSummarizableAnnotationType("org.eclipse.ui.workbench.texteditor.warning");
-
-		projectionSupport.install();
-
-		viewer.doOperation(ProjectionViewer.TOGGLE);
+	  
+	  if (Platform.isRunning()) {
+		  super.createPartControl(parent);
+			ProjectionViewer viewer = (ProjectionViewer) getSourceViewer();
+			
+			projectionSupport = new ProjectionSupport(viewer,
+					getAnnotationAccess(), getSharedColors());
+			projectionSupport
+					.addSummarizableAnnotationType("org.eclipse.ui.workbench.texteditor.error");
+			projectionSupport
+					.addSummarizableAnnotationType("org.eclipse.ui.workbench.texteditor.warning");
+	
+			projectionSupport.install();
+	
+			viewer.doOperation(ProjectionViewer.TOGGLE);
+	  }
 	}
 	
 	protected boolean affectsTextPresentation(PropertyChangeEvent event) {
@@ -878,7 +889,7 @@ public class PerlEditor extends TextEditor implements
 		
 		int cursorPosition = myText.getCaretOffset();
 		char sourceChar = myText.getTextRange(cursorPosition - 1, 1).charAt(0);
-    return viewer.modelOffset2WidgetOffset(findNextOccurance(myDocument,
+    return viewerText5.modelOffset2WidgetOffset(findNextOccurance(myDocument,
                                            sourceChar, 
                                            cursorPosition
                                            ));
@@ -904,7 +915,7 @@ public class PerlEditor extends TextEditor implements
 		int findFirst;
 		int findPair;
 		boolean searchForward = true;
-    StartPosition = viewer.widgetOffset2ModelOffset(StartPosition);
+    StartPosition = viewerText5.widgetOffset2ModelOffset(StartPosition);
     String text = myDocument.get();
     int maxLen = text.length();
     

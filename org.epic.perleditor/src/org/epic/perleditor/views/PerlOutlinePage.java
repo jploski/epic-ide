@@ -95,11 +95,16 @@ public class PerlOutlinePage
 	}
 	
 	public List getModList(String text) {
+//		return SourceParser.getElements(
+//					text,
+//					"^[\\s]*use\\s+([^a-z][^\\n;]+)",
+//					"", "",
+//					true);
 		return SourceParser.getElements(
-					text,
-					"^[\\s]*use\\s+([^a-z][^\\n;]+)",
-					"", "",
-					true);
+				text,
+				"^[\\s]*use\\s+([^\\s]*[A-Z]+[^;\\s\\n]*)",
+				"", "",
+				true);
 	}
 	
 	public void dispose()  {

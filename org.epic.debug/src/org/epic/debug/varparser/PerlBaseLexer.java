@@ -171,8 +171,8 @@ tryAgain:
 		int _saveIndex;
 		
 		{
-		int _cnt1399=0;
-		_loop1399:
+		int _cnt151=0;
+		_loop151:
 		do {
 			if ((_tokenSet_1.member(LA(1)))) {
 				{
@@ -180,10 +180,10 @@ tryAgain:
 				}
 			}
 			else {
-				if ( _cnt1399>=1 ) { break _loop1399; } else {throw new NoViableAltForCharException((char)LA(1), getFilename(), getLine(), getColumn());}
+				if ( _cnt151>=1 ) { break _loop151; } else {throw new NoViableAltForCharException((char)LA(1), getFilename(), getLine(), getColumn());}
 			}
 			
-			_cnt1399++;
+			_cnt151++;
 		} while (true);
 		}
 		if ( _createToken && _token==null && _ttype!=Token.SKIP ) {
@@ -254,10 +254,10 @@ tryAgain:
 		_ttype = MODULE_NAME;
 		int _saveIndex;
 		
-		boolean synPredMatched1406 = false;
+		boolean synPredMatched158 = false;
 		if (((LA(1)=='A') && (LA(2)=='R') && (LA(3)=='R'))) {
-			int _m1406 = mark();
-			synPredMatched1406 = true;
+			int _m158 = mark();
+			synPredMatched158 = true;
 			inputState.guessing++;
 			try {
 				{
@@ -265,22 +265,22 @@ tryAgain:
 				}
 			}
 			catch (RecognitionException pe) {
-				synPredMatched1406 = false;
+				synPredMatched158 = false;
 			}
-			rewind(_m1406);
+			rewind(_m158);
 			inputState.guessing--;
 		}
-		if ( synPredMatched1406 ) {
+		if ( synPredMatched158 ) {
 			match("ARRAY");
 			if ( inputState.guessing==0 ) {
 				_ttype = ARRAY_REF;
 			}
 		}
 		else {
-			boolean synPredMatched1408 = false;
+			boolean synPredMatched160 = false;
 			if (((LA(1)=='S') && (LA(2)=='C') && (LA(3)=='A'))) {
-				int _m1408 = mark();
-				synPredMatched1408 = true;
+				int _m160 = mark();
+				synPredMatched160 = true;
 				inputState.guessing++;
 				try {
 					{
@@ -288,22 +288,22 @@ tryAgain:
 					}
 				}
 				catch (RecognitionException pe) {
-					synPredMatched1408 = false;
+					synPredMatched160 = false;
 				}
-				rewind(_m1408);
+				rewind(_m160);
 				inputState.guessing--;
 			}
-			if ( synPredMatched1408 ) {
+			if ( synPredMatched160 ) {
 				match("SCALAR");
 				if ( inputState.guessing==0 ) {
 					_ttype = SCALAR_REF;
 				}
 			}
 			else {
-				boolean synPredMatched1410 = false;
+				boolean synPredMatched162 = false;
 				if (((LA(1)=='H') && (LA(2)=='A') && (LA(3)=='S'))) {
-					int _m1410 = mark();
-					synPredMatched1410 = true;
+					int _m162 = mark();
+					synPredMatched162 = true;
 					inputState.guessing++;
 					try {
 						{
@@ -311,22 +311,22 @@ tryAgain:
 						}
 					}
 					catch (RecognitionException pe) {
-						synPredMatched1410 = false;
+						synPredMatched162 = false;
 					}
-					rewind(_m1410);
+					rewind(_m162);
 					inputState.guessing--;
 				}
-				if ( synPredMatched1410 ) {
+				if ( synPredMatched162 ) {
 					match("HASH");
 					if ( inputState.guessing==0 ) {
 						_ttype = HASH_REF;
 					}
 				}
 				else {
-					boolean synPredMatched1412 = false;
+					boolean synPredMatched164 = false;
 					if (((LA(1)=='C') && (LA(2)=='O') && (LA(3)=='D'))) {
-						int _m1412 = mark();
-						synPredMatched1412 = true;
+						int _m164 = mark();
+						synPredMatched164 = true;
 						inputState.guessing++;
 						try {
 							{
@@ -334,22 +334,22 @@ tryAgain:
 							}
 						}
 						catch (RecognitionException pe) {
-							synPredMatched1412 = false;
+							synPredMatched164 = false;
 						}
-						rewind(_m1412);
+						rewind(_m164);
 						inputState.guessing--;
 					}
-					if ( synPredMatched1412 ) {
+					if ( synPredMatched164 ) {
 						match("CODE");
 						if ( inputState.guessing==0 ) {
 							_ttype = CODE_REF;
 						}
 					}
 					else {
-						boolean synPredMatched1414 = false;
+						boolean synPredMatched166 = false;
 						if (((LA(1)=='R') && (LA(2)=='E') && (LA(3)=='F'))) {
-							int _m1414 = mark();
-							synPredMatched1414 = true;
+							int _m166 = mark();
+							synPredMatched166 = true;
 							inputState.guessing++;
 							try {
 								{
@@ -357,22 +357,22 @@ tryAgain:
 								}
 							}
 							catch (RecognitionException pe) {
-								synPredMatched1414 = false;
+								synPredMatched166 = false;
 							}
-							rewind(_m1414);
+							rewind(_m166);
 							inputState.guessing--;
 						}
-						if ( synPredMatched1414 ) {
+						if ( synPredMatched166 ) {
 							match("REF");
 							if ( inputState.guessing==0 ) {
 								_ttype = REF;
 							}
 						}
 						else {
-							boolean synPredMatched1416 = false;
+							boolean synPredMatched168 = false;
 							if (((LA(1)=='F') && (LA(2)=='i') && (LA(3)=='l'))) {
-								int _m1416 = mark();
-								synPredMatched1416 = true;
+								int _m168 = mark();
+								synPredMatched168 = true;
 								inputState.guessing++;
 								try {
 									{
@@ -380,22 +380,22 @@ tryAgain:
 									}
 								}
 								catch (RecognitionException pe) {
-									synPredMatched1416 = false;
+									synPredMatched168 = false;
 								}
-								rewind(_m1416);
+								rewind(_m168);
 								inputState.guessing--;
 							}
-							if ( synPredMatched1416 ) {
+							if ( synPredMatched168 ) {
 								match("FileHandle");
 								if ( inputState.guessing==0 ) {
 									_ttype = FILE_HANDLE;
 								}
 							}
 							else {
-								boolean synPredMatched1418 = false;
+								boolean synPredMatched170 = false;
 								if (((LA(1)=='f') && (LA(2)=='i') && (LA(3)=='l'))) {
-									int _m1418 = mark();
-									synPredMatched1418 = true;
+									int _m170 = mark();
+									synPredMatched170 = true;
 									inputState.guessing++;
 									try {
 										{
@@ -403,27 +403,27 @@ tryAgain:
 										}
 									}
 									catch (RecognitionException pe) {
-										synPredMatched1418 = false;
+										synPredMatched170 = false;
 									}
-									rewind(_m1418);
+									rewind(_m170);
 									inputState.guessing--;
 								}
-								if ( synPredMatched1418 ) {
+								if ( synPredMatched170 ) {
 									{
 									match("fileno(");
 									}
 									{
-									int _cnt1421=0;
-									_loop1421:
+									int _cnt173=0;
+									_loop173:
 									do {
 										if (((LA(1) >= '0' && LA(1) <= '9'))) {
 											matchRange('0','9');
 										}
 										else {
-											if ( _cnt1421>=1 ) { break _loop1421; } else {throw new NoViableAltForCharException((char)LA(1), getFilename(), getLine(), getColumn());}
+											if ( _cnt173>=1 ) { break _loop173; } else {throw new NoViableAltForCharException((char)LA(1), getFilename(), getLine(), getColumn());}
 										}
 										
-										_cnt1421++;
+										_cnt173++;
 									} while (true);
 									}
 									match(')');
@@ -457,13 +457,13 @@ tryAgain:
 		mFIRST_PURE_NAME_CHAR(false);
 		}
 		{
-		_loop1429:
+		_loop181:
 		do {
 			if ((_tokenSet_2.member(LA(1)))) {
 				mPURE_NAME_CHAR(false);
 			}
 			else {
-				break _loop1429;
+				break _loop181;
 			}
 			
 		} while (true);
@@ -512,8 +512,8 @@ tryAgain:
 		
 		match("(0x");
 		{
-		int _cnt1432=0;
-		_loop1432:
+		int _cnt184=0;
+		_loop184:
 		do {
 			switch ( LA(1)) {
 			case '0':  case '1':  case '2':  case '3':
@@ -531,10 +531,10 @@ tryAgain:
 			}
 			default:
 			{
-				if ( _cnt1432>=1 ) { break _loop1432; } else {throw new NoViableAltForCharException((char)LA(1), getFilename(), getLine(), getColumn());}
+				if ( _cnt184>=1 ) { break _loop184; } else {throw new NoViableAltForCharException((char)LA(1), getFilename(), getLine(), getColumn());}
 			}
 			}
-			_cnt1432++;
+			_cnt184++;
 		} while (true);
 		}
 		match(')');
@@ -578,7 +578,7 @@ tryAgain:
 		
 		match('\'');
 		{
-		_loop1439:
+		_loop191:
 		do {
 			if ((_tokenSet_3.member(LA(1)))) {
 				{
@@ -591,7 +591,7 @@ tryAgain:
 				mCHAR_ESC(false);
 			}
 			else {
-				break _loop1439;
+				break _loop191;
 			}
 			
 		} while (true);
@@ -676,34 +676,34 @@ tryAgain:
 		int _saveIndex;
 		
 		{
-		int _cnt1442=0;
-		_loop1442:
+		int _cnt194=0;
+		_loop194:
 		do {
 			if (((LA(1) >= '0' && LA(1) <= '9'))) {
 				matchRange('0','9');
 			}
 			else {
-				if ( _cnt1442>=1 ) { break _loop1442; } else {throw new NoViableAltForCharException((char)LA(1), getFilename(), getLine(), getColumn());}
+				if ( _cnt194>=1 ) { break _loop194; } else {throw new NoViableAltForCharException((char)LA(1), getFilename(), getLine(), getColumn());}
 			}
 			
-			_cnt1442++;
+			_cnt194++;
 		} while (true);
 		}
 		{
 		if ((LA(1)=='.')) {
 			match('.');
 			{
-			int _cnt1445=0;
-			_loop1445:
+			int _cnt197=0;
+			_loop197:
 			do {
 				if (((LA(1) >= '0' && LA(1) <= '9'))) {
 					matchRange('0','9');
 				}
 				else {
-					if ( _cnt1445>=1 ) { break _loop1445; } else {throw new NoViableAltForCharException((char)LA(1), getFilename(), getLine(), getColumn());}
+					if ( _cnt197>=1 ) { break _loop197; } else {throw new NoViableAltForCharException((char)LA(1), getFilename(), getLine(), getColumn());}
 				}
 				
-				_cnt1445++;
+				_cnt197++;
 			} while (true);
 			}
 		}
@@ -737,8 +737,8 @@ tryAgain:
 		int _saveIndex;
 		
 		{
-		int _cnt1449=0;
-		_loop1449:
+		int _cnt201=0;
+		_loop201:
 		do {
 			switch ( LA(1)) {
 			case ' ':
@@ -753,10 +753,10 @@ tryAgain:
 			}
 			default:
 			{
-				if ( _cnt1449>=1 ) { break _loop1449; } else {throw new NoViableAltForCharException((char)LA(1), getFilename(), getLine(), getColumn());}
+				if ( _cnt201>=1 ) { break _loop201; } else {throw new NoViableAltForCharException((char)LA(1), getFilename(), getLine(), getColumn());}
 			}
 			}
-			_cnt1449++;
+			_cnt201++;
 		} while (true);
 		}
 		if ( inputState.guessing==0 ) {

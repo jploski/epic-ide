@@ -121,6 +121,7 @@ public class SourceFormatter {
 			formattedText = srt.getResult();
 			inr.close();
 			in.close();
+			srt.dispose();
 			
 
 		} catch (Exception ex) {

@@ -216,6 +216,10 @@ public class PerlEditor
 			if (fOutlinePage != null) {
 				fOutlinePage.dispose();
 			}
+			
+			if (fTodoMarkerThread != null) {
+				fTodoMarkerThread.dispose();
+			}
 
 			super.dispose();
 		} catch (Exception ex) {

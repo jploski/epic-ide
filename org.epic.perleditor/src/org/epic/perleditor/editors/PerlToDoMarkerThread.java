@@ -142,5 +142,10 @@ public class PerlToDoMarkerThread extends Thread implements IdleTimerListener {
       ble1.printStackTrace();
     }
   }
+  
+  public void dispose() throws InterruptedException {
+    this.interrupt();
+    this.join();
+  }
 
 }

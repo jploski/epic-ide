@@ -9,8 +9,8 @@
 
 package org.epic.perleditor.editors;
 
-import java.awt.Toolkit;
-import java.util.Date;
+//import java.awt.Toolkit;
+//import java.util.Date;
 
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IAdaptable;
@@ -147,7 +147,7 @@ public class PerlSyntaxValidationThread extends Thread implements IdleTimerListe
 			IResource resource =
 				(IResource) ((IAdaptable) input).getAdapter(IResource.class);
 				
-			PerlValidator.validate(resource, text);
+			PerlValidator.validate(resource, text, srt);
 		} catch (Exception e) {
 			e.printStackTrace();
 			if (proc != null) {

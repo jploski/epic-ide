@@ -99,6 +99,18 @@ public class PerlValidator {
 
 	public static boolean validate(IResource resource) {
 		try {
+			StringReaderThread srt = new StringReaderThread();
+			boolean res = validate(resource, srt);
+			srt.dispose();
+			return res;
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+	
+	public static boolean validate(IResource resource, StringReaderThread srt) {
+		try {
 			//	Check if resource should be validated
 			IEditorDescriptor defaultEditorDescriptor =
 				PerlEditorPlugin
@@ -130,7 +142,7 @@ public class PerlValidator {
 			}
 			in.close();
 
-			validate(resource, sourceCode.toString());
+			validate(resource, sourceCode.toString(), srt);
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -140,7 +152,7 @@ public class PerlValidator {
 		return true;
 	}
 
-	public static void validate(IResource resource, String sourceCode) {
+	public static void validate(IResource resource, String sourceCode, StringReaderThread srt) {
 		Process proc = null;
 		Map attributes = new HashMap(11);
 		
@@ -192,7 +204,6 @@ public class PerlValidator {
 			Reader inr = new InputStreamReader(in);
 			Writer outw = new OutputStreamWriter(out);
 
-			StringReaderThread srt = new StringReaderThread();
 			srt.read(inr);
 
 			try {

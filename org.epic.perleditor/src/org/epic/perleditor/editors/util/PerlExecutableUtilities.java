@@ -165,15 +165,16 @@ public class PerlExecutableUtilities {
 	 */
 	public static String readStringFromStream(InputStream stream)
 		throws IOException {
+        //TODO which charset?
+        Reader r = new InputStreamReader(stream);
 		StringBuffer strbuf = new StringBuffer();
-		byte[] buffer = new byte[100];
-		int read = 0;
-
-		while ((read = stream.read(buffer)) != -1) {
-			strbuf.append(new String(buffer, 0, read));
+		char[] buffer = new char[1024];
+        
+		while (true) {
+            int l = r.read(buffer);
+            if (l<0) return strbuf.toString();
+			strbuf.append(buffer, 0, l);
 		}
-
-		return strbuf.toString();
 	}
 
 }

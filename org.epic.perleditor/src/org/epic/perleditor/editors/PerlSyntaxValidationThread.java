@@ -178,13 +178,18 @@ public class PerlSyntaxValidationThread extends Thread {
 
 			InputStream in = proc.getErrorStream();		
 			OutputStream out = proc.getOutputStream();
-			
-			out.write(text.getBytes());
+
+            try {			
+                out.write(text.getBytes());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
 			out.close();
 			
-			String content =  PerlExecutableUtilities.readStringFromStream(in);
-			
+			String content =  PerlExecutableUtilities.readStringFromStream(in);			
 			in.close();
+            
+            //TODO check if content is empty (indicates error)
 
 			// DEBUG start
 			System.out.println("-----------------------------------------");

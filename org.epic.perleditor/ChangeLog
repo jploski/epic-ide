@@ -1,6 +1,7 @@
 Eclipse Perl Integration: Perl Editor Plugin
 
 Version 0.1.0 alpha  - 
+		* Spaces or now inserted correctly when using "shift left/right" operation.
 		* Support for non Perl files (eg. EmbPerl) add. The source menu has been
 		  disabled, because it makes no sense (and would currupt the content) for
 		  these files.

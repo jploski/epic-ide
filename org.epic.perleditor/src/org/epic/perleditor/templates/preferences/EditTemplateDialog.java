@@ -22,10 +22,10 @@ import org.epic.perleditor.templates.TemplateVariableProcessor;
 import org.epic.perleditor.templates.ui.util.SWTUtil;
 //import net.sourceforge.phpdt.ui.text.JavaTextTools;
 import org.epic.perleditor.preferences.PreferenceConstants;
+import org.epic.perleditor.preferences.preview.PreviewSourceViewerConfiguration;
 //import net.sourceforge.phpeclipse.IPreferenceConstants;
 import org.epic.perleditor.PerlEditorPlugin;
 //import net.sourceforge.phpeclipse.phpeditor.PHPSourceViewerConfiguration;
-import org.epic.perleditor.editors.PerlSourceViewerConfiguration;
 import org.epic.perleditor.editors.util.PerlColorProvider;
 
 import org.eclipse.core.runtime.CoreException;
@@ -89,17 +89,17 @@ import cbg.editor.Modes;
  */
 public class EditTemplateDialog extends StatusDialog {
 
-	private static class SimpleJavaSourceViewerConfiguration extends PerlSourceViewerConfiguration {
+	//private static class SimpleJavaSourceViewerConfiguration extends PerlSourceViewerConfiguration {
+	private static class SimpleJavaSourceViewerConfiguration extends PreviewSourceViewerConfiguration {
 
 		private final IContentAssistProcessor fProcessor;
 
 	//SimpleJavaSourceViewerConfiguration(JavaTextTools tools, ITextEditor editor, IContentAssistProcessor processor) {
 	
-	//SimpleJavaSourceViewerConfiguration(JavaTextTools tools, IContentAssistProcessor processor) {
 	SimpleJavaSourceViewerConfiguration(IContentAssistProcessor processor) {
 		// TODO CHANGED
         //super(tools, null);
-        super(PerlEditorPlugin.getDefault().getPreferenceStore(), null);
+		super(PerlEditorPlugin.getDefault().getPreferenceStore());
 		fProcessor= processor;
 	}
 		

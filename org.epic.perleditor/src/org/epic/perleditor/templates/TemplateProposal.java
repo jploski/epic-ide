@@ -139,8 +139,8 @@ public class TemplateProposal implements IPerlCompletionProposal {
 			if (fTemplateBuffer == null)
 				fTemplateBuffer= fContext.evaluate(fTemplate);
 
-			return textToHTML(fTemplateBuffer.getString());
-
+			//return textToHTML(fTemplateBuffer.getString());
+			return fTemplateBuffer.getString();		
 	    } catch (CoreException e) {
 			handleException(e);		    
 			return null;

@@ -140,7 +140,10 @@ public class SubroutineProposal implements IPerlCompletionProposal {
     //				fTemplateBuffer= fContext.evaluate(fTemplate);
 
 
-    return textToHTML(fTemplate); // fTemplateBuffer.getString());
+    //return textToHTML(fTemplate); // fTemplateBuffer.getString());
+    
+	//	Do not return additional info for subroutines
+  	return null;
 
     //	    } catch (CoreException e) {
     //			handleException(e);		    

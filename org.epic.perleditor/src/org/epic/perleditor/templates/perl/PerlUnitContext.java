@@ -22,7 +22,8 @@ public class PerlUnitContext extends DocumentTemplateContext {
   /** The platform default line delimiter. */
   private static final String PLATFORM_LINE_DELIMITER = System.getProperty("line.separator"); //$NON-NLS-1$
 
-  private static final String specialChars = "";
+  // To allow templates starting with "=" (for POD comments)
+  private static final String specialChars = "=";
   /** The compilation unit, may be <code>null</code>. */
   //	private final ICompilationUnit fCompilationUnit;
 
@@ -63,10 +64,10 @@ public class PerlUnitContext extends DocumentTemplateContext {
     return
     //      fEnabled &&
     //      fContextTypeName.equals(contextTypeName) &&
-   (prefix.length() != 0) && identifier.toLowerCase().startsWith(prefix.toLowerCase());
+  //(prefix.length() != 0) && identifier.toLowerCase().startsWith(prefix.toLowerCase());
    
-    // Testing: if nothing is specified, return all templates
-	//(prefix.length() == 0) || identifier.toLowerCase().startsWith(prefix.toLowerCase());
+    // If nothing is specified, return all identifiers
+	(prefix.length() == 0) || identifier.toLowerCase().startsWith(prefix.toLowerCase());
   }
 
   /*

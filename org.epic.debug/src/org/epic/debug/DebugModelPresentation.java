@@ -126,6 +126,14 @@ public class DebugModelPresentation implements IDebugModelPresentation {
 	 * @see org.eclipse.debug.ui.IDebugModelPresentation#computeDetail(IValue, IValueDetailListener)
 	 */
 	public void computeDetail(IValue value, IValueDetailListener listener) {
+		try
+		{
+			listener.detailComputed(value,value.getValueString());
+		} catch (DebugException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	/**

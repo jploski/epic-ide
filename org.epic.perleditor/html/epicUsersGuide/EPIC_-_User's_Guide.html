@@ -480,6 +480,42 @@ View</i>.<br>
 </div>
 <br>
 <br>
+<h2>Open SUB Declaration</h2>
+Open SUB Declaration allows the user to search for the declaration of a
+specific SUBroutine. <br>
+<br>
+<img height="234" width="372" alt=""
+ src="images/OpenDeclaration_Menu.gif"><br>
+<br>
+<br>
+The search first determines what is selected. If no text is selected,
+under the current cursor-position it is attempted to find a name which
+might be a SUBroutine. The selection cause an Error <br>
+<br>
+<img height="146" width="441" alt=""
+ src="images/OpenDeclaration_Error.gif"><br>
+<br>
+- only special characters were found <br>
+<br>
+- only numbers could be detected The SUBroutine is searched first
+locally, next in the 'require'-file. Before a new file is scanned
+through the packages are also inspected. If the located SUB is not in
+the current editor, the location is opened automatically and
+highlighted. <br>
+<br>
+<img height="88" width="448" alt=""
+ src="images/OpenDeclaration_Found.gif"><br>
+<br>
+<br>
+<b>NOTE 1:</b> The files in the 'require'-statement are case-sensitive!<br>
+<br>
+<b>NOTE 2:</b> The search is editor-based, i.e. if the file in the
+require-statement is already opened, the content of this editor is
+taken instead of the file-content. This effect includes unsaved changes
+into search-scope! <br>
+<div class="informalfigure"><br>
+<p> </p>
+<p> </p>
 <h2>Perldoc</h2>
 To retrieve perldoc information select a keyword or text and choose one
 of the perldoc options from the context menu.<br>
@@ -1110,6 +1146,7 @@ sub dummy<br>
 Part of this document is taken from the official Eclipse documentation
 provided by the Eclipse project and IBM.<br>
 <br>
+</div>
 </div>
 </div>
 </body>

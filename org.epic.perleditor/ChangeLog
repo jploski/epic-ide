@@ -10,6 +10,8 @@ Eclipse Perl Integration:
 		* Fixed bug: [ 996351 ] NullPointer exception during Launch (problems if path to Perl executable has spaces) 
 		
 		Editor:
+		* added Open SUB Declaration [ 810926 ]: Finds the selected (resp. current position) SUB locally, require and packages
+		* Fixed bug: Better handling when editing across Platform (line-separator issue in the Outline View)
 		* Preference Page change: Interpreter name is automatically surrounded by "" if browse button is used
 		* Implemented Feature Request: [ 847292 ] Add *.pl to CVS ASCII file list
 		* Fixed bug: [ 993685 ] Outlinie/Modules lists modules in POD with PC line endings

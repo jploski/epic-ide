@@ -4,6 +4,7 @@ Eclipse Perl Integration:
 		* Fixed problem with Cygwin (Pathmapper error)
 		
 		Editor:
+		* Fixed Bug: [ 991625 ] Outline\Modules also lists modules from POD sections
 		* Empty entries are no longer added to the Perl Include Path
 		* Performance improvements (Outline View redraw enhanced)
 

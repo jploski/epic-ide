@@ -4,7 +4,7 @@
    <description url="http://e-p-i-c.sourceforge.net/">
       EPIC - Eclipse Perl Integration
    </description>
-   <feature url="features/org.epic.feature.main_0.3.1.jar" id="org.epic.feature.main" version="0.3.1"/>
+   <feature url="features/org.epic.feature.main_0.3.2.jar" id="org.epic.feature.main" version="0.3.2"/>
    <category-def name="EPIC" label="EPIC Main Components">
       <description>
          This package contains the PerlEditor, Debugger and Regexp Plugin.

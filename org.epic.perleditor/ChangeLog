@@ -2,6 +2,9 @@ Eclipse Perl Integration:
 
 		Debugger:
 		* Fixed problem with Cygwin (Pathmapper error)
+		
+		Editor:
+		* Performance improvements (Outline View redraw enhanced)
 
 Version 0.3.0 - 04-July-2004
 		* Fixed bug: [ 934795 ] Outline view does not work with Unix source

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<toc label="EPIC - Eclipse Perl Integration">
+
+<toc label="EPIC - External Tool Reference">
   <anchor id="epicHelp"/>
   <topic label="Perl Editor">
     <topic label="Preferences">

@@ -99,7 +99,12 @@ public class PerlEditorPreferencePage extends PreferencePage implements IWorkben
 		new OverlayPreferenceStore.OverlayKey(OverlayPreferenceStore.BOOLEAN, PreferenceConstants.EDITOR_PRINT_MARGIN),
 		new OverlayPreferenceStore.OverlayKey(OverlayPreferenceStore.BOOLEAN, PreferenceConstants.EDITOR_OVERVIEW_RULER),
 		new OverlayPreferenceStore.OverlayKey(OverlayPreferenceStore.BOOLEAN, PreferenceConstants.SOURCE_FOLDING),
-		new OverlayPreferenceStore.OverlayKey(OverlayPreferenceStore.BOOLEAN, PreferenceConstants.AUTO_COMPLETION),
+		new OverlayPreferenceStore.OverlayKey(OverlayPreferenceStore.BOOLEAN, PreferenceConstants.AUTO_COMPLETION_QUOTE1),
+		new OverlayPreferenceStore.OverlayKey(OverlayPreferenceStore.BOOLEAN, PreferenceConstants.AUTO_COMPLETION_QUOTE2),
+		new OverlayPreferenceStore.OverlayKey(OverlayPreferenceStore.BOOLEAN, PreferenceConstants.AUTO_COMPLETION_BRACKET1),
+		new OverlayPreferenceStore.OverlayKey(OverlayPreferenceStore.BOOLEAN, PreferenceConstants.AUTO_COMPLETION_BRACKET2),
+		new OverlayPreferenceStore.OverlayKey(OverlayPreferenceStore.BOOLEAN, PreferenceConstants.AUTO_COMPLETION_BRACKET3),
+		new OverlayPreferenceStore.OverlayKey(OverlayPreferenceStore.BOOLEAN, PreferenceConstants.AUTO_COMPLETION_BRACKET4),
 		//-------------------------------------
 		
         //-------------------------------------
@@ -575,10 +580,6 @@ public class PerlEditorPreferencePage extends PreferencePage implements IWorkben
 		label= PreferencesMessages.getString("PerlEditorPreferencePage.sourceFolding"); //$NON-NLS-1$
 		addCheckBox(appearanceComposite, label, PreferenceConstants.SOURCE_FOLDING, 0);
 		
-		label= PreferencesMessages.getString("PerlEditorPreferencePage.autoCompletion"); //$NON-NLS-1$
-		addCheckBox(appearanceComposite, label, PreferenceConstants.AUTO_COMPLETION, 0);
-
-
 		Label l= new Label(appearanceComposite, SWT.LEFT );
 		GridData gd= new GridData(GridData.HORIZONTAL_ALIGN_FILL);
 		gd.horizontalSpan= 2;
@@ -760,6 +761,34 @@ public class PerlEditorPreferencePage extends PreferencePage implements IWorkben
 		return composite;
 	}
 
+	private Control createTypingPage(Composite parent) {
+		
+		Composite typingComposite= new Composite(parent, SWT.NULL);
+		typingComposite.setLayout(new GridLayout());
+
+		Label l= new Label(typingComposite, SWT.LEFT);
+		l.setText(PreferencesMessages.getString("PerlEditorPreferencePage.typing.autoCompletion")); //$NON-NLS-1$
+
+		String label= PreferencesMessages.getString("PerlEditorPreferencePage.typing.autoCompletionQuote1"); //$NON-NLS-1$
+		addCheckBox(typingComposite, label, PreferenceConstants.AUTO_COMPLETION_QUOTE1, 0);
+
+		label= PreferencesMessages.getString("PerlEditorPreferencePage.typing.autoCompletionQuote2"); //$NON-NLS-1$
+		addCheckBox(typingComposite, label, PreferenceConstants.AUTO_COMPLETION_QUOTE2, 0);
+
+		label= PreferencesMessages.getString("PerlEditorPreferencePage.typing.autoCompletionBracket1"); //$NON-NLS-1$
+		addCheckBox(typingComposite, label, PreferenceConstants.AUTO_COMPLETION_BRACKET1, 0);
+
+		label= PreferencesMessages.getString("PerlEditorPreferencePage.typing.autoCompletionBracket2"); //$NON-NLS-1$
+		addCheckBox(typingComposite, label, PreferenceConstants.AUTO_COMPLETION_BRACKET2, 0);
+
+		label= PreferencesMessages.getString("PerlEditorPreferencePage.typing.autoCompletionBracket3"); //$NON-NLS-1$
+		addCheckBox(typingComposite, label, PreferenceConstants.AUTO_COMPLETION_BRACKET3, 0);
+
+		label= PreferencesMessages.getString("PerlEditorPreferencePage.typing.autoCompletionBracket4"); //$NON-NLS-1$
+		addCheckBox(typingComposite, label, PreferenceConstants.AUTO_COMPLETION_BRACKET4, 0);
+
+		return typingComposite;
+	}
 	
 	private void addFiller(Composite composite) {
 		Label filler= new Label(composite, SWT.LEFT );
@@ -863,6 +892,10 @@ public class PerlEditorPreferencePage extends PreferencePage implements IWorkben
 		item= new TabItem(folder, SWT.NONE);
 		item.setText(PreferencesMessages.getString("PerlEditorPreferencePage.annotationsTab.title")); //$NON-NLS-1$
 		item.setControl(createAnnotationsPage(folder));
+
+		item= new TabItem(folder, SWT.NONE);
+		item.setText(PreferencesMessages.getString("PerlEditorPreferencePage.typing.title")); //$NON-NLS-1$
+		item.setControl(createTypingPage(folder));
 
 		initialize();
 		

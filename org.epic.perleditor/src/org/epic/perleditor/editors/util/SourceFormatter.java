@@ -43,8 +43,11 @@ public class SourceFormatter {
 
 		String formattedText = null;
 		try {		
-			URL installURL = PerlEditorPlugin.getDefault().getDescriptor().getInstallURL();
-			URL perlTidyURL = Platform.resolve(new URL(installURL,"perlutils/perltidy"));
+      URL installURL = PerlEditorPlugin.getDefault().getBundle().getEntry("/");
+      //			URL installURL =
+      // PerlEditorPlugin.getDefault().getDescriptor().getInstallURL();
+      URL perlTidyURL = Platform.resolve(new URL(installURL,
+          "perlutils/perltidy"));
   
             List  perlParamList =PerlExecutableUtilities.getPerlExecutableCommandLine();
             

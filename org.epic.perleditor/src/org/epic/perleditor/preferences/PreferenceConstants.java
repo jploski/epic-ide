@@ -76,7 +76,12 @@ public class PreferenceConstants {
 	 * Value is of type <code>Boolean</code>.
 	 * </p>
 	 */
-	public final static String AUTO_COMPLETION= "autoCompletion";
+	public final static String AUTO_COMPLETION_QUOTE1	 = "autoCompletionQuote1";
+	public final static String AUTO_COMPLETION_QUOTE2	 = "autoCompletionQuote2";
+	public final static String AUTO_COMPLETION_BRACKET1	 = "autoCompletionBracket1";
+	public final static String AUTO_COMPLETION_BRACKET2	 = "autoCompletionBracket2";
+	public final static String AUTO_COMPLETION_BRACKET3	 = "autoCompletionBracket3";
+	public final static String AUTO_COMPLETION_BRACKET4	 = "autoCompletionBracket4";
 	
 	/**
 	 * A named preference that holds the color used to render the print margin.
@@ -503,7 +508,12 @@ public class PreferenceConstants {
 			
 			store.setDefault(PreferenceConstants.SOURCE_FOLDING, true);
 			
-			store.setDefault(PreferenceConstants.AUTO_COMPLETION, true);
+			store.setDefault(PreferenceConstants.AUTO_COMPLETION_QUOTE1, true);
+			store.setDefault(PreferenceConstants.AUTO_COMPLETION_QUOTE2, true);
+			store.setDefault(PreferenceConstants.AUTO_COMPLETION_BRACKET1, true);
+			store.setDefault(PreferenceConstants.AUTO_COMPLETION_BRACKET2, true);
+			store.setDefault(PreferenceConstants.AUTO_COMPLETION_BRACKET3, true);
+			store.setDefault(PreferenceConstants.AUTO_COMPLETION_BRACKET4, true);
 		
 		
 		    // Syntay highlighting

@@ -39,7 +39,7 @@ public class PerlTextHover implements ITextHover {
 								"org.epic.perleditor.editors.quickreference");
 
 						// Check if only a word (without spaces or tabs) has been selected
-						if (text.length() > 0 && text.indexOf(" ") == -1 && text.indexOf("\t") == -1) {
+						if (text.length() > 0 && text.indexOf(" ") < 0 && text.indexOf("\t") < 0) {
 							try {
 								String value = rb.getString(text);
 								textRes = splitMessage(value);

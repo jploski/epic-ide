@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin
+   id="org.epic.debug"
+   name="Debug Plug-in"
+   version="1.0.0"
+   provider-name="Stephan Ruehl"
+   class="org.epic.debug.PerlDebugPlugin">
+
+   <runtime>
+      <library name="debug.jar"/>
+      <library name="gnu-regexp-1.1.4.jar"/>
+   </runtime>
+   <requires>
+      <import plugin="org.eclipse.core.resources"/>
+      <import plugin="org.eclipse.ui"/>
+      <import plugin="org.eclipse.debug.core"/>
+      <import plugin="org.eclipse.debug.ui"/>
+      <import plugin="org.eclipse.core.runtime"/>
+   </requires>
+
+
+   <extension
+         id="org.epic.debug"
+         name="Epic Pearl Debugger"
+         point="org.eclipse.debug.core.launchConfigurationTypes">
+      <launchConfigurationType
+            name="DebugPerl"
+            delegate="org.epic.debug.LaunchConfigurationDelegate"
+            modes="run,debug"
+            public="true"
+            id="org.epic.debug.launchConfigurationPerl">
+      </launchConfigurationType>
+   </extension>
+   <extension
+         point="org.eclipse.debug.ui.launchConfigurationTabGroups">
+      <launchConfigurationTabGroup
+            type="org.epic.debug.launchConfigurationPerl"
+            class="org.epic.debug.LaunchConfigurationDialog"
+            id="org.epic.debug.launchDialog">
+      </launchConfigurationTabGroup>
+   </extension>
+   <extension
+         point="org.eclipse.debug.core.sourceLocators">
+      <sourceLocator
+            name="Perl Source Locator"
+            class="org.epic.debug.SourceLocator"
+            id="org.epic.debug.sourceLocator.Local">
+      </sourceLocator>
+   </extension>
+   <extension
+         point="org.eclipse.debug.ui.debugModelPresentations">
+      <debugModelPresentation
+            class="org.epic.debug.DebugModelPresentation"
+            id="org.epic.debug.perldebugger.perl">
+      </debugModelPresentation>
+   </extension>
+   <extension
+         point="org.eclipse.ui.popupMenus">
+      <viewerContribution
+            targetID="#TextRulerContext"
+            id="org.epic.debug.RulerPopupActions">
+         <action
+               label="Add Remove Breakpoint"
+               class="org.epic.debug.ManageBreakpointRulerActionDelegate"
+               menubarPath="debug"
+               id="org.epic.ManageBreakpointRulerActionDelegate">
+         </action>
+      </viewerContribution>
+   </extension>
+   <extension
+         point="org.eclipse.debug.core.breakpoints">
+      <breakpoint
+            markerType="org.epic.debug.perlLineBreakpointMarker"
+            class="org.epic.debug.PerlLineBreakpoint"
+            id="perlLineBreakpoint">
+      </breakpoint>
+   </extension>
+   <extension
+         id="perlLineBreakpointMarker"
+         point="org.eclipse.core.resources.markers">
+      <super
+            type="org.eclipse.debug.core.lineBreakpointMarker">
+         org.eclipse.debug.core.breakpoint
+      </super>
+      <persistent
+            value="false">
+      </persistent>
+   </extension>
+
+</plugin>

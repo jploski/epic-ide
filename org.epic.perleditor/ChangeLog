@@ -1,5 +1,8 @@
 Eclipse Perl Integration: Perl Editor Plugin
 
+Version 0.2.1 - 25-June-2004
+		* Fixed bug: [ 934795 ] Outline view does not work with Unix source
+
 Version 0.2.1 - 04-June-2004
 		* moved TODO parser into it?s own thread
 		* parseTasks() does not delete foreign tasks anymore

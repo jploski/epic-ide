@@ -110,7 +110,7 @@
    <extension
          point="org.eclipse.debug.ui.launchConfigurationTypeImages">
       <launchConfigurationTypeImage
-            icon="icons/epic_cgi.gif"
+            icon="icons/epic_remote.gif"
             configTypeID="org.epic.debug.launchConfigurationPerlRemote"
             id="org.epic.debug.launchimage">
       </launchConfigurationTypeImage>

@@ -618,7 +618,7 @@ public class LaunchConfigurationRemoteMainTab
 	 */
 	public Image getImage() {
 		return (PerlDebugPlugin.getDefaultDesciptorImageRegistry()
-				.get(PerlDebugImages.DESC_OBJS_LaunchTabMain));
+				.get(PerlDebugImages.DESC_OBJS_LaunchTabRemote));
 	}
 
 	/**

@@ -58,6 +58,7 @@ public class PerlDebugImages {
 	
 	/* Launchconfig*/
 	public static final ImageDescriptor DESC_OBJS_LaunchTabMain= createImageDescriptor(iconPath + "epic.gif");
+	public static final ImageDescriptor DESC_OBJS_LaunchTabRemote= createImageDescriptor(iconPath + "epic_remote.gif");
 	public static final ImageDescriptor DESC_OBJS_LaunchTabCGI= createImageDescriptor(iconPath + "epic_cgi.gif");
 	
 	/* Expression View */

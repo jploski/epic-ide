@@ -153,6 +153,7 @@ public class ManageRegExpBreakpointRulerPropertyAction extends Action
 public void run() {
 		
 		Shell shell = getTextEditor().getEditorSite().getShell();
+		((PerlRegExpBreakpoint)getBP(getMarker())).updateIfRecognized();
 		RegExpBPSettingsDalog dialog = new RegExpBPSettingsDalog(shell, ((PerlRegExpBreakpoint)getBP(getMarker()))); 
 		dialog.open();
 	}

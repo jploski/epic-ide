@@ -139,7 +139,7 @@ public class PerlDB implements IDebugElement, ITerminate {
 	private final static String mLineSeparator = System
 			.getProperty("line.separator");
 	private org.epic.debug.util.PathMapper mPathMapper;
-	String mRegExp ;
+	String mRegExp;
 	String mText;
 	private String mPerlVersion;
 	private class CommandThread extends Thread {
@@ -157,6 +157,8 @@ public class PerlDB implements IDebugElement, ITerminate {
 	private String mVarGlobalString;
 	private VarUpdateJob mVarUpdateJob;
 	private StackFrame mStackFrameOrg;
+	private boolean mMultiLine;
+	private boolean mIgnoreCase;
 	private class IP_Position {
 		int IP_Line;
 		IPath IP_Path;
@@ -293,6 +295,14 @@ public class PerlDB implements IDebugElement, ITerminate {
 			mTarget.perlDBstarted(this);
 			updateStackFramesInit(null);
 			generateDebugInitEvent();
+			if (isBreakPointReached()) {
+
+				DebugEvent event = new DebugEvent(mThreads[0],
+						DebugEvent.BREAKPOINT, DebugEvent.BREAKPOINT);
+				DebugEvent debugEvents[] = new DebugEvent[1];
+				debugEvents[0] = event;
+				DebugPlugin.getDefault().fireDebugEventSet(debugEvents);
+			}
 		} else
 			generateDebugTermEvent();
 
@@ -899,11 +909,12 @@ public class PerlDB implements IDebugElement, ITerminate {
 
 		if (bp != null) {
 			if (bp instanceof PerlRegExpBreakpoint) {
-				((PerlRegExpBreakpoint)(bp)).calculateRegExp();
-				mRegExp = ((PerlRegExpBreakpoint)(bp)).getRegExp();
-				mText = ((PerlRegExpBreakpoint)(bp)).getMatchText();
+				((PerlRegExpBreakpoint) (bp)).calculateRegExp();
+				mRegExp = ((PerlRegExpBreakpoint) (bp)).getRegExp();
+				mText = ((PerlRegExpBreakpoint) (bp)).getMatchText();
+				mMultiLine = ((PerlRegExpBreakpoint) (bp)).getMultiLine();
+				mIgnoreCase = ((PerlRegExpBreakpoint) (bp)).getIgnoreCase();
 
-			
 				// show view
 				Shell shell = PerlDebugPlugin.getActiveWorkbenchShell();
 				if (shell != null) {
@@ -921,6 +932,8 @@ public class PerlDB implements IDebugElement, ITerminate {
 							}
 							view.setRegExpText(mRegExp);
 							view.setMatchText(mText);
+							view.setMultilineCheckbox(mMultiLine);
+							view.setIgnoreCaseCheckbox(mIgnoreCase);
 
 						}
 
@@ -1444,12 +1457,12 @@ public class PerlDB implements IDebugElement, ITerminate {
 		String erg;
 		erg = evaluateStatement(mThreads[0],
 				";{foreach $t(@INC) {print $DB::OUT $t.\"\\n\";}}", false);
-	
+
 		StringTokenizer s = new StringTokenizer(erg, "\r\n");
 
 		String token;
 		int count = s.countTokens();
-		
+
 		for (int x = 0; x < count; ++x) {
 			token = s.nextToken();
 			fErg.add(token);

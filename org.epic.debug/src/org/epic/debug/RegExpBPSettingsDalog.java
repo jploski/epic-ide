@@ -12,6 +12,7 @@ import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -33,6 +34,8 @@ public class RegExpBPSettingsDalog extends Dialog {
 	private Text fRegExpText;
 	private Text fMatchText;
 	private String mTitle;
+	private Button fIgnoreCase;
+	private Button fMultiLine;
 	/**
 	 * @param parentShell
 	 */
@@ -59,7 +62,12 @@ public class RegExpBPSettingsDalog extends Dialog {
 			fSourceText = createLine(comp,"Source Line:",false,mBP.getSourceLine());	
 			fRegExpText = createLine(comp,"Regular Expression:",true,mBP.getRegExp());
 			fMatchText = createLine(comp,"Term to Match:",true,mBP.getMatchText());
+			fMultiLine = createBoolen(comp,"Multi Line",true,mBP.getMultiLine()); 
+			fIgnoreCase = createBoolen(comp,"Ignore Case",true,mBP.getIgnoreCase());
 			return(comp);
+			
+			
+			
 	 }
 	 
 	   protected void configureShell(Shell newShell) {
@@ -67,6 +75,38 @@ public class RegExpBPSettingsDalog extends Dialog {
 	      newShell.setText(mTitle);
 	     }
 
+	   Button  createBoolen(Composite fComp,String fText, boolean fWrite, boolean fVal)
+	   {
+	   			Composite comp = new Composite(fComp, SWT.NONE);
+	   			GridLayout sourceLayout = new GridLayout();
+	   			sourceLayout.numColumns = 3;
+	   			sourceLayout.marginHeight = 0;
+	   			sourceLayout.marginWidth = 0;
+	   			sourceLayout.makeColumnsEqualWidth = true;
+	   			comp.setLayout(sourceLayout);
+	   			GridData gd = new GridData(GridData.FILL_HORIZONTAL);
+	   			comp.setLayoutData(gd);
+	   	
+
+	   			fSourceLabel = new Label(comp, SWT.NONE);
+	   			fSourceLabel.setText(fText); //$NON-NLS-1$
+	   			gd = new GridData();
+	   			gd.horizontalSpan = 1;
+	   			fSourceLabel.setLayoutData(gd);
+	   			
+
+	   			Button checkBox = new Button(fComp, SWT.CHECK | SWT.CENTER);
+gd = new GridData(GridData.FILL_HORIZONTAL);
+gd.horizontalSpan = 1;
+checkBox.setLayoutData(gd);
+
+checkBox.setSelection(fVal);
+checkBox.setEnabled(fWrite);
+
+	   	       return checkBox;
+	   	   }
+	   
+	   
 	   Text  createLine(Composite fComp,String fText, boolean fWrite, String fVal)
 	   {
 	   			Composite comp = new Composite(fComp, SWT.NONE);
@@ -97,11 +137,12 @@ public class RegExpBPSettingsDalog extends Dialog {
 	   				text.setText(fVal);
 	   	       return text;
 	   	   }
-	   
 	   protected void okPressed()
 	   {
 	   	mBP.setRegExp(fRegExpText.getText());
 	   	mBP.setMatchText(fMatchText.getText());
+	   	mBP.setMultiLine(fMultiLine.getSelection());
+	   	mBP.setIgnoreCase(fIgnoreCase.getSelection());
 	   super.okPressed();
 	   }
 	   

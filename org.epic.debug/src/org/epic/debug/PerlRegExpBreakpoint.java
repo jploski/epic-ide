@@ -42,7 +42,9 @@ public class PerlRegExpBreakpoint extends PerlLineBreakpoint {
 	private static final String SOURCE_LINE = "EPIC_SOURCE_LINE";
 	private static final String REG_EXP = "EPIC_REG_EXP";
 	private static final String MATCH_TEXT = "EPIC_MATCH_TEXT";
-	private IResource mResource;
+	private static final String IGNORE_CASE = "EPIC_IGNORE_CASE";
+	private static final String MULTILINE = "EPIC_MULTILINE";
+	//private IResource mResource;
 	private RegExpBPSettingsDalog dialog;
 
 	public PerlRegExpBreakpoint() {
@@ -53,7 +55,7 @@ public class PerlRegExpBreakpoint extends PerlLineBreakpoint {
 	public PerlRegExpBreakpoint(IResource resource, int lineNumber)
 			throws DebugException, CoreException {
 		super(resource, lineNumber);
-		mResource = resource;
+		//mResource = resource;
 		calculateRegExp();
 	}
 
@@ -61,7 +63,7 @@ public class PerlRegExpBreakpoint extends PerlLineBreakpoint {
 			int charStart, int charEnd, boolean add, Map attributes)
 			throws DebugException, CoreException {
 		super(resource, lineNumber, charStart, charEnd, add, attributes);
-		mResource = resource;
+		//	mResource = resource;
 		calculateRegExp();
 	}
 
@@ -75,7 +77,7 @@ public class PerlRegExpBreakpoint extends PerlLineBreakpoint {
 
 	private Object getAttribute(String fID) {
 		try {
-			return (String) (getMarker().getAttribute(fID));
+			return (getMarker().getAttribute(fID));
 		} catch (CoreException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -104,6 +106,28 @@ public class PerlRegExpBreakpoint extends PerlLineBreakpoint {
 		setAttributeValue(MATCH_TEXT, fText);
 	}
 
+	public void setIgnoreCase(boolean fBool) {
+		setAttributeValue(IGNORE_CASE, new Boolean(fBool));
+	}
+
+	public boolean getIgnoreCase() {
+		Boolean b = (Boolean) getAttribute(IGNORE_CASE);
+		if (b != null)
+			return b.booleanValue();
+		return false;
+	}
+
+	public boolean getMultiLine() {
+		Boolean b = (Boolean) getAttribute(MULTILINE);
+		if (b != null)
+			return b.booleanValue();
+		return false;
+	}
+
+	public void setMultiLine(boolean fBool) {
+		setAttributeValue(MULTILINE, new Boolean(fBool));
+	}
+
 	public void setRegExp(String fText) {
 		setAttributeValue(REG_EXP, fText);
 	}
@@ -120,32 +144,31 @@ public class PerlRegExpBreakpoint extends PerlLineBreakpoint {
 	public boolean isStoredDataValid(String fCurrentSourceLine) {
 		String lineStored = getSourceLine();
 
-		return (fCurrentSourceLine != null && lineStored != null && fCurrentSourceLine
-				.equals(lineStored) && getRegExp()!= null && getMatchText() != null );
+		return (fCurrentSourceLine != null && lineStored != null
+				&& fCurrentSourceLine.equals(lineStored) && getRegExp() != null && getMatchText() != null);
 
 	}
-void calculateRegExp() {
+	void calculateRegExp() {
 
-		
-	String lineCurrent = getCurrentSourceLine();
-		if( !isStoredDataValid(lineCurrent))
-		{	
-			extractRegExp(lineCurrent);
+		String lineCurrent = getCurrentSourceLine();
+		if (!isStoredDataValid(lineCurrent)) {
 			setSourceLine(lineCurrent);
+			if (extractRegExp(lineCurrent))
+				return;
+
 			Shell shell = PerlDebugPlugin.getActiveWorkbenchShell();
-			dialog = new RegExpBPSettingsDalog(shell, this,"Could not extract Regular Expression...");
+			dialog = new RegExpBPSettingsDalog(shell, this,
+					"Could not extract Regular Expression...");
 			if (shell != null) {
 				shell.getDisplay().syncExec(new Runnable() {
 					public void run() {
-					dialog.open();
+						dialog.open();
 					}
 
 				});
 
-			
+			}
 		}
-		}
-		
 
 	}
 	private boolean extractRegExp(String line) {
@@ -165,12 +188,29 @@ void calculateRegExp() {
 			String temp = line;
 			temp.replaceAll("\\" + delim, "xx");
 			RE findRegExp = new RE("([$%@][^\\s]+)[\\s]*=~[\\s]*[m]?" + delim
-					+ "(.*)" + delim, 0, RESyntax.RE_SYNTAX_PERL5);
+					+ "(.*)" + delim + "(.*)", 0, RESyntax.RE_SYNTAX_PERL5);
 			match = findRegExp.getMatch(temp);
+			if (match == null)
+				return false;
+
 			String var = line.substring(match.getStartIndex(1), match
 					.getEndIndex(1));
 			String text = line.substring(match.getStartIndex(2), match
 					.getEndIndex(2));
+			String mod = line.substring(match.getStartIndex(3), match
+					.getEndIndex(3));
+			if (var == null || text == null)
+				return false;
+
+			if (mod != null && mod.indexOf("i") >= 0)
+				setIgnoreCase(true);
+			else
+				setIgnoreCase(false);
+
+			if (mod != null && mod.indexOf("m") >= 0)
+				setMultiLine(true);
+			else
+				setMultiLine(false);
 
 			//System.out.println("\n" + var + ":" + text + "\n");
 			setRegExp(text);
@@ -178,6 +218,7 @@ void calculateRegExp() {
 		} catch (REException e2) {
 			// TODO Auto-generated catch block
 			e2.printStackTrace();
+			return false;
 		}
 		return (true);
 	}
@@ -190,7 +231,8 @@ void calculateRegExp() {
 
 		//	Get the file content
 		char[] buf = new char[BUF_SIZE];
-		File inputFile = new File(mResource.getLocation().toString());
+		File inputFile = new File(getMarker().getResource().getLocation()
+				.toString());
 		BufferedReader in;
 		try {
 			in = new BufferedReader(new FileReader(inputFile));
@@ -212,8 +254,8 @@ void calculateRegExp() {
 		String line = null;
 		Document doc = new Document(sourceCode.toString());
 		try {
-			int length = doc.getLineLength(getLineNumber()-1);
-			int offset = doc.getLineOffset(getLineNumber()-1);
+			int length = doc.getLineLength(getLineNumber() - 1);
+			int offset = doc.getLineOffset(getLineNumber() - 1);
 			line = doc.get(offset, length);
 		} catch (BadLocationException e1) {
 			// TODO Auto-generated catch block
@@ -224,4 +266,12 @@ void calculateRegExp() {
 		return line.trim();
 	}
 
+	public void updateIfRecognized() {
+
+		String lineCurrent = getCurrentSourceLine();
+		if (!isStoredDataValid(lineCurrent)) {
+			setSourceLine(lineCurrent);
+		extractRegExp(lineCurrent);
+				}
+	}
 }

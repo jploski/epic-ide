@@ -99,6 +99,7 @@ public class PerlEditorPreferencePage extends PreferencePage implements IWorkben
 		new OverlayPreferenceStore.OverlayKey(OverlayPreferenceStore.BOOLEAN, PreferenceConstants.EDITOR_PRINT_MARGIN),
 		new OverlayPreferenceStore.OverlayKey(OverlayPreferenceStore.BOOLEAN, PreferenceConstants.EDITOR_OVERVIEW_RULER),
 		new OverlayPreferenceStore.OverlayKey(OverlayPreferenceStore.BOOLEAN, PreferenceConstants.SOURCE_FOLDING),
+		new OverlayPreferenceStore.OverlayKey(OverlayPreferenceStore.BOOLEAN, PreferenceConstants.AUTO_COMPLETION),
 		//-------------------------------------
 		
         //-------------------------------------
@@ -573,6 +574,9 @@ public class PerlEditorPreferencePage extends PreferencePage implements IWorkben
 		
 		label= PreferencesMessages.getString("PerlEditorPreferencePage.sourceFolding"); //$NON-NLS-1$
 		addCheckBox(appearanceComposite, label, PreferenceConstants.SOURCE_FOLDING, 0);
+		
+		label= PreferencesMessages.getString("PerlEditorPreferencePage.autoCompletion"); //$NON-NLS-1$
+		addCheckBox(appearanceComposite, label, PreferenceConstants.AUTO_COMPLETION, 0);
 
 
 		Label l= new Label(appearanceComposite, SWT.LEFT );

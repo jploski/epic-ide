@@ -71,6 +71,14 @@ public class PreferenceConstants {
 	public final static String SOURCE_FOLDING= "sourceFolding"; //$NON-NLS-1$
 	
 	/**
+	 * A named preference that controls whether auto completion of quotes etc. is turned on or off.
+	 * <p>
+	 * Value is of type <code>Boolean</code>.
+	 * </p>
+	 */
+	public final static String AUTO_COMPLETION= "autoCompletion";
+	
+	/**
 	 * A named preference that holds the color used to render the print margin.
 	 * <p>
 	 * Value is of type <code>String</code>. A RGB color value encoded as a string
@@ -494,6 +502,8 @@ public class PreferenceConstants {
 			store.setDefault(PreferenceConstants.SPACES_INSTEAD_OF_TABS, false);
 			
 			store.setDefault(PreferenceConstants.SOURCE_FOLDING, true);
+			
+			store.setDefault(PreferenceConstants.AUTO_COMPLETION, true);
 		
 		
 		    // Syntay highlighting

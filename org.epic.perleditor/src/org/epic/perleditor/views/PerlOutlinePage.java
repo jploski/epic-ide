@@ -30,6 +30,8 @@ public class PerlOutlinePage
 		super();
 		this.input = input;
 		updateThread = new UpdateThread(Display.getCurrent());
+		// Set thread priority to minimal
+		updateThread.setPriority(Thread.MIN_PRIORITY);
 		updateThread.start();
 	}
 

@@ -109,18 +109,21 @@ public class ExpressionView extends ViewPart {
 			PerlDB db =thread.getPerlDB();
 						
 			String res = db.evaluateStatement( thread, expressionInput.getText()); 
-			
-			boolean isMatch = mReIsWhitespace.isMatch(res) || 
+			boolean isMatch = false;
+			if( res != null)
+			{
+				isMatch = mReIsWhitespace.isMatch(res) || 
 			   				mReIsWhitespace.getAllMatches(res).length > 0;
-			   				
+			}
+						   				
 			if( res == null || res.length() == 0 || isMatch == true)			
 			{
-				res =  "\n<Command("+mCommandCount+") finished>n";
+				res =  "\n<Command("+mCommandCount+") finished>\n";
 				
 			}
 			else
 			{
-				res = res + "\n<Command("+mCommandCount+") finished>n";
+				res = res + "\n<Command("+mCommandCount+") finished>\n";
 			}
 			  
 			setExpressionOutput(res);

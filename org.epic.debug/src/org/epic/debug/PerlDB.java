@@ -416,7 +416,11 @@ public class PerlDB	implements IDebugElement {
 	
 	public String evaluateStatement(Object fThread, String fText)
 	{
-		startCommand(mCommandEvaluateCode,fText,true, fThread);
+		startCommand(mCommandEvaluateCode,fText,false, fThread);
+		if(  mDebugOutput == null || mDebugOutput.lastIndexOf("\n") <= 0)
+		{
+			return null;
+		}
 		String result = mDebugOutput.substring(0, mDebugOutput.lastIndexOf("\n"));
 		return(result);
 	}

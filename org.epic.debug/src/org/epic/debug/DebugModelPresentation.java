@@ -18,6 +18,7 @@ import org.eclipse.debug.core.model.IBreakpoint;
 import org.eclipse.ui.IEditorRegistry;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.IEditorDescriptor;
+import org.epic.core.util.FileUtilities;
 /**
  * @author ruehl
  *
@@ -135,7 +136,7 @@ public class DebugModelPresentation implements IDebugModelPresentation {
 		  	i = new LocalFileStorageEditorInput(p.toString());
 		  	i = new LocalFileEditorInput(i);
 		} */
-		i =  LocalFileEditorInput.getFileEditorInput(p);
+		i =  FileUtilities.getFileEditorInput(p);
 			
 		return(i);
 

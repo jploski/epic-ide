@@ -26,7 +26,11 @@ import java.util.Set;
 import java.util.StringTokenizer;
 
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.debug.core.DebugEvent;
 import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.DebugPlugin;
@@ -150,7 +154,7 @@ public class PerlDB implements IDebugElement, ITerminate {
 	public boolean mStopVarUpdate;
 	private String mVarLocalString;
 	private String mVarGlobalString;
-	private VarUpdateThread mVarUpdateThread;
+	private VarUpdateJob mVarUpdateJob;
 	private StackFrame mStackFrameOrg;
 	private class IP_Position {
 		int IP_Line;
@@ -293,7 +297,8 @@ public class PerlDB implements IDebugElement, ITerminate {
 			generateDebugInitEvent();
 		} else
 			generateDebugTermEvent();
-
+		
+	
 	}
 	/*
 	 * (non-Javadoc)
@@ -1093,9 +1098,9 @@ public class PerlDB implements IDebugElement, ITerminate {
 		mThreads[0].setStackFrames(frames);
 
 		mIsCommandFinished = true;
-		if (mVarUpdateThread != null)
+		if (mVarUpdateJob != null)
 			try {
-				mVarUpdateThread.join();
+				mVarUpdateJob.join();
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -1105,9 +1110,9 @@ public class PerlDB implements IDebugElement, ITerminate {
 		mIsCommandRunning = false;
 		mIsCommandFinished = true;
 		
-		mVarUpdateThread = new VarUpdateThread(fOutputString);
-		mVarUpdateThread.setPriority(Thread.MIN_PRIORITY);
-		mVarUpdateThread.start();
+		mVarUpdateJob = new VarUpdateJob("Retrieve Variables",fOutputString);
+		mVarUpdateJob.setPriority(Job.SHORT);
+		mVarUpdateJob.schedule();;
 
 	}
 	private IP_Position getCurrent_IP_Position() {
@@ -1151,7 +1156,7 @@ public class PerlDB implements IDebugElement, ITerminate {
 
 	}
 
-	private void setVarStrings() {
+	private void setVarStrings(IProgressMonitor fMon) {
 		String command;
 		String result;
 		boolean ret;
@@ -1176,19 +1181,22 @@ public class PerlDB implements IDebugElement, ITerminate {
 				}
 			}
 		}
-		
+		fMon.worked(40);
 
 		ret = startCommand(mCommandExecuteCode, command, false, mThreads);
+		fMon.worked(50);
 		if (!ret || this.mStopVarUpdate)
 			return;
 		result = evaluateStatement(mThreads[0], mGlobalVarCommand, false);
-
+		fMon.worked(70);
+		
 		command = "o frame=2\n";
 		if (mPerlVersion.startsWith("5.6"))
 			command = "O frame=2\n";
 		
 		mVarGlobalString = result;
-		System.out.println(mVarGlobalString);
+		
+		//System.out.println(mVarGlobalString);
 
 	}
 
@@ -1548,23 +1556,26 @@ public class PerlDB implements IDebugElement, ITerminate {
 		}
 	}
 
-	public class VarUpdateThread extends Thread {
+	public class VarUpdateJob extends Job {
 		private String mString;
 
-		public VarUpdateThread(String fString) {
+		public VarUpdateJob(String fName, String fString) {
+			super(fName);
 			mString = fString;
 		}
 
-		public void run() {
+		public IStatus run(IProgressMonitor fMon) {
 
+			fMon.beginTask("Vars",100);
 			StackFrame frame = null;
 			System.err.println("Start+++++++++++++++++" + mIsCommandFinished);
 			try {
 				for (int x = 0; (x < 5) && !mStopVarUpdate; x++)
-					sleep(100);
+					Thread.sleep(100);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
+				fMon.worked(10);
 			}
 
 			System.err.println("Start 0+++++++++++++++++" + mIsCommandFinished);
@@ -1572,13 +1583,13 @@ public class PerlDB implements IDebugElement, ITerminate {
 			if (mStopVarUpdate == true) {
 				System.err.println("Exit 0+++++++++++++++++"
 						+ mIsCommandFinished);
-				return;
+				return( Status.OK_STATUS );
 			}
 
-			setVarStrings();
+			setVarStrings(fMon);
 			try {
 				if (mThreads[0].getStackFrames() == null)
-					return;
+					return( Status.OK_STATUS );
 				frame = (StackFrame) mThreads[0].getStackFrames()[0];
 			} catch (DebugException e1) {
 				// TODO Auto-generated catch block
@@ -1590,21 +1601,27 @@ public class PerlDB implements IDebugElement, ITerminate {
 			if (mStopVarUpdate == true) {
 				System.err.println("Exit 1+++++++++++++++++"
 						+ mIsCommandFinished);
-				return;
+				return( Status.OK_STATUS );
 			}
 			setVarList(frame);
+			fMon.worked(85);
 			System.err.println("Start 2+++++++++++++++++" + mIsCommandFinished);
 			if (mStopVarUpdate == true) {
 				System.err.println("Exit 2+++++++++++++++++"
 						+ mIsCommandFinished);
-				return;
+				return( Status.OK_STATUS );
 			}
 			updateStackFramesFinish(mString);
+			fMon.worked(95);
 			System.err.println("Start 3+++++++++++++++++" + mIsCommandFinished);
 			if (mStopVarUpdate == true)
-				return;
+				return( Status.OK_STATUS );
 			generateDebugEvalEvent();
+			fMon.done();
+			return( Status.OK_STATUS );
+			
 		}
-
+		
 	}
+	
 };

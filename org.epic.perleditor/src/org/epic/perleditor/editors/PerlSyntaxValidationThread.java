@@ -9,6 +9,9 @@
 
 package org.epic.perleditor.editors;
 
+import java.awt.Toolkit;
+import java.util.Date;
+
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.text.source.ISourceViewer;
@@ -99,7 +102,9 @@ public class PerlSyntaxValidationThread extends Thread implements IdleTimerListe
                 synchronized (this.lock1)
                 {
 //                    while (!this.modified)
+                	if(!this.modified) {
                         this.lock1.wait();
+                	}
 
                     this.force = false;
                     this.modified = false;

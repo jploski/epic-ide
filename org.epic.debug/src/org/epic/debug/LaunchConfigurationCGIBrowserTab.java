@@ -33,6 +33,8 @@ import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 //import org.eclipse.swt.events.SelectionAdapter;
 //import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Font;
@@ -42,7 +44,10 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IEditorDescriptor;
 //import org.eclipse.swt.widgets.Shell;
@@ -51,9 +56,14 @@ import org.eclipse.ui.IEditorDescriptor;
 //import org.eclipse.ui.dialogs.SelectionDialog;
 //import org.eclipse.ui.help.WorkbenchHelp;
 import org.eclipse.debug.ui.AbstractLaunchConfigurationTab;
+import org.eclipse.help.internal.HelpPlugin;
+import org.eclipse.help.internal.browser.BrowserDescriptor;
+import org.eclipse.help.internal.browser.BrowserManager;
+import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.core.resources.IProject;
 
-public class LaunchConfigurationMainTab extends AbstractLaunchConfigurationTab
+public class LaunchConfigurationCGIBrowserTab
+	extends AbstractLaunchConfigurationTab
 {
 
 	/**
@@ -65,19 +75,10 @@ public class LaunchConfigurationMainTab extends AbstractLaunchConfigurationTab
 	 * @since 2.0
 	 */
 
-	// Project UI widgets
-	protected Label fProjLabel;
-	protected Label fParamLabel;
-	protected Combo fProjText;
-	protected Button fProjButton;
-	protected Text fParamText;
-
-	// Main class UI widgets
-	protected Label fMainLabel;
-	protected Combo fMainText;
-	//	protected Button fSearchButton;
-	//  protected Button fSearchExternalJarsCheckButton;
-	//	protected Button fStopInMainCheckButton;
+	private Table browsersTable;
+	private Label customBrowserPathLabel;
+	private Text customBrowserPath;
+	private Button customBrowserBrowse;
 
 	protected static final String EMPTY_STRING = ""; //$NON-NLS-1$
 
@@ -91,145 +92,86 @@ public class LaunchConfigurationMainTab extends AbstractLaunchConfigurationTab
 	{
 		Font font = parent.getFont();
 
-		Composite comp = new Composite(parent, SWT.NONE);
-		setControl(comp);
+		//noDefaultAndApplyButton();
+		Composite mainComposite = new Composite(parent, SWT.NULL);
+		setControl(mainComposite);
+		GridData data = new GridData();
+		data.verticalAlignment = GridData.FILL;
+		data.horizontalAlignment = GridData.FILL;
+		//data.grabExcessHorizontalSpace = true;
+		mainComposite.setLayoutData(data);
+		mainComposite.setFont(font);
 
-		GridLayout topLayout = new GridLayout();
-		comp.setLayout(topLayout);
-		GridData gd;
+		GridLayout layout = new GridLayout();
+		layout.marginHeight = 0;
+		layout.marginWidth = 0;
+		mainComposite.setLayout(layout);
 
-		createVerticalSpacer(comp, 1);
+		Label description = new Label(mainComposite, SWT.NULL);
+		description.setFont(font);
+		description.setText("select_browser");
+		createSpacer(mainComposite);
 
-		Composite projComp = new Composite(comp, SWT.NONE);
-		GridLayout projLayout = new GridLayout();
-		projLayout.numColumns = 2;
-		projLayout.marginHeight = 0;
-		projLayout.marginWidth = 0;
-		projComp.setLayout(projLayout);
-		gd = new GridData(GridData.FILL_HORIZONTAL);
-		projComp.setLayoutData(gd);
-		projComp.setFont(font);
-
-		fProjLabel = new Label(projComp, SWT.NONE);
-		fProjLabel.setText("&Project:"); //$NON-NLS-1$
-		gd = new GridData();
-		gd.horizontalSpan = 2;
-		fProjLabel.setLayoutData(gd);
-		fProjLabel.setFont(font);
-
-		//fParamText = new Text(projComp, SWT.SINGLE | SWT.BORDER);
-		fProjText =
-			new Combo(projComp, SWT.SINGLE | SWT.BORDER | SWT.READ_ONLY);
-		gd = new GridData(GridData.FILL_HORIZONTAL);
-		fProjText.setLayoutData(gd);
-		fProjText.setFont(font);
-		fProjText.setItems(getPerlProjects());
-		fProjText.addModifyListener(new ModifyListener()
+		Label tableDescription = new Label(mainComposite, SWT.NULL);
+		tableDescription.setFont(font);
+		tableDescription.setText("current_browser");
+		//data = new GridData(GridData.VERTICAL_ALIGN_BEGINNING);
+		//description.setLayoutData(data);
+		browsersTable = new Table(mainComposite, SWT.CHECK | SWT.BORDER);
+		GridData gd = new GridData(GridData.FILL_BOTH);
+		//.heightHint = convertHeightInCharsToPixels(6);
+		browsersTable.setLayoutData(gd);
+		browsersTable.setFont(font);
+		browsersTable.addSelectionListener(new SelectionListener()
 		{
-			public void modifyText(ModifyEvent evt)
+			public void widgetSelected(SelectionEvent selEvent)
 			{
-				updateLaunchConfigurationDialog();
-				fMainText.setItems(getPerlFiles());
-			}
-		});
-
-		//fProjButton = createPushButton(projComp, "Browse..."), null); //$NON-NLS-1$
-		/*fProjButton.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent evt) {
-				handleProjectButtonSelected();
-			}
-		});
-		*/
-
-		createVerticalSpacer(comp, 1);
-
-		Composite mainComp = new Composite(comp, SWT.NONE);
-		GridLayout mainLayout = new GridLayout();
-		mainLayout.numColumns = 2;
-		mainLayout.marginHeight = 0;
-		mainLayout.marginWidth = 0;
-		mainComp.setLayout(mainLayout);
-		gd = new GridData(GridData.FILL_HORIZONTAL);
-		mainComp.setLayoutData(gd);
-		mainComp.setFont(font);
-
-		fMainLabel = new Label(mainComp, SWT.NONE);
-		fMainLabel.setText("File to execute"); //$NON-NLS-1$
-		gd = new GridData();
-		gd.horizontalSpan = 2;
-		fMainLabel.setLayoutData(gd);
-		fMainLabel.setFont(font);
-
-		//fMainText = new Text(mainComp, SWT.SINGLE | SWT.BORDER);
-		fMainText =
-			new Combo(mainComp, SWT.READ_ONLY | SWT.SINGLE | SWT.BORDER);
-		gd = new GridData(GridData.FILL_HORIZONTAL);
-		fMainText.setLayoutData(gd);
-		fMainText.setFont(font);
-		fMainText.addModifyListener(new ModifyListener()
-		{
-			public void modifyText(ModifyEvent evt)
-			{
-				updateLaunchConfigurationDialog();
-			}
-		});
-
-		createVerticalSpacer(comp, 2);
-		Composite paramComp = new Composite(comp, SWT.NONE);
-		GridLayout paramLayout = new GridLayout();
-		paramLayout.numColumns = 2;
-		paramLayout.marginHeight = 0;
-		paramLayout.marginWidth = 0;
-		paramComp.setLayout(paramLayout);
-		gd = new GridData(GridData.FILL_HORIZONTAL);
-		paramComp.setLayoutData(gd);
-		paramComp.setFont(font);
-
-		fParamLabel = new Label(paramComp, SWT.NONE);
-		fParamLabel.setText("Commandline Parameters:"); //$NON-NLS-1$
-		gd = new GridData();
-		gd.horizontalSpan = 2;
-		fParamLabel.setLayoutData(gd);
-		fParamLabel.setFont(font);
-
-		fParamText = new Text(paramComp, SWT.SINGLE | SWT.BORDER);
-
-		gd = new GridData(GridData.FILL_HORIZONTAL);
-		fParamText.setLayoutData(gd);
-		fParamText.setFont(font);
-		fParamText.addModifyListener(new ModifyListener()
-		{
-			public void modifyText(ModifyEvent evt)
-			{
-				updateLaunchConfigurationDialog();
-			}
-		});
-
-		/*	fSearchButton = createPushButton(mainComp,LauncherMessages.getString("JavaMainTab.Searc&h_5"), null); //$NON-NLS-1$
-			fSearchButton.addSelectionListener(new SelectionAdapter() {
-				public void widgetSelected(SelectionEvent evt) {
-					handleSearchButtonSelected();
+				if (selEvent.detail == SWT.CHECK)
+				{
+					TableItem item = (TableItem) selEvent.item;
+					if (item.getChecked())
+					{
+						// Deselect others
+						TableItem[] items = browsersTable.getItems();
+						for (int i = 0; i < items.length; i++)
+						{
+							if (items[i] == item)
+								continue;
+							else
+								items[i].setChecked(false);
+						}
+					} else
+					{
+						// Do not allow deselection
+						item.setChecked(true);
+					}
+					setEnabledCustomBrowserPath();
 				}
-			});
+			}
+			public void widgetDefaultSelected(SelectionEvent selEvent)
+			{
+			}
+		});
+		// populate table with browsers
+		BrowserDescriptor[] aDescs =
+			BrowserManager.getInstance().getBrowserDescriptors();
+		for (int i = 0; i < aDescs.length; i++)
+		{
+			TableItem item = new TableItem(browsersTable, SWT.NONE);
+			item.setText(aDescs[i].getLabel());
+			if (BrowserManager
+				.getInstance()
+				.getDefaultBrowserID()
+				.equals(aDescs[i].getID()))
+				item.setChecked(true);
+			else
+				item.setChecked(false);
+			item.setGrayed(aDescs.length == 1);
+		}
+
+		createCustomBrowserPathPart(mainComposite);
+
 		
-			fSearchExternalJarsCheckButton = new Button(mainComp, SWT.CHECK);
-			fSearchExternalJarsCheckButton.setText(LauncherMessages.getString("JavaMainTab.E&xt._jars_6")); //$NON-NLS-1$
-			fSearchExternalJarsCheckButton.setFont(font);
-			fSearchExternalJarsCheckButton.addSelectionListener(new SelectionAdapter() {
-				public void widgetSelected(SelectionEvent evt) {
-					updateLaunchConfigurationDialog();
-				}
-			});
-		
-			fStopInMainCheckButton = new Button(comp, SWT.CHECK);
-			fStopInMainCheckButton.setText(LauncherMessages.getString("JavaMainTab.St&op_in_main_1")); //$NON-NLS-1$
-			fStopInMainCheckButton.setFont(font);
-			fStopInMainCheckButton.addSelectionListener(new SelectionAdapter() {
-				public void widgetSelected(SelectionEvent evt) {
-					updateLaunchConfigurationDialog();
-				}
-			});
-			*/
 	}
 
 	/**
@@ -237,74 +179,49 @@ public class LaunchConfigurationMainTab extends AbstractLaunchConfigurationTab
 	 */
 	public void initializeFrom(ILaunchConfiguration config)
 	{
-		updateProjectFromConfig(config);
-		fMainText.setItems(getPerlFiles());
-		updateMainTypeFromConfig(config);
-		updateParamsFromConfig(config);
+//		updateProjectFromConfig(config);
+//		fMainText.setItems(getPerlFiles());
+//		updateMainTypeFromConfig(config);
+//		updateParamsFromConfig(config);
 	}
 
-	protected void updateProjectFromConfig(ILaunchConfiguration config)
-	{
-		String projectName = ""; //$NON-NLS-1$
-		try
-		{
-			projectName =
-				config.getAttribute(
-					PerlLaunchConfigurationConstants.ATTR_PROJECT_NAME,
-					EMPTY_STRING);
-		} catch (CoreException ce)
-		{
-			PerlDebugPlugin.log(ce);
-		}
-		fProjText.setText(projectName);
-	}
+
 
 	protected void updateParamsFromConfig(ILaunchConfiguration config)
 	{
-		String params = ""; //$NON-NLS-1$
-		try
-		{
-			params =
-				config.getAttribute(
-					PerlLaunchConfigurationConstants.ATTR_PROGRAM_PARAMETERS,
-					EMPTY_STRING);
-		} catch (CoreException ce)
-		{
-			PerlDebugPlugin.log(ce);
-		}
-		fParamText.setText(params);
+//		String params = ""; //$NON-NLS-1$
+//		try
+//		{
+//			params =
+//				config.getAttribute(
+//					PerlLaunchConfigurationConstants.ATTR_PROGRAM_PARAMETERS,
+//					EMPTY_STRING);
+//		} catch (CoreException ce)
+//		{
+//			PerlDebugPlugin.log(ce);
+//		}
+//		fParamText.setText(params);
 	}
 
-	protected void updateMainTypeFromConfig(ILaunchConfiguration config)
-	{
-		String mainTypeName = ""; //$NON-NLS-1$
-		try
-		{
-			mainTypeName =
-				config.getAttribute(
-					PerlLaunchConfigurationConstants.ATTR_STARTUP_FILE,
-					EMPTY_STRING);
-		} catch (CoreException ce)
-		{
-			PerlDebugPlugin.log(ce);
-		}
-		fMainText.setText(mainTypeName);
-	}
+	
 
 	/**
 	 * @see org.eclipse.debug.ui.ILaunchConfigurationTab#performApply(ILaunchConfigurationWorkingCopy)
 	 */
 	public void performApply(ILaunchConfigurationWorkingCopy config)
 	{
-		config.setAttribute(
-			PerlLaunchConfigurationConstants.ATTR_PROJECT_NAME,
-			(String) fProjText.getText());
-		config.setAttribute(
-			PerlLaunchConfigurationConstants.ATTR_STARTUP_FILE,
-			(String) fMainText.getText());
-		config.setAttribute(
-			PerlLaunchConfigurationConstants.ATTR_PROGRAM_PARAMETERS,
-			(String) fParamText.getText());
+//		config.setAttribute(
+//			PerlLaunchConfigurationConstants.ATTR_PROJECT_NAME,
+//			(String) fProjText.getText());
+//		config.setAttribute(
+//			PerlLaunchConfigurationConstants.ATTR_STARTUP_FILE,
+//			(String) fMainText.getText());
+//		config.setAttribute(
+//			PerlLaunchConfigurationConstants.ATTR_PROGRAM_PARAMETERS,
+//			(String) fParamText.getText());
+//		config.setAttribute(
+//			PerlLaunchConfigurationConstants.ATTR_DEBUG_CGI,
+//			"CGI");
 	}
 
 	/**
@@ -419,36 +336,36 @@ public class LaunchConfigurationMainTab extends AbstractLaunchConfigurationTab
 	 */
 	public boolean isValid(ILaunchConfiguration config)
 	{
-
-		setErrorMessage(null);
-		setMessage(null);
-
-		String name = fProjText.getText().trim();
-		if (name.length() > 0)
-		{
-			if (!ResourcesPlugin
-				.getWorkspace()
-				.getRoot()
-				.getProject(name)
-				.exists())
-			{
-				setErrorMessage("Project does not exist"); //$NON-NLS-1$
-				return false;
-			}
-		} else
-		{
-			setErrorMessage("Specify Project"); //$NON-NLS-1$
-			return false;
-		}
-
-		name = fMainText.getText().trim();
-		if (name.length() == 0)
-		{
-			setErrorMessage("Startup File is not specified"); //$NON-NLS-1$
-			return false;
-		}
-
-		return true;
+		return(true);
+//		setErrorMessage(null);
+//		setMessage(null);
+//
+//		String name = fProjText.getText().trim();
+//		if (name.length() > 0)
+//		{
+//			if (!ResourcesPlugin
+//				.getWorkspace()
+//				.getRoot()
+//				.getProject(name)
+//				.exists())
+//			{
+//				setErrorMessage("Project does not exist"); //$NON-NLS-1$
+//				return false;
+//			}
+//		} else
+//		{
+//			setErrorMessage("Specify Project"); //$NON-NLS-1$
+//			return false;
+//		}
+//
+//		name = fMainText.getText().trim();
+//		if (name.length() == 0)
+//		{
+//			setErrorMessage("Startup File is not specified"); //$NON-NLS-1$
+//			return false;
+//		}
+//
+//		return true;
 	}
 
 	/**
@@ -521,7 +438,7 @@ public class LaunchConfigurationMainTab extends AbstractLaunchConfigurationTab
 	 */
 	public String getName()
 	{
-		return "Configuration"; //$NON-NLS-1$
+		return "Browser Configuration"; //$NON-NLS-1$
 	}
 
 	/**
@@ -563,67 +480,77 @@ public class LaunchConfigurationMainTab extends AbstractLaunchConfigurationTab
 		return (String[]) projectList.toArray(new String[projectList.size()]);
 	}
 
-	private String[] getPerlFiles()
-	{
-		String projectName = fProjText.getText();
 
-		if (projectName == null || projectName.length() == 0)
-		{
-			return (new String[] {
-			});
-		}
+//**********************************************************
+  private void createSpacer(Composite parent) {
+		  Label spacer = new Label(parent, SWT.NONE);
+		  GridData data = new GridData();
+		  data.horizontalAlignment = GridData.FILL;
+		  data.verticalAlignment = GridData.BEGINNING;
+		  spacer.setLayoutData(data);
+	  }
+	  
+	  private void setEnabledCustomBrowserPath() {
+			  TableItem[] items = browsersTable.getItems();
+			  for (int i = 0; i < items.length; i++) {
+				  if (items[i].getChecked()) {
+					  boolean enabled =
+						  (HelpPlugin.PLUGIN_ID + ".custombrowser").equals(
+							  BrowserManager
+								  .getInstance()
+								  .getBrowserDescriptors()[i]
+								  .getID());
+					  customBrowserPathLabel.setEnabled(enabled);
+					  customBrowserPath.setEnabled(enabled);
+					  customBrowserBrowse.setEnabled(enabled);
+					  break;
+				  }
+			  }
 
-		IWorkspaceRoot workspaceRoot = PerlDebugPlugin.getWorkspace().getRoot();
-		IProject project = workspaceRoot.getProject(projectName);
-		IResourceVisitor visitor = new PerlProjectVisitor();
-		try
-		{
-			project.accept(visitor);
-		} catch (CoreException e)
-		{
-			e.printStackTrace();
-		}
-		return ((PerlProjectVisitor) visitor).getList();
-	}
+		  }
+		  
+		protected void createCustomBrowserPathPart(Composite mainComposite) {
+				Font font = mainComposite.getFont();
 
-	class PerlProjectVisitor implements IResourceVisitor
-	{
-		private static final String PERL_EDITOR_ID =
-			"org.epic.perleditor.editors.PerlEditor";
-		private static final String EMB_PERL_FILE_EXTENSION = "epl";
+				// vertical space
+				new Label(mainComposite, SWT.NULL);
 
-		private List fileList = new ArrayList();
-		/* (non-Javadoc)
-		 * @see org.eclipse.core.resources.IResourceVisitor#visit(org.eclipse.core.resources.IResource)
-		 */
-		public boolean visit(IResource resource) throws CoreException
-		{
-			IEditorDescriptor defaultEditorDescriptor =
-				PerlDebugPlugin
-					.getDefault()
-					.getWorkbench()
-					.getEditorRegistry()
-					.getDefaultEditor(resource.getFullPath().toString());
+				Composite bPathComposite = new Composite(mainComposite, SWT.NULL);
+				GridLayout layout = new GridLayout();
+				layout.marginWidth = 0;
+				layout.marginHeight = 0;
+				layout.numColumns = 3;
+				bPathComposite.setLayout(layout);
+				bPathComposite.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+				customBrowserPathLabel = new Label(bPathComposite, SWT.LEFT);
+				customBrowserPathLabel.setFont(font);
+			//customBrowserPathLabel.setText(WorkbenchResources.getString("CustomBrowserPreferencePage.Program")); //$NON-NLS-1$
 
-			if (defaultEditorDescriptor == null)
-			{
-				return true;
+				customBrowserPath = new Text(bPathComposite, SWT.BORDER);
+				customBrowserPath.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+				customBrowserPath.setFont(font);
+				//customBrowserPath.setText(
+				//	HelpPlugin.getDefault().getPluginPreferences().getString(
+				//		CustomBrowser.CUSTOM_BROWSER_PATH_KEY));
+
+				customBrowserBrowse = new Button(bPathComposite, SWT.NONE);
+				customBrowserBrowse.setFont(font);
+				customBrowserBrowse.setText("CustomBrowserPreferencePage.Browse"); //$NON-NLS-1$
+				GridData data = new GridData();
+				data.horizontalAlignment = GridData.FILL;
+				customBrowserBrowse.setLayoutData(data);
+				customBrowserBrowse.addSelectionListener(new SelectionListener() {
+					public void widgetDefaultSelected(SelectionEvent event) {
+					}
+					public void widgetSelected(SelectionEvent event) {
+						FileDialog d = new FileDialog(getShell());
+						d.setText("CustomBrowserPreferencePage.Details"); //$NON-NLS-1$
+						String file = d.open();
+						if (file != null) {
+							customBrowserPath.setText("\""+file+"\" %1");
+						}
+					}
+				});
+				setEnabledCustomBrowserPath();
 			}
-
-			if (defaultEditorDescriptor.getId().equals(PERL_EDITOR_ID)
-				&& !resource.getFileExtension().equals(EMB_PERL_FILE_EXTENSION))
-			{
-				fileList.add(
-					resource.getFullPath().removeFirstSegments(1).toString());
-			}
-
-			return true;
-		}
-
-		public String[] getList()
-		{
-			return (String[]) fileList.toArray(new String[fileList.size()]);
-		}
-
-	}
 }

@@ -25,5 +25,6 @@ public final static String ATTR_DEBUG_HOST = "ATTR_DEBUG_HOST";
 public final static String ATTR_DEBUG_PORT = "ATTR_DEBUG_PORT";
 public final static String ATTR_DEBUG_IO_PORT = "ATTR_DEBUG_IO_PORT";
 public final static String ATTR_DEBUG_ERROR_PORT = "ATTR_DEBUG_ERROR_PORT";
-
+public final static String ATTR_DEBUG_CGI = "ATTR_DEBUG_CGI";
+public final static String ATTR_CUSTOM_BROWSER_PATH = "ATTR_CUSTOM_BROWSER_PATH";
 }

@@ -204,8 +204,8 @@ public class ManageBreakpointRulerAction extends Action implements IUpdate {
 		int line= getVerticalRulerInfo().getLineOfLastMouseButtonActivity();
 
 		new PerlLineBreakpoint(getResource(),line+1);	
-		} catch (Throwable e){
-			PerlDebugPlugin.errorDialog("ManageBreakpointRulerAction error adding Breakpoint", e); //$NON-NLS-1$
+		} catch (Exception e){
+			PerlDebugPlugin.getDefault().logError("ManageBreakpointRulerAction error adding Breakpoint", e); //$NON-NLS-1$
 			}
 		
 		
@@ -220,7 +220,7 @@ public class ManageBreakpointRulerAction extends Action implements IUpdate {
 				breakpointManager.removeBreakpoint(breakpoint, true);
 			}
 		} catch (CoreException e) {
-			PerlDebugPlugin.errorDialog("ManageBreakpointRulerAction.error.removing.message1", e); //$NON-NLS-1$
+			PerlDebugPlugin.getDefault().logError("ManageBreakpointRulerAction.error.removing.message1", e); //$NON-NLS-1$
 		}
 	}
 	

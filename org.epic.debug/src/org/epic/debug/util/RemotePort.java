@@ -110,7 +110,7 @@ public class RemotePort
 		try{			
 				synchronized(this)
 				{
-				for( int x=0; ((x < 1000) || fTimeOut) && (mClient == null) ; ++x)
+				for( int x=0; ((x < 1000) || (!fTimeOut)) && (mClient == null) ; ++x)
 				{
 					System.out.println("Waiting for connect Port"+mPort+"(Try "+x+" of 100)\n");
 						 wait(100);

@@ -17,30 +17,31 @@ import org.eclipse.debug.core.ILaunchManager;
  * Window>Preferences>Java>Code Generation.
  */
 public class LaunchConfigurationDelegate
-	implements ILaunchConfigurationDelegate {
-		
+	implements ILaunchConfigurationDelegate
+{
+
 	private ILaunchConfiguration mLaunchConfiguration;
+	Target mTarget;
+	ILaunch mLaunch;
 
 	/**
 	 * Constructor for LaunchConfigurationDelegate.
 	 */
-	public LaunchConfigurationDelegate() {
+	public LaunchConfigurationDelegate()
+	{
 		super();
 	}
-
-
 
 	/**
 	 * Convenience method to get the launch manager.
 	 * 
 	 * @return the launch manager
 	 */
-	protected ILaunchManager getLaunchManager() {
+	protected ILaunchManager getLaunchManager()
+	{
 		return DebugPlugin.getDefault().getLaunchManager();
 	}
 
-	
-	
 	/**
 	 * @see org.eclipse.debug.core.model.ILaunchConfigurationDelegate#launch(ILaunchConfiguration, String, ILaunch, IProgressMonitor)
 	 */
@@ -49,26 +50,55 @@ public class LaunchConfigurationDelegate
 		String mode,
 		ILaunch launch,
 		IProgressMonitor monitor)
-		throws CoreException {
-		
-		Target target;	
+		throws CoreException
+	{
+
 		mLaunchConfiguration = configuration;
-		System.out.println("Launch: "+mLaunchConfiguration.getLocation());
-		launch.setSourceLocator(new SourceLocator ());
-		if( launch.getLaunchMode().equals(ILaunchManager.DEBUG_MODE) )
+		mLaunch = launch;
+		
+		System.out.println("Launch: " + mLaunchConfiguration.getLocation());
+		
+		String cgi = launch.getLaunchConfiguration().getAttribute(PerlLaunchConfigurationConstants.ATTR_DEBUG_CGI,((String)null));
+		
+		launch.setSourceLocator(new SourceLocator());
+		
+		if( cgi != null )
 		{
-			target =new DebugTarget(launch);
-			launch.addDebugTarget( target );
-			((DebugTarget)target).getDebuger().generateDebugInitEvent();
-		}
-		else
-		{
-					target =new RunTarget(launch);
-				launch.addDebugTarget( target );
-		}
+			mTarget =new CGITarget(launch);
+			//target = new CGITarget(launch);
+			Thread start = 
+			new Thread() 
+			{ 
+				public void run()
+				{
+					mTarget.start();
+					mLaunch.addDebugTarget(mTarget);
+					((DebugTarget) mTarget).getDebuger().generateDebugInitEvent();
+				};
+			};
+				
+			start.start();
 			
-		
-		
+						
+//			mTarget.start();
+//			mLaunch.addDebugTarget(mTarget);
+			//((DebugTarget) mTarget).getDebuger().generateDebugInitEvent();
 		}
+		else	
+		if (launch.getLaunchMode().equals(ILaunchManager.DEBUG_MODE))
+		{
+			mTarget =new DebugTarget(launch);
+			//target = new CGITarget(launch);
+			mTarget.start();
+			mLaunch.addDebugTarget(mTarget);
+			((DebugTarget) mTarget).getDebuger().generateDebugInitEvent();
+		} else
+		{
+			mTarget = new RunTarget(launch);
+			mTarget.start();
+			mLaunch.addDebugTarget(mTarget);
+		}
+
+	}
 
 }

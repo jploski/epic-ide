@@ -1,0 +1,127 @@
+$? = 0
+FileHandle(STDOUT) => fileno(1)
+$@ = ''
+$^D = 0
+$^E = ''
+FileHandle(STDIN) => fileno(0)
+$^H = 256
+$^O = 'MSWin32'
+$^S = 1
+$^W = 0
+$^X = 'C:\\Tools\\Perl\\bin\\perl.exe'
+%SIG = (
+'ABRT' => undef
+'ALRM' => undef
+'BREAK' => undef
+'BUS' => CODE(0x1b59f8c)
+-> &CODE(0x1b59f8c) in ???
+'CHLD' => undef
+'CLD' => undef
+'CONT' => undef
+'FPE' => undef
+'ILL' => undef
+'INT' => CODE(0x1b74f7c)
+-> &DB::catch in 0
+'KILL' => undef
+'NUM01' => undef
+'NUM05' => undef
+'NUM06' => undef
+'NUM07' => undef
+'NUM10' => undef
+'NUM12' => undef
+'NUM16' => undef
+'NUM17' => undef
+'NUM18' => undef
+'NUM19' => undef
+'NUM24' => undef
+'PIPE' => undef
+'QUIT' => undef
+'SEGV' => CODE(0x1b59f8c)
+-> REUSED_ADDRESS
+'STOP' => undef
+'TERM' => undef
+'__DIE__' => ''
+'__WARN__' => ''
+)
+$! = 'Invalid argument'
+$" = ' '
+$$ = 3084
+FileHandle(stdout) => fileno(1)
+$, = ''
+$/ = '
+'
+$0 = 'mkxmlwarn.pl'
+$1 = 'main'
+$2 = ''
+FileHandle(STDERR) => fileno(2)
+$< = 0
+$? = 0
+$@ = ''
+$\ = ''
+FileHandle(stderr) => fileno(2)
+@INC = (
+0 'C:/Tools/Perl/lib'
+1 'C:/Tools/Perl/site/lib'
+2 '.'
+)
+%INC = (
+'Carp.pm' => 'C:/Tools/Perl/lib/Carp.pm'
+'Carp/Heavy.pm' => 'C:/Tools/Perl/lib/Carp/Heavy.pm'
+'Devel/Peek.pm' => 'C:/Tools/Perl/lib/Devel/Peek.pm'
+'Exporter.pm' => 'C:/Tools/Perl/lib/Exporter.pm'
+'Term/Cap.pm' => 'C:/Tools/Perl/lib/Term/Cap.pm'
+'Term/ReadLine.pm' => 'C:/Tools/Perl/lib/Term/ReadLine.pm'
+'XSLoader.pm' => 'C:/Tools/Perl/lib/XSLoader.pm'
+'dumpvar.pl' => 'C:/Tools/Perl/lib/dumpvar.pl'
+'perl5db.pl' => 'C:/Tools/Perl/lib/perl5db.pl'
+)
+@_ = (
+0 0
+1 '_'
+2
+)
+%ENV = (
+'ALLUSERSPROFILE' => 'C:\\Dokumente und Einstellungen\\All Users'
+'APPDATA' => 'C:\\Dokumente und Einstellungen\\mab\\Anwendungsdaten'
+'CLASSPATH' => '.;'
+'COMMANDER_PATH' => 'C:\\Tools\\WinCmd'
+'COMMONPROGRAMFILES' => 'C:\\Programme\\Gemeinsame Dateien'
+'COMPUTERNAME' => 'DEFIANT'
+'COMSPEC' => 'C:\\WINDOWS\\system32\\cmd.exe'
+'HOMEDRIVE' => 'C:'
+'HOMEPATH' => '\\Dokumente und Einstellungen\\mab'
+'JAVA_HOME' => 'C:\\Programme\\Entwicklung\\j2sdk1.4.1_05'
+'LOGONSERVER' => '\\\\DEFIANT'
+'NUMBER_OF_PROCESSORS' => 1
+'OS' => 'Windows_NT'
+'PATH' => 'C:\\Programme\\Oracle\\OraHome\\bin;c:\\Programme\\Entwicklung\\j2
+sdk1.4.1_05\\bin;C:\\Programme\\Oracle\\jre\\1.3.1\\bin;C:\\Programme\\Oracle\\j
+re\\1.1.8\\bin;C:\\Tools\\Perl\\bin\\;C:\\Programme\\Tools\\Tcl\\bin;C:\\Tools\\
+Perl\\bin\\;C:\\WINDOWS\\system32;C:\\WINDOWS;C:\\WINDOWS\\system32\\WBEM;C:\\Pr
+ogramme\\Entwicklung\\JBuilder35\\jdk1.2.2\\jre\\bin;c:\\bat;c:\\Tools\\Packer;c
+:\\tools;c:\\tools\\cygwin\\bin;c:\\tools\\openssl\\bin;c:\\Programme\\kommunika
+tion\\edonkey2000;c:\\Programme\\Datenbank\\mysql\\db\\bin;C:\\Programme\\Entwic
+klung\\Subversion;c:\\tools\\php;C:\\Programme\\Kommunikation\\Apache\\Apache2\\
+bin;C:\\Programme\\Support Tools\\;C:\\Programme\\ATI Technologies\\ATI Control
+Panel;C:\\Programme\\Entwicklung\\CVS-Server;p:\\exe\\vc60d;p:\\exe\\vc60c;P:\\t
+hirdparty\\win32\\bin;c:\\Tools\\mico\\bin;c:\\Programme\\Tools\\jEdit 4.2pre6'
+'PATHEXT' => '.COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JS;.JSE;.WSF;.WSH;.tcl'
+'PROCESSOR_ARCHITECTURE' => 'x86'
+'PROCESSOR_IDENTIFIER' => 'x86 Family 6 Model 6 Stepping 2, AuthenticAMD'
+'PROCESSOR_LEVEL' => 6
+'PROCESSOR_REVISION' => 0602
+'PROGRAMFILES' => 'C:\\Programme'
+'PROMPT' => '$P$G'
+'SESSIONNAME' => 'Console'
+'SYSTEMDRIVE' => 'C:'
+'SYSTEMROOT' => 'C:\\WINDOWS'
+'TEMP' => 'C:\\DOKUME~1\\mab\\LOKALE~1\\Temp'
+'TMP' => 'C:\\DOKUME~1\\mab\\LOKALE~1\\Temp'
+'USERDOMAIN' => 'DEFIANT'
+'USERNAME' => 'mab'
+'USERPROFILE' => 'C:\\Dokumente und Einstellungen\\mab'
+'WF_RESOURCES' => 'C:\\Programme\\Oracle\\OraHome\\WF\\RES\\WFus.RES'
+'WINDIR' => 'C:\\WINDOWS'
+)
+FileHandle(stdin) => fileno(0)
+$| = 1

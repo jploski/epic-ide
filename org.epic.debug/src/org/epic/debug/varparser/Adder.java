@@ -143,7 +143,7 @@ public class Adder
 		
         //*******************************************
         // the name of the file to read
-        String fileName = "F:/eclipse_2.1/eclipse/workspace/ANTLR/test.dat";
+        String fileName = "F:\\eclipse_test\\eclipse\\workspace\\org.epic.debug\\error.dat";
 
         // construct the special shared input state that is needed
         // in order to annotate ExtentTokens properly

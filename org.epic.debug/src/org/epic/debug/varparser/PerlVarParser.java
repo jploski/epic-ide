@@ -14,6 +14,8 @@ import antlr.LexerSharedInputState;
 import antlr.SemanticException;*/
 import antlr.TokenStreamException;
 import org.epic.debug.PerlDB;
+import org.epic.debug.PerlDebugPlugin;
+
 import java.io.*;
 
 /**
@@ -148,12 +150,12 @@ public class PerlVarParser
     	
     	if ( par.hasError() > 1)
     	{
-    		System.out.println("!!!!! Paars Error!!!!");
+    		System.out.println("!!!!! Parse Error!!!!");
     		logParsError(fText);
     	}
     	else
     	{
-			System.out.println("!!!!! Paars OK!!!!");
+			System.out.println("!!!!! Parse OK!!!!");
     	}
     	return(par.getVars());
     	
@@ -162,28 +164,26 @@ public class PerlVarParser
     
     private void logParsError(String fText)
     {
-		PrintStream out = null;
-				
-    	try{
-    	
-		out = new PrintStream( new FileOutputStream("c:\\ParsError.log",true),true);
-    	}catch(Exception e) {System.err.println("Could not open ParsError-Logfile !!!");}						
-    	
-    	out.println("*******************************");
-		out.println("*******************************");
-		out.println("+++++++Error Parsing Vars++++++");
-		out.println("*******************************");
-		out.println("*******************************");
-
-			out.println(fText);
 			
-		out.println("-------------------------------");
-		out.println("-------------------------------");
-		out.println("+++++++Error Parsing Vars++++++");
-		out.println("-------------------------------");
-		out.println("-------------------------------");
 		
-		out.close();
+		
+		StringBuffer out	=	new StringBuffer();
+	    	
+    	out.append("*******************************");
+		out.append("*******************************");
+		out.append("+++++++Error Parsing Vars++++++");
+		out.append("*******************************");
+		out.append("*******************************");
+
+			out.append(fText);
+			
+		out.append("-------------------------------");
+		out.append("-------------------------------");
+		out.append("+++++++Error Parsing Vars++++++");
+		out.append("-------------------------------");
+		out.append("-------------------------------");
+		
+		PerlDebugPlugin.getDefault().logError(out.toString());
 								 
     }
     

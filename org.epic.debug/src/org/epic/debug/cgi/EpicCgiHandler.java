@@ -212,7 +212,7 @@ public class EpicCgiHandler implements Handler {
 		//Get Perl executable and generate comand array
 		command[0] =
 			request.props.getProperty(propsPrefix + EXECUTABLE, "perl");
-		command[1] = "-d"; // Add begug switch
+		command[1] = "-d"; // Add debug switch
 		command[2] = name.getAbsolutePath();
 		request.log(
 			Server.LOG_DIAGNOSTIC,
@@ -287,6 +287,7 @@ public class EpicCgiHandler implements Handler {
 				}
 			}
 			env.addElement("CONFIG_PREFIX=" + propsPrefix);
+		
 		}
 
 		// Set custom environment variables
@@ -295,6 +296,7 @@ public class EpicCgiHandler implements Handler {
 			String key = (String) keys.nextElement();
 
 			if (key.startsWith(propsPrefix + ENV  + "_")) {
+				request.log(Server.LOG_DIAGNOSTIC, key);
 				env.addElement(
 						key.substring((propsPrefix + ENV + "_").length())
 						+ "="
@@ -368,10 +370,6 @@ public class EpicCgiHandler implements Handler {
 			int y = 0;
 			while ((c = in.read()) >= 0) {
 				buff.write(c);
-				request.log(
-					Server.LOG_DIAGNOSTIC,
-					propsPrefix,
-					"In read...." + (++y) + ":" + Integer.toString(c));
 			}
 
 			request.sendHeaders(status, type, buff.size());
@@ -443,7 +441,7 @@ public class EpicCgiHandler implements Handler {
 
 	/***********************************************/
 //	private final static String mDebugOptions =
-//		"PERLDB_OPTS=RemotePort=localhost:4444 DumpReused ReadLine=0";
+		//"PERLDB_OPTS=RemotePort=localhost:4444 DumpReused ReadLine=0";
 //	 frame=2";
 	void createEnvArray(Vector fEnv) {
 		String mDebugEnv[];
@@ -483,7 +481,7 @@ public class EpicCgiHandler implements Handler {
 			fEnv.addElement(token);
 		}
 
-		//fEnv.addElement(mDebugOptions);
+	//	fEnv.addElement(mDebugOptions);
 
 		//mDebugEnv[count+1] = "PERL5DB=BEGIN {require'perl5db.pl'}";
 	}

@@ -7,28 +7,25 @@
    class="org.epic.perleditor.PerlEditorPlugin">
 
    <runtime>
-      <library name="perleditor.jar" />
-      <library name="gnu-regexp-1.1.4.jar" />
-      <library name="jdom.jar" />
-      <!-- JEdit text Editor libs (Syntax Coloring by Chris Grindstaf) -->
-      <!--
-      <library name="editor.jar" />
-      <library name="libs/dom4j-mini.jar" />
-      <library name="libs/regexp-1.2-mini.jar" />
-      -->
+      <library name="perleditor.jar">
+         <packages prefixes="org.epic.core,org.epic.perleditor"/>
+      </library>
+      <library name="gnu-regexp-1.1.4.jar"/>
+      <library name="jdom.jar"/>
    </runtime>
    <requires>
       <import plugin="org.eclipse.ui"/>
       <import plugin="org.eclipse.core.resources"/>
-      <import plugin="org.apache.xerces"/>
       <import plugin="org.epic.ext.cbg.editor"/>
+      <import plugin="org.eclipse.debug.core"/>
+      <import plugin="org.eclipse.debug.ui"/>
    </requires>
 
 
    <extension
          point="org.eclipse.ui.editors">
       <editor
-	    name="Epic Perl Editor"
+            name="Epic Perl Editor"
             icon="icons/epic.gif"
             extensions="pl, ipl, pm, cgi"
             contributorClass="org.epic.perleditor.editors.PerlActionContributor"
@@ -36,8 +33,7 @@
             id="org.epic.perleditor.editors.PerlEditor">
       </editor>
    </extension>
-
-   <!--
+<!--
    <extension
          point="org.eclipse.ui.documentProviders">
       <provider
@@ -47,19 +43,21 @@
       </provider>
    </extension>
 -->
-   <extension point="org.eclipse.ui.preferencePages">
-	<page id="org.epic.core.preferences.PerlMainPreferencePage"
-		name="Perl EPIC"
-		class="org.epic.core.preferences.PerlMainPreferencePage">
-   		</page>
-	<page id="org.epic.perleditor.preferences.EpicPerlEditorPreferencePage"
-		name="Editor"
-		category="org.epic.core.preferences.PerlMainPreferencePage"
-		class="org.epic.perleditor.preferences.PerlEditorPreferencePage">
-   		</page>
-   	</extension>
-
-	<extension
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            name="Perl EPIC"
+            class="org.epic.core.preferences.PerlMainPreferencePage"
+            id="org.epic.core.preferences.PerlMainPreferencePage">
+      </page>
+      <page
+            name="Editor"
+            category="org.epic.core.preferences.PerlMainPreferencePage"
+            class="org.epic.perleditor.preferences.PerlEditorPreferencePage"
+            id="org.epic.perleditor.preferences.EpicPerlEditorPreferencePage">
+      </page>
+   </extension>
+   <extension
          point="org.eclipse.ui.perspectives">
       <perspective
             name="Perl"
@@ -68,8 +66,6 @@
             id="org.epic.core.Perspective">
       </perspective>
    </extension>
-
-
    <extension
          point="org.eclipse.ui.newWizards">
       <category
@@ -88,34 +84,36 @@
          </description>
       </wizard>
    </extension>
-
-
    <extension
-	point="org.eclipse.core.resources.natures"
-	id="perlnature"
-	name="Perl Nature">
-	<runtime>
-		<run class="org.epic.core.PerlProjectNature">
-		</run>
-	</runtime>
+         id="perlnature"
+         name="Perl Nature"
+         point="org.eclipse.core.resources.natures">
+      <runtime>
+         <run
+               class="org.epic.core.PerlProjectNature">
+         </run>
+      </runtime>
    </extension>
-
-   <extension point="org.eclipse.ui.projectNatureImages">
-	<image
-		id="org.epic.core.perlProjectNatureImage"
-		natureId="org.epic.perleditor.perlnature"
-	        icon="icons/project_folder.gif">
-	</image>
-</extension>
-
-<extension
-	point="org.eclipse.ui.propertyPages">
-	<page name="Perl Include Path"
-  	   id="org.epic.core.properties.IncludePathPropertyPage"
-       objectClass="org.eclipse.core.resources.IProject"
-       class="org.epic.core.properties.IncludePathPropertyPage">
-      <filter name="nature" value="org.epic.perleditor.perlnature"/>
-   	</page>
-</extension>
+   <extension
+         point="org.eclipse.ui.projectNatureImages">
+      <image
+            icon="icons/project_folder.gif"
+            natureId="org.epic.perleditor.perlnature"
+            id="org.epic.core.perlProjectNatureImage">
+      </image>
+   </extension>
+   <extension
+         point="org.eclipse.ui.propertyPages">
+      <page
+            objectClass="org.eclipse.core.resources.IProject"
+            name="Perl Include Path"
+            class="org.epic.core.properties.IncludePathPropertyPage"
+            id="org.epic.core.properties.IncludePathPropertyPage">
+         <filter
+               name="nature"
+               value="org.epic.perleditor.perlnature">
+         </filter>
+      </page>
+   </extension>
 
 </plugin>

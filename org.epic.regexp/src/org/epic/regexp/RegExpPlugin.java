@@ -20,8 +20,8 @@ public class RegExpPlugin extends AbstractUIPlugin {
 	/**
 	 * The constructor.
 	 */
-	public RegExpPlugin(IPluginDescriptor descriptor) {
-		super(descriptor);
+	public RegExpPlugin() {
+		super();
 		plugin = this;
 		try {
 			resourceBundle= ResourceBundle.getBundle("org.epic.regexp.RegexpPluginResources");
@@ -66,8 +66,7 @@ public class RegExpPlugin extends AbstractUIPlugin {
 	
 	static public String getPlugInDir()
 	{
-		URL installURL =
-			getDefault().getDescriptor().getInstallURL();
+		URL installURL = getDefault().getBundle().getEntry("/");
 			
 		try
 		{
@@ -76,9 +75,6 @@ public class RegExpPlugin extends AbstractUIPlugin {
 		{
 			e.printStackTrace();
 		}
-		String path =installURL.getPath();
-		if( path.charAt(0) == '/' && path.charAt(2)==':' && path.charAt(3) == '/')
-			path = path.substring(1);
-		return (path);
+		return installURL.toExternalForm();
 	}
 }

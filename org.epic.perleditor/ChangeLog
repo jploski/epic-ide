@@ -10,6 +10,7 @@ Eclipse Perl Integration:
 		* Fixed bug: [ 996351 ] NullPointer exception during Launch (problems if path to Perl executable has spaces) 
 		
 		Editor:
+		* Added Refactoring: Extract Subroutine. Uses CPAN module Devel::Refactor.
 		* Added Source Folding for POD and subroutines (Source Folding can be disabled via Editor preferences)
 		* Fixed bug: [ 1017681 ] outline/subroutines leads to wrong line if code contains POD
 		* Added Source menu to Editor context popup menu

@@ -1,7 +1,8 @@
 Eclipse Perl Integration: Perl Editor Plugin
 
 Version 0.1.0 alpha  - 
-		* OverviewRuler summary view fixed in editor
+		* Perl project builder and Navigator markers added
+		* OverviewRuler summary view/Task markers fixed in editor
 		* Corrected wrong idle timer label (seconds instead of milliseconds) in main preference page
 		* Perltidy has been updated (Version 20031021)
 		* Small keybinding bug for uncomment action fixed (Ctrl+\)

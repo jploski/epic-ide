@@ -1,6 +1,7 @@
 Eclipse Perl Integration: 
 
 		Debugger:
+		* Implemented Feature Request: [ 1051399 ] Debug-Perspective: Switching automatically
 		* Corrected createEnvArray() to work on Linux systems
 		* Fixed problem with Cygwin (Pathmapper error)
 		* Preserve spaces in variable values

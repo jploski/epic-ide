@@ -11,6 +11,7 @@ import java.util.ArrayList;
 
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.editors.text.TextEditor;
+import org.eclipse.core.resources.IProject;
 
 import gnu.regexp.RE;
 
@@ -23,10 +24,22 @@ import org.epic.core.util.XMLUtilities;
  */
 public class PerlExecutableUtilities {
 
+	public static List getPerlExecutableCommandLine(IProject project) {
+		return getPerlExecutableCommandLine(null, project);
+	}
+
 	public static List getPerlExecutableCommandLine(TextEditor textEditor) {
-		// Get perl executable and extra parameters
-		String preExe =
-			PerlEditorPlugin.getDefault().getExecutablePreference().trim();
+		IProject project = ((IFileEditorInput) textEditor.getEditorInput()).getFile().getProject();
+		return getPerlExecutableCommandLine(textEditor, project);
+				
+	}
+
+	public static List getPerlExecutableCommandLine(
+		TextEditor textEditor,
+		IProject project) {
+			// Get perl executable and extra parameters
+	String preExe =
+		PerlEditorPlugin.getDefault().getExecutablePreference().trim();
 
 		int startParams = 0;
 		String perlExe = "";
@@ -60,29 +73,28 @@ public class PerlExecutableUtilities {
 			cmdList.add(perlParams.trim());
 		}
 
-		String currentPath =
-			((IFileEditorInput) textEditor.getEditorInput())
-				.getFile()
-				.getLocation()
-				.makeAbsolute()
-				.removeLastSegments(1)
-				.toString();
-		currentPath = preparePath(currentPath);
+		if (textEditor != null) {
+			String currentPath =
+				((IFileEditorInput) textEditor.getEditorInput())
+					.getFile()
+					.getLocation()
+					.makeAbsolute()
+					.removeLastSegments(1)
+					.toString();
+			currentPath = preparePath(currentPath);
 
-		cmdList.add("-I");
-		cmdList.add(currentPath);
+			cmdList.add("-I");
+			cmdList.add(currentPath);
+		}
 
 		// Add other project include paths
 		XMLUtilities xmlUtil = new XMLUtilities();
 		String[] includes =
-			xmlUtil.getIncludeEntries(
-				((IFileEditorInput) textEditor.getEditorInput())
-					.getFile()
-					.getProject());
-		for(int i=0; i<includes.length; i++) {
+			xmlUtil.getIncludeEntries(project);
+		for (int i = 0; i < includes.length; i++) {
 			String path = preparePath(includes[i]);
 			cmdList.add("-I");
-			cmdList.add(path);			
+			cmdList.add(path);
 		}
 
 		return cmdList;

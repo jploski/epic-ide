@@ -1,0 +1,9 @@
+Eclipse Perl Integration: Perl Editor Plugin
+
+Version 0.1.0 alpha  - 13-September-2003
+        * Compatibility version to work with Eclipse 2.1 and 3.0 RC builds.
+        * Basic Perldoc support has been added (popup menu) 
+        * Bug fix: perl doens't read the whole program from STDIN in all cases
+        * Bug fix: XML encoding correctly set to UTF-8
+        * Improved SyntaxValidationThread.
+        * Bug fix: send Ctrl-Z to "perl -c" to fix bug with Win98

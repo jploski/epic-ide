@@ -25,9 +25,11 @@ public class SourceFormatter {
 		
        IPreferenceStore store = PerlEditorPlugin.getDefault().getPreferenceStore();
        
-	   int tabWidth = store.getInt(PreferenceConstants.EDITOR_TAB_WIDTH);
-	   int pageSize = store.getInt(PreferenceConstants.EDITOR_PRINT_MARGIN_COLUMN);
+	   int numSpaces = store.getInt(PreferenceConstants.INSERT_TABS_ON_INDENT);
 	   boolean useTabs = store.getBoolean(PreferenceConstants.SPACES_INSTEAD_OF_TABS) ? false:true;
+	   int tabWidth = useTabs?store.getInt(PreferenceConstants.EDITOR_TAB_WIDTH):numSpaces ;
+	   int pageSize = store.getInt(PreferenceConstants.EDITOR_PRINT_MARGIN_COLUMN);
+	   
 	   
 	   boolean cuddleElse = store.getBoolean(SourceFormatterPreferences.CUDDLED_ELSE);
 	   boolean bracesLeft = store.getBoolean(SourceFormatterPreferences.BRACES_LEFT);

@@ -155,7 +155,7 @@ public class PerlSourceViewerConfiguration
 		 */
 		public String[] getIndentPrefixes(ISourceViewer sourceViewer, String contentType) {
 			//return new String[] { "\t", "    " }; //$NON-NLS-1$ //$NON-NLS-2$
-			return new String[] {PreferenceUtil.getTab()};
+			return new String[] {PreferenceUtil.getTab(0), "\t"};
 		}
 
 		/* 

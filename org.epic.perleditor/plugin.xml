@@ -114,7 +114,18 @@
                class="org.epic.core.PerlProjectNature">
          </run>
       </runtime>
+      <!-- Builder test START -->
+      <builder id="org.epic.perleditor.perlbuilder" />
+      <!-- Builder test END -->
    </extension>
+   <!-- Builder test START -->
+   <extension
+      id="perlbuilder" name="Perl Auto Builder" point="org.eclipse.core.resources.builders">
+      <builder hasNature="true">
+         <run class="org.epic.core.builders.PerlBuilder" />
+      </builder>
+   </extension>
+   <!-- Builder test END -->
    <extension
          point="org.eclipse.ui.projectNatureImages">
       <image

@@ -6,7 +6,9 @@
  */
 package org.epic.core;
 
+import org.eclipse.core.resources.ICommand;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IProjectNature;
 import org.eclipse.core.runtime.CoreException;
 
@@ -19,6 +21,7 @@ import org.eclipse.core.runtime.CoreException;
 public class PerlProjectNature implements IProjectNature {
 
 private IProject project;
+private String PLUGIN_ID = "org.epic.perleditor";
 	/**
 	 * 
 	 */
@@ -31,8 +34,11 @@ private IProject project;
 	 * @see org.eclipse.core.resources.IProjectNature#configure()
 	 */
 	public void configure() throws CoreException {
-		// TODO Auto-generated method stub
-
+		// register Perl builder
+		IProjectDescription description = getProject().getDescription();
+		ICommand command = description.newCommand();
+		command.setBuilderName(PLUGIN_ID + ".perlbuilder");
+		System.out.println("Builder name: " + PLUGIN_ID+ ".perlbuilder");
 	}
 
 	/* (non-Javadoc)

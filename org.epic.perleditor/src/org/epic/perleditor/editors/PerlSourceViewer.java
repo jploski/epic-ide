@@ -21,7 +21,11 @@ public class PerlSourceViewer extends SourceViewer {
 
 	protected void customizeDocumentCommand(DocumentCommand command) {
 		if (command.text.equals("\t")) {
-			command.text = PreferenceUtil.getTab();
+			int line            = getTextWidget().getLineAtOffset(command.offset);
+			int lineStartOffset = getTextWidget().getOffsetAtLine(line);		
+			int column          = command.offset - lineStartOffset;
+
+			command.text = PreferenceUtil.getTab(column);
 		}
 		super.customizeDocumentCommand(command);
 	}

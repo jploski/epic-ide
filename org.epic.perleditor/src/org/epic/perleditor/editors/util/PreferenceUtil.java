@@ -8,20 +8,21 @@ public class PreferenceUtil {
 	/**
 	 * @return
 	 */
-	public static String getTab() {
+	public static String getTab(int column) {
 		boolean useSpaces =
 			PerlEditorPlugin.getDefault().getPreferenceStore().getBoolean(
 				PreferenceConstants.SPACES_INSTEAD_OF_TABS);
 
-		int numSpaces =
-			PerlEditorPlugin.getDefault().getPreferenceStore().getInt(
-				PreferenceConstants.EDITOR_TAB_WIDTH);
 
 		String tabString = null;
 
 		if (useSpaces) {
-			char[] indentChars = new char[numSpaces];
-
+			int numSpaces =
+			PerlEditorPlugin.getDefault().getPreferenceStore().getInt(
+				PreferenceConstants.INSERT_TABS_ON_INDENT);
+			char[] indentChars = new char[numSpaces - (column % numSpaces)];
+			
+			
 			for (int i = 0; i < indentChars.length; i++) {
 				indentChars[i] = ' ';
 			}
@@ -44,11 +45,16 @@ public class PreferenceUtil {
 		int tabCount = 
 		PerlEditorPlugin.getDefault().getPreferenceStore().getInt(
 			PreferenceConstants.INSERT_TABS_ON_INDENT);
+		boolean useSpaces =
+			PerlEditorPlugin.getDefault().getPreferenceStore().getBoolean(
+				PreferenceConstants.SPACES_INSTEAD_OF_TABS);
 			
-	    String indentString = getTab();
+	    String indentString = getTab(0);
 		
-		for (int i = 0; i < tabCount; i++) {
-			buf.append(indentString);
+        if (!useSpaces) {
+			for (int i = 0; i < tabCount; i++) {
+				buf.append(indentString);
+			}
 		}
 		
 		return buf.toString();

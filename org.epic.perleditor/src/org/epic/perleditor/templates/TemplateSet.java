@@ -95,8 +95,8 @@ public class TemplateSet {
 	public void addFromStream(InputStream stream) throws CoreException {
 		try {
 			DocumentBuilderFactory factory= DocumentBuilderFactory.newInstance();
-			DocumentBuilder parser= factory.newDocumentBuilder();		
-			Document document= parser.parse(new InputSource(stream));
+			DocumentBuilder parser= factory.newDocumentBuilder();
+			Document document= parser.parse(stream);
 			NodeList elements= document.getElementsByTagName(TEMPLATE_TAG);
 			
 			int count= elements.getLength();

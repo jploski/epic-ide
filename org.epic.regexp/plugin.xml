@@ -18,14 +18,10 @@
 
    <extension
          point="org.eclipse.ui.views">
-      <category
-            name="EPIC"
-            id="org.epic.regexp">
-      </category>
       <view
             name="RegExp"
             icon="icons/rx.gif"
-            category="org.epic.regexp"
+            category="org.epic.views"
             class="org.epic.regexp.views.RegExpView"
             id="org.epic.regexp.views.RegExpView">
       </view>

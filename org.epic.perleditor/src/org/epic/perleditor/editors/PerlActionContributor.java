@@ -7,6 +7,7 @@ import org.eclipse.ui.editors.text.TextEditorActionContributor;
 
 import org.epic.perleditor.actions.ExportHtmlSourceAction;
 import org.epic.perleditor.actions.FormatSourceAction;
+import org.epic.perleditor.actions.Jump2BracketAction;
 import org.epic.perleditor.actions.ToggleCommentAction;
 import org.epic.perleditor.actions.ValidateSourceAction;
 import org.epic.perleditor.popupmenus.OpenDeclaration;
@@ -22,6 +23,7 @@ public class PerlActionContributor extends TextEditorActionContributor {
 	protected ValidateSourceAction validateSourceAction;
 	protected OpenDeclaration openDeclarationAction;
 	protected ToggleCommentAction toggleCommentAction;
+	protected Jump2BracketAction jump2BracketAction;
 
 	/**
 	 * Default constructor.
@@ -33,6 +35,7 @@ public class PerlActionContributor extends TextEditorActionContributor {
 		validateSourceAction = new ValidateSourceAction();
 		openDeclarationAction = new OpenDeclaration();
 		toggleCommentAction = new ToggleCommentAction();
+		jump2BracketAction = new Jump2BracketAction();
 		//formatSourceAction.setActionDefinitionId("org.epic.perledior.formatsource");
 	}
 
@@ -72,6 +75,7 @@ public class PerlActionContributor extends TextEditorActionContributor {
 					bars.setGlobalActionHandler("org.epic.perleditor.HtmlExport", htmExportAction);
 					bars.setGlobalActionHandler("org.epic.perleditor.ValidateSyntax", validateSourceAction);
 					bars.setGlobalActionHandler("org.epic.perleditor.popupmenus.OpenSubAction", openDeclarationAction);
+					bars.setGlobalActionHandler("org.epic.perleditor.Jump2Bracket", jump2BracketAction);
 				}
 				else {
 					bars.setGlobalActionHandler("org.epic.perleditor.FormatSource", null);
@@ -79,6 +83,7 @@ public class PerlActionContributor extends TextEditorActionContributor {
 					bars.setGlobalActionHandler("org.epic.perleditor.ValidateSyntax", null);
 					bars.setGlobalActionHandler("org.epic.perleditor.popupmenus.OpenSubAction", null);
 					bars.setGlobalActionHandler("org.epic.perleditor.ToggleComment", null);
+					bars.setGlobalActionHandler("org.epic.perleditor.Jump2Bracket", null);
 				}
 		}
 				

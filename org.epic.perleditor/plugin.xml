@@ -404,6 +404,15 @@
                id="org.epic.perleditor.popupmenus.OpenSubAction">
          </action>
          
+<!-- Matching Bracket -->
+         <action
+               label="Matching &amp;Bracket"
+               retarget="true"
+               definitionId="org.epic.perleditor.jump2Bracket"
+               menubarPath="navigate/goto/additions"
+               id="org.epic.perleditor.Jump2Bracket">
+         </action>
+         
       </actionSet>
    </extension>
    <extension
@@ -501,6 +510,24 @@
             scope="org.epic.perleditor.perlEditorScope"
             command="org.epic.perleditor.openDeclaration"
             configuration="org.eclipse.ui.defaultAcceleratorConfiguration"/>
+	  <command
+            description="Matching Bracket"
+            name="MatchingBracket"
+            id="org.epic.perleditor.jump2Bracket"/>
+      <keyBinding
+            string="Shift+Ctrl+P"
+            commandId="org.epic.perleditor.jump2Bracket"
+            scope="org.epic.perleditor.perlEditorScope"
+            command="org.epic.perleditor.jump2Bracket"
+            configuration="org.eclipse.ui.defaultAcceleratorConfiguration"/>
+      <keyBinding
+            platform="carbon"
+            string="Shift+Command+P"
+            commandId="org.epic.perleditor.jump2Bracket"
+            scope="org.epic.perleditor.perlEditorScope"
+            command="org.epic.perleditor.jump2Bracket"
+            configuration="org.eclipse.ui.defaultAcceleratorConfiguration">
+      </keyBinding>
    </extension>
 <!--             So to not have equal markers for the same thing we use BOTTOM_LEFT.            -->
 <!--             But on some occasions the Java Builder seems to check Perl projecs as well.    -->

@@ -109,10 +109,10 @@ public class PerlEditor extends TextEditor implements
 	private final String matchBrakets = "{([<>])}";
 	
 	private ITextViewerExtension5 viewer;
+	
+//	private SourceViewer fSourceViewer;
 
-	private SourceViewer fSourceViewer;
-
-	private IDocumentProvider fDocumentProvider;
+//	private IDocumentProvider fDocumentProvider;
 
 	private IdleTimer idleTimer;
 
@@ -158,12 +158,14 @@ public class PerlEditor extends TextEditor implements
 		setAction("org.epic.perleditor.ContentAssist", action);
 
 
+
+
 		IDocumentProvider provider = getDocumentProvider();
 		IDocument document = provider.getDocument(getEditorInput());
 		getSourceViewer().setDocument(document);
 
-		fDocumentProvider = provider;
-		fSourceViewer = (SourceViewer) getSourceViewer();
+//		fDocumentProvider = provider;
+//		fSourceViewer = (SourceViewer) getSourceViewer();
 
 		if (fValidationThread == null && isPerlMode()) {
 			fValidationThread = new PerlSyntaxValidationThread(this,
@@ -176,16 +178,18 @@ public class PerlEditor extends TextEditor implements
 		}
 
 		if (fValidationThread != null) {
-			try {
-				// Give the validation thread time for initialization
-				// TODO Find better solution
-				Thread.sleep(1000);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
+// Any reason why this is required at all?
+		  //			try {
+//				// Give the validation thread time for initialization
+//				// TODO Find better solution
+//				Thread.sleep(1000);
+//			} catch (InterruptedException e) {
+//				e.printStackTrace();
+//			}
 			// Always check syntax when editor is opened
 			//fValidationThread.setText(getSourceViewer().getTextWidget().getText());
-			fValidationThread.setText(getSourceViewer().getDocument().get());
+//			fValidationThread.setText(getSourceViewer().getDocument().get());
+			fValidationThread.setText(document.get());
 		}
 		
     calculateIgnoreTypeHash();  // to get the current HashCodes of Strings we should ignore
@@ -274,6 +278,15 @@ public class PerlEditor extends TextEditor implements
 	public void doRevertToSaved() {
 
 		super.doRevertToSaved();
+
+		if (page != null) {
+			page.update(page.getSubList(), page.getModList());
+		}
+
+		if (fValidationThread != null) {
+			//fValidationThread.setText(getSourceViewer().getTextWidget().getText());
+			fValidationThread.setText(getSourceViewer().getDocument().get());
+		}
 
 	}
 
@@ -468,7 +481,14 @@ public class PerlEditor extends TextEditor implements
 		}
 
 	}
-
+	
+	/**
+	 * To provide an access to a changed position 
+	 * Colouring of the Brackets will be adjusted.
+	 */
+	public final void newCurosorPos() {
+	  handleCursorPositionChanged();
+	}
 	protected void handleCursorPositionChanged() {
 		super.handleCursorPositionChanged();
 
@@ -776,8 +796,9 @@ public class PerlEditor extends TextEditor implements
 	}
 
 	public void createPartControl(Composite parent) {
-		super.createPartControl(parent);
+	  super.createPartControl(parent);
 		ProjectionViewer viewer = (ProjectionViewer) getSourceViewer();
+		
 		projectionSupport = new ProjectionSupport(viewer,
 				getAnnotationAccess(), getSharedColors());
 		projectionSupport
@@ -841,6 +862,23 @@ public class PerlEditor extends TextEditor implements
   }
 
   /**
+   * to access the method via Command-Stroke
+   * 
+   * @param StartPosition from the widget
+   * @return the position for the widget
+   */
+  public int findNextOccurance(int StartPosition){
+		StyledText myText = getSourceViewer().getTextWidget();
+		IDocument myDocument=getSourceViewer().getDocument();
+		
+		int cursorPosition = myText.getCaretOffset();
+		char sourceChar = myText.getTextRange(cursorPosition - 1, 1).charAt(0);
+    return viewer.modelOffset2WidgetOffset(findNextOccurance(myDocument,
+                                           sourceChar, 
+                                           cursorPosition
+                                           ));
+  }
+  /**
    * Finds the next matching Bracket <p>
    * If the current Bracket is under quotes/comments => consider the next
    * matching bracket also under (same) quotes/comment. If the next found
@@ -855,8 +893,7 @@ public class PerlEditor extends TextEditor implements
    * @return absolute Positon in the Document
    * @since Sep. 2004
    */
-  public final int findNextOccurance(final IDocument myDocument, char findNextChar, int StartPosition) {
-
+  public int findNextOccurance(final IDocument myDocument, char findNextChar, int StartPosition) {
 		char nextStringPair = ' ';
 		int StackCounter = 0;
 		int findFirst;

@@ -10,6 +10,7 @@ Eclipse Perl Integration:
 		* Fixed bug: [ 996351 ] NullPointer exception during Launch (problems if path to Perl executable has spaces) 
 		
 		Editor:
+		* Added Jump Matching Bracket
 		* Added Bracket Matching
 		* Added Default Web-Starter Page
 		* Fixed bug: [ 847291 ] Changes in Preference-Editor caused sometimes a NullPointer exception

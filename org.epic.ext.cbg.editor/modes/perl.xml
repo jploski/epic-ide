@@ -152,8 +152,6 @@
 		<SEQ TYPE="NULL">[</SEQ>
 		<SEQ TYPE="NULL">?</SEQ>
 		<SEQ TYPE="NULL">:</SEQ>
-		<SEQ TYPE="NULL">\"</SEQ>   <!-- To avoid inproper Quote spanning -->
-		<SEQ TYPE="NULL">\'</SEQ>   <!-- To avoid inproper Quote spanning -->
 
 		<!-- Keywords -->
 		<KEYWORDS IGNORE_CASE="FALSE">

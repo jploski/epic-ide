@@ -16,7 +16,7 @@ public class PerlSpellCheckerPreferences extends SpellCheckerPreferences {
 	
 	public static final String CHECKCOMMENTS = "checkComments";
 	public static final String CHECKSTRINGLITERALS = "stringLiterals";
-	//public static final String IGNORECOMPOUNDS = "ignoreCompounds";
+	public static final String IGNORECOMPOUNDS = "ignoreCompounds";
 	public static final String CHECKNAMES = "checkNames";   // new in version 1.1 //$NON-NLS-1$
 
 

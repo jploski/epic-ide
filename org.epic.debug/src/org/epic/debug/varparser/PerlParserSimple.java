@@ -146,37 +146,37 @@ public PerlParserSimple(ParserSharedInputState state) {
 		
 		try {      // for error handling
 			{
-			_loop218:
+			_loop114:
 			do {
 				if ((LA(1)==NL)) {
 					match(NL);
 				}
 				else {
-					break _loop218;
+					break _loop114;
 				}
 				
 			} while (true);
 			}
 			{
-			_loop222:
+			_loop118:
 			do {
 				if ((_tokenSet_0.member(LA(1)))) {
 					namedVar();
 					{
-					_loop221:
+					_loop117:
 					do {
 						if ((LA(1)==NL)) {
 							match(NL);
 						}
 						else {
-							break _loop221;
+							break _loop117;
 						}
 						
 					} while (true);
 					}
 				}
 				else {
-					break _loop222;
+					break _loop118;
 				}
 				
 			} while (true);
@@ -238,7 +238,7 @@ public PerlParserSimple(ParserSharedInputState state) {
 			match(SCALAR_NAME);
 			addVar(name.getText(),"Scalar");printConsole("++++SCALAR:"+name.getText()+"\n");
 			{
-			if ((LA(1)==EQ) && (_tokenSet_3.member(LA(2))) && (LA(3)==NL||LA(3)==ADR||LA(3)==PURE_NAME)) {
+			if ((LA(1)==EQ) && (_tokenSet_3.member(LA(2))) && (_tokenSet_4.member(LA(3)))) {
 				match(EQ);
 				value();
 				finalizeVar();printConsole("----SCALAR:"+name.getText()+"\n");
@@ -372,13 +372,13 @@ public PerlParserSimple(ParserSharedInputState state) {
 			if ((LA(1)==INDENT_START) && (LA(2)==NUMBER||LA(2)==INDENT_END)) {
 				match(INDENT_START);
 				{
-				_loop230:
+				_loop126:
 				do {
 					if ((LA(1)==NUMBER)) {
 						arrayEntry();
 					}
 					else {
-						break _loop230;
+						break _loop126;
 					}
 					
 				} while (true);
@@ -400,7 +400,7 @@ public PerlParserSimple(ParserSharedInputState state) {
 		catch (RecognitionException ex) {
 			reportError(ex);
 			consume();
-			consumeUntil(_tokenSet_4);
+			consumeUntil(_tokenSet_5);
 		}
 	}
 	
@@ -444,7 +444,7 @@ public PerlParserSimple(ParserSharedInputState state) {
 		catch (RecognitionException ex) {
 			reportError(ex);
 			consume();
-			consumeUntil(_tokenSet_5);
+			consumeUntil(_tokenSet_6);
 		}
 	}
 	
@@ -456,38 +456,13 @@ public PerlParserSimple(ParserSharedInputState state) {
 			start = LT(1);
 			match(NUMBER);
 			addVar("["+start.getText()+"]",null);printConsole("INDEX:"+start.getText());
-			{
-			switch ( LA(1)) {
-			case ARRAY_REF:
-			case SCALAR_REF:
-			case HASH_REF:
-			case CODE_REF:
-			case REF:
-			case NUMBER:
-			case PURE_NAME:
-			case STRING:
-			case FILE_REF:
-			{
-				value();
-				break;
-			}
-			case NL:
-			{
-				match(NL);
-				break;
-			}
-			default:
-			{
-				throw new NoViableAltException(LT(1), getFilename());
-			}
-			}
-			}
+			value();
 			finalizeVar();
 		}
 		catch (RecognitionException ex) {
 			reportError(ex);
 			consume();
-			consumeUntil(_tokenSet_6);
+			consumeUntil(_tokenSet_7);
 		}
 	}
 	
@@ -556,6 +531,12 @@ public PerlParserSimple(ParserSharedInputState state) {
 				match(NL);
 				break;
 			}
+			case NL:
+			{
+				match(NL);
+				setVal("undef","Scalar");
+				break;
+			}
 			default:
 			{
 				throw new NoViableAltException(LT(1), getFilename());
@@ -565,7 +546,7 @@ public PerlParserSimple(ParserSharedInputState state) {
 		catch (RecognitionException ex) {
 			reportError(ex);
 			consume();
-			consumeUntil(_tokenSet_5);
+			consumeUntil(_tokenSet_6);
 		}
 	}
 	
@@ -576,13 +557,13 @@ public PerlParserSimple(ParserSharedInputState state) {
 			if ((LA(1)==INDENT_START) && (LA(2)==INDENT_END||LA(2)==STRING)) {
 				match(INDENT_START);
 				{
-				_loop239:
+				_loop134:
 				do {
 					if ((LA(1)==STRING)) {
 						hashEntry();
 					}
 					else {
-						break _loop239;
+						break _loop134;
 					}
 					
 				} while (true);
@@ -604,7 +585,7 @@ public PerlParserSimple(ParserSharedInputState state) {
 		catch (RecognitionException ex) {
 			reportError(ex);
 			consume();
-			consumeUntil(_tokenSet_4);
+			consumeUntil(_tokenSet_5);
 		}
 	}
 	
@@ -648,7 +629,7 @@ public PerlParserSimple(ParserSharedInputState state) {
 		catch (RecognitionException ex) {
 			reportError(ex);
 			consume();
-			consumeUntil(_tokenSet_5);
+			consumeUntil(_tokenSet_6);
 		}
 	}
 	
@@ -668,7 +649,7 @@ public PerlParserSimple(ParserSharedInputState state) {
 		catch (RecognitionException ex) {
 			reportError(ex);
 			consume();
-			consumeUntil(_tokenSet_7);
+			consumeUntil(_tokenSet_8);
 		}
 	}
 	
@@ -718,7 +699,7 @@ public PerlParserSimple(ParserSharedInputState state) {
 		catch (RecognitionException ex) {
 			reportError(ex);
 			consume();
-			consumeUntil(_tokenSet_5);
+			consumeUntil(_tokenSet_6);
 		}
 	}
 	
@@ -741,7 +722,7 @@ public PerlParserSimple(ParserSharedInputState state) {
 		catch (RecognitionException ex) {
 			reportError(ex);
 			consume();
-			consumeUntil(_tokenSet_5);
+			consumeUntil(_tokenSet_6);
 		}
 	}
 	
@@ -784,7 +765,7 @@ public PerlParserSimple(ParserSharedInputState state) {
 			}
 			}
 			{
-			_loop250:
+			_loop145:
 			do {
 				switch ( LA(1)) {
 				case PURE_NAME:
@@ -816,7 +797,7 @@ public PerlParserSimple(ParserSharedInputState state) {
 				}
 				default:
 				{
-					break _loop250;
+					break _loop145;
 				}
 				}
 			} while (true);
@@ -828,7 +809,7 @@ public PerlParserSimple(ParserSharedInputState state) {
 		catch (RecognitionException ex) {
 			reportError(ex);
 			consume();
-			consumeUntil(_tokenSet_5);
+			consumeUntil(_tokenSet_6);
 		}
 	}
 	
@@ -851,7 +832,7 @@ public PerlParserSimple(ParserSharedInputState state) {
 		catch (RecognitionException ex) {
 			reportError(ex);
 			consume();
-			consumeUntil(_tokenSet_5);
+			consumeUntil(_tokenSet_6);
 		}
 	}
 	
@@ -897,7 +878,7 @@ public PerlParserSimple(ParserSharedInputState state) {
 		catch (RecognitionException ex) {
 			reportError(ex);
 			consume();
-			consumeUntil(_tokenSet_5);
+			consumeUntil(_tokenSet_6);
 		}
 	}
 	
@@ -957,29 +938,34 @@ public PerlParserSimple(ParserSharedInputState state) {
 	}
 	public static final BitSet _tokenSet_2 = new BitSet(mk_tokenSet_2());
 	private static final long[] mk_tokenSet_3() {
-		long[] data = { 369114880L, 0L};
+		long[] data = { 369639168L, 0L};
 		return data;
 	}
 	public static final BitSet _tokenSet_3 = new BitSet(mk_tokenSet_3());
 	private static final long[] mk_tokenSet_4() {
-		long[] data = { 72032370L, 0L};
+		long[] data = { 42598514L, 0L};
 		return data;
 	}
 	public static final BitSet _tokenSet_4 = new BitSet(mk_tokenSet_4());
 	private static final long[] mk_tokenSet_5() {
-		long[] data = { 67838066L, 0L};
+		long[] data = { 72032370L, 0L};
 		return data;
 	}
 	public static final BitSet _tokenSet_5 = new BitSet(mk_tokenSet_5());
 	private static final long[] mk_tokenSet_6() {
-		long[] data = { 73728L, 0L};
+		long[] data = { 67838066L, 0L};
 		return data;
 	}
 	public static final BitSet _tokenSet_6 = new BitSet(mk_tokenSet_6());
 	private static final long[] mk_tokenSet_7() {
-		long[] data = { 67174400L, 0L};
+		long[] data = { 73728L, 0L};
 		return data;
 	}
 	public static final BitSet _tokenSet_7 = new BitSet(mk_tokenSet_7());
+	private static final long[] mk_tokenSet_8() {
+		long[] data = { 67174400L, 0L};
+		return data;
+	}
+	public static final BitSet _tokenSet_8 = new BitSet(mk_tokenSet_8());
 	
 	}

@@ -102,6 +102,7 @@ public abstract class Target implements IDebugTarget
 	{
 		URL installURL =
 			PerlDebugPlugin.getDefault().getDescriptor().getInstallURL();
+			
 		try
 		{
 			installURL = Platform.resolve(installURL);
@@ -111,7 +112,10 @@ public abstract class Target implements IDebugTarget
 				"Error retrieving Plugin dir",
 				e);
 		}
-		return (installURL.getPath());
+		String path =installURL.getPath();
+		if( path.charAt(0) == '/' && path.charAt(2)==':' && path.charAt(3) == '/')
+			path = path.substring(1);
+		return (path);
 	}
 
 	public String getJavaHome()

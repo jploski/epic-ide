@@ -142,7 +142,7 @@ namedArray: name:ARRAY_NAME{addVar(name.getText(),"Array");printConsole("++++ARR
 arrayReference: ARRAY_REF name:ADR NL {addVar("Array->"+name.getText()," ");printConsole("++++ARRAYREF:"+name.getText()+"\n");}(arrayEntries)? {finalizeVar();printConsole("----ARRAYREF:"+name.getText()+"\n");};
 arrayEntries:  INDENT_START (arrayEntry)* INDENT_END
 			| INDENT_START REF_SYMB PURE_NAME NL INDENT_END;
-arrayEntry: start:NUMBER {addVar("["+start.getText()+"]",null);printConsole("INDEX:"+start.getText());} (value | NL) {finalizeVar();};
+arrayEntry: start:NUMBER {addVar("["+start.getText()+"]",null);printConsole("INDEX:"+start.getText());} value {finalizeVar();};
 
 
 
@@ -162,7 +162,7 @@ ref: REF name:ADR{printConsole("++++REF_SYMB:"+name.getText()+"\n");} NL INDENT_
 fileHandle: FILE_HANDLE PAREN_OP name:PURE_NAME{addVar(name.getText(),"FileHandle");printConsole("++++FH:"+name.getText()+"\n");} PAREN_CL KEY_ASSIGN val:FILE_NO{setVal(val.getText(),"FileHandle"); finalizeVar();printConsole("++++FNO_SYMB:"+val.getText()+"\n");};
 fileHandleRef: name:FILE_REF{addVar("->"+name.getText(),"FileHandleRef");printConsole("++++FRef:"+name.getText()+"\n");}  NL (INDENT_START fileHandle NL INDENT_END)? {finalizeVar();};
 
-value: p:PURE_NAME{setVal(p.getText(),"");System.out.print(" VAL:"+p.getText());} ((p2:PURE_NAME){appendVal(" "+p2.getText());printConsole(" "+p2.getText());})? {printConsole("\n");}NL  | refs | s:STRING{setVal(s.getText(),"Scalar");printConsole(" VAL:"+s.getText()+"\n");} NL | n:NUMBER{setVal(n.getText(),"Scalar");printConsole(" VAL_NUM:"+n.getText()+"\n");}NL ;
+value: p:PURE_NAME{setVal(p.getText(),"");System.out.print(" VAL:"+p.getText());} ((p2:PURE_NAME){appendVal(" "+p2.getText());printConsole(" "+p2.getText());})? {printConsole("\n");}NL  | refs | s:STRING{setVal(s.getText(),"Scalar");printConsole(" VAL:"+s.getText()+"\n");} NL | n:NUMBER{setVal(n.getText(),"Scalar");printConsole(" VAL_NUM:"+n.getText()+"\n");}NL | NL{setVal("undef","Scalar");};
 refs:  (hashReference | arrayReference | scalarRef | codeRef | ref | fileHandleRef);
 //refs: (PURE_NAME EQ)? (hashReference | arrayReference | scalarRef | codeRef | ref | fileHandleRef);
 // ----------------------------------------------------------------------------

@@ -82,6 +82,7 @@ public class PerlEditorPreferencePage extends PreferencePage implements IWorkben
         //-------------------------------------
 		new OverlayPreferenceStore.OverlayKey(OverlayPreferenceStore.INT, PreferenceConstants.EDITOR_TAB_WIDTH),
 		new OverlayPreferenceStore.OverlayKey(OverlayPreferenceStore.INT, PreferenceConstants.INSERT_TABS_ON_INDENT),
+		new OverlayPreferenceStore.OverlayKey(OverlayPreferenceStore.BOOLEAN, PreferenceConstants.SPACES_INSTEAD_OF_TABS),
 		new OverlayPreferenceStore.OverlayKey(OverlayPreferenceStore.STRING, PreferenceConstants.EDITOR_LINE_NUMBER_RULER_COLOR),
 		new OverlayPreferenceStore.OverlayKey(OverlayPreferenceStore.BOOLEAN, PreferenceConstants.EDITOR_LINE_NUMBER_RULER),
 		new OverlayPreferenceStore.OverlayKey(OverlayPreferenceStore.STRING, PreferenceConstants.EDITOR_LINE_NUMBER_RULER_COLOR),
@@ -540,6 +541,9 @@ public class PerlEditorPreferencePage extends PreferencePage implements IWorkben
 
 		label= PreferencesMessages.getString("PerlEditorPreferencePage.printMarginColumn"); //$NON-NLS-1$
 		addTextField(appearanceComposite, label, PreferenceConstants.EDITOR_PRINT_MARGIN_COLUMN, 3, 0, true);
+		
+		label= PreferencesMessages.getString("PerlEditorPreferencePage.spacesInsteadOfTabs");
+		addCheckBox(appearanceComposite, label, PreferenceConstants.SPACES_INSTEAD_OF_TABS, 0);
 				
 		//label= PreferencesMessages.getString("PerlEditorPreferencePage.synchronizeOnCursor"); //$NON-NLS-1$
 		//addCheckBox(appearanceComposite, label, PreferenceConstants.EDITOR_SYNC_OUTLINE_ON_CURSOR_MOVE, 0);

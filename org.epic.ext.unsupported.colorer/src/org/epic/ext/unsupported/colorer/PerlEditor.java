@@ -6,18 +6,28 @@
 
 package org.epic.ext.unsupported.colorer;
 
+import java.util.Iterator;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.text.source.ISharedTextColors;
 import org.eclipse.jface.text.source.ISourceViewer;
+import org.eclipse.jface.text.source.IVerticalRuler;
 import org.eclipse.jface.text.source.LineNumberRulerColumn;
 import org.eclipse.jface.text.source.CompositeRuler;
+import org.eclipse.jface.text.source.OverviewRuler;
 import org.eclipse.jface.text.IDocument;
+import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IFileEditorInput;
+import org.eclipse.ui.internal.editors.text.EditorsPlugin;
+import org.eclipse.ui.texteditor.AnnotationPreference;
 import org.eclipse.ui.texteditor.IDocumentProvider;
+import org.eclipse.ui.texteditor.MarkerAnnotationPreferences;
+import org.eclipse.ui.texteditor.SourceViewerDecorationSupport;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -227,17 +237,59 @@ public class PerlEditor
 		
 	}
 
-	/*
-		protected final ISourceViewer createSourceViewer(
-			Composite parent,
-			IVerticalRuler ruler,
-			int styles) {
-	
-			ISourceViewer viewer = super.createSourceViewer(parent, ruler, styles);
-	
-			return viewer;
+	/* Create SourceViewer so we can use the PerlSourceViewer class */
+	protected final ISourceViewer createSourceViewer(
+		Composite parent,
+		IVerticalRuler ruler,
+		int styles) {
+
+		super.fAnnotationAccess = createAnnotationAccess();
+
+		ISharedTextColors sharedColors =
+			EditorsPlugin.getDefault().getSharedTextColors();
+
+		fOverviewRuler =
+			new OverviewRuler(
+				fAnnotationAccess,
+				VERTICAL_RULER_WIDTH,
+				sharedColors);
+
+		MarkerAnnotationPreferences fAnnotationPreferences =
+			new MarkerAnnotationPreferences();
+
+		Iterator e =
+			fAnnotationPreferences.getAnnotationPreferences().iterator();
+
+		while (e.hasNext()) {
+
+			AnnotationPreference preference = (AnnotationPreference) e.next();
+
+			if (preference.contributesToHeader())
+				fOverviewRuler.addHeaderAnnotationType(
+					preference.getAnnotationType());
+
 		}
-		*/
+
+		ISourceViewer sourceViewer =
+			new PerlSourceViewer(
+				parent,
+				ruler,
+				fOverviewRuler,
+				isOverviewRulerVisible(),
+				styles);
+
+		fSourceViewerDecorationSupport =
+			new SourceViewerDecorationSupport(
+				sourceViewer,
+				fOverviewRuler,
+				fAnnotationAccess,
+				sharedColors);
+
+		configureSourceViewerDecorationSupport();
+
+		return sourceViewer;
+
+	}
 
 	/*
 		protected IVerticalRuler createVerticalRuler() {

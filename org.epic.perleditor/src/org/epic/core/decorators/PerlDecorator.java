@@ -59,6 +59,7 @@ public class PerlDecorator
 	public void decorate(Object element, IDecoration decoration) {
 		IResource resource = getResource(element);
 		boolean isPerlProject = false;
+		boolean isPerlFile = true;
 
 		// Only decorate Perl sources or projects
 		IEditorDescriptor defaultEditorDescriptor =
@@ -67,7 +68,7 @@ public class PerlDecorator
 				.getWorkbench()
 				.getEditorRegistry()
 				.getDefaultEditor(resource.getFullPath().toString());
-				
+
 		try {
 			if (resource.getType() == IResource.PROJECT) {
 				if (resource.getProject().hasNature(PERL_NATURE_ID)) {
@@ -78,10 +79,13 @@ public class PerlDecorator
 			e.printStackTrace();
 		}
 
-		if (!isPerlProject &&  defaultEditorDescriptor != null) {
+		if (!isPerlProject && defaultEditorDescriptor != null) {
 			if (!defaultEditorDescriptor.getId().equals(PERL_EDITOR_ID)
 				|| resource.getFileExtension().equals(EMB_PERL_FILE_EXTENSION)) {
 				return;
+			}
+			else {
+				isPerlFile = true;
 			}
 		}
 
@@ -92,29 +96,31 @@ public class PerlDecorator
 			} catch (CoreException e1) {
 				e1.printStackTrace();
 			}
-			
+
 			int state = projectVisitor.getState();
-			
+
 			if (state == IMarker.SEVERITY_ERROR) {
 				decoration.addOverlay(ICON_ERROR);
 			} else if (state == IMarker.SEVERITY_WARNING) {
 				decoration.addOverlay(ICON_WARNING);
-			}
-		} else {
-			try {
-				if (resource.findMarkers(IMarker.PROBLEM, true, 1).length	> 0) {
-					int state = PerlDecorator.getDecoratorMarker(resource);
+				}
+			} else if(isPerlFile){
+				try {
+					if (resource.findMarkers(IMarker.PROBLEM, true, 1).length
+						> 0) {
+						int state = PerlDecorator.getDecoratorMarker(resource);
 
-					if (state == IMarker.SEVERITY_ERROR) {
-						decoration.addOverlay(ICON_ERROR);
-					} else if (state == IMarker.SEVERITY_WARNING) {
-						decoration.addOverlay(ICON_WARNING);
+						if (state == IMarker.SEVERITY_ERROR) {
+							decoration.addOverlay(ICON_ERROR);
+						} else if (state == IMarker.SEVERITY_WARNING) {
+							decoration.addOverlay(ICON_WARNING);
+						}
 					}
-				}	
-			} catch (CoreException e1) {
-				e1.printStackTrace();
+				} catch (CoreException e1) {
+					e1.printStackTrace();
+				}
 			}
-		}
+		
 
 		PerlDecoratorManager.removeResource(resource);
 	}
@@ -195,8 +201,8 @@ class PerlProjectVisitor implements IResourceVisitor {
 	 */
 	public boolean visit(IResource resource) throws CoreException {
 		int resourceState = PerlDecorator.getDecoratorMarker(resource);
-		
-		if(resourceState != PerlDecorator.NO_ERROR) {
+
+		if (resourceState != PerlDecorator.NO_ERROR) {
 			state = resourceState;
 		}
 

@@ -32,20 +32,30 @@ public class RemotePort
 	public BufferedReader mReader;
 	public OutputStream mOutStream;
 	public InputStream mInStream;
-	public int mPort;
+	//public int mServer.getLocalPort();
 	private Thread mConnectionThread;
 	private volatile boolean mStop;
 	public static int mWaitOK = 1;
 	public static int mWaitTerminate = 2;
 	public static int mWaitError = 3;
-	
+	final static int mStartPortSearch = 5000;
+	final static int mEndPortSearch = 10000;
 
-	public RemotePort(int fPort)
+	//	public RemotePort(int fPort)
+	//	{
+	//		reset();
+	//		mServer.getLocalPort() = fPort;
+	//
+	//	}
+
+	public RemotePort()
 	{
 		reset();
-		mPort = fPort;
+		//mServer.getLocalPort() = -1;
 
 	}
+
+	
 
 	void reset()
 	{
@@ -73,33 +83,70 @@ public class RemotePort
 				mClient.close();
 			if (mServer != null)
 				mServer.close();
-//			if (mConnectionThread != null && mConnectionThread.isAlive())
-//			{
-//				mStop = true;
-//				mConnectionThread.join();
-//			}
-			
-			} catch (IOException e)
-		{
-			PerlDebugPlugin.log(e);
-		} 
-	}
+			//			if (mConnectionThread != null && mConnectionThread.isAlive())
+			//			{
+			//				mStop = true;
+			//				mConnectionThread.join();
+			//			}
 
-	public boolean startConnect()
-	{
-
-		reset();
-
-		try
-		{
-			mServer = new ServerSocket(mPort);
 		} catch (IOException e)
 		{
-			PerlDebugPlugin.log(
-				new InstantiationException("Couldn't listen to Port" + mPort));
-			return false;
+			PerlDebugPlugin.log(e);
 		}
+	}
 
+	
+
+	public boolean startReconnect()
+	{
+		return (startConnect(true));
+	}
+	public boolean startConnect()
+	{
+		return (startConnect(false));
+	}
+	public boolean startConnect(boolean fReconnect)
+	{
+		boolean found;
+		
+		if (fReconnect)
+		{
+			int port = mServer.getLocalPort();
+			reset();
+			found = true;
+			try
+					{
+						mServer = new ServerSocket(port);
+					} catch (IOException e)
+					{
+						found = false;
+					}
+
+		} else
+		{
+
+			reset();
+
+			found= false;
+			for (int i = mStartPortSearch;(i < mEndPortSearch) && !found; i++)
+			{
+				found = true;
+				try
+				{
+					mServer = new ServerSocket(i);
+				} catch (IOException e)
+				{
+					found = false;
+				}
+			}
+
+			if (!found)
+			{
+				PerlDebugPlugin.log(
+					new InstantiationException("Couldn't not listen on server port ! No free port available!"));
+				return false;
+			}
+		}
 		mClient = null;
 
 		mConnectionThread = new Thread()
@@ -108,12 +155,17 @@ public class RemotePort
 			{
 				try
 				{
-					System.out.println("Trying to Accept on Port" + mPort);
+					System.out.println(
+						"Trying to Accept on Port" + mServer.getLocalPort());
 					mClient = mServer.accept();
-					System.out.println("Accept on Port " + mPort + "!!!!!!!\n");
+					System.out.println(
+						"Accept on Port "
+							+ mServer.getLocalPort()
+							+ "!!!!!!!\n");
 				} catch (IOException e)
 				{
-					System.out.println("Accept failed: " + mPort);
+					System.out.println(
+						"Accept failed: " + mServer.getLocalPort());
 				}
 			}
 		};
@@ -134,11 +186,11 @@ public class RemotePort
 					((x < 1000) || (!fTimeOut)) && (mClient == null);
 					++x)
 				{
-					if(mStop)
+					if (mStop)
 						break;
 					System.out.println(
 						"Waiting for connect Port"
-							+ mPort
+							+ mServer.getLocalPort()
 							+ "(Try "
 							+ x
 							+ " of 100)\n");
@@ -149,8 +201,8 @@ public class RemotePort
 			if (mClient == null)
 			{
 				shutdown();
-				if( mStop )
-				 return( mWaitTerminate);
+				if (mStop)
+					return (mWaitTerminate);
 				else
 					return mWaitError;
 			}
@@ -235,4 +287,46 @@ public class RemotePort
 
 	}
 
+	public int getServerPort()
+	{
+		return mServer.getLocalPort();
+	}
+	
+	public static int findFreePort() 
+	{
+		boolean found;
+		ServerSocket s = null;
+		
+		found= false;
+					for (int i = mStartPortSearch;(i < mEndPortSearch) && !found; i++)
+					{
+						found = true;
+						try
+						{
+							s = new ServerSocket(i);
+						} catch (IOException e)
+						{
+							found = false;
+						}
+					}
+
+					if (!found)
+					{
+						PerlDebugPlugin.log(
+							new InstantiationException("Couldn't not listen on server port ! No free port available!"));
+						return -1;
+					}
+		int port = 	s.getLocalPort();
+		try
+		{
+			s.close();
+		} catch (IOException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return port;
+	}
+	
+	
 }

@@ -132,11 +132,15 @@ public class EpicCgiHandler implements Handler
 		port = server.listen.getLocalPort();
 		hostname = server.hostName;
 		protocol = server.protocol;
+		int portIn = Integer.parseInt(server.props.getProperty(propsPrefix+"InPort",null));
+		int portOut = Integer.parseInt(server.props.getProperty(propsPrefix+"OutPort",null));
+		int portError = Integer.parseInt(server.props.getProperty(propsPrefix+"ErrorPort",null));
+		//System.out.println("**************Ports: "+portIn+" "+portOut+" "+portError+"\n");
 		try
 		{
-			mInSocket = new Socket("localhost", 4080);
-			mOutSocket = new Socket("localhost", 4081);
-			mErrorSocket = new Socket("localhost", 4082);
+			mInSocket = new Socket("localhost", portIn);
+			mOutSocket = new Socket("localhost", portOut);
+			mErrorSocket = new Socket("localhost", portError);
 
 			mErrorWriter =
 				new PrintWriter(mErrorSocket.getOutputStream(), true);
@@ -151,9 +155,9 @@ public class EpicCgiHandler implements Handler
 			e.printStackTrace();
 			return false;
 		}
-		mInWriter.println("IN*****************");
-		mOutWriter.println("Out*****************");
-		mErrorWriter.println("Error*****************");
+//		mInWriter.println("IN*****************");
+//		mOutWriter.println("Out*****************");
+//		mErrorWriter.println("Error*****************");
 		return true;
 	}
 

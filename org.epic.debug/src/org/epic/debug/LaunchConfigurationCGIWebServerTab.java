@@ -19,6 +19,9 @@ package org.epic.debug;
 
 //import java.lang.reflect.InvocationTargetException;
 
+import gnu.regexp.RE;
+import gnu.regexp.REException;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -59,8 +62,9 @@ import org.eclipse.jface.preference.IntegerFieldEditor;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.core.resources.IProject;
+import org.epic.debug.util.ListEditor;
 
-public class LaunchConfigurationCGIMainTab
+public class LaunchConfigurationCGIWebServerTab
 	extends AbstractLaunchConfigurationTab
 	implements IPropertyChangeListener
 {
@@ -74,7 +78,8 @@ public class LaunchConfigurationCGIMainTab
 	 * @since 2.0
 	 */
 
-	private IntegerFieldEditor fDebugPort;
+	private ListEditor fEnvVar;
+	//	private IntegerFieldEditor fWebserverPort;
 	private DirectoryFieldEditor fCGIRootDir;
 	private DirectoryFieldEditor fHTMLRootDir;
 	private FileFieldEditor fHTMLRootFile;
@@ -92,11 +97,26 @@ public class LaunchConfigurationCGIMainTab
 	//  protected Button fSearchExternalJarsCheckButton;
 	//	protected Button fStopInMainCheckButton;
 
+	private RE mTestEnvVar;
+
 	protected static final String EMPTY_STRING = ""; //$NON-NLS-1$
 
 	private static final String PERL_NATURE_ID =
 		"org.epic.perleditor.perlnature";
 
+	public LaunchConfigurationCGIWebServerTab()
+	{
+		super();
+		try
+		{
+			mTestEnvVar = new RE("^\\s*[^\\s]+\\s*=.*");
+		} catch (REException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	}
 	/**
 	 * @see org.eclipse.debug.ui.ILaunchConfigurationTab#createControl(Composite)
 	 */
@@ -115,6 +135,21 @@ public class LaunchConfigurationCGIMainTab
 
 		createVerticalSpacer(comp, 2);
 
+		layout = new GridLayout();
+		layout.numColumns = 1;
+		layout.marginHeight = 0;
+		layout.marginWidth = 0;
+		gd = new GridData(GridData.FILL_HORIZONTAL);
+
+		Composite envComp = new Composite(comp, SWT.NONE);
+		envComp.setLayout(layout);
+		envComp.setLayoutData(gd);
+		envComp.setFont(font);
+
+		fEnvVar = new ListEditor("Envirement Variables", envComp, this);
+		fEnvVar.fillIntoGrid(envComp, 3);
+		fEnvVar.setPropertyChangeListener(this);
+		createVerticalSpacer(comp, 1);
 		layout = new GridLayout();
 		layout.numColumns = 1;
 		layout.marginHeight = 0;
@@ -177,26 +212,20 @@ public class LaunchConfigurationCGIMainTab
 
 		fCGIRootDir.setPropertyChangeListener(this);
 
-		createVerticalSpacer(comp, 1);
+		//createVerticalSpacer(comp, 1);
 
-		layout = new GridLayout();
-		layout.numColumns = 1;
-		layout.marginHeight = 0;
-		layout.marginWidth = 0;
-		gd = new GridData(GridData.FILL_HORIZONTAL);
+		//				Composite webserverPortComp = new Composite(comp, SWT.NONE);
+		//		webserverPortComp.setLayout(layout);
+		//		webserverPortComp.setLayoutData(gd);
+		//		webserverPortComp.setFont(font);
 
-		Composite debugPortComp = new Composite(comp, SWT.NONE);
-		debugPortComp.setLayout(layout);
-		debugPortComp.setLayoutData(gd);
-		debugPortComp.setFont(font);
-
-		fDebugPort =
-			new IntegerFieldEditor("Test", "Debugger Port", debugPortComp);
-		fDebugPort.fillIntoGrid(debugPortComp, 2);
-		fDebugPort.setValidRange(1,Integer.MAX_VALUE);
-
-		fDebugPort.setValidateStrategy(IntegerFieldEditor.VALIDATE_ON_KEY_STROKE);
-		fDebugPort.setPropertyChangeListener(this);
+		//		fWebserverPort =
+		//			new IntegerFieldEditor("Test", "Debugger Port", webserverPortComp);
+		//		fWebserverPort.fillIntoGrid(webserverPortComp, 2);
+		//		fWebserverPort.setValidRange(1,Integer.MAX_VALUE);
+		//
+		//		fWebserverPort.setValidateStrategy(IntegerFieldEditor.VALIDATE_ON_KEY_STROKE);
+		//		fWebserverPort.setPropertyChangeListener(this);
 	}
 
 	/**
@@ -226,12 +255,13 @@ public class LaunchConfigurationCGIMainTab
 					PerlLaunchConfigurationConstants.ATTR_CGI_ROOT_DIR,
 					(String) null));
 
-			fDebugPort.setStringValue(
-					config.getAttribute(
-						PerlLaunchConfigurationConstants.ATTR_DEBUG_PORT,
-						(String)null));
-			
-			} catch (CoreException e)
+			//			fWebserverPort.setStringValue(
+			//					config.getAttribute(
+			//						PerlLaunchConfigurationConstants.ATTR_DEBUG_PORT,
+			//						(String)null));
+			fEnvVar.initilizeFrom(config);
+
+		} catch (CoreException e)
 		{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -252,13 +282,14 @@ public class LaunchConfigurationCGIMainTab
 		config.setAttribute(
 			PerlLaunchConfigurationConstants.ATTR_CGI_ROOT_DIR,
 			this.fCGIRootDir.getStringValue());
+		//		config.setAttribute(
+		//						PerlLaunchConfigurationConstants.ATTR_DEBUG_PORT,
+		//						fWebserverPort.getStringValue());
 		config.setAttribute(
-						PerlLaunchConfigurationConstants.ATTR_DEBUG_PORT,
-						fDebugPort.getStringValue());
-		config.setAttribute(
-				PerlLaunchConfigurationConstants.ATTR_DEBUG_CGI,
-							"OK");
+			PerlLaunchConfigurationConstants.ATTR_DEBUG_CGI,
+			"OK");
 
+		fEnvVar.doApply(config);
 
 	}
 
@@ -335,25 +366,17 @@ public class LaunchConfigurationCGIMainTab
 			setErrorMessage("CGI Root Directory is invalid"); //$NON-NLS-1$
 			return false;
 		}
-
-		value = fDebugPort.getStringValue();
-				if (value == null )
-				{
-					setErrorMessage("Debug Port is missing"); //$NON-NLS-1$
-					return false;
-				}
-				else {
-					try{
-				
-					 Integer.parseInt(value);
-					}
-					 catch(Exception e)
-					 {
-						setErrorMessage("Debug Port is invalid"); //$NON-NLS-1$
-											return false;
-					 }
-				}
-
+		
+		
+		String[] items = this.fEnvVar.getItems();
+		for (int i = 0; i < items.length; i++)
+		{
+			if( !mTestEnvVar.isMatch(items[i]))
+			{
+				setErrorMessage("Invalid Environment Variable Entry at Line "+(i+1) );
+				return false;
+			}
+		}
 		return true;
 	}
 
@@ -371,11 +394,11 @@ public class LaunchConfigurationCGIMainTab
 			PerlLaunchConfigurationConstants.ATTR_DEBUG_PORT,
 			PerlDebugPlugin.getDefaultDebugPort());
 		config.setAttribute(
-		PerlLaunchConfigurationConstants.ATTR_DEBUG_CGI,
-					"OK");
+			PerlLaunchConfigurationConstants.ATTR_DEBUG_CGI,
+			"OK");
 		config.setAttribute(
-				PerlLaunchConfigurationConstants.ATTR_CGI_ENV,
-							(Map)null);
+			PerlLaunchConfigurationConstants.ATTR_CGI_ENV,
+			(Map) null);
 
 	}
 
@@ -422,7 +445,7 @@ public class LaunchConfigurationCGIMainTab
 	 */
 	public String getName()
 	{
-		return "Configuration"; //$NON-NLS-1$
+		return "Webserver"; //$NON-NLS-1$
 	}
 
 	/**
@@ -432,7 +455,7 @@ public class LaunchConfigurationCGIMainTab
 	{
 		return (
 			PerlDebugPlugin.getDefaultDesciptorImageRegistry().get(
-				PerlDebugImages.DESC_OBJS_LaunchTabMain));
+				PerlDebugImages.DESC_OBJS_LaunchTabCGI));
 	}
 
 	/* (non-Javadoc)
@@ -451,6 +474,11 @@ public class LaunchConfigurationCGIMainTab
 
 		updateLaunchConfigurationDialog();
 
+	}
+
+	public void update()
+	{
+		updateLaunchConfigurationDialog();
 	}
 
 }

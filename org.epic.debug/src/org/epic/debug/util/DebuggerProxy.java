@@ -56,19 +56,19 @@ public class DebuggerProxy  extends PlatformObject implements IProcess, ITermina
 			
 		int port ;
 		
-		port = Integer.parseInt(getAttribute(PerlLaunchConfigurationConstants.ATTR_DEBUG_IO_PORT));
-		mIOStream = new RemotePort(port);
+		//port = Integer.parseInt(getAttribute(PerlLaunchConfigurationConstants.ATTR_DEBUG_IO_PORT));
+		mIOStream = new RemotePort();
 		mIOStream.startConnect();
-		mDebugger.redirectIO(port);
+		mDebugger.redirectIO(mIOStream.getServerPort());
 		if(  mIOStream.waitForConnect(true) != RemotePort.mWaitOK)
-			throw new InstantiationException("Could not Create Connection to Debugger on Port("+port+")");
+			throw new InstantiationException("Could not Create Connection to Debugger Console");
 		
-		port =  Integer.parseInt(getAttribute(PerlLaunchConfigurationConstants.ATTR_DEBUG_ERROR_PORT));
-		mErrorStream = new RemotePort(port);
+		//port =  Integer.parseInt(getAttribute(PerlLaunchConfigurationConstants.ATTR_DEBUG_ERROR_PORT));
+		mErrorStream = new RemotePort();
 		mErrorStream.startConnect();
-		mDebugger.redirectError(port);
+		mDebugger.redirectError(mErrorStream.getServerPort());
 		if( mErrorStream.waitForConnect(true)!= RemotePort.mWaitOK )
-					throw new InstantiationException("Could not Create Connection to Debugger on Port("+port+")");
+					throw new InstantiationException("Could not Create Connection to Debugger Console");
 					
 		mMonitorIn = new InputStreamMonitor(mIOStream.getOutStream());
 		mMonitorOut = new OutputStreamMonitor(mIOStream.getInStream());

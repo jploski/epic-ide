@@ -2,7 +2,7 @@
 <plugin
    id="org.epic.debug"
    name="Debug Plug-in"
-   version="0.0.7"
+   version="0.1.0"
    provider-name="EPIC Project"
    class="org.epic.debug.PerlDebugPlugin">
 
@@ -81,7 +81,7 @@
    <extension
          point="org.eclipse.debug.ui.launchConfigurationTypeImages">
       <launchConfigurationTypeImage
-            icon="icons/run.gif"
+            icon="icons/epic_cgi.gif"
             configTypeID="org.epic.debug.launchConfigurationPerlCGI"
             id="org.epic.debug.launchimage">
       </launchConfigurationTypeImage>
@@ -160,13 +160,13 @@
          </action>
       </viewContribution>
    </extension>
-   
-    <extension point="org.eclipse.debug.ui.consoleColorProviders">
-   <consoleColorProvider 
-      id="org.epic.debug.CGIConsoleColorProvider"
-      class="org.epic.debug.util.CGIConsoleColorProvider"
-      processType="EpicCGIProxy">
-   </consoleColorProvider>
- </extension>
+   <extension
+         point="org.eclipse.debug.ui.consoleColorProviders">
+      <consoleColorProvider
+            class="org.epic.debug.util.CGIConsoleColorProvider"
+            processType="EpicCGIProxy"
+            id="org.epic.debug.CGIConsoleColorProvider">
+      </consoleColorProvider>
+   </extension>
 
 </plugin>

@@ -39,7 +39,7 @@ tokens
 	
 	public void printConsole(String fString)
 	{
-		//System.out.println(fString);
+		System.out.println(fString);
 	}
 	
 	public void setVarList( java.util.ArrayList fVarList )
@@ -177,7 +177,7 @@ options
     exportVocab = Add;
     testLiterals = false;
     k = 3;
-    charVocabulary = '\3'..'\377' ;
+    charVocabulary = '\u0000'..'\uFFFE' ;
 }
 
 {

@@ -159,7 +159,7 @@ public class PerlDebugPlugin extends AbstractUIPlugin
 		log(new Status(fSeverity, getUniqueIdentifier(), 0,fText,fException));
 		errorDialog(fText, result);
 	}
-	static String[] createEnvArrays(ILaunch fLaunch)
+	static String[] createEnvArrays(Target fTarget)
 	{
 		Process proc = null;
 		String env = null;
@@ -198,7 +198,10 @@ public class PerlDebugPlugin extends AbstractUIPlugin
 		count = s.countTokens();
 
 		mSystemEnv = new String[count];
-		debugEnv = new String[count + 1];
+		if( fTarget instanceof DebugTarget )
+			debugEnv = new String[count + 1];
+		else
+			debugEnv = new String[count];
 
 		String token;
 
@@ -208,13 +211,14 @@ public class PerlDebugPlugin extends AbstractUIPlugin
 			mSystemEnv[x] = token;
 			debugEnv[x] = token;
 		}
-
-		debugEnv[count] = getPerlDebugEnv(fLaunch);
+		
+		if( fTarget instanceof DebugTarget )
+			debugEnv[count] = getPerlDebugEnv((DebugTarget)fTarget);
 		return debugEnv;
 		//mDebugEnv[count+1] = "PERL5DB=BEGIN {require'perl5db.pl'}";
 	}
 
-	static String getPerlDebugEnv(ILaunch fLaunch)
+	public static String getPerlDebugEnv(DebugTarget fTarget)
 	{
 		String port = null;
 		String host = null;
@@ -229,7 +233,7 @@ public class PerlDebugPlugin extends AbstractUIPlugin
 		
 		
 		
-		 port = PerlLaunchConfigurationConstants.getDebugPort(fLaunch);
+		 port = fTarget.getDebugPort();
 		
 		return (mDebugOptionsEnvPrefix+host+":"+port+" "+mDebugOptionsValue);
 	}
@@ -377,9 +381,9 @@ public class PerlDebugPlugin extends AbstractUIPlugin
 		return (mSystemEnv);
 	}
 
-	public static String[] getDebugEnv(ILaunch fLaunch)
+	public static String[] getDebugEnv(Target fTarget)
 	{
-		return (createEnvArrays(fLaunch));
+		return (createEnvArrays(fTarget));
 	}
 
 	public static PerlBreakpointManager getPerlBreakPointmanager()

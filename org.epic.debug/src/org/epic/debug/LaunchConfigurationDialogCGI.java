@@ -30,7 +30,7 @@ public void createTabs(ILaunchConfigurationDialog dialog, String mode) {
 		ILaunchConfigurationTab[] tabs = new ILaunchConfigurationTab[] {
 		
 			
-			  new LaunchConfigurationCGIMainTab(),new LaunchConfigurationCGIBrowserTab(), new org.eclipse.debug.ui.CommonTab()
+			new LaunchConfigurationCGIWebServerTab(), new LaunchConfigurationCGIBrowserTab(),new org.eclipse.debug.ui.CommonTab()
 		};
 		setTabs(tabs);
 	}

@@ -1,24 +1,228 @@
-1;
-  (2);
-    #"3";
-      $4;
-        2 + 3;
-      "s" + "ix";
-    #"4" + 3;
-  "e" + $(-1 + 2) + "ght";
-#("4" + "2") + -33;
-  #10;
-    $"eleven";
-      12 + "twelve";
-    "thirteen" + 13;
-  1 + ("foo" + 4);
-(1 +
-2 +
-3 +
-4 +
-5)
-+
-("foo" +
- "bar" +
- "baz");
-"This file is in the public domain. Author: Dan Bornstein, danfuzz@milk.com";
+$/ = '
+'
+FileHandle(stderr) => fileno(2)
+%SIG = (
+   'ABRT' => undef
+   'ALRM' => undef
+   'BREAK' => undef
+   'BUS' => CODE(0x1c1d4d4)
+      -> &DB::diesignal in 0
+   'CHLD' => undef
+   'CLD' => undef
+   'CONT' => undef
+   'FPE' => undef
+   'HUP' => undef
+   'ILL' => undef
+   'INT' => CODE(0x1bf9bb8)
+      -> &DB::catch in 0
+   'KILL' => undef
+   'NUM05' => undef
+   'NUM06' => undef
+   'NUM07' => undef
+   'NUM10' => undef
+   'NUM12' => undef
+   'NUM16' => undef
+   'NUM17' => undef
+   'NUM18' => undef
+   'NUM19' => undef
+   'NUM24' => undef
+   'PIPE' => undef
+   'QUIT' => undef
+   'SEGV' => CODE(0x1c1d4d4)
+      -> &DB::diesignal in 0
+   'STOP' => undef
+   'TERM' => undef
+   '__DIE__' => CODE(0x1c22428)
+      -> &DB::dbdie in 0
+   '__WARN__' => CODE(0x1c22284)
+      -> &DB::dbwarn in 0
+)
+@products = (
+   0  '
+'
+   1  '
+'
+   2  '
+'
+   3  '
+'
+   4  '
+'
+   5  '
+'
+   6  '
+'
+   7  '
+'
+   8  '
+'
+   9  '
+'
+   10  '
+'
+   11  '
+'
+   12  '
+'
+   13  '
+'
+   14  '
+'
+   15  '
+'
+   16  '
+'
+   17  '
+'
+   18  "Asics<COLDEL>Laufschuhe Herren/Adidas<COLDEL>dfdfdf<COLDEL>       NAME    convert - convert an image or sequence of images<br><br>SYNOPSIS<br>       convert [ options ... ] input_file output_file<br><br>DESCRIPTION<br>       Convert converts an input file using one image format to an output file<br>       with a differing image format. In addition, various types of image pro-<br>       cessing  can  be performed on the converted image during the conversion<br>       process. Convert recognizes the image formats listed in ImageMagick(1).<br><br>EXAMPLES<br>       To make a thumbnail of a JPEG image, use:<br><br>           convert -size 120x120 cockatoo.jpg -resize 120x120<br>                   +profile \"*\" thumbnail.jpg<br><br>       In  this example, '-size 120x120' gives a hint to the JPEG decoder that<br>       the image is going to be downscaled to  120x120,  allowing  it  to  run<br>       faster  by avoiding returning full-resolution images to ImageMagick for<br>       the subsequent resizing operation.   The  output  image.   It  will  be<br>       scaled  so  its  largest  dimension  is  120 pixels.  The that might be<br> Manual page convert(1) line 1<br><br>[ALT]alter preis 1000,0 €[/ALT]<COLDEL>150,00<COLDEL>6\c@6,5\c@7\c@7,5\c@8\c@8,5\c@9\c@9,5\c@10\c@10,5\c@11\c@11,5\c@12\c@12,5\c@13\c@13,5\c@14<COLDEL>C:/Programme/ShopCms/temp/Foundatinplusgr.HerrnTN342_1552_390x195.jpg\cJ"
+   19  "AAAA<COLDEL>Laufschuhe Damen/Asics<COLDEL>Bla Bla Bla<COLDEL>Long<br>description<COLDEL>10,00<COLDEL>8\c@10<COLDEL>C:/Programme/ShopCms/temp/Kayano_X_Women_gro__390x195.jpg\cJ"
+   20  "7777777<COLDEL>Laufschuhe Damen/Asics<COLDEL>Bla Bla Bla<COLDEL>Long<br>description<br>[ROT]Alter Preis[/ROT]<br>[ROTS]50,00 €[/ROTS]<COLDEL>10,00<COLDEL>8\c@10<COLDEL>C:/Programme/ShopCms/temp/taper_222x157.jpg\cJ"
+   21  "7777778<COLDEL>Laufschuhe Damen/Asics<COLDEL>Bla Bla Bla<COLDEL>Long<br>description<br>[ROT]Alter Preis[/ROT]<br>[ROTS]50,00 €[/ROTS]<COLDEL>10,00<COLDEL>8\c@10<COLDEL>C:/Programme/ShopCms/temp/taper_222x157.jpg"
+)
+$^L = "\cL"
+$^ = 'GEN0_TOP'
+$$ = 1868
+$\ = ''
+$- = 0
+@- = (
+   0  empty slot
+   1  empty slot
+   2  empty slot
+)
+$! = ''
+$^X = 'C:\\Perl\\bin\\perl.exe'
+$^UNICODE = 0
+$^V = "\cE\cH\cB"
+$= = 60
+$2 = ''
+FileHandle(PRODUCTS) => fileno(5)
+$^WARNING_BITS = "\c@\c@\c@\c@\c@\c@\c@\c@\c@\c@\c@\c@"
+FileHandle(stdin) => fileno(0)
+@INC = (
+   0  'C:/Perl/lib'
+   1  'C:/Perl/site/lib'
+   2  '.'
+)
+%INC = (
+   'Carp.pm' => 'C:/Perl/lib/Carp.pm'
+   'Carp/Heavy.pm' => 'C:/Perl/lib/Carp/Heavy.pm'
+   'Config.pm' => 'C:/Perl/lib/Config.pm'
+   'Devel/Peek.pm' => 'C:/Perl/lib/Devel/Peek.pm'
+   'Errno.pm' => 'C:/Perl/lib/Errno.pm'
+   'Exporter.pm' => 'C:/Perl/lib/Exporter.pm'
+   'Exporter/Heavy.pm' => 'C:/Perl/lib/Exporter/Heavy.pm'
+   'IO.pm' => 'C:/Perl/lib/IO.pm'
+   'IO/Handle.pm' => 'C:/Perl/lib/IO/Handle.pm'
+   'IO/Socket.pm' => 'C:/Perl/lib/IO/Socket.pm'
+   'IO/Socket/INET.pm' => 'C:/Perl/lib/IO/Socket/INET.pm'
+   'IO/Socket/UNIX.pm' => 'C:/Perl/lib/IO/Socket/UNIX.pm'
+   'SelectSaver.pm' => 'C:/Perl/lib/SelectSaver.pm'
+   'Socket.pm' => 'C:/Perl/lib/Socket.pm'
+   'Symbol.pm' => 'C:/Perl/lib/Symbol.pm'
+   'Term/Cap.pm' => 'C:/Perl/lib/Term/Cap.pm'
+   'Term/ReadLine.pm' => 'C:/Perl/lib/Term/ReadLine.pm'
+   'XSLoader.pm' => 'C:/Perl/lib/XSLoader.pm'
+   'cgi-lib.pl' => 'cgi-lib.pl'
+   'dumpvar.pl' => 'C:/Perl/lib/dumpvar.pl'
+   'perl5db.pl' => 'C:/Perl/lib/perl5db.pl'
+   'strict.pm' => 'C:/Perl/lib/strict.pm'
+   'vars.pm' => 'C:/Perl/lib/vars.pm'
+   'warnings.pm' => 'C:/Perl/lib/warnings.pm'
+   'warnings/register.pm' => 'C:/Perl/lib/warnings/register.pm'
+)
+$? = 0
+$www = ''
+$: = ' 
+-'
+$0 = 'F:\\eclipse_test\\eclipse\\workspace\\Brazil_test\\shopcms\\show_products.cgi'
+$^S = 1
+$@ = ''
+$] = 5.008002
+$^D = 0
+FileHandle(STDERR) => fileno(2)
+$, = ''
+$" = ' '
+$^F = 2
+FileHandle(stdout) => fileno(1)
+$| = 1
+$^A = ''
+$~ = 'GEN0'
+$^TAINT = 0
+$^O = 'MSWin32'
+$% = 0
+@_ = (
+   0  0
+   1  '_'
+   2  *main::_
+   3  0
+   4  '-1'
+)
+$+ = ''
+@+ = (
+   0  empty slot
+   1  empty slot
+   2  empty slot
+)
+FileHandle(STDIN) => fileno(0)
+$1 = 'main'
+$< = 0
+%ENV = (
+   'ALLUSERSPROFILE' => 'C:\\Dokumente und Einstellungen\\All Users'
+   'APPDATA' => 'C:\\Dokumente und Einstellungen\\ST\\Anwendungsdaten'
+   'COMMONPROGRAMFILES' => 'C:\\Programme\\Gemeinsame Dateien'
+   'COMPUTERNAME' => 'PC-WIN1'
+   'COMSPEC' => 'C:\\WINNT\\system32\\cmd.exe'
+   'CYGWIN' => 'tty'
+   'GATEWAY_INTERFACE' => 'CGI/1.1'
+   'HOMEDRIVE' => 'C:'
+   'HOMEPATH' => '\\'
+   'HTTP_ACCEPT' => 'text/xml,application/xml,application/xhtml+xml,text/html;q=0.9,text/plain;q=0.8,video/x-mng,image/png,image/jpeg,image/gif;q=0.2,*/*;q=0.1'
+   'HTTP_ACCEPT_CHARSET' => 'ISO-8859-15,utf-8;q=0.7,*;q=0.7'
+   'HTTP_ACCEPT_ENCODING' => 'gzip,deflate'
+   'HTTP_ACCEPT_LANGUAGE' => 'de-DE,de;q=0.8,en-us;q=0.5,en;q=0.3'
+   'HTTP_CONNECTION' => 'keep-alive'
+   'HTTP_HOST' => 'localhost:5004'
+   'HTTP_KEEP_ALIVE' => 300
+   'HTTP_REFERER' => 'http://localhost:5004/nav.html'
+   'HTTP_USER_AGENT' => 'Mozilla/5.0 (Windows; U; Windows NT 5.0; de-DE; rv:1.5) Gecko/20031007 Firebird/0.7'
+   'JOCHEN' => 1
+   'LOGONSERVER' => '\\\\PC-WIN1'
+   'NUMBER_OF_PROCESSORS' => 1
+   'OS' => 'Windows_NT'
+   'OS2LIBPATH' => 'C:\\WINNT\\system32\\os2\\dll;'
+   'PATH' => 'C:\\Programme\\Logitech\\iTouch;C:\\Perl\\bin\\;C:\\WINNT\\system32;C:\\WINNT;C:\\WINNT\\System32\\Wbem;C:\\lcc\\bin;C:\\cygwin\\bin;C:\\Programme\\proton\\proton32de;C:\\Programme\\gogo'
+   'PATHEXT' => '.COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JS;.JSE;.WSF;.WSH'
+   'PATH_INFO' => ''
+   'PATH_TRANSLATED' => 'F:/eclipse_test/eclipse/workspace/Brazil_test/shopcms'
+   'PERLDB_OPTS' => 'RemotePort=192.168.1.11:5000 DumpReused ReadLine=0'
+   'PERLDB_PIDS' => 1868
+   'PROCESSOR_ARCHITECTURE' => 'x86'
+   'PROCESSOR_IDENTIFIER' => 'x86 Family 6 Model 4 Stepping 2, AuthenticAMD'
+   'PROCESSOR_LEVEL' => 6
+   'PROCESSOR_REVISION' => 0402
+   'PROGRAMFILES' => 'C:\\Programme'
+   'QUERY_STRING' => ''
+   'REMOTE_ADDR' => '127.0.0.1'
+   'REQUEST_METHOD' => 'GET'
+   'SCRIPT_NAME' => '/show_products.cgi'
+   'SERVER_NAME' => '192.168.1.11'
+   'SERVER_PORT' => 5004
+   'SERVER_PROTOCOL' => 'HTTP/1.1'
+   'SERVER_SOFTWARE' => 'Mini Java CgiHandler 0.2'
+   'SERVER_URL' => 'http://localhost:5004'
+   'STEPHAN' => 2
+   'SYSTEMDRIVE' => 'C:'
+   'SYSTEMROOT' => 'C:\\WINNT'
+   'TEMP' => 'C:\\DOKUME~1\\ST\\LOKALE~1\\Temp'
+   'TMP' => 'C:\\DOKUME~1\\ST\\LOKALE~1\\Temp'
+   'USERDOMAIN' => 'PC-WIN1'
+   'USERNAME' => 'ST'
+   'USERPROFILE' => 'C:\\Dokumente und Einstellungen\\ST'
+   'WINDIR' => 'C:\\WINNT'
+)
+$^E = ''
+$^H = 256
+$. = 22
+FileHandle(STDOUT) => fileno(1)
+$^W = 0
+  DB<46> 

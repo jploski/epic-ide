@@ -29,7 +29,7 @@ public class DebugTarget extends Target
 
 	private boolean mShutDownStarted;
 
-	RemotePort mRemotePort;
+	RemotePort mDebugPort;
 
 	protected PerlDB mPerlDB;
 
@@ -50,6 +50,11 @@ public class DebugTarget extends Target
 
 	}
 
+	public DebugTarget(ILaunch launch, RemotePort fPort)
+		{
+			super(launch);
+			mDebugPort = fPort;
+		}
 	public void start()
 	{
 		if (connectDebugger(true) != RemotePort.mWaitOK)
@@ -80,12 +85,18 @@ public class DebugTarget extends Target
 
 	 int connectDebugPort(boolean fTimeout)
 	{
-		mRemotePort = new RemotePort(PerlLaunchConfigurationConstants.getDebugPortInt(mLaunch));
-		mRemotePort.startConnect();
+		
+		if( mDebugPort == null )
+		{
+			mDebugPort = new RemotePort();
+			mDebugPort.startConnect();
+		}
+		else
+		 mDebugPort.startReconnect();
 
 		startPerlProcess();
 
-		int res = mRemotePort.waitForConnect(fTimeout);
+		int res = mDebugPort.waitForConnect(fTimeout);
 		
 
 		if ( res  == RemotePort.mWaitError)
@@ -98,12 +109,12 @@ public class DebugTarget extends Target
 
 	public PrintWriter getDebugWriteStream()
 	{
-		return mRemotePort.getWriteStream();
+		return mDebugPort.getWriteStream();
 	}
 
 	public BufferedReader getDebugReadSrream()
 	{
-		return mRemotePort.getReadStream();
+		return mDebugPort.getReadStream();
 	}
 
 	/**
@@ -292,8 +303,8 @@ public class DebugTarget extends Target
 		mShutDownStarted = true;
 		if ( mPerlDB != null && !mPerlDB.isTerminated())
 			mPerlDB.shutdown();
-		if( mRemotePort !=null)
-			mRemotePort.shutdown();
+		if( mDebugPort !=null)
+			mDebugPort.shutdown();
 		super.shutdown(unregister);
 	}
 
@@ -312,6 +323,12 @@ public class DebugTarget extends Target
 //
 //		term.start();
 //		return;
+	}
+
+
+	public String getDebugPort()
+	{
+		return Integer.toString(mDebugPort.getServerPort());
 	}
 
 }

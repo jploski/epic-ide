@@ -8,6 +8,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 import org.eclipse.core.resources.IMarkerDelta;
 import org.eclipse.core.runtime.CoreException;
@@ -42,6 +46,8 @@ import org.epic.perleditor.editors.util.PerlExecutableUtilities;
 public class CGITarget extends DebugTarget implements IDebugEventSetListener
 {
 
+	private ArrayList cgiEnv;
+
 	private boolean mShutDownStarted;
 
 	private boolean mReConnect;
@@ -66,7 +72,6 @@ public class CGITarget extends DebugTarget implements IDebugEventSetListener
 		super(launch);
 		mProcessName = "CGI Perl Debugger";
 		DebugPlugin.getDefault().addDebugEventListener(this);
-
 	}
 
 	public void start()
@@ -86,6 +91,11 @@ public class CGITarget extends DebugTarget implements IDebugEventSetListener
 		String htmlRootDir = null;
 		String htmlRootFile = null;
 		String cgiRootDir = null;
+		mDebugPort = new RemotePort();
+		mDebugPort.startConnect();
+		if (mDebugPort == null)
+			return false;
+
 		try
 		{
 			htmlRootDir =
@@ -102,6 +112,11 @@ public class CGITarget extends DebugTarget implements IDebugEventSetListener
 				mLaunch.getLaunchConfiguration().getAttribute(
 					PerlLaunchConfigurationConstants.ATTR_CGI_ROOT_DIR,
 					(String) null);
+
+			cgiEnv =
+				(ArrayList) mLaunch.getLaunchConfiguration().getAttribute(
+					PerlLaunchConfigurationConstants.ATTR_CGI_ENV,
+					(List) null);
 
 		} catch (CoreException e2)
 		{
@@ -123,12 +138,19 @@ public class CGITarget extends DebugTarget implements IDebugEventSetListener
 				.setDevice(null)
 				.removeFirstSegments(htmlDirPath.segments().length)
 				.toString();
-
+				
+		StringBuffer brazilProps = new StringBuffer();
+		mCGIProxy = new CGIProxy(mLaunch, "CGI-Process", brazilProps);
+		int webServerPort = RemotePort.findFreePort();
+		
 		/* start web-server*/
 		/* create config file*/
-		String brazilProps =
-			"root="
+		
+		brazilProps.append(
+			"\nroot="
 				+ htmlRootDir
+				+ "\n"
+				+ "port="+webServerPort
 				+ "\n"
 				+ "cgi.root="
 				+ cgiRootDir
@@ -136,11 +158,20 @@ public class CGITarget extends DebugTarget implements IDebugEventSetListener
 				+ "file.default="
 				+ htmlRootFileRel
 				+ "\n"
-				+ "cgi.ENV_"
-				+ PerlDebugPlugin.getPerlDebugEnv(mLaunch)
-				+ "\n"
 				+ "cgi.executable="
-				+ PerlExecutableUtilities.getPerlExecutableCommandLine().get(0);
+				+ PerlExecutableUtilities.getPerlExecutableCommandLine().get(0)
+				+ "\n"
+				+ "cgi.ENV_"
+				+ PerlDebugPlugin.getPerlDebugEnv(this));
+
+		if (cgiEnv != null)
+			for (Iterator iter = cgiEnv.iterator(); iter.hasNext();)
+			{
+				String element = (String) iter.next();
+				brazilProps.append("\n" + "cgi.ENV_" + element);
+			}
+
+		
 		File templ =
 			new File(getPlugInDir() + File.separator + "brazil_cgi_templ.cfg");
 		File dest =
@@ -151,7 +182,7 @@ public class CGITarget extends DebugTarget implements IDebugEventSetListener
 
 		try
 		{
-			copy(templ, dest, brazilProps);
+			copy(templ, dest, brazilProps.toString());
 		} catch (IOException e)
 		{
 			e.printStackTrace();
@@ -160,8 +191,6 @@ public class CGITarget extends DebugTarget implements IDebugEventSetListener
 				e);
 			return false;
 		}
-
-		mCGIProxy = new CGIProxy(mLaunch, "CGI-Process");
 
 		// Brazil command line parameters
 		String javaExec =
@@ -187,12 +216,12 @@ public class CGITarget extends DebugTarget implements IDebugEventSetListener
 
 		try
 		{
-			String params = " ";
-			for (int x = 0; x < cmdParams.length; ++x)
-				params = params + " " + cmdParams[x];
-
-			PerlDebugPlugin.getDefault().logError(
-				"CMDline:" + params + "\n" + workingDir);
+//			String params = " ";
+//			for (int x = 0; x < cmdParams.length; ++x)
+//				params = params + " " + cmdParams[x];
+//
+//			PerlDebugPlugin.getDefault().logError(
+//				"CMDline:" + params + "\n" + workingDir);
 			//Startup Brazil
 			mBrazilProcess =
 				Runtime.getRuntime().exec(cmdParams, null, workingDir);
@@ -204,12 +233,12 @@ public class CGITarget extends DebugTarget implements IDebugEventSetListener
 				e1);
 			return false;
 		}
-		
+
 		mProcess =
-					DebugPlugin.newProcess(mLaunch, mBrazilProcess, "WEB-Server");
-				fireCreationEvent(mProcess);
+			DebugPlugin.newProcess(mLaunch, mBrazilProcess, "WEB-Server");
+		fireCreationEvent(mProcess);
 		mCGIProxy.waitForConnect();
-		
+
 		System.out.println(mCGIProxy.isConnected());
 		if (!mCGIProxy.isConnected())
 		{
@@ -220,9 +249,8 @@ public class CGITarget extends DebugTarget implements IDebugEventSetListener
 
 		mLaunch.addProcess(mCGIProxy);
 		fireCreationEvent(mCGIProxy);
-		
 
-		startBrowser();
+		startBrowser(webServerPort);
 		/* start console-proxy*/
 		return true;
 
@@ -247,7 +275,7 @@ public class CGITarget extends DebugTarget implements IDebugEventSetListener
 		}
 	}
 
-	void startBrowser()
+	void startBrowser(int fPort)
 	{
 		String browserID = null;
 		String browserPath = null;
@@ -291,7 +319,7 @@ public class CGITarget extends DebugTarget implements IDebugEventSetListener
 
 		try
 		{
-			mBrowser.displayURL("http://localhost:8080/");
+			mBrowser.displayURL("http://localhost:"+fPort+"/");
 		} catch (Exception e)
 		{
 			PerlDebugPlugin.getDefault().logError(
@@ -331,6 +359,7 @@ public class CGITarget extends DebugTarget implements IDebugEventSetListener
 		{
 			mBrazilProcess.destroy();
 		}
+
 		if (mBrowser != null)
 			mBrowser.close();
 
@@ -345,8 +374,8 @@ public class CGITarget extends DebugTarget implements IDebugEventSetListener
 	void debugSessionTerminated()
 	{
 
-		if (mRemotePort != null)
-			mRemotePort.shutdown();
+		if (mDebugPort != null)
+			mDebugPort.shutdown();
 
 		//	 mTarget = new CGITarget(mLaunch);
 		//	 mTarget.mProcessName ="New";
@@ -454,9 +483,9 @@ public class CGITarget extends DebugTarget implements IDebugEventSetListener
 				});
 		}
 	}
-	
+
 	public IProcess getProcess()
-		{
-			return mCGIProxy;
-		}
+	{
+		return mCGIProxy;
+	}
 }

@@ -227,7 +227,7 @@ public abstract class Target implements IDebugTarget
 			mJavaProcess =
 				Runtime.getRuntime().exec(
 					cmdParams,
-					PerlDebugPlugin.getDebugEnv(mLaunch),
+					PerlDebugPlugin.getDebugEnv(this),
 					new File(workingDir.toString()));
 		} catch (IOException e1)
 		{

@@ -1149,12 +1149,16 @@ public class PerlDB implements IDebugElement, ITerminate
 		startSubCommand(mCommandExecuteCode, "o frame=0 ", false);
 		if (ShowLocalVariableActionDelegate.getPreferenceValue())
 			startSubCommand(mCommandExecuteCode, "y ", false);
+			
+			System.out.println("\n\n\n\n\n\n\n\n\n********Local Vars:"+	mDebugSubCommandOutput);
 		lVarList =
 			mVarParser.parseVars(
 				mDebugSubCommandOutput,
 				PerlDebugVar.IS_LOCAL_SCOPE);
 		startSubCommand(mCommandExecuteCode, "o frame=2", false);
 		startSubCommand(mCommandExecuteCode, "X ", false);
+		
+		System.out.println("\n\n\n\n\n\n\n\n\n********Global Vars:"+	mDebugSubCommandOutput);
 		mVarParser.parseVars(
 			mDebugSubCommandOutput,
 			PerlDebugVar.IS_GLOBAL_SCOPE,

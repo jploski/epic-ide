@@ -8,6 +8,7 @@ import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.Reader;
+import java.util.ArrayList;
 
 import antlr.InputBuffer;
 import antlr.LexerSharedInputState;
@@ -125,25 +126,25 @@ public class Adder
         //***************************************
       
         
-		RE mReStackTrace=null;
-		try{
-			mReStackTrace = new RE("^(.)\\s+=\\s+(.*)called from .* \\`([^\\']+)\\'\\s*line (\\d+)\\s*$",RE.REG_MULTILINE, RESyntax.RE_SYNTAX_PERL5); 
-		//mReStackTrace = new RE("^(.)\\s+=\\s+(.*)called from .* \\`([^\\']+)\\'\\s*line (\\d+)\\s*$",RE.REG_MULTILINE, RESyntax.RE_SYNTAX_PERL5);
-				
-				} catch (REException e){ new InstantiationException("Couldn't RegEX");};
-
-		//REMatch[] matches = mReStackTrace.getAllMatches("$ = main::infested called from file `Ambulation.pm' line 10\n");
-		REMatch[] matches = mReStackTrace.getAllMatches("$ = main::infested called from file `Ambulation.pm' line 10\r\n@ = Ambulation::legs(1, 2, 3, 4) called from file `camel_flea' line 7\r\n$ = main::pests('bactrian', 4) called from file `camel_flea' line 4");
-		for( int pos = 0; pos < matches.length; ++pos)
-		{
-			System.out.println("Called Function: "+matches[pos].toString(2));
-			System.out.println("Return Type: "+matches[pos].toString(1));	
-			System.out.println("Caled From:  "+matches[pos].toString(3)+"["+matches[pos].toString(4)+"]");
-		}
+//		RE mReStackTrace=null;
+//		try{
+//			mReStackTrace = new RE("^(.)\\s+=\\s+(.*)called from .* \\`([^\\']+)\\'\\s*line (\\d+)\\s*$",RE.REG_MULTILINE, RESyntax.RE_SYNTAX_PERL5); 
+//		//mReStackTrace = new RE("^(.)\\s+=\\s+(.*)called from .* \\`([^\\']+)\\'\\s*line (\\d+)\\s*$",RE.REG_MULTILINE, RESyntax.RE_SYNTAX_PERL5);
+//				
+//				} catch (REException e){ new InstantiationException("Couldn't RegEX");};
+//
+//		//REMatch[] matches = mReStackTrace.getAllMatches("$ = main::infested called from file `Ambulation.pm' line 10\n");
+//		REMatch[] matches = mReStackTrace.getAllMatches("$ = main::infested called from file `Ambulation.pm' line 10\r\n@ = Ambulation::legs(1, 2, 3, 4) called from file `camel_flea' line 7\r\n$ = main::pests('bactrian', 4) called from file `camel_flea' line 4");
+//		for( int pos = 0; pos < matches.length; ++pos)
+//		{
+//			System.out.println("Called Function: "+matches[pos].toString(2));
+//			System.out.println("Return Type: "+matches[pos].toString(1));	
+//			System.out.println("Caled From:  "+matches[pos].toString(3)+"["+matches[pos].toString(4)+"]");
+//		}
 		
         //*******************************************
         // the name of the file to read
-        String fileName = "F:\\eclipse_test\\eclipse\\workspace\\org.epic.debug\\error.dat";
+        String fileName = "F:\\eclipse_test\\eclipse\\workspace\\org.epic.debug\\test.txt";
 
         // construct the special shared input state that is needed
         // in order to annotate ExtentTokens properly
@@ -154,7 +155,7 @@ public class Adder
         // construct the parser
        PerlParser par = new PerlParser (lex);
 	
-//		Token tok;
+		Token tok;
 //      while(true)
 //      {
 //      	tok =lex.nextToken();
@@ -163,7 +164,8 @@ public class Adder
 //      }
 
         //parse the file
+        par.mVarList = new ArrayList();
         par.topLevel ();
-		System.out.println( "Error:"+ par.hasError());
+//		System.out.println( "Error:"+ par.hasError());
            }
 }

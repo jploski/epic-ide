@@ -3,6 +3,7 @@ import java.io.Reader;
 import java.io.InputStream;
 import java.io.StringReader;
 import antlr.InputBuffer;
+import antlr.RecognitionException;
 import antlr.Token;
 /*import antlr.RecognitionException;
 import antlr.NoViableAltForCharException;
@@ -135,6 +136,7 @@ public class PerlVarParser
 	
     public java.util.ArrayList parseVars( String fText, int fScope, java.util.ArrayList fVarList )
     {
+    	boolean hasErrors=false;
 		try{
 		// construct the lexer
 		PerlBaseLexer lex = new PerlLexer ( new StringReader( fText ) );
@@ -145,10 +147,22 @@ public class PerlVarParser
 		par.setScope(fScope);
 		par.setVarList(fVarList);
     	
-		par.topLevel();
-    	} catch(Exception e){};	
+		try
+		{
+			par.topLevel();
+		} catch (TokenStreamException e1)
+		{
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+			hasErrors = true;
+		}
+    	} catch(RecognitionException e){
     	
-    	if ( par.hasError() > 1)
+    	   	par.reportError(e);
+    	   	hasErrors = true;
+    	}
+    	
+    	if ( par.hasError() > 1 || hasErrors)
     	{
     		System.out.println("!!!!! Parse Error!!!!");
     		logParsError(fText);

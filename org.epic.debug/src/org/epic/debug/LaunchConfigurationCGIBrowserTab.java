@@ -326,7 +326,7 @@ public class LaunchConfigurationCGIBrowserTab
 	{
 		return (
 			PerlDebugPlugin.getDefaultDesciptorImageRegistry().get(
-				PerlDebugImages.DESC_OBJS_LaunchTabMain));
+				PerlDebugImages.DESC_OBJS_LaunchTabCGI));
 	}
 
 	//**********************************************************

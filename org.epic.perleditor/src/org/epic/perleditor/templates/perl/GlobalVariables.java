@@ -7,6 +7,7 @@ package org.epic.perleditor.templates.perl;
 import java.text.DateFormat;
 import java.util.Calendar;
 
+import org.eclipse.ui.PlatformUI;
 import org.epic.perleditor.templates.SimpleTemplateVariable;
 import org.epic.perleditor.templates.TemplateContext;
 
@@ -48,20 +49,20 @@ public class GlobalVariables {
 		public String evaluate(TemplateContext context) {
 			return DateFormat.getDateInstance().format(new java.util.Date());
 		}
-	}		
-	
-  /**
-   * The year variable evaluates to the current year.
-   */
-  static class Year extends SimpleTemplateVariable {
-    public Year() {
-      super(PerlTemplateMessages.getString("GlobalVariables.variable.name.year"), PerlTemplateMessages.getString("GlobalVariables.variable.description.year")); //$NON-NLS-1$ //$NON-NLS-2$
-      setResolved(true);
-    }
-    public String evaluate(TemplateContext context) {
-      return Integer.toString(Calendar.getInstance().get(Calendar.YEAR));
-    }
-  }
+	}
+
+	/**
+	 * The year variable evaluates to the current year.
+	 */
+	static class Year extends SimpleTemplateVariable {
+		public Year() {
+			super(PerlTemplateMessages.getString("GlobalVariables.variable.name.year"), PerlTemplateMessages.getString("GlobalVariables.variable.description.year")); //$NON-NLS-1$ //$NON-NLS-2$
+			setResolved(true);
+		}
+		public String evaluate(TemplateContext context) {
+			return Integer.toString(Calendar.getInstance().get(Calendar.YEAR));
+		}
+	}
 	/**
 	 * The time variable evaluates to the current time.
 	 */
@@ -85,6 +86,19 @@ public class GlobalVariables {
 		}
 		public String evaluate(TemplateContext context) {
 			return System.getProperty("user.name"); //$NON-NLS-1$
-		}	
+		}
+	}
+
+	/**
+		 * The user variable evaluates to the current user.
+		 */
+	static class Filename extends SimpleTemplateVariable {
+		public Filename() {
+			super(PerlTemplateMessages.getString("GlobalVariables.variable.name.filename"), PerlTemplateMessages.getString("GlobalVariables.variable.description.filename")); //$NON-NLS-1$ //$NON-NLS-2$
+			setResolved(true);
+		}
+		public String evaluate(TemplateContext context) {
+			return PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor().getTitle();
+		}
 	}
 }

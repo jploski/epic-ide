@@ -81,23 +81,8 @@ public class PerlContextType extends CompilationUnitContextType {
     	addVariable(new GlobalVariables.Year());
 		addVariable(new GlobalVariables.Time());
 		addVariable(new GlobalVariables.User());
+		addVariable(new GlobalVariables.Filename());
 		
-		// compilation unit
-	/*	addVariable(new File());
-		addVariable(new ReturnType());
-		addVariable(new Method());
-		addVariable(new Type());
-		addVariable(new Package());
-		addVariable(new Project());
-		addVariable(new Arguments());
-
-		// java
-		addVariable(new Array());
-		addVariable(new ArrayType());
-		addVariable(new ArrayElement());
-		addVariable(new Index());
-		addVariable(new Iterator());
-		addVariable(new Collection());*/
 	}
 	
 	/*

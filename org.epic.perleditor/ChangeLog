@@ -1,6 +1,16 @@
 Eclipse Perl Integration: 
 
-		Debugger:
+		Debugger
+		* Displaying of variables re-coded. 
+		  - This should remove all known bugs (" Error Parsing Debugger Variables")
+		  - significant improvement in speed
+		* Remote Debugging implemented
+		* Improved handling of Regular Expression Breakpoints
+		  - Property dialogue added
+		  - if RegEx can't be extracted user is asked for intervention
+		  - before executing a breakpoint properties are updated if source line has changed
+		* Perl Debugger uses 127.0.0.1 to connect to EPIC for local debugging sessions. This should avoid some Problems with firewalls.
+		* Fixed bug: [ 1050648 ] Environment vars not inherited by debugged script on Solaris
 		* Implemented Feature Request: [ 1051399 ] Debug-Perspective: Switching automatically
 		* Corrected createEnvArray() to work on Linux systems
 		* Fixed problem with Cygwin (Pathmapper error)

@@ -89,7 +89,7 @@ public class PerlOutlinePage
 				text,
 				"^[\\s]*sub\\s+([^\\n\\r{]+)",
 				"", "",
-				true);
+				SourceParser.DELETE_POD);
 	}
 	
 	public List getModList() {
@@ -106,7 +106,7 @@ public class PerlOutlinePage
 				text,
 				"^[\\s]*use\\s+([^\\s]*[A-Z]+[^;\\s\\n\\r]*)",
 				"", "",
-				true);
+				SourceParser.DELETE_POD);
 	}
 	
 	public void dispose()  {

@@ -203,6 +203,7 @@ public class PerlEditor extends TextEditor implements
 		if ((fTodoMarkerThread == null) && isPerlMode()) {
 			fTodoMarkerThread = new PerlToDoMarkerThread(this,
 			    fSourceViewer);
+			fTodoMarkerThread.setPriority(Thread.MIN_PRIORITY);			
 			fTodoMarkerThread.start();
 		}
 
@@ -485,6 +486,13 @@ public class PerlEditor extends TextEditor implements
 		}
 
 	}
+	
+	public void refreshTaskView() {
+		if (fTodoMarkerThread != null) {
+			fTodoMarkerThread.setText(getSourceViewer().getDocument().get());
+		}
+	}
+	
 	
 	/**
 	 * To provide an access to a changed position 

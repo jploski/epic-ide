@@ -7,6 +7,9 @@
    <feature url="features/org.epic.feature.main_0.3.2.jar" id="org.epic.feature.main" version="0.3.2">
       <category name="EPIC"/>
    </feature>
+   <feature url="features/org.epic.feature.main_0.3.3.jar" id="org.epic.feature.main" version="0.3.3">
+      <category name="EPIC"/>
+   </feature>
    <category-def name="EPIC" label="EPIC Main Components">
       <description>
          This package contains the PerlEditor, Debugger and Regexp Plugin.

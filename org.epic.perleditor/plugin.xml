@@ -3,7 +3,7 @@
 <plugin
    id="org.epic.perleditor"
    name="Perl Editor Plug-in"
-   version="0.1.3"
+   version="0.1.4"
    provider-name="Epic Project"
    class="org.epic.perleditor.PerlEditorPlugin">
 

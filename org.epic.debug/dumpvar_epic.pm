@@ -389,6 +389,7 @@ sub dumplex {
   local %address;
   my $off = 0;  # It reads better this way
   my $fileno;
+  $UnwrapCount =0;
   if (UNIVERSAL::isa($val,'ARRAY')) {
       print buildName("$key");
     unwrap($val,3+$off,$m) ;
@@ -456,7 +457,10 @@ sub main::dumpvar_epic {
     local $TotalStrings = 0;
     local $Strings = 0;
     local $CompleteTotal = 0;
-    while (($key,$val) = each(%stab)) {
+   # while (($key,$val) = each(%stab)) {
+   foreach $key (sort keys %stab)
+   {
+   	 $val = $stab{$key};
       return if $DB::signal;
       next if @vars && !grep( matchvar($key, $_), @vars );
       if ($usageOnly) {

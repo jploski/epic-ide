@@ -8,6 +8,7 @@ import org.eclipse.ui.editors.text.TextEditorActionContributor;
 import org.epic.perleditor.actions.ExportHtmlSourceAction;
 import org.epic.perleditor.actions.FormatSourceAction;
 import org.epic.perleditor.actions.ValidateSourceAction;
+import org.epic.perleditor.popupmenus.OpenDeclaration;
 
 
 /**
@@ -18,6 +19,7 @@ public class PerlActionContributor extends TextEditorActionContributor {
 	protected FormatSourceAction formatSourceAction;
 	protected ExportHtmlSourceAction htmExportAction;
 	protected ValidateSourceAction validateSourceAction;
+	protected OpenDeclaration openDeclarationAction;
 
 	/**
 	 * Default constructor.
@@ -27,6 +29,7 @@ public class PerlActionContributor extends TextEditorActionContributor {
 		formatSourceAction = new FormatSourceAction();
 		htmExportAction = new ExportHtmlSourceAction();
 		validateSourceAction = new ValidateSourceAction();
+		openDeclarationAction = new OpenDeclaration();
 		//formatSourceAction.setActionDefinitionId("org.epic.perledior.formatsource");
 	}
 
@@ -65,10 +68,13 @@ public class PerlActionContributor extends TextEditorActionContributor {
 					bars.setGlobalActionHandler("org.epic.perleditor.FormatSource", formatSourceAction);
 					bars.setGlobalActionHandler("org.epic.perleditor.HtmlExport", htmExportAction);
 					bars.setGlobalActionHandler("org.epic.perleditor.ValidateSyntax", validateSourceAction);
+					bars.setGlobalActionHandler("org.epic.perleditor.popupmenus.OpenSubAction", openDeclarationAction);
 				}
 				else {
 					bars.setGlobalActionHandler("org.epic.perleditor.FormatSource", null);
 					bars.setGlobalActionHandler("org.epic.perleditor.HtmlExport", null);
+					bars.setGlobalActionHandler("org.epic.perleditor.ValidateSyntax", null);
+					bars.setGlobalActionHandler("org.epic.perleditor.popupmenus.OpenSubAction", null);
 				}
 		}
 				

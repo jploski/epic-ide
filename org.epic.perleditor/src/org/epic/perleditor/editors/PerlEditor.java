@@ -200,6 +200,10 @@ public class PerlEditor
 				idleTimer.dispose();
 			}
 			
+			if(fOutlinePage != null) {
+				fOutlinePage.dispose();
+			}
+			
 			super.dispose();
 		} catch (Exception ex) {
 			ex.printStackTrace();

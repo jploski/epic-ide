@@ -21,6 +21,8 @@ Eclipse Perl Integration:
 		* Fixed bug: [ 996351 ] NullPointer exception during Launch (problems if path to Perl executable has spaces)
 
 		Editor:
+		* Fixed bug: [ 1111483 ] Outline now only displays SUBs without trailing comments
+		* Fixed bug: [ 1106001 ] Now only SUBs and Modules are listed which does not belong to any kind of Syntax group (like Quote, Pod, __END__, ...)
 		* [ 1114652 ] Added support for modifier in regula expressions
 		* [ 1113907 ] Added support for additional spanning types (e.g. 'format')
 		* Module Degel::Refactor updated to version 0.03

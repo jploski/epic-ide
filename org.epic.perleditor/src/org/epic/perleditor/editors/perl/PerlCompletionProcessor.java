@@ -65,7 +65,7 @@ public class PerlCompletionProcessor implements IContentAssistProcessor {
 			TextPresentation presentation) {
 			return false;
 		}
-	};
+	}
 
 	protected IContextInformationValidator fValidator = new Validator();
 	private TextEditor fTextEditor = null;

@@ -49,7 +49,7 @@ public class PerlSourceViewerConfiguration
 					public SingleTokenScanner(TextAttribute attribute) {
 						setDefaultReturnToken(new Token(attribute));
 					}
-				};
+				}
 				
 				
 				

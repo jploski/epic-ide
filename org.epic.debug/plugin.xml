@@ -4,24 +4,19 @@
    id="org.epic.debug"
    name="Debug Plug-in"
    version="0.1.0"
-   provider-name="Epic Project"
+   provider-name="EPIC Project"
    class="org.epic.debug.PerlDebugPlugin">
 
    <runtime>
       <library name="debug.jar">
          <export name="*"/>
       </library>
-      <library name="antlr.jar">
-         <export name="*"/>
-      </library>
-      <library name="brazil_mini.jar">
-         <export name="*"/>
-      </library>
-      <library name="gnu-regexp-1.1.4.jar">
-         <export name="*"/>
-      </library>
+      <library name="gnu-regexp-1.1.4.jar"/>
+      <library name="antlr.jar"/>
+      <library name="perlvarparser.jar"/>
+      <library name="brazil_mini.jar"/>
    </runtime>
-   <requires>
+ <requires>
       <import plugin="org.eclipse.core.runtime.compatibility"/>
       <import plugin="org.eclipse.ui.views"/>
       <import plugin="org.eclipse.core.runtime"/>
@@ -40,6 +35,7 @@
       <import plugin="org.eclipse.help"/>
       <import plugin="org.eclipse.ui.ide"/>
       <import plugin="org.eclipse.help.base"/>
+      <import plugin="org.epic.regexp"/>
    </requires>
 
 
@@ -125,6 +121,19 @@
       </viewerContribution>
    </extension>
    <extension
+         point="org.eclipse.ui.popupMenus">
+      <viewerContribution
+            targetID="#PerlRulerContext"
+            id="org.epic.debug.RulerPopupActions">
+         <action
+               label="Add RegExp Breakpoint"
+               class="org.epic.debug.ManageRegExpBreakpointRulerActionDelegate"
+               menubarPath="debug"
+               id="org.epic.ManageRegExpBreakpointRulerActionDelegate">
+         </action>
+      </viewerContribution>
+   </extension>
+   <extension
          id="perlLineBreakpointMarker"
          point="org.eclipse.core.resources.markers">
       <super
@@ -140,6 +149,27 @@
             markerType="org.epic.debug.perlLineBreakpointMarker"
             class="org.epic.debug.PerlLineBreakpoint"
             id="perlLineBreakpoint">
+      </breakpoint>
+   </extension>
+   <extension
+         id="perlRegExpBreakpointMarker"
+         point="org.eclipse.core.resources.markers">
+      <super
+            type="org.eclipse.debug.core.breakpointMarker">
+      </super>
+      <super
+            type="perlLineBreakpointMarker">
+      </super>
+      <persistent
+            value="true">
+      </persistent>
+   </extension>
+   <extension
+         point="org.eclipse.debug.core.breakpoints">
+      <breakpoint
+            markerType="org.epic.debug.perlRegExpBreakpointMarker"
+            class="org.epic.debug.PerlRegExpBreakpoint"
+            id="perlRegExpBreakpoint">
       </breakpoint>
    </extension>
    <extension

@@ -117,7 +117,7 @@ public class PerlDoubleClickSelector implements ITextDoubleClickStrategy {
 
 			while (pos >= 0) {
 				c= doc.getChar(pos);
-				if (!Character.isJavaIdentifierPart(c))
+				if (!Character.isJavaIdentifierPart(c) && (c != '@') && (c != '%'))
 					break;
 				--pos;
 			}

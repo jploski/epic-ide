@@ -356,7 +356,7 @@ public class PerlSyntaxValidationThread extends Thread {
 							markerLine = text.substring(lineOffset);
 						}
 
-						byte[] bytes = markerLine.getBytes();
+						char[] bytes = markerLine.toCharArray();
 
 						int start = 0;
 						while (start < bytes.length) {

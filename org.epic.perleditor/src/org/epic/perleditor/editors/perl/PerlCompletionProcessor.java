@@ -302,10 +302,10 @@ public class PerlCompletionProcessor implements IContentAssistProcessor {
 			OutputStream out = proc.getOutputStream();
 
 			try {
-			   out.write(perlCode.getBytes());
+                PerlExecutableUtilities.writeStringToStream(perlCode, out);
 			}
-			catch(Exception ex) {
-				System.out.println(ex);
+			catch(IOException ex) {
+				ex.printStackTrace();
 			}
 
 			out.close();

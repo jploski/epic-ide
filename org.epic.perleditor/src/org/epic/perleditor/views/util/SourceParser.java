@@ -50,10 +50,10 @@ public class SourceParser {
 					
 					String wholeLine = str.substring(lineOffset, lineOffset + doc.getLineLength(currentLine));
 					boolean containsInvalidCharacters = false;
-					byte[] ic = invalidCharacters.getBytes();
+					char[] ic = invalidCharacters.toCharArray();
 			
 					for(int i=0; i<ic.length; i++) {
-						if(wholeLine.indexOf("" + ((char) ic[i])) != -1) {
+						if(wholeLine.indexOf(ic[i]) != -1) {
 							containsInvalidCharacters = true;
 							break;
 						}

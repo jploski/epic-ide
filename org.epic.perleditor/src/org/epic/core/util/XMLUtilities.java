@@ -34,6 +34,9 @@ public class XMLUtilities {
 	}
 
 	public String[] getIncludeEntries(IProject project) {
+		return getIncludeEntries(project, false);
+	}
+	public String[] getIncludeEntries(IProject project, boolean replaceVariables) {
 		List includes = new ArrayList();
 		try {
 
@@ -59,7 +62,16 @@ public class XMLUtilities {
 
 				while (iter.hasNext()) {
 					Element element = (Element) iter.next();
-					includes.add(element.getAttributeValue("path"));
+					String path = element.getAttributeValue("path");
+					
+					if(replaceVariables) {
+						String projectDir = project.getLocation().toString();
+						if(path.startsWith("${project_path}")) {
+							path = projectDir + path.substring("${project_path}".length());
+						}
+					}
+					
+					includes.add(path);
 				}
 			}
 		} catch (Exception e) {

@@ -111,7 +111,7 @@ public class PerlExecutableUtilities {
 		// Add other project include paths
 		if(project != null) {
 			XMLUtilities xmlUtil = new XMLUtilities();
-			String[] includes = xmlUtil.getIncludeEntries(project);
+			String[] includes = xmlUtil.getIncludeEntries(project, true);
 			for (int i = 0; i < includes.length; i++) {
 				String path = preparePath(includes[i]);
 				cmdList.add("-I");

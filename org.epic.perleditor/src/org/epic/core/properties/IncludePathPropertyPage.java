@@ -114,6 +114,10 @@ public class IncludePathPropertyPage extends PropertyPage {
 				dirBrowser.setFilterPath(filterPath);
 				String dir = dirBrowser.open();
 				if (dir != null) {
+					String projectDir = project.getLocation().toString();
+					if(dir.startsWith(projectDir)) {
+						dir = "${project_path}" + dir.substring(projectDir.length());
+					}
 					newEntryText.setText(dir);
 					filterPath = dir.substring(0, dir
 							.lastIndexOf(File.separator));

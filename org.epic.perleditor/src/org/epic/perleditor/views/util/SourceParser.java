@@ -311,7 +311,7 @@ public static List getElements(String text, String regexp, String preFix,
 		int start = match.getStartIndex();
 		int end = match.getEndIndex();
 		int lineSepLength = reSyntax.getLineSeparator().length();
-		System.out.println("++++++S: " + start + " E: " + end + " LS: " +lineSepLength + "TOTAL: " + text.length);
+
 		for(int i=start; i<=end-lineSepLength; i++) {
 			text[i] = '#';
 		}

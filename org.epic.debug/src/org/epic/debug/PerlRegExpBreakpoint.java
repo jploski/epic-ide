@@ -232,26 +232,12 @@ public class PerlRegExpBreakpoint extends PerlLineBreakpoint {
 
 	private String getCurrentSourceLine() {
 
-		StringBuffer sourceCode = new StringBuffer();
+		IDocument doc = getDocument();
 
-		int BUF_SIZE = 1024;
-
-		IWorkbench bench = PerlDebugPlugin.getDefault().getWorkbench();
-		if ( bench == null )
-			return null;
-		IWorkbenchWindow window = bench.getActiveWorkbenchWindow();
-		if ( window == null )
-			return  null;
-		IWorkbenchPage page = window.getActivePage();
-		if ( page == null )
-			return  null;
-		FileEditorInput input = new FileEditorInput((IFile)getMarker().getResource());
-		TextEditor editor = (TextEditor) page.findEditor(input);
-		
-		IDocument doc = editor.getDocumentProvider().getDocument(input);
 	
+
 		String line = null;
-		
+
 		try {
 			int length = doc.getLineLength(getLineNumber() - 1);
 			int offset = doc.getLineOffset(getLineNumber() - 1);

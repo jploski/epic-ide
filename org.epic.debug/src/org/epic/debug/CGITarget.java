@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.debug.core.DebugEvent;
@@ -55,6 +56,7 @@ public class CGITarget extends DebugTarget implements IDebugEventSetListener
 	private CGITarget mTarget;
 	private IBrowser mBrowser;
 	private CGIProxy mCGIProxy;
+	private String mHtmlRootFileRel ;
 	/**
 	 * Constructor for DebugTarget.
 	 */
@@ -99,6 +101,8 @@ public class CGITarget extends DebugTarget implements IDebugEventSetListener
 		String htmlRootFile = null;
 		String cgiRootDir = null;
 		String cgiFileExtension = null;
+		String projectName = null;
+		IProject project;
 		
 		if (mDebug)
 		{
@@ -133,13 +137,17 @@ public class CGITarget extends DebugTarget implements IDebugEventSetListener
 							mLaunch.getLaunchConfiguration().getAttribute(
 								PerlLaunchConfigurationConstants.ATTR_CGI_FILE_EXTENSION,
 								(String) null);					
-
+			projectName =
+				mLaunch.getLaunchConfiguration().getAttribute(
+					PerlLaunchConfigurationConstants.ATTR_PROJECT_NAME,
+					(String) null);		
+			
 		} catch (CoreException e2)
 		{
 			// TODO Auto-generated catch block
 			e2.printStackTrace();
 		}
-
+		project = PerlDebugPlugin.getWorkspace().getRoot().getProject(projectName);
 		Path htmlDirPath = new Path(htmlRootDir);
 		htmlRootDir = htmlDirPath.toString();
 
@@ -149,7 +157,7 @@ public class CGITarget extends DebugTarget implements IDebugEventSetListener
 		Path cgiDirPath = new Path(cgiRootDir);
 		cgiRootDir = cgiDirPath.toString();
 
-		String htmlRootFileRel =
+		 mHtmlRootFileRel =
 			htmlFilePath
 				.setDevice(null)
 				.removeFirstSegments(htmlDirPath.segments().length)
@@ -162,6 +170,7 @@ public class CGITarget extends DebugTarget implements IDebugEventSetListener
 		/* start web-server */
 		/* create config file */
 
+		
 		brazilProps.append(
 			"\ncgi.Debug="
 				+ mDebug
@@ -175,9 +184,9 @@ public class CGITarget extends DebugTarget implements IDebugEventSetListener
 				+ "cgi.root="
 				+ cgiRootDir
 				+ "\n"
-				+ "file.default="
-				+ htmlRootFileRel
-				+ "\n"
+//				+ "file.default="
+//				+ htmlRootFileRel
+//				+ "\n"
 				+ "cgi.executable="
 				+ PerlExecutableUtilities.getPerlExecPath()
 				+ "\n"
@@ -185,6 +194,14 @@ public class CGITarget extends DebugTarget implements IDebugEventSetListener
 				+"\n"
 				+ "cgi.DebugInclude="+" -I"+PerlDebugPlugin.getPlugInDir());
 		
+		List list = PerlExecutableUtilities.getPerlIncPath(project);
+		Iterator i = list.iterator();
+		int x= 0;
+		while(i.hasNext())
+		{
+			brazilProps.append("\ncgi.RunInclude["+x+"]="+i.next());
+			++x;
+		}	
 		if (mDebug)
 		{
 
@@ -282,7 +299,7 @@ public class CGITarget extends DebugTarget implements IDebugEventSetListener
 				{
 					public void run()
 					{
-						startBrowser(mWeberverPort);
+						startBrowser(mWeberverPort, mHtmlRootFileRel);
 					}
 				});
 		
@@ -310,7 +327,8 @@ public class CGITarget extends DebugTarget implements IDebugEventSetListener
 		}
 	}
 
-	void startBrowser(int fPort)
+	BrowserDescriptor[] browserDescr ;
+	void startBrowser(int fPort, String  htmlRootFileRel)
 	{
 		String browserID = null;
 		String browserPath = null;
@@ -356,8 +374,15 @@ public class CGITarget extends DebugTarget implements IDebugEventSetListener
 			}
 			return;
 		}
-		BrowserDescriptor[] browserDescr =
+		Shell shell = PerlDebugPlugin.getActiveWorkbenchShell();
+		if (shell != null) {
+			shell.getDisplay().syncExec(new Runnable() {
+				public void run() {
+			
+		browserDescr =
 			BrowserManager.getInstance().getBrowserDescriptors();
+				}});}
+			
 		BrowserDescriptor descr;
 
 		if (CustomBrowser.isCustomBrowserID(browserID))
@@ -380,7 +405,7 @@ public class CGITarget extends DebugTarget implements IDebugEventSetListener
 
 		try
 		{
-			mBrowser.displayURL("http://localhost:" + fPort + "/");
+			mBrowser.displayURL("http://localhost:" + fPort + "/"+ htmlRootFileRel);
 		} catch (Exception e)
 		{
 			PerlDebugPlugin.getDefault().logError(
@@ -448,6 +473,11 @@ public class CGITarget extends DebugTarget implements IDebugEventSetListener
 			public void run()
 			{
 				mTarget.startSession();
+				if( mTarget.mPerlDB.isTerminated())
+				{ 
+					mTarget.mPerlDB = null;
+					return;
+				}
 				mLaunch.addDebugTarget(mTarget);
 				((DebugTarget) mTarget).getDebuger().generateDebugInitEvent();
 				getDebuger().generateDebugInitEvent();
@@ -558,4 +588,6 @@ public class CGITarget extends DebugTarget implements IDebugEventSetListener
 		
 		return true;
 	}
+	
+	
 }

@@ -193,8 +193,8 @@ public class DebugModelPresentation implements IDebugModelPresentation
 	 */
 	public IEditorInput getEditorInput(Object element)
 	{
-		IStorageEditorInput i;
-		StackFrame frame;
+		IEditorInput i;
+		StackFrame frame = null;
 		IPath p;
 
 		System.out.println(
@@ -204,9 +204,10 @@ public class DebugModelPresentation implements IDebugModelPresentation
 			frame = (StackFrame) element;
 		} else
 		{
-			return (null);
+			if( element instanceof PerlBreakpoint )
+			{ return (((PerlBreakpoint) element).getEditorInput());}
 		}
-
+		if( frame == null) return null;
 		p = frame.get_IP_Path();
 		/*IWorkspaceRoot myWorkspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
 		IFile file;

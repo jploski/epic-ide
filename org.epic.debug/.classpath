@@ -2,7 +2,7 @@
 <classpath>
 	<classpathentry kind="src" path="src/"/>
 	<classpathentry kind="lib" path="gnu-regexp-1.1.4.jar"/>
-	<classpathentry sourcepath="F:/antlr/antlr_2.7.2/antlr-2.7.2" kind="lib" path="antlr.jar"/>
+	<classpathentry kind="lib" path="antlr.jar"/>
 	<classpathentry kind="lib" path="brazil_mini.jar"/>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>

@@ -304,7 +304,8 @@ public class PerlDB implements IDebugElement, ITerminate {
 				DebugPlugin.getDefault().fireDebugEventSet(debugEvents);
 			}
 		} else
-			generateDebugTermEvent();
+			//if (mTarget == null || ! (mTarget instanceof CGITarget))
+				generateDebugTermEvent();
 
 	}
 	/*
@@ -709,8 +710,9 @@ public class PerlDB implements IDebugElement, ITerminate {
 		}
 
 		//	System.out.println(currentOutput);
-
-		if (finished == SESSION_TERMINATED) {
+		//System.out.println("\nCurrent DEBUGOUTPUT:\n" + currentOutput
+			//				+ "\n");
+				if (finished == SESSION_TERMINATED) {
 			abortSession();
 			return (false);
 		}

@@ -103,6 +103,8 @@ public abstract class Target implements IDebugTarget
 
 	public String getJavaHome()
 	{
+		
+	
 		return (System.getProperty("java.home"));
 	}
 

@@ -20,8 +20,14 @@ package org.epic.debug;
 //import java.lang.reflect.InvocationTargetException;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
+import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IResourceVisitor;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
@@ -34,6 +40,8 @@ import org.eclipse.jface.preference.IntegerFieldEditor;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
@@ -41,6 +49,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
+import org.epic.debug.LaunchConfigurationMainTab.PerlProjectVisitor;
 
 public class LaunchConfigurationCGIMainTab
 	extends AbstractLaunchConfigurationTab
@@ -56,11 +65,7 @@ public class LaunchConfigurationCGIMainTab
 	 * @since 2.0
 	 */
 
-	private IntegerFieldEditor fDebugPort;
-	private DirectoryFieldEditor fCGIRootDir;
-	private DirectoryFieldEditor fHTMLRootDir;
-	private FileFieldEditor fHTMLRootFile;
-	// Project UI widgets
+	
 	//	protected Label fProjLabel;
 	//protected Label fParamLabel;
 	//	protected Combo fProjText;
@@ -68,8 +73,7 @@ public class LaunchConfigurationCGIMainTab
 	//	protected Text fParamText;
 
 	// Main class UI widgets
-	protected Label fMainLabel;
-	protected Combo fMainText;
+
 	//	protected Button fSearchButton;
 	//  protected Button fSearchExternalJarsCheckButton;
 	//	protected Button fStopInMainCheckButton;
@@ -78,6 +82,8 @@ public class LaunchConfigurationCGIMainTab
 
 	private static final String PERL_NATURE_ID =
 		"org.epic.perleditor.perlnature";
+	private Label fProjLabel;
+	private Combo fProjText;
 
 	/**
 	 * @see org.eclipse.debug.ui.ILaunchConfigurationTab#createControl(Composite)
@@ -103,82 +109,24 @@ public class LaunchConfigurationCGIMainTab
 		layout.marginWidth = 0;
 		gd = new GridData(GridData.FILL_HORIZONTAL);
 
-		Composite htmlRootDirComp = new Composite(comp, SWT.NONE);
-		htmlRootDirComp.setLayout(layout);
-		htmlRootDirComp.setLayoutData(gd);
-		htmlRootDirComp.setFont(font);
-
-		fHTMLRootDir =
-			new DirectoryFieldEditor(
-				"Test",
-				"HTML Root Directory",
-				htmlRootDirComp);
-		fHTMLRootDir.fillIntoGrid(htmlRootDirComp, 3);
-		fHTMLRootDir.setPropertyChangeListener(this);
-
-		createVerticalSpacer(comp, 1);
-
-		layout = new GridLayout();
-		layout.numColumns = 1;
-		layout.marginHeight = 0;
-		layout.marginWidth = 0;
+		Composite projComp = new Composite(comp, SWT.NONE);
+		GridLayout projLayout = new GridLayout();
+		projLayout.numColumns = 2;
+		projLayout.marginHeight = 0;
+		projLayout.marginWidth = 0;
+		projComp.setLayout(projLayout);
 		gd = new GridData(GridData.FILL_HORIZONTAL);
+		projComp.setLayoutData(gd);
+		projComp.setFont(font);
 
-		Composite htmlRootFileComp = new Composite(comp, SWT.NONE);
-		htmlRootFileComp.setLayout(layout);
-		htmlRootFileComp.setLayoutData(gd);
-		htmlRootFileComp.setFont(font);
+		fProjLabel = new Label(projComp, SWT.NONE);
+		fProjLabel.setText("&Project:"); //$NON-NLS-1$
+		gd = new GridData();
+		gd.horizontalSpan = 2;
+		fProjLabel.setLayoutData(gd);
+		fProjLabel.setFont(font);
 
-		fHTMLRootFile =
-			new FileFieldEditor(
-				"Test",
-				"HTML Root File",
-				true,
-				htmlRootFileComp);
-		fHTMLRootFile.fillIntoGrid(htmlRootFileComp, 3);
-		fHTMLRootFile.setPropertyChangeListener(this);
-
-		createVerticalSpacer(comp, 1);
-		layout = new GridLayout();
-		layout.numColumns = 1;
-		layout.marginHeight = 0;
-		layout.marginWidth = 0;
-		gd = new GridData(GridData.FILL_HORIZONTAL);
-
-		Composite cgiRootDirComp = new Composite(comp, SWT.NONE);
-		cgiRootDirComp.setLayout(layout);
-		cgiRootDirComp.setLayoutData(gd);
-		cgiRootDirComp.setFont(font);
-
-		fCGIRootDir =
-			new DirectoryFieldEditor(
-				"Test",
-				"CGI Root Directory",
-				cgiRootDirComp);
-		fCGIRootDir.fillIntoGrid(cgiRootDirComp, 3);
-
-		fCGIRootDir.setPropertyChangeListener(this);
-
-		createVerticalSpacer(comp, 1);
-
-		layout = new GridLayout();
-		layout.numColumns = 1;
-		layout.marginHeight = 0;
-		layout.marginWidth = 0;
-		gd = new GridData(GridData.FILL_HORIZONTAL);
-
-		Composite debugPortComp = new Composite(comp, SWT.NONE);
-		debugPortComp.setLayout(layout);
-		debugPortComp.setLayoutData(gd);
-		debugPortComp.setFont(font);
-
-		fDebugPort =
-			new IntegerFieldEditor("Test", "Debugger Port", debugPortComp);
-		fDebugPort.fillIntoGrid(debugPortComp, 2);
-		fDebugPort.setValidRange(1,Integer.MAX_VALUE);
-
-		fDebugPort.setValidateStrategy(IntegerFieldEditor.VALIDATE_ON_KEY_STROKE);
-		fDebugPort.setPropertyChangeListener(this);
+		
 	}
 
 	/**
@@ -194,24 +142,12 @@ public class LaunchConfigurationCGIMainTab
 	{
 		try
 		{
-			fHTMLRootDir.setStringValue(
+			fProjText.setText(
 				config.getAttribute(
 					PerlLaunchConfigurationConstants.ATTR_HTML_ROOT_DIR,
 					(String) null));
 
-			fHTMLRootFile.setStringValue(
-				config.getAttribute(
-					PerlLaunchConfigurationConstants.ATTR_HTML_ROOT_FILE,
-					(String) null));
-			fCGIRootDir.setStringValue(
-				config.getAttribute(
-					PerlLaunchConfigurationConstants.ATTR_CGI_ROOT_DIR,
-					(String) null));
-
-			fDebugPort.setStringValue(
-					config.getAttribute(
-						PerlLaunchConfigurationConstants.ATTR_DEBUG_PORT,
-						(String)null));
+		
 			
 			} catch (CoreException e)
 		{
@@ -226,22 +162,8 @@ public class LaunchConfigurationCGIMainTab
 	public void performApply(ILaunchConfigurationWorkingCopy config)
 	{
 		config.setAttribute(
-			PerlLaunchConfigurationConstants.ATTR_HTML_ROOT_DIR,
-			this.fHTMLRootDir.getStringValue());
-		config.setAttribute(
-			PerlLaunchConfigurationConstants.ATTR_HTML_ROOT_FILE,
-			this.fHTMLRootFile.getStringValue());
-		config.setAttribute(
-			PerlLaunchConfigurationConstants.ATTR_CGI_ROOT_DIR,
-			this.fCGIRootDir.getStringValue());
-		config.setAttribute(
-						PerlLaunchConfigurationConstants.ATTR_DEBUG_PORT,
-						fDebugPort.getStringValue());
-		config.setAttribute(
-				PerlLaunchConfigurationConstants.ATTR_DEBUG_CGI,
-							"OK");
-
-
+			PerlLaunchConfigurationConstants.ATTR_PROJECT_NAME,
+			fProjText.getText());
 	}
 
 	/**
@@ -259,105 +181,13 @@ public class LaunchConfigurationCGIMainTab
 		return ResourcesPlugin.getWorkspace().getRoot();
 	}
 
-	/**
-	 * @see org.eclipse.debug.ui.ILaunchConfigurationTab#isValid(ILaunchConfiguration)
-	 */
-	public boolean isValid(ILaunchConfiguration config)
-	{
-
-		setErrorMessage(null);
-		setMessage(null);
-
-		String value = fHTMLRootDir.getStringValue();
-
-		if (value == null)
-		{
-			setErrorMessage("HTML Root Directory is missing"); //$NON-NLS-1$
-			return false;
-		}
-
-		File file = new File(value);
-		if (!file.exists() || !file.isDirectory())
-		{
-			setErrorMessage("HTML Root Directory is invalid"); //$NON-NLS-1$
-			return false;
-		}
-
-		value = fHTMLRootFile.getStringValue();
-
-		if (value == null)
-		{
-			setErrorMessage("HTML Startup File is missing"); //$NON-NLS-1$
-			return false;
-		}
-
-		file = new File(value);
-		if (!file.exists() || !file.isFile())
-		{
-			setErrorMessage("HTML Startup File is invalid"); //$NON-NLS-1$
-			return false;
-		}
-
-		if (value.indexOf(fHTMLRootDir.getStringValue()) != 0)
-		{
-			setErrorMessage("HTML Startup File must be located within HTML Root Directory (or one of its subfolders)"); //$NON-NLS-1$
-			return false;
-		}
-
-		value = fCGIRootDir.getStringValue();
-		if (value == null)
-		{
-			setErrorMessage("CGI Root Directory is missing"); //$NON-NLS-1$
-			return false;
-		}
-
-		file = new File(value);
-		if (!file.exists() || !file.isDirectory())
-		{
-			setErrorMessage("CGI Root Directory is invalid"); //$NON-NLS-1$
-			return false;
-		}
-
-		value = fDebugPort.getStringValue();
-				if (value == null )
-				{
-					setErrorMessage("Debug Port is missing"); //$NON-NLS-1$
-					return false;
-				}
-				else {
-					try{
-				
-					 Integer.parseInt(value);
-					}
-					 catch(Exception e)
-					 {
-						setErrorMessage("Debug Port is invalid"); //$NON-NLS-1$
-											return false;
-					 }
-				}
-
-		return true;
-	}
-
+	
 	/**
 	 * @see org.eclipse.debug.ui.ILaunchConfigurationTab#setDefaults(ILaunchConfigurationWorkingCopy)
 	 */
 	public void setDefaults(ILaunchConfigurationWorkingCopy config)
 	{
-		String root =
-			ResourcesPlugin.getWorkspace().getRoot().getLocation().toOSString();
-		config.setAttribute(PerlLaunchConfigurationConstants.ATTR_CGI_ROOT_DIR, root); //$NON-NLS-1$
-		config.setAttribute(PerlLaunchConfigurationConstants.ATTR_HTML_ROOT_DIR, root); //$NON-NLS-1$
-		config.setAttribute(PerlLaunchConfigurationConstants.ATTR_HTML_ROOT_FILE, root); //$NON-NLS-1$
-		config.setAttribute(
-			PerlLaunchConfigurationConstants.ATTR_DEBUG_PORT,
-			PerlDebugPlugin.getDefaultDebugPort());
-		config.setAttribute(
-		PerlLaunchConfigurationConstants.ATTR_DEBUG_CGI,
-					"OK");
-		config.setAttribute(
-				PerlLaunchConfigurationConstants.ATTR_CGI_ENV,
-							(Map)null);
+		config.setAttribute(PerlLaunchConfigurationConstants.ATTR_PROJECT_NAME, ""); //$NON-NLS-1$
 
 	}
 
@@ -422,17 +252,97 @@ public class LaunchConfigurationCGIMainTab
 	 */
 	public void propertyChange(PropertyChangeEvent event)
 	{
-		if (event.getSource() == fHTMLRootDir)
+//		if (event.getSource() == fHTMLRootDir)
+//		{
+//			if (fHTMLRootFile
+//				.getStringValue()
+//				.indexOf(fHTMLRootDir.getStringValue())
+//				!= 0)
+//				fHTMLRootFile.setStringValue(fHTMLRootDir.getStringValue());
+//		}
+//
+//		updateLaunchConfigurationDialog();
+
+	}
+
+	private String[] getDirs()
+	{
+		String projectName = fProjText.getText();
+
+		if (projectName == null || projectName.length() == 0)
 		{
-			if (fHTMLRootFile
-				.getStringValue()
-				.indexOf(fHTMLRootDir.getStringValue())
-				!= 0)
-				fHTMLRootFile.setStringValue(fHTMLRootDir.getStringValue());
+			return (new String[] {
+			});
 		}
 
-		updateLaunchConfigurationDialog();
+		IWorkspaceRoot workspaceRoot = PerlDebugPlugin.getWorkspace().getRoot();
+		IProject project = workspaceRoot.getProject(projectName);
+		IResourceVisitor visitor = new PerlProjectVisitor();
+		try
+		{
+			project.accept(visitor);
+		} catch (CoreException e)
+		{
+			e.printStackTrace();
+		}
+		return ((PerlProjectVisitor) visitor).getDirList();
+	}
 
+	class PerlProjectVisitor implements IResourceVisitor
+	{
+		private static final String PERL_EDITOR_ID =
+			"org.epic.perleditor.editors.PerlEditor";
+		private static final String EMB_PERL_FILE_EXTENSION = "epl";
+
+		private List mDirList = new ArrayList();
+		/* (non-Javadoc)
+		 * @see org.eclipse.core.resources.IResourceVisitor#visit(org.eclipse.core.resources.IResource)
+		 */
+		public boolean visit(IResource resource) throws CoreException
+		{
+			if(resource instanceof IFolder)
+
+			
+			{
+				mDirList.add(
+					resource.getFullPath().removeFirstSegments(1).toString());
+			}
+
+			return true;
+		}
+
+		public String[] getDirList()
+		{
+			return (String[]) mDirList.toArray(new String[mDirList.size()]);
+		}
+
+	}
+	/**
+	 * Returns a String array whith all Perl projects
+	 * @return Stiring[] List of Perl projects
+	 */
+	private String[] getPerlProjects()
+	{
+		List projectList = new ArrayList();
+		IWorkspaceRoot workspaceRoot = PerlDebugPlugin.getWorkspace().getRoot();
+		IProject[] projects = workspaceRoot.getProjects();
+		for (int i = 0; i < projects.length; i++)
+		{
+			IProject project = projects[i];
+			try
+			{
+				if (project.exists() && project.hasNature(PERL_NATURE_ID))
+				{
+					//System.out.println("Perl Project: " + project.getName());
+					projectList.add(project.getName());
+				}
+			} catch (CoreException e)
+			{
+				e.printStackTrace();
+			}
+
+		}
+		return (String[]) projectList.toArray(new String[projectList.size()]);
 	}
 
 }

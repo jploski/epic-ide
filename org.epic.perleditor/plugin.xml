@@ -206,39 +206,9 @@
          </action>
       </viewerContribution>
 
-    <!-- Viewer Popup Source menu (luelljoc) -->
-    <viewerContribution
-            targetID="#PerlSourceEditorContext"
-            id="org.epic.perleditor.PerlSourcePopup">
-          <menu
-               label="&amp;Source"
-               path="additions"
-               id="PerlSourcePopupMenu">
-            <separator
-                  name="PerlDocGroup">
-            </separator>
-         </menu>
-         <!-- Validate syntax -->
-         <action
-               definitionId="org.epic.perleditor.validatesyntax"
-               label="&amp;Validate Syntax"
-               class="org.epic.perleditor.actions.ValidateSourceAction"
-               menubarPath="PerlSourcePopupMenu/PerlSourceGroup"
-               id="org.epic.perleditor.ValidateSyntax">
-         </action>         
- 		<!-- Format source action -->
-         <action
-               definitionId="org.epic.perleditor.formatsource"
-               label="F&amp;ormat"
-               class="org.epic.perleditor.actions.FormatSourceAction"
-               menubarPath="PerlSourcePopupMenu/PerlSourceGroup"
-               id="org.epic.perleditor.FormatSource">
-         </action>
-    </viewerContribution>
- 
-	<!-- Perdoc menu -->
+	<!-- Popup Menu menu -->
       <viewerContribution
-            targetID="#PerlDocEditorContext"
+            targetID="#PerlEditorContext"
             id="org.epic.perleditor.PerlDocPopup">
          <menu
                label="&amp;Perldoc"
@@ -276,6 +246,48 @@
                menubarPath="PerlDocPopupMenu/PerlDocGroup"
                id="org.epic.perleditor.popupmenus.PerlDocAction.Module">
          </action>
+         <!-- SUBMENU: Source Menu -->
+         <menu
+               label="&amp;Source"
+               path="additions"
+               id="PerlSourcePopupMenu">
+            <separator
+                  name="PerlDocGroup">
+            </separator>
+         </menu>
+         <!-- Validate syntax -->
+         <action
+               definitionId="org.epic.perleditor.validatesyntax"
+               label="&amp;Validate Syntax"
+               class="org.epic.perleditor.actions.ValidateSourceAction"
+               menubarPath="PerlSourcePopupMenu/PerlSourceGroup"
+               id="org.epic.perleditor.ValidateSyntax">
+         </action>         
+ 		<!-- Format source action -->
+         <action
+               definitionId="org.epic.perleditor.formatsource"
+               label="F&amp;ormat"
+               class="org.epic.perleditor.actions.FormatSourceAction"
+               menubarPath="PerlSourcePopupMenu/PerlSourceGroup"
+               id="org.epic.perleditor.FormatSource">
+         </action>
+         <!-- Uncomment action -->
+         <action
+               definitionId="org.epic.perleditor.uncomment"
+               label="&amp;Uncomment"
+               class="org.epic.perleditor.actions.UncommentAction"
+               menubarPath="PerlSourcePopupMenu/PerlSourceGroup"
+               id="org.epic.perleditor.Uncomment">
+         </action>
+         <!-- Comment action -->
+         <action
+               definitionId="org.epic.perleditor.comment"
+               label="Co&amp;mment"
+               class="org.epic.perleditor.actions.CommentAction"
+               menubarPath="PerlSourcePopupMenu/PerlSourceGroup"
+               id="org.epic.perleditor.Comment">
+         </action>
+         <!-- Open Declaration -->
          <menu
                label="&amp;OpenDeclaration"
                path="additions"

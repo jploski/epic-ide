@@ -25,6 +25,7 @@ import org.eclipse.jface.text.source.projection.ProjectionSupport;
 import org.eclipse.jface.text.source.projection.ProjectionViewer;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
+import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
@@ -164,9 +165,9 @@ public class PerlEditor extends TextEditor implements
 		IDocument document = provider.getDocument(getEditorInput());
 		getSourceViewer().setDocument(document);
 
-//		fDocumentProvider = provider;
-//		fSourceViewer = (SourceViewer) getSourceViewer();
-
+
+//		fDocumentProvider = provider;//
+//		fSourceViewer = (SourceViewer) getSourceViewer();
 		if (fValidationThread == null && isPerlMode()) {
 			fValidationThread = new PerlSyntaxValidationThread(this,
 					getSourceViewer());
@@ -492,7 +493,6 @@ public class PerlEditor extends TextEditor implements
 	protected void handleCursorPositionChanged() {
 		super.handleCursorPositionChanged();
 
-   
 		StyledText myText = getSourceViewer().getTextWidget();
 		IDocument myDocument=getSourceViewer().getDocument();
 		
@@ -692,11 +692,16 @@ public class PerlEditor extends TextEditor implements
 			posChange += currentTextLength - lastTextLength;
 		}
 		if (posChange >= 0 && posChange <= currentTextLength) {
-			if (newStyleRange.equals(myText.getStyleRangeAtOffset(posChange))) {
-				myLastStyleRange.start = posChange;
-				myText.setStyleRange(myLastStyleRange);
-			}
-			markDocPos = -1;
+		  try {
+				if (newStyleRange.equals(myText.getStyleRangeAtOffset(posChange))) {
+					myLastStyleRange.start = posChange;
+					myText.setStyleRange(myLastStyleRange);
+				}
+				markDocPos = -1;
+		  } catch (Exception e) {
+        // illegal Position
+				markDocPos = -1;
+      }
 		}
 	}
 

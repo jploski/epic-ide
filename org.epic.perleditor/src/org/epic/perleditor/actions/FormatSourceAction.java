@@ -2,9 +2,11 @@ package org.epic.perleditor.actions;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.swt.custom.StyledText;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PlatformUI;
 
@@ -29,20 +31,60 @@ public class FormatSourceAction extends Action implements
 
 		IDocument document = editor.getDocumentProvider().getDocument(
 				editor.getEditorInput());
+		StringBuffer text= new StringBuffer();
+		text.append(document.get());
+		if (text.length() == 0) {
+		  return;
+		}
+		
+		//create an Anchor
+		String myLineSep ="";
+		try {
+      myLineSep = document.getLineDelimiter(0);
+    } catch (BadLocationException e) {
+      // nothing needs to be done, no LineSep
+    }
+		String posAnchor="φί§²";
+		String insertAnchor = "#" + posAnchor;
+		while (text.indexOf(insertAnchor) >= 0) {
+		  insertAnchor += posAnchor;
+		}
+		
 		ISourceViewer viewer = editor.getViewer();
-		int topIndex = viewer.getTextWidget().getTopIndex();
-		int carretOffset = viewer.getTextWidget().getCaretOffset();
-		String text = new SourceFormatter().doConversion(document.get());
+		StyledText myTextWidget = viewer.getTextWidget();
+		//get the point to insert the Anchor
+		int lineOfScreen = myTextWidget.getLineAtOffset(myTextWidget.getCaretOffset());
+		int insPos = 0;
+		if (lineOfScreen > 0) {
+			insPos = myTextWidget.getOffsetAtLine(lineOfScreen + 1) -
+			         myLineSep.length();
+		  //inser the Anchor
+			text.insert(insPos, insertAnchor);
+			//rel. Pos on the Screen
+			lineOfScreen -= myTextWidget.getTopIndex();
+		}
+		
+		StringBuffer newText = new StringBuffer();
+		String formatText=new SourceFormatter().doConversion(text + "");
+		newText.append(formatText);
 
-		if (text != null) {
-			document.set(text);
-			viewer.getTextWidget().setTopIndex(topIndex);
-			viewer.getTextWidget().setCaretOffset(carretOffset);
-			viewer.getTextWidget().redraw();
-			// Re-validate Syntax
-			if (editor != null) {
-				editor.revalidateSyntax(true);
-			}
+		if (formatText == null  || formatText.length() == 0 || newText.equals(text) || formatText.equals(insertAnchor)) {
+		  //no news after formatting!
+		  return;
+		}
+		
+		int newPosAnchor=0;
+		if (insPos > 0) {
+		  newPosAnchor = newText.indexOf(insertAnchor);
+		  newText.delete(newPosAnchor, newPosAnchor + insertAnchor.length());
+		}
+		document.set(newText + "");
+		//set the new Cursor pos at the beginning of the Line
+		myTextWidget.setCaretOffset(myTextWidget.getOffsetAtLine(myTextWidget.getLineAtOffset(newPosAnchor)));
+		myTextWidget.setTopIndex(myTextWidget.getLineAtOffset(newPosAnchor) - lineOfScreen);
+		// Re-validate Syntax
+		if (editor != null) {
+			editor.revalidateSyntax(true);
 		}
 	}
 

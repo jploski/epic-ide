@@ -7,6 +7,7 @@ import org.eclipse.ui.editors.text.TextEditorActionContributor;
 
 import org.epic.perleditor.actions.ExportHtmlSourceAction;
 import org.epic.perleditor.actions.FormatSourceAction;
+import org.epic.perleditor.actions.ToggleCommentAction;
 import org.epic.perleditor.actions.ValidateSourceAction;
 import org.epic.perleditor.popupmenus.OpenDeclaration;
 
@@ -20,6 +21,7 @@ public class PerlActionContributor extends TextEditorActionContributor {
 	protected ExportHtmlSourceAction htmExportAction;
 	protected ValidateSourceAction validateSourceAction;
 	protected OpenDeclaration openDeclarationAction;
+	protected ToggleCommentAction toggleCommentAction;
 
 	/**
 	 * Default constructor.
@@ -30,6 +32,7 @@ public class PerlActionContributor extends TextEditorActionContributor {
 		htmExportAction = new ExportHtmlSourceAction();
 		validateSourceAction = new ValidateSourceAction();
 		openDeclarationAction = new OpenDeclaration();
+		toggleCommentAction = new ToggleCommentAction();
 		//formatSourceAction.setActionDefinitionId("org.epic.perledior.formatsource");
 	}
 
@@ -61,10 +64,10 @@ public class PerlActionContributor extends TextEditorActionContributor {
 						
 				IActionBars bars= getActionBars();
 				bars.setGlobalActionHandler("org.epic.perleditor.ContentAssist", getAction(editor, "org.epic.perleditor.ContentAssist"));
-				bars.setGlobalActionHandler("org.epic.perleditor.Comment", getAction(editor, "org.epic.perleditor.Comment"));
-				bars.setGlobalActionHandler("org.epic.perleditor.Uncomment", getAction(editor, "org.epic.perleditor.Uncomment"));
+
 				
 				if(editor.isPerlMode()) {
+					bars.setGlobalActionHandler("org.epic.perleditor.ToggleComment", toggleCommentAction);
 					bars.setGlobalActionHandler("org.epic.perleditor.FormatSource", formatSourceAction);
 					bars.setGlobalActionHandler("org.epic.perleditor.HtmlExport", htmExportAction);
 					bars.setGlobalActionHandler("org.epic.perleditor.ValidateSyntax", validateSourceAction);
@@ -75,6 +78,7 @@ public class PerlActionContributor extends TextEditorActionContributor {
 					bars.setGlobalActionHandler("org.epic.perleditor.HtmlExport", null);
 					bars.setGlobalActionHandler("org.epic.perleditor.ValidateSyntax", null);
 					bars.setGlobalActionHandler("org.epic.perleditor.popupmenus.OpenSubAction", null);
+					bars.setGlobalActionHandler("org.epic.perleditor.ToggleComment", null);
 				}
 		}
 				

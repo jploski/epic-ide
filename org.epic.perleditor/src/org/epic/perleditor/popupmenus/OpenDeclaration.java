@@ -229,6 +229,14 @@ implements org.eclipse.ui.IEditorActionDelegate,
               try {
 
                 editor = (PerlEditor) myPage.openEditor(inputNew, editorID);
+                
+                //Perform the Search twice, in case after loading the LineFeed has changed!
+
+                text = editor.getDocumentProvider().getDocument(
+
+                    editor.getEditorInput()).get();
+
+                searchResults = searchSelection(text, selection);
 
               } catch (PartInitException e1) {
 

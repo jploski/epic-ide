@@ -288,22 +288,15 @@
                menubarPath="PerlSourcePopupMenu/PerlSourceGroup"
                id="org.epic.perleditor.FormatSource">
          </action>
-         <!-- Uncomment action -->
+         <!-- Toggle Comment action -->
          <action
-               definitionId="org.epic.perleditor.uncomment"
-               label="&amp;Uncomment"
-               class="org.epic.perleditor.actions.UncommentAction"
+               definitionId="org.epic.perleditor.togglecomment"
+               label="Togg&amp;le Comment"
+               class="org.epic.perleditor.actions.ToggleCommentAction"
                menubarPath="PerlSourcePopupMenu/PerlSourceGroup"
-               id="org.epic.perleditor.Uncomment">
+               id="org.epic.perleditor.ToggleComment">
          </action>
-         <!-- Comment action -->
-         <action
-               definitionId="org.epic.perleditor.comment"
-               label="Co&amp;mment"
-               class="org.epic.perleditor.actions.CommentAction"
-               menubarPath="PerlSourcePopupMenu/PerlSourceGroup"
-               id="org.epic.perleditor.Comment">
-         </action>
+         
          
          <!-- Open Declaration -->
          <menu
@@ -392,22 +385,15 @@
                menubarPath="org.epic.perleditor.source.menu/editGroup"
                id="org.epic.perleditor.FormatSource">
          </action>
-<!-- Uncomment action -->
+<!-- Toggle Comment action -->
          <action
-               definitionId="org.epic.perleditor.uncomment"
-               label="&amp;Uncomment"
+               definitionId="org.epic.perleditor.togglecomment"
+               label="Toggl&amp;e Comment"
                retarget="true"
                menubarPath="org.epic.perleditor.source.menu/editGroup"
-               id="org.epic.perleditor.Uncomment">
+               id="org.epic.perleditor.ToggleComment">
          </action>
-<!-- Comment action -->
-         <action
-               definitionId="org.epic.perleditor.comment"
-               label="Co&amp;mment"
-               retarget="true"
-               menubarPath="org.epic.perleditor.source.menu/editGroup"
-               id="org.epic.perleditor.Comment">
-         </action>
+
 <!-- Open declaration -->
          <action
                label="Open &amp;Declaration"
@@ -429,42 +415,24 @@
             description="Perl Editor Scope"
             id="org.epic.perleditor.perlEditorScope">
       </scope>
-<!-- Uncomment command -->
+
+<!-- Toggle Comment command -->
       <command
-            name="Uncomment"
-            description="Uncomment Source"
-            id="org.epic.perleditor.uncomment">
-      </command>
-      <keyBinding
-            string="Ctrl+\"
-            scope="org.epic.perleditor.perlEditorScope"
-            command="org.epic.perleditor.uncomment"
-            configuration="org.eclipse.ui.defaultAcceleratorConfiguration">
-      </keyBinding>
-      <keyBinding
-            platform="carbon"
-            string="Command+\"
-            scope="org.epic.perleditor.perlEditorScope"
-            command="org.epic.eclipse.perleditor.uncomment"
-            configuration="org.eclipse.ui.defaultAcceleratorConfiguration">
-      </keyBinding>
-<!-- Comment command -->
-      <command
-            name="Comment"
-            description="Comment source"
-            id="org.epic.perleditor.comment">
+            name="ToggleComment"
+            description="Toggle Comment source"
+            id="org.epic.perleditor.togglecomment">
       </command>
       <keyBinding
             string="Ctrl+/"
             scope="org.epic.perleditor.perlEditorScope"
-            command="org.epic.perleditor.comment"
+            command="org.epic.perleditor.togglecomment"
             configuration="org.eclipse.ui.defaultAcceleratorConfiguration">
       </keyBinding>
       <keyBinding
             platform="carbon"
             string="Command+/"
             scope="org.epic.perleditor.perlEditorScope"
-            command="org.epic.eclipse.perleditor.comment"
+            command="org.epic.eclipse.perleditor.togglecomment"
             configuration="org.eclipse.ui.defaultAcceleratorConfiguration">
       </keyBinding>
 <!-- Content assist -->

@@ -192,7 +192,7 @@
                label="Show Local Variables"
                icon="icons/epic.gif"
                tooltip="Show Local Variable"
-               state="false"
+               state="true"
                class="org.epic.debug.ShowLocalVariableActionDelegate"
                menubarPath="additions"
                id="org.epig.debug.showLocalVariablesAction">

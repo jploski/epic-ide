@@ -9,7 +9,7 @@ import org.eclipse.debug.core.model.IThread;
 import org.eclipse.debug.core.model.IVariable;
 import org.eclipse.core.runtime.IPath;
 
-/**---
+/**
  * @author ruehl
  *
  * To change this generated comment edit the template variable "typecomment":
@@ -22,7 +22,7 @@ public class StackFrame implements IStackFrame {
 	/**
 	 * Constructor for StackFrame.
 	 */
-	private IVariable [] mVars = new IVariable[1];
+	private IVariable [] mVars;
 	private PerlDebugThread mThread;
 	private int mIP_Line;
 	private IPath mIP_Path;
@@ -31,7 +31,7 @@ public class StackFrame implements IStackFrame {
 
    public StackFrame(PerlDebugThread fThread) {
 		super();
-		mVars[0]= new Variable(fThread);
+		
 		mThread = fThread;
 		}
 	/**
@@ -48,11 +48,14 @@ public class StackFrame implements IStackFrame {
 		return mVars;
 	}
 
+	public void setVariables(IVariable[] fVars) throws DebugException {
+			mVars = fVars;
+		}
 	/**
 	 * @see org.eclipse.debug.core.model.IStackFrame#hasVariables()
 	 */
 	public boolean hasVariables() throws DebugException {
-		return true;
+		return ( mVars != null && mVars.length > 0);
 	}
 
 	/**
@@ -80,7 +83,7 @@ public class StackFrame implements IStackFrame {
 	 * @see org.eclipse.debug.core.model.IStackFrame#getName()
 	 */
 	public String getName() throws DebugException {
-		return "TopPearlStackFRame";
+		return "TopLevelStackFrame";
 	}
 
 	/**
@@ -129,21 +132,21 @@ public class StackFrame implements IStackFrame {
 	 * @see org.eclipse.debug.core.model.IStep#canStepOver()
 	 */
 	public boolean canStepOver() {
-		return false;
+		return  mThread.canStepOver();
 	}
 
 	/**
 	 * @see org.eclipse.debug.core.model.IStep#canStepReturn()
 	 */
 	public boolean canStepReturn() {
-		return false;
+		return mThread.canStepReturn();
 	}
 
 	/**
 	 * @see org.eclipse.debug.core.model.IStep#isStepping()
 	 */
 	public boolean isStepping() {
-		return false;
+		return mThread.isStepping();
 	}
 
 	/**
@@ -157,65 +160,71 @@ public class StackFrame implements IStackFrame {
 	 * @see org.eclipse.debug.core.model.IStep#stepOver()
 	 */
 	public void stepOver() throws DebugException {
+		mThread.stepOver();
 	}
 
 	/**
 	 * @see org.eclipse.debug.core.model.IStep#stepReturn()
 	 */
 	public void stepReturn() throws DebugException {
+		mThread.stepReturn();
 	}
 
 	/**
 	 * @see org.eclipse.debug.core.model.ISuspendResume#canResume()
 	 */
 	public boolean canResume() {
-		return false;
+		return mThread.canResume();
+		
 	}
 
 	/**
 	 * @see org.eclipse.debug.core.model.ISuspendResume#canSuspend()
 	 */
 	public boolean canSuspend() {
-		return false;
+		return mThread.canSuspend();
 	}
 
 	/**
 	 * @see org.eclipse.debug.core.model.ISuspendResume#isSuspended()
 	 */
 	public boolean isSuspended() {
-		return true;
+		return mThread.isSuspended();
 	}
 
 	/**
 	 * @see org.eclipse.debug.core.model.ISuspendResume#resume()
 	 */
 	public void resume() throws DebugException {
+		mThread.resume();
 	}
 
 	/**
 	 * @see org.eclipse.debug.core.model.ISuspendResume#suspend()
 	 */
 	public void suspend() throws DebugException {
+		mThread.suspend();
 	}
 
 	/**
 	 * @see org.eclipse.debug.core.model.ITerminate#canTerminate()
 	 */
 	public boolean canTerminate() {
-		return false;
+		return mThread.canTerminate();
 	}
 
 	/**
 	 * @see org.eclipse.debug.core.model.ITerminate#isTerminated()
 	 */
 	public boolean isTerminated() {
-		return false;
+		return mThread.isTerminated();
 	}
 
 	/**
 	 * @see org.eclipse.debug.core.model.ITerminate#terminate()
 	 */
 	public void terminate() throws DebugException {
+		mThread.terminate();
 	}
 
 	/**

@@ -19,6 +19,11 @@ package org.epic.debug;
 
 //import java.lang.reflect.InvocationTargetException;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IResourceVisitor;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
@@ -35,18 +40,17 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.ui.IEditorDescriptor;
 //import org.eclipse.swt.widgets.Shell;
-import org.eclipse.swt.widgets.Text;
+//import org.eclipse.swt.widgets.Text;
 //import org.eclipse.ui.dialogs.ElementListSelectionDialog;
 //import org.eclipse.ui.dialogs.SelectionDialog;
 //import org.eclipse.ui.help.WorkbenchHelp;
 import org.eclipse.debug.ui.AbstractLaunchConfigurationTab;
 import org.eclipse.core.resources.IProject;
-
-
-
 
 
 public class LaunchConfigurationMainTab
@@ -63,17 +67,20 @@ public class LaunchConfigurationMainTab
 
 	// Project UI widgets
 	protected Label fProjLabel;
-	protected Text fProjText;
+	protected Combo fProjText;
 	protected Button fProjButton;
 
 	// Main class UI widgets
 	protected Label fMainLabel;
-	protected Text fMainText;
+	protected Combo fMainText;
 //	protected Button fSearchButton;
 //  protected Button fSearchExternalJarsCheckButton;
 //	protected Button fStopInMainCheckButton;
 
 	protected static final String EMPTY_STRING = ""; //$NON-NLS-1$
+	
+	private static final String PERL_NATURE_ID =
+			"org.epic.perleditor.perlnature";
 
 	
 	
@@ -109,13 +116,16 @@ public class LaunchConfigurationMainTab
 		fProjLabel.setLayoutData(gd);
 		fProjLabel.setFont(font);
 
-		fProjText = new Text(projComp, SWT.SINGLE | SWT.BORDER);
+		//fProjText = new Text(projComp, SWT.SINGLE | SWT.BORDER);
+		fProjText = new Combo(projComp, SWT.SINGLE | SWT.BORDER | SWT.READ_ONLY);
 		gd = new GridData(GridData.FILL_HORIZONTAL);
 		fProjText.setLayoutData(gd);
 		fProjText.setFont(font);
+		fProjText.setItems(getPerlProjects());
 		fProjText.addModifyListener(new ModifyListener() {
 			public void modifyText(ModifyEvent evt) {
 				updateLaunchConfigurationDialog();
+				fMainText.setItems(getPerlFiles());
 			}
 		});
 
@@ -146,7 +156,8 @@ public class LaunchConfigurationMainTab
 		fMainLabel.setLayoutData(gd);
 		fMainLabel.setFont(font);
 
-		fMainText = new Text(mainComp, SWT.SINGLE | SWT.BORDER);
+		//fMainText = new Text(mainComp, SWT.SINGLE | SWT.BORDER);
+		fMainText = new Combo(mainComp, SWT.READ_ONLY | SWT.SINGLE | SWT.BORDER);
 		gd = new GridData(GridData.FILL_HORIZONTAL);
 		fMainText.setLayoutData(gd);
 		fMainText.setFont(font);
@@ -188,6 +199,7 @@ public class LaunchConfigurationMainTab
 	 */
 	public void initializeFrom(ILaunchConfiguration config) {
 		updateProjectFromConfig(config);
+		fMainText.setItems(getPerlFiles());
 		updateMainTypeFromConfig(config);
 	}
 
@@ -426,5 +438,82 @@ public class LaunchConfigurationMainTab
 	return( PerlDebugPlugin.getDefaultDesciptorImageRegistry().get( PerlDebugImages.DESC_OBJS_LaunchTabMain));
 	}
 	
+	/**
+	 * Returns a String array whith all Perl projects
+	 * @return Stiring[] List of Perl projects
+	 */
+	private String[] getPerlProjects() {
+		List projectList = new ArrayList();
+		IWorkspaceRoot workspaceRoot = PerlDebugPlugin.getWorkspace().getRoot();
+						IProject[] projects = workspaceRoot.getProjects();
+						for(int i = 0; i < projects.length; i++) {
+								IProject project = projects[i];
+								try {
+									if (project.exists() && project.hasNature(PERL_NATURE_ID)) {
+											//System.out.println("Perl Project: " + project.getName());
+											projectList.add(project.getName());
+									}
+								} catch (CoreException e) {
+									e.printStackTrace();
+								}
+                        
+						}
+						
+						return (String[]) projectList.toArray(new String[projectList.size()]);
+	}
+	
+	private String[] getPerlFiles() {
+		String projectName = fProjText.getText();
+		
+		if(projectName == null || projectName.length() == 0) {
+			return(new String[] {});
+		}
+		
+		IWorkspaceRoot workspaceRoot = PerlDebugPlugin.getWorkspace().getRoot();
+		IProject project =workspaceRoot.getProject(projectName);
+		IResourceVisitor visitor = new PerlProjectVisitor();
+		try {
+			project.accept(visitor);
+		} catch (CoreException e) {
+			e.printStackTrace();
+		}
+		return ((PerlProjectVisitor)visitor).getList();
+	}
+	
+}
+
+class PerlProjectVisitor implements IResourceVisitor {
+	private static final String PERL_EDITOR_ID =
+			"org.epic.perleditor.editors.PerlEditor";
+		private static final String EMB_PERL_FILE_EXTENSION = "epl";
+	
+	private List fileList = new ArrayList();
+	/* (non-Javadoc)
+	 * @see org.eclipse.core.resources.IResourceVisitor#visit(org.eclipse.core.resources.IResource)
+	 */
+	public boolean visit(IResource resource) throws CoreException {
+		IEditorDescriptor defaultEditorDescriptor =
+					PerlDebugPlugin
+						.getDefault()
+						.getWorkbench()
+						.getEditorRegistry()
+						.getDefaultEditor(resource.getFullPath().toString());
+						
+						
+		if(defaultEditorDescriptor == null)  {
+			return true;
+		}
+						
+		if (defaultEditorDescriptor.getId().equals(PERL_EDITOR_ID)
+						&& !resource.getFileExtension().equals(EMB_PERL_FILE_EXTENSION)) {
+							fileList.add(resource.getFullPath().removeFirstSegments(1).toString());
+		}
+		
+		return true;
+	}
+
+	public String[] getList() {
+		return (String[]) fileList.toArray(new String[fileList.size()]);
+	}
 
 }

@@ -10,6 +10,7 @@ import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.model.IDebugElement;
 import org.eclipse.debug.core.model.IDebugTarget;
 import org.eclipse.debug.core.model.IThread;
+import org.eclipse.core.resources.IProject;
 import java.net.*;
 import java.io.*;
 import gnu.regexp.*;
@@ -18,6 +19,14 @@ import org.eclipse.debug.core.DebugEvent;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.IPath;
 import java.util.*;
+import org.eclipse.debug.core.model.IVariable;
+import PerlVarParser;
+import org.epic.perleditor.editors.util.PerlExecutableUtilities;
+import org.epic.perleditor.PerlEditorPlugin;
+import cbg.editor.*;
+
+
+
 
 
 /**
@@ -78,6 +87,7 @@ public class PerlDB	implements IDebugElement {
 	private RE mReSetLineBreakpoint;
 
 	private IP_Position mStartIP;
+	private PerlVarParser mVarParser = new PerlVarParser(this);
 		
 	private final static int mIsStepCommand= mCommandStepInto | mCommandStepOver | mCommandStepReturn;
 	private final static int mIsRunCommand = mIsStepCommand | mCommandResume;
@@ -152,7 +162,7 @@ public class PerlDB	implements IDebugElement {
 	public PerlDB(DebugTarget fTarget) throws InstantiationException
 	{
 		
-		Path path;
+		IPath path;
 		
 		mTarget = fTarget;
 		mProcess = null;
@@ -169,18 +179,51 @@ public class PerlDB	implements IDebugElement {
 		mIsCommandFinished = false;
 		mIsCommandRunning = false;
 		String	startfile = null;
+		String prjName = null;
 		mPendingBreakpoints = new BreakpointMap();
 		mActiveBreakpoints  = new BreakpointMap();
 		
 		try {
 				startfile = mTarget.getLaunch().getLaunchConfiguration().getAttribute(PerlLaunchConfigurationConstants.ATTR_STARTUP_FILE
 					, EMPTY_STRING);
-				} catch (Exception ce) {
-					PerlDebugPlugin.log(ce);
-					}
-		path = new Path(startfile);
+				prjName =  mTarget.getLaunch().getLaunchConfiguration().getAttribute(PerlLaunchConfigurationConstants.ATTR_PROJECT_NAME
+								, EMPTY_STRING);
+				} catch (Exception ce) {PerlDebugPlugin.log(ce);}
+		IProject prj = PerlDebugPlugin.getWorkspace().getRoot().getProject(prjName);
+		
+		path = prj.getLocation().append(startfile);
 		mWorkingDir =  path.removeLastSegments(1);
 		
+		/************************************/
+		
+		// Construct command line parameters
+		List fCmdList = null;
+		try{
+		
+		//fCmdList = new ArrayList();
+		//fCmdList.add("c:\\perl\\bin\\perl.exe");
+		fCmdList=PerlExecutableUtilities.getPerlExecutableCommandLine(prj);
+		} catch ( Exception e){ System.out.println(e);}
+		
+		fCmdList.add("-d");
+		
+		if (PerlEditorPlugin.getDefault().getWarningsPreference()) {
+			fCmdList.add("-w");
+		}
+		
+		
+		if (PerlEditorPlugin.getDefault().getTaintPreference()) {
+			fCmdList.add("-T");
+		}
+		
+		fCmdList.add(startfile);
+		String[] cmdParams =
+			(String[]) fCmdList.toArray(new String[fCmdList.size()]);
+
+		
+		
+		
+		/************************************/
 		mThreads = new PerlDebugThread[1];
 		mThreads[0]= new PerlDebugThread("Main-Thread",fTarget.getLaunch(),fTarget,this);
 		
@@ -225,7 +268,15 @@ public class PerlDB	implements IDebugElement {
 		String nix[] = PerlDebugPlugin.getDebugEnv();
 		
 		try{
-			mProcess=	Runtime.getRuntime().exec("perl -d "+startfile,PerlDebugPlugin.getDebugEnv(), new File(mWorkingDir.toString()));
+				//Runtime.getRuntime().
+			//	exec("perl -d "+startfile,PerlDebugPlugin.getDebugEnv(), new File(mWorkingDir.toString()));
+
+			mProcess= Runtime.getRuntime().exec(
+			cmdParams,
+			PerlDebugPlugin.getDebugEnv(),
+			new File(mWorkingDir.toString()));
+			
+			
 			}catch (Exception e)
 				{ System.out.println(e);
 				  throw new InstantiationException("Failing to create Process !!!");
@@ -553,17 +604,18 @@ public class PerlDB	implements IDebugElement {
 			try{			
 				count = mDebugOut.read(buf);
 			}catch (IOException e)
-				{ 	throw new RuntimeException("Terminating Debug Session due to IO-Error !");}
+				{ abortSession(); throw new RuntimeException("Terminating Debug Session due to IO-Error !");}
 	
 			if(count > 0) debugOutput.append(buf,0,count);
 	
 			currentOutput = debugOutput.toString();
 	
 			System.out.println("\nCurrent DEBUGOUTPUT:\n"+currentOutput+"\n");
-			if(hasCommandTerminated(currentOutput))
-				{ finished = mCommandFinished; break;}  
+		
 			if( hasSessionTerminated(currentOutput) )
 				{ finished = mSessionTerminated; break;}
+			if(hasCommandTerminated(currentOutput))
+				{ finished = mCommandFinished; break;}  
 		}
 		
 		if( finished == mSessionTerminated)
@@ -739,6 +791,7 @@ public class PerlDB	implements IDebugElement {
 	{
 		StackFrame frame = new StackFrame(mThreads[0]);
 		setCurrent_IP_Position(frame);
+		setVarList(frame);
 		mThreads[0].setStrackFrame(frame);
 	}
 	
@@ -782,6 +835,17 @@ public class PerlDB	implements IDebugElement {
 		 
 	}
 
+	private  void setVarList(StackFrame fFrame)
+			{
+				IVariable[] lVars;
+				startSubCommand(mCommandExecuteCode,"X ",false);
+				
+				lVars = mVarParser.parseVars(mDebugSubCommandOutput);
+				try{
+			    fFrame.setVariables(lVars);
+				}catch (Exception e){};
+		 
+			}
 
 	private boolean isStepCommand(int fCommand)
 	{

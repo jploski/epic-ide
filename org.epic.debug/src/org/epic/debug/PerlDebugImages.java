@@ -54,7 +54,9 @@ public class PerlDebugImages {
 	/* Launchconfig*/
 	public static final ImageDescriptor DESC_OBJS_LaunchTabMain= createImageDescriptor(iconPath + "epic.gif");
 	
-
+	/* Expression View */
+		public static final ImageDescriptor ACTION_EXPRESSION_EVALUATE = 
+	createImageDescriptor(iconPath + "run.gif");
 
 	   private static ImageDescriptor createImageDescriptor(String path)
 	   {

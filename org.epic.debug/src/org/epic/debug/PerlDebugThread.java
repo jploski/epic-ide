@@ -81,8 +81,9 @@ public class PerlDebugThread implements IThread {
 		else
 			if( !isTerminated() )
 				return ("<running>"+mName);
+			
+		return (mName);
 		
-		return(mName);
 	}
 
 	/**
@@ -139,7 +140,7 @@ public class PerlDebugThread implements IThread {
 	 * @see org.eclipse.debug.core.model.ISuspendResume#resume()
 	 */
 	public void resume() throws DebugException {
-			System.out.println("DEbugPearl-Thread: Resuming\n");
+			System.out.println("DEbugperl-Thread: Resuming\n");
 		    mPerlDB.resume(this);
 	}
 
@@ -147,7 +148,7 @@ public class PerlDebugThread implements IThread {
 	 * @see org.eclipse.debug.core.model.ISuspendResume#suspend()
 	 */
 	public void suspend() throws DebugException {
-		System.out.println("DEbugPearl-Thread: suspending\n");
+		System.out.println("DEbugperl-Thread: suspending\n");
 		mPerlDB.suspend(this);
 	}
 
@@ -183,7 +184,7 @@ public class PerlDebugThread implements IThread {
 	 * @see org.eclipse.debug.core.model.IStep#stepInto()
 	 */
 	public void stepInto() throws DebugException {
-			System.out.println("DEbugPearl-Thread: StepingInto\n");
+			System.out.println("DEbugperl-Thread: StepingInto\n");
 			mPerlDB.stepInto(this);
 	}
 
@@ -191,7 +192,7 @@ public class PerlDebugThread implements IThread {
 	 * @see org.eclipse.debug.core.model.IStep#stepOver()
 	 */
 	public void stepOver() throws DebugException {
-		System.out.println("DEbugPearl-Thread: StepingOver\n");
+		System.out.println("DEbugperl-Thread: StepingOver\n");
 		mPerlDB.stepOver(this);
 	}
 
@@ -199,7 +200,7 @@ public class PerlDebugThread implements IThread {
 	 * @see org.eclipse.debug.core.model.IStep#stepReturn()
 	 */
 	public void stepReturn() throws DebugException {
-			System.out.println("DEbugPearl-Thread: StepReturn\n");
+			System.out.println("DEbugperl-Thread: StepReturn\n");
 			mPerlDB.stepReturn(this);
 	}
 
@@ -214,7 +215,7 @@ public class PerlDebugThread implements IThread {
 	 * @see org.eclipse.debug.core.model.ITerminate#isTerminated()
 	 */
 	public boolean isTerminated() {
-		System.out.println("DEbugPearl-Thread: is terminated\n");
+		System.out.println("DEbugperl-Thread: is terminated\n");
 		return(mPerlDB.isTerminated(this));
 	}
 
@@ -222,7 +223,7 @@ public class PerlDebugThread implements IThread {
 	 * @see org.eclipse.debug.core.model.ITerminate#terminate()
 	 */
 	public void terminate() throws DebugException {
-		System.out.println("DEbugPearl-Thread: terminating\n");
+		System.out.println("DEbugperl-Thread: terminating\n");
 		mPerlDB.terminate(this);
 	}
 	

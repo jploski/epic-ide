@@ -394,7 +394,7 @@ public class LaunchConfigurationCGIBrowserTab
 
 		customBrowserBrowse = new Button(bPathComposite, SWT.NONE);
 		customBrowserBrowse.setFont(font);
-		customBrowserBrowse.setText("CustomBrowserPreferencePage.Browse"); //$NON-NLS-1$
+		customBrowserBrowse.setText("Select Custom Browser"); //$NON-NLS-1$
 		GridData data = new GridData();
 		data.horizontalAlignment = GridData.FILL;
 		customBrowserBrowse.setLayoutData(data);

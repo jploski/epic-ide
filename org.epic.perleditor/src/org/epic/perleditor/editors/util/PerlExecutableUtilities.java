@@ -68,10 +68,35 @@ public class PerlExecutableUtilities {
 
 		List cmdList = new ArrayList();
 		cmdList.add(perlExe.trim());
+		
+		// Support Include Path in executable command line
+		int index;
+		while((index = perlParams.indexOf("-I")) != -1) {
+            
+            //Check for next include path
+            int next = perlParams.indexOf("-I", index + 1);
+            
+            String param;
+            
+            if(next != -1) {
+			   param = perlParams.substring(index, next).trim();
+			   perlParams = perlParams.substring(next);
+            }
+            else {
+				param = perlParams.substring(index).trim();
+				perlParams = "";
+            }
+			
+			param.trim();
+			
+			cmdList.add(param);
 
+		}
+       /*
 		if (perlParams.length() > 0) {
 			cmdList.add(perlParams.trim());
 		}
+		*/
 
 		if (textEditor != null) {
 			String currentPath =

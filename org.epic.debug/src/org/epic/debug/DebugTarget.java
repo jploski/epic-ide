@@ -16,14 +16,12 @@ import org.epic.perleditor.PerlEditorPlugin;
 
 /**
  * @author ruehl
- *
+ * 
  * To change this generated comment edit the template variable "typecomment":
- * Window>Preferences>Java>Templates.
- * To enable and disable the creation of type comments go to
- * Window>Preferences>Java>Code Generation.
+ * Window>Preferences>Java>Templates. To enable and disable the creation of type
+ * comments go to Window>Preferences>Java>Code Generation.
  */
-public abstract class DebugTarget extends Target 
-{
+public abstract class DebugTarget extends Target {
 
 	private boolean mShutDownStarted;
 
@@ -34,84 +32,68 @@ public abstract class DebugTarget extends Target
 	/**
 	 * Constructor for DebugTarget.
 	 */
-	public DebugTarget()
-	{
+	public DebugTarget() {
 		super();
 	}
 
 	/**
-		 * Constructor for DebugTarget.
-		 */
-	public DebugTarget(ILaunch launch)
-	{
+	 * Constructor for DebugTarget.
+	 */
+	public DebugTarget(ILaunch launch) {
 		super(launch);
 
 	}
 
-	public DebugTarget(ILaunch launch, RemotePort fPort)
-		{
-			super(launch);
-			mDebugPort = fPort;
-		}
-	public void start()
-	{
-		if (connectDebugger(true) != RemotePort.mWaitOK)
-					terminate();
+	public DebugTarget(ILaunch launch, RemotePort fPort) {
+		super(launch);
+		mDebugPort = fPort;
 	}
-	 int connectDebugger(boolean fTimeout)
-	{
+	public void start() {
+		if (connectDebugger(true) != RemotePort.mWaitOK)
+			terminate();
+	}
+	int connectDebugger(boolean fTimeout) {
 		int res = connectDebugPort(fTimeout);
-		
-		if (  res != RemotePort.mWaitOK)
-		{
+
+		if (res != RemotePort.mWaitOK) {
 			return res;
 		}
 
-		try
-		{
+		try {
 			mPerlDB = new PerlDB(this);
-		} catch (Exception e)
-		{
+		} catch (Exception e) {
 			PerlDebugPlugin.getDefault().logError(
-				"Failing to create PerlDB-Interface !!!",
-				e);
+					"Failing to create PerlDB-Interface !!!", e);
 			return RemotePort.mWaitError;
 		}
 
 		return (RemotePort.mWaitOK);
 	}
 
-	 int connectDebugPort(boolean fTimeout)
-	{
-		
-		if( mDebugPort == null )
-		{
+	int connectDebugPort(boolean fTimeout) {
+
+		if (mDebugPort == null) {
 			mDebugPort = new RemotePort();
 			mDebugPort.startConnect();
-		}
-		else
-		 mDebugPort.startReconnect();
+		} else
+			mDebugPort.startReconnect();
 
 		startPerlProcess();
 
 		int res = mDebugPort.waitForConnect(fTimeout);
-		
 
-		if ( res  == RemotePort.mWaitError)
-		{
+		if (res == RemotePort.mWaitError) {
 			PerlDebugPlugin.errorDialog("Could not connect to Debugg-Port !");
-				}
-		
-			return res;
+		}
+
+		return res;
 	}
 
-	public PrintWriter getDebugWriteStream()
-	{
+	public PrintWriter getDebugWriteStream() {
 		return mDebugPort.getWriteStream();
 	}
 
-	public BufferedReader getDebugReadSrream()
-	{
+	public BufferedReader getDebugReadSrream() {
 		return mDebugPort.getReadStream();
 	}
 
@@ -119,17 +101,15 @@ public abstract class DebugTarget extends Target
 	 * @see org.eclipse.debug.core.model.IDebugTarget#getProcess()
 	 */
 
-	public PerlDB getDebuger()
-	{
+	public PerlDB getDebuger() {
 		return mPerlDB;
 	}
 
 	/**
 	 * @see org.eclipse.debug.core.model.IDebugTarget#getThreads()
 	 */
-	public IThread[] getThreads() throws DebugException
-	{
-		if( mPerlDB == null)
+	public IThread[] getThreads() throws DebugException {
+		if (mPerlDB == null)
 			return null;
 		return mPerlDB.getThreads();
 	}
@@ -137,10 +117,9 @@ public abstract class DebugTarget extends Target
 	/**
 	 * @see org.eclipse.debug.core.model.IDebugTarget#hasThreads()
 	 */
-	public boolean hasThreads() throws DebugException
-	{
-		if( mPerlDB == null)
-			return(false);
+	public boolean hasThreads() throws DebugException {
+		if (mPerlDB == null)
+			return (false);
 		return (mPerlDB.getThreads() != null);
 	}
 
@@ -151,205 +130,183 @@ public abstract class DebugTarget extends Target
 	/**
 	 * @see org.eclipse.debug.core.model.IDebugTarget#supportsBreakpoint(IBreakpoint)
 	 */
-	public boolean supportsBreakpoint(IBreakpoint breakpoint)
-	{
+	public boolean supportsBreakpoint(IBreakpoint breakpoint) {
 		return false;
 	}
 
 	/**
 	 * @see org.eclipse.debug.core.model.IDebugElement#getModelIdentifier()
 	 */
-	public String getModelIdentifier()
-	{
+	public String getModelIdentifier() {
 		return PerlDebugPlugin.getUniqueIdentifier();
 	}
 
 	/**
 	 * @see org.eclipse.debug.core.model.IDebugElement#getLaunch()
 	 */
-	public ILaunch getLaunch()
-	{
+	public ILaunch getLaunch() {
 		return mLaunch;
 	}
 
 	/**
 	 * @see org.eclipse.debug.core.model.ITerminate#canTerminate()
 	 */
-	public boolean canTerminate()
-	{
+	public boolean canTerminate() {
 		return !isTerminated();
 	}
 
 	/**
 	 * @see org.eclipse.debug.core.model.ITerminate#isTerminated()
 	 */
-	public boolean isTerminated()
-	{
-		return mPerlDB.isTerminated(this) ;
+	public boolean isTerminated() {
+		if (mPerlDB == null)
+			return true;
+		return mPerlDB.isTerminated(this);
 	}
 
 	/**
 	 * @see org.eclipse.debug.core.model.ITerminate#terminate()
 	 */
-	public void terminate() 
-	{
+	public void terminate() {
 		shutdown();
 	}
 
-	public boolean canResume()
-	{
-		if( mPerlDB == null)
-		 return false;
-		 
+	public boolean canResume() {
+		if (mPerlDB == null)
+			return false;
+
 		return mPerlDB.canResume(this);
 	}
 
 	/**
 	 * @see org.eclipse.debug.core.model.ISuspendResume#canSuspend()
 	 */
-	public boolean canSuspend()
-	{
-		if( mPerlDB == null)
-				 return false;
+	public boolean canSuspend() {
+		if (mPerlDB == null)
+			return false;
 		return mPerlDB.canSuspend(this);
 	}
 
 	/**
 	 * @see org.eclipse.debug.core.model.ISuspendResume#isSuspended()
 	 */
-	public boolean isSuspended()
-	{
-		if( mPerlDB == null)
-				 return false;
+	public boolean isSuspended() {
+		if (mPerlDB == null)
+			return false;
 		return mPerlDB.isSuspended(this);
 	}
 
 	/**
 	 * @see org.eclipse.debug.core.model.ISuspendResume#resume()
 	 */
-	public void resume() throws DebugException
-	{
+	public void resume() throws DebugException {
 		mPerlDB.resume(this);
 	}
 
 	/**
 	 * @see org.eclipse.debug.core.model.ISuspendResume#suspend()
 	 */
-	public void suspend() throws DebugException
-	{
+	public void suspend() throws DebugException {
 		mPerlDB.suspend(this);
 	}
 
 	/**
 	 * @see org.eclipse.debug.core.IBreakpointListener#breakpointAdded(IBreakpoint)
 	 */
-	public void breakpointAdded(IBreakpoint breakpoint)
-	{
+	public void breakpointAdded(IBreakpoint breakpoint) {
 	}
 
 	/**
-	 * @see org.eclipse.debug.core.IBreakpointListener#breakpointRemoved(IBreakpoint, IMarkerDelta)
+	 * @see org.eclipse.debug.core.IBreakpointListener#breakpointRemoved(IBreakpoint,
+	 *      IMarkerDelta)
 	 */
-	public void breakpointRemoved(IBreakpoint breakpoint, IMarkerDelta delta)
-	{
+	public void breakpointRemoved(IBreakpoint breakpoint, IMarkerDelta delta) {
 	}
 
 	/**
-	 * @see org.eclipse.debug.core.IBreakpointListener#breakpointChanged(IBreakpoint, IMarkerDelta)
+	 * @see org.eclipse.debug.core.IBreakpointListener#breakpointChanged(IBreakpoint,
+	 *      IMarkerDelta)
 	 */
-	public void breakpointChanged(IBreakpoint breakpoint, IMarkerDelta delta)
-	{
+	public void breakpointChanged(IBreakpoint breakpoint, IMarkerDelta delta) {
 	}
 
-	public boolean canDisconnect()
-	{
+	public boolean canDisconnect() {
 		return false;
 	}
 
 	/**
 	 * @see org.eclipse.debug.core.model.IDisconnect#disconnect()
 	 */
-	public void disconnect()
-	{
+	public void disconnect() {
 	}
 
-	public boolean isDisconnected()
-	{
+	public boolean isDisconnected() {
 		return false;
 	}
 
 	/**
 	 * @see org.eclipse.debug.core.model.IMemoryBlockRetrieval#supportsStorageRetrieval()
 	 */
-	public boolean supportsStorageRetrieval()
-	{
+	public boolean supportsStorageRetrieval() {
 		return false;
 	}
 
 	/**
-	 * @see org.eclipse.debug.core.model.IMemoryBlockRetrieval#getMemoryBlock(long, long)
+	 * @see org.eclipse.debug.core.model.IMemoryBlockRetrieval#getMemoryBlock(long,
+	 *      long)
 	 */
 	public IMemoryBlock getMemoryBlock(long startAddress, long length)
-		throws DebugException
-	{
+			throws DebugException {
 		return null;
 	}
 
 	/**
 	 * @see org.eclipse.core.runtime.IAdaptable#getAdapter(Class)
 	 */
-	public Object getAdapter(Class arg0)
-	{
+	public Object getAdapter(Class arg0) {
 		return null;
 	}
 
-	public void shutdown(boolean unregister)
-	{
-		if( mShutDownStarted)
+	public void shutdown(boolean unregister) {
+		if (mShutDownStarted)
 			return;
 		mShutDownStarted = true;
-		if ( mPerlDB != null && !mPerlDB.isTerminated())
+		if (mPerlDB != null && !mPerlDB.isTerminated())
 			mPerlDB.shutdown();
-		if( mDebugPort !=null)
+		if (mDebugPort != null)
 			mDebugPort.shutdown();
 		super.shutdown(unregister);
 	}
 
-	
-
-	void debugSessionTerminated()
-	{
+	void debugSessionTerminated() {
 		shutdown();
-//		Thread term = new Thread()
-//		{
-//			public void run()
-//			{
-//				shutdown();
-//			}
-//		};
-//
-//		term.start();
-//		return;
+		//		Thread term = new Thread()
+		//		{
+		//			public void run()
+		//			{
+		//				shutdown();
+		//			}
+		//		};
+		//
+		//		term.start();
+		//		return;
 	}
 
-
-	public String getDebugPort()
-	{
+	public String getDebugPort() {
 		return Integer.toString(mDebugPort.getServerPort());
 	}
 
-public PathMapper getPathMapper()
-{
-	String interpreterType = PerlEditorPlugin.getDefault()
-	.getPreferenceStore().getString(
-			PerlEditorPlugin.INTERPRETER_TYPE_PREFERENCE);
+	public PathMapper getPathMapper() {
+		String interpreterType = PerlEditorPlugin.getDefault()
+				.getPreferenceStore().getString(
+						PerlEditorPlugin.INTERPRETER_TYPE_PREFERENCE);
 
-	if (interpreterType.equals(PerlEditorPlugin.INTERPRETER_TYPE_CYGWIN)) 
-		return( new PathMapperCygwin());
-	else 
-		return (null);
-}
-	
-public void perlDBstarted(PerlDB fDB)
-{}
+		if (interpreterType.equals(PerlEditorPlugin.INTERPRETER_TYPE_CYGWIN))
+			return (new PathMapperCygwin());
+		else
+			return (null);
+	}
+
+	public void perlDBstarted(PerlDB fDB) {
+	}
 }

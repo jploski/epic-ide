@@ -1,15 +1,40 @@
-/*
- * Created on Jan 31, 2004
- *
- * To change the template for this generated file go to
- * Window&gt;Preferences&gt;Java&gt;Code Generation&gt;Code and Comments
- */
 package org.epic.perleditor.views;
 
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
+import java.util.List;
+
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.text.Document;
+import org.eclipse.jface.text.FindReplaceDocumentAdapter;
+import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.text.IRegion;
+import org.eclipse.jface.text.source.SourceViewer;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.StyledText;
+import org.eclipse.swt.custom.StyleRange;
+import org.eclipse.swt.events.KeyAdapter;
+import org.eclipse.swt.events.KeyEvent;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.TabFolder;
+import org.eclipse.swt.widgets.TabItem;
+import org.eclipse.swt.widgets.Text;
+import org.eclipse.swt.widgets.Widget;
+import org.eclipse.ui.editors.text.TextEditor;
 import org.eclipse.ui.part.ViewPart;
+import org.eclipse.ui.texteditor.ITextEditor;
+import org.epic.perleditor.editors.util.PerlExecutableUtilities;
+import org.epic.perleditor.popupmenus.PopupMessages;
+import org.epic.perleditor.editors.PerlImages;
 
 /**
  * @author luelljoc
@@ -18,8 +43,25 @@ import org.eclipse.ui.part.ViewPart;
  * Window&gt;Preferences&gt;Java&gt;Code Generation&gt;Code and Comments
  */
 public class PerlDocView extends ViewPart {
-
-	private StyledText perldocText;
+	
+	
+	private Button highlightButton;
+	private Button searchPerldocButton;
+	private Text highlightText;
+	private Text searchPerldocText;
+	private Display display;
+	private Color highlightColor;
+	private Color highlightBackgroundColor;
+	private TabFolder tabFolder;
+	
+	
+	private static int ITEM_COUNT = 4;
+	private static String[] searchOptions = {"-t -f", "-t -q", "-t", "-m"};
+	private static String[] tabItemsLabels = {"Builtin Function", "FAQ", "Module", "Module Source"};
+	private boolean[] foundItems = {false, false, false, false};
+	private SourceViewer[] sourceViewers = {null, null, null, null};
+	private TabItem[] tabItems = {null, null, null, null};
+	//private IDocumentPartitioner partitioner;
 	
 
 	public PerlDocView() {
@@ -31,24 +73,293 @@ public class PerlDocView extends ViewPart {
 	 * @see org.eclipse.ui.part.WorkbenchPart#createPartControl(org.eclipse.swt.widgets.Composite)
 	 */
 	public void createPartControl(Composite parent) {
-		perldocText = new StyledText(parent, SWT.MULTI | SWT.V_SCROLL
-				| SWT.H_SCROLL);
-		perldocText.setEditable(false);
-
+		 display = parent.getDisplay();
+		 highlightColor = new Color(display, 255, 127, 0);
+		 highlightBackgroundColor = new Color(display, 255, 255, 255);
+		 
+		
+		GridLayout gridLayout = new GridLayout(); 
+		gridLayout.numColumns = 6;
+		parent.setLayout(gridLayout);
+		
+		GridData gridData;
+		
+		new Label(parent, SWT.NULL).setText("Search:");
+		
+		searchPerldocText = new Text(parent, SWT.BORDER);
+		gridData = new GridData();
+		gridData.widthHint = 100;		
+		searchPerldocText.setLayoutData(gridData);
+		
+		searchPerldocButton = new Button(parent, SWT.PUSH | SWT.FLAT);
+		searchPerldocButton.setImage(PerlImages.ICON_SEARCH.createImage());
+		searchPerldocButton.setToolTipText("Search Perldoc");
+		
+		gridData = new GridData();
+		gridData.horizontalIndent = 20;
+		Label highlightLabel = new Label(parent, SWT.NULL);
+		highlightLabel.setText("Highlight:");
+		highlightLabel.setLayoutData(gridData);
+		
+		highlightText = new Text(parent, SWT.BORDER);
+		gridData = new GridData();
+		gridData.widthHint = 100;		
+		highlightText.setLayoutData(gridData);
+		
+		highlightButton = new Button(parent, SWT.PUSH | SWT.FLAT);
+		highlightButton.setImage(PerlImages.ICON_MARK_OCCURRENCES.createImage());
+		highlightButton.setToolTipText("Highlight Text");
+		
+		 tabFolder = new TabFolder( parent, SWT.BORDER);
+		 // Inititalize SourceViewers
+		 for(int i = 0; i < sourceViewers.length; i++) {
+		 	sourceViewers[i] = new SourceViewer(tabFolder, null, SWT.MULTI | SWT.V_SCROLL | SWT.H_SCROLL);
+		 	sourceViewers[i].setEditable(false);
+		 }
+		
+		
+		gridData = new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.VERTICAL_ALIGN_FILL);
+		gridData.horizontalAlignment = GridData.FILL;
+		gridData.grabExcessVerticalSpace = true;
+		gridData.grabExcessHorizontalSpace = true;
+		gridData.horizontalSpan = 6;
+		
+		tabFolder.setLayoutData(gridData);
+		
+		parent.pack();
+		
+		Listener listener = new Listener() {
+	        public void handleEvent(Event event) {
+	          Widget item = event.widget;
+	          if (item == highlightButton) {
+	            highlightText();
+	          }
+	          else if(item == searchPerldocButton) {
+	          	search();
+	          }
+	          
+	        }
+	      };
+	      
+	      KeyAdapter keyListener = new KeyAdapter() {
+	      	  public void keyPressed(KeyEvent event) {
+	      	  	Widget item = event.widget;
+	      	  	
+	      	  	switch(event.keyCode) {
+	      	  		case 13:
+	      	  				if(item == searchPerldocText) {
+	      	  					search();
+	      	  				}
+	      	  				else if(item == highlightText) {
+	      	  			    highlightText();
+	      	  				}
+	      	  				break;
+	      	  	}
+	      	  }
+	      	
+	      };
+	      
+	      searchPerldocButton.addListener(SWT.Selection, listener);
+	      searchPerldocText.addKeyListener(keyListener);
+	      highlightButton.addListener(SWT.Selection, listener);
+	      highlightText.addKeyListener(keyListener);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
+	
+	public void search() {
+		search(searchPerldocText.getText());
+	}
+	
+	public void search(String searchText) {
+		search(searchText, null);
+	}
+	
+	public void search(String searchText, ITextEditor textEditor) {
+		
+		if(searchText.trim().length() == 0) {
+			return;
+		}
+		
+		if(!searchPerldocText.getText().equals(searchText)) {
+			searchPerldocText.setText(searchText);
+		}
+		
+		// Search PerlDoc
+		int itemsFound = 0;
+		for(int i = 0; i < ITEM_COUNT; i++) {
+			String result = getPerlDoc(searchOptions[i], searchText, textEditor);
+			sourceViewers[i].setDocument(new Document(result));
+			foundItems[i] = result.length() > 0 ? true : false;
+			itemsFound += result.length() > 0 ? 1 : 0;
+		}
+	
+		
+		// Delete all tab items
+		for(int i = 0; i < ITEM_COUNT; i++) {
+			if(tabItems[i] != null) {
+				tabItems[i].dispose();
+				tabItems[i] = null;
+			}
+		}
+		
+		// Show tab items
+		for(int i = 0; i < ITEM_COUNT; i++) {
+			if(foundItems[i]) {
+				// Create new tab item
+				tabItems[i] = new TabItem(tabFolder, SWT.NULL);
+				tabItems[i].setText(tabItemsLabels[i]);
+				tabItems[i].setControl(sourceViewers[i].getControl());
+			}
+			
+		}
+		
+		// Set focus on first tab
+		for(int i = 0; i < ITEM_COUNT; i++) {
+			if(foundItems[i]) {
+				tabItems[i].getControl().setFocus();
+				break;
+			}
+		}
+		
+		// Highlight text
+		highlightText();
+		
+		// If nothing has been found, display info dialog
+		if(itemsFound == 0) {
+			MessageDialog.openInformation(
+					display.getActiveShell(),
+					PopupMessages.getString("NoDocumentation.title"),
+					PopupMessages.getString("NoDocumentation.message"));
+		}
+	}
+	
+	private String getPerlDoc(String option, String searchText) {
+		return getPerlDoc(option, searchText, null);
+	}
+	
+	private String getPerlDoc(String option, String searchText, ITextEditor textEditor) {
+
+		String perlCode =
+			"use Env qw(@PERL5LIB);\n\n"
+				+ "push(@PERL5LIB, @INC);\n"
+				+ "exec('perldoc "
+				+ option
+				+ " \""
+				+ searchText
+				+ "\"');";
+
+		String content = "";
+		
+
+		try {
+
+			//			Construct command line parameters
+			List cmdList;
+			
+			if(textEditor != null) {
+			   cmdList = PerlExecutableUtilities.getPerlExecutableCommandLine(
+					(TextEditor) textEditor);
+			}
+			else {
+				cmdList = PerlExecutableUtilities.getPerlExecutableCommandLine();
+			}
+
+			String[] cmdParams =
+				(String[]) cmdList.toArray(new String[cmdList.size()]);
+
+			//Get working directory -- Fixes Bug: 736631
+//			String workingDir =
+//				((IFileEditorInput) textEditor.getEditorInput())
+//					.getFile()
+//					.getLocation()
+//					.makeAbsolute()
+//					.removeLastSegments(1)
+//					.toString();
+
+//			Process proc = Runtime.getRuntime().exec(cmdParams, null, new File(workingDir));
+//Juergen bitte testen
+			Process proc = Runtime.getRuntime().exec(cmdParams);
+			/*
+			 * Due to Java Bug #4763384 sleep for a very small amount of time
+			 * immediately after starting the subprocess
+			 */
+			Thread.sleep(1);
+
+            proc.getErrorStream().close();
+			InputStream in = proc.getInputStream();
+			OutputStream out = proc.getOutputStream();
+            //TODO which charset?
+            Writer outw = new OutputStreamWriter(out);
+
+			try {
+                outw.write(perlCode);
+                outw.write(0x1a);  //this should avoid problem with Win98
+                outw.flush();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+            out.close();
+			content = PerlExecutableUtilities.readStringFromStream(in);
+			in.close();
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+
+		return content;
+	}
+	
+	/**
+	 * Highlights text in all SourceViewers
+	 */
+	private void highlightText() {
+		for(int i = 0; i < ITEM_COUNT; i++) {
+			if(foundItems[i]) {
+				highlightText(sourceViewers[i]);
+			}
+		}
+	}
+	
+	private void highlightText(SourceViewer sourceViewer) {
+		StyleRange styleRange;
+		
+		IDocument document = sourceViewer.getDocument();
+		
+		// Reset style
+		styleRange = new StyleRange(0, document.getLength(), null, null, SWT.NORMAL);            
+		sourceViewer.getTextWidget().setStyleRange(styleRange);
+		
+		String searchText = highlightText.getText();
+		if(searchText.trim().length() > 0) {
+			FindReplaceDocumentAdapter findAdapter = new FindReplaceDocumentAdapter(document);
+			try {
+				IRegion findResult;
+				int offset = 0;
+				
+				while ((findResult = findAdapter.find(offset, searchText, true, false, true, false))!= null) {
+					int startPos = findResult.getOffset();
+					int endPos = startPos + findResult.getLength();
+					
+					styleRange = new StyleRange();
+			        styleRange.start = startPos;
+			        styleRange.length = findResult.getLength();
+			        styleRange.foreground = highlightBackgroundColor;
+			        //styleRange.fontStyle = SWT.BOLD;
+			        styleRange.background = highlightColor;
+			        sourceViewer.getTextWidget().setStyleRange(styleRange);
+
+			        offset = endPos + 1;
+					
+				}
+			} catch (Exception e) {
+				//e.printStackTrace();
+			}
+		}
+	}
+	/* (non-Javadoc)
 	 * @see org.eclipse.ui.part.WorkbenchPart#setFocus()
 	 */
 	public void setFocus() {
-		perldocText.setFocus();
+		// TODO Auto-generated method stub
 	}
-	
-	public void setText(String text) {
-		perldocText.setText(text);
-	}
-	
 
 }

@@ -317,9 +317,11 @@
             </separator>
          </menu>
          <action
+         definitionId="org.epic.perleditor.searchPerlDoc"
                label="Perldoc"
                icon="icons/book.gif"
                class="org.epic.perleditor.popupmenus.PerlDocAction"
+               tooltip="Search Perldoc"
                menubarPath="PerlDocPopupMenu"
                id="org.epic.perleditor.popupmenus.PerlDocAction">
          </action>
@@ -411,6 +413,16 @@
                definitionId="org.epic.perleditor.openDeclaration"
                menubarPath="navigate/additions"
                id="org.epic.perleditor.popupmenus.OpenSubAction">
+         </action>
+         
+<!-- Perldoc -->
+         <action
+               label="Perldoc"
+               retarget="true"
+               icon="icons/book.gif"
+               definitionId="org.epic.perleditor.searchPerlDoc"
+               menubarPath="help/additions"
+               id="org.epic.perleditor.popupmenus.PerlDocAction">
          </action>
          
 <!-- Matching Bracket -->
@@ -519,6 +531,24 @@
             scope="org.epic.perleditor.perlEditorScope"
             command="org.epic.perleditor.openDeclaration"
             configuration="org.eclipse.ui.defaultAcceleratorConfiguration"/>
+       <command
+            description="Search Perldoc"
+            name="SearchPerldoc"
+            id="org.epic.perleditor.searchPerlDoc"/>
+      <keyBinding
+            string="Shift+Ctrl+H"
+            commandId="org.epic.perleditor.searchPerlDoc"
+            scope="org.epic.perleditor.perlEditorScope"
+            command="org.epic.perleditor.searchPerlDoc"
+            configuration="org.eclipse.ui.defaultAcceleratorConfiguration"/>
+      <keyBinding
+            platform="carbon"
+            string="Shift+Command+H"
+            commandId="org.epic.perleditor.searchPerlDoc"
+            scope="org.epic.perleditor.perlEditorScope"
+            command="org.epic.perleditor.searchPerlDoc"
+            configuration="org.eclipse.ui.defaultAcceleratorConfiguration">
+      </keyBinding>
 	  <command
             description="Matching Bracket"
             name="MatchingBracket"

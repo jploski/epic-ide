@@ -1,5 +1,9 @@
 Eclipse Perl Integration: Perl Editor Plugin
 
+Version 0.1.0 alpha
+		* Fixed bug: [ 822545 ] a plugin is used that Doesn't exist in platform version.
+		* Quickreference totally revised.
+
 Version 0.1.0 alpha  - 10-October-2003
 		* Formatter was blocking on big files. Should be fixed.
 

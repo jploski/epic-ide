@@ -99,7 +99,14 @@ public class Perspective implements IPerspectiveFactory {
 	public static boolean switchPerspective(String perspectiveId) {
 		final IWorkbench workBench = PerlEditorPlugin.getDefault()
 				.getWorkbench();
+		
 		IWorkbenchWindow window = workBench.getActiveWorkbenchWindow();
+		
+		// Make sure to get a window
+		if (window == null) {
+			window = workBench.getWorkbenchWindows()[0];
+		}
+		
 		Display display = workBench.getDisplay();
 		IPerspectiveRegistry reg = WorkbenchPlugin.getDefault()
 				.getPerspectiveRegistry();

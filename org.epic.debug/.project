@@ -5,6 +5,7 @@
 	<projects>
 		<project>org.epic.ext.cbg.editor</project>
 		<project>org.epic.perleditor</project>
+		<project>org.epic.regexp</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

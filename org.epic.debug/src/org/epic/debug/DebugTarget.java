@@ -39,7 +39,7 @@ public class DebugTarget implements IDebugTarget {
 		mLaunch = launch;
 		try{
 		mPerlDB = new PerlDB(this);
-		}catch (Exception e){System.out.println("Failing to create DB-Process: "+e+" !!!");}
+		}catch (Exception e){System.out.println("Failing to create DB-Process: "+e+" !!!");e.printStackTrace();}
 
 		//mThreads[0]= new PerlDebugThread("Hallo",mLaunch,this);
 		if( ! mPerlDB.isTerminated(mPerlDB))

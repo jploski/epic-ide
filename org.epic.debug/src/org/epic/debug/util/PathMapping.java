@@ -11,7 +11,7 @@ public class PathMapping implements Comparator
 	
 	public PathMapping(String fOrg, String fMapped)
 	{
-		mOrg=fOrg;
+		mOrg= new Path(fOrg).toString();
 		mMapped=fMapped;
 	}
 			

@@ -350,4 +350,6 @@ public PathMapper getPathMapper()
 		return (null);
 }
 	
+public void perlDBstarted(PerlDB fDB)
+{}
 }

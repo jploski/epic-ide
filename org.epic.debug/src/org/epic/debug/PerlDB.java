@@ -22,6 +22,7 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 import java.util.StringTokenizer;
 
@@ -289,7 +290,7 @@ public class PerlDB implements IDebugElement, ITerminate {
 			//		mTarget.setProcess(p);
 			/** ******************************** */
 			PerlDebugPlugin.getPerlBreakPointmanager().addDebugger(this);
-
+			mTarget.perlDBstarted(this);
 			updateStackFramesInit(null);
 			generateDebugInitEvent();
 		} else
@@ -816,7 +817,7 @@ public class PerlDB implements IDebugElement, ITerminate {
 		boolean finished = false;
 		boolean skip = false;
 
-		if (!isSuspended(null) &&  !( mTarget instanceof CGITarget))
+		if (!isSuspended(null) && !(mTarget instanceof CGITarget))
 			mTarget.killDebugProcess();
 		else {
 			try {
@@ -1437,6 +1438,23 @@ public class PerlDB implements IDebugElement, ITerminate {
 
 	}
 
+	public void getRemoteInc(List fErg) {
+
+		String erg;
+		erg = evaluateStatement(mThreads[0],
+				";{foreach $t(@INC) {print $DB::OUT $t.\"\\n\";}}", false);
+	
+		StringTokenizer s = new StringTokenizer(erg, "\r\n");
+
+		String token;
+		int count = s.countTokens();
+		
+		for (int x = 0; x < count; ++x) {
+			token = s.nextToken();
+			fErg.add(token);
+		}
+	}
+
 	public void redirectError(int fPort) {
 		String ip = null;
 
@@ -1565,7 +1583,7 @@ public class PerlDB implements IDebugElement, ITerminate {
 
 		public IStatus run(IProgressMonitor fMon) {
 
-		//	long start = System.currentTimeMillis();
+			//	long start = System.currentTimeMillis();
 			this.getThread().setPriority(Thread.MIN_PRIORITY);
 			fMon.beginTask("Vars", 100);
 			Thread.yield();
@@ -1580,8 +1598,9 @@ public class PerlDB implements IDebugElement, ITerminate {
 				fMon.worked(10);
 				Thread.yield();
 			}
-//			System.err.println("Time needed for waiting: "+(start-System.currentTimeMillis())+"\n");
-//			start = System.currentTimeMillis();
+			//			System.err.println("Time needed for waiting:
+			// "+(start-System.currentTimeMillis())+"\n");
+			//			start = System.currentTimeMillis();
 			System.err.println("Start 0+++++++++++++++++" + mIsCommandFinished);
 
 			if (mStopVarUpdate == true) {
@@ -1591,8 +1610,9 @@ public class PerlDB implements IDebugElement, ITerminate {
 			}
 
 			setVarStrings(fMon);
-//			System.err.println("Time needed for reading vars: "+(start-System.currentTimeMillis())+"\n");
-//			start = System.currentTimeMillis();
+			//			System.err.println("Time needed for reading vars:
+			// "+(start-System.currentTimeMillis())+"\n");
+			//			start = System.currentTimeMillis();
 			try {
 				if (mThreads[0].getStackFrames() == null)
 					return (Status.OK_STATUS );
@@ -1610,8 +1630,9 @@ public class PerlDB implements IDebugElement, ITerminate {
 				return (Status.OK_STATUS );
 			}
 			setVarList(frame);
-//			System.err.println("Time needed for parsing vars: "+(start-System.currentTimeMillis())+"\n");
-//			start = System.currentTimeMillis();
+			//			System.err.println("Time needed for parsing vars:
+			// "+(start-System.currentTimeMillis())+"\n");
+			//			start = System.currentTimeMillis();
 			fMon.worked(80);
 			Thread.yield();
 			System.err.println("Start 2+++++++++++++++++" + mIsCommandFinished);
@@ -1621,8 +1642,9 @@ public class PerlDB implements IDebugElement, ITerminate {
 				return (Status.OK_STATUS );
 			}
 			updateStackFramesFinish(mString);
-//			System.err.println("Time needed for flagging vars: "+(start-System.currentTimeMillis())+"\n");
-//			start = System.currentTimeMillis();
+			//			System.err.println("Time needed for flagging vars:
+			// "+(start-System.currentTimeMillis())+"\n");
+			//			start = System.currentTimeMillis();
 			fMon.worked(90);
 			Thread.yield();
 			System.err.println("Start 3+++++++++++++++++" + mIsCommandFinished);

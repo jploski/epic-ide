@@ -17,8 +17,6 @@ package org.epic.debug.util;
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
-
-
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -32,11 +30,10 @@ import org.eclipse.debug.internal.core.DebugCoreMessages;
 import org.eclipse.debug.internal.core.ListenerList;
 
 /**
- * Monitors the output stream of a system process and notifies
- * listeners of additions to the stream.
- *
- * The output stream monitor reads system out (or err) via
- * and input stream.
+ * Monitors the output stream of a system process and notifies listeners of
+ * additions to the stream.
+ * 
+ * The output stream monitor reads system out (or err) via and input stream.
  */
 public class OutputStreamMonitor implements IFlushableStreamMonitor {
 	/**
@@ -47,7 +44,7 @@ public class OutputStreamMonitor implements IFlushableStreamMonitor {
 	/**
 	 * A collection of listeners
 	 */
-	private ListenerList fListeners= new ListenerList(1);
+	private ListenerList fListeners = new ListenerList(1);
 
 	/**
 	 * Whether content is being buffered
@@ -67,24 +64,29 @@ public class OutputStreamMonitor implements IFlushableStreamMonitor {
 	/**
 	 * The size of the read buffer
 	 */
-	private static final int BUFFER_SIZE= 8192;
+	private static final int BUFFER_SIZE = 8192;
 
 	/**
-	 * Whether or not this monitor has been killed.
-	 * When the monitor is killed, it stops reading
-	 * from the stream immediately.
+	 * Whether or not this monitor has been killed. When the monitor is killed,
+	 * it stops reading from the stream immediately.
 	 */
-	private boolean fKilled= false;
+	private boolean fKilled = false;
 
 	/**
-	 * Creates an output stream monitor on the
-	 * given stream (connected to system out or err).
+	 * Creates an output stream monitor on the given stream (connected to system
+	 * out or err).
 	 */
 	public OutputStreamMonitor(InputStream stream) {
-		fStream= stream;
-		fContents= new StringBuffer();
+		fStream = stream;
+		fContents = new StringBuffer();
+	}
+	public OutputStreamMonitor() {
+		fContents = new StringBuffer();
 	}
 
+	public void setStream(InputStream stream) {
+		fStream = stream;
+	}
 	/**
 	 * @see IStreamMonitor#addListener(IStreamListener)
 	 */
@@ -93,14 +95,13 @@ public class OutputStreamMonitor implements IFlushableStreamMonitor {
 	}
 
 	/**
-	 * Causes the monitor to close all
-	 * communications between it and the
+	 * Causes the monitor to close all communications between it and the
 	 * underlying stream by waiting for the thread to terminate.
 	 */
 	protected void close() {
 		if (fThread != null) {
-			Thread thread= fThread;
-			fThread= null;
+			Thread thread = fThread;
+			fThread = null;
 			try {
 				thread.join();
 			} catch (InterruptedException ie) {
@@ -110,8 +111,7 @@ public class OutputStreamMonitor implements IFlushableStreamMonitor {
 	}
 
 	/**
-	 * Notifies the listeners that text has
-	 * been appended to the stream.
+	 * Notifies the listeners that text has been appended to the stream.
 	 */
 	private void fireStreamAppended(String text) {
 		getNotifier().notifyAppend(text);
@@ -127,22 +127,22 @@ public class OutputStreamMonitor implements IFlushableStreamMonitor {
 	/**
 	 * Continually reads from the stream.
 	 * <p>
-	 * This method, along with the <code>startReading</code>
-	 * method is used to allow <code>OutputStreamMonitor</code>
-	 * to implement <code>Runnable</code> without publicly
-	 * exposing a <code>run</code> method.
+	 * This method, along with the <code>startReading</code> method is used to
+	 * allow <code>OutputStreamMonitor</code> to implement
+	 * <code>Runnable</code> without publicly exposing a <code>run</code>
+	 * method.
 	 */
 	private void read() {
-		byte[] bytes= new byte[BUFFER_SIZE];
+		byte[] bytes = new byte[BUFFER_SIZE];
 		int read = 0;
 		while (read >= 0) {
 			try {
 				if (fKilled) {
 					break;
 				}
-				read= fStream.read(bytes);
+				read = fStream.read(bytes);
 				if (read > 0) {
-					String text= new String(bytes, 0, read);
+					String text = new String(bytes, 0, read);
 					if (isBuffered()) {
 						fContents.append(text);
 					}
@@ -154,9 +154,9 @@ public class OutputStreamMonitor implements IFlushableStreamMonitor {
 			} catch (Exception e) {
 				// killing the stream monitor while reading can cause an NPE
 				// when reading from the stream
-//				if (!fKilled || fThread != null) {
-//					DebugPlugin.log(e);
-//				}
+				//				if (!fKilled || fThread != null) {
+				//					DebugPlugin.log(e);
+				//				}
 				return;
 			}
 		}
@@ -168,7 +168,7 @@ public class OutputStreamMonitor implements IFlushableStreamMonitor {
 	}
 
 	protected void kill() {
-		fKilled= true;
+		fKilled = true;
 	}
 
 	/**
@@ -183,7 +183,7 @@ public class OutputStreamMonitor implements IFlushableStreamMonitor {
 	 */
 	protected void startMonitoring() {
 		if (fThread == null) {
-			fThread= new Thread(new Runnable() {
+			fThread = new Thread(new Runnable() {
 				public void run() {
 					read();
 				}
@@ -239,8 +239,8 @@ public class OutputStreamMonitor implements IFlushableStreamMonitor {
 			if (text == null)
 				return;
 			fText = text;
-			Object[] copiedListeners= fListeners.getListeners();
-			for (int i= 0; i < copiedListeners.length; i++) {
+			Object[] copiedListeners = fListeners.getListeners();
+			for (int i = 0; i < copiedListeners.length; i++) {
 				fListener = (IStreamListener) copiedListeners[i];
 				Platform.run(this);
 			}

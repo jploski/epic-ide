@@ -116,13 +116,27 @@ public class RemoteTarget extends DebugTarget implements IDebugEventSetListener
 	public void start()
 	{
 	
+	 boolean create = true;
+	 
 		initPath();
 		createPathMapper();
 		
+	try{
+	  create =
+			mLaunch.getLaunchConfiguration().getAttribute(
+				PerlLaunchConfigurationConstants.ATTR_REMOTE_CREATE_DEBUG_PACKAGE,
+				true);
+
+	} catch (Exception ce)
+	{
+		PerlDebugPlugin.log(ce);
+	}
+	if( create )
+	{
 		CreateDebugPackageJob job = new CreateDebugPackageJob(this);
 		job.setUser(true);
 		job.schedule();
-		
+	}	
 		//RemotePackage.create(this);
 		
 		if (!startTarget())
@@ -141,7 +155,8 @@ public class RemoteTarget extends DebugTarget implements IDebugEventSetListener
 	 */
 	private void createPathMapper() {
 		mMapper = new PathMapper();
-		mMapper.add(new PathMapping(mProjectDir.toString(), mRemoteDest));
+		mMapper.add(new PathMapping(mRemoteDest,mProjectDir.toString()));
+		mMapper.print();
 	}
 
 	boolean startTarget()
@@ -195,12 +210,7 @@ public class RemoteTarget extends DebugTarget implements IDebugEventSetListener
 		if (connectDebugger(false) != RemotePort.mWaitOK)
 			return false;
 		
-		try {
-			mProxy.init(mPerlDB);
-		} catch (InstantiationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+	
 		
 		
 //		mLaunch.addProcess(mProxy);
@@ -333,6 +343,7 @@ public class RemoteTarget extends DebugTarget implements IDebugEventSetListener
 		mStartupFile = path.lastSegment();
 		mStartupFileAbsolut = dest +"/"+startfile;
 		mRemoteDest = dest;
+		mProject = prj;
 		
 	}
 
@@ -435,6 +446,22 @@ public class RemoteTarget extends DebugTarget implements IDebugEventSetListener
 		return !isTerminated();
 	}
 	
+	
+	
+	public void perlDBstarted(PerlDB fDB)
+	{
+		try {
+			mPerlDB= fDB;
+			mProxy.init(fDB);
+		//	mMapper.initInc(mPerlDB);
+		//	mMapper.print();
+		} catch (InstantiationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		mMapper.initInc(fDB);
+		mMapper.print();
+	}
 	
 	public class CreateDebugPackageJob extends Job {
 		private String mString;

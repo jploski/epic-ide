@@ -49,12 +49,14 @@ public class DebuggerProxy extends PlatformObject
 		mLabel = fLabel;
 		mLaunch = fLaunch;
 		mShutDown = false;
+		create();
 	}
 
 	public DebuggerProxy(PerlDB fDebugger, String fLabel)
 			throws InstantiationException {
 		mLabel = fLabel;
 		mShutDown = false;
+		create();
 		init(fDebugger);
 	}
 
@@ -83,8 +85,8 @@ public class DebuggerProxy extends PlatformObject
 					"Could not Create Connection to Debugger Console");
 
 		mMonitorIn = new InputStreamMonitor(mIOStream.getOutStream());
-		mMonitorOut = new OutputStreamMonitor(mIOStream.getInStream());
-		mMonitorError = new OutputStreamMonitor(mErrorStream.getInStream());
+		mMonitorOut.setStream(mIOStream.getInStream());
+		mMonitorError.setStream(mErrorStream.getInStream());
 		mMonitorIn.startMonitoring();
 		mMonitorOut.startMonitoring();
 		mMonitorError.startMonitoring();
@@ -232,7 +234,8 @@ public class DebuggerProxy extends PlatformObject
 	 * @see org.eclipse.debug.core.model.IStreamsProxy#write(java.lang.String)
 	 */
 	public void write(String input) throws IOException {
-		mOut.print(input);
+		if( mOut != null)
+			mOut.print(input);
 	}
 
 	/**
@@ -275,4 +278,12 @@ public class DebuggerProxy extends PlatformObject
 			mErrorStream.shutdown();
 		fireTerminateEvent();
 	}
+	
+	private void create()
+	{
+			mMonitorOut = new OutputStreamMonitor();
+		mMonitorError = new OutputStreamMonitor();
+	}
+	
+	
 }

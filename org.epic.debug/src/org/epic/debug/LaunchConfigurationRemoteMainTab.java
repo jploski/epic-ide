@@ -331,7 +331,7 @@ public class LaunchConfigurationRemoteMainTab
 
 		mDebugPackageFilePath = new FileFieldEditor("Test",
 				"Debug Package File Path", mDebugPackageComp);
-		
+
 		String[] ext = {".zip"};
 		mDebugPackageFilePath.setFileExtensions(ext);
 		//fHTMLRootDir.fillIntoGrid(htmlRootDirComp, 3);
@@ -339,9 +339,9 @@ public class LaunchConfigurationRemoteMainTab
 		calculatePackageFilePathEnabled();
 	}
 
-	void calculatePackageFilePathEnabled()
-	{
-		mDebugPackageFilePath.setEnabled(fCheckBox.getSelection(),mDebugPackageComp);
+	void calculatePackageFilePathEnabled() {
+		mDebugPackageFilePath.setEnabled(fCheckBox.getSelection(),
+				mDebugPackageComp);
 	}
 	/**
 	 * @see org.eclipse.debug.ui.ILaunchConfigurationTab#initializeFrom(ILaunchConfiguration)
@@ -535,21 +535,11 @@ public class LaunchConfigurationRemoteMainTab
 			if (name == null)
 				setErrorMessage("Debug Package File Path missing");
 			else {
-				FileOutputStream f = null;
-				boolean notfound = false;
-				try {
-					f = new FileOutputStream(name);
-				} catch (FileNotFoundException e1) {
-					notfound = true;
-				}
-				if (f != null)
-					try {
-						f.close();
-					} catch (IOException e2) {
-						// TODO Auto-generated catch block
-						e2.printStackTrace();
-					}
-				if (notfound)
+				Path path = new Path(name);
+				File file = path.removeLastSegments(1).toFile();
+
+				if (!path.isValidPath(name) || path.segmentCount() == 0
+						|| !file.exists())
 					setErrorMessage("Debug Package File Path invalid");
 			}
 
@@ -680,12 +670,13 @@ public class LaunchConfigurationRemoteMainTab
 	 * @see org.eclipse.jface.util.IPropertyChangeListener#propertyChange(org.eclipse.jface.util.PropertyChangeEvent)
 	 */
 	public void propertyChange(PropertyChangeEvent event) {
-
 		String path = this.mDebugPackageFilePath.getStringValue();
-		if( !path.endsWith(".zip"))
-			mDebugPackageFilePath.setStringValue(path +".zip");
-		updateLaunchConfigurationDialog();
-
+		if (path.length() >= 1 && !path.endsWith(".zip"))
+				mDebugPackageFilePath.setStringValue(path + ".zip");
+			
+			updateLaunchConfigurationDialog();
+		
+			
 	}
 
 	class PerlProjectVisitor implements IResourceVisitor

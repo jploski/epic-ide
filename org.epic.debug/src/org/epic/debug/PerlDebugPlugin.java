@@ -13,6 +13,7 @@ import java.net.URL;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 import java.util.StringTokenizer;
@@ -216,6 +217,55 @@ public class PerlDebugPlugin extends AbstractUIPlugin {
 			debugEnv[count] = getPerlDebugEnv((DebugTarget) fTarget);
 		return debugEnv;
 		//mDebugEnv[count+1] = "PERL5DB=BEGIN {require'perl5db.pl'}";
+	}
+
+	
+	
+	
+	public static void createDefaultIncPath(List fInc) {
+		Process proc = null;
+		String erg = null;
+		int count;
+		//String command[]= {PerlExecutableUtilities.getPerlExecPath(),
+		// "-e","'while(($k,$v)= each %ENV){ print\"$k=$v\\n\";}'"};
+		//String command = "while(($k,$v)= each %ENV){ print\"$k=$v\\n\";}";
+		String command[]= {PerlExecutableUtilities.getPerlExecPath(),PerlDebugPlugin.getPlugInDir()+"get_inc.pl"};
+		try {
+
+			proc = Runtime.getRuntime().exec(
+					command);
+		
+			Thread.sleep(1);
+
+		//	InputStream in = proc.getInputStream();
+
+		
+
+		proc.getErrorStream().close();
+		} catch (Exception e) {
+			getDefault().logError("Error reading include path: check Perl executable preference !");
+		}
+		InputStream in = proc.getInputStream();
+
+		try {
+			erg = PerlExecutableUtilities.readStringFromStream(in);
+			in.close();
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
+
+		StringTokenizer s = new StringTokenizer(erg, "\r\n");
+		count = s.countTokens();
+
+		
+
+		String token;
+
+		for (int x = 0; x < count; ++x) {
+			token = s.nextToken();
+					fInc.add(token);
+		}
+
 	}
 
 	public static String getPerlDebugEnv(DebugTarget fTarget) {

@@ -38,6 +38,7 @@ public abstract class Target implements IDebugTarget
 	Process mJavaProcess;
 	final static String EMPTY_STRING = "";
 	String mProcessName;
+	protected IProject mProject;
 
 
 	/**
@@ -129,7 +130,7 @@ public abstract class Target implements IDebugTarget
 		}
 		IProject prj =
 			PerlDebugPlugin.getWorkspace().getRoot().getProject(prjName);
-		
+		mProject = prj;
 		mProjectDir = prj.getLocation();
 		IPath path = mProjectDir.append(startfile);
 		mWorkingDir = path.removeLastSegments(1);
@@ -331,4 +332,9 @@ public abstract class Target implements IDebugTarget
 		
 	
 	
+	public IProject getProject() {
+		return mProject;
+	}
+	
+
 }

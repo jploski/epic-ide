@@ -1,5 +1,7 @@
 package org.epic.perleditor.editors;
 
+import java.util.Iterator;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IAdaptable;
@@ -17,7 +19,10 @@ import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.editors.text.TextEditor;
 import org.eclipse.ui.internal.editors.text.EditorsPlugin;
+import org.eclipse.ui.texteditor.AnnotationPreference;
 import org.eclipse.ui.texteditor.IDocumentProvider;
+import org.eclipse.ui.texteditor.MarkerAnnotationPreferences;
+import org.eclipse.ui.texteditor.SourceViewerDecorationSupport;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -241,29 +246,60 @@ public class PerlEditor
 		super.initializeEditor();
 	}
 
-	/* TEST */
-
+	/* Create SourceViewer so we can use the PerlSourceViewer class */
 	protected final ISourceViewer createSourceViewer(
 		Composite parent,
 		IVerticalRuler ruler,
 		int styles) {
+
+		super.fAnnotationAccess = createAnnotationAccess();
+
 		ISharedTextColors sharedColors =
 			EditorsPlugin.getDefault().getSharedTextColors();
+
 		fOverviewRuler =
 			new OverviewRuler(
 				fAnnotationAccess,
 				VERTICAL_RULER_WIDTH,
 				sharedColors);
-		
-		SourceViewer viewer =
-			new PerlSourceViewer(parent, ruler, fOverviewRuler, true, styles);
-		viewer.showAnnotations(true);
-		viewer.showAnnotationsOverview(true);
 
-		return viewer;
+		MarkerAnnotationPreferences fAnnotationPreferences =
+			new MarkerAnnotationPreferences();
+
+		Iterator e =
+			fAnnotationPreferences.getAnnotationPreferences().iterator();
+
+		while (e.hasNext()) {
+
+			AnnotationPreference preference = (AnnotationPreference) e.next();
+
+			if (preference.contributesToHeader())
+				fOverviewRuler.addHeaderAnnotationType(
+					preference.getAnnotationType());
+
+		}
+
+		ISourceViewer sourceViewer =
+			new PerlSourceViewer(
+				parent,
+				ruler,
+				fOverviewRuler,
+				isOverviewRulerVisible(),
+				styles);
+
+		fSourceViewerDecorationSupport =
+			new SourceViewerDecorationSupport(
+				sourceViewer,
+				fOverviewRuler,
+				fAnnotationAccess,
+				sharedColors);
+
+		configureSourceViewerDecorationSupport();
+
+		return sourceViewer;
+
 	}
 
-	
 	/*
 		protected IVerticalRuler createVerticalRuler() {
 			ruler = new CompositeRuler();

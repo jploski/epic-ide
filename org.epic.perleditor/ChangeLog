@@ -2,6 +2,8 @@ Eclipse Perl Integration:
 
 		Debugger:
 		* Fixed problem with Cygwin (Pathmapper error)
+		* Preverve spaces in variable values
+		* Support displaying of empty arrays and hashes
 		
 		Editor:
 		* Fixed bug: [ 814986 ] Pragmas are not modules

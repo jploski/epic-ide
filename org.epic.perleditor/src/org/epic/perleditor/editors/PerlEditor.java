@@ -52,7 +52,7 @@ import org.epic.perleditor.views.model.Model;
 import org.epic.perleditor.views.model.Module;
 import org.epic.perleditor.views.model.Subroutine;
 
-import cbg.editor.ColoringSourceViewerConfiguration;
+import cbg.editor.ColoringSourceViewerConfiguration;
 import org.epic.core.util.FileUtilities;
 
 /**
@@ -482,10 +482,6 @@ public class PerlEditor extends TextEditor implements
 
 	}
 	
-	public void setFocus(){
-	  super.setFocus();
-	  revalidateSyntax(true);
-	}
 	
 	/**
 	 * 

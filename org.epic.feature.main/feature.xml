@@ -5,10 +5,7 @@
       version="0.2.0"
       provider-name="Epic Project"
       plugin="org.epic.perleditor"
-      os=""
-      ws=""
       nl="en_GB,en_US"
-      arch=""
       image="icons/epic_install.jpg">
 
    <description>

@@ -183,7 +183,7 @@ public class PerlCompletionProcessor implements IContentAssistProcessor {
 
 		String VARIABLE_REGEXP = "([$@%][a-z0-9A-Z_]+)\\s*[=;]";
 		String FILEHANDLE_REGEXP =
-			"open[a-z]*\\s*?\\s*?[(]\\s*?([A-Z_]+)\\s*?[,]";
+			"open[a-z]*\\s*?\\s*?[(]\\s*?([A-Z_0-9]+)\\s*?[,]";
 
 		List variablesModel = new ArrayList();
 		List variables = new ArrayList();

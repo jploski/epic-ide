@@ -198,15 +198,20 @@ $smtp-&gt;
         </p><p>
         </p><p>
         </p><p>
-        </p></div></div><div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="N1054D"></a>TODO Markers</h3></div></div><div></div></div><p>
-        <span class="emphasis"><em>TODO Markers</em></span>
+        </p></div></div>
+        
+        <!-- TODO update -->
+        
+        <div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="N1054D"></a>ToDo markers</h3></div></div><div></div></div><p>
+        <em>ToDo markers</em>
       </p><p>
- are a very convenient way to add&nbsp; todos to the
+ are a very convenient way to add task markers to the
 Eclipse task list.
       </p><p>
 
-A TODO marker is generated when a <tt class="literal">#TODO anytext</tt>
-is found in the Perl source code.
+A ToDo marker is generated automatically when a <em>task tag</em> is found at the beginning of a Perl comment, e.g.
+<tt class="literal">#TODO anytext</tt> or <tt class="literal"># TASK anytext</tt></p>
+You can customize the keywords which mark ToDos in the <a href="ar01s02.html#tasktags">preferences</a> ("Preferences | Perl EPIC | Task Tags").
       </p><p>
 
 On deletion of the <tt class="literal">#TODO</tt> comment, the <span class="emphasis"><em>TODO Marker</em></span>

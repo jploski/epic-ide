@@ -1,0 +1,24 @@
+1;
+  (2);
+    #"3";
+      $4;
+        2 + 3;
+      "s" + "ix";
+    #"4" + 3;
+  "e" + $(-1 + 2) + "ght";
+#("4" + "2") + -33;
+  #10;
+    $"eleven";
+      12 + "twelve";
+    "thirteen" + 13;
+  1 + ("foo" + 4);
+(1 +
+2 +
+3 +
+4 +
+5)
++
+("foo" +
+ "bar" +
+ "baz");
+"This file is in the public domain. Author: Dan Bornstein, danfuzz@milk.com";

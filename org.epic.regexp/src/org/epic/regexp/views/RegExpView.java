@@ -17,7 +17,14 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.custom.*;
 import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.events.FocusEvent;
+import org.epic.regexp.RegExpPlugin;
 
+import java.awt.MenuItem;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.*;
 
 import gnu.regexp.RE;
@@ -30,20 +37,30 @@ public class RegExpView extends ViewPart {
 		public void focusGained(FocusEvent e) {
 			activeInput = e.getSource();
 		}
+
 		public void focusLost(FocusEvent e) {
 		}
 	};
 
 	class DebugInfo {
 		private RE re;
+
 		private List subexpressions = new ArrayList();
+
 		private List bracketsInRegexp = new ArrayList();
+
 		private List allMatches = new ArrayList();
+
 		private String input;
+
 		private String regexp;
+
 		private String matchString;
+
 		private boolean matchesInitialized = false;
+
 		private int matchingBracketsCount = 0;
+
 		int eflags = 0;
 
 		public DebugInfo() {
@@ -91,25 +108,25 @@ public class RegExpView extends ViewPart {
 		}
 
 		public REMatch[] getMatches(int index) {
-  
-            int checkEflags = 0;
-  
+
+			int checkEflags = 0;
+
 			if (ignoreCaseCheckBox.getSelection()) {
 				checkEflags |= RE.REG_ICASE;
-						}
+			}
 
-						if (multilineCheckBox.getSelection()) {
-							checkEflags |= RE.REG_MULTILINE;
-						}
+			if (multilineCheckBox.getSelection()) {
+				checkEflags |= RE.REG_MULTILINE;
+			}
 
 			if (!matchesInitialized || eflags != checkEflags) {
 				eflags = checkEflags;
 				initMatches();
 			}
 
-			return (REMatch[])allMatches.toArray(new REMatch[0]);
+			return (REMatch[]) allMatches.toArray(new REMatch[0]);
 		}
-		
+
 		public int geMatchingBracketsCount() {
 			return matchingBracketsCount;
 		}
@@ -124,12 +141,12 @@ public class RegExpView extends ViewPart {
 
 			try {
 				for (int i = bracketsInRegexp.size() - 1; i >= 0; i--) {
-					SubexpressionPos pos =
-						(SubexpressionPos) bracketsInRegexp.get(i);
+					SubexpressionPos pos = (SubexpressionPos) bracketsInRegexp
+							.get(i);
 					reg = regexp.substring(0, pos.getEnd() + 1);
-	
+
 					re = new RE(reg, eflags);
-					if (re.getAllMatches(matchString).length > 0 ) {
+					if (re.getAllMatches(matchString).length > 0) {
 						matchingBracketsCount = i + 1;
 						found = true;
 
@@ -155,6 +172,7 @@ public class RegExpView extends ViewPart {
 
 	class SubexpressionPos {
 		int start;
+
 		int end;
 
 		public SubexpressionPos(int start, int end) {
@@ -172,12 +190,15 @@ public class RegExpView extends ViewPart {
 	};
 
 	private Composite panel;
+
 	private List colorTable = new ArrayList();
 
 	private Action validateAction, cutAction, copyAction, pasteAction;
+
 	private Action stopDebugAction, forwardDebugAction, backDebugAction;
-	
+
 	private StyledText regExpText;
+
 	private StyledText matchText;
 
 	private Label resultImageLabel;
@@ -190,6 +211,8 @@ public class RegExpView extends ViewPart {
 
 	private int debugPosition = 0;
 
+	private static final String SHORTCUTS_RESOURCE_BUNDLE = "org.epic.regexp.shortcuts";
+
 	/**
 	 * The constructor.
 	 */
@@ -197,8 +220,8 @@ public class RegExpView extends ViewPart {
 	}
 
 	/**
-	 * This is a callback that will allow us
-	 * to create the viewer and initialize it.
+	 * This is a callback that will allow us to create the viewer and initialize
+	 * it.
 	 */
 	public void createPartControl(Composite parent) {
 
@@ -259,8 +282,8 @@ public class RegExpView extends ViewPart {
 		//Match text
 		data = new GridData(GridData.FILL_HORIZONTAL | GridData.FILL_VERTICAL);
 		data.horizontalSpan = 4;
-		matchText =
-			new StyledText(panel, SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL);
+		matchText = new StyledText(panel, SWT.BORDER | SWT.H_SCROLL
+				| SWT.V_SCROLL);
 		matchText.setLayoutData(data);
 		matchText.addFocusListener(new focusListener());
 
@@ -268,7 +291,8 @@ public class RegExpView extends ViewPart {
 		IActionBars bars = getViewSite().getActionBars();
 		bars.setGlobalActionHandler(IWorkbenchActionConstants.CUT, cutAction);
 		bars.setGlobalActionHandler(IWorkbenchActionConstants.COPY, copyAction);
-		bars.setGlobalActionHandler(IWorkbenchActionConstants.PASTE, pasteAction);
+		bars.setGlobalActionHandler(IWorkbenchActionConstants.PASTE,
+				pasteAction);
 
 		hookContextMenu();
 
@@ -295,6 +319,8 @@ public class RegExpView extends ViewPart {
 		manager.add(cutAction);
 		manager.add(copyAction);
 		manager.add(pasteAction);
+		createShortcutsMenu(manager);
+
 		// Other plug-ins can contribute there actions here
 		manager.add(new Separator("Additions"));
 	}
@@ -311,6 +337,53 @@ public class RegExpView extends ViewPart {
 		colorTable.add(new Color(display, 201, 141, 141));
 		colorTable.add(new Color(display, 214, 179, 74));
 		colorTable.add(new Color(display, 204, 74, 214));
+	}
+
+	private void createShortcutsMenu(IMenuManager mgr) {
+		IMenuManager submenu = new MenuManager("Shortcuts");
+		mgr.add(submenu);
+
+		Action shortcut;
+
+		try {
+			File shortcutsFile = new File(RegExpPlugin.getPlugInDir()
+					+ File.separator + "shortcuts");
+			
+			
+			FileInputStream fin = new FileInputStream(shortcutsFile);
+			BufferedReader br = new BufferedReader(new InputStreamReader(fin));
+
+			String line;
+
+			while ((line = br.readLine()) != null) {
+				StringTokenizer st = new StringTokenizer(line, "\t");
+
+				if (st.countTokens() == 2) {
+
+					final String shortc = st.nextToken();
+					String descr = st.nextToken();
+
+					shortcut = new Action() {
+						public void run() {
+							insertShortcut(shortc);
+						}
+					};
+
+					shortcut.setText(shortc + " - " + descr);
+					submenu.add(shortcut);
+					//}
+
+					mgr.update(true);
+				} else if (st.countTokens() == 1) {
+					String token = st.nextToken();
+					if (token.equals("<DEL>")) {
+						submenu.add(new Separator());
+					}
+				}
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	private void contributeToActionBars() {
@@ -391,13 +464,25 @@ public class RegExpView extends ViewPart {
 
 	}
 
-	private void validateRegExp() {
+	private void insertShortcut(String text) {
+		int selCount = regExpText.getSelectionCount();
+		int pos = regExpText.getCaretOffset();
+		regExpText.insert(text);
+
+		// Adjust carret offset if no selection was available,
+		// so carret is placed after the inserted text
+		if (selCount == 0) {
+			regExpText.setCaretOffset(pos + text.length());
+		}
+	}
+
+	public void validateRegExp() {
 		boolean result = false;
 		int eflags = 0;
-		
-        // Reset style
+
+		// Reset style
 		regExpText.setStyleRange(null);
-		
+
 		// Reset debug poition counter
 		debugPosition = 0;
 
@@ -428,12 +513,12 @@ public class RegExpView extends ViewPart {
 					StyleRange styleRange = new StyleRange();
 
 					styleRange.start = matches[i].getStartIndex(j);
-					styleRange.length =
-						matches[i].getEndIndex(j) - matches[i].getStartIndex(j);
+					styleRange.length = matches[i].getEndIndex(j)
+							- matches[i].getStartIndex(j);
 
 					Display display = panel.getDisplay();
-					styleRange.foreground =
-						display.getSystemColor(SWT.COLOR_WHITE);
+					styleRange.foreground = display
+							.getSystemColor(SWT.COLOR_WHITE);
 					//styleRange.fontStyle = SWT.BOLD;
 
 					styleRange.background = (Color) colorTable.get(color);
@@ -442,7 +527,9 @@ public class RegExpView extends ViewPart {
 					// Update text position
 					matchText.setTopIndex(styleRange.start);
 					matchText.setCaretOffset(styleRange.start);
-					int offsetFromLine = styleRange.start - matchText.getOffsetAtLine(matchText.getLineAtOffset(styleRange.start));
+					int offsetFromLine = styleRange.start
+							- matchText.getOffsetAtLine(matchText
+									.getLineAtOffset(styleRange.start));
 					matchText.setHorizontalIndex(offsetFromLine);
 					matchText.redraw();
 
@@ -465,8 +552,8 @@ public class RegExpView extends ViewPart {
 	}
 
 	public void setResultLabelImage(ImageDescriptor descr) {
-		Image labelImage =
-			new Image(resultImageLabel.getDisplay(), descr.getImageData());
+		Image labelImage = new Image(resultImageLabel.getDisplay(), descr
+				.getImageData());
 		labelImage.setBackground(panel.getBackground());
 		resultImageLabel.setImage(labelImage);
 	}
@@ -545,9 +632,8 @@ public class RegExpView extends ViewPart {
 
 							result += ")";
 							debugInfo.addSubexpressionPosition(start, i + 1);
-							debugInfo.addBracketPosition(
-								bracketStart,
-								result.length() - 1);
+							debugInfo.addBracketPosition(bracketStart, result
+									.length() - 1);
 
 						}
 
@@ -571,8 +657,8 @@ public class RegExpView extends ViewPart {
 									i++;
 
 									if ((i + 1) < input.length()) {
-										nextChar =
-											input.substring(i + 1, i + 2);
+										nextChar = input
+												.substring(i + 1, i + 2);
 
 										re = new RE("[\\?]");
 										if (re.isMatch(nextChar)) {
@@ -581,35 +667,29 @@ public class RegExpView extends ViewPart {
 										}
 									}
 									result += ")";
-									debugInfo.addSubexpressionPosition(
-										start,
-										i + 1);
-									debugInfo.addBracketPosition(
-										bracketStart,
-										result.length() - 1);
+									debugInfo.addSubexpressionPosition(start,
+											i + 1);
+									debugInfo.addBracketPosition(bracketStart,
+											result.length() - 1);
 
 									inBracket = false;
 
 								} else {
 									result += character + ")";
-									debugInfo.addSubexpressionPosition(
-										start,
-										i + 1);
-									debugInfo.addBracketPosition(
-										bracketStart,
-										result.length() - 1);
+									debugInfo.addSubexpressionPosition(start,
+											i + 1);
+									debugInfo.addBracketPosition(bracketStart,
+											result.length() - 1);
 									inBracket = false;
 								}
 							}
 							// If it's the last character
 							else {
 								result += character + ")";
-								debugInfo.addSubexpressionPosition(
-									start,
-									i + 1);
-								debugInfo.addBracketPosition(
-									bracketStart,
-									result.length() - 1);
+								debugInfo
+										.addSubexpressionPosition(start, i + 1);
+								debugInfo.addBracketPosition(bracketStart,
+										result.length() - 1);
 								inBracket = false;
 							}
 
@@ -667,8 +747,7 @@ public class RegExpView extends ViewPart {
 		if (debugInfo == null) {
 			buildDebugRegExp(regExpText.getText(), matchText.getText());
 			position = 1;
-		} else if (
-			!debugInfo.getInput().equals(regExpText.getText())
+		} else if (!debugInfo.getInput().equals(regExpText.getText())
 				|| !debugInfo.getMatchString().equals(matchText.getText())) {
 			buildDebugRegExp(regExpText.getText(), matchText.getText());
 			position = 1;
@@ -698,37 +777,39 @@ public class RegExpView extends ViewPart {
 		styleRangeRegExp.length = pos.getEnd() - pos.getStart();
 
 		regExpText.setStyleRange(styleRangeRegExp);
-		
+
 		//	Update text position
 		regExpText.setTopIndex(styleRangeRegExp.start);
 		regExpText.setCaretOffset(styleRangeRegExp.start);
-		int offsetFromLine = styleRangeRegExp.start - regExpText.getOffsetAtLine(regExpText.getLineAtOffset(styleRangeRegExp.start));
+		int offsetFromLine = styleRangeRegExp.start
+				- regExpText.getOffsetAtLine(regExpText
+						.getLineAtOffset(styleRangeRegExp.start));
 		regExpText.setHorizontalIndex(offsetFromLine);
 		regExpText.redraw();
 
 		// Colour the matching text
 		matchText.setStyleRange(null);
 
-		
-
 		if (position <= debugInfo.geMatchingBracketsCount()) {
 			setResultLabelImage(RegExpImages.RESULT_GREEN);
 			for (int i = 0; i < matches.length; i++) {
-				
+
 				StyleRange styleRangeMatch = new StyleRange();
-						styleRangeMatch.background = display.getSystemColor(SWT.COLOR_BLUE);
-						styleRangeMatch.foreground = display.getSystemColor(SWT.COLOR_WHITE);
-				
-				
+				styleRangeMatch.background = display
+						.getSystemColor(SWT.COLOR_BLUE);
+				styleRangeMatch.foreground = display
+						.getSystemColor(SWT.COLOR_WHITE);
+
 				styleRangeMatch.start = matches[i].getStartIndex(position);
-				styleRangeMatch.length =
-					matches[i].getEndIndex(position)
+				styleRangeMatch.length = matches[i].getEndIndex(position)
 						- matches[i].getStartIndex(position);
 				matchText.setStyleRange(styleRangeMatch);
 				//	Update text position
 				matchText.setTopIndex(styleRangeMatch.start);
 				matchText.setCaretOffset(styleRangeMatch.start);
-				offsetFromLine = styleRangeMatch.start - matchText.getOffsetAtLine(matchText.getLineAtOffset(styleRangeMatch.start));
+				offsetFromLine = styleRangeMatch.start
+						- matchText.getOffsetAtLine(matchText
+								.getLineAtOffset(styleRangeMatch.start));
 				matchText.setHorizontalIndex(offsetFromLine);
 				matchText.redraw();
 			}
@@ -740,15 +821,36 @@ public class RegExpView extends ViewPart {
 	}
 
 	/**
-	 * @param regExpText The regExpText to set.
+	 * @param regExpText
+	 *            The regExpText to set.
 	 */
 	public void setRegExpText(String regexp) {
 		regExpText.setText(regexp);
 	}
+
 	/**
-	 * @param matchText The matchText to set.
+	 * @param matchText
+	 *            The matchText to set.
 	 */
 	public void setMatchText(String text) {
 		matchText.setText(text);
+	}
+
+	/**
+	 * @param state
+	 *            The state of the ingore checkbox, <code>true</code> or
+	 *            <code>false</code>
+	 */
+	public void setIgnoreCaseCheckbox(boolean state) {
+		ignoreCaseCheckBox.setSelection(state);
+	}
+
+	/**
+	 * @param state
+	 *            The state of the multiline checkbox, <code>true</code> or
+	 *            <code>false</code>
+	 */
+	public void setMultilineCheckbox(boolean state) {
+		multilineCheckBox.setSelection(state);
 	}
 }

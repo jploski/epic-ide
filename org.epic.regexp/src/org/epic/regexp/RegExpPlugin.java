@@ -3,6 +3,9 @@ package org.epic.regexp;
 import org.eclipse.ui.plugin.*;
 import org.eclipse.core.runtime.*;
 import org.eclipse.core.resources.*;
+
+import java.io.IOException;
+import java.net.URL;
 import java.util.*;
 
 /**
@@ -59,5 +62,23 @@ public class RegExpPlugin extends AbstractUIPlugin {
 	 */
 	public ResourceBundle getResourceBundle() {
 		return resourceBundle;
+	}
+	
+	static public String getPlugInDir()
+	{
+		URL installURL =
+			getDefault().getDescriptor().getInstallURL();
+			
+		try
+		{
+			installURL = Platform.resolve(installURL);
+		} catch (IOException e)
+		{
+			e.printStackTrace();
+		}
+		String path =installURL.getPath();
+		if( path.charAt(0) == '/' && path.charAt(2)==':' && path.charAt(3) == '/')
+			path = path.substring(1);
+		return (path);
 	}
 }

@@ -14,7 +14,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.io.Reader;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -188,10 +190,13 @@ public class PerlSyntaxValidationThread extends Thread {
 			OutputStream out = proc.getOutputStream();
             //TODO which charset?
             Reader inr = new InputStreamReader(in);
+            Writer outw = new OutputStreamWriter(out);
             this.srt.read(inr);
 
-            try {			
-                PerlExecutableUtilities.writeStringToStream(text, out);
+            try {
+                outw.write(text);
+                outw.write("\n__END__\n");  //this is for Win98
+                outw.flush();
             } catch (IOException e) {
                 e.printStackTrace();
             }

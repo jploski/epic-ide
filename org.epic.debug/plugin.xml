@@ -154,11 +154,11 @@
    <extension
          id="perlRegExpBreakpointMarker"
          point="org.eclipse.core.resources.markers">
-      <super
+    <!--  <super
             type="org.eclipse.debug.core.breakpointMarker">
-      </super>
+      </super> -->
       <super
-            type="perlLineBreakpointMarker">
+            type="org.epic.debug.perlLineBreakpointMarker">
       </super>
       <persistent
             value="true">

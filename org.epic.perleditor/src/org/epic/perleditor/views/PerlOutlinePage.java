@@ -39,6 +39,9 @@ public class PerlOutlinePage extends ContentOutlinePage {
 		viewer.setLabelProvider(new SourceElementLabelProvider());
 		viewer.setInput(getInitalInput());
 		viewer.setSorter(new NameSorter());
+		
+		// Tree is expanded by default
+		viewer.expandAll();
 
 	}
 
@@ -98,7 +101,7 @@ public class PerlOutlinePage extends ContentOutlinePage {
 		getTreeViewer().refresh(modules, false);
 
         // Tree is expanded by default
-		getTreeViewer().expandAll();
+		//getTreeViewer().expandAll();
 		
 		getControl().setRedraw(true);
 	}

@@ -121,6 +121,26 @@
          </description>
       </wizard>
    </extension>
+   
+   <extension
+         point="org.eclipse.ui.newWizards">
+      <wizard
+            name="Perl File"
+            icon="icons/epic_file.gif"
+            category="org.epic.newproject"
+            class="org.eclipse.ui.wizards.newresource.BasicNewFileResourceWizard"
+            project="false"
+            finalPerspective="org.epic.core.Perspective"
+            id="org.epic.newfile.wizard">
+         <description>
+            Perl File
+         </description>
+         <selection
+               class="org.eclipse.core.resources.IResource">
+         </selection>
+      </wizard>
+   </extension>
+   
    <extension
          id="perlnature"
          name="Perl Nature"
@@ -211,47 +231,12 @@
                id="org.epic.perleditor.popupmenus.ExplainErrorsRulerActionDelegate">
          </action>
       </viewerContribution>
-
 	<!-- Popup Menu menu -->
+	
       <viewerContribution
             targetID="#PerlEditorContext"
             id="org.epic.perleditor.PerlEditorPopup">
-         <menu
-               label="&amp;Perldoc"
-               path="additions"
-               id="PerlDocPopupMenu">
-            <separator
-                  name="PerlDocGroup">
-            </separator>
-         </menu>
-         <action
-               label="FAQ Search"
-               icon="icons/light_bulb.gif"
-               class="org.epic.perleditor.popupmenus.PerlDocAction"
-               menubarPath="PerlDocPopupMenu/PerlDocGroup"
-               id="org.epic.perleditor.popupmenus.PerlDocAction.Faq">
-         </action>
-         <action
-               label="Builtin Function Documentation"
-               icon="icons/epic.gif"
-               class="org.epic.perleditor.popupmenus.PerlDocAction"
-               menubarPath="PerlDocPopupMenu/PerlDocGroup"
-               id="org.epic.perleditor.popupmenus.PerlDocAction.BuiltinFunction">
-         </action>
-         <action
-               label="Module/Program Source"
-               icon="icons/module_node.gif"
-               class="org.epic.perleditor.popupmenus.PerlDocAction"
-               menubarPath="PerlDocPopupMenu/PerlDocGroup"
-               id="org.epic.perleditor.popupmenus.PerlDocAction.ModuleSource">
-         </action>
-         <action
-               label="Module/Program Documentation"
-               icon="icons/book.gif"
-               class="org.epic.perleditor.popupmenus.PerlDocAction"
-               menubarPath="PerlDocPopupMenu/PerlDocGroup"
-               id="org.epic.perleditor.popupmenus.PerlDocAction.Module">
-         </action>
+          
             <!-- SUBMENU: Refactor Menu -->
          <menu
                label="Re&amp;factor"
@@ -321,6 +306,24 @@
                tooltip="Open Declaration for SUBs only, defined locally, in files or in packages!"
                menubarPath="DeclarationPopUp"
                id="org.epic.perleditor.popupmenus.OpenSubAction"/>
+               
+		<!-- Perldoc -->
+         <menu
+               label="&amp;Perldoc"
+               path="additions"
+               id="PerlDocPopupMenu">
+            <separator
+                  name="PerlDocGroup">
+            </separator>
+         </menu>
+         <action
+               label="Perldoc"
+               icon="icons/book.gif"
+               class="org.epic.perleditor.popupmenus.PerlDocAction"
+               menubarPath="PerlDocPopupMenu"
+               id="org.epic.perleditor.popupmenus.PerlDocAction">
+         </action>
+
       </viewerContribution>
    </extension>
 <!-- Associate menus with PerlEditor -->

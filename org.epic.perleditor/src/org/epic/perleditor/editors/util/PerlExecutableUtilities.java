@@ -168,9 +168,9 @@ public class PerlExecutableUtilities {
 	}
 	
 	
-	public static String getPerlIncPath(
+	public static List getPerlIncPath(
 			IProject project) {
-			StringBuffer res = new StringBuffer();
+			ArrayList res = new ArrayList();
 
 			// Add other project include paths
 			if(project != null) {
@@ -178,11 +178,11 @@ public class PerlExecutableUtilities {
 				String[] includes = xmlUtil.getIncludeEntries(project, true);
 				for (int i = 0; i < includes.length; i++) {
 					String path = preparePath(includes[i]);
-					res.append(" -I");
-					res.append(path);
+					res.add(" -I");
+					res.add(path.replace('\\','/'));
 				}
 			}
 
-			return res.toString();
+			return res;
 		}
 }

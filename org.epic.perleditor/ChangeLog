@@ -1,6 +1,7 @@
 Eclipse Perl Integration: Perl Editor Plugin
 
 Version 0.1.0 alpha  - 
+		* Source menu definition has been moved to plugin.xml
 		* Code Assist preference page added
 		* Added variable inspection to code assist
 		* Quickreference corrected

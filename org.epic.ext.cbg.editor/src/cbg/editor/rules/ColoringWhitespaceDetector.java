@@ -9,7 +9,7 @@ public class ColoringWhitespaceDetector implements IWhitespaceDetector {
 	 static private Map whitespaces = new HashMap();
 
 	//	TODO Added by EPIC (workaround)
-	 public static void addWhiteSpaceChar(String whitespaceChar) {
+	 public void addWhiteSpaceChar(String whitespaceChar) {
 		   whitespaces.put(whitespaceChar, "");
 	 }
 

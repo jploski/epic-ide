@@ -3,8 +3,10 @@ package cbg.editor.rules;
 import org.eclipse.jface.text.rules.ICharacterScanner;
 import org.eclipse.jface.text.rules.IPredicateRule;
 import org.eclipse.jface.text.rules.IToken;
+import org.eclipse.jface.text.rules.IWhitespaceDetector;
 import org.eclipse.jface.text.rules.IWordDetector;
 import org.eclipse.jface.text.rules.Token;
+import cbg.editor.ColoringPartitionScanner;
 
 public class TextSequenceRule extends Object implements IPredicateRule {/**
  * An implementation of <code>IRule</code> capable of detecting words
@@ -24,13 +26,31 @@ public class TextSequenceRule extends Object implements IPredicateRule {/**
 	/** The column constraint */
 	protected int fColumn= UNDEFINED;
 	protected char[] word;
-	protected boolean ignoreCase;
+	protected boolean isCaseInSensitive;
 	private StringBuffer fBuffer= new StringBuffer();
 
-	public TextSequenceRule(String wordToMatch, IToken token, boolean ignoreCase) {
+  private String[] groupContent;
+  private boolean isExistingGroup;
+  private char curScannerChar;
+  private int myStepCounter = 0;
+  private final char EOFChar= (char) ICharacterScanner.EOF;
+	private IWhitespaceDetector whiteSpace;
+
+
+	public TextSequenceRule(String wordToMatch, String[] groupContent, IToken token, 
+	                        boolean ignoreCase, IWhitespaceDetector whiteSpace) {
 		this.token = token;
 		word = (ignoreCase ? wordToMatch.toLowerCase().toCharArray() : wordToMatch.toCharArray());
-		this.ignoreCase = ignoreCase;
+		this.isCaseInSensitive = ignoreCase;
+		
+		this.groupContent = groupContent;
+		if (groupContent == null) {
+		  isExistingGroup = false;
+		} else {
+		  isExistingGroup = true;
+		}
+		this.whiteSpace= whiteSpace;
+
 	}
 	
 	/**
@@ -85,54 +105,130 @@ public class TextSequenceRule extends Object implements IPredicateRule {/**
 	}
 
 	/**
-	 * Evaluates this rules without considering any column constraints. Resumes
-	 * detection, i.e. look sonly for the end sequence required by this rule if the
-	 * <code>resume</code> flag is set.
-	 *
-	 * @param scanner the character scanner to be used
-	 * @param resume <code>true</code> if detection should be resumed, <code>false</code> otherwise
-	 * @return the token resulting from this evaluation
-	 * @since 2.0
+	 * Same code as in ExtendePatternRule
 	 */
 	protected IToken doEvaluate(ICharacterScanner scanner, boolean resume) {
-		if (resume) {
-			if (sequenceDetected(scanner)) return token;		
-		} else {
-			int c = scanner.read();
-			if (c == word[0] || Character.toLowerCase((char)c) == word[0]) {
-				if (sequenceDetected(scanner)) return token;
-			}
-		}
-		scanner.unread();
-		return Token.UNDEFINED;
+	  myStepCounter = 0;
+	  boolean continueCheck=true;
+	  
+	  if (((ColoringPartitionScanner) scanner).getOffset() > 0) {
+      scanner.unread();
+      curScannerChar = (char) scanner.read();
+      if (!whiteSpace.isWhitespace(curScannerChar)) {
+        //we do not check anything, since the leading char before this is not
+        //whitespace or equivalent
+        continueCheck = false;
+      }
+	  }
+	  
+	  if (continueCheck) {
+	    if (isExistingGroup) {
+	      if (forwardStartSequenceDetected(scanner)) {
+	          return token;
+	      }
+	    } else {
+	      //check from the regular startSequence
+	      curScannerChar= (char) scanner.read();
+	      myStepCounter++;
+	      if (isCaseInSensitive) {
+	        curScannerChar = Character.toLowerCase(curScannerChar);
+	      }
+	      if (curScannerChar == word[0]) {
+	        if (sequenceDetected(scanner, word, true)) {
+	            return token;
+	        }
+	      }
+	    }
+	  }
+	  
+	  unwindScanner(scanner);
+	  return Token.UNDEFINED;
 	}	
 	
 	public IToken getSuccessToken() {
 		return token;
 	}
-	/**
-	 * Returns whether the next characters to be read by the character scanner
-	 * are an exact match with the given sequence. No escape characters are allowed 
-	 * within the sequence. If specified the sequence is considered to be found
-	 * when reading the EOF character.
-	 *
-	 * @param scanner the character scanner to be used
-	 * @param sequence the sequence to be detected
-	 * @param eofAllowed indicated whether EOF terminates the pattern
-	 * @return <code>true</code> if the given sequence has been detected
-	 */
-	protected boolean sequenceDetected(ICharacterScanner scanner) {
-		for (int i= 1; i < word.length; i++) {
-			int c = scanner.read();
-			if (c != word[i] || c != Character.toLowerCase((char)c)) {
-				// Non-matching character detected, rewind the scanner back to the start.
-				// Do not unread the first character.
-				scanner.unread();
-				for (int j= i-1; j > 0; j--)
-					scanner.unread();
+	
+	private final boolean forwardStartSequenceDetected(ICharacterScanner scanner) {
+	  StringBuffer c = new StringBuffer();
+	  int i=0;
+	  int j=0;
+	  int elementSize=0;
+	  elementSize = groupContent.length - 1;
+	  
+	  String escape= groupContent[0];
+	  c.append(escape);
+	
+	  while (i++ <= elementSize) {
+	    curScannerChar= (char) scanner.read();
+	    myStepCounter++;
+	    if (curScannerChar == EOFChar) {
+	      return false;
+	    }
+	    if (isCaseInSensitive) {
+	      curScannerChar = Character.toLowerCase(curScannerChar);
+	    }
+	    c.append(curScannerChar);
+	    if (groupContent[i].indexOf(c.toString()) >= 0) {
+	      return true;
+	    } else if (i == elementSize) {
+	      return false;
+	    } else {
+	      j= i+1;
+	      while(j < elementSize && groupContent[j].indexOf(c.toString()) < 0) 
+	      {
+	        j++;
+	      }
+	      if (j < elementSize || groupContent[j].indexOf(c.toString()) >= 0) {
+	        for (int k = j-i-1; k> 0; k--) {
+	          curScannerChar= (char) scanner.read();
+	          myStepCounter++;
+	    	    if (curScannerChar == EOFChar) {
+	    	      return false;
+	    	    }
+	    	    if (isCaseInSensitive) {
+	    	      curScannerChar = Character.toLowerCase(curScannerChar);
+	    	    }
+	          c.append(curScannerChar);
+	          i++;
+	        }
+	      } else {
+	        return false;
+	      }
+	    }
+	  }
+	  return false;
+	}
+	 
+ //copied from the superclass to provide a counter, what has read
+	protected boolean sequenceDetected(ICharacterScanner scanner, char[] sequence, boolean eofAllowed) {
+		for (int i= 1; i < sequence.length; i++) {
+      curScannerChar= (char) scanner.read();
+			myStepCounter++;
+      if (isCaseInSensitive) {
+        curScannerChar = Character.toLowerCase(curScannerChar);
+      }
+			if (curScannerChar == EOFChar && eofAllowed) {
+				return true;
+			} else if (curScannerChar != sequence[i]) {
 				return false;
 			}
 		}
 		return true;
 	}
+
+	/*
+   * unwind the scanner to the orginal position
+   */
+  
+  private final void unwindScanner(ICharacterScanner scanner) {
+    if (myStepCounter < 0) {
+      for (; myStepCounter < 0; myStepCounter++ )
+        scanner.read();
+    } else {
+      for (; myStepCounter > 0; myStepCounter--)
+        scanner.unread();
+    }
+  }
+
 }

@@ -17,64 +17,25 @@
 		<EOL_SPAN TYPE="COMMENT1">#</EOL_SPAN>
 
 		<!-- Rules added by EPIC - START -->
-		<!-- To get this working changes were made to ColoringEditorTools.java-->
-		<!-- <SEQ TYPE="LITERAL1">$</SEQ> -->
-		<SPAN TYPE="INVALID" NO_LINE_BREAK="TRUE">
-			<BEGIN>__END__</BEGIN>
+		<SPAN TYPE="INVALID" NO_LINE_BREAK="FALSE" IGNORE_TEXT_AFTER_START_TAG="TRUE">
+			<GROUP>__END__</GROUP>
+			<GROUP>__DATA__</GROUP>
 			<END>@EOF</END>
 		</SPAN>
-
-		<SPAN TYPE="INVALID" NO_LINE_BREAK="TRUE">
-			<BEGIN>__DATA__</BEGIN>
-			<END>@EOF</END>
-		</SPAN>
-		<MARK TYPE="KEYWORD2">$</MARK>
-		<!-- Rules added by EPIC - END -->
-
 
 		<!-- TYPE is LABEL so that =head1 and =cut are highlighted as so -->
 		<SPAN TYPE="LABEL" AT_LINE_START="TRUE" DELEGATE="POD">
-			<BEGIN>=head1</BEGIN>
-			<END>=cut</END>
-		</SPAN>
-		<SPAN TYPE="LABEL" AT_LINE_START="TRUE" DELEGATE="POD">
-			<BEGIN>=head2</BEGIN>
-			<END>=cut</END>
-		</SPAN>
-		<SPAN TYPE="LABEL" AT_LINE_START="TRUE" DELEGATE="POD">
-			<BEGIN>=head3</BEGIN>
-			<END>=cut</END>
-		</SPAN>
-		<SPAN TYPE="LABEL" AT_LINE_START="TRUE" DELEGATE="POD">
-			<BEGIN>=head4</BEGIN>
-			<END>=cut</END>
-		</SPAN>
-		<SPAN TYPE="LABEL" AT_LINE_START="TRUE" DELEGATE="POD">
-			<BEGIN>=item</BEGIN>
-			<END>=cut</END>
-		</SPAN>
-		<SPAN TYPE="LABEL" AT_LINE_START="TRUE" DELEGATE="POD">
-			<BEGIN>=over</BEGIN>
-			<END>=cut</END>
-		</SPAN>
-		<SPAN TYPE="LABEL" AT_LINE_START="TRUE" DELEGATE="POD">
-			<BEGIN>=back</BEGIN>
-			<END>=cut</END>
-		</SPAN>
-		<SPAN TYPE="LABEL" AT_LINE_START="TRUE" DELEGATE="POD">
-			<BEGIN>=pod</BEGIN>
-			<END>=cut</END>
-		</SPAN>
-		<SPAN TYPE="LABEL" AT_LINE_START="TRUE" DELEGATE="POD">
-			<BEGIN>=for</BEGIN>
-			<END>=cut</END>
-		</SPAN>
-		<SPAN TYPE="LABEL" AT_LINE_START="TRUE" DELEGATE="POD">
-			<BEGIN>=begin</BEGIN>
-			<END>=cut</END>
-		</SPAN>
-		<SPAN TYPE="LABEL" AT_LINE_START="TRUE" DELEGATE="POD">
-			<BEGIN>=end</BEGIN>
+			<GROUP>=head1</GROUP>
+			<GROUP>=head2</GROUP>
+			<GROUP>=head3</GROUP>
+			<GROUP>=head4</GROUP>
+			<GROUP>=item</GROUP>
+			<GROUP>=over</GROUP>
+			<GROUP>=back</GROUP>
+			<GROUP>=pod</GROUP>
+			<GROUP>=for</GROUP>
+			<GROUP>=begin</GROUP>
+			<GROUP>=end</GROUP>
 			<END>=cut</END>
 		</SPAN>
 
@@ -83,41 +44,23 @@
 		<SEQ TYPE="KEYWORD2">$'</SEQ>
 		<SEQ TYPE="KEYWORD2">$"</SEQ>
 
-		<SPAN TYPE="KEYWORD2" NO_LINE_BREAK="TRUE">
-			<BEGIN>${</BEGIN>
+		<SPAN TYPE="KEYWORD2" NO_LINE_BREAK="FALSE" MATCH_BRACKET="TRUE">
+	<GROUP>${</GROUP>
+	<GROUP>@{</GROUP>
+	<GROUP>%{</GROUP>
 			<END>}</END>
 		</SPAN>
+
+		<SEQ TYPE="NULL">\"</SEQ>   <!-- To avoid inproper Quote spanning -->
+		<SEQ TYPE="NULL">\*</SEQ>   <!-- To avoid inproper Quote spanning -->
+		<SEQ TYPE="NULL">$::</SEQ>   <!-- To avoid inproper Marks -->
+		<SEQ TYPE="NULL">@::</SEQ>   <!-- To avoid inproper Marks -->
+		<SEQ TYPE="NULL">%::</SEQ>   <!-- To avoid inproper Marks -->
 
         <MARK_FOLLOWING TYPE="KEYWORD2">$#</MARK_FOLLOWING>
 		<MARK_FOLLOWING TYPE="KEYWORD2">$</MARK_FOLLOWING>
-
-		<SPAN TYPE="KEYWORD2" NO_LINE_BREAK="TRUE">
-			<BEGIN>@{</BEGIN>
-			<END>}</END>
-		</SPAN>
-
 		<MARK_FOLLOWING TYPE="KEYWORD2">@</MARK_FOLLOWING>
-
-		<SPAN TYPE="KEYWORD2" NO_LINE_BREAK="TRUE">
-			<BEGIN>%{</BEGIN>
-			<END>}</END>
-		</SPAN>
-
 		<MARK_FOLLOWING TYPE="KEYWORD2">%</MARK_FOLLOWING>
-
-		<!-- RegExps -->
-		<SPAN TYPE="LITERAL2" DELEGATE="REGEXP" NO_LINE_BREAK="TRUE" >
-			<BEGIN>s/</BEGIN>
-			<END>/</END>
-		</SPAN>
-		<SPAN TYPE="LITERAL2" DELEGATE="REGEXP" NO_LINE_BREAK="TRUE" >
-			<BEGIN>/</BEGIN>
-			<END>/</END>
-		</SPAN>
-		<SPAN TYPE="LITERAL2" DELEGATE="REGEXP" NO_LINE_BREAK="TRUE" >
-			<BEGIN>/</BEGIN>
-			<END>;</END>
-		</SPAN>
 
 		<!-- Literals -->
 		<SPAN TYPE="LITERAL1">
@@ -135,11 +78,18 @@
 			<END>`</END>
 		</SPAN>
 
-		<!-- Readins -->
-		<SPAN TYPE="LITERAL1" DELEGATE="LITERAL">
-			<BEGIN>&lt;&lt;EOF</BEGIN>
-			<END>EOF</END>
+		<!-- HERE Documents -->
+		<SPAN TYPE="LITERAL2" NO_LINE_BREAK="FALSE" 
+              DYNAMIC_TAGGING="TRUE" DELIMITER_MAX_CHAR="999"
+              DELIMITER_TAG_CHARS="ANY"
+              REQUIRE_AFTER_TAG=":LINEFEED:">
+			<BEGIN>&lt;&lt;</BEGIN>
+			<!--
+			<END>"'</END>
+			-->
+			<END>;</END>
 		</SPAN>
+		
 
 		<!-- Operators -->
 		<SEQ TYPE="OPERATOR">|</SEQ>
@@ -155,7 +105,6 @@
 		<SEQ TYPE="OPERATOR">&lt;=</SEQ>
 		<SEQ TYPE="OPERATOR">+</SEQ>
 		<SEQ TYPE="OPERATOR">-</SEQ>
-		<SEQ TYPE="OPERATOR">/</SEQ>
 		<SEQ TYPE="OPERATOR">*</SEQ>
 		<SEQ TYPE="OPERATOR">^</SEQ>
 		<SEQ TYPE="OPERATOR">~</SEQ>
@@ -166,314 +115,286 @@
 		<SEQ TYPE="NULL">;</SEQ>
 		<SEQ TYPE="NULL">]</SEQ>
 		<SEQ TYPE="NULL">[</SEQ>
-		<SEQ TYPE="NULL">?</SEQ>
 		<SEQ TYPE="NULL">:</SEQ>
-		<SEQ TYPE="NULL">\"</SEQ>   <!-- To avoid inproper Quote spanning -->
-		<SEQ TYPE="NULL">\'</SEQ>   <!-- To avoid inproper Quote spanning -->
+	<SEQ TYPE="KEYWORD1">
+			<GROUP>BEGIN</GROUP>
+			<GROUP>END</GROUP>
+			<GROUP>caller</GROUP>
+			<GROUP>continue</GROUP>
+			<GROUP>die</GROUP>
+			<GROUP>do</GROUP>
+			<GROUP>dump</GROUP>
+			<GROUP>else</GROUP>
+			<GROUP>elsif</GROUP>
+			<GROUP>eval</GROUP>
+			<GROUP>exit</GROUP>
+			<GROUP>foreach</GROUP>
+			<GROUP>goto</GROUP>
+			<GROUP>if</GROUP>
+			<GROUP>import</GROUP>
+			<GROUP>last</GROUP>
+			<GROUP>local</GROUP>
+			<GROUP>my</GROUP>
+			<GROUP>new</GROUP>
+			<GROUP>next</GROUP>
+			<GROUP>no</GROUP>
+			<GROUP>package</GROUP>
+			<GROUP>redo</GROUP>
+			<GROUP>require</GROUP>
+			<GROUP>return</GROUP>
+			<GROUP>unless</GROUP>
+			<GROUP>until</GROUP>
+			<GROUP>use</GROUP>
+			<GROUP>wantarray</GROUP>
+			<GROUP>while</GROUP>
+		</SEQ>
+		
+	<SEQ TYPE="KEYWORD2">
+			<GROUP>closedir</GROUP>
+			<GROUP>for</GROUP>
+			<GROUP>lcfirst</GROUP>
+			<GROUP>opendir</GROUP>
+			<GROUP>printf</GROUP>
+			<GROUP>readdir</GROUP>
+			<GROUP>readlink</GROUP>
+			<GROUP>seekdir</GROUP>
+			<GROUP>socketpair</GROUP>
+			<GROUP>substr</GROUP>
+			<GROUP>telldir</GROUP>
+			<GROUP>tied</GROUP>
+			<GROUP>times</GROUP>
+			<GROUP>ucfirst</GROUP>
+			<GROUP>waitpid</GROUP>
+	</SEQ>
+	
+	<SEQ TYPE="KEYWORD3">
+			<GROUP>__FILE__</GROUP>
+			<GROUP>__LINE__</GROUP>
+			<GROUP>__PACKAGE__</GROUP>
+			<GROUP>abs</GROUP>
+			<GROUP>accept</GROUP>
+			<GROUP>alarm</GROUP>
+			<GROUP>atan2</GROUP>
+			<GROUP>bind</GROUP>
+			<GROUP>binmode</GROUP>
+			<GROUP>bless</GROUP>
+			<GROUP>chdir</GROUP>
+			<GROUP>chmod</GROUP>
+			<GROUP>chomp</GROUP>
+			<GROUP>chop</GROUP>
+			<GROUP>chown</GROUP>
+			<GROUP>chr</GROUP>
+			<GROUP>chroot</GROUP>
+			<GROUP>close</GROUP>
+			<GROUP>connect</GROUP>
+			<GROUP>cos</GROUP>
+			<GROUP>crypt</GROUP>
+			<GROUP>dbmclose</GROUP>
+			<GROUP>dbmopen</GROUP>
+			<GROUP>defined</GROUP>
+			<GROUP>delete</GROUP>
+			<GROUP>each</GROUP>
+			<GROUP>endgrent</GROUP>
+			<GROUP>endhostent</GROUP>
+			<GROUP>endnetent</GROUP>
+			<GROUP>endprotoent</GROUP>
+			<GROUP>endpwent</GROUP>
+			<GROUP>endservent</GROUP>
+			<GROUP>eof</GROUP>
+			<GROUP>exec</GROUP>
+			<GROUP>exists</GROUP>
+			<GROUP>exp</GROUP>
+			<GROUP>fcntl</GROUP>
+			<GROUP>fileno</GROUP>
+			<GROUP>flock</GROUP>
+			<GROUP>fork</GROUP>
+			<GROUP>format</GROUP>
+			<GROUP>formline</GROUP>
+			<GROUP>getc</GROUP>
+			<GROUP>getgrent</GROUP>
+			<GROUP>getgrgid</GROUP>
+			<GROUP>getgrnam</GROUP>
+			<GROUP>gethostbyaddr</GROUP>
+			<GROUP>gethostbyname</GROUP>
+			<GROUP>gethostent</GROUP>
+			<GROUP>getlogin</GROUP>
+			<GROUP>getnetbyaddr</GROUP>
+			<GROUP>getnetbyname</GROUP>
+			<GROUP>getnetent</GROUP>
+			<GROUP>getpeername</GROUP>
+			<GROUP>getpgrp</GROUP>
+			<GROUP>getppid</GROUP>
+			<GROUP>getpriority</GROUP>
+			<GROUP>getprotobyname</GROUP>
+			<GROUP>getprotobynumber</GROUP>
+			<GROUP>getprotoent</GROUP>
+			<GROUP>getpwent</GROUP>
+			<GROUP>getpwnam</GROUP>
+			<GROUP>getpwuid</GROUP>
+			<GROUP>getservbyname</GROUP>
+			<GROUP>getservbyport</GROUP>
+			<GROUP>getservent</GROUP>
+			<GROUP>getsockname</GROUP>
+			<GROUP>getsockopt</GROUP>
+			<GROUP>glob</GROUP>
+			<GROUP>gmtime</GROUP>
+			<GROUP>grep</GROUP>
+			<GROUP>hex</GROUP>
+			<GROUP>index</GROUP>
+			<GROUP>int</GROUP>
+			<GROUP>ioctl</GROUP>
+			<GROUP>join</GROUP>
+			<GROUP>keys</GROUP>
+			<GROUP>kill</GROUP>
+			<GROUP>lc</GROUP>
+			<GROUP>length</GROUP>
+			<GROUP>link</GROUP>
+			<GROUP>listen</GROUP>
+			<GROUP>localtime</GROUP>
+			<GROUP>log</GROUP>
+			<GROUP>lstat</GROUP>
+			<GROUP>map</GROUP>
+			<GROUP>mkdir</GROUP>
+			<GROUP>msgctl</GROUP>
+			<GROUP>msgget</GROUP>
+			<GROUP>msgrcv</GROUP>
+			<GROUP>msgsnd</GROUP>
+			<GROUP>oct</GROUP>
+			<GROUP>our</GROUP>
+			<GROUP>open</GROUP>
+			<GROUP>ord</GROUP>
+			<GROUP>pack</GROUP>
+			<GROUP>pipe</GROUP>
+			<GROUP>pop</GROUP>
+			<GROUP>pos</GROUP>
+			<GROUP>print</GROUP>
+			<GROUP>push</GROUP>
+			<GROUP>quotemeta</GROUP>
+			<GROUP>rand</GROUP>
+			<GROUP>read</GROUP>
+			<GROUP>recv</GROUP>
+			<GROUP>ref</GROUP>
+			<GROUP>rename</GROUP>
+			<GROUP>reset</GROUP>
+			<GROUP>reverse</GROUP>
+			<GROUP>rewinddir</GROUP>
+			<GROUP>rindex</GROUP>
+			<GROUP>rmdir</GROUP>
+			<GROUP>scalar</GROUP>
+			<GROUP>seek</GROUP>
+			<GROUP>select</GROUP>
+			<GROUP>semctl</GROUP>
+			<GROUP>semget</GROUP>
+			<GROUP>semop</GROUP>
+			<GROUP>send</GROUP>
+			<GROUP>setgrent</GROUP>
+			<GROUP>sethostent</GROUP>
+			<GROUP>setnetent</GROUP>
+			<GROUP>setpgrp</GROUP>
+			<GROUP>setpriority</GROUP>
+			<GROUP>setprotoent</GROUP>
+			<GROUP>setpwent</GROUP>
+			<GROUP>setservent</GROUP>
+			<GROUP>setsockopt</GROUP>
+			<GROUP>shift</GROUP>
+			<GROUP>shmctl</GROUP>
+			<GROUP>shmget</GROUP>
+			<GROUP>shmread</GROUP>
+			<GROUP>shmwrite</GROUP>
+			<GROUP>shutdown</GROUP>
+			<GROUP>sin</GROUP>
+			<GROUP>sleep</GROUP>
+			<GROUP>socket</GROUP>
+			<GROUP>sort</GROUP>
+			<GROUP>splice</GROUP>
+			<GROUP>split</GROUP>
+			<GROUP>sprintf</GROUP>
+			<GROUP>sqrt</GROUP>
+			<GROUP>srand</GROUP>
+			<GROUP>stat</GROUP>
+			<GROUP>study</GROUP>
+			<GROUP>sub</GROUP>
+			<GROUP>symlink</GROUP>
+			<GROUP>syscall</GROUP>
+			<GROUP>sysread</GROUP>
+			<GROUP>sysseek</GROUP>
+			<GROUP>system</GROUP>
+			<GROUP>syswrite</GROUP>
+			<GROUP>tell</GROUP>
+			<GROUP>tie</GROUP>
+			<GROUP>time</GROUP>
+			<GROUP>truncate</GROUP>
+			<GROUP>uc</GROUP>
+			<GROUP>umask</GROUP>
+			<GROUP>undef</GROUP>
+			<GROUP>unlink</GROUP>
+			<GROUP>unpack</GROUP>
+			<GROUP>unshift</GROUP>
+			<GROUP>untie</GROUP>
+			<GROUP>utime</GROUP>
+			<GROUP>values</GROUP>
+			<GROUP>vec</GROUP>
+			<GROUP>wait</GROUP>
+			<GROUP>warn</GROUP>
+			<GROUP>write</GROUP>
+	</SEQ>
+	<SEQ TYPE="OPERATOR">
+			<GROUP>and</GROUP>
+			<GROUP>cmp</GROUP>
+			<GROUP>eq</GROUP>
+			<GROUP>ge</GROUP>
+			<GROUP>le</GROUP>
+			<GROUP>ne</GROUP>
+			<GROUP>not</GROUP>
+			<GROUP>or</GROUP>
+			<GROUP>xor</GROUP>
+	</SEQ>
+	<SEQ TYPE="OPERATOR">x</SEQ>
 
-		<!-- Keywords -->
-		<KEYWORDS IGNORE_CASE="FALSE">
-			<KEYWORD1>new</KEYWORD1>
-			<KEYWORD1>if</KEYWORD1>
-			<KEYWORD1>until</KEYWORD1>
-			<KEYWORD1>while</KEYWORD1>
-			<KEYWORD1>elsif</KEYWORD1>
-			<KEYWORD1>else</KEYWORD1>
-			<KEYWORD1>unless</KEYWORD1>
-			<KEYWORD1>for</KEYWORD1>
-			<KEYWORD1>foreach</KEYWORD1>
-			<KEYWORD1>BEGIN</KEYWORD1>
-			<KEYWORD1>END</KEYWORD1>
+		<!-- RegExps -->
+		<SPAN TYPE="LITERAL2" NO_LINE_BREAK="FALSE" 
+              DYNAMIC_TAGGING="TRUE" DELIMITER_MAX_CHAR="1">
+			<GROUP>m</GROUP>
+			<END>\</END>
+		</SPAN> 
 
-			<OPERATOR>cmp</OPERATOR>
-			<OPERATOR>eq</OPERATOR>
-			<OPERATOR>ne</OPERATOR>
-			<OPERATOR>le</OPERATOR>
-			<OPERATOR>ge</OPERATOR>
-			<OPERATOR>not</OPERATOR>
-			<OPERATOR>and</OPERATOR>
-			<OPERATOR>or</OPERATOR>
-			<OPERATOR>xor</OPERATOR>
+		<SPAN TYPE="LITERAL2" NO_LINE_BREAK="FALSE" NO_OF_MULTIPLE_ENDTAG="2" 
+              DYNAMIC_TAGGING="TRUE" DELIMITER_MAX_CHAR="1">
+			<GROUP>s</GROUP>
+			<GROUP>tr</GROUP>
+			<END>\</END>
+		</SPAN> 
+		<!-- Quotes not RegExps  -->
+		<SPAN TYPE="LITERAL2" NO_LINE_BREAK="FALSE" 
+              DYNAMIC_TAGGING="TRUE" DELIMITER_MAX_CHAR="1">
+			<GROUP>qq</GROUP>
+			<GROUP>qx</GROUP>
+			<GROUP>qw</GROUP>
+			<GROUP>qr</GROUP>
+			<END>\</END>
+		</SPAN> 
+		<SPAN TYPE="LITERAL2" NO_LINE_BREAK="FALSE" 
+              DYNAMIC_TAGGING="TRUE" DELIMITER_MAX_CHAR="1">
+			<GROUP>q</GROUP>
+			<END>\</END>
+		</SPAN> 
 
-			<!-- At least attempt to highlight 'x', although this misses some -->
-			<OPERATOR>x</OPERATOR>
+<!--    the normal Match at the End - should be checked if it works -->
+        <SPAN TYPE="LITERAL2" NO_LINE_BREAK="TRUE" REQUIRE_END_TAG="TRUE">
+			<BEGIN>/</BEGIN>
+			<END>/</END>
+		</SPAN> 
 
-			<!--
-				The following function list was derived from the perlfunc man
-				page, Perl version 5.00503
+		<SEQ TYPE="OPERATOR">/</SEQ>
 
-				Certain keywords have been commented out where they appear more
-				than once, and the y///, qx//, etc. functions have been removed,
-				since they would not be colorized as keywords, but with separate
-				rules.
-			-->
+<!--    the normal Match at the End - should be checked if it works -->
+        <SPAN TYPE="LITERAL2" NO_LINE_BREAK="TRUE" REQUIRE_END_TAG="TRUE">
+			<BEGIN>?</BEGIN>
+			<END>?</END>
+		</SPAN> 
 
-			<!-- Functions for SCALARs or strings -->
-			<KEYWORD3>chomp</KEYWORD3>
-			<KEYWORD3>chop</KEYWORD3>
-			<KEYWORD3>chr</KEYWORD3>
-			<KEYWORD3>crypt</KEYWORD3>
-			<KEYWORD3>hex</KEYWORD3>
-			<KEYWORD3>index</KEYWORD3>
-			<KEYWORD3>lc</KEYWORD3>
-			<KEYWORD3>lcfirst</KEYWORD3>
-			<KEYWORD3>length</KEYWORD3>
-			<KEYWORD3>oct</KEYWORD3>
-			<KEYWORD3>ord</KEYWORD3>
-			<KEYWORD3>pack</KEYWORD3>
-			<KEYWORD3>reverse</KEYWORD3>
-			<KEYWORD3>rindex</KEYWORD3>
-			<KEYWORD3>sprintf</KEYWORD3>
-			<KEYWORD3>substr</KEYWORD3>
-			<KEYWORD3>uc</KEYWORD3>
-			<KEYWORD3>ucfirst</KEYWORD3>
+		<SEQ TYPE="OPERATOR">?</SEQ>
 
-			<!-- Regular expressions and pattern matching -->
-			<KEYWORD3>pos</KEYWORD3>
-			<KEYWORD3>quotemeta</KEYWORD3>
-			<KEYWORD3>split</KEYWORD3>
-			<KEYWORD3>study</KEYWORD3>
-
-			<!-- Numeric functions -->
-			<KEYWORD3>abs</KEYWORD3>
-			<KEYWORD3>atan2</KEYWORD3>
-			<KEYWORD3>cos</KEYWORD3>
-			<KEYWORD3>exp</KEYWORD3>
-			<!--<KEYWORD3>hex</KEYWORD3>-->
-			<KEYWORD3>int</KEYWORD3>
-			<KEYWORD3>log</KEYWORD3>
-			<!--<KEYWORD3>oct</KEYWORD3>-->
-			<KEYWORD3>rand</KEYWORD3>
-			<KEYWORD3>sin</KEYWORD3>
-			<KEYWORD3>sqrt</KEYWORD3>
-			<KEYWORD3>srand</KEYWORD3>
-
-			<!-- Functions for real @ARRAYs -->
-			<KEYWORD3>pop</KEYWORD3>
-			<KEYWORD3>push</KEYWORD3>
-			<KEYWORD3>shift</KEYWORD3>
-			<KEYWORD3>splice</KEYWORD3>
-			<KEYWORD3>unshift</KEYWORD3>
-
-			<!-- Functions for list data -->
-			<KEYWORD3>grep</KEYWORD3>
-			<KEYWORD3>join</KEYWORD3>
-			<KEYWORD3>map</KEYWORD3>
-			<!--<KEYWORD3>reverse</KEYWORD3>-->
-			<KEYWORD3>sort</KEYWORD3>
-			<KEYWORD3>unpack</KEYWORD3>
-
-			<!-- Functions for real %HASHes -->
-			<KEYWORD3>delete</KEYWORD3>
-			<KEYWORD3>each</KEYWORD3>
-			<KEYWORD3>exists</KEYWORD3>
-			<KEYWORD3>keys</KEYWORD3>
-			<KEYWORD3>values</KEYWORD3>
-
-			<!-- Input and output functions -->
-			<KEYWORD3>binmode</KEYWORD3>
-			<KEYWORD3>close</KEYWORD3>
-			<KEYWORD3>closedir</KEYWORD3>
-			<KEYWORD3>dbmclose</KEYWORD3>
-			<KEYWORD3>dbmopen</KEYWORD3>
-			<!--<KEYWORD3>die</KEYWORD3>-->
-			<KEYWORD3>eof</KEYWORD3>
-			<KEYWORD3>fileno</KEYWORD3>
-			<KEYWORD3>flock</KEYWORD3>
-			<KEYWORD3>format</KEYWORD3>
-			<KEYWORD3>getc</KEYWORD3>
-			<KEYWORD3>print</KEYWORD3>
-			<KEYWORD3>printf</KEYWORD3>
-			<KEYWORD3>read</KEYWORD3>
-			<KEYWORD3>readdir</KEYWORD3>
-			<KEYWORD3>rewinddir</KEYWORD3>
-			<KEYWORD3>seek</KEYWORD3>
-			<KEYWORD3>seekdir</KEYWORD3>
-			<KEYWORD3>select</KEYWORD3>
-			<KEYWORD3>syscall</KEYWORD3>
-			<KEYWORD3>sysread</KEYWORD3>
-			<KEYWORD3>sysseek</KEYWORD3>
-			<KEYWORD3>syswrite</KEYWORD3>
-			<KEYWORD3>tell</KEYWORD3>
-			<KEYWORD3>telldir</KEYWORD3>
-			<KEYWORD3>truncate</KEYWORD3>
-			<KEYWORD3>warn</KEYWORD3>
-			<KEYWORD3>write</KEYWORD3>
-
-			<!-- Functions for fixed length data or records -->
-			<!--<KEYWORD3>pack</KEYWORD3>-->
-			<!--<KEYWORD3>read</KEYWORD3>-->
-			<!--<KEYWORD3>syscall</KEYWORD3>-->
-			<!--<KEYWORD3>sysread</KEYWORD3>-->
-			<!--<KEYWORD3>syswrite</KEYWORD3>-->
-			<!--<KEYWORD3>unpack</KEYWORD3>-->
-			<KEYWORD3>vec</KEYWORD3>
-
-			<!-- Functions for filehandles, files, or directories -->
-			<KEYWORD3>chdir</KEYWORD3>
-			<KEYWORD3>chmod</KEYWORD3>
-			<KEYWORD3>chown</KEYWORD3>
-			<KEYWORD3>chroot</KEYWORD3>
-			<KEYWORD3>fcntl</KEYWORD3>
-			<KEYWORD3>glob</KEYWORD3>
-			<KEYWORD3>ioctl</KEYWORD3>
-			<KEYWORD3>link</KEYWORD3>
-			<KEYWORD3>lstat</KEYWORD3>
-			<KEYWORD3>mkdir</KEYWORD3>
-			<KEYWORD3>open</KEYWORD3>
-			<KEYWORD3>opendir</KEYWORD3>
-			<KEYWORD3>readlink</KEYWORD3>
-			<KEYWORD3>rename</KEYWORD3>
-			<KEYWORD3>rmdir</KEYWORD3>
-			<KEYWORD3>stat</KEYWORD3>
-			<KEYWORD3>symlink</KEYWORD3>
-			<KEYWORD3>umask</KEYWORD3>
-			<KEYWORD3>unlink</KEYWORD3>
-			<KEYWORD3>utime</KEYWORD3>
-
-			<!-- Keywords related to the control flow of your perl program -->
-			<KEYWORD1>caller</KEYWORD1>
-			<KEYWORD1>continue</KEYWORD1>
-			<KEYWORD1>die</KEYWORD1>
-			<KEYWORD1>do</KEYWORD1>
-			<KEYWORD1>dump</KEYWORD1>
-			<KEYWORD1>eval</KEYWORD1>
-			<KEYWORD1>exit</KEYWORD1>
-			<KEYWORD1>goto</KEYWORD1>
-			<KEYWORD1>last</KEYWORD1>
-			<KEYWORD1>next</KEYWORD1>
-			<KEYWORD1>redo</KEYWORD1>
-			<KEYWORD1>return</KEYWORD1>
-			<KEYWORD1>sub</KEYWORD1>
-			<KEYWORD1>wantarray</KEYWORD1>
-
-			<!-- Keywords related to scoping -->
-			<!--<KEYWORD1>caller</KEYWORD1>-->
-			<!--<KEYWORD1>import</KEYWORD1>-->
-			<KEYWORD1>local</KEYWORD1>
-			<KEYWORD1>my</KEYWORD1>
-			<KEYWORD1>our</KEYWORD1>
-			<KEYWORD1>package</KEYWORD1>
-			<KEYWORD1>use</KEYWORD1>
-
-			<!-- Miscellaneous functions -->
-			<KEYWORD3>defined</KEYWORD3>
-			<!--<KEYWORD3>dump</KEYWORD3>-->
-			<!--<KEYWORD3>eval</KEYWORD3>-->
-			<KEYWORD3>formline</KEYWORD3>
-			<!--<KEYWORD3>local</KEYWORD3>-->
-			<!--<KEYWORD3>my</KEYWORD3>-->
-			<KEYWORD3>reset</KEYWORD3>
-			<KEYWORD3>scalar</KEYWORD3>
-			<KEYWORD3>undef</KEYWORD3>
-			<!--<KEYWORD3>wantarray</KEYWORD3>-->
-
-			<!-- Functions for processes and process groups -->
-			<KEYWORD3>alarm</KEYWORD3>
-			<KEYWORD3>exec</KEYWORD3>
-			<KEYWORD3>fork</KEYWORD3>
-			<KEYWORD3>getpgrp</KEYWORD3>
-			<KEYWORD3>getppid</KEYWORD3>
-			<KEYWORD3>getpriority</KEYWORD3>
-			<KEYWORD3>kill</KEYWORD3>
-			<KEYWORD3>pipe</KEYWORD3>
-			<KEYWORD3>setpgrp</KEYWORD3>
-			<KEYWORD3>setpriority</KEYWORD3>
-			<KEYWORD3>sleep</KEYWORD3>
-			<KEYWORD3>system</KEYWORD3>
-			<KEYWORD3>times</KEYWORD3>
-			<KEYWORD3>wait</KEYWORD3>
-			<KEYWORD3>waitpid</KEYWORD3>
-
-			<!-- Keywords related to perl modules -->
-			<!--<KEYWORD1>do</KEYWORD1>-->
-			<KEYWORD1>import</KEYWORD1>
-			<KEYWORD1>no</KEYWORD1>
-			<!--<KEYWORD1>package</KEYWORD1>-->
-			<KEYWORD1>require</KEYWORD1>
-			<!--<KEYWORD1>use</KEYWORD1>-->
-
-			<!-- Keywords related to classes and object-orientedness -->
-			<KEYWORD3>bless</KEYWORD3>
-			<!--<KEYWORD3>dbmclose</KEYWORD3>-->
-			<!--<KEYWORD3>dbmopen</KEYWORD3>-->
-			<!--<KEYWORD3>package</KEYWORD3>-->
-			<KEYWORD3>ref</KEYWORD3>
-			<KEYWORD3>tie</KEYWORD3>
-			<KEYWORD3>tied</KEYWORD3>
-			<KEYWORD3>untie</KEYWORD3>
-			<!--<KEYWORD3>use</KEYWORD3>-->
-
-			<!-- Low-level socket functions -->
-			<KEYWORD3>accept</KEYWORD3>
-			<KEYWORD3>bind</KEYWORD3>
-			<KEYWORD3>connect</KEYWORD3>
-			<KEYWORD3>getpeername</KEYWORD3>
-			<KEYWORD3>getsockname</KEYWORD3>
-			<KEYWORD3>getsockopt</KEYWORD3>
-			<KEYWORD3>listen</KEYWORD3>
-			<KEYWORD3>recv</KEYWORD3>
-			<KEYWORD3>send</KEYWORD3>
-			<KEYWORD3>setsockopt</KEYWORD3>
-			<KEYWORD3>shutdown</KEYWORD3>
-			<KEYWORD3>socket</KEYWORD3>
-			<KEYWORD3>socketpair</KEYWORD3>
-
-			<!-- System V interprocess communication functions -->
-			<KEYWORD3>msgctl</KEYWORD3>
-			<KEYWORD3>msgget</KEYWORD3>
-			<KEYWORD3>msgrcv</KEYWORD3>
-			<KEYWORD3>msgsnd</KEYWORD3>
-			<KEYWORD3>semctl</KEYWORD3>
-			<KEYWORD3>semget</KEYWORD3>
-
-			<KEYWORD3>semop</KEYWORD3>
-			<KEYWORD3>shmctl</KEYWORD3>
-			<KEYWORD3>shmget</KEYWORD3>
-			<KEYWORD3>shmread</KEYWORD3>
-			<KEYWORD3>shmwrite</KEYWORD3>
-
-			<!-- Fetching user and group info -->
-			<KEYWORD3>endgrent</KEYWORD3>
-			<KEYWORD3>endhostent</KEYWORD3>
-			<KEYWORD3>endnetent</KEYWORD3>
-			<KEYWORD3>endpwent</KEYWORD3>
-			<KEYWORD3>getgrent</KEYWORD3>
-			<KEYWORD3>getgrgid</KEYWORD3>
-			<KEYWORD3>getgrnam</KEYWORD3>
-			<KEYWORD3>getlogin</KEYWORD3>
-			<KEYWORD3>getpwent</KEYWORD3>
-			<KEYWORD3>getpwnam</KEYWORD3>
-			<KEYWORD3>getpwuid</KEYWORD3>
-			<KEYWORD3>setgrent</KEYWORD3>
-			<KEYWORD3>setpwent</KEYWORD3>
-
-			<!-- Fetching network info -->
-			<KEYWORD3>endprotoent</KEYWORD3>
-			<KEYWORD3>endservent</KEYWORD3>
-			<KEYWORD3>gethostbyaddr</KEYWORD3>
-			<KEYWORD3>gethostbyname</KEYWORD3>
-			<KEYWORD3>gethostent</KEYWORD3>
-			<KEYWORD3>getnetbyaddr</KEYWORD3>
-			<KEYWORD3>getnetbyname</KEYWORD3>
-			<KEYWORD3>getnetent</KEYWORD3>
-			<KEYWORD3>getprotobyname</KEYWORD3>
-			<KEYWORD3>getprotobynumber</KEYWORD3>
-			<KEYWORD3>getprotoent</KEYWORD3>
-			<KEYWORD3>getservbyname</KEYWORD3>
-			<KEYWORD3>getservbyport</KEYWORD3>
-			<KEYWORD3>getservent</KEYWORD3>
-			<KEYWORD3>sethostent</KEYWORD3>
-			<KEYWORD3>setnetent</KEYWORD3>
-			<KEYWORD3>setprotoent</KEYWORD3>
-			<KEYWORD3>setservent</KEYWORD3>
-
-			<!-- Time-related functions -->
-			<KEYWORD3>gmtime</KEYWORD3>
-			<KEYWORD3>localtime</KEYWORD3>
-			<KEYWORD3>time</KEYWORD3>
-			<!--<KEYWORD3>times</KEYWORD3>-->
-		</KEYWORDS>
 	</RULES>
 
 	<RULES SET="POD" DEFAULT="COMMENT2">

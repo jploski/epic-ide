@@ -33,8 +33,18 @@ public class Mode {
 			Mode.this.add(currentRule);
 		}
 	
-		public void newSpan(String type, String begin, String end, boolean atLineStart, boolean excludeMatch, boolean noLineBreak, boolean noWordBreak, String delegate) {
-			currentRule.add(Type.newSpan(type, begin, end, atLineStart, excludeMatch, noLineBreak, noWordBreak, delegate));
+		public void newSpan(String type, String begin, String end, boolean atLineStart, boolean excludeMatch, boolean noLineBreak, boolean noWordBreak,
+		                    boolean matchBracket, int noMultipleEndTag, 
+		                	  boolean requireEndTag,
+		                		boolean dynamicTagging, int noMaxChar, String[] groupContent,
+		                		String beforeTag, String afterTag,
+		                    String delegate) {
+			currentRule.add(Type.newSpan(type, begin, end, atLineStart, excludeMatch, noLineBreak, noWordBreak, 
+			                             matchBracket, noMultipleEndTag, 
+			                             requireEndTag, 
+			                             dynamicTagging, noMaxChar, groupContent,
+			                             beforeTag, afterTag, 
+			                             delegate));
 		}
 	
 		public void newMark(String type, String text, boolean atLineStart, boolean atWhitespaceEnd, 
@@ -43,8 +53,8 @@ public class Mode {
 				atWordStart, delegate, isPrevious, excludeMatch));
 		}
 	
-		public void newTextSequence(String type, String text, boolean atLineStart, boolean atWhitespaceEnd, boolean atWordStart, String delegate) {
-			currentRule.add(Type.newTextSequence(type, text, atLineStart, atWhitespaceEnd, atWordStart, delegate));
+		public void newTextSequence(String type, String text, String[] groupContent, boolean atLineStart, boolean atWhitespaceEnd, boolean atWordStart, String delegate) {
+			currentRule.add(Type.newTextSequence(type, text, groupContent, atLineStart, atWhitespaceEnd, atWordStart, delegate));
 		}
 	
 	}

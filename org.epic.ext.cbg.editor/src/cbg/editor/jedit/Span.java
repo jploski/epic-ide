@@ -1,35 +1,70 @@
 package cbg.editor.jedit;
 
 public class Span extends TextSequence {
-	protected String begin, end;
-	protected boolean noLineBreak, noWordBreak, excludeMatch;
+	protected String begin, end, afterTag, beforeTag;
+	protected boolean noLineBreak, noWordBreak, excludeMatch, matchBracket;
+	protected boolean requireEndTag, dynamicTagging;
+	protected int noMultipleEndTag, noMaxChar;
+	protected String[] groupContent;
 	public void accept(IVisitor visitor) {
 		visitor.acceptSpan(this);
 	}
-	public String getStart() {
+	public final String getStart() {
 		return begin;
 	}
-	public String getEnd() {
-		return end;
+	public final String getEnd() {
+	  return end;
 	}
-	public boolean hasDelegate() {
+	public final boolean hasDelegate() {
 		return getDelegate() != null;
 	}
 
-	public boolean noLineBreak() {
+	public final boolean noLineBreak() {
 		return noLineBreak;
 	}
 
-	public boolean isNoWordBreak() {
+	public final boolean matchBracket() {
+	  return matchBracket;
+	}
+	
+	public final int noMultipleEndTag() {
+	  return noMultipleEndTag;
+	}
+	public final boolean isNoWordBreak() {
 		return noWordBreak;
 	}
 
-	public boolean getExcludeMatch() {
+	public final boolean getExcludeMatch() {
 		return excludeMatch;
 	}
-
+		
+	public final boolean requireEndTag() {
+	  return requireEndTag;
+	}
+	
+	public final boolean dynamicTagging() {
+	  return dynamicTagging;
+	}
+	
+	public final int noMaxChar() {
+	  return noMaxChar;
+	}
+	
+	public final String[] getGroupContent() {
+	  return groupContent;
+	}
+		
+	public final String getBeforeTag(){
+	  return beforeTag;
+	}
+	
+	public final String getAfterTag() {
+	  return afterTag;
+	}
 	public String getDelegateContentType() {
 		return getDelegate() + getContentType();
 	}
 
 }
+
+	

@@ -34,7 +34,10 @@ public abstract class Type {
 	
 	public static Span newSpan(String color, String begin, String end,
 		boolean atLineStart, boolean excludeMatch, boolean noLineBreak, 
-		boolean noWordBreak, String delegate) {
+		boolean noWordBreak, boolean matchBracket, int noMultipleEndTag,  
+		boolean requireEndTag, boolean dynamicTagging, 
+	  int noMaxChar, String[] groupContent, String beforeTag, String afterTag,
+		String delegate) {
 			
 		Span span = new Span();
 		span.type = delegate == null ? noLineBreak ? SINGLE_S : MULTI_S : DELEGATE_S;
@@ -45,6 +48,15 @@ public abstract class Type {
 		span.atLineStart = atLineStart;
 		span.noLineBreak = noLineBreak;
 		span.noWordBreak = noWordBreak;
+		span.matchBracket = matchBracket;
+		span.noMultipleEndTag = noMultipleEndTag;
+		span.requireEndTag = requireEndTag;
+		span.dynamicTagging = dynamicTagging;
+		span.noMaxChar = noMaxChar;
+		span.groupContent = groupContent;
+		span.beforeTag = beforeTag;
+		span.afterTag = afterTag;
+		
 		span.delegateName = delegate;
 		return span;
 	}
@@ -66,7 +78,7 @@ public abstract class Type {
 		return mark;
 	}
 	
-	public static TextSequence newTextSequence(String color, String text, 
+	public static TextSequence newTextSequence(String color, String text, String[] groupContent,
 		boolean atLineStart, boolean atWhitespaceEnd, 
 		boolean atWordStart, String delegate) {
 			
@@ -78,6 +90,7 @@ public abstract class Type {
 		textSequence.atWhitespaceEnd = atWhitespaceEnd;
 		textSequence.atWordStart = atWordStart;
 		textSequence.delegateName = delegate;
+		textSequence.groupContent = groupContent;
 		return textSequence;
 	}
 

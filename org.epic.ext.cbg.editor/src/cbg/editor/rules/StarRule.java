@@ -198,7 +198,6 @@ public class StarRule implements IPredicateRule {
 		}
 		// Non-matching character detected, rewind the scanner back to the start.
 		// Do not unread the first character.
-		scanner.unread();
 		for (int j = read - 1; j > 0; j--)
 			scanner.unread();
 		return false;

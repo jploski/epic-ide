@@ -10,6 +10,7 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.text.rules.IToken;
 import org.eclipse.jface.text.rules.PatternRule;
 import org.eclipse.jface.util.PropertyChangeEvent;
+
 import cbg.editor.jedit.EOLSpan;
 import cbg.editor.jedit.IVisitor;
 import cbg.editor.jedit.Mark;
@@ -19,16 +20,17 @@ import cbg.editor.jedit.Span;
 import cbg.editor.jedit.TextSequence;
 import cbg.editor.jedit.Type;
 import cbg.editor.prefs.ColorsPreferencePage;
-import cbg.editor.rules.CasedPatternRule;
 import cbg.editor.rules.ColoringWhitespaceDetector;
 import cbg.editor.rules.ColoringWordDetector;
 import cbg.editor.rules.DelegateToken;
 import cbg.editor.rules.EndOfLineRule;
+import cbg.editor.rules.ExtendedPatternRule;
 import cbg.editor.rules.ITokenFactory;
 import cbg.editor.rules.StarRule;
 import cbg.editor.rules.TextSequenceRule;
 
 public class ColoringEditorTools {
+  static ColoringWhitespaceDetector myWhitespaceDetector=new ColoringWhitespaceDetector();
 		
 	public static void add(Rule rule, List rules, ITokenFactory factory) {
 		List allTypes = rule.getTypes();
@@ -48,18 +50,26 @@ public class ColoringEditorTools {
 					Rule delegateRule = mode.getRule(span.getDelegate());
 					defaultToken = new DelegateToken(type, delegateRule, span.getEnd());
 				}
-				/* Using a PatternRule instead of a MultiLineRule because
-				 * PatternRule exposes the break on newline behavior. */
-				 
-				//	TODO EPIC workaround !!!!
-				/* SHOULD BE REMOVED IF REGEXP ARE IMPLEMENTED */
-				PatternRule pat;
-				if(span.getEnd().equals("@EOF")) {
-						pat = new PatternRule(span.getStart(), "",  defaultToken, mode.getDefaultRuleSet().getEscape(), false, true);
+				PatternRule pat = null;
+				boolean checkCase = (span.getStart().toUpperCase() == span.getStart().toLowerCase()) &&
+				                          (span.getEnd().toUpperCase() == span.getEnd().toLowerCase()) ;
+				if (ignoreCase) {
+				  checkCase = ignoreCase && ! checkCase;  
+				} else {
+				  checkCase = false;
 				}
-				else {
-						pat = new CasedPatternRule(span.getStart(), span.getEnd(), 
-						defaultToken, mode.getDefaultRuleSet().getEscape(), span.noLineBreak(), ignoreCase);
+				
+				if (span.matchBracket() || span.noMultipleEndTag() > 1 || span.requireEndTag() 
+				    || span.getGroupContent() != null || checkCase || span.dynamicTagging()) {
+				  pat = new ExtendedPatternRule(span.getStart(), span.getEnd(), 
+				      defaultToken, mode.getDefaultRuleSet().getEscape(), span.noLineBreak(), span.noMaxChar(), span.getGroupContent()
+				      , span.matchBracket(), span.noMultipleEndTag(), span.requireEndTag(), ignoreCase, span.dynamicTagging(),
+				      span.getBeforeTag(), span.getAfterTag(),myWhitespaceDetector);
+				} else {
+				  //the last parameter makes a default handling, 
+				  //i.e. if the End-Tag is missing => mark till the end of File
+				  pat = new PatternRule(span.getStart(), span.getEnd(), 
+				      defaultToken, mode.getDefaultRuleSet().getEscape(), span.noLineBreak(),true);
 				}
 				rules.add(pat);
 			}
@@ -69,18 +79,21 @@ public class ColoringEditorTools {
 				 * the text sequence can not be recognized as a word add it
 				 * as a text sequence.
 				 */
-				if(isWordStart(text.getText().charAt(0))) return;
-				
-				//	TODO EPIC workaround -- Add Operators to whitespace characters
-				ColoringWhitespaceDetector.addWhiteSpaceChar(text.getText());
-				
-				rules.add(new TextSequenceRule(text.getText(), token, ignoreCase));
+				if((text.getText().length() == 1) && !isWordStart(text.getText().charAt(0))) {
+				/**
+				 * EPIC workaround -- Add Operators to whitespace characters =>
+				 * i.e. $t='x' will be also correctly recognized as $t ='x'
+				 */
+				  myWhitespaceDetector.addWhiteSpaceChar(text.getText());
+				}
+				rules.add(new TextSequenceRule(text.getText(), text.groupContent(),  token, 
+				         ignoreCase, myWhitespaceDetector));
 			}
 			public void acceptEolSpan(EOLSpan eolSpan) {
 				rules.add(new EndOfLineRule(eolSpan.getText(), token, ignoreCase));
 			}
 			public void acceptMark(Mark mark) {
-				rules.add(new StarRule(mark, new ColoringWhitespaceDetector(),
+				rules.add(new StarRule(mark, myWhitespaceDetector,
 					wordDetector, token));
 			}
 		});

@@ -8,6 +8,7 @@ Version 0.3.0 - 04-July-2004
 		* Explain Errors/Warnings popup action
 		* Moved Perldoc so separate view
 		* added TODO marker in Perl Editor
+		* Built in web browser added
 
 Version 0.2.0 - 07-May-2004
 		* Enhanced Error/Warning detection in Perl Editor

@@ -81,32 +81,25 @@ public class XMLUtilities {
 
 		// Prepare output
 		Document doc = new Document(root);
-		String xml = prepareOutput(doc);
         String file = project.getLocation().toString()+File.separator+INCLUDE_FILE_NAME;
         
-        Writer outw = null;        
         OutputStream out = null;
 		try {
 			out = new FileOutputStream(file);
-            outw = new OutputStreamWriter(out, CHARSET); 
-			outw.write(xml);
-            outw.close();
+            this.writeOutput(doc, out);
 		} finally {
             SafeClose.close(out);
 		}
 	}
 
-	private String prepareOutput(Document doc) {
+	private void writeOutput(Document doc, OutputStream out) throws IOException {
 		XMLOutputter xmlout = new XMLOutputter();
 
 		xmlout.setIndent(true);
 		xmlout.setNewlines(true);
 		//xmlout.setTextNormalize(true);
 		xmlout.setEncoding(CHARSET);
-
-		String xml = xmlout.outputString(doc);
-
-		return xml;
+        xmlout.output(doc, out);
 	}
 
 }

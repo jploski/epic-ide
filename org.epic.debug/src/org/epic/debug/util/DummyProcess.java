@@ -8,18 +8,22 @@
 package org.epic.debug.util;
 
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.util.Vector;
 
 import org.eclipse.core.runtime.PlatformObject;
 import org.eclipse.debug.core.DebugEvent;
 import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunch;
+import org.eclipse.debug.core.IStreamListener;
 import org.eclipse.debug.core.model.IDebugTarget;
 import org.eclipse.debug.core.model.IProcess;
 import org.eclipse.debug.core.model.IStreamMonitor;
 import org.eclipse.debug.core.model.IStreamsProxy;
 import org.eclipse.debug.core.model.ITerminate;
+import org.eclipse.debug.internal.core.DebugCoreMessages;
 import org.eclipse.debug.internal.core.InputStreamMonitor;
 import org.epic.debug.PerlDB;
 
@@ -29,67 +33,32 @@ import org.epic.debug.PerlDB;
  * To change the template for this generated type comment go to
  * Window&gt;Preferences&gt;Java&gt;Code Generation&gt;Code and Comments
  */
-public class DebuggerProxy extends PlatformObject
+public class DummyProcess extends PlatformObject
 		implements
 			IProcess,
 			ITerminate,
 			IStreamsProxy {
-	private OutputStreamMonitor mMonitorError;
-	private OutputStreamMonitor mMonitorOut;
-	private InputStreamMonitor mMonitorIn;
-	private PrintWriter mOut;
-	ILaunch mLaunch;
-	PerlDB mDebugger;
-	String mLabel;
-	RemotePort mIOStream;
-	RemotePort mErrorStream;
-	boolean mShutDown;
+	
+	//private OutputStreamMonitor mMonitorOut;
 
-	public DebuggerProxy(String fLabel, ILaunch fLaunch ) throws InstantiationException {
+		ILaunch mLaunch;
+	
+	String mLabel;
+	
+	boolean mShutDown;
+	private IStreamMonitor mMonitor;
+
+	
+
+	public DummyProcess(ILaunch fLaunch, String fLabel)
+			throws InstantiationException {
 		mLabel = fLabel;
 		mLaunch = fLaunch;
 		mShutDown = false;
-	}
-
-	public DebuggerProxy(PerlDB fDebugger, String fLabel)
-			throws InstantiationException {
-		mLabel = fLabel;
-		mShutDown = false;
-		init(fDebugger);
-	}
-
-	public void init(PerlDB fDebugger) throws InstantiationException {
-		mDebugger = fDebugger;
-		mLaunch = fDebugger.getLaunch();
-
-		int port;
-
-		//port =
-		// Integer.parseInt(getAttribute(PerlLaunchConfigurationConstants.ATTR_DEBUG_IO_PORT));
-		mIOStream = new RemotePort();
-		mIOStream.startConnect();
-		mDebugger.redirectIO(mIOStream.getServerPort());
-		if (mIOStream.waitForConnect(true) != RemotePort.mWaitOK)
-			throw new InstantiationException(
-					"Could not Create Connection to Debugger Console");
-
-		//port =
-		// Integer.parseInt(getAttribute(PerlLaunchConfigurationConstants.ATTR_DEBUG_ERROR_PORT));
-		mErrorStream = new RemotePort();
-		mErrorStream.startConnect();
-		mDebugger.redirectError(mErrorStream.getServerPort());
-		if (mErrorStream.waitForConnect(true) != RemotePort.mWaitOK)
-			throw new InstantiationException(
-					"Could not Create Connection to Debugger Console");
-
-		mMonitorIn = new InputStreamMonitor(mIOStream.getOutStream());
-		mMonitorOut = new OutputStreamMonitor(mIOStream.getInStream());
-		mMonitorError = new OutputStreamMonitor(mErrorStream.getInStream());
-		mMonitorIn.startMonitoring();
-		mMonitorOut.startMonitoring();
-		mMonitorError.startMonitoring();
-
-		mOut = mIOStream.getWriteStream();
+	
+		mMonitor = new DummyMonitor();
+	//	mMonitorOut = new DummyOutputStreamMonitor();
+		
 
 		fireCreationEvent();
 
@@ -179,9 +148,9 @@ public class DebuggerProxy extends PlatformObject
 	 * @see org.eclipse.debug.core.model.ITerminate#canTerminate()
 	 */
 	public boolean canTerminate() {
-		if (mDebugger == null)
+		
 			return (!mShutDown);
-		return mDebugger.canTerminate();
+		
 	}
 
 	/*
@@ -190,9 +159,9 @@ public class DebuggerProxy extends PlatformObject
 	 * @see org.eclipse.debug.core.model.ITerminate#isTerminated()
 	 */
 	public boolean isTerminated() {
-		if (mDebugger == null)
+		
 			return (!canTerminate());
-		return mDebugger.isTerminated();
+	
 	}
 
 	/*
@@ -201,9 +170,7 @@ public class DebuggerProxy extends PlatformObject
 	 * @see org.eclipse.debug.core.model.ITerminate#terminate()
 	 */
 	public void terminate() throws DebugException {
-		if (mDebugger != null) {
-			mDebugger.terminate();
-		}
+	
 		shutdown();
 
 	}
@@ -214,7 +181,7 @@ public class DebuggerProxy extends PlatformObject
 	 * @see org.eclipse.debug.core.model.IStreamsProxy#getErrorStreamMonitor()
 	 */
 	public IStreamMonitor getErrorStreamMonitor() {
-		return mMonitorError;
+		return mMonitor;
 	}
 
 	/*
@@ -223,7 +190,7 @@ public class DebuggerProxy extends PlatformObject
 	 * @see org.eclipse.debug.core.model.IStreamsProxy#getOutputStreamMonitor()
 	 */
 	public IStreamMonitor getOutputStreamMonitor() {
-		return mMonitorOut;
+		return mMonitor;
 	}
 
 	/*
@@ -232,7 +199,7 @@ public class DebuggerProxy extends PlatformObject
 	 * @see org.eclipse.debug.core.model.IStreamsProxy#write(java.lang.String)
 	 */
 	public void write(String input) throws IOException {
-		mOut.print(input);
+		
 	}
 
 	/**
@@ -260,19 +227,34 @@ public class DebuggerProxy extends PlatformObject
 	}
 
 	void shutdown() {
-		mShutDown= true;
-		if (mMonitorError != null)
-			mMonitorError.kill();
-		if (mMonitorOut != null)
-			mMonitorOut.kill();
-		if (mMonitorIn != null)
-			mMonitorIn.close();
-		if (mMonitorOut != null)
-			mOut.close();
-		if (mIOStream != null)
-			mIOStream.shutdown();
-		if (mErrorStream != null)
-			mErrorStream.shutdown();
-		fireTerminateEvent();
+		mShutDown = true;
+			fireTerminateEvent();
 	}
+	
+	
+	public class DummyMonitor implements IStreamMonitor{
+		
+		
+		
+		/**
+		 * Adds the given listener to this stream monitor's registered listeners.
+		 * Has no effect if an identical listener is already registered.
+		 *
+		 * @param listener the listener to add
+		 */
+		public void addListener(IStreamListener listener)
+		{
+			
+		 
+		}
+		public String getContents()
+		{
+			return("Waiting for connect");
+		}
+		public void removeListener(IStreamListener listener)
+		{
+		}
+		
+	}
+
 }

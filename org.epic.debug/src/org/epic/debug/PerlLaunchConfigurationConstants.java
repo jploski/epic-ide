@@ -41,6 +41,8 @@ public static final String ATTR_REMOTE_PORT = "ATTR_REMOTE_PORT";
 public static final String ATTR_REMOTE_DEST = "ATTR_REMOTE_DEST";
 public static final String ATTR_REMOTE_HOST = "ATTR_REMOTE_HOST";
 public static final String ATTR_REMOTE = "ATTR_REMOTE";
+public static final String ATTR_REMOTE_CREATE_DEBUG_PACKAGE = "ATTR_REMOTE_CREATE_DEBUG_PACKAGE";
+public static final String ATTR_REMOTE_DEBUG_PACKAGE_PATH = "ATTR_REMOTE_DEBUG_PACKAGE_PATH";
 
 public final static String getDebugPort(ILaunch fLaunch)
 {

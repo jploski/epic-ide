@@ -13,7 +13,11 @@ import java.util.List;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.debug.core.DebugEvent;
 import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.DebugPlugin;
@@ -53,7 +57,6 @@ public class RemoteTarget extends DebugTarget implements IDebugEventSetListener
 
 	private boolean mShutDownStarted;
 
-	private boolean mReConnect;
 
 	private RemoteTarget mTarget;
 	
@@ -112,10 +115,15 @@ public class RemoteTarget extends DebugTarget implements IDebugEventSetListener
 
 	public void start()
 	{
-		mReConnect = true;
+	
 		initPath();
 		createPathMapper();
-		RemotePackage.create(this);
+		
+		CreateDebugPackageJob job = new CreateDebugPackageJob(this);
+		job.setUser(true);
+		job.schedule();
+		
+		//RemotePackage.create(this);
 		
 		if (!startTarget())
 			terminate();
@@ -141,10 +149,19 @@ public class RemoteTarget extends DebugTarget implements IDebugEventSetListener
 
 		if (mDebug)
 		{
-			mDebugPort = new RemotePort();
-			mDebugPort.startConnect();
-			if (mDebugPort == null)
-				return false;
+			try {
+				mProxy = new DebuggerProxy("Remote Process",mLaunch);
+			} catch (InstantiationException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			mLaunch.addProcess(mProxy);
+			fireCreationEvent(mProxy);
+//			mDebugPort = new RemotePort();
+//			mDebugPort.startConnect();
+//			if (mDebugPort == null)
+//				return false;
 		}
 						
 		
@@ -179,14 +196,15 @@ public class RemoteTarget extends DebugTarget implements IDebugEventSetListener
 			return false;
 		
 		try {
-			mProxy = new DebuggerProxy(mPerlDB,"Remote Process");
+			mProxy.init(mPerlDB);
 		} catch (InstantiationException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
-		mLaunch.addProcess(mProxy);
-		fireCreationEvent(mProxy);
+		
+//		mLaunch.addProcess(mProxy);
+//		fireCreationEvent(mProxy);
 
 		return true;
 	}
@@ -197,9 +215,9 @@ public class RemoteTarget extends DebugTarget implements IDebugEventSetListener
 	public boolean isTerminated()
 	{
 		if (mPerlDB == null)
-			return (!mReConnect);
+			return (!mShutDownStarted);
 
-		return mPerlDB.isTerminated(this) && !mReConnect;
+		return mPerlDB.isTerminated(this);
 	}
 
 	/**
@@ -207,7 +225,6 @@ public class RemoteTarget extends DebugTarget implements IDebugEventSetListener
 	 */
 	public void terminate()
 	{
-		mReConnect = false;
 		shutdown();
 	}
 
@@ -227,25 +244,25 @@ public class RemoteTarget extends DebugTarget implements IDebugEventSetListener
 
 		mTarget = this;
 
-		Thread term = new Thread()
-		{
-			public void run()
-			{
-				mTarget.startSession();
-				mLaunch.addDebugTarget(mTarget);
-				((DebugTarget) mTarget).getDebuger().generateDebugInitEvent();
-				getDebuger().generateDebugInitEvent();
-			}
-		};
+//		Thread term = new Thread()
+//		{
+//			public void run()
+//			{
+//				mTarget.startSession();
+//				mLaunch.addDebugTarget(mTarget);
+//				((DebugTarget) mTarget).getDebuger().generateDebugInitEvent();
+//				getDebuger().generateDebugInitEvent();
+//			}
+//		};
 
-		term.start();
+//		term.start();
 
 		mLaunch.removeDebugTarget(this);
 		//	mTarget.fireCreateEvent();
 
 		//	fireTerminateEvent();
 		//	fireTerminateEvent();
-		mReConnect = false;
+	
 
 		fireChangeEvent();
 
@@ -335,7 +352,7 @@ public class RemoteTarget extends DebugTarget implements IDebugEventSetListener
 		mTerminated = true;
 		if (mShutDownStarted)
 			return;
-		mReConnect = false;
+	
 		mShutDownStarted = true;
 
 		super.shutdown(unregister);
@@ -417,4 +434,21 @@ public class RemoteTarget extends DebugTarget implements IDebugEventSetListener
 		}
 		return !isTerminated();
 	}
+	
+	
+	public class CreateDebugPackageJob extends Job {
+		private String mString;
+		private RemoteTarget mTarget;
+		
+		public CreateDebugPackageJob(RemoteTarget fTarget) {
+		super("Create Debug Package");
+		mTarget = fTarget;
+		}
+
+		public IStatus run(IProgressMonitor fMon) {
+
+			RemotePackage.create(mTarget,fMon);
+			return Status.OK_STATUS ;
+		}
+}
 }

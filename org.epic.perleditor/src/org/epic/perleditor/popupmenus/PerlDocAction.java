@@ -160,27 +160,24 @@ public class PerlDocAction
 			 * Due to Java Bug #4763384 sleep for a very small amount of time
 			 * immediately after starting the subprocess
 			 */
-			Process proc =
-				Runtime.getRuntime().exec(
-					cmdParams,
-					null,
-					new File(workingDir));
+			Process proc = Runtime.getRuntime().exec(cmdParams, null, new File(workingDir));
 			Thread.sleep(1);
 
 			InputStream in = proc.getInputStream();
-
 			OutputStream out = proc.getOutputStream();
+            //TODO which charset?
+            Writer outw = new OutputStreamWriter(out);
 
 			try {
-				out.write(perlCode.getBytes());
+                outw.write(perlCode);
+                outw.write("\n__END__\n");  //this should avoid problem with Win98
+                outw.flush();
 			} catch (Exception ex) {
-				System.out.println(ex);
+				ex.printStackTrace();
 			}
-
-			out.close();
+            out.close();
 
 			content = PerlExecutableUtilities.readStringFromStream(in);
-
 			in.close();
 
 		} catch (Exception ex) {

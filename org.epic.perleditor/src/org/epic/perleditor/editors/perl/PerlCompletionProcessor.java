@@ -297,21 +297,21 @@ public class PerlCompletionProcessor implements IContentAssistProcessor {
 			Process proc = Runtime.getRuntime().exec(cmdParams, null, new File(workingDir));
 			Thread.sleep(1);
 
-			InputStream in = proc.getInputStream();
-			
-			OutputStream out = proc.getOutputStream();
+            InputStream in = proc.getInputStream();
+            OutputStream out = proc.getOutputStream();
+            //TODO which charset?
+            Writer outw = new OutputStreamWriter(out);
 
 			try {
-                PerlExecutableUtilities.writeStringToStream(perlCode, out);
-			}
-			catch(IOException ex) {
+                outw.write(perlCode);
+                outw.write("\n__END__\n");  //this should avoid problem with Win98
+                outw.flush();
+			} catch(IOException ex) {
 				ex.printStackTrace();
-			}
-
-			out.close();
-			
+            }
+            out.close();
+            
 			String content =  PerlExecutableUtilities.readStringFromStream(in);
-			
 			in.close();
 
 			String line;

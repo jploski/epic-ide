@@ -11,6 +11,7 @@ package org.epic.perleditor.popupmenus;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.text.DateFormat;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
@@ -28,6 +29,7 @@ import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.editors.text.TextEditor;
 import org.eclipse.ui.part.FileEditorInput;
@@ -41,7 +43,8 @@ import org.epic.perleditor.views.util.*;
 //import org.epic.perleditor.PerlEditorPlugin;
 
 public class OpenDeclaration 
-       implements org.eclipse.ui.IEditorActionDelegate
+       implements org.eclipse.ui.IEditorActionDelegate,
+                  org.eclipse.ui.IWorkbenchWindowActionDelegate
        {
   private TextEditor fTextEditor;
   private IResource resource;
@@ -57,7 +60,7 @@ public class OpenDeclaration
    */
   public void run(IAction action) {
 
-
+System.out.println("LeO was here");
     String selection;
     List currentFileList = null;
     int[] searchResults = new int[3];
@@ -280,12 +283,30 @@ public class OpenDeclaration
       int selectionStart = cursorPosition - 1;
       int selectionEnd = cursorPosition;
       //search in front the first letter
-      while (selectionStart >= 0 && Character.isLetterOrDigit(text.charAt(selectionStart))) {
-        --selectionStart;
+      boolean endSearch=false;
+      String allowedSubChar="_";
+      while (selectionStart >= 0 && !endSearch) { 
+        if (!Character.isLetterOrDigit(text.charAt(selectionStart))) {
+        //include also allowed special characters for sub-names  
+            if (allowedSubChar.indexOf(text.charAt(selectionStart)) <0 ) {
+              	endSearch = true;
+            }
+        }
+        if (!endSearch)  
+          --selectionStart;
       }
+      
+      endSearch=false;
       //search at the end for the last letter
-      while (selectionEnd <= maxLength && Character.isLetterOrDigit(text.charAt(selectionEnd))) {
-        ++selectionEnd;
+      while (selectionEnd <= maxLength && !endSearch) {
+        if (!Character.isLetterOrDigit(text.charAt(selectionEnd))) {
+        //include also allowed special characters for sub-names  
+            if (allowedSubChar.indexOf(text.charAt(selectionEnd)) <0 ) {
+              	endSearch = true;
+            }
+        }
+        if (!endSearch)  
+          ++selectionEnd;
       }
 
       selection = text.substring(++selectionStart, selectionEnd);
@@ -330,4 +351,22 @@ public class OpenDeclaration
 
   }
 
+  /* (non-Javadoc)
+   * @see org.eclipse.ui.IWorkbenchWindowActionDelegate#dispose()
+   */
+  public void dispose() {
+    // TODO Auto-generated method stub
+    System.out.println("dispose()");
+
+  }
+
+  /* (non-Javadoc)
+   * @see org.eclipse.ui.IWorkbenchWindowActionDelegate#init(org.eclipse.ui.IWorkbenchWindow)
+   */
+  public void init(IWorkbenchWindow window) {
+    // TODO Auto-generated method stub
+    fTextEditor = (TextEditor) window.getActivePage().getActiveEditor();
+    System.out.println("init()");
+    
+  }
 }

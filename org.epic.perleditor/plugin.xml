@@ -139,6 +139,7 @@
    <!-- Perldoc Perl Editor popup menu definition -->
 <extension point="org.eclipse.ui.popupMenus"> 
       
+      <!-- Perdoc menu -->
       <viewerContribution 
          id="org.epic.perleditor.PerlDocPopup" 
             targetID="#PerlDocEditorContext" >
@@ -176,9 +177,142 @@
             menubarPath="PelDocPopupMenu/PerlDocGroup" 
             class="org.epic.perleditor.popupmenus.PerlDocAction"> 
          </action> 
-      </viewerContribution> 
+	 </viewerContribution>
    </extension>
    
+
+  <!-- Associate menus with PerlEditor -->
+   <extension point="org.eclipse.ui.actionSetPartAssociations">
+      <actionSetPartAssociation targetID="org.epic.perleditor.sourcemenu">
+            <part id="org.epic.perleditor.editors.PerlEditor"/>
+       </actionSetPartAssociation>
+   </extension>
+
+
+  <extension point="org.eclipse.ui.actionSets">
+    <actionSet id="org.epic.perleditor.sourcemenu"
+                     label="Source Menu">
+		
+        <!-- Content assist -->
+		<action id="org.epic.perleditor.ContentAssist"
+      		menubarPath="edit/additions"
+      		label="Co&amp;ntent Assist"
+			definitionId="org.epic.perleditor.contentassist"
+			retarget="true" />
+			
+			
+	    <!-- Source menu -->
+		<menu
+            id="org.epic.perleditor.source.menu"
+            label="Source"
+            path="edit">
+            <separator name="editGroup"/>
+         </menu>
+         
+         <!-- Format source action -->
+		<action id="org.epic.perleditor.FormatSource"
+      		menubarPath="org.epic.perleditor.source.menu/editGroup"
+      		label="F&amp;ormat"
+			definitionId="org.epic.perleditor.formatsource"
+			retarget="true" />
+         
+        <!-- Uncomment action -->
+		<action id="org.epic.perleditor.Uncomment"
+      		menubarPath="org.epic.perleditor.source.menu/editGroup"
+      		label="&amp;Uncomment"
+			definitionId="org.epic.perleditor.uncomment"
+			retarget="true" />
+			
+        <!-- Comment action -->
+		<action id="org.epic.perleditor.Comment"
+      		menubarPath="org.epic.perleditor.source.menu/editGroup"
+      		label="Co&amp;mment"
+			definitionId="org.epic.perleditor.comment"
+			retarget="true" />
+
+	</actionSet>
+  </extension>
+
+  <extension point="org.eclipse.ui.commands">
+    <!-- Uncomment command -->
+     <command
+         id="org.epic.perleditor.uncomment"
+         name= "Uncomment"
+         description= "Uncomment Source">
+     </command>
+     <keyBinding
+         string="Ctrl+\"
+         scope="org.eclipse.ui.textEditorScope"
+         command="org.epic.perleditor.uncomment"
+         configuration="org.eclipse.ui.defaultAcceleratorConfiguration">
+      </keyBinding>
+      <keyBinding
+         platform="carbon"
+         string="Command+\"
+         scope="org.eclipse.ui.textEditorScope"
+         command="org.epic.eclipse.perleditor.uncomment"
+         configuration="org.eclipse.ui.defaultAcceleratorConfiguration">
+      </keyBinding>
+     <!-- Comment command -->
+     <command
+         id="org.epic.perleditor.comment"
+         name= "Comment"
+         description= "Comment source">
+     </command>
+     <keyBinding
+         string="Ctrl+/"
+         scope="org.eclipse.ui.textEditorScope"
+         command="org.epic.perleditor.comment"
+         configuration="org.eclipse.ui.defaultAcceleratorConfiguration">
+      </keyBinding>
+      <keyBinding
+         platform="carbon"
+         string="Command+/"
+         scope="org.eclipse.ui.textEditorScope"
+         command="org.epic.eclipse.perleditor.comment"
+         configuration="org.eclipse.ui.defaultAcceleratorConfiguration">
+      </keyBinding>
+     <!-- Content assist -->
+     <command
+         id="org.epic.perleditor.contentassist"
+         name= "Content Assist"
+         description= "Content Assist">
+     </command>
+     <keyBinding
+         string="Ctrl+Space"
+         scope="org.eclipse.ui.textEditorScope"
+         command="org.epic.perleditor.contentassist"
+         configuration="org.eclipse.ui.defaultAcceleratorConfiguration">
+      </keyBinding>
+      <keyBinding
+         platform="carbon"
+         string="Command+Space"
+         scope="org.eclipse.ui.textEditorScope"
+         command="org.epic.perleditor.contentassist"
+         configuration="org.eclipse.ui.defaultAcceleratorConfiguration">
+      </keyBinding>
+     <!--Format source -->
+     <command
+         id="org.epic.perleditor.formatsource"
+         name= "Format Source"
+         description= "Format Source">
+     </command>
+     <keyBinding
+         string="Ctrl+Shift+F"
+         scope="org.eclipse.ui.textEditorScope"
+         command="org.epic.perleditor.formatsource"
+         configuration="org.eclipse.ui.defaultAcceleratorConfiguration">
+      </keyBinding>
+      <keyBinding
+         platform="carbon"
+         string="Command+Shift+F"
+         scope="org.eclipse.ui.textEditorScope"
+         command="org.epic.perleditor.formatsource"
+         configuration="org.eclipse.ui.defaultAcceleratorConfiguration">
+      </keyBinding>
+  </extension> 
+
+
    <extension
          point="org.eclipse.help.toc">
       <toc
@@ -193,5 +327,6 @@
             file="HelpContexts.xml">
       </contexts>
    </extension>
+ 
 
 </plugin>

@@ -18,8 +18,8 @@ public class FormatSourceAction extends Action {
 	/**
 	 * Constructs and updates the action.
 	 */
-	public FormatSourceAction(String label) {
-		super(label);
+	public FormatSourceAction() {
+		super();
 	}
 	
 	

@@ -37,7 +37,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.editors.text.TextEditorPreferenceConstants;
-import org.eclipse.ui.internal.editors.text.EditorsPlugin;
 import org.eclipse.ui.texteditor.AnnotationPreference;
 import org.eclipse.ui.texteditor.ContentAssistAction;
 import org.eclipse.ui.texteditor.DefaultMarkerAnnotationAccess;
@@ -95,7 +94,7 @@ public class PerlEditor
 	public PerlEditor() {
 		super();
 		
-		// TODO Added to suppor Colorer Plugin
+		// TODO Added to support Colorer Plugin
 		setSourceViewerConfiguration(new PerlSourceViewerConfiguration(PerlEditorPlugin.getDefault().getPreferenceStore(), this));
 		//setDocumentProvider(new ColoringDocumentProvider());
 		
@@ -124,21 +123,21 @@ public class PerlEditor
 		action = new ContentAssistAction(PerlEditorMessages.getResourceBundle(),
 												"ContentAssistProposal.", this);
 		action.setActionDefinitionId(ITextEditorActionDefinitionIds.CONTENT_ASSIST_PROPOSALS);
-		setAction("ContentAssist", action);
+		setAction("org.epic.perleditor.ContentAssist", action);
 		
          // Add comment action
 		action = new TextOperationAction(
 						 PerlEditorMessages.getResourceBundle(),
 						"Comment.", this, ITextOperationTarget.PREFIX);
 		action.setActionDefinitionId(IPerlEditorActionDefinitionIds.COMMENT);
-		setAction("Comment", action);
+		setAction("org.epic.perleditor.Comment", action);
 
 		// Add uncomment action
 		action = new TextOperationAction(
 		PerlEditorMessages.getResourceBundle(),
 					  "Uncomment.", this, ITextOperationTarget.STRIP_PREFIX);
 		action.setActionDefinitionId(IPerlEditorActionDefinitionIds.UNCOMMENT);
-		setAction("Uncomment", action);
+		setAction("org.epic.perleditor.Uncomment", action);
 		
 		IDocumentProvider provider = getDocumentProvider();
 		IDocument document = provider.getDocument(getEditorInput());

@@ -123,21 +123,21 @@ public class PerlEditor
 	    action = new ContentAssistAction(PerlEditorMessages.getResourceBundle(),
 											  "ContentAssistProposal.", this);
 		action.setActionDefinitionId(ITextEditorActionDefinitionIds.CONTENT_ASSIST_PROPOSALS);
-		setAction("ContentAssist", action);
+		setAction("org.epic.perleditor.ContentAssist", action);
 		
            // Add comment action
 		   action = new TextOperationAction(
 						 PerlEditorMessages.getResourceBundle(),
 						 "Comment.", this, ITextOperationTarget.PREFIX);
 		   action.setActionDefinitionId(IPerlEditorActionDefinitionIds.COMMENT);
-		   setAction("Comment", action);
+		   setAction("org.epic.perleditor.Comment", action);
 
 		   // Add uncomment action
 		   action = new TextOperationAction(
 		   PerlEditorMessages.getResourceBundle(),
 				 "Uncomment.", this, ITextOperationTarget.STRIP_PREFIX);
 		   action.setActionDefinitionId(IPerlEditorActionDefinitionIds.UNCOMMENT);
-		   setAction("Uncomment", action);
+		   setAction("org.epic.perleditor.Uncomment", action);
 
 		IDocumentProvider provider = getDocumentProvider();
 		IDocument document = provider.getDocument(getEditorInput());

@@ -31,7 +31,7 @@ public class SourceElementLabelProvider extends LabelProvider {
 		RE matchNew = null;
 
 				try {
-					matchNew = new RE("^new[\\s\\)]");
+					matchNew = new RE("^new[\\s\\(]");
 				} catch (REException e) {
 					e.printStackTrace();
 					return (null);
@@ -52,6 +52,7 @@ public class SourceElementLabelProvider extends LabelProvider {
 		else if(element instanceof Subroutine) {
 			//descriptor = PerlImages.ICON_SUBROUTINE;
 			String name = ((Subroutine)element).getName();
+		
 			if (name != null
 						&& ((matchNew.getAllMatches(name).length > 0)
 							|| name.equals("new"))) {

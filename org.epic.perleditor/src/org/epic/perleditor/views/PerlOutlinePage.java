@@ -62,7 +62,7 @@ public class PerlOutlinePage
 		subroutines.addSubroutines(
 			SourceParser.getElements(
 				input.getTextWidget().getText(),
-				"^[\\s]*(sub\\s+[^\\n{]+)",
+				"^[\\s]*sub\\s+([^\\n\\r{]+)",
 				"", "",
 				true));
 				
@@ -119,7 +119,7 @@ public class PerlOutlinePage
 		subroutines.addSubroutines(
 				SourceParser.getElements(
 					input.getTextWidget().getText(),
-					"^[\\s]*(sub\\s+[^\\n{]+)",
+					"^[\\s]*sub\\s+([^\\n\\r{]+)",
 					"", "",
 					true));
 

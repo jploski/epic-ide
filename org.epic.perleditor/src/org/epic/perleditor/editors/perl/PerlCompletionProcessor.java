@@ -15,6 +15,7 @@ import org.eclipse.jface.text.contentassist.IContextInformationValidator;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.editors.text.TextEditor;
+import org.eclipse.ui.IFileEditorInput;
 
 import org.eclipse.jface.text.IDocument;
 
@@ -246,6 +247,7 @@ public class PerlCompletionProcessor implements IContentAssistProcessor {
 		ITextViewer viewer,
 		String className) {
 		List result = new ArrayList();
+		int READ_BUFFER_SIZE = 128;
 
 		String perlCode =
 			"use "
@@ -269,42 +271,46 @@ public class PerlCompletionProcessor implements IContentAssistProcessor {
 
 		try {
 
-			tmpFileName =
-				System.getProperty("java.io.tmpdir")
-					+ File.separator
-					+ "epic-proposal"
-					+ new Date().getTime();
-
-			// Write output file
-			FileOutputStream fos = new FileOutputStream(new File(tmpFileName));
-			fos.write(perlCode.getBytes());
-			fos.flush();
-			fos.close();
+			
 
 			//			Construct command line parameters
 			List cmdList =
 				PerlExecutableUtilities.getPerlExecutableCommandLine(
 					fTextEditor);
-			cmdList.add(tmpFileName);
 
 			String[] cmdParams =
 				(String[]) cmdList.toArray(new String[cmdList.size()]);
+				
+            //Get working directory -- Fixes Bug: 736631
+			String workingDir =
+				 ((IFileEditorInput) fTextEditor.getEditorInput())
+							 .getFile()
+							 .getLocation()
+							 .makeAbsolute()
+							 .removeLastSegments(1)
+							 .toString();
 
-			Process proc = Runtime.getRuntime().exec(cmdParams);
+			Process proc = Runtime.getRuntime().exec(cmdParams, null, new File(workingDir));
 
 			InputStream in = proc.getInputStream();
+			
+			OutputStream out = proc.getOutputStream();
 
-			byte[] buffer = new byte[1];
-			StringBuffer content = new StringBuffer();
-
-			int read;
-			while ((read = in.read(buffer)) > 0) {
-				content.append(new String(buffer));
+			try {
+			   out.write(perlCode.getBytes());
 			}
+			catch(Exception ex) {
+				System.out.println(ex);
+			}
+
+			out.close();
+			
+			String content =  PerlExecutableUtilities.readStringFromStream(in);
+			
 			in.close();
 
 			String line;
-			StringTokenizer st = new StringTokenizer(content.toString(), "\n");
+			StringTokenizer st = new StringTokenizer(content, "\n");
 			while (st.hasMoreTokens()) {
 				line = st.nextToken();
 				if (line.indexOf("\r") != -1) {
@@ -318,11 +324,7 @@ public class PerlCompletionProcessor implements IContentAssistProcessor {
 			ex.printStackTrace();
 		} finally {
 			try {
-				//				Delete tmp file
-				new File(tmpFileName).delete();
-				//TODO
-				// Just because of Linux problems
-				new File(tmpFileName + "_call").delete();
+			
 			} catch (Exception ex) {
 				ex.printStackTrace();
 			}

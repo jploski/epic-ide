@@ -10,7 +10,6 @@
 package org.epic.perleditor.editors;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.StringTokenizer;
 import java.io.*;
@@ -32,7 +31,8 @@ import org.epic.perleditor.PerlEditorPlugin;
 
 public class PerlSyntaxValidationThread extends Thread {
 	private static final String PERL_CMD_EXT = "-c";
-	private static final String PERL_ERROR_INDICATOR = " line ";
+	private static final String PERL_ERROR_INDICATOR = " at - line ";
+	private static final int READ_BUFFER_SIZE = 128;
 
 	private static final String[] WARNING_STRINGS =
 		{ "possible", "Useless", "may", "better written as" };
@@ -53,7 +53,6 @@ public class PerlSyntaxValidationThread extends Thread {
 	private int waitForTermination = 400; // millis
 	private int maxErrorsShown = 10;
 
-	private String tmpFileName;
 
 	public PerlSyntaxValidationThread(
 		TextEditor textEditor,
@@ -61,11 +60,6 @@ public class PerlSyntaxValidationThread extends Thread {
 		super();
 		fTextEditor = textEditor;
 		fSourceViewer = viewer;
-		tmpFileName =
-			System.getProperty("java.io.tmpdir")
-				+ File.separator
-				+ "epic"
-				+ new Date().getTime();
 	}
 
 	public void setText(String text) {
@@ -149,11 +143,6 @@ public class PerlSyntaxValidationThread extends Thread {
 			IResource resource =
 				(IResource) ((IAdaptable) input).getAdapter(IResource.class);
 
-			// Write output file
-			FileOutputStream fos = new FileOutputStream(new File(tmpFileName));
-			fos.write(text.getBytes());
-			fos.flush();
-			fos.close();
 
 			// Construct command line parameters
 			List cmdList =
@@ -164,8 +153,6 @@ public class PerlSyntaxValidationThread extends Thread {
 			if(PerlEditorPlugin.getDefault().getWarningsPreference()) {
 				cmdList.add("-w");
 			}
-			
-			cmdList.add(tmpFileName);
 
 			String[] cmdParams =
 				(String[]) cmdList.toArray(new String[cmdList.size()]);
@@ -182,16 +169,14 @@ public class PerlSyntaxValidationThread extends Thread {
 
 			proc = Runtime.getRuntime().exec(cmdParams, null, new File(workingDir));
 
-			InputStream in = proc.getErrorStream();
-
-			StringBuffer content = new StringBuffer();
-
-			byte[] buffer = new byte[1];
-
-			int read;
-			while ((read = in.read(buffer)) > 0) {
-				content.append(new String(buffer));
-			}
+			InputStream in = proc.getErrorStream();		
+			OutputStream out = proc.getOutputStream();
+			
+			out.write(text.getBytes());
+			out.close();
+			
+			String content =  PerlExecutableUtilities.readStringFromStream(in);
+			
 			in.close();
 
 			// DEBUG start
@@ -216,7 +201,7 @@ public class PerlSyntaxValidationThread extends Thread {
 
 			previousHashCode = hashCode;
 
-			StringTokenizer st = new StringTokenizer(content.toString(), "\n");
+			StringTokenizer st = new StringTokenizer(content, "\n");
 
 			int lineCount = 0;
 
@@ -245,13 +230,16 @@ public class PerlSyntaxValidationThread extends Thread {
 				line = (String) lines.get(i);
 
 				// If error message is not from temporary file, skip
+				// TODO
+				// temporarily deleted
+				/*
 				if (line.indexOf(tmpFileName) == -1) {
 					continue;
 				}
+				*/
 
 				// Delete filename from error message
 				StringBuffer lineSb = new StringBuffer(line);
-				replace(lineSb, tmpFileName + " ", "", true);
 				line = lineSb.toString();
 
 				if ((index = line.indexOf(PERL_ERROR_INDICATOR)) != -1) {
@@ -387,8 +375,6 @@ public class PerlSyntaxValidationThread extends Thread {
 			return false;
 		} finally {
 			try {
-				//				Delete tmp file
-				new File(tmpFileName).delete();
 			} catch (Exception ex) {
 				ex.printStackTrace();
 			}

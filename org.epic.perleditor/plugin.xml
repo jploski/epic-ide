@@ -255,7 +255,7 @@
             </separator>
          </menu>
          <action
-               label="Open SUB Declaration"
+               label="Open SUB Declaration (Ctrl+Shift+Q)"
                icon="icons/open-source.gif"
                class="org.epic.perleditor.popupmenus.OpenDeclaration"
                tooltip="Open Declaration for SUBs only, defined locally, in files or in packages!"
@@ -463,10 +463,19 @@
       </keyBinding>
       <command
             description="Opens the SUBs declaration"
-            name="EPIC.openDeclaration"
+            name="OpenDeclaration"
             id="org.epic.perleditor.openDeclaration"/>
       <keyBinding
-            string="Ctrl+Q"
+            string="Ctrl+Shift+Q"
+            commandId="org.epic.perleditor.openDeclaration"
+            scope="org.epic.perleditor.perlEditorScope"
+            command="org.epic.perleditor.openDeclaration"
+            configuration="org.eclipse.ui.defaultAcceleratorConfiguration"/>
+      <keyBinding
+            platform="carbon"
+            string="Command+Shift+Q"
+            commandId="org.epic.perleditor.openDeclaration"
+            scope="org.epic.perleditor.perlEditorScope"
             command="org.epic.perleditor.openDeclaration"
             configuration="org.eclipse.ui.defaultAcceleratorConfiguration"/>
    </extension>

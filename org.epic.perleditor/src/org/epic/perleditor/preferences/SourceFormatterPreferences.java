@@ -11,13 +11,14 @@ import org.epic.perleditor.PerlEditorPlugin;
  * Source Formatter default settings
  */
 public class SourceFormatterPreferences {
-	public static final String CUDDLED_ELSE = "cuddledElse";
-	public static final String BRACES_LEFT = "bracesLeft";
-	public static final String LINE_UP_WITH_PARENTHESES = "lineUpWithParenttheses";
-	public static final String CONTAINER_TIGHTNESS_BRACES = "containerTightnessBraces";
-	public static final String CONTAINER_TIGHTNESS_PARENTHESES = "containerTightnessParentheses";
-	public static final String CONTAINER_TIGHTNESS_SQUARE_BRACKETS = "containerTightnessSquareBrackets";
-
+	public static final String CUDDLED_ELSE = "Formatter.cuddledElse";
+	public static final String BRACES_LEFT = "Formatter.bracesLeft";
+	public static final String LINE_UP_WITH_PARENTHESES = "Formatter.lineUpWithParenttheses";
+//	public static final String CONTAINER_TIGHTNESS_BRACES = "Formatter.containerTightnessBraces";
+//	public static final String CONTAINER_TIGHTNESS_PARENTHESES = "Formatter.containerTightnessParentheses";
+//	public static final String CONTAINER_TIGHTNESS_SQUARE_BRACKETS = "Formatter.containerTightnessSquareBrackets";
+	public static final String SWALLOW_OPTIONAL_BLANK_LINES ="Formatter.swallowOptionalBlankLines";
+	public static final String PERLTIDY_OPTIONS = "Formatter.perltidyOptions";
 	
 	
 	/**
@@ -37,9 +38,10 @@ public class SourceFormatterPreferences {
 		store.setDefault(CUDDLED_ELSE, false);
 		store.setDefault(BRACES_LEFT, false);
 		store.setDefault(LINE_UP_WITH_PARENTHESES, false);
-		store.setDefault(CONTAINER_TIGHTNESS_BRACES, 1);
-		store.setDefault(CONTAINER_TIGHTNESS_PARENTHESES, 1);
-		store.setDefault(CONTAINER_TIGHTNESS_SQUARE_BRACKETS, 1);
+//		store.setDefault(CONTAINER_TIGHTNESS_BRACES, 1);
+//		store.setDefault(CONTAINER_TIGHTNESS_PARENTHESES, 1);
+//		store.setDefault(CONTAINER_TIGHTNESS_SQUARE_BRACKETS, 1);
+		store.setDefault(PERLTIDY_OPTIONS, "");
 }
 
 	

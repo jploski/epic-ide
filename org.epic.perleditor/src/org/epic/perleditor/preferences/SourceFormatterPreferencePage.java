@@ -30,7 +30,7 @@ public class SourceFormatterPreferencePage
 	 * @see org.eclipse.ui.IWorkbenchPreferencePage#init(org.eclipse.ui.IWorkbench)
 	 */
 	public void init(IWorkbench workbench) {
-		setDescription("All changes will take effect next time the formatter is run.\n\n");
+		setDescription("All changes will take effect next time the formatter is run.\n");
 	}
 
 	
@@ -65,38 +65,52 @@ public class SourceFormatterPreferencePage
 		addField(
 			new BooleanFieldEditor(
 				SourceFormatterPreferences.BRACES_LEFT,
-				"Braces left",
+				"Opening brace on new line",
 				composite));
 		addField(
 				new BooleanFieldEditor(
 				SourceFormatterPreferences.LINE_UP_WITH_PARENTHESES,
 				"Line up with parentheses",
 				composite));
+		addField(
+						new BooleanFieldEditor(
+						SourceFormatterPreferences.SWALLOW_OPTIONAL_BLANK_LINES,
+						"Swallow optional blank lines",
+						composite));
+ 
 
-        addField(new SpacerFieldEditor(composite));
-		addField(new LabelFieldEditor("Container tightness:", composite));
-		addField(new LabelFieldEditor("(values 0-2)", composite));
-
-		IntegerFieldEditor ctBraces = new IntegerFieldEditor(
-				SourceFormatterPreferences.CONTAINER_TIGHTNESS_BRACES,
-				"Braces",
-				composite);
-		ctBraces.setValidRange(0, 2);	
-		addField(ctBraces);
+//        addField(new SpacerFieldEditor(composite));
+//		addField(new LabelFieldEditor("Container tightness:", composite));
+//		addField(new LabelFieldEditor("(values 0-2)", composite));
+//
+//		IntegerFieldEditor ctBraces = new IntegerFieldEditor(
+//				SourceFormatterPreferences.CONTAINER_TIGHTNESS_BRACES,
+//				"Braces",
+//				composite);
+//		ctBraces.setValidRange(0, 2);	
+//		addField(ctBraces);
+//		
+//		IntegerFieldEditor ctParentheses = new IntegerFieldEditor(
+//				SourceFormatterPreferences.CONTAINER_TIGHTNESS_PARENTHESES,
+//				"Parentheses",
+//				composite);
+//		ctParentheses.setValidRange(0, 2);	
+//		addField(ctParentheses);
+//		
+//		IntegerFieldEditor ctSquareBraces = new IntegerFieldEditor(
+//				SourceFormatterPreferences.CONTAINER_TIGHTNESS_SQUARE_BRACKETS,
+//				"Square brackets",
+//				composite);
+//		ctSquareBraces.setValidRange(0, 2);	
+//		addField(ctSquareBraces);
 		
-		IntegerFieldEditor ctParentheses = new IntegerFieldEditor(
-				SourceFormatterPreferences.CONTAINER_TIGHTNESS_PARENTHESES,
-				"Parentheses",
-				composite);
-		ctParentheses.setValidRange(0, 2);	
-		addField(ctParentheses);
+		addField(new SpacerFieldEditor(composite));
+		addField(new LabelFieldEditor("Additional PerlTidy options (separated by space)", composite));
+		addField(new StringFieldEditor(
+						SourceFormatterPreferences.PERLTIDY_OPTIONS,
+						"Options",
+						composite));
 		
-		IntegerFieldEditor ctSquareBraces = new IntegerFieldEditor(
-				SourceFormatterPreferences.CONTAINER_TIGHTNESS_SQUARE_BRACKETS,
-				"Square brackets",
-				composite);
-		ctSquareBraces.setValidRange(0, 2);	
-		addField(ctSquareBraces);
 
 	}
 

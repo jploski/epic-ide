@@ -215,6 +215,9 @@ public abstract class Target implements IDebugTarget
 			fCmdList.add("-T");
 		}
 
+		
+		
+		startfile = getProjectDir().toString()+"/"+startfile;
 		fCmdList.add(startfile);
 		if (progParams.length() > 0)
 		{

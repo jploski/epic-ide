@@ -18,15 +18,22 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.Map;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.DebugException;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.Document;
+import org.eclipse.jface.text.IDocument;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.editors.text.TextEditor;
+import org.eclipse.ui.part.FileEditorInput;
 import org.epic.regexp.views.RegExpView;
 
 /**
@@ -229,30 +236,22 @@ public class PerlRegExpBreakpoint extends PerlLineBreakpoint {
 
 		int BUF_SIZE = 1024;
 
-		//	Get the file content
-		char[] buf = new char[BUF_SIZE];
-		File inputFile = new File(getMarker().getResource().getLocation()
-				.toString());
-		BufferedReader in;
-		try {
-			in = new BufferedReader(new FileReader(inputFile));
-
-			int read = 0;
-			while ((read = in.read(buf)) > 0) {
-				sourceCode.append(buf, 0, read);
-			}
-			in.close();
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		IWorkbench bench = PerlDebugPlugin.getDefault().getWorkbench();
+		if ( bench == null )
 			return null;
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return null;
-		}
+		IWorkbenchWindow window = bench.getActiveWorkbenchWindow();
+		if ( window == null )
+			return  null;
+		IWorkbenchPage page = window.getActivePage();
+		if ( page == null )
+			return  null;
+		FileEditorInput input = new FileEditorInput((IFile)getMarker().getResource());
+		TextEditor editor = (TextEditor) page.findEditor(input);
+		
+		IDocument doc = editor.getDocumentProvider().getDocument(input);
+	
 		String line = null;
-		Document doc = new Document(sourceCode.toString());
+		
 		try {
 			int length = doc.getLineLength(getLineNumber() - 1);
 			int offset = doc.getLineOffset(getLineNumber() - 1);
@@ -271,7 +270,7 @@ public class PerlRegExpBreakpoint extends PerlLineBreakpoint {
 		String lineCurrent = getCurrentSourceLine();
 		if (!isStoredDataValid(lineCurrent)) {
 			setSourceLine(lineCurrent);
-		extractRegExp(lineCurrent);
-				}
+			extractRegExp(lineCurrent);
+		}
 	}
 }

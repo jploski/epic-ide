@@ -100,7 +100,11 @@ public class StringReaderThread extends Thread
         catch (InterruptedException e)
         {
             //everything is fine, and this thread will terminate
-            e.printStackTrace();
+  				if (e.getMessage() == null) {
+  				  System.out.println("Thread interrupted due to normal workflow in " +this.getClass().getName());
+  				} else {
+  				  e.printStackTrace();
+  				}
         }
     }
 }

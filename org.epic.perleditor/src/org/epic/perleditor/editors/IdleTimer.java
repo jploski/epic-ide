@@ -85,7 +85,10 @@ public class IdleTimer extends Thread {
 			try {
 				Thread.sleep(sleep);
 			} catch (InterruptedException e) {
-				e.printStackTrace();
+			  //The only reason why an exception is caught here, is that the sleep timer terminated before end
+			  //makes no special reason to print this out! (LeO)
+
+			  //			  e.printStackTrace();
 			}
 		}
 	}

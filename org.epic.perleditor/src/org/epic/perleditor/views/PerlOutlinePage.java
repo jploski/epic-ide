@@ -192,7 +192,11 @@ public class PerlOutlinePage
 
 				}
 			} catch (InterruptedException e) {
-				e.printStackTrace();
+				if (e.getMessage() == null) {
+				  System.out.println("Thread interrupted due to normal workflow in " +this.getClass().getName());
+				} else {
+				  e.printStackTrace();
+				}
 			}
 		}
 

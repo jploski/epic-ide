@@ -80,8 +80,6 @@ public class PerlCompletionProcessor implements IContentAssistProcessor {
 	private TemplateEngine fTemplateEngine;
 	private PerlCompletionProposalComparator fComparator;
 
-	private String lastClassName;
-	private List lastClassList;
 
 	/*
 	 * Constructor
@@ -95,7 +93,14 @@ public class PerlCompletionProcessor implements IContentAssistProcessor {
 
 		fComparator = new PerlCompletionProposalComparator();
 	}
-	/* 
+	/**
+   * 
+   */
+  public PerlCompletionProcessor() {
+    
+    // nothing to do cause, it's only required for OpenDeclaration
+  }
+  /* 
 	 * Method declared on IContentAssistProcessor
 	 */
 	public ICompletionProposal[] computeCompletionProposals(
@@ -106,7 +111,7 @@ public class PerlCompletionProcessor implements IContentAssistProcessor {
 
 		if (className != null) {
 
-			List proposals = getProposalsForClassname(viewer, className);
+			List proposals = getProposalsForClassname(className);
 
 			IPerlCompletionProposal[] subroutineResults =
 				new IPerlCompletionProposal[0];
@@ -382,11 +387,15 @@ public class PerlCompletionProcessor implements IContentAssistProcessor {
 		return className;
 	}
 
+	public final List getProposalsForClassname(TextEditor fTextEditor, String className){
+	  this.fTextEditor = fTextEditor ;
+	  return getProposalsForClassname(className);
+	}
+	
 	private List getProposalsForClassname(
-		ITextViewer viewer,
 		String className) {
 		List result = new ArrayList();
-		int READ_BUFFER_SIZE = 128;
+	//	int READ_BUFFER_SIZE = 128;
 
 		String perlCode =
 			"use "
@@ -405,8 +414,6 @@ public class PerlCompletionProcessor implements IContentAssistProcessor {
 				+ "       #print \"$name\\n\";\n"
 				+ "   }\n"
 				+ "}\n";
-
-		String tmpFileName = null;
 
 		try {
 

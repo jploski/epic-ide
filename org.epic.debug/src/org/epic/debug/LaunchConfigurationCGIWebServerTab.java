@@ -370,7 +370,7 @@ public class LaunchConfigurationCGIWebServerTab
 
 		if (value.indexOf(fHTMLRootDir.getStringValue()) != 0)
 		{
-			setErrorMessage("HTML Startup File must be located within HTMT Root Directory (or one of its subfolders)"); //$NON-NLS-1$
+			setErrorMessage("HTML Startup File must be located within HTML Root Directory (or one of its subfolders)"); //$NON-NLS-1$
 			return false;
 		}
 

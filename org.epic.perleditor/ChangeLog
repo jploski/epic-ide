@@ -14,9 +14,7 @@ Eclipse Perl Integration:
 		* On double-click text selection also select @ and %. (Contributor: Danny Bud <Danny_Bud at bmc.com>)
 		* Fixed bug: [ 999542 ] ResourceException when file removed
 		* Fixed bug: [ 996612 ] ClassCastException on Perl project right-click
-		  NOTE by luelljoc: Hope that it's working. Has to be tested.
 		* Fixed bug: [ 993782 ] no warnings displayed until first change is applied
-		  NOTE by luelljoc: Hope that it's working. Has to be tested.
 		* Fixed bug: [ 814986 ] Pragmas are not modules
 		* Fixed bug: [ 991625 ] Outline\Modules also lists modules from POD sections
 		* Empty entries are no longer added to the Perl Include Path

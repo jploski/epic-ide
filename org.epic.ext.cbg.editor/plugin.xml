@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin
+   id="org.epic.ext.cbg.editor"
+   name="Syntax Coloring  Editor Plugin"
+   version="0.2.8"
+   provider-name="Chris Grindstaff"
+   class="cbg.editor.EditorPlugin">
+
+   <runtime>
+      <library name="editor.jar">
+         <export name="*"/>
+      </library>
+      <library name="libs/dom4j-mini.jar">
+         <export name="*"/>
+      </library>
+      <library name="libs/regexp-1.2-mini.jar">
+         <export name="*"/>
+      </library>
+   </runtime>
+   <requires>
+      <import plugin="org.eclipse.core.resources"/>
+      <import plugin="org.eclipse.ui"/>
+   </requires>
+
+
+   <extension
+         id="cbg.editor"
+         name="ColoringEditor"
+         point="org.eclipse.ui.editors">
+
+   </extension>
+
+
+</plugin>

@@ -6,6 +6,8 @@ Eclipse Perl Integration:
 		* Support displaying of empty arrays and hashes
 		
 		Editor:
+		* Fixed bug: [ 993782 ] no warnings displayed until first change is applied
+		  NOTE by luelljoc: Hope that it's working. Has to be tested.
 		* Fixed bug: [ 814986 ] Pragmas are not modules
 		* Fixed bug: [ 991625 ] Outline\Modules also lists modules from POD sections
 		* Empty entries are no longer added to the Perl Include Path

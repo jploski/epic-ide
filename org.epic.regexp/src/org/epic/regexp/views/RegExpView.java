@@ -176,8 +176,8 @@ public class RegExpView extends ViewPart {
 
 	private Action validateAction, cutAction, copyAction, pasteAction;
 	private Action stopDebugAction, forwardDebugAction, backDebugAction;
+	
 	private StyledText regExpText;
-
 	private StyledText matchText;
 
 	private Label resultImageLabel;
@@ -739,4 +739,16 @@ public class RegExpView extends ViewPart {
 
 	}
 
+	/**
+	 * @param regExpText The regExpText to set.
+	 */
+	public void setRegExpText(String regexp) {
+		regExpText.setText(regexp);
+	}
+	/**
+	 * @param matchText The matchText to set.
+	 */
+	public void setMatchText(String text) {
+		matchText.setText(text);
+	}
 }

@@ -1,0 +1,1 @@
+while(($k,$v)= each %ENV){ print "$k=$v\n"};

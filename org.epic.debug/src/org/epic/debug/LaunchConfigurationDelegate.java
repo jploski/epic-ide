@@ -65,8 +65,40 @@ public class LaunchConfigurationDelegate
 				PerlLaunchConfigurationConstants.ATTR_DEBUG_CGI,
 				((String) null));
 
+		String remote =
+			launch.getLaunchConfiguration().getAttribute(
+				PerlLaunchConfigurationConstants.ATTR_REMOTE,
+				((String) null));
 		launch.setSourceLocator(new SourceLocator());
+		if (remote != null)
+		{
+			mTarget = new RemoteTarget(launch);
+			//target = new CGITarget(launch);
+			Thread start = new Thread()
+			{
+				public void run()
+				{
+					mTarget.start();
+					if (!mTarget.isTerminated())
+					{
+						mLaunch.addDebugTarget(mTarget);
+						PerlDB db = ((DebugTarget) mTarget)
+						.getDebuger();
+						if( db != null )					
+						 db.generateDebugInitEvent();
+					}
+				};
+			};
 
+			start.start();
+			
+			// Switch to Debug Perspective
+			Perspective.switchPerspective(Constants.DEBUG_PERSPECTIVE_ID);
+
+			//			mTarget.start();
+			//			mLaunch.addDebugTarget(mTarget);
+			//((DebugTarget) mTarget).getDebuger().generateDebugInitEvent();
+		}else 
 		if (cgi != null)
 		{
 			mTarget = new CGITarget(launch);

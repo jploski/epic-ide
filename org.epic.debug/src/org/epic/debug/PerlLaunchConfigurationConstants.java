@@ -37,6 +37,10 @@ public final static String ATTR_CGI_ROOT_DIR = "ATTR_CGI_ROOT_DIR";
 public final static String ATTR_CGI_ENV = "ATTR_CGI_ENV";
 /*STR*/
 public final static String ATTR_CGI_FILE_EXTENSION = "ATTR_CGI_FILE_EXTENSION";
+public static final String ATTR_REMOTE_PORT = "ATTR_REMOTE_PORT";
+public static final String ATTR_REMOTE_DEST = "ATTR_REMOTE_DEST";
+public static final String ATTR_REMOTE_HOST = "ATTR_REMOTE_HOST";
+public static final String ATTR_REMOTE = "ATTR_REMOTE";
 
 public final static String getDebugPort(ILaunch fLaunch)
 {

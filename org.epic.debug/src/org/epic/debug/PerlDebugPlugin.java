@@ -9,6 +9,7 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.Writer;
 import java.net.InetAddress;
+import java.net.URL;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -21,6 +22,7 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPluginDescriptor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.IDebugEventSetListener;
@@ -167,37 +169,23 @@ public class PerlDebugPlugin extends AbstractUIPlugin {
 		int count;
 		//String command[]= {PerlExecutableUtilities.getPerlExecPath(),
 		// "-e","'while(($k,$v)= each %ENV){ print\"$k=$v\\n\";}'"};
-		String command = "while(($k,$v)= each %ENV){ print\"$k=$v\\n\";}";
-
+		//String command = "while(($k,$v)= each %ENV){ print\"$k=$v\\n\";}";
+		String command[]= {PerlExecutableUtilities.getPerlExecPath(),PerlDebugPlugin.getPlugInDir()+"get_env.pl"};
 		try {
 
 			proc = Runtime.getRuntime().exec(
-					PerlExecutableUtilities.getPerlExecPath());
+					command);
+		
 			Thread.sleep(1);
 
-			proc.getErrorStream().close();
-			InputStream in = proc.getInputStream();
-			OutputStream out = proc.getOutputStream();
-			//TODO which charset?
-			Writer outw = new OutputStreamWriter(out);
+		//	InputStream in = proc.getInputStream();
 
-			try {
-				outw.write(command);
-				outw.write(0x1a); //this should avoid problem with Win98
-				outw.flush();
-			} catch (Exception ex) {
-				ex.printStackTrace();
-			}
+		
 
-			out.close();
-			//				Runtime.getRuntime().exec(
-			//					PerlExecutableUtilities.getPerlExecPath()
-			//						+ " -e\"while(($k,$v)= each %ENV){ print\\\"$k=$v\\n\\\";}\"");
-
+		proc.getErrorStream().close();
 		} catch (Exception e) {
-			System.out.println("Failing to create Process !!!");
+			getDefault().logError("Error reading environment: check Perl executable preference !");
 		}
-
 		InputStream in = proc.getInputStream();
 
 		try {
@@ -233,13 +221,13 @@ public class PerlDebugPlugin extends AbstractUIPlugin {
 	public static String getPerlDebugEnv(DebugTarget fTarget) {
 		String port = null;
 		String host = null;
-//		try {
-//			host = InetAddress.getLocalHost().getHostAddress();
-//		} catch (UnknownHostException e1) {
-//			// TODO Auto-generated catch block
-//			e1.printStackTrace();
-//		}
-//		;
+		try {
+			host = InetAddress.getLocalHost().getHostAddress();
+		} catch (UnknownHostException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		;
 
 		port = fTarget.getDebugPort();
 		
@@ -418,6 +406,26 @@ public class PerlDebugPlugin extends AbstractUIPlugin {
 
 	public static String getDefaultDebugPort() {
 		return mDefaultDebugPort;
+	}
+
+	static public String getPlugInDir()
+	{
+		URL installURL =
+			getDefault().getDescriptor().getInstallURL();
+			
+		try
+		{
+			installURL = Platform.resolve(installURL);
+		} catch (IOException e)
+		{
+			getDefault().logError(
+				"Error retrieving Plugin dir",
+				e);
+		}
+		String path =installURL.getPath();
+		if( path.charAt(0) == '/' && path.charAt(2)==':' && path.charAt(3) == '/')
+			path = path.substring(1);
+		return (path);
 	}
 
 }

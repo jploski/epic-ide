@@ -9,7 +9,10 @@ import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.model.IBreakpoint;
 import org.eclipse.debug.core.model.IMemoryBlock;
 import org.eclipse.debug.core.model.IThread;
+import org.epic.debug.util.PathMapper;
+import org.epic.debug.util.PathMapperCygwin;
 import org.epic.debug.util.RemotePort;
+import org.epic.perleditor.PerlEditorPlugin;
 
 /**
  * @author ruehl
@@ -335,4 +338,16 @@ public abstract class DebugTarget extends Target
 		return Integer.toString(mDebugPort.getServerPort());
 	}
 
+public PathMapper getPathMapper()
+{
+	String interpreterType = PerlEditorPlugin.getDefault()
+	.getPreferenceStore().getString(
+			PerlEditorPlugin.INTERPRETER_TYPE_PREFERENCE);
+
+	if (interpreterType.equals(PerlEditorPlugin.INTERPRETER_TYPE_CYGWIN)) 
+		return( new PathMapperCygwin());
+	else 
+		return (null);
+}
+	
 }

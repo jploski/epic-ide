@@ -2,12 +2,10 @@ package org.epic.debug;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
 import java.util.List;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.debug.core.DebugEvent;
 import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.DebugPlugin;
@@ -102,26 +100,6 @@ public abstract class Target implements IDebugTarget
 		return mLaunch;
 	}
 
-	static public String getPlugInDir()
-	{
-		URL installURL =
-			PerlDebugPlugin.getDefault().getDescriptor().getInstallURL();
-			
-		try
-		{
-			installURL = Platform.resolve(installURL);
-		} catch (IOException e)
-		{
-			PerlDebugPlugin.getDefault().logError(
-				"Error retrieving Plugin dir",
-				e);
-		}
-		String path =installURL.getPath();
-		if( path.charAt(0) == '/' && path.charAt(2)==':' && path.charAt(3) == '/')
-			path = path.substring(1);
-		return (path);
-	}
-
 	public String getJavaHome()
 	{
 		return (System.getProperty("java.home"));
@@ -158,6 +136,7 @@ public abstract class Target implements IDebugTarget
 		mStartupFile = path.lastSegment();
 		mStartupFileAbsolut = prj.findMember(startfile).getLocation().toString();
 	}
+	
 	Process startPerlProcess()
 	{
 		
@@ -189,7 +168,7 @@ public abstract class Target implements IDebugTarget
 		IProject prj =
 			PerlDebugPlugin.getWorkspace().getRoot().getProject(prjName);
 
-		IPath workingDir = getWorkingDir();
+		IPath workingDir = getLocalWorkingDir();
 
 		List fCmdList = null;
 		try
@@ -202,7 +181,7 @@ public abstract class Target implements IDebugTarget
 				"Could not start Debug Process (Erroror assambling command line !",
 				e);
 		}
-		fCmdList.add("-I"+CGITarget.getPlugInDir());
+		fCmdList.add("-I"+PerlDebugPlugin.getPlugInDir());
 		if (mLaunch.getLaunchMode().equals(ILaunchManager.DEBUG_MODE))
 		{
 			fCmdList.add("-d");
@@ -254,7 +233,7 @@ public abstract class Target implements IDebugTarget
 
 	}
 
-	public IPath getWorkingDir()
+	public IPath getLocalWorkingDir()
 	{
 		return mWorkingDir;
 	}
@@ -264,7 +243,7 @@ public abstract class Target implements IDebugTarget
 			return mProjectDir;
 	}
 
-	public String _getStartupFile()
+	public String getStartupFile()
 	{
 		return mStartupFile;
 	}

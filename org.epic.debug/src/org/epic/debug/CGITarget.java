@@ -183,7 +183,7 @@ public class CGITarget extends DebugTarget implements IDebugEventSetListener
 				+ "\n"
 				+ "cgi.suffix="+cgiFileExtension
 				+"\n"
-				+ "cgi.DebugInclude="+" -I"+getPlugInDir());
+				+ "cgi.DebugInclude="+" -I"+PerlDebugPlugin.getPlugInDir());
 		
 		if (mDebug)
 		{
@@ -200,7 +200,7 @@ public class CGITarget extends DebugTarget implements IDebugEventSetListener
 			}
 
 		File templ =
-			new File(getPlugInDir() + File.separator + "brazil_cgi_templ.cfg");
+			new File(PerlDebugPlugin.getPlugInDir() + File.separator + "brazil_cgi_templ.cfg");
 		File dest =
 			new File(
 				PerlDebugPlugin.getDefault().getStateLocation()
@@ -229,13 +229,13 @@ public class CGITarget extends DebugTarget implements IDebugEventSetListener
 			{
 				javaExec,
 				"-classpath",
-				getPlugInDir()
+				PerlDebugPlugin.getPlugInDir()
 					+ "brazil_mini.jar"
 					+ File.pathSeparator
-					+ getPlugInDir()
+					+ PerlDebugPlugin.getPlugInDir()
 					+ "debug.jar"
 					+ File.pathSeparator
-					+ getPlugInDir()
+					+ PerlDebugPlugin.getPlugInDir()
 					+ "bin",
 				"sunlabs.brazil.server.Main",
 				"-c",

@@ -12,13 +12,13 @@ import org.eclipse.debug.ui.ILaunchConfigurationTab;
  * To enable and disable the creation of type comments go to
  * Window>Preferences>Java>Code Generation.
  */
-public class LaunchConfigurationDialog
+public class LaunchConfigurationRemoteDialog
 	extends AbstractLaunchConfigurationTabGroup {
 
 	/**
 	 * Constructor for LaucunchConfigurationDialog.
 	 */
-	public LaunchConfigurationDialog() {
+	public LaunchConfigurationRemoteDialog() {
 		super();
 	}
 
@@ -30,7 +30,7 @@ public void createTabs(ILaunchConfigurationDialog dialog, String mode) {
 		ILaunchConfigurationTab[] tabs = new ILaunchConfigurationTab[] {
 		
 			
-			 new LaunchConfigurationMainTab(),new org.eclipse.debug.ui.CommonTab()
+			 new LaunchConfigurationRemoteMainTab(),new org.eclipse.debug.ui.CommonTab()
 		};
 		setTabs(tabs);
 	}

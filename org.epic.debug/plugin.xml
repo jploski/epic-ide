@@ -57,6 +57,13 @@
             public="true"
             id="org.epic.debug.launchConfigurationPerlCGI">
       </launchConfigurationType>
+       <launchConfigurationType
+            name="Perl Remote"
+            delegate="org.epic.debug.LaunchConfigurationDelegate"
+            modes="debug"
+            public="true"
+            id="org.epic.debug.launchConfigurationPerlRemote">
+      </launchConfigurationType>
    </extension>
    <extension
          point="org.eclipse.debug.ui.launchConfigurationTabGroups">
@@ -92,6 +99,29 @@
       </launchConfigurationTypeImage>
    </extension>
 <!-- -->
+<extension
+         point="org.eclipse.debug.ui.launchConfigurationTabGroups">
+      <launchConfigurationTabGroup
+            type="org.epic.debug.launchConfigurationPerlRemote"
+            class="org.epic.debug.LaunchConfigurationRemoteDialog"
+            id="org.epic.debug.launchDialogRemote">
+      </launchConfigurationTabGroup>
+   </extension>
+   <extension
+         point="org.eclipse.debug.ui.launchConfigurationTypeImages">
+      <launchConfigurationTypeImage
+            icon="icons/epic_cgi.gif"
+            configTypeID="org.epic.debug.launchConfigurationPerlRemote"
+            id="org.epic.debug.launchimage">
+      </launchConfigurationTypeImage>
+   </extension>
+<!-- -->
+
+
+
+
+
+
    <extension
          point="org.eclipse.debug.core.sourceLocators">
       <sourceLocator

@@ -255,7 +255,7 @@ public class PerlDB implements IDebugElement, ITerminate {
 			new InstantiationException("Couldn't RegEX");
 		};
 
-		mWorkingDir = mTarget.getWorkingDir();
+		mWorkingDir = mTarget.getLocalWorkingDir();
 
 		mDebugIn = mTarget.getDebugWriteStream();
 		mDebugOut = mTarget.getDebugReadSrream();
@@ -265,10 +265,7 @@ public class PerlDB implements IDebugElement, ITerminate {
 				.getPreferenceStore().getString(
 						PerlEditorPlugin.INTERPRETER_TYPE_PREFERENCE);
 
-		//		   Check if cygwin is used
-		if (interpreterType.equals(PerlEditorPlugin.INTERPRETER_TYPE_CYGWIN)) {
-			mPathMapper = new PathMapperCygwin();
-		}
+		mPathMapper = mTarget.getPathMapper();
 
 		startCommand(mCommandClearOutput, null, false, this);
 

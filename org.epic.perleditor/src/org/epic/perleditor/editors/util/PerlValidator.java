@@ -51,49 +51,54 @@ public class PerlValidator {
 	private static HashMap errorMessagesHash = null;
 
 	private static final int BUF_SIZE = 1024;
+	
+	private static void initializeErrorsAndWarnings() {
+				//		Initialize Hash containing possible Warning/Error messages
+				try {
+					 if (errorMessagesHash == null) {
+						 errorMessagesHash = new HashMap();
+	
+						 ResourceBundle errorBundle =
+							 ResourceBundle.getBundle(
+								 "org.epic.perleditor.editors.errorsAndWarnings");
+	
+						 RE re;
+	
+						 // Populate the error messages hash
+						 for (Enumeration enum = errorBundle.getKeys();
+							 enum.hasMoreElements();
+							 ) {
+								 String index = (String) enum.nextElement();
+								 String complete = (String) errorBundle.getObject(index);
+								 int tabIndex = complete.indexOf("\t");
+								 String key = complete.substring(0, tabIndex);
+								 String value = complete.substring(tabIndex + 1);
+		
+								 String convKey = new String(key);
+		
+								 // Substitute "( ) [ ]?|*+\" with .
+								 re = new RE("[\\(\\)\\[\\]\\?\\|\\*\\+\\\\]");
+								 convKey = re.substituteAll(convKey, ".");
+		
+								 //	Substitute "%s %c %d %lx" with .*
+								 re = new RE("%([sdcl][x]{0,1})");
+								 convKey = re.substituteAll(convKey, ".*");
+		
+								 // Substitute %.[0-9]s with .*
+								 re = new RE("%\\.[0-9]s");
+								 convKey = re.substituteAll(convKey, ".*");
+		
+								 errorMessagesHash.put(convKey, value);
+						 }
+					 }
+				}
+				catch(Exception e) {
+					 e.printStackTrace();
+				}
+	}
 
 	public static boolean validate(IResource resource) {
 		try {
-
-			// Initialize Hash containing possible Warning/Error messages
-			if (errorMessagesHash == null) {
-				errorMessagesHash = new HashMap();
-
-				ResourceBundle errorBundle =
-					ResourceBundle.getBundle(
-						"org.epic.perleditor.editors.errorsAndWarnings");
-
-				RE re;
-
-				// Populate the error messages hash
-				for (Enumeration enum = errorBundle.getKeys();
-					enum.hasMoreElements();
-					) {
-					String index = (String) enum.nextElement();
-					String complete = (String) errorBundle.getObject(index);
-					int tabIndex = complete.indexOf("\t");
-					String key = complete.substring(0, tabIndex);
-					String value = complete.substring(tabIndex + 1);
-
-					String convKey = new String(key);
-
-					// Substitute "( ) [ ]?|*+\" with .
-					re = new RE("[\\(\\)\\[\\]\\?\\|\\*\\+\\\\]");
-					convKey = re.substituteAll(convKey, ".");
-
-					//	Substitute "%s %c %d %lx" with .*
-					re = new RE("%([sdcl][x]{0,1})");
-					convKey = re.substituteAll(convKey, ".*");
-
-					// Substitute %.[0-9]s with .*
-					re = new RE("%\\.[0-9]s");
-					convKey = re.substituteAll(convKey, ".*");
-
-					errorMessagesHash.put(convKey, value);
-				}
-
-			}
-
 			//	Check if resource should be validated
 			IEditorDescriptor defaultEditorDescriptor =
 				PerlEditorPlugin
@@ -138,6 +143,10 @@ public class PerlValidator {
 	public static void validate(IResource resource, String sourceCode) {
 		Process proc = null;
 		Map attributes = new HashMap(11);
+		
+		
+		// Initilize Errors and Warnngs Hash;
+		initializeErrorsAndWarnings();
 
 		try {
 			// Construct command line parameters

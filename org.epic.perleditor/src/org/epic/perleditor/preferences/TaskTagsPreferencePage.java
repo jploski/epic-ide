@@ -46,7 +46,7 @@ implements IWorkbenchPreferencePage, ITaskTagConstants {
 	
 	
 	protected String getPreferenceHelpContextID() {
-		return "org.epic.perleditor.preferencesSourceFormatter_context";
+		return "org.epic.perleditor.preferencesTaskTags_context";
 	}
 	
 	/**

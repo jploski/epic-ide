@@ -166,4 +166,23 @@ public class PerlExecutableUtilities {
 			strbuf.append(buffer, 0, l);
 		}
 	}
+	
+	
+	public static String getPerlIncPath(
+			IProject project) {
+			StringBuffer res = new StringBuffer();
+
+			// Add other project include paths
+			if(project != null) {
+				XMLUtilities xmlUtil = new XMLUtilities();
+				String[] includes = xmlUtil.getIncludeEntries(project, true);
+				for (int i = 0; i < includes.length; i++) {
+					String path = preparePath(includes[i]);
+					res.append(" -I");
+					res.append(path);
+				}
+			}
+
+			return res.toString();
+		}
 }

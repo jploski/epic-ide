@@ -19,6 +19,7 @@
       -->
    </runtime>
    <requires>
+      <import plugin="org.apache.xerces"/>
       <import plugin="org.eclipse.ui"/>
       <import plugin="org.eclipse.core.resources"/>
       <import plugin="org.epic.ext.cbg.editor"/>
@@ -118,5 +119,48 @@
       <filter name="nature" value="org.epic.perleditor.perlnature"/>
    	</page>
 </extension>
+
+<!-- Perldoc Perl Editor popup menu definition -->
+<extension point="org.eclipse.ui.popupMenus"> 
+      
+      <viewerContribution 
+         id="org.epic.perleditor.PerlDocPopup" 
+            targetID="#PerlDocEditorContext" >
+         <menu
+            id="PelDocPopupMenu" 
+            path="additions" 
+            label="&amp;Perldoc"> 
+            <separator name="PerlDocGroup"/> 
+         </menu>
+         <action
+            id="org.epic.perleditor.popupmenus.PerlDocAction.Faq" 
+            label="FAQ Search"
+            icon="icons/light_bulb.gif"
+            menubarPath="PelDocPopupMenu/PerlDocGroup" 
+            class="org.epic.perleditor.popupmenus.PerlDocAction"> 
+         </action>
+         <action
+            id="org.epic.perleditor.popupmenus.PerlDocAction.BuiltinFunction" 
+            label="Builtin Function Documentation"
+            icon="icons/epic.gif"
+            menubarPath="PelDocPopupMenu/PerlDocGroup" 
+            class="org.epic.perleditor.popupmenus.PerlDocAction"> 
+         </action> 
+         <action
+            id="org.epic.perleditor.popupmenus.PerlDocAction.ModuleSource" 
+            label="Module/Program Source"
+            icon="icons/module_node.gif"
+            menubarPath="PelDocPopupMenu/PerlDocGroup" 
+            class="org.epic.perleditor.popupmenus.PerlDocAction"> 
+         </action> 
+         <action
+            id="org.epic.perleditor.popupmenus.PerlDocAction.Module" 
+            label="Module/Program Documentation"
+            icon="icons/module_node.gif"
+            menubarPath="PelDocPopupMenu/PerlDocGroup" 
+            class="org.epic.perleditor.popupmenus.PerlDocAction"> 
+         </action> 
+      </viewerContribution> 
+   </extension>
 
 </plugin>

@@ -197,7 +197,8 @@ public static List getElements(String text, String regexp, String preFix,
 public static List getElements(String text, String regexp, String preFix,
 		String postFix, int flags) {
 		List results = new ArrayList();
-		Document docOrg = new Document(text);
+
+	//	Document docOrg = new Document(text);
 		try {
 			RE reg;
 			// support all types of linebreaks on all platforms

@@ -1,8 +1,8 @@
 package org.epic.perleditor.editors;
 
-import org.eclipse.core.resources.IResource;
+//import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IAdaptable;
+//import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuManager;
@@ -46,12 +46,13 @@ import org.epic.perleditor.views.model.Model;
 import org.epic.perleditor.views.model.Module;
 import org.epic.perleditor.views.model.Subroutine;
 
-import cbg.editor.ColoringSourceViewerConfiguration;
+ import cbg.editor.ColoringSourceViewerConfiguration;
+
 import org.epic.core.util.FileUtilities;
 
 /**
  * Perl specific text editor.
- */
+ */ 
 
 public class PerlEditor extends TextEditor implements
 		ISelectionChangedListener, IPropertyChangeListener
@@ -75,7 +76,6 @@ public class PerlEditor extends TextEditor implements
 	protected LineNumberRulerColumn numberRuler;
 
 	private int lastHashCode = 0;
-	private int lastOutlineHashCode = 0;
 
 	private int lastTextLength = 0;
 
@@ -86,7 +86,6 @@ public class PerlEditor extends TextEditor implements
 	private int markDocPos = -1;
   private int doubleQuoteHash= 0;
   private int singleQuoteHash= 0;
-  private int commentHash=0;
 
 	private StyleRange myLastStyleRange = new StyleRange();
 
@@ -111,7 +110,14 @@ public class PerlEditor extends TextEditor implements
 	private final static String PERL_MODE = "perl";
 
 	private ProjectionSupport projectionSupport;
+	private int lastOutlineHashCode;
+	private StyledText myText ;
+	private IDocument myDocument; 
+	
+	private int cursorPosition;
+	private int currentTextLength;
 
+	
 	int iZ=0;
 	/**
 	 * Default constructor();
@@ -166,8 +172,6 @@ public class PerlEditor extends TextEditor implements
 			fValidationThread.setText(document.get());
 		}
 
-		calculateIgnoreTypeHash();  // to get the current HashCodes of Strings we should ignore
-
 		//set up the ToDoMarkerThread
 		if ((fTodoMarkerThread == null) && isPerlMode()) {
 			fTodoMarkerThread = new PerlToDoMarkerThread(this,
@@ -211,9 +215,9 @@ public class PerlEditor extends TextEditor implements
 
 	public void dispose() {
 		try {
-			IEditorInput input = this.getEditorInput();
-			IResource resource = (IResource) ((IAdaptable) input)
-					.getAdapter(IResource.class);
+//			IEditorInput input = this.getEditorInput();
+//			IResource resource = (IResource) ((IAdaptable) input)
+//					.getAdapter(IResource.class);
 
 			// resource.deleteMarkers(IMarker.PROBLEM, true, 1);
 
@@ -256,7 +260,7 @@ public class PerlEditor extends TextEditor implements
 			// Update only if input has changed 
 		  //check here before we retrieve the Outline-List
 			int hashCode = getSourceViewer().getDocument().get().hashCode();
-			if (hashCode == lastHashCode) {
+			if (hashCode == lastOutlineHashCode) {
 				return;
 			}
 			lastOutlineHashCode = hashCode;
@@ -282,7 +286,7 @@ public class PerlEditor extends TextEditor implements
 			// Update only if input has changed 
 		  //check here before we retrieve the Outline-List
 			int hashCode = getSourceViewer().getDocument().get().hashCode();
-			if (hashCode == lastHashCode) {
+			if (hashCode == lastOutlineHashCode) {
 				return;
 			}
 			lastOutlineHashCode = hashCode;
@@ -309,7 +313,7 @@ public class PerlEditor extends TextEditor implements
 			// Update only if input has changed 
 		  //check here before we retrieve the Outline-List
 			int hashCode = getSourceViewer().getDocument().get().hashCode();
-			if (hashCode == lastHashCode) {
+			if (hashCode == lastOutlineHashCode) {
 				return;
 			}
 			lastOutlineHashCode = hashCode;
@@ -410,7 +414,7 @@ public class PerlEditor extends TextEditor implements
 			// Update only if input has changed 
 		  //check here before we retrieve the Outline-List
 			int hashCode = getSourceViewer().getDocument().get().hashCode();
-			if (hashCode == lastHashCode) {
+			if (hashCode == lastOutlineHashCode) {
 				return;
 			}
 			lastOutlineHashCode = hashCode;
@@ -476,11 +480,15 @@ public class PerlEditor extends TextEditor implements
 
 	}
 	
+	public void setFocus(){
+	  super.setFocus();
+	  revalidateSyntax(true);
+	}
 	
 	/**
 	 * 
 	 * @param documentPosition
-	 * @return true   => the current text has no assigned ColourPattern, i.e. normal Text
+	 * @return true   => the current text has no assigned ColourPattern, i.e. normal Text <br>
 	 *         false  => the current text has an assigned ColourPattern (e.g. KEYWORD, LITERAL)
 	 */
 	public final boolean isNormalText(int documentPosition) {
@@ -492,8 +500,7 @@ public class PerlEditor extends TextEditor implements
     } catch (BadLocationException e) {
       // should not happen, since it is for FoldingThread and Outline only
     }
-	  return true;
-	  	}
+	  return true;	}
 	
 	public void refreshTaskView() {
 		if (fTodoMarkerThread != null) {
@@ -513,15 +520,14 @@ public class PerlEditor extends TextEditor implements
 	public final void foldingUpdate() {
 	  fFoldingThread.updateFoldingAnnotations();
 	}
-	
 	protected void handleCursorPositionChanged() {
 		super.handleCursorPositionChanged();
 
-		StyledText myText = getSourceViewer().getTextWidget();
-		IDocument myDocument=getSourceViewer().getDocument();
+		myText = getSourceViewer().getTextWidget();
+		myDocument=getSourceViewer().getDocument();
 		
-		int cursorPosition = myText.getCaretOffset();
-		int currentTextLength = myText.getText().length();
+		cursorPosition = myText.getCaretOffset();
+		currentTextLength = myText.getText().length();
 
 		/*
      * The main complexity of the Bracket matching is the cursor momevent. The
@@ -549,7 +555,6 @@ public class PerlEditor extends TextEditor implements
 			if (cursorPosition > 0) {
 				char sourceChar = '\u0000';
         sourceChar = myText.getTextRange(cursorPosition - 1, 1).charAt(0);
-        calculateIgnoreTypeHash();  // to get the current HashCodes of Strings we should ignore
         if (myText.getText().hashCode() != lastHashCode) {
           handleTextChange(myDocument, myText, cursorPosition, currentTextLength, sourceChar);
         }
@@ -894,16 +899,17 @@ public class PerlEditor extends TextEditor implements
    * @return the position for the widget
    */
   public int findNextOccurance(){
-		StyledText myText = getSourceViewer().getTextWidget();
-		IDocument myDocument=getSourceViewer().getDocument();
+		myText = getSourceViewer().getTextWidget();
+		myDocument=getSourceViewer().getDocument();
 		
-		int cursorPosition = myText.getCaretOffset();
+		cursorPosition = myText.getCaretOffset();
 		char sourceChar = myText.getTextRange(cursorPosition - 1, 1).charAt(0);
     return viewerText5.modelOffset2WidgetOffset(findNextOccurance(myDocument,
                                            sourceChar, 
                                            cursorPosition
                                            ));
   }
+  
   /**
    * Finds the next matching Bracket <p>
    * If the current Bracket is under quotes/comments => consider the next
@@ -920,276 +926,190 @@ public class PerlEditor extends TextEditor implements
    * @since Sep. 2004
    */
   public int findNextOccurance(final IDocument myDocument, char findNextChar, int StartPosition) {
-		char nextStringPair = ' ';
-		int StackCounter = 0;
-		int findFirst;
-		int findPair;
-		boolean searchForward = true;
+    char nextStringPair = ' ';
+    int StackCounter = 0;
+    int findFirst;
+    int findPair;
+    boolean searchForward = true;
     StartPosition = viewerText5.widgetOffset2ModelOffset(StartPosition);
     String text = myDocument.get();
     int maxLen = text.length();
     
-    boolean isNextCharQuote = false;
-    boolean isNextCharComment = false;
-    boolean isNextCharLiteral2 = false;    int checkPos = 0;
-    String textType="";        try {
-      checkPos = myDocument.getPartition(StartPosition - 1).getType().hashCode();
-      textType = myDocument.getPartition(StartPosition - 1).getType();    } catch (BadLocationException e) {
-      //should not happen!
+    try {
+      String textType=myDocument.getPartition(StartPosition - 1).getType();
+      final int checkHereHash=myDocument.getPartition(StartPosition - 1).getType().hashCode();
+      boolean looseCheck=true;
+      
+      if (textType.indexOf("LITERAL1") >= 0) {
+        looseCheck = false;
+      } else if (textType.indexOf("COMMENT") >= 0) {
+        looseCheck = false;
+      } else if (textType.indexOf("LITERAL2") >= 0) {
+        looseCheck = false;
+      }
+            switch (findNextChar) {
+      case '[':
+        nextStringPair = ']';
+        break;
+      case '{':
+        nextStringPair = '}';
+        break;
+      case '(':
+        nextStringPair = ')';
+        break;
+      case '<':
+        nextStringPair = '>';
+        break;
+      case ']':
+        nextStringPair = '[';
+        searchForward = false;
+        StartPosition -= 2;
+        break;
+      case '}':
+        nextStringPair = '{';
+        searchForward = false;
+        StartPosition -= 2;
+        break;
+      case ')':
+        nextStringPair = '(';
+        searchForward = false;
+        StartPosition -= 2;
+        break;
+      case '>':
+        nextStringPair = '<';
+        searchForward = false;
+        StartPosition -= 2;
+        break;
+      }
+      
+      if (StartPosition < 0 || maxLen < StartPosition) {
+        return -1;
+      }
+      
+      
+      int calcResult=0;
+      while (StackCounter >= 0) {
+        if (searchForward) {
+          findFirst = text.indexOf(findNextChar, StartPosition);
+        } else {
+          findFirst = text.lastIndexOf(findNextChar, StartPosition);
+        }
+        if (findFirst == -1) {
+          if (searchForward) {
+            findFirst = maxLen;
+          } else {
+            findFirst = 0;
+          }
+        }
+        
+        if (searchForward) {
+          findPair = text.indexOf(nextStringPair, StartPosition);
+        } else {
+          findPair = text.lastIndexOf(nextStringPair, StartPosition);
+        }
+        if (findPair == -1) {
+          if (searchForward) {
+            findPair = maxLen;
+          } else {
+            findPair = 0;
+          }
+        }
+        if (findPair < findFirst) {
+          if (searchForward) {
+            StartPosition = findPair + 1;
+            calcResult = findSingleCharNextOccurance(checkHereHash, myDocument.getPartition(findPair).getType().hashCode(),
+                looseCheck);            if (calcResult >= 0) {
+              StackCounter -= calcResult;
+            } else {
+              StackCounter = -3;
+            }
+          } else {
+            StartPosition = findFirst - 1;
+            calcResult = findSingleCharNextOccurance(checkHereHash, myDocument.getPartition(findFirst).getType().hashCode(),
+                looseCheck);            if (calcResult >= 0) {
+              StackCounter += calcResult;
+            } else {
+              StackCounter = -4;
+            }
+          }
+        } else if (findFirst < findPair) {
+          if (searchForward) {
+            StartPosition = findFirst + 1;
+            calcResult = findSingleCharNextOccurance(checkHereHash, myDocument.getPartition(findFirst).getType().hashCode(),
+                looseCheck);            if (calcResult >= 0) {
+              StackCounter += calcResult;
+            } else {
+              StackCounter = -5;
+            }
+          } else {
+            StartPosition = findPair - 1;
+            calcResult = findSingleCharNextOccurance(checkHereHash, myDocument.getPartition(findPair).getType().hashCode(),
+                looseCheck);            if (calcResult >= 0) {
+              StackCounter -= calcResult;
+            } else {
+              StackCounter = -6;
+            }
+          }
+        } else {
+          if (findPair == 0
+              && (text.lastIndexOf(nextStringPair, StartPosition) == 0)) {
+            //The very first character is the Bracket-matcher
+            StartPosition = -1;
+            calcResult = findSingleCharNextOccurance(checkHereHash, myDocument.getPartition(0).getType().hashCode(),
+                looseCheck);            if (calcResult >= 0) {
+              StackCounter -= calcResult;
+            } else {
+              StackCounter = -7;
+            }
+          } else {
+            StackCounter = -2; //nothing found
+          }
+        }
+        
+      }
+      
+      int returnValue=0;
+      if (StackCounter == -1) {
+        if (searchForward) {
+          if (StartPosition == 0) {
+            returnValue= 0;
+          } else {
+            returnValue= StartPosition - 1;
+          }
+        } else {
+          if (StartPosition == text.length()) {
+            returnValue = StartPosition;
+          } else {
+            returnValue = StartPosition + 1;
+          }
+        }
+      } else {
+        returnValue = -1;
+      }
+      return returnValue;
+      
+    } catch (BadLocationException e) {
+      //should not happen! cause all Positions are retrieved via indexof
+      return -1;
     }
-    if (checkPos ==  doubleQuoteHash || checkPos == singleQuoteHash) {
-      isNextCharQuote = true;
-    } else if (checkPos == commentHash) {
-      isNextCharComment = true;
-    } else if (textType.indexOf("LITERAL2") >= 0) {      isNextCharLiteral2 = true;    }
-    
 
-		switch (findNextChar) {
-		case '[':
-			nextStringPair = ']';
-			break;
-		case '{':
-			nextStringPair = '}';
-			break;
-		case '(':
-			nextStringPair = ')';
-			break;
-		case '<':
-			nextStringPair = '>';
-			break;
-		case ']':
-			nextStringPair = '[';
-			searchForward = false;
-			StartPosition -= 2;
-			break;
-		case '}':
-			nextStringPair = '{';
-			searchForward = false;
-			StartPosition -= 2;
-			break;
-		case ')':
-			nextStringPair = '(';
-			searchForward = false;
-			StartPosition -= 2;
-			break;
-		case '>':
-			nextStringPair = '<';
-			searchForward = false;
-			StartPosition -= 2;
-			break;
-		}
-
-		if (StartPosition < 0 || maxLen < StartPosition) {
-			return -1;
-		}
-
-		int calcResult=0;
-		while (StackCounter >= 0) {
-			if (searchForward) {
-				findFirst = text.indexOf(findNextChar, StartPosition);
-			} else {
-				findFirst = text.lastIndexOf(findNextChar, StartPosition);
-			}
-			if (findFirst == -1) {
-				if (searchForward) {
-					findFirst = maxLen;
-				} else {
-					findFirst = 0;
-				}
-			}
-
-			if (searchForward) {
-				findPair = text.indexOf(nextStringPair, StartPosition);
-			} else {
-				findPair = text.lastIndexOf(nextStringPair, StartPosition);
-			}
-			if (findPair == -1) {
-				if (searchForward) {
-					findPair = maxLen;
-				} else {
-					findPair = 0;
-				}
-			}
-			if (findPair < findFirst) {
-				if (searchForward) {
-					StartPosition = findPair + 1;
-					calcResult = findSingleCharNextOccurance(myDocument, findPair, isNextCharQuote, isNextCharComment, isNextCharLiteral2);					if (calcResult >= 0) {
-					  StackCounter -= calcResult;
-					} else {
-					  StackCounter = -3;
-					}
-        } else {
-					StartPosition = findFirst - 1;
-					calcResult = findSingleCharNextOccurance(myDocument, findFirst, isNextCharQuote, isNextCharComment, isNextCharLiteral2);					if (calcResult >= 0) {
-					  StackCounter += calcResult;
-					} else {
-					  StackCounter = -4;
-					}
-				}
-			} else if (findFirst < findPair) {
-				if (searchForward) {
-					StartPosition = findFirst + 1;
-					calcResult = findSingleCharNextOccurance(myDocument, findFirst, isNextCharQuote, isNextCharComment, isNextCharLiteral2);					if (calcResult >= 0) {
-					  StackCounter += calcResult;
-					} else {
-					  StackCounter = -5;
-					}
-        } else {
-					StartPosition = findPair - 1;
-					calcResult = findSingleCharNextOccurance(myDocument, findPair, isNextCharQuote, isNextCharComment, isNextCharLiteral2);					if (calcResult >= 0) {
-					  StackCounter -= calcResult;
-					} else {
-					  StackCounter = -6;
-					}
-				}
-			} else {
-				if (findPair == 0
-						&& (text.lastIndexOf(nextStringPair, StartPosition) == 0)) {
-					//The very first character is the Bracket-matcher
-					StartPosition = -1;
-					calcResult = findSingleCharNextOccurance(myDocument, 0, isNextCharQuote, isNextCharComment, isNextCharLiteral2);					if (calcResult >= 0) {
-					  StackCounter -= calcResult;
-					} else {
-					  StackCounter = -7;
-					}
-				} else {
-					StackCounter = -2; //nothing found
-				}
-			}
-
-		}
-		
-		int returnValue=0;
-		if (StackCounter == -1) {
-			if (searchForward) {
-				if (StartPosition == 0) {
-					returnValue= 0;
-				} else {
-					returnValue= StartPosition - 1;
-				}
-			} else {
-				if (StartPosition == text.length()) {
-					returnValue = StartPosition;
-				} else {
-					returnValue = StartPosition + 1;
-				}
-			}
-		} else {
-			return -1;
-		}
-	  return returnValue;
 	}
   
   /*
    * To make the inline coding little bit more easier to understand
    * We check if the found position is a valid character or it should be ignored
    */
-  private int findSingleCharNextOccurance(final IDocument myDocument, 
-                                           final int findPos,
-                                           final boolean isNextCharQuote,
-                                           final boolean isNextCharComment,                                           final boolean isNextLiteral2                                           ) {
-    int checkPos = 0;
-    String checkType="";    try {
-      checkPos = myDocument.getPartition(findPos).getType().hashCode();
-      checkType = myDocument.getPartition(findPos).getType();    } catch (BadLocationException e1) {
-      //should not happen!
-    }
-    if (isNextCharQuote) {
-      if (checkPos == doubleQuoteHash || 
-          checkPos == singleQuoteHash) {
-        return 1; //The current pos is also under quotes
-      } else {
-        return -1; //End the search-procedure, cause we found a non-quote char
-      }
-    } else if (isNextCharComment) {
-      if (checkPos == commentHash) {
-        return 1; //The current pos is also a comment
-      } else {
-        return -1; //End the search-procedure, cause we found a non-comment char
-      }
-    } else if (isNextLiteral2) {      if (checkType.indexOf("LITERAL2") >= 0) {        return 1; //The current pos is also a comment      } else {        return -1; //End the search-procedure, cause we found a non-comment char    }
-    } else {      if (!(checkPos == doubleQuoteHash) && 
-          !(checkPos == singleQuoteHash) &&
-          !(checkPos == commentHash) &&           !(checkType.indexOf("LITERAL2") >= 0)          ){
-        return 1;
-      } else {
-        return 0;  //ignore the current pos., continue search
-      }
+  private int findSingleCharNextOccurance(final int originalHashCode,
+                                          final int foundHashCode,
+                                          final boolean looseCheck) {
+    if (originalHashCode == foundHashCode) {
+      return 1;
+    } else if (looseCheck) {
+      return 0;
+    } else {
+      return -1;
     }
   }
-  /**
-   * calculate the TypeString for the Quotes (single and double) and Comments
-   * 
-   * @return
-   */
-  private void calculateIgnoreTypeHash() {
-    
-    if (doubleQuoteHash == 0 || singleQuoteHash == 0 || commentHash == 0) {
-      final IDocument myDocument = getSourceViewer().getDocument();
-      
-      if (doubleQuoteHash == 0) { 
-        doubleQuoteHash = calculateIgnoreTypeHash(myDocument, "\"", "LITERAL1", 0);
-      }
-      
-      if (singleQuoteHash == 0) { 
-        singleQuoteHash = calculateIgnoreTypeHash(myDocument,"\'", "LITERAL1", doubleQuoteHash);
-      }
-
-      if (singleQuoteHash == doubleQuoteHash && singleQuoteHash != 0) {
-        doubleQuoteHash = calculateIgnoreTypeHash(myDocument, "\"", "LITERAL1", singleQuoteHash);
-      }
-      
-      if (commentHash == 0) {
-        commentHash = calculateIgnoreTypeHash(myDocument, "#", "COMMENT", 0);
-      }
-      return;
-    }
-  }
-
-  /**
-   * Initially used to calculate the Hash for the Quotes, but then extended, e.g. for Comments
-   * 
-   * @param myDocument
-   * @param quoteChar
-   * @param ignoreHash
-   */
-  private int calculateIgnoreTypeHash(final IDocument myDocument, 
-                                 String quoteChar,
-                                 String charType,
-                                 int ignoreHash) {
-    boolean quoteNotFound=true;
-    String text=myDocument.get();
-    int quotePos=text.indexOf(quoteChar);
-    while (quoteNotFound && quotePos >= 0) {
-      if (quotePos > 0)  {
-        if (text.charAt(quotePos - 1) != '\\') {
-          //check if it is a Quote (could also be Remark)
-          try {
-            if (myDocument.getPartition(quotePos+1).getType().toString().indexOf(charType) >= 0 &&
-                ! (myDocument.getPartition(quotePos+1).getType().hashCode() == ignoreHash)) {
-              quoteNotFound = false;
-            }
-          } catch (BadLocationException e) {
-            //should not happen!
-          }
-        }
-      } else if (quotePos == 0) {
-        quoteNotFound = false;
-      }
-      if (quoteNotFound) {
-        quotePos = text.indexOf(quoteChar,quotePos+1);
-      }
-    }
-    if (quotePos >= 0) {
-      try {
-        return myDocument.getPartition(quotePos+1).getType().hashCode();
-      } catch (BadLocationException e) {
-        //should not happen!
-      }
-    }
-    return 0;
-  }
-  
 /**
  * Returns the Idle Timer associated with the editor
  * 

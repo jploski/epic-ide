@@ -14,6 +14,11 @@ import java.io.*;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.editors.text.TextEditor;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IContainer;
+import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 
 import gnu.regexp.RE;
 
@@ -117,6 +122,25 @@ public class PerlExecutableUtilities {
 				cmdList.add("-I");
 				cmdList.add(path);
 			}
+						try {
+			  				if (project instanceof IContainer) {
+			  					int flags = IResource.DEPTH_ONE | IResource.FOLDER;
+			  					IResource[] folders 
+			  						= ((IContainer) project).members(flags);
+			  					for (int i = 0; i < folders.length; i++) {
+			  						if (folders[i] instanceof IFolder) {
+			  							IFolder folder = (IFolder) folders[i];
+			  							IPath path = folder.getRawLocation();
+			  							
+			  							cmdList.add("-I");
+			  							cmdList.add(path.toOSString());
+			  						}
+			  					}
+			  				}
+			  			} catch (CoreException e) {
+			  				// we couldn't add the folders in the project to the build path.
+			  			}
+
 		}
 
 		return cmdList;

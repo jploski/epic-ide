@@ -240,6 +240,20 @@ public class PerlWordTokenizer extends AbstractDocumentWordTokenizer {
 			return true;
 		return false;
 	}
+	
+	/** 
+		 * Separates CamelCase words into tokens
+		 * @see com.bdaum.SpellChecker.AbstractDocumentWordTokenizer#isWordBreak(char, boolean)
+		 */
+		protected boolean isWordBreak(
+			char ch,
+			boolean notFirst) { // new in version 1.1	
+			if (state == CODE && notFirst) {
+				return !Character.isLowerCase(ch);
+			}
+			return !Character.isLetterOrDigit(ch);
+		}
+
 
 	/**
 	 * @see com.bdaum.SpellChecker.AbstractDocumentWordTokenizer

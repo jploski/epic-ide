@@ -1,13 +1,13 @@
 Eclipse Perl Integration: Perl Editor Plugin
 
-Version 0.1.0 alpha  - 
+Version 0.1.0 alpha  - 08-October-2003
 		* PerlTidy is used for formatting (perltidy is provided together with the plugin)
 		* Source Formatter preferences added
 		* Templating support added.
 		* Templating preview added.
 		* Template filename variable added.
 		* Template Perl interpreter variable added
-		* Content assist/templating dropdown enhanced.
+		* Content assist/templating dropdown enhanced (type-ahead  find)
 		* Comment/uncomment added.
 		
 Version 0.1.0 alpha  - 13-September-2003

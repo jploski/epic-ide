@@ -21,6 +21,7 @@ import org.eclipse.ui.IEditorInput;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IMarker;
+import org.eclipse.ui.IFileEditorInput;
 
 import java.util.Map;
 import java.util.HashMap;
@@ -169,7 +170,17 @@ public class PerlSyntaxValidationThread extends Thread {
 			String[] cmdParams =
 				(String[]) cmdList.toArray(new String[cmdList.size()]);
 
-			proc = Runtime.getRuntime().exec(cmdParams);
+            // Get working directory -- Fixes Bug: 736631
+			String workingDir =
+				((IFileEditorInput) fTextEditor.getEditorInput())
+					.getFile()
+					.getLocation()
+					.makeAbsolute()
+					.removeLastSegments(1)
+					.toString();
+			
+
+			proc = Runtime.getRuntime().exec(cmdParams, null, new File(workingDir));
 
 			InputStream in = proc.getErrorStream();
 

@@ -18,6 +18,11 @@ public class StringReaderThread extends Thread
         this.start();
     }
         
+    public void dispose() throws InterruptedException {
+        this.interrupt();
+        this.join();
+    }
+
     public void read(Reader r)
     {
         synchronized (this.lock)

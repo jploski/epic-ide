@@ -100,6 +100,7 @@ public class PerlSyntaxValidationThread extends Thread {
 	}
 
 	public void dispose() throws InterruptedException {
+        this.srt.dispose();
         this.interrupt();
         this.join(this.waitForTermination);
 	}

@@ -63,7 +63,8 @@ public class ColoringEditorTools {
 				    || span.getGroupContent() != null || checkCase || span.dynamicTagging() 
 				    || span.getRequireAfterWhitespace() || span.getRequireBeforeWhitespace()) {
 				  pat = new ExtendedPatternRule(span.getStart(), span.getEnd(), 
-				      defaultToken, mode.getDefaultRuleSet().getEscape(), span.noLineBreak(), span.noMaxChar(), span.getGroupContent()
+				      defaultToken, mode.getDefaultRuleSet().getEscape(), span.noLineBreak(), span.noMaxChar(), 
+				      span.rejectDelimWithFirstChar(), span.getGroupContent()
 				      , span.matchBracket(), span.noMultipleEndTag(), span.requireEndTag(), ignoreCase, span.dynamicTagging(),
 				      span.getCountDelimterChars(), span.getBeforeTag(), span.getAfterTag(),
 				      span.getRequireBeforeWhitespace() , span.getRequireAfterWhitespace(),

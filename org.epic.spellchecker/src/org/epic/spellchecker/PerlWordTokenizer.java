@@ -216,7 +216,7 @@ public class PerlWordTokenizer extends AbstractDocumentWordTokenizer {
 	 *                            org.eclipse.swt.widgets.Display)
 	 */
 	protected void configure() {
-		// Benutzeroptionen holen
+		super.configure();
 		checkLiterals =
 			config.getBoolean(PerlSpellCheckerPreferences.CHECKSTRINGLITERALS);
 		checkPod = config.getBoolean(PerlSpellCheckerPreferences.CHECKPOD);
@@ -260,6 +260,9 @@ public class PerlWordTokenizer extends AbstractDocumentWordTokenizer {
 	 *                            #isToBeChecked(java.lang.String)
 	 */
 	protected boolean isToBeChecked(String word) {
+		if (!super.isToBeChecked(word))
+					return false;
+					
 		if (ignoreCompounds) {
 			if (word.indexOf("->") >= 0)
 				return false;

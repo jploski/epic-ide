@@ -13,9 +13,10 @@ public class PerlSpellCheckerPreferences extends SpellCheckerPreferences {
 	protected static final String PAGEID = "org.epic.spellchecker.preferencePerlPropertiesSpellCheckerPreferencePage"; //$NON-NLS-1$
 
 	public static final String CHECKPOD = "checkPod";
+	
 	public static final String CHECKCOMMENTS = "checkComments";
 	public static final String CHECKSTRINGLITERALS = "stringLiterals";
-	public static final String IGNORECOMPOUNDS = "ignoreCompounds";
+	//public static final String IGNORECOMPOUNDS = "ignoreCompounds";
 	public static final String CHECKNAMES = "checkNames";   // new in version 1.1 //$NON-NLS-1$
 
 
@@ -33,6 +34,7 @@ public class PerlSpellCheckerPreferences extends SpellCheckerPreferences {
 			Configuration.SPELL_IGNORESENTENCECAPITALIZATION,
 			false);
 		store.setDefault(Configuration.SPELL_IGNOREUPPERCASE, true);
+		
 		store.setDefault(IGNOREONELETTERWORDS, false); // new in 1.2
 		store.setDefault(IGNORECOMPOUNDS, true);
 		store.setDefault(CHECKPOD, true);

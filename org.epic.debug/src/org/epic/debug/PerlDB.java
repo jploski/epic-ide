@@ -819,7 +819,7 @@ public class PerlDB implements IDebugElement, ITerminate {
 		boolean finished = false;
 		boolean skip = false;
 
-		if (!isSuspended(null))
+		if (!isSuspended(null) &&  !( mTarget instanceof CGITarget))
 			mTarget.killDebugProcess();
 		else {
 			try {
@@ -1108,7 +1108,7 @@ public class PerlDB implements IDebugElement, ITerminate {
 		mIsCommandRunning = false;
 		mIsCommandFinished = true;
 
-		mVarUpdateJob = new VarUpdateJob("Retrieve Variables", fOutputString);
+		mVarUpdateJob = new VarUpdateJob("Retrieving Variables", fOutputString);
 		mVarUpdateJob.setPriority(Job.SHORT);
 		mVarUpdateJob.schedule();
 		;

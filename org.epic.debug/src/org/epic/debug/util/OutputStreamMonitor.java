@@ -151,7 +151,7 @@ public class OutputStreamMonitor implements IFlushableStreamMonitor {
 			} catch (IOException ioe) {
 				DebugPlugin.log(ioe);
 				return;
-			} catch (NullPointerException e) {
+			} catch (Exception e) {
 				// killing the stream monitor while reading can cause an NPE
 				// when reading from the stream
 				if (!fKilled || fThread != null) {

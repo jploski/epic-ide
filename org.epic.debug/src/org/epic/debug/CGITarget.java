@@ -179,7 +179,7 @@ public class CGITarget extends DebugTarget implements IDebugEventSetListener
 				+ htmlRootFileRel
 				+ "\n"
 				+ "cgi.executable="
-				+ PerlExecutableUtilities.getPerlExecutableCommandLine().get(0)
+				+ PerlExecutableUtilities.getPerlExecPath()
 				+ "\n"
 				+ "cgi.suffix="+cgiFileExtension
 				+"\n"

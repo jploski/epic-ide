@@ -10,8 +10,12 @@
       <library name="perleditor.jar">
          <packages prefixes="org.epic.core,org.epic.perleditor"/>
       </library>
-      <library name="gnu-regexp-1.1.4.jar"/>
-      <library name="jdom.jar"/>
+      <library name="jdom.jar">
+         <packages prefixes="org.jdom"/>
+      </library>
+      <library name="gnu-regexp-1.1.4.jar">
+         <packages prefixes="gnu.regexp"/>
+      </library>
    </runtime>
    <requires>
       <import plugin="org.eclipse.ui"/>

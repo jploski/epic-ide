@@ -201,6 +201,7 @@ public class SourceParser {
 		boolean deleteComments) {
 		List results = new ArrayList();
 
+		Document docOrg = new Document(text);
 		try {
 			RE reg;
 
@@ -247,9 +248,13 @@ public class SourceParser {
 				
 				end -= match.length() - match.trim().length();
 				match = match.trim();
-
+				
+				Document doc = new Document(text);
+				int line = doc.getLineOfOffset(start);
+				
 				Model func =
-					new Model(preFix + match + postFix, start, end - start);
+					new Model(preFix + match + postFix, docOrg.getLineOffset(line), docOrg.getLineLength(line)-1);
+					//new Model(preFix + match + postFix, start, end - start);
 				results.add(func);
 			}
 		} catch (Exception e) {

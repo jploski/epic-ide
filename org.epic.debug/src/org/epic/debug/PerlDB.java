@@ -12,6 +12,9 @@ import gnu.regexp.REMatch;
 import gnu.regexp.RESyntax;
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.InetAddress;
@@ -32,11 +35,17 @@ import org.eclipse.debug.core.model.IDebugTarget;
 import org.eclipse.debug.core.model.ITerminate;
 import org.eclipse.debug.core.model.IThread;
 import org.eclipse.debug.core.model.IVariable;
+import org.eclipse.jface.text.BadLocationException;
+import org.eclipse.jface.text.Document;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.PartInitException;
 import org.epic.debug.util.PathMapperCygwin;
 import org.epic.debug.varparser.PerlDebugValue;
 import org.epic.debug.varparser.PerlDebugVar;
 import org.epic.debug.varparser.PerlVarParser;
 import org.epic.perleditor.PerlEditorPlugin;
+import org.epic.regexp.views.RegExpView;
 
 /**
  * @author ruehl
@@ -48,7 +57,6 @@ public class PerlDB implements IDebugElement, ITerminate
 {
 
 	private boolean mIsSessionTerminated;
-
 	private DebugTarget mTarget;
 	private CommandThread mCommandThread;
 	private int mCurrentCommand;
@@ -116,8 +124,10 @@ public class PerlDB implements IDebugElement, ITerminate
 	private BreakpointMap mPendingBreakpoints;
 	private BreakpointMap mActiveBreakpoints;
 
+	private final static  String mLineSeparator = System.getProperty("line.separator");
 	private org.epic.debug.util.PathMapper mPathMapper;
-
+	StringBuffer mRegExp = new StringBuffer();
+			StringBuffer mText = new StringBuffer();
 	private class CommandThread extends Thread
 	{
 
@@ -427,13 +437,37 @@ public class PerlDB implements IDebugElement, ITerminate
 
 	public String evaluateStatement(Object fThread, String fText)
 	{
-		startCommand(mCommandEvaluateCode, fText, false, fThread);
-		if (mDebugOutput == null || mDebugOutput.lastIndexOf("\n") <= 0)
+		
+		String res;
+		
+		if( mIsCommandRunning )
+		{
+			startSubCommand(mCommandEvaluateCode, fText, false);
+		}
+		else
+		{
+			startCommand(mCommandEvaluateCode, fText, false, fThread);
+		}
+		
+		res = mDebugOutput;
+		int index_n = res.lastIndexOf("\n");
+		int index_r = res.lastIndexOf("\r");
+		
+		if ( res == null || ( (index_n <= 0) && (index_r<=0)) )
 		{
 			return null;
 		}
+		
+		
+		int index;
+		
+		if( index_n > 0 && !(index_r>0 && index_r<index_n))
+			index = index_n;
+		else 
+			index = index_r;
+				
 		String result =
-			mDebugOutput.substring(0, mDebugOutput.lastIndexOf("\n"));
+			res.substring(0,index);
 		return (result);
 	}
 	public boolean startCommand(
@@ -721,7 +755,7 @@ public class PerlDB implements IDebugElement, ITerminate
 
 		}
 
-	//	System.out.println(currentOutput);
+		//	System.out.println(currentOutput);
 
 		if (finished == SESSION_TERMINATED)
 		{
@@ -854,7 +888,7 @@ public class PerlDB implements IDebugElement, ITerminate
 
 		boolean finished = false;
 		boolean skip = false;
-		
+
 		try
 		{
 			mCurrentCommandDest = mThreads[0];
@@ -868,32 +902,31 @@ public class PerlDB implements IDebugElement, ITerminate
 				e);
 		}
 
-		int count=0;
-	//	StringBuffer debugOutput=new StringBuffer();
+		int count = 0;
+		//	StringBuffer debugOutput=new StringBuffer();
 		char buf[] = new char[1000];
-		
-		if( ! skip )
-		do
-		{
-			try
-			{
-			  count = mDebugOut.read(buf);
-	//		  System.out.println("Count: "+count+"\n");
-			} catch (IOException e)
-			{
-				skip = true;
-				break;
-//				PerlDebugPlugin.getDefault().logError(
-//								"Test: Could not terminate Perl Process",
-//								e);
-			}
 
-		//	if (count > 0)
-		//		debugOutput.append(buf, 0, count);
-			
+		if (!skip)
+			do
+			{
+				try
+				{
+					count = mDebugOut.read(buf);
+					//		  System.out.println("Count: "+count+"\n");
+				} catch (IOException e)
+				{
+					skip = true;
+					break;
+					//				PerlDebugPlugin.getDefault().logError(
+					//								"Test: Could not terminate Perl Process",
+					//								e);
+				}
 
-		}while(count != -1);
-//		System.out.println("\n***************EXIT DB-****************\n"+debugOutput.toString());
+				//	if (count > 0)
+				//		debugOutput.append(buf, 0, count);
+
+			} while (count != -1);
+		//		System.out.println("\n***************EXIT DB-****************\n"+debugOutput.toString());
 		//					try
 		//					{
 		//						this.mDebugOut.read();
@@ -904,15 +937,15 @@ public class PerlDB implements IDebugElement, ITerminate
 		//				}
 
 		//	}
-	//	startCommand(mCommandClearOutput, null, false, this);
-	//	startCommand(mCommandExecuteCode, "q\n", false, this);
+		//	startCommand(mCommandClearOutput, null, false, this);
+		//	startCommand(mCommandExecuteCode, "q\n", false, this);
 		mCurrentSubCommand = mCommandNone;
 		mCurrentCommand = mCommandNone;
 		mIsCommandRunning = false;
 		mIsCommandFinished = false;
 
-	//	generateDebugTermEvent();
-	//	PerlDebugPlugin.getPerlBreakPointmanager().removeDebugger(this);
+		//	generateDebugTermEvent();
+		//	PerlDebugPlugin.getPerlBreakPointmanager().removeDebugger(this);
 		mTarget.debugSessionTerminated();
 	}
 
@@ -939,11 +972,54 @@ public class PerlDB implements IDebugElement, ITerminate
 	{
 		IP_Position pos = getCurrent_IP_Position();
 
-		return (
+		PerlBreakpoint bp =
 			mActiveBreakpoints.getBreakpointForLocation(
 				pos.get_IP_Path(),
-				pos.get_IP_Line())
-				!= null);
+				pos.get_IP_Line());
+		
+		if (bp != null)
+		{
+			if (bp instanceof PerlRegExpBreakpoint)
+			{
+				mRegExp = new StringBuffer();
+				mText = new StringBuffer();
+				
+				this.getRegExp(pos, mRegExp,mText);
+				// show view
+				Shell shell = PerlDebugPlugin.getActiveWorkbenchShell();
+				if (shell != null)
+				{
+					shell.getDisplay().syncExec(new Runnable()
+					{
+						public void run()
+						{
+							RegExpView view = null;
+							IWorkbenchPage activePage =
+								PerlDebugPlugin
+									.getWorkbenchWindow()
+									.getActivePage();
+							try
+							{
+							view = (RegExpView)	activePage.showView(
+									"org.epic.regexp.views.RegExpView");
+							} catch (PartInitException e)
+							{
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+							view.setRegExpText(mRegExp.toString());
+							view.setMatchText(mText.toString());
+							
+						}
+						
+					
+					});
+
+				}
+			}
+			return true;
+		}
+		return false;
 	}
 
 	public IThread[] getThreads()
@@ -1162,16 +1238,18 @@ public class PerlDB implements IDebugElement, ITerminate
 		startSubCommand(mCommandExecuteCode, "o frame=0 ", false);
 		if (ShowLocalVariableActionDelegate.getPreferenceValue())
 			startSubCommand(mCommandExecuteCode, "y ", false);
-			
-			System.out.println("\n\n\n\n\n\n\n\n\n********Local Vars:"+	mDebugSubCommandOutput);
+
+		System.out.println(
+			"\n\n\n\n\n\n\n\n\n********Local Vars:" + mDebugSubCommandOutput);
 		lVarList =
 			mVarParser.parseVars(
 				mDebugSubCommandOutput,
 				PerlDebugVar.IS_LOCAL_SCOPE);
 		startSubCommand(mCommandExecuteCode, "o frame=2", false);
 		startSubCommand(mCommandExecuteCode, "X ", false);
-		
-		System.out.println("\n\n\n\n\n\n\n\n\n********Global Vars:"+	mDebugSubCommandOutput);
+
+		System.out.println(
+			"\n\n\n\n\n\n\n\n\n********Global Vars:" + mDebugSubCommandOutput);
 		mVarParser.parseVars(
 			mDebugSubCommandOutput,
 			PerlDebugVar.IS_GLOBAL_SCOPE,
@@ -1447,6 +1525,80 @@ public class PerlDB implements IDebugElement, ITerminate
 	public boolean containtsThread(PerlDebugThread fThread)
 	{
 		return (mThreads[0] == fThread);
+	}
+	private void getRegExp(
+		IP_Position fPos,
+		StringBuffer fRegexp,
+		StringBuffer fArg)
+	{
+		StringBuffer sourceCode = new StringBuffer();
+
+		int BUF_SIZE = 1024;
+
+		//	Get the file content
+		char[] buf = new char[BUF_SIZE];
+		File inputFile = new File(fPos.get_IP_Path().makeAbsolute().toString());
+		BufferedReader in;
+		try
+		{
+			in = new BufferedReader(new FileReader(inputFile));
+
+			int read = 0;
+			while ((read = in.read(buf)) > 0)
+			{
+				sourceCode.append(buf, 0, read);
+			}
+			in.close();
+		} catch (FileNotFoundException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		String line=null;
+		Document doc = new Document(sourceCode.toString());
+		try
+		{
+			int length = doc.getLineLength(fPos.get_IP_Line()-1);
+			int offset = doc.getLineOffset(fPos.get_IP_Line()-1);
+			line = doc.get(offset,length);
+		} catch (BadLocationException e1)
+		{
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
+		try
+		{
+			String delim;
+			
+			RE findDelim =new RE("[$%@].+[\\s]*=~[\\s]*[m]?(.)", 0, RESyntax.RE_SYNTAX_PERL5);
+			
+			REMatch match = findDelim.getMatch(line);
+			
+			delim = match.toString(1);
+			String temp = line;
+			temp.replaceAll("\\"+delim,"xx");
+			RE findRegExp =new RE("([$%@][^\\s]+)[\\s]*=~[\\s]*[m]?"+delim+"(.*)"+delim, 0, RESyntax.RE_SYNTAX_PERL5);
+			match = findRegExp.getMatch(temp);
+			String var = line.substring(match.getStartIndex(1),match.getEndIndex(1));
+			String text = line.substring(match.getStartIndex(2),match.getEndIndex(2));
+			var = evaluateStatement(mThreads[0],"p \""+var+"\"");
+			text = evaluateStatement(mThreads[0],"p \""+text+"\"");
+			System.out.println("\n"+var+":"+text+"\n");
+			fRegexp.append(text);
+			fArg.append(var);
+		} catch (REException e2)
+		{
+			// TODO Auto-generated catch block
+			e2.printStackTrace();
+		}
+
+		
+		
 	}
 
 }

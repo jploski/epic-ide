@@ -76,7 +76,7 @@ import sunlabs.brazil.server.Server;
  * @author      Stephen Uhler
  * @version     1.22, 02/05/02
  */
-
+/*STR*/
 public class EpicCgiHandler implements Handler
 {
 	private boolean mDebug;
@@ -132,10 +132,20 @@ public class EpicCgiHandler implements Handler
 		port = server.listen.getLocalPort();
 		hostname = server.hostName;
 		protocol = server.protocol;
-		int portIn = Integer.parseInt(server.props.getProperty(propsPrefix+"InPort",null));
-		int portOut = Integer.parseInt(server.props.getProperty(propsPrefix+"OutPort",null));
-		int portError = Integer.parseInt(server.props.getProperty(propsPrefix+"ErrorPort",null));
-		mDebug = server.props.getProperty(propsPrefix+"Debug",null).equalsIgnoreCase("true");
+		int portIn =
+			Integer.parseInt(
+				server.props.getProperty(propsPrefix + "InPort", null));
+		int portOut =
+			Integer.parseInt(
+				server.props.getProperty(propsPrefix + "OutPort", null));
+		int portError =
+			Integer.parseInt(
+				server.props.getProperty(propsPrefix + "ErrorPort", null));
+		mDebug =
+			server.props.getProperty(
+				propsPrefix + "Debug",
+				null).equalsIgnoreCase(
+				"true");
 		//System.out.println("**************Ports: "+portIn+" "+portOut+" "+portError+"\n");
 		try
 		{
@@ -156,9 +166,9 @@ public class EpicCgiHandler implements Handler
 			e.printStackTrace();
 			return false;
 		}
-//		mInWriter.println("IN*****************");
-//		mOutWriter.println("Out*****************");
-//		mErrorWriter.println("Debug*****************"+mDebug+"\n");
+		//		mInWriter.println("IN*****************");
+		//		mOutWriter.println("Out*****************");
+		//		mErrorWriter.println("Debug*****************"+mDebug+"\n");
 		return true;
 	}
 
@@ -198,7 +208,8 @@ public class EpicCgiHandler implements Handler
 
 		boolean useCustom =
 			!request.props.getProperty(propsPrefix + CUSTOM, "").equals("");
-		String suffix = request.props.getProperty(propsPrefix + SUFFIX, ".cgi");
+		String suffixes =
+			request.props.getProperty(propsPrefix + SUFFIX, ".cgi");
 		String root =
 			request.props.getProperty(
 				propsPrefix + ROOT,
@@ -207,78 +218,89 @@ public class EpicCgiHandler implements Handler
 			Server.LOG_DIAGNOSTIC,
 			propsPrefix
 				+ " suffix="
-				+ suffix
+				+ suffixes
 				+ " root="
 				+ root
 				+ " url: "
 				+ url);
-
+		String suffix = null;
+		StringTokenizer tok = new StringTokenizer(suffixes, ",");
+		File name = null;
 		int start = 1;
 		int end = 0;
-		File name = null;
-		while (end < url.length())
+		while (tok.hasMoreTokens())
 		{
-			end = url.indexOf(File.separatorChar, start);
-			if (end < 0)
-			{
-				end = url.length();
-			}
-			String s = url.substring(1, end);
-			if (!s.endsWith(suffix))
-			{
-				s += suffix;
-			}
-			name = new File(root, s);
+			suffix = tok.nextToken();
 			request.log(
 				Server.LOG_DIAGNOSTIC,
-				propsPrefix + " looking for: " + name);
-			if (name.isFile())
-			{
-				break;
-			}
+				"Checking for suffix: " + suffix);
+			start = 1;
+			end = 0;
 			name = null;
-			start = end + 1;
+			while (end < url.length())
+			{
+				end = url.indexOf(File.separatorChar, start);
+				if (end < 0)
+				{
+					end = url.length();
+				}
+				String s = url.substring(1, end);
+				if (!s.endsWith(suffix))
+				{
+					s += suffix;
+				}
+				name = new File(root, s);
+				request.log(
+					Server.LOG_DIAGNOSTIC,
+					propsPrefix + " looking for: " + name);
+				if (name.isFile())
+				{
+					break;
+				}
+				name = null;
+				start = end + 1;
+			}
+			if (name != null)
+				break;
 		}
-
 		if (name == null)
 		{
 			return false;
 		}
 
+		request.log(Server.LOG_DIAGNOSTIC, "Suffix: " + suffix );
 		// Formulate the command.  Look at the query and check for an =
 		// If no '=', then use '+' as an argument delimeter
 
 		String query = request.query;
 
 		int reduceComSize;
-		if( mDebug )
+		if (mDebug)
 			reduceComSize = 0;
 		else
 			reduceComSize = 1;
-		
+
 		if (query.indexOf("=") == -1)
 		{ // need args
-			command = new String[4-reduceComSize];
-			command[3-reduceComSize] = query; // XXX this is wrong
+			command = new String[4 - reduceComSize];
+			command[3 - reduceComSize] = query; // XXX this is wrong
 		} else
 		{ // no args
-			command = new String[3-reduceComSize];
+			command = new String[3 - reduceComSize];
 		}
 
 		//Get Perl executable and generate comand array
 		command[0] =
 			request.props.getProperty(propsPrefix + EXECUTABLE, "perl");
-		if( mDebug )
+		if (mDebug)
 		{
 			command[1] = "-d"; // Add debug switch
 			command[2] = name.getAbsolutePath();
-		}
-		else
+		} else
 		{
 			command[1] = name.getAbsolutePath();
-		} 
-			
-		
+		}
+
 		request.log(
 			Server.LOG_DIAGNOSTIC,
 			propsPrefix + " command= " + command[0]);

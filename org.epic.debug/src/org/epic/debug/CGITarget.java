@@ -93,6 +93,8 @@ public class CGITarget extends DebugTarget implements IDebugEventSetListener
 		String htmlRootDir = null;
 		String htmlRootFile = null;
 		String cgiRootDir = null;
+		String cgiFileExtension = null;
+		
 		if (mDebug)
 		{
 			mDebugPort = new RemotePort();
@@ -121,6 +123,11 @@ public class CGITarget extends DebugTarget implements IDebugEventSetListener
 				(ArrayList) mLaunch.getLaunchConfiguration().getAttribute(
 					PerlLaunchConfigurationConstants.ATTR_CGI_ENV,
 					(List) null);
+					
+			cgiFileExtension =
+							mLaunch.getLaunchConfiguration().getAttribute(
+								PerlLaunchConfigurationConstants.ATTR_CGI_FILE_EXTENSION,
+								(String) null);					
 
 		} catch (CoreException e2)
 		{
@@ -167,7 +174,9 @@ public class CGITarget extends DebugTarget implements IDebugEventSetListener
 				+ htmlRootFileRel
 				+ "\n"
 				+ "cgi.executable="
-				+ PerlExecutableUtilities.getPerlExecutableCommandLine().get(0));
+				+ PerlExecutableUtilities.getPerlExecutableCommandLine().get(0)
+				+ "\n"
+				+ "cgi.suffix="+cgiFileExtension);
 		
 		if (mDebug)
 		{

@@ -313,9 +313,15 @@ public class PerlDebugPlugin extends AbstractUIPlugin
 		 */
 	public static IWorkbenchWindow getActiveWorkbenchWindow()
 	{
-		return getDefault().getWorkbench().getActiveWorkbenchWindow();
+			return getDefault().getWorkbench().getActiveWorkbenchWindow();
 	}
-
+	
+	public static IWorkbenchWindow getWorkbenchWindow()
+		{
+			IWorkbenchWindow window = getDefault().getWorkbench().getActiveWorkbenchWindow();
+			if (window == null)
+						window = getDefault().getWorkbench().getWorkbenchWindows()[0];
+			return window;}
 	/**
 		 * Returns the active workbench shell or <code>null</code> if none
 		 *

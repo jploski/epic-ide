@@ -14,7 +14,7 @@
  * To change the template for this generated type comment go to
  * Window>Preferences>Java>Code Generation>Code and Comments
  */
-
+/*STR*/
 package org.epic.debug;
 
 //import java.lang.reflect.InvocationTargetException;
@@ -36,6 +36,8 @@ import org.eclipse.jface.preference.FileFieldEditor;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
@@ -43,8 +45,9 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Text;
 //import org.epic.debug.util.ListEditor;
-
+/*STR*/
 public class LaunchConfigurationCGIWebServerTab
 	extends AbstractLaunchConfigurationTab
 	implements IPropertyChangeListener
@@ -59,6 +62,8 @@ public class LaunchConfigurationCGIWebServerTab
 	 * @since 2.0
 	 */
 
+	private Text mCGIsuffixText;
+	private Label mCGIsuffixLabel;
 	//private ListEditor fEnvVar;
 	//	private IntegerFieldEditor fWebserverPort;
 	private DirectoryFieldEditor fCGIRootDir;
@@ -193,6 +198,37 @@ public class LaunchConfigurationCGIWebServerTab
 
 		fCGIRootDir.setPropertyChangeListener(this);
 
+		createVerticalSpacer(comp, 2);
+				Composite paramComp = new Composite(comp, SWT.NONE);
+				GridLayout paramLayout = new GridLayout();
+				paramLayout.numColumns = 2;
+				paramLayout.marginHeight = 0;
+				paramLayout.marginWidth = 0;
+				paramComp.setLayout(paramLayout);
+				gd = new GridData(GridData.FILL_HORIZONTAL);
+				paramComp.setLayoutData(gd);
+				paramComp.setFont(font);
+
+				mCGIsuffixLabel = new Label(paramComp, SWT.NONE);
+				mCGIsuffixLabel.setText("File Extension for CGI Files:  (comma separated list e.g. .cgi,.pl)"); //$NON-NLS-1$
+				gd = new GridData();
+				gd.horizontalSpan = 2;
+				mCGIsuffixLabel.setLayoutData(gd);
+				mCGIsuffixLabel.setFont(font);
+
+				mCGIsuffixText = new Text(paramComp, SWT.SINGLE | SWT.BORDER);
+
+				gd = new GridData(GridData.FILL_HORIZONTAL);
+				mCGIsuffixText.setLayoutData(gd);
+				mCGIsuffixText.setFont(font);
+				mCGIsuffixText.addModifyListener(new ModifyListener()
+				{
+					public void modifyText(ModifyEvent evt)
+					{
+						updateLaunchConfigurationDialog();
+					}
+				});
+
 		//createVerticalSpacer(comp, 1);
 
 		//				Composite webserverPortComp = new Composite(comp, SWT.NONE);
@@ -235,7 +271,11 @@ public class LaunchConfigurationCGIWebServerTab
 				config.getAttribute(
 					PerlLaunchConfigurationConstants.ATTR_CGI_ROOT_DIR,
 					(String) null));
-
+			
+			mCGIsuffixText.setText(	config.getAttribute(
+								PerlLaunchConfigurationConstants.ATTR_PROJECT_NAME,
+								".cgi,.pl"));
+					
 			//			fWebserverPort.setStringValue(
 			//					config.getAttribute(
 			//						PerlLaunchConfigurationConstants.ATTR_DEBUG_PORT,
@@ -263,9 +303,9 @@ public class LaunchConfigurationCGIWebServerTab
 		config.setAttribute(
 			PerlLaunchConfigurationConstants.ATTR_CGI_ROOT_DIR,
 			this.fCGIRootDir.getStringValue());
-		//		config.setAttribute(
-		//						PerlLaunchConfigurationConstants.ATTR_DEBUG_PORT,
-		//						fWebserverPort.getStringValue());
+		config.setAttribute(
+								PerlLaunchConfigurationConstants.ATTR_CGI_FILE_EXTENSION,
+								this.mCGIsuffixText.getText());
 		config.setAttribute(
 			PerlLaunchConfigurationConstants.ATTR_DEBUG_CGI,
 			"OK");
@@ -380,6 +420,9 @@ public class LaunchConfigurationCGIWebServerTab
 		config.setAttribute(
 			PerlLaunchConfigurationConstants.ATTR_CGI_ENV,
 			(Map) null);
+		config.setAttribute(
+					PerlLaunchConfigurationConstants.ATTR_CGI_FILE_EXTENSION,
+					".CGI,.PL");
 
 	}
 

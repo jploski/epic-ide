@@ -96,7 +96,7 @@ public class ExpressionView extends ViewPart {
 	}
 	
 	/**
-	 * Action called, when Evaluate Expressin button is pressed
+	 * Action called, when Evaluate expression button is pressed
 	 */
 	private void evaluateExpression() {
 		

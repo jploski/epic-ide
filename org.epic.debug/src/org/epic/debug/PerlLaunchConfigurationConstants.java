@@ -35,7 +35,8 @@ public final static String ATTR_HTML_ROOT_DIR = "ATTR_HTML_ROOT_DIR";
 public final static String ATTR_HTML_ROOT_FILE = "ATTR_HTML_ROOT_FILE";
 public final static String ATTR_CGI_ROOT_DIR = "ATTR_CGI_ROOT_DIR";
 public final static String ATTR_CGI_ENV = "ATTR_CGI_ENV";
-
+/*STR*/
+public final static String ATTR_CGI_FILE_EXTENSION = "ATTR_CGI_FILE_EXTENSION";
 
 public final static String getDebugPort(ILaunch fLaunch)
 {

@@ -64,6 +64,10 @@ public class PerlDebugImages {
 		public static final ImageDescriptor ACTION_EXPRESSION_EVALUATE = 
 	createImageDescriptor(iconPath + "run.gif");
 
+	/* RegExp Breakpoint*/
+		public static final ImageDescriptor DESC_OBJS_REGEXP_BP_ENABLED= createImageDescriptor(iconPath + "rx.gif");
+		public static final ImageDescriptor DESC_OBJS_REGEXP_BP_DISABLED= createImageDescriptor(iconPath + "rx_dis.gif");
+
 	   private static ImageDescriptor createImageDescriptor(String path)
 	   {
 		  try

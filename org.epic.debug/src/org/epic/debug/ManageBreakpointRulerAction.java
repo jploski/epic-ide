@@ -22,6 +22,7 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.IBreakpointManager;
 import org.eclipse.debug.core.model.IBreakpoint;
@@ -39,13 +40,13 @@ import org.eclipse.ui.texteditor.IUpdate;
 
 public class ManageBreakpointRulerAction extends Action implements IUpdate {	
 	
-	private IVerticalRulerInfo fRuler;
-	private ITextEditor fTextEditor;
+	protected IVerticalRulerInfo fRuler;
+	protected ITextEditor fTextEditor;
 	private String fMarkerType;
-	private List fMarkers;
+	protected List fMarkers;
 
-	private String fAddLabel;
-	private String fRemoveLabel;
+	protected String fAddLabel;
+	protected String fRemoveLabel;
 	
 	public ManageBreakpointRulerAction(IVerticalRulerInfo ruler, ITextEditor editor) {
 		fRuler= ruler;
@@ -144,6 +145,7 @@ public class ManageBreakpointRulerAction extends Action implements IUpdate {
 	public void update() {
 		fMarkers= getMarkers();
 		setText(fMarkers.isEmpty() ? fAddLabel : fRemoveLabel);
+
 	}
 
 	/**
@@ -192,24 +194,36 @@ public class ManageBreakpointRulerAction extends Action implements IUpdate {
 		return breakpoints;
 	}
 	
-	protected void addMarker() {
-		
-		IEditorInput editorInput= getTextEditor().getEditorInput();
-		
-		IDocument document= getDocument();
+	protected void addMarker()
+	{
 
-		int rulerLine= getVerticalRulerInfo().getLineOfLastMouseButtonActivity();
-		
-	try{
-		int line= getVerticalRulerInfo().getLineOfLastMouseButtonActivity();
+		IEditorInput editorInput = getTextEditor().getEditorInput();
 
-		new PerlLineBreakpoint(getResource(),line+1);	
-		} catch (Exception e){
+		IDocument document = getDocument();
+
+		int rulerLine =
+			getVerticalRulerInfo().getLineOfLastMouseButtonActivity();
+
+		try
+		{
+			int line =
+				getVerticalRulerInfo().getLineOfLastMouseButtonActivity();
+
+			 createBreakPoint(line+1);
+			
+		} catch (Exception e)
+		{
 			PerlDebugPlugin.getDefault().logError("ManageBreakpointRulerAction error adding Breakpoint", e); //$NON-NLS-1$
-			}
-		
-		
+		}
+
 	}
+
+ void createBreakPoint(int fLine) throws DebugException, CoreException
+ {
+ 	
+	new PerlLineBreakpoint(getResource(), fLine + 1);
+ 	
+ }
 	
 	protected void removeMarkers(List markers) {
 		IBreakpointManager breakpointManager= DebugPlugin.getDefault().getBreakpointManager();

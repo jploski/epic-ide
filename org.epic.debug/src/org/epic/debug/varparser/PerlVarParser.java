@@ -131,7 +131,7 @@ public class PerlVarParser
     {
     	boolean hasErrors=false;
 		try{
-		// construct the lexer
+		// Construct the lexer
 		PerlBaseLexer lex = new PerlLexer ( new StringReader( fText ) );
         
 		// construct the parser
@@ -155,7 +155,7 @@ public class PerlVarParser
     	   	hasErrors = true;
     	}
     	
-    	if ( par.hasError() > 1 || hasErrors)
+    	if (  par.hasError() > 1 || hasErrors)
     	{
     		System.out.println("!!!!! Parse Error!!!!");
     		logParsError(fText);

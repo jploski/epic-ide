@@ -43,7 +43,7 @@ public class PerlLineBreakpoint extends PerlBreakpoint implements ILineBreakpoin
 	public PerlLineBreakpoint(IResource resource, int lineNumber) throws DebugException, CoreException {
 				super();
 			    Map attributes = new HashMap(10); 
-				createPerlLineBreakpoint(resource,lineNumber, -1, -1, true, attributes,Perl_LINE_BREAKPOINT);
+				createPerlLineBreakpoint(resource,lineNumber, -1, -1, true, attributes,getMarkerID());
 			}
 			
 	
@@ -52,8 +52,14 @@ public class PerlLineBreakpoint extends PerlBreakpoint implements ILineBreakpoin
 				super();
 				if( attributes == null)
 				{ attributes = new HashMap(10); }
-				createPerlLineBreakpoint(resource,lineNumber, charStart, charEnd, add, attributes, Perl_LINE_BREAKPOINT);
+				createPerlLineBreakpoint(resource,lineNumber, charStart, charEnd, add, attributes,getMarkerID());
 		}
+		
+	String getMarkerID()
+	{
+		return(Perl_LINE_BREAKPOINT);
+	}
+	
 	/**
 	 * 
 	 */

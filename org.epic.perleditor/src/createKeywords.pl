@@ -17,7 +17,7 @@ open(OUT, ">$outFile") || die "Unable to open $outFile: $!\n";
 foreach my $keyword (<KEYWORDS>) {
     chomp($keyword);
     my $result = `perldoc -t -f $keyword`;
-    $result =~ s/\n\n.*//sm;
+    $result =~ s/(.*?\.)\n\n.*/$1/sm;
     $result =~ s/\\/\\\\/g;
     $result =~ s/\n/\\n/g;
     

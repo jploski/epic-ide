@@ -1,7 +1,9 @@
 Eclipse Perl Integration: Perl Editor Plugin
 
 Version 0.1.0 alpha  - 
+		* Code Assist preference page added
 		* Added variable inspection to code assist
+		* Quickreference corrected
 		* Color Editor upgraded to version 0.3.0 (thanks to Chris Grindstaff)
 
 Version 0.1.0 alpha  - 16-October-2003

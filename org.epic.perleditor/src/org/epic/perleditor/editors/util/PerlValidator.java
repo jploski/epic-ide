@@ -29,6 +29,8 @@ import java.util.StringTokenizer;
 
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.Document;
 import org.eclipse.ui.IEditorDescriptor;
 import org.epic.core.Constants;
@@ -426,4 +428,58 @@ public class PerlValidator {
 		}
 
 	}
+
+	public static void parseTasks(IResource resource, String sourceCode) {
+  	
+		// TODO get the strings marking a todo from the configuration
+		// at the moment, we´re assuming something like "# TODO text" 
+		final String TODO_STRING = "# TODO ";
+  	
+		Map attributes = new HashMap(11);
+
+		// delete the old markers
+		try {
+			resource.deleteMarkers(IMarker.TASK, true, 1);
+		}
+		catch (CoreException ce) {
+			System.out.println("couldn´t delete the old task markers : ");
+			ce.printStackTrace();
+		}
+
+		// get the source and search for all occurrences of "# TODO"
+		Document document = new Document(sourceCode);
+		try {																	
+			int currentPos = -1;
+			do {
+				currentPos = document.search(currentPos+1, TODO_STRING, true, false, false);
+				
+				if (currentPos > -1) {
+					System.out.println("found " + TODO_STRING + " at pos. " + currentPos + ". adding marker.");				
+					
+					AddEditorMarker ed = new AddEditorMarker();
+					// the starting char is simple - 
+					attributes.put(IMarker.CHAR_START, new Integer(currentPos));
+					// the ending char is the first newline after the start position (assuming that each todo ends at the end of the line)
+					int stopPos = document.search(currentPos, "\n", true, true, false);					
+					attributes.put(IMarker.CHAR_END, new Integer(stopPos));
+					
+					// get the number of the line in which the current position is
+					int lineCountToHere = document.getNumberOfLines(0, currentPos);
+					attributes.put(IMarker.LINE_NUMBER, new Integer(lineCountToHere));
+					
+					// the text that should be displayed is everything between the end of the TODO marker and the end of the line
+					int textStartPos = currentPos + TODO_STRING.length();				 	
+					String todoText = document.get(textStartPos, stopPos-textStartPos);
+					attributes.put(IMarker.MESSAGE, todoText);
+					attributes.put(IMarker.TRANSIENT, Boolean.TRUE);																								
+															
+					ed.addMarker(resource, attributes, IMarker.TASK);					
+				}        
+			} while (currentPos > -1);
+		}
+		catch (BadLocationException ble1) {
+			ble1.printStackTrace();			
+		}  
+	}	
+	
 }

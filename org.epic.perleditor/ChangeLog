@@ -1,5 +1,8 @@
 Eclipse Perl Integration: Perl Editor Plugin
 
+Version 0.1.0 - 26-May-2004
+		* added TODO marker in Perl Editor
+
 Version 0.1.0 - 07-May-2004
 		* Enhanced Error/Warning detection in Perl Editor
 		* @INC path property error fixed

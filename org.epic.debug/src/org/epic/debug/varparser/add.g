@@ -40,7 +40,7 @@ tokens
 	
 	public void printConsole(String fString)
 	{
-		System.out.println(fString);
+		//System.out.println(fString);
 	}
 	
 	public void setVarList( java.util.ArrayList fVarList )

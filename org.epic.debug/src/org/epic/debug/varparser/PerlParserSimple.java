@@ -24,7 +24,7 @@ public class PerlParserSimple extends antlr.LLkParser       implements AddTokenT
 	
 	public void printConsole(String fString)
 	{
-		System.out.println(fString);
+		//System.out.println(fString);
 	}
 	
 	public void setVarList( java.util.ArrayList fVarList )
@@ -146,37 +146,37 @@ public PerlParserSimple(ParserSharedInputState state) {
 		
 		try {      // for error handling
 			{
-			_loop351:
+			_loop467:
 			do {
 				if ((LA(1)==NL)) {
 					match(NL);
 				}
 				else {
-					break _loop351;
+					break _loop467;
 				}
 				
 			} while (true);
 			}
 			{
-			_loop355:
+			_loop471:
 			do {
 				if ((_tokenSet_0.member(LA(1)))) {
 					namedVar();
 					{
-					_loop354:
+					_loop470:
 					do {
 						if ((LA(1)==NL)) {
 							match(NL);
 						}
 						else {
-							break _loop354;
+							break _loop470;
 						}
 						
 					} while (true);
 					}
 				}
 				else {
-					break _loop355;
+					break _loop471;
 				}
 				
 			} while (true);
@@ -372,13 +372,13 @@ public PerlParserSimple(ParserSharedInputState state) {
 			if ((LA(1)==INDENT_START) && (LA(2)==NUMBER||LA(2)==INDENT_END)) {
 				match(INDENT_START);
 				{
-				_loop363:
+				_loop479:
 				do {
 					if ((LA(1)==NUMBER)) {
 						arrayEntry();
 					}
 					else {
-						break _loop363;
+						break _loop479;
 					}
 					
 				} while (true);
@@ -558,13 +558,13 @@ public PerlParserSimple(ParserSharedInputState state) {
 			if ((LA(1)==INDENT_START) && (LA(2)==INDENT_END||LA(2)==STRING)) {
 				match(INDENT_START);
 				{
-				_loop371:
+				_loop487:
 				do {
 					if ((LA(1)==STRING)) {
 						hashEntry();
 					}
 					else {
-						break _loop371;
+						break _loop487;
 					}
 					
 				} while (true);
@@ -771,7 +771,7 @@ public PerlParserSimple(ParserSharedInputState state) {
 			}
 			}
 			{
-			_loop382:
+			_loop498:
 			do {
 				switch ( LA(1)) {
 				case PURE_NAME:
@@ -803,7 +803,7 @@ public PerlParserSimple(ParserSharedInputState state) {
 				}
 				default:
 				{
-					break _loop382;
+					break _loop498;
 				}
 				}
 			} while (true);

@@ -8,6 +8,7 @@ import java.text.DateFormat;
 import java.util.Calendar;
 
 import org.eclipse.ui.PlatformUI;
+import org.epic.perleditor.editors.util.PerlExecutableUtilities;
 import org.epic.perleditor.templates.SimpleTemplateVariable;
 import org.epic.perleditor.templates.TemplateContext;
 
@@ -98,7 +99,25 @@ public class GlobalVariables {
 			setResolved(true);
 		}
 		public String evaluate(TemplateContext context) {
-			return PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor().getTitle();
+			return PlatformUI
+				.getWorkbench()
+				.getActiveWorkbenchWindow()
+				.getActivePage()
+				.getActiveEditor()
+				.getTitle();
+		}
+	}
+
+	/**
+		* The name of the PerlInterpreter.
+		*/
+	static class PerlInterpreter extends SimpleTemplateVariable {
+		public PerlInterpreter() {
+			super(PerlTemplateMessages.getString("GlobalVariables.variable.name.perlInterpreter"), PerlTemplateMessages.getString("GlobalVariables.variable.description.perlInterpreter")); //$NON-NLS-1$ //$NON-NLS-2$
+			setResolved(true);
+		}
+		public String evaluate(TemplateContext context) {
+			 return (String) PerlExecutableUtilities.getPerlExecutableCommandLine().get(0);
 		}
 	}
 }

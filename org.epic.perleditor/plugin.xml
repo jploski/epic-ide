@@ -192,7 +192,7 @@
   <extension point="org.eclipse.ui.actionSets">
     <actionSet id="org.epic.perleditor.sourcemenu"
                      label="Source Menu">
-		
+			
         <!-- Content assist -->
 		<action id="org.epic.perleditor.ContentAssist"
       		menubarPath="edit/additions"
@@ -207,7 +207,23 @@
             label="&amp;Source"
             path="edit">
             <separator name="editGroup"/>
+            <separator name="exportGroup"/>
          </menu>
+             
+         <!-- Export menu -->
+		<menu
+            id="export"
+            label="&amp;Export"
+            path="org.epic.perleditor.source.menu/exportGroup">
+            <separator name="group1"/>
+         </menu>
+                
+		<!-- HTML export -->
+		<action id="org.epic.perleditor.HtmlExport"
+      		menubarPath="org.epic.perleditor.source.menu/export/group1"
+      		label="&amp;HTML"
+			definitionId="org.epic.perleditor.htmlexport"
+			class="org.epic.perleditor.actions.ExportHtmlSourceAction" />
          
          <!-- Format source action -->
 		<action id="org.epic.perleditor.FormatSource"

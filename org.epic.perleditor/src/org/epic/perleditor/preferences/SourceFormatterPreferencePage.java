@@ -115,7 +115,13 @@ public class SourceFormatterPreferencePage
 						SourceFormatterPreferences.PERLTIDY_OPTIONS,
 						"Options",
 						composite));
-		
+					
+		addField(new SpacerFieldEditor(composite));
+				addField(new LabelFieldEditor("HTML Export options (separated by space)", composite));
+				addField(new StringFieldEditor(
+								SourceFormatterPreferences.HTML_EXPORT_OPTIONS,
+								"Options",
+								composite));
 
 	}
 

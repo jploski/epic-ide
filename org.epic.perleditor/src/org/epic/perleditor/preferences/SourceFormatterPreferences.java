@@ -19,6 +19,7 @@ public class SourceFormatterPreferences {
 //	public static final String CONTAINER_TIGHTNESS_SQUARE_BRACKETS = "Formatter.containerTightnessSquareBrackets";
 	public static final String SWALLOW_OPTIONAL_BLANK_LINES ="Formatter.swallowOptionalBlankLines";
 	public static final String PERLTIDY_OPTIONS = "Formatter.perltidyOptions";
+	public static final String HTML_EXPORT_OPTIONS = "Formatter.htmlExportOptions";
 	
 	
 	/**
@@ -42,6 +43,7 @@ public class SourceFormatterPreferences {
 //		store.setDefault(CONTAINER_TIGHTNESS_PARENTHESES, 1);
 //		store.setDefault(CONTAINER_TIGHTNESS_SQUARE_BRACKETS, 1);
 		store.setDefault(PERLTIDY_OPTIONS, "");
+		store.setDefault(HTML_EXPORT_OPTIONS, "-toc -frm");
 }
 
 	

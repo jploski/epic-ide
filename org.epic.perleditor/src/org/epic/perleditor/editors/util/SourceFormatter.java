@@ -2,6 +2,7 @@ package org.epic.perleditor.editors.util;
 
 import java.io.*;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
 
@@ -11,7 +12,6 @@ import org.epic.perleditor.PerlEditorPlugin;
 import org.epic.perleditor.preferences.PreferenceConstants;
 import org.epic.perleditor.preferences.SourceFormatterPreferences;
 
-import org.epic.perleditor.editors.util.StringReaderThread;
 
 
 public class SourceFormatter {
@@ -45,7 +45,12 @@ public class SourceFormatter {
 			URL installURL = PerlEditorPlugin.getDefault().getDescriptor().getInstallURL();
 			URL perlTidyURL = Platform.resolve(new URL(installURL,"perlutils/perltidy"));
   
-            List  cmdList =PerlExecutableUtilities.getPerlExecutableCommandLine();
+            List  perlParamList =PerlExecutableUtilities.getPerlExecutableCommandLine();
+            
+            // Use only perl executable (first element)
+            List cmdList = new ArrayList();
+            cmdList.add((String) PerlExecutableUtilities.getPerlExecutableCommandLine().get(0));
+            
             cmdList.add("perltidy");
             
             /* Add additional parameters */

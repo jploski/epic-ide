@@ -10,6 +10,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.debug.core.DebugPlugin
 ;
+import org.epic.perleditor.editors.util.PerlExecutableUtilities;
 
 
 
@@ -52,7 +53,7 @@ public class PerlDebugPlugin extends AbstractUIPlugin {
 		String env=null;
 		int count;
 			try{
-			proc =	Runtime.getRuntime().exec("perl  -e\"while(($k,$v)= each %ENV){ print\\\"$k=$v\\n\\\";}\"");
+			proc =	Runtime.getRuntime().exec(PerlExecutableUtilities.getPerlExecPath()+" -e\"while(($k,$v)= each %ENV){ print\\\"$k=$v\\n\\\";}\"");
 		}catch (Exception e){System.out.println("Failing to create Process !!!");}
 
 		InputStream in = proc.getInputStream();

@@ -43,6 +43,10 @@ public class PerlExecutableUtilities {
 
 	}
 
+ 	public static String getPerlExecPath()
+ 	{
+ 		return (String)getPerlExecutableCommandLine().get(0);
+ 	}
 	public static List getPerlExecutableCommandLine(
 		TextEditor textEditor,
 		IProject project) {

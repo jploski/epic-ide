@@ -1,6 +1,11 @@
 package org.epic.debug.varparser;
 
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.eclipse.debug.core.DebugException;
 import org.epic.debug.PerlDB;
 import org.epic.debug.PerlDebugPlugin;
 
@@ -23,9 +28,11 @@ public class TokenVarParser {
 
 	java.util.Stack mVarStack = new java.util.Stack();
 	java.util.ArrayList mVarList = null; //new java.util.ArrayList();
+	HashMap mVarMap = new HashMap();
 	int mPos;
 	String indent;
 	char mChars[];
+	boolean mHasErrors;
 
 	public TokenVarParser(PerlDB fDebugger) {
 		mDebugger = fDebugger;
@@ -35,20 +42,27 @@ public class TokenVarParser {
 		return (parseVars(fText, fScope, new java.util.ArrayList()));
 	}
 
-	public java.util.ArrayList parseVars(String fText, int fScope,
-			java.util.ArrayList fVarList) {
-		boolean hasErrors = false;
-
+	public ArrayList parseVars(String fText, int fScope,
+			ArrayList fVarList) {
+		
+		mHasErrors = false;
+		
+		mVarMap.clear();
+		mVarStack.clear();
+		
+		
 		mChars = fText.toCharArray();
 
 		mScope = fScope;
+		
 		setVarList(fVarList);
 
 		mPos = 0;
 		indent = " ";
+		try{
 		readVars();
-
-		if (hasErrors) {
+		}catch(Exception e){mHasErrors = true;}
+		if (mHasErrors) {
 			System.out.println("!!!!! Parse Error!!!!");
 			logParsError(fText);
 		} else {
@@ -73,14 +87,22 @@ public class TokenVarParser {
 			return (0);
 		while (mChars[mPos] != 'N') {
 			System.err.println("Name not found[" + mPos + "]\n");
+			mHasErrors = true;
 			++mPos;
 		};
 		mPos++;
 		name = readString();
 		value = readStrings();
 		//System.out.println(indent + name + "=" + value + "\n");
-		addVar(name);
-		setValue(value);
+		if(mChars[mPos] == 'R')
+		{
+			mPos++;
+			linkVar(name,value);
+		}
+		else
+		 { addVar(name,value); }
+		
+		
 		if (mChars[mPos] == 'I') {
 			mPos++;
 			String indentOrg = indent;
@@ -104,6 +126,7 @@ public class TokenVarParser {
 		if (mChars[mPos] != 'S') {
 			if (fPrintError) {
 				System.err.println("String not found[" + mPos + "]\n");
+				mHasErrors = true;
 			}
 			return (null);
 		};
@@ -145,28 +168,14 @@ public class TokenVarParser {
 		return (mVarList);
 	}
 
-	public void addVar(String fName) {
-		addVar(fName, " ");
-	}
-
-	public void setValue(String fVal)
-	{ setValue(fVal," ");}
 	
-	
-	public void setValue(String fVal, String fType)
-	{
-			try{
-			 ((PerlDebugVar)mVarStack.peek()).getPdValue().setValue(fVal);
-	 		 ((PerlDebugVar)mVarStack.peek()).getPdValue().setType(fType);
-	 		}catch (Exception e){};
-
-	}
-	public void addVar(String fName, String fType) {
+	public void addVar(String fName, String fValue) {
 		PerlDebugVar var = new PerlDebugVar(mDebugger, mScope);
 		PerlDebugValue val = new PerlDebugValue(mDebugger);
 
 		try {
-			val.setType(fType);
+			val.setType(" ");
+			val.setValue(fValue);
 			var.setName(fName);
 			var.setValue(val);
 
@@ -178,8 +187,38 @@ public class TokenVarParser {
 		} catch (Exception e) {
 		};
 		mVarStack.push(var);
+		
+		int pos = fValue.indexOf(')');
+		if( pos > 0)
+		{
+		   mVarMap.put(fValue.substring(0,pos+1),var);	
+		}
+		
 	}
 
+	public void linkVar(String fName, String fValue) {
+		PerlDebugVar varRe = (PerlDebugVar) this.mVarMap.get(fValue);
+		PerlDebugVar var = new PerlDebugVar(mDebugger, mScope);
+		try {
+			PerlDebugValue valRe = varRe.getPdValue();
+	
+		PerlDebugValue val = new PerlDebugValue(mDebugger);
+			val.mVars = valRe.mVars;
+			val.setType(" ");
+			val.setValue(valRe.getValueString());
+			var.setName(fName);
+			var.setValue(val);
+
+			if (!mVarStack.empty()) {
+				((PerlDebugVar) mVarStack.peek()).getPdValue().addVar(var);
+			}
+		} catch (DebugException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		mVarStack.push(var);
+
+	}
 	public void finalizeVar() {
 		PerlDebugVar var;
 		var = (PerlDebugVar) mVarStack.pop();

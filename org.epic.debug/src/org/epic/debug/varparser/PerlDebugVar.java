@@ -26,6 +26,8 @@ public class PerlDebugVar implements IVariable {
 	private PerlDebugValue mValue;
 	private int mHasChanged;
 	private boolean mHideImage;
+	private boolean mVisited;
+	private boolean mIsSet;
 	int mScope;
 	public static final int IS_LOCAL_SCOPE = 1; 
 	public static final int IS_GLOBAL_SCOPE = 2;  
@@ -61,6 +63,10 @@ public class PerlDebugVar implements IVariable {
 	
 	public boolean calculateChangeFlags(PerlDebugVar fVarOrg)
 	{
+		if( fVarOrg.mVisited == true) 
+			return(false);
+		
+		fVarOrg.mVisited = true;
 		try{
 		
 		//System.out.println("-*-Comparing Var"+fVarOrg.getName()+"/"+getName());
@@ -72,7 +78,7 @@ public class PerlDebugVar implements IVariable {
 		 
 	    int ret = mValue.calculateChangeFlags(fVarOrg.getPdValue());
 	    
-	    System.out.println(PerlDebugValue.changeFlagsToString(ret));
+	   
 	    setChangeFlags(ret,false);
 	    
 	    return( ret != PerlDebugValue.mValueUnchanged );
@@ -84,6 +90,9 @@ public class PerlDebugVar implements IVariable {
 	
 	public void setChangeFlags(int fVal, boolean fRecourse)
 	{
+		if( mIsSet == true) return;
+		
+		else mIsSet = true;
 		mHasChanged = fVal;
 		
 		if( fRecourse )
@@ -101,6 +110,8 @@ public class PerlDebugVar implements IVariable {
 		mHideImage = false;
 		mScope = fScope;
 		mHasChanged = PerlDebugValue.mValueUnchanged;
+		mVisited = false;
+		mIsSet = false;
 	}
 	
 	public PerlDebugVar(IDebugElement fDebugger,int fScope, boolean fHide) {
@@ -110,6 +121,8 @@ public class PerlDebugVar implements IVariable {
 			mValue = null;
 			mHideImage = fHide;
 			mScope = fScope;
+			mVisited = false;
+			mIsSet = false;
 		}
 
 	/* (non-Javadoc)

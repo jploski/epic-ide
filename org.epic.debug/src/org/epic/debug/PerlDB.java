@@ -45,6 +45,7 @@ import org.epic.debug.util.PathMapperCygwin;
 import org.epic.debug.varparser.PerlDebugValue;
 import org.epic.debug.varparser.PerlDebugVar;
 import org.epic.debug.varparser.PerlVarParser;
+import org.epic.debug.varparser.TokenVarParser;
 import org.epic.perleditor.PerlEditorPlugin;
 import org.epic.regexp.views.RegExpView;
 
@@ -70,9 +71,10 @@ public class PerlDB implements IDebugElement, ITerminate {
 	private static final String mDBinitPerl_5_8 = "o frame=2";
 	private static final String mDBinitPerl_5_6 = "O frame=2";
 	private final static String mPadwalkerError = "PadWalker module not found - please install";
-	private static final String mLovalVarCommand_5_6 = ";{eval { require PadWalker; PadWalker->VERSION(0.08) }or print $DB::OUT (\""
+	private static final String mLovalVarCommand = ";{eval { require PadWalker; PadWalker->VERSION(0.08) }or print $DB::OUT (\""
 			+ mPadwalkerError
-			+ "\\n\");do 'dumpvar_epic.pl' unless defined &main::dumpvar_epic;defined &main::dumpvar_epic or print $DB::OUT \"dumpvar_epic.pl not available.\\n\";my $h = eval { PadWalker::peek_my(2) };my @vars = split (' ','');$@ and $@ =~ s/ at .*//, print $DB::OUT ($@);my $savout = select($DB::OUT);dumpvar_epic::dumplex($_,$h->{$_},defined $option{dumpDepth} ? $option{dumpDepth} : -1,@vars) for sort keys %$h;select($savout);};\n";
+			+ "\\n\");do 'dumpvar_epic.pm' unless defined &main::dumpvar_epic;defined &main::dumpvar_epic or print $DB::OUT \"dumpvar_epic.pl not available.\\n\";my $h = eval { PadWalker::peek_my(2) };my @vars = split (' ','');$@ and $@ =~ s/ at .*//, print $DB::OUT ($@);my $savout = select($DB::OUT);dumpvar_epic::dumplex($_,$h->{$_},defined $option{dumpDepth} ? $option{dumpDepth} : -1,@vars) for sort keys %$h;print \"E\";select($savout);};\n";
+	private static final String mGlobalVarCommand = ";{do 'dumpvar_epic.pm' unless defined &main::dumpvar_epic;defined &main::dumpvar_epic or print $DB::OUT \"dumpvar_epic.pm not available.\\n\";my $savout = select($DB::OUT);main::dumpvar_epic();select($savout);};\n";
 
 	private PerlDebugThread[] mThreads;
 
@@ -115,7 +117,7 @@ public class PerlDB implements IDebugElement, ITerminate {
 	private RE mReExitFrame;
 
 	private IP_Position mStartIP;
-	private PerlVarParser mVarParser = new PerlVarParser(this);
+	private TokenVarParser mVarParser = new TokenVarParser(this);
 
 	private final static int mIsStepCommand = mCommandStepInto
 			| mCommandStepOver | mCommandStepReturn;
@@ -224,7 +226,7 @@ public class PerlDB implements IDebugElement, ITerminate {
 				fTarget, this);
 
 		try {
-			mReCommandFinished1 = new RE("\n\\s+DB<\\d+>", 0,
+			mReCommandFinished1 = new RE("\n\\s+DB<+\\d+>+", 0,
 					RESyntax.RE_SYNTAX_PERL5);
 			mReCommandFinished2 = new RE("^\\s+DB<\\d+>", 0,
 					RESyntax.RE_SYNTAX_PERL5);
@@ -1151,20 +1153,18 @@ public class PerlDB implements IDebugElement, ITerminate {
 
 	private void setVarStrings() {
 		String command;
-		String command_local = "y ";
 		String result;
 		boolean ret;
 
 		command = "o frame=0\n";
 		if (mPerlVersion.startsWith("5.6")) {
 			command = "O frame=0\n";
-			command_local = mLovalVarCommand_5_6;
 		}
 		ret = startCommand(mCommandExecuteCode, command, false, mThreads[0]);
 		if (!ret || this.mStopVarUpdate)
 			return;
 		if (ShowLocalVariableActionDelegate.getPreferenceValue()) {
-			result = evaluateStatement(mThreads[0], command_local, false);
+			result = evaluateStatement(mThreads[0], mLovalVarCommand, false);
 			//startSubCommand(mCommandExecuteCode, command_local, false);
 			if (result != null) {
 				if (result.startsWith(mPadwalkerError)) {
@@ -1176,16 +1176,19 @@ public class PerlDB implements IDebugElement, ITerminate {
 				}
 			}
 		}
-		command = "o frame=2\n";
-		if (mPerlVersion.startsWith("5.6"))
-			command = "O frame=2\n";
+		
 
 		ret = startCommand(mCommandExecuteCode, command, false, mThreads);
 		if (!ret || this.mStopVarUpdate)
 			return;
-		result = evaluateStatement(mThreads[0], "X ", false);
+		result = evaluateStatement(mThreads[0], mGlobalVarCommand, false);
 
+		command = "o frame=2\n";
+		if (mPerlVersion.startsWith("5.6"))
+			command = "O frame=2\n";
+		
 		mVarGlobalString = result;
+		System.out.println(mVarGlobalString);
 
 	}
 

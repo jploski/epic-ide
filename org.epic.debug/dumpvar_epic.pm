@@ -18,6 +18,8 @@ $winsize = 80 unless defined $winsize;
 # Defaults
 
 # $globPrint = 1;
+$MaxUnwrapCount = 20;
+$UnwrapCount = 0;
 $printUndef = 1 unless defined $printUndef;
 $tick = "auto" unless defined $tick;
 $unctrl = 'quote' unless defined $unctrl;
@@ -29,6 +31,8 @@ $TOKEN_NAME ="N";
 $TOKEN_STRING ="S";
 $TOKEN_IN="I";
 $TOKEN_OUT="O";
+$TOKEN_REUSED="R";
+
 #########################
 sub buildString{
 local($text) = @_;
@@ -85,15 +89,15 @@ sub stringify {
 	  }
 	}
 	if ($tick eq "'") {
-	  s/([\'\\])/\\$1/g;
+	  s/([\'])/\\$1/g;#  s/([\'\\])/\\$1/g;
 	} elsif ($unctrl eq 'unctrl') {
-	  s/([\"\\])/\\$1/g ;
+	  s/([\"])/\\$1/g ;# s/([\"\\])/\\$1/g ;
 	  s/([\000-\037\177])/'^'.pack('c',ord($1)^64)/eg;
 	  # uniescape?
 	  s/([\200-\377])/'\\0x'.sprintf('%2X',ord($1))/eg
 	    if $quoteHighBit;
 	} elsif ($unctrl eq 'quote') {
-	  s/([\"\\\$\@])/\\$1/g if $tick eq '"';
+	  s/([\"\$\@])/\\$1/g if $tick eq '"';#s/([\"\\\$\@])/\\$1/g if $tick eq '"';
 	  s/\033/\\e/g;
 	  s/([\000-\037\177])/'\\c'.chr(ord($1)^64)/eg;
 	}
@@ -146,7 +150,36 @@ sub unwrap {
 
     $sp = " " x $s ;
     $s += 3 ;
+ # Check for reused addresses
+    if (ref $v) {
+      my $val = $v;
+      $val = &{'overload::StrVal'}($v)
+	if %overload:: and defined &{'overload::StrVal'};
+      # Match type and address.
+      # Unblessed references will look like TYPE(0x...)
+      # Blessed references will look like Class=TYPE(0x...)
+      ($start_part, $val) = split /=/,$val;
+      $val = $start_part unless defined $val;
+      ($item_type, $address) =
+        $val =~ /([^\(]+)        # Keep stuff that's
+                                 # not an open paren
+                 \(              # Skip open paren
+                 (0x[0-9a-f]+)   # Save the address
+                 \)              # Skip close paren
+                 $/x;            # Should be at end now
 
+      if (defined $address) {
+	$address{$address}++ ;
+	if ( $address{$address} > 1 ) {
+	  print $TOKEN_REUSED;
+	  return ;
+	}
+      }
+    }
+	
+	if( $UnwrapCount > $MaxUnwrapCount) { print buildString("...Cut..."); return;}
+	$UnwrapCount ++;
+	#if ($s > 30 ) { print buildString("...Cut..."); return;}
     # Check for reused addresses
     if (ref $v) {
       my $val = $v;
@@ -169,6 +202,7 @@ sub unwrap {
 	$address{$address}++ ;
 	if ( $address{$address} > 1 ) {
 	  print "${sp}-> REUSED_ADDRESS" ;
+	  $MaxUnwrapCount--;
 	  return ;
 	}
       }
@@ -178,6 +212,7 @@ sub unwrap {
       $address{$address}++ ;
       if ( $address{$address} > 1 ) {
 	print buildString("*DUMPED_GLOB*");
+	$MaxUnwrapCount--;
 	return ;
       }
     }
@@ -187,6 +222,7 @@ sub unwrap {
       my $re = "$v";
       $re =~ s,/,\\/,g;
       print buildString(" -> qr/$re/");
+      $MaxUnwrapCount--;
       return;
     }
 
@@ -232,6 +268,7 @@ sub unwrap {
     } elsif ( $item_type eq 'SCALAR' ) {
             unless (defined $$v) {
               print buildString("-> undef");
+              $MaxUnwrapCount--;
               return;
             }
 	    print buildString("-> ");
@@ -319,6 +356,7 @@ sub dumpglob {
     my ($off,$key, $val, $all, $m) = @_;
     local(*entry) = $val;
     my $fileno;
+    $UnwrapCount =0;
     if (($key !~ /^_</ or $dumpDBFiles) and defined $entry) {
       print buildName("\$".&unctrl($key));
       DumpElem $entry, 3+$off, $m;

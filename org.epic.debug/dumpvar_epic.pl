@@ -150,7 +150,7 @@ sub unwrap {
                  \)              # Skip close paren
                  $/x;            # Should be at end now
 
-      if (!$dumpReused && defined $address) {
+      if (defined $address) {
 	$address{$address}++ ;
 	if ( $address{$address} > 1 ) {
 	  print "${sp}-> REUSED_ADDRESS\n" ;
@@ -461,6 +461,7 @@ sub main::dumpvar_epic {
       $CompleteTotal += $TotalStrings;
       print "Grand total = $CompleteTotal bytes (1 level deep) + overhead.\n";
     }
+    print "E\n";
 }
 
 sub scalarUsage {

@@ -224,9 +224,11 @@ public class SourceParser {
 				reg = new RE("[\\n);]\\s*(#.*)$");
 				text = reg.substituteAll(text, "\n");
 			}
-
+			// support all types of linebreaks on all platforms
 			reg = new RE(regexp, RE.REG_MULTILINE);
-
+			text =text.replaceAll("\r\n","\n");
+			text =text.replaceAll("\r","\n");
+			text =text.replaceAll("\n",System.getProperty("line.separator"));
 			REMatch[] matches = reg.getAllMatches(text);
 
 			for (int i = 0; i < matches.length; i++) {

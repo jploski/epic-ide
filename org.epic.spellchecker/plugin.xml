@@ -30,12 +30,6 @@
    </extension>
 
    <extension
-         point="org.eclipse.help.contexts">
-      <contexts
-            file="contexts.xml">
-      </contexts>
-   </extension>
-   <extension
          id="org.epic.spellchecker.Perl"
          name="Perl Spell Checker"
          point="com.bdaum.SpellChecker.documentTokenizer">

@@ -314,6 +314,12 @@
          command="org.epic.perleditor.contentassist"
          configuration="org.eclipse.ui.defaultAcceleratorConfiguration">
       </keyBinding>
+      <!--HTML export -->
+     <command
+         id="org.epic.perleditor.htmlexport"
+         name= "HTML Export"
+         description= "HTML Export">
+     </command>
      <!--Format source -->
      <command
          id="org.epic.perleditor.formatsource"

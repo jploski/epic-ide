@@ -2,7 +2,7 @@ Eclipse Perl Integration:
 
 		Debugger:
 		* Fixed problem with Cygwin (Pathmapper error)
-		* Preverve spaces in variable values
+		* Preserve spaces in variable values
 		* Support displaying of empty arrays and hashes
 		
 		Editor:

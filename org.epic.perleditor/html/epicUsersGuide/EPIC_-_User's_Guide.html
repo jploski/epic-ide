@@ -33,6 +33,12 @@ box.<br>
 For Window, Perl can be downloaded from <a
  href="http://www.activestate.com">www.activestate.com</a>.<br>
 <br>
+<br>
+<h3>Considerations when using Cygwin</h3>
+Make sure that the mount command is available and that it is in your
+system path. As mount is a standard component of Cygwin this usually
+only have&nbsp; to add the cygwin\bin directory to your system path.<br>
+<br>
 <h2>Installation<br>
 </h2>
 The installation is done by using the Eclipse Update Manager. The
@@ -46,7 +52,7 @@ After starting Eclipse, select <b>Help &gt; Software and Updates &gt;
 Find and Install...</b> from the menu.<br>
 <br>
 <div align="center"><img src="images/updates_1.gif"
- alt="Find and Install..." width="308" height="157"><br>
+ alt="Find and Install..." height="157" width="308"><br>
 <br>
 </div>
 <br>
@@ -59,7 +65,7 @@ When installing EPIC from remote enter any desired <i>Name</i> and the
 <i>URL </i> <i><b>http://e-p-i-c.sf.net/updates</b></i>.<br>
 <br>
 <div align="center"><img src="images/updates_2.gif"
- alt="Add Update Site..." width="350" height="123"><br>
+ alt="Add Update Site..." height="123" width="350"><br>
 <br>
 </div>
 <br>
@@ -75,8 +81,8 @@ Now the EPIC installation should be complete.<br>
 EPIC preferences can be accessed via <b>Window &gt; Preferences...</b>
 from the Eclipse Menu.<br>
 <br>
-<div align="center"><img height="362" width="595" alt="Preferences..."
- src="images/preferences_1.gif"><br>
+<div align="center"><img alt="Preferences..."
+ src="images/preferences_1.gif" height="362" width="595"><br>
 </div>
 <br>
 <h2><a name="General_Preferences"></a>General Preferences</h2>
@@ -97,8 +103,8 @@ By default the editor suggests a list of already used variables when
 the characters <i>$ @ %</i> are typed. To switch this feature off,
 deselect the <i>Inspect Variables</i> check box.<br>
 <br>
-<div align="center"><img height="376" width="468"
- alt="Code Assist Preferences" src="images/preferences_5.gif"><br>
+<div align="center"><img alt="Code Assist Preferences"
+ src="images/preferences_5.gif" height="376" width="468"><br>
 <br>
 <div align="left">
 <h2>Editor</h2>
@@ -106,7 +112,7 @@ These options define the appearance of the Perl Editor , the coloring
 of the Perl source code and how annotations are displayed.<br>
 <br>
 <div align="center"><img src="images/preferences_2.gif"
- alt="Editor Preferences" width="424" height="532"><br>
+ alt="Editor Preferences" height="532" width="424"><br>
 <br>
 </div>
 <h2>Source Formatter</h2>
@@ -116,7 +122,7 @@ description of available parameters, press the Help key and select <i>PerlTidy</
 options from the popup menu.<br>
 <br>
 <div align="center"><img src="images/preferences_3.gif"
- alt="Source Formatter Preferences" width="422" height="164"><br>
+ alt="Source Formatter Preferences" height="164" width="422"><br>
 </div>
 <br>
 <b>NOTE:</b> In order for PerlTidy to work correctly the Perl
@@ -127,7 +133,7 @@ Templates are a powerful tool to insert pre defined code snippets while
 working with the&nbsp; Perl Editor.<br>
 <br>
 <div align="center"><img src="images/preferences_4.gif"
- alt="Template Preferences" width="540" height="510"><br>
+ alt="Template Preferences" height="510" width="540"><br>
 <br>
 <div align="left">How Templates are use is covered in <i>Working with
 the Perl Editor</i>. The Templates Preference page allows the creation,
@@ -152,8 +158,8 @@ button.<br>
 Select the Perl Editor from the list and press the <b>Default</b>
 button.<br>
 <br>
-<div align="center"><img height="500" width="537"
- alt="File Associations" src="images/file_associations_1.gif"><br>
+<div align="center"><img alt="File Associations"
+ src="images/file_associations_1.gif" height="500" width="537"><br>
 </div>
 <br>
 <br>
@@ -166,8 +172,8 @@ File Content</b> settings.<br>
 Add your Perl extensions (pl, pm etc.) by pressing the <b>Add...</b>
 button and specify <i>ASCII</i> in the <i>Contents</i> column.<br>
 <br>
-<div align="center"><img height="393" width="525" alt="CVS File Content"
- src="images/cvs_file_content_1.gif"><br>
+<div align="center"><img alt="CVS File Content"
+ src="images/cvs_file_content_1.gif" height="393" width="525"><br>
 </div>
 <br>
 <br>
@@ -199,11 +205,11 @@ Perl projects are created (like any other Project) by selecting <b>File
 &gt; New &gt; Project...</b> from the Eclipse menu.<br>
 <br>
 <div align="center"><img src="images/project_1.gif"
- alt="Creating a Project" width="397" height="388"><br>
+ alt="Creating a Project" height="388" width="397"><br>
 <br>
 <div align="left">After following the instructions of the wizard the
 Perl Project will be created. In the Navigator the Perl folder icon <img
- src="images/project_icon.gif" alt="Project Icon" width="20" height="20">
+ src="images/project_icon.gif" alt="Project Icon" height="20" width="20">
 is assigned to Perl Projects.<br>
 <br>
 <h2>Perl Include Path</h2>
@@ -211,8 +217,8 @@ To expand the Perl Include Path (@INC) right click on the project icon
 and select <b>Properties...<br>
 <br>
 </b>
-<div align="center"><img height="346" width="516"
- alt="@INC Path Settings" src="images/include_path_1.gif"><br>
+<div align="center"><img alt="@INC Path Settings"
+ src="images/include_path_1.gif" height="346" width="516"><br>
 </div>
 <br>
 <h2><a name="Converting_an_existing_Project"></a>Converting an existing
@@ -223,7 +229,7 @@ the Navigator and select <i>Add Perl Nature</i> from the dropdown menu.<br>
 </div>
 </div>
 <div align="center"><img src="images/nature_1.gif"
- alt="Change Perl Nature" width="192" height="196"><br>
+ alt="Change Perl Nature" height="196" width="192"><br>
 <br>
 <div align="left">To remove a Perl Nature form a project, select a Perl
 project and select <i>Remove Perl Nature</i> form the popup menu.<br>
@@ -248,12 +254,12 @@ perspective that you can open again later.&nbsp;&nbsp;</p>
 <p label="Type" class="Para">You can set your Workbench preferences to
 open perspectives in the same window or in a new window.</p>
 The main perspectives perspectives for developing Perl applications are<br>
-<img height="17" width="36" alt=""
- src="images/perl_perspective_symbol.gif"> : This is the main view for
+<img alt="" src="images/perl_perspective_symbol.gif" height="17"
+ width="36"> : This is the main view for
 coding&nbsp; Perl
 scripts<br>
-<img height="18" width="51" alt=""
- src="images/debug_perspective_symbol.gif"> : Provides the main
+<img alt="" src="images/debug_perspective_symbol.gif" height="18"
+ width="51"> : Provides the main
 functionally for
 debugging
 and executing Perl scripts. For details see <a
@@ -282,8 +288,8 @@ different positions in the Workbench window. <br>
 <p class="Head">There are several ways to open a new perspective within
 this Workbench window:</p>
 <ul>
-  <li> Using the Open Perspective button <img height="23" width="23"
- border="0" alt="Open Perspectives" src="images/Image70_shortcut2.gif">
+  <li> Using the Open Perspective button <img alt="Open Perspectives"
+ src="images/Image70_shortcut2.gif" border="0" height="23" width="23">
 on the shortcut bar.</li>
   <li> Choosing a perspective from the <b>Window &gt; Open Perspective</b>
 menu.&nbsp;</li>
@@ -292,8 +298,8 @@ menu.&nbsp;</li>
 <ol>
   <li>
     <p class="Para">Click on the Open Perspective button <img
- height="23" width="23" border="0" alt="Open Perspectives"
- src="images/Image70_shortcut2.gif">.&nbsp;</p>
+ alt="Open Perspectives" src="images/Image70_shortcut2.gif" border="0"
+ height="23" width="23">.&nbsp;</p>
   </li>
   <li>
     <p class="Head">A menu appears showing the same choices as shown on
@@ -301,15 +307,16 @@ the <b>Window &gt; Open Perspective</b> menu. Choose <b>Other</b>
 from the menu.</p>
     <blockquote>
       <p class="Head"> <img src="images/Image70_shortcut3.gif"
- alt="Open Perspective Menu" border="0" width="216" height="152"></p>
+ alt="Open Perspective Menu" border="0" height="152" width="216"></p>
     </blockquote>
   </li>
   <li>
     <p class="Para">In the Select Perspective dialog choose <b>Debug</b>
 and click <b>OK</b>.&nbsp; </p>
     <blockquote>
-      <p class="Para"> <img height="420" width="245" border="0"
- alt="Select Perspective" src="images/Image70_select_pers.gif"></p>
+      <p class="Para"> <img alt="Select Perspective"
+ src="images/Image70_select_pers.gif" border="0" height="420"
+ width="245"></p>
     </blockquote>
     <p class="Para">The Debug perspective is displayed.&nbsp;&nbsp;</p>
   </li>
@@ -330,8 +337,8 @@ that it is the current perspective. </p>
       <li>
         <p class="Para">To disply the full name of the perspective
 right click the perspective bar and check <strong>Show Text</strong>.<br>
-        <img height="95" width="511" border="0" alt="Debug Perspective"
- src="images/Image70_shortcut4.gif"> </p>
+        <img alt="Debug Perspective" src="images/Image70_shortcut4.gif"
+ border="0" height="95" width="511"> </p>
       </li>
     </ul>
   </li>
@@ -367,15 +374,17 @@ perspective.&nbsp;</p>
   </li>
   <li>Check <b>Launch</b> and click <b>OK</b>.
     <blockquote>
-      <p> <img height="491" width="642" border="0"
- alt="Customizing Perspective" src="images/Image71_pers_customize.gif"></p>
+      <p> <img alt="Customizing Perspective"
+ src="images/Image71_pers_customize.gif" border="0" height="491"
+ width="642"></p>
     </blockquote>
   </li>
   <li>Observe that the toolbar now includes buttons for debug/run
 launching.
     <blockquote>
-      <p> <img height="49" width="77" border="0"
- alt="Customized Perspective" src="images/Image71_pers_rundebug.gif"></p>
+      <p> <img alt="Customized Perspective"
+ src="images/Image71_pers_rundebug.gif" border="0" height="49"
+ width="77"></p>
     </blockquote>
   </li>
   <li>
@@ -447,8 +456,8 @@ the left side of the editor), underlines the error in the source and
 inserts a marker into the<i> Problems View</i> window.<br>
 <br>
 </div>
-<div align="center"><img height="428" width="597" alt="Syntax Check"
- src="images/syntax_check_1.gif"><br>
+<div align="center"><img alt="Syntax Check"
+ src="images/syntax_check_1.gif" height="428" width="597"><br>
 <br>
 <div align="left"><br>
 </div>
@@ -459,15 +468,15 @@ explaining Errors and Warnings.<br>
 To get an Error/Warning explanation right-click the Error/Warning icon
 and select Explain <i>Errors/Warnings</i> from the dropdown menu.<br>
 <br>
-<div align="center"><img height="157" width="272"
- alt="Explaint Errors/Warnings popup" src="images/explain_1.gif"><br>
+<div align="center"><img alt="Explaint Errors/Warnings popup"
+ src="images/explain_1.gif" height="157" width="272"><br>
 </div>
 <br>
 The explanation(s) will be displayed in the <i>Explain Errors/Warnings
 View</i>.<br>
 <br>
-<div align="center"><img height="250" width="447"
- alt="Explain Warnings/Errors" src="images/explain_2.gif"><br>
+<div align="center"><img alt="Explain Warnings/Errors"
+ src="images/explain_2.gif" height="250" width="447"><br>
 </div>
 <br>
 <br>
@@ -477,13 +486,13 @@ of the perldoc options from the context menu.<br>
 If nothing is selected an input box will pop up.<br>
 <br>
 <div align="center"><img src="images/perldoc_1.gif"
- alt="Perldoc Context Menu" width="425" height="170"><br>
+ alt="Perldoc Context Menu" height="170" width="425"><br>
 </div>
 <br>
 If a perldoc entry is found it is displayed inside the <i>Perldoc View</i>.<br>
 <br>
 <div align="center"><img src="images/perldoc_2.gif" alt="Perldoc View"
- width="445" height="250"><br>
+ height="250" width="445"><br>
 </div>
 <br>
 <b>NOTE:</b> Perldoc has to be installed available in the system PATH,
@@ -504,7 +513,7 @@ over the selection.<br>
 A tooltip with a short description of the keyword should appear.<br>
 <br>
 <div align="center"><img src="images/quick_reference_1.gif"
- alt="Quick Reference" width="584" height="150"><br>
+ alt="Quick Reference" height="150" width="584"><br>
 </div>
 <br>
 <br>
@@ -519,8 +528,8 @@ When pressing one of the auto completion characters <i>$ @ % </i>the
 editor displays all defined variables in a list. From the list the user
 can select the variable that should be inserted in the source code.<br>
 <br>
-<div align="center"><img height="100" width="330"
- alt="Variable Inspection" src="images/variable_inspection_1.gif"><br>
+<div align="center"><img alt="Variable Inspection"
+ src="images/variable_inspection_1.gif" height="100" width="330"><br>
 </div>
 <br>
 <h3>Module Inspection</h3>
@@ -528,8 +537,8 @@ The editor tries to display methods available in modules when the auto
 completion characters <i>&gt; </i>or<i> </i><i>:</i> are pressed.<br>
 <br>
 <br>
-<div align="center"><img height="277" width="391"
- alt="Module Inspection" src="images/module_inspection_1.gif"><br>
+<div align="center"><img alt="Module Inspection"
+ src="images/module_inspection_1.gif" height="277" width="391"><br>
 <br>
 </div>
 <b><br>
@@ -560,8 +569,8 @@ is found in the Perl source code.<br>
 On deletion of the <code>#TODO</code> comment, the <i>TODO Marker</i>
 is also deleted.<br>
 <br>
-<div align="center"><img height="483" width="608" alt="TODO Marker"
- src="images/todo_markers_1.gif"><br>
+<div align="center"><img alt="TODO Marker"
+ src="images/todo_markers_1.gif" height="483" width="608"><br>
 </div>
 <br>
 <br>
@@ -577,16 +586,16 @@ Preferences...)</b>.<br>
 To define a new template press the <b>New...</b> button.<br>
 <br>
 <br>
-<div align="center"><img height="291" width="463" alt="Template Dialog"
- src="images/templates_2.gif"><br>
+<div align="center"><img alt="Template Dialog"
+ src="images/templates_2.gif" height="291" width="463"><br>
 </div>
 <br>
 <br>
 To insert pre-defined variables press the <b>Insert Variable...</b>
 button.<br>
 <br>
-<div align="center"><img height="239" width="319"
- alt="Predefined Variables" src="images/templates_3.gif"><br>
+<div align="center"><img alt="Predefined Variables"
+ src="images/templates_3.gif" height="239" width="319"><br>
 <br>
 <div align="left">In addition to pre-defined variables the user can
 specify additional variables ( using the syntax <i>${varname}</i> )
@@ -601,15 +610,15 @@ Templates are invoked by typing some characters and pressing <i><b>Ctrl+Space</b
 Templates matching the typed characters will be displayed in a list. A
 preview is also available.<br>
 <br>
-<div align="center"><img height="281" width="678"
- alt="Template Selection" src="images/templates_1.gif"><br>
+<div align="center"><img alt="Template Selection"
+ src="images/templates_1.gif" height="281" width="678"><br>
 </div>
 <br>
 If the template contains user defined variables the user can press the <i><b>TAB</b></i>
 key to jump to the next variable after the template has been inserted.<br>
 <br>
-<div align="center"><img height="97" width="320" alt="User Variables"
- src="images/templates_4.gif"><br>
+<div align="center"><img alt="User Variables"
+ src="images/templates_4.gif" height="97" width="320"><br>
 </div>
 <br>
 <h2>Source Formatter</h2>
@@ -640,8 +649,8 @@ module/subroutine name the editor will jump to the appropriate position
 in the source code.<br>
 Subroutines named <i>new</i> will get a different icon.<br>
 <br>
-<div align="center"><img height="242" width="286" alt="Outline View"
- src="images/outline_view_1.gif"><br>
+<div align="center"><img alt="Outline View"
+ src="images/outline_view_1.gif" height="242" width="286"><br>
 <div align="left"><br>
 </div>
 </div>
@@ -671,7 +680,7 @@ environment</li>
 CGI framework</li>
 </ul>
 <h3>Launching Perl programs in run mode</h3>
-<img src="images/run_diag.gif" alt="" width="622" height="557"><br>
+<img src="images/run_diag.gif" alt="" height="557" width="622"><br>
 <br>
 <ol>
   <li>Select Menu-&gt;Run</li>
@@ -698,7 +707,7 @@ execution of the program. For details see <a href="#Debug_View">Debug
 View</a> .<br>
 <br>
 <h3>Launching Perl Programs in debug mode</h3>
-<img src="images/debug_dialog.gif" alt="" width="638" height="509"><br>
+<img src="images/debug_dialog.gif" alt="" height="509" width="638"><br>
 <br>
 Before debugging a program you may want to set break points to stop
 program execution at certain source code locations. For details see <a
@@ -746,7 +755,7 @@ Last Launched</strong> (<kbd>F11</kbd>) from the workbench menu bar.<br>
 <h2><a name="Configuring_Launch_Configurations"></a>Configuring Launch
 Configurations</h2>
 <h3>Perl(local): Running a Perl script on the local machine</h3>
-<img src="images/Debug_Local.gif" alt="" width="641" height="517"><br>
+<img src="images/Debug_Local.gif" alt="" height="517" width="641"><br>
 <br>
 <ol>
   <li>Enter the name for the launch configuration in they "Name" field.</li>
@@ -767,7 +776,7 @@ pass to the selected perl script</li>
   <li>Press the "Apply" button</li>
 </ol>
 <h3>Perl-CGI(local): Run Perl programms in a CGI environment</h3>
-<img src="images/debug_cgi.gif" alt="" width="638" height="517"><br>
+<img src="images/debug_cgi.gif" alt="" height="517" width="638"><br>
 <ol>
   <li>Enter the name for the launch configuration in they "Name" field.</li>
   <ol>
@@ -817,15 +826,15 @@ additionally extract the regular expression contained in the line of
 code they are associated with and enable you to debug the regular
 expression within the <a href="#RegExp_Plugin">RegEx-Plugin</a>. <br>
 The following symbols are used to indicate breakpoints :<br>
-<table cellpadding="2" cellspacing="2" border="2" width="50%">
+<table border="2" cellpadding="2" cellspacing="2" width="50%">
   <tbody>
     <tr>
-      <td valign="top" align="center" bgcolor="#cccccc">Status <br>
+      <td align="center" bgcolor="#cccccc" valign="top">Status <br>
       </td>
-      <td valign="top" align="center" bgcolor="#cccccc">Line <br>
+      <td align="center" bgcolor="#cccccc" valign="top">Line <br>
 Break Point<br>
       </td>
-      <td valign="top" align="center" bgcolor="#cccccc">Regular
+      <td align="center" bgcolor="#cccccc" valign="top">Regular
 Expression<br>
 &nbsp;Break Point<br>
       </td>
@@ -833,31 +842,31 @@ Expression<br>
     <tr>
       <td valign="top">Enabled<br>
       </td>
-      <td valign="top" align="center"><img src="images/line_bp_en.gif"
- alt="" width="16" height="12"><br>
+      <td align="center" valign="top"><img src="images/line_bp_en.gif"
+ alt="" height="12" width="16"><br>
       </td>
-      <td valign="top" align="center"><img src="images/rx_bp_en.gif"
- alt="" width="17" height="16"><br>
+      <td align="center" valign="top"><img src="images/rx_bp_en.gif"
+ alt="" height="16" width="17"><br>
       </td>
     </tr>
     <tr>
       <td valign="top">Disabled<br>
       </td>
-      <td valign="top" align="center"><img src="images/line_bp_dis.gif"
- alt="" width="12" height="13"><br>
+      <td align="center" valign="top"><img src="images/line_bp_dis.gif"
+ alt="" height="13" width="12"><br>
       </td>
-      <td valign="top" align="center"><img src="images/rx_bp_dis.gif"
- alt="" width="17" height="15"><br>
+      <td align="center" valign="top"><img src="images/rx_bp_dis.gif"
+ alt="" height="15" width="17"><br>
       </td>
     </tr>
     <tr>
       <td valign="top">Registered with debugger<br>
       </td>
-      <td valign="top" align="center"><img src="images/line_bp_inst.gif"
- alt="" width="16" height="14"><br>
+      <td align="center" valign="top"><img src="images/line_bp_inst.gif"
+ alt="" height="14" width="16"><br>
       </td>
-      <td valign="top" align="center"><img src="images/rx_bp_inst.gif"
- alt="" width="15" height="15"><br>
+      <td align="center" valign="top"><img src="images/rx_bp_inst.gif"
+ alt="" height="15" width="15"><br>
       </td>
     </tr>
   </tbody>
@@ -903,7 +912,7 @@ select <span style="font-weight: bold;">Remove</span>.<br>
 </ol>
 <h2><a name="Debug_Perspective"></a>Views in the Debug Perspective</h2>
 <h3>Debug View</h3>
-<img src="images/Debug_view.gif" alt="" width="503" height="216"><br>
+<img src="images/Debug_view.gif" alt="" height="216" width="503"><br>
 This view allows you to manage the debugging or running of&nbsp;
 programs in
 the workbench. It displays the stack frame for the suspended threads
@@ -916,8 +925,8 @@ elements.<br>
 </p>
 <br>
 <h3>Variable View</h3>
-<img src="images/variables_view.gif" alt="Variables View" width="502"
- height="342"><br>
+<img src="images/variables_view.gif" alt="Variables View" height="342"
+ width="502"><br>
 <br>
 When a stack frame is selected, you can see the visible variables in
 that
@@ -926,19 +935,20 @@ The Variables view shows the value of primitive types.&nbsp;
 Complex variables can be examined by expanding them to show their
 members.<br>
 <p>Global variables (including Perl internal variables) are marked with
-an <img height="13" width="15" alt=""
- src="file:///F:/eclipse_3/eclipse/workspace/org.epic.perleditor/html/epicUsersGuide/images/global_var.gif">
-icon,&nbsp; local variables with an&nbsp;<img height="15" width="16"
- alt=""
- src="file:///F:/eclipse_3/eclipse/workspace/org.epic.perleditor/html/epicUsersGuide/images/local_var.gif">
+an <img alt=""
+ src="file:///F:/eclipse_3/eclipse/workspace/org.epic.perleditor/html/epicUsersGuide/images/global_var.gif"
+ height="13" width="15">
+icon,&nbsp; local variables with an&nbsp;<img alt=""
+ src="file:///F:/eclipse_3/eclipse/workspace/org.epic.perleditor/html/epicUsersGuide/images/local_var.gif"
+ height="15" width="16">
 icon.</p>
 <p>If the value of a variable has changed since the last execution step
 it is
 displayed in red.<br>
 If changes in inner levels of complex&nbsp; variables have occurred the
 path to the changed variables is indicated via&nbsp; delta symbols:</p>
-<p><img src="images/var_delta_complex.gif" alt="" width="332"
- height="94"><br>
+<p><img src="images/var_delta_complex.gif" alt="" height="94"
+ width="332"><br>
 </p>
 This makes it possible to see these kind of changes even if variables
 are collapsed.<br>
@@ -972,7 +982,7 @@ viewing of local variables.<br>
   </li>
 </ul>
 <h3><a name="Breakpoint_View"></a>Breakpoint View</h3>
-<img src="images/breakpoint_view.gif" alt="" width="502" height="219"><br>
+<img src="images/breakpoint_view.gif" alt="" height="219" width="502"><br>
 <br>
 The breakpoint views shows all breakpoints, their state (see <a
  href="#Break_Points">Break
@@ -980,7 +990,7 @@ Points</a>) and location. <br>
 By selecting one ore more break points and invoking the context menu
 you can enable, disable or remove these break points.<br>
 <h3>Perl Expression View</h3>
-<img src="images/perl_expr_view.gif" alt="" width="363" height="161"><br>
+<img src="images/perl_expr_view.gif" alt="" height="161" width="363"><br>
 <br>
 The Perl Expression View allows you to execute any valid Perl code
 within the current context of the program executed in debug mode.<br>
@@ -989,8 +999,8 @@ within the current context of the program executed in debug mode.<br>
   <li>Open the Perl Debug View&nbsp; (Window-&gt;Open
 View-&gt;Other-&gt;Epic-&gt;Perl Expression View)</li>
   <li>Enter the code to execute</li>
-  <li>Press the <img src="images/perl_expr_run.gif" alt="" width="18"
- height="20"> symbol<br>
+  <li>Press the <img src="images/perl_expr_run.gif" alt="" height="20"
+ width="18"> symbol<br>
   </li>
 </ol>
 <h2>Stepping through the execution of a Perl program </h2>
@@ -1004,7 +1014,7 @@ suspend at the breakpoint and the step operation is ended. </p>
 execution in that stack frame is highlighted in the editor in the Debug
 perspective. </li>
   <li>Click the <strong>Step Over</strong> button (<img
- src="images/step_over.gif" alt="" width="20" height="19">)
+ src="images/step_over.gif" alt="" height="19" width="20">)
 in the
 Debug view
 toolbar, or press the <kbd>F6</kbd> key. The currently-selected line
@@ -1016,7 +1026,7 @@ is executed and suspends on the next executable line. </li>
 execution in the selected frame is highlighted in the editor in the
 Debug perspective. </li>
   <li>Click the <strong>Step Into</strong> (<img
- src="images/step_into.gif" alt="" width="23" height="19">) button in
+ src="images/step_into.gif" alt="" height="19" width="23">) button in
 the Debug view
 toolbar, or press the <kbd>F5</kbd> key. The next expression on the
 currently-selected line to be executed is invoked, and execution
@@ -1027,8 +1037,8 @@ suspends at the next executable line in the method that is invoked. </li>
   <li>Select a stack frame in the Debug view. The current line of
 execution in the selected frame is highlighted in the editor in the
 Debug perspective. </li>
-  <li>Click the <strong>Run to Return</strong> button (<img height="19"
- width="23" alt="" src="images/step_out.gif">)
+  <li>Click the <strong>Run to Return</strong> button (<img alt=""
+ src="images/step_out.gif" height="19" width="23">)
 in the Debug
 view toolbar or press the <kbd>F7</kbd> key. Execution resumes until
 the next return statement in the current method is executed, and
@@ -1042,25 +1052,25 @@ from the list.<br>
 <br>
 <br>
 <div align="center"><img src="images/show_view_1.gif"
- alt="Show View RegExp" width="200" height="109"></div>
+ alt="Show View RegExp" height="109" width="200"></div>
 <br>
 <h2>Using the RegExp Plugin</h2>
 The RegExp plugin is a small tool to debug Regular Expressions.<br>
 <br>
 <div align="center"><img src="images/regexp_1.gif" alt="RegExp View"
- width="299" height="320"><br>
+ height="320" width="299"><br>
 <br>
 <br>
 </div>
-To check if a Regular Expression is valid, press the run <img
- height="16" width="16" alt="Run" src="images/run.gif"> icon. If the
+To check if a Regular Expression is valid, press the run <img alt="Run"
+ src="images/run.gif" height="16" width="16"> icon. If the
 Regular Expression matches the text i t will be signaled by a green
 icon.<br>
 If the Regular Expression contain brackets the resulting string will be
 colored.<br>
 <br>
 <h2>Debugging Regular Expressions</h2>
-<font size="-1" face="arial,helvetica,geneva">The Single Step
+<font face="arial,helvetica,geneva" size="-1">The Single Step
 feature allows for a step by step inspection of the regular expression.<br>
 If no sub expressions (...) are defined by the user the <i>RegExp
 Plug-in
@@ -1068,14 +1078,14 @@ Plug-in
 existing
 subexpressions are used.</font> <br>
 <br>
-<font size="-1" face="arial,helvetica,geneva">The following
+<font face="arial,helvetica,geneva" size="-1">The following
 buttons are provided:</font>
-<blockquote> <font size="-1" face="arial,helvetica,geneva"><img
- height="16" width="16" alt="" src="images/debug_stop.gif">&nbsp;Reset
+<blockquote> <font face="arial,helvetica,geneva" size="-1"><img alt=""
+ src="images/debug_stop.gif" height="16" width="16">&nbsp;Reset
 (clears all color markers)<br>
-  <img height="16" width="16" alt="" src="images/debug_forward.gif">&nbsp;Step
+  <img alt="" src="images/debug_forward.gif" height="16" width="16">&nbsp;Step
 forward<br>
-  <img height="16" width="16" alt="" src="images/debug_back.gif">&nbsp;Step
+  <img alt="" src="images/debug_back.gif" height="16" width="16">&nbsp;Step
 backward</font></blockquote>
 <br>
 <h1>Known Bugs &amp; Problems</h1>

@@ -4,6 +4,7 @@ import org.eclipse.jface.preference.*;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
+import org.eclipse.ui.help.WorkbenchHelp;
 import org.epic.core.preferences.LabelFieldEditor;
 import org.epic.core.preferences.SpacerFieldEditor;
 import org.epic.perleditor.PerlEditorPlugin;
@@ -47,8 +48,12 @@ public class SourceFormatterPreferencePage
 	 */
 	public void createControl(Composite parent) {
 		super.createControl(parent);
+		WorkbenchHelp.setHelp(getControl(), getPreferenceHelpContextID());
 	}
 	
+	protected String getPreferenceHelpContextID() {
+		return "org.epic.perleditor.preferencesSourceFormatter_context";
+	}
 
 
 	/* (non-Javadoc)

@@ -218,6 +218,7 @@ public class PerlSyntaxValidationThread extends Thread implements IdleTimerListe
 	 * @see org.epic.perleditor.editors.IdleTimerListener#onEditorIdle(org.eclipse.jface.text.source.ISourceViewer)
 	 */
 	public synchronized void onEditorIdle(ISourceViewer viewer) {
-		this.setText(((SourceViewer) viewer).getTextWidget().getText());
+		//this.setText(((SourceViewer) viewer).getTextWidget().getText());
+		this.setText(((SourceViewer) viewer).getDocument().get());
 	}
 }

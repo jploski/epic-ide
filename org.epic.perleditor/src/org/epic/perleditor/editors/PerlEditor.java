@@ -16,6 +16,9 @@ import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.jface.text.source.IVerticalRuler;
 import org.eclipse.jface.text.source.LineNumberRulerColumn;
 import org.eclipse.jface.text.source.SourceViewer;
+import org.eclipse.jface.text.source.projection.ProjectionAnnotationModel;
+import org.eclipse.jface.text.source.projection.ProjectionSupport;
+import org.eclipse.jface.text.source.projection.ProjectionViewer;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -35,6 +38,7 @@ import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.texteditor.ITextEditorActionDefinitionIds;
 import org.eclipse.ui.texteditor.TextOperationAction;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
+import org.epic.core.util.FileUtilities;
 import org.epic.perleditor.PerlEditorPlugin;
 import org.epic.perleditor.actions.IPerlEditorActionDefinitionIds;
 import org.epic.perleditor.editors.util.PerlColorProvider;
@@ -45,11 +49,6 @@ import org.epic.perleditor.views.model.Module;
 import org.epic.perleditor.views.model.Subroutine;
 
 import cbg.editor.ColoringSourceViewerConfiguration;
-//import java.util.Map;
-//import java.util.HashMap;
-//import org.eclipse.swt.graphics.Color;
-
-import org.epic.core.util.FileUtilities;
 
 
 /**
@@ -67,6 +66,7 @@ public class PerlEditor
 	protected PerlOutlinePage page;
 	protected PerlSyntaxValidationThread fValidationThread = null;
 	protected PerlToDoMarkerThread fTodoMarkerThread = null;
+	protected PerlFoldingThread fFoldingThread = null;
 	protected CompositeRuler ruler;
 	protected LineNumberRulerColumn numberRuler;
 	private boolean lineRulerActive = false;
@@ -75,6 +75,8 @@ public class PerlEditor
 	private IdleTimer idleTimer;
 
 	private final static String PERL_MODE = "perl";
+	
+	private ProjectionSupport projectionSupport;
 
 	/**
 	 * Default constructor();
@@ -170,14 +172,20 @@ public class PerlEditor
 				e.printStackTrace();
 			}
 			// Always check syntax when editor is opened
-			fValidationThread.setText(
-				getSourceViewer().getTextWidget().getText());
+			//fValidationThread.setText(getSourceViewer().getTextWidget().getText());
+			fValidationThread.setText(getSourceViewer().getDocument().get());
 		}
 		
 		//set up the ToDoMarkerThread
 		if ((fTodoMarkerThread == null) && isPerlMode()) {
 			fTodoMarkerThread = new PerlToDoMarkerThread(this, getSourceViewer());
 			fTodoMarkerThread.start();
+		}
+		
+		// set up the FoldingThread
+		if ((fFoldingThread == null) && isPerlMode()) {
+			fFoldingThread = new PerlFoldingThread(this, getSourceViewer());
+			fFoldingThread.start();
 		}
 
 		setEditorForegroundColor();
@@ -189,6 +197,7 @@ public class PerlEditor
 		// Register the validation thread
 		this.registerIdleListener(fValidationThread);
 		this.registerIdleListener(fTodoMarkerThread);
+		this.registerIdleListener(fFoldingThread);
 
 	}
 
@@ -219,6 +228,10 @@ public class PerlEditor
 			
 			if (fTodoMarkerThread != null) {
 				fTodoMarkerThread.dispose();
+			}
+			
+			if (fFoldingThread != null) {
+				fFoldingThread.dispose();
 			}
 
 			super.dispose();
@@ -252,8 +265,8 @@ public class PerlEditor
 		}
 
 		if (fValidationThread != null) {
-			fValidationThread.setText(
-				getSourceViewer().getTextWidget().getText());
+			//fValidationThread.setText(getSourceViewer().getTextWidget().getText());
+			fValidationThread.setText(getSourceViewer().getDocument().get());
 		}
 
 	}
@@ -272,8 +285,8 @@ public class PerlEditor
 		}
 
 		if (fValidationThread != null) {
-			fValidationThread.setText(
-				getSourceViewer().getTextWidget().getText());
+			//fValidationThread.setText(getSourceViewer().getTextWidget().getText());
+			fValidationThread.setText(getSourceViewer().getDocument().get());
 		}
 
 	}
@@ -336,8 +349,18 @@ public class PerlEditor
 	 * outline page.
 	 */
 
-	public Object getAdapter(Class required) {
-		if (required.equals(IContentOutlinePage.class)) {
+	public Object getAdapter(Class adapter) {
+		
+		if (ProjectionAnnotationModel.class.equals(adapter)) {
+			if (this.projectionSupport != null) {
+				Object result = this.projectionSupport.getAdapter(getSourceViewer(), adapter);
+				if (result != null) {
+					return result;
+				}
+			}
+		}
+		
+		if (adapter.equals(IContentOutlinePage.class)) {
 			IEditorInput input = getEditorInput();
 
 			if (input instanceof IFileEditorInput) {
@@ -351,7 +374,7 @@ public class PerlEditor
 
 		}
 
-		return super.getAdapter(required);
+		return super.getAdapter(adapter);
 	}
 
 	public void updateOutline() {
@@ -423,9 +446,8 @@ public class PerlEditor
 	public void revalidateSyntax(boolean forceUpdate) {
 
 		if (fValidationThread != null) {
-			fValidationThread.setText(
-				getSourceViewer().getTextWidget().getText(),
-				forceUpdate);
+			//fValidationThread.setText(getSourceViewer().getTextWidget().getText(), forceUpdate);
+			fValidationThread.setText(getSourceViewer().getDocument().get(), forceUpdate);
 		}
 
 	}
@@ -444,14 +466,15 @@ public class PerlEditor
 			return;
 		}
 
-		PerlSourceViewerConfiguration viewerConfiguration =
-			(PerlSourceViewerConfiguration) this.getSourceViewerConfiguration();
-		viewerConfiguration.adaptToPreferenceChange(event);
-
-		IAnnotationModel model = fSourceViewer.getAnnotationModel();
-		IDocument document = fDocumentProvider.getDocument(getEditorInput());
-		fSourceViewer.refresh();
-		fSourceViewer.setDocument(document, model);
+//		PerlSourceViewerConfiguration viewerConfiguration =
+//			(PerlSourceViewerConfiguration) this.getSourceViewerConfiguration();
+//		viewerConfiguration.adaptToPreferenceChange(event);
+//
+//		//IAnnotationModel model = fSourceViewer.getAnnotationModel();
+//		IAnnotationModel model = (IAnnotationModel) this.getAdapter(ProjectionAnnotationModel.class);
+//		IDocument document = fDocumentProvider.getDocument(getEditorInput());
+//		fSourceViewer.refresh();
+//		fSourceViewer.setDocument(document, model);
 
 		setEditorForegroundColor();
 
@@ -493,6 +516,25 @@ public class PerlEditor
 				PreferenceConstants.EDITOR_STRING_COLOR);
 		getSourceViewer().getTextWidget().setForeground(
 			PerlColorProvider.getColor(rgb));
+	}
+	
+	public void createPartControl(Composite parent) {
+		super.createPartControl(parent);
+		ProjectionViewer viewer = (ProjectionViewer) getSourceViewer();
+		projectionSupport = new ProjectionSupport(viewer, getAnnotationAccess(), getSharedColors());
+		projectionSupport.addSummarizableAnnotationType("org.eclipse.ui.workbench.texteditor.error");
+		projectionSupport.addSummarizableAnnotationType("org.eclipse.ui.workbench.texteditor.warning");
+		
+//		projectionSupport.setHoverControlCreator(new IInformationControlCreator() {
+//			public IInformationControl createInformationControl(Shell shell) {
+//				//return new CustomSourceInformationControl(shell, IDocument.DEFAULT_CONTENT_TYPE);
+//				return new SourceViewerInformationControl(shell);
+//			}
+//		});
+		
+		projectionSupport.install();
+		
+		viewer.doOperation(ProjectionViewer.TOGGLE);
 	}
 
 }

@@ -40,7 +40,8 @@ public class PerlToDoMarkerThread extends Thread implements IdleTimerListener {
   public void onEditorIdle(ISourceViewer viewer) {		
 			System.out.println("editor is idle...setting source viewer");
 			this.fSourceViewer = viewer;			
-			this.setText(fSourceViewer.getTextWidget().getText());  	    		
+			//this.setText(fSourceViewer.getTextWidget().getText());
+			this.setText(fSourceViewer.getDocument().get());
   }  	
   
   public void setText(String newText) {

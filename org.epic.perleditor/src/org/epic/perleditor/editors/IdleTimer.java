@@ -122,7 +122,8 @@ public class IdleTimer extends Thread {
 
 			try {
 				// Get checksum
-				hashCode = sourceViewer.getTextWidget().getText().hashCode();
+				//hashCode = sourceViewer.getTextWidget().getText().hashCode();
+				hashCode = sourceViewer.getDocument().get().hashCode();
 
 				if (((SourceViewer) viewer).getTextWidget().isVisible()
 					&& hashCode != previousHashCode) {

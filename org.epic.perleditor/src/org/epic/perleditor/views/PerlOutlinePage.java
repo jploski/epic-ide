@@ -81,7 +81,8 @@ public class PerlOutlinePage
 	}
 	
 	public List getSubList() {
-		return getSubList(input.getTextWidget().getText());
+		//return getSubList(input.getTextWidget().getText());
+		return getSubList(input.getDocument().get());
 	}
 	
 	public List getSubList(String text) {
@@ -93,7 +94,8 @@ public class PerlOutlinePage
 	}
 	
 	public List getModList() {
-		return getModList(input.getTextWidget().getText());
+		//return getModList(input.getTextWidget().getText());
+		return getModList(input.getDocument().get());
 	}
 	
 	public List getModList(String text) {
@@ -121,7 +123,8 @@ public class PerlOutlinePage
 
 	public void update(List subList, List modList) {
 		// Update only if input has changed
-		int hashCode = input.getTextWidget().getText().hashCode();
+		//int hashCode = input.getTextWidget().getText().hashCode();
+		int hashCode = input.getDocument().get().hashCode();
 
 		if (hashCode == lastHashCode) {
 			return;
@@ -164,7 +167,8 @@ public class PerlOutlinePage
 	 * @see org.epic.perleditor.editors.IdleTimerListener#onEditorIdle(org.eclipse.jface.text.source.ISourceViewer)
 	 */
 	public synchronized void onEditorIdle(ISourceViewer viewer) {
-		updateThread.setSourceCode(input.getTextWidget().getText());
+		//updateThread.setSourceCode(input.getTextWidget().getText());
+		updateThread.setSourceCode(input.getDocument().get());
 		updateThread.releaseLock();
 	}
 

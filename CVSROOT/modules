@@ -26,7 +26,7 @@
 # spread out over the entire source repository.
 
 ANTLR 								ANTLR/
-org.epic.debugger 					org.epic.debugger/
+org.epic.debug 						org.epic.debug/
 org.epic.ext.cbg.editor 			org.epic.ext.cbg.editor/
 org.epic.ext.unsupported.colorer	org.epic.ext.unsupported.colorer/
 org.epic.perleditor					org.epic.perleditor/

@@ -15,7 +15,8 @@ public class SourceElementLabelProvider extends LabelProvider {
 	final static Image imageSubNode = PerlImages.ICON_SUBROUTINE_NODE.createImage();
 	final static Image imageModuleNode = PerlImages.ICON_MODULE_NODE.createImage();
 	final static Image imageSub = PerlImages.ICON_SUBROUTINE.createImage();
-		final static Image imageModule = PerlImages.ICON_MODULE.createImage();
+	final static Image imageModule = PerlImages.ICON_MODULE.createImage();
+	final static Image imageConstructor = PerlImages.ICON_CONSTRUCTOR.createImage();
 	
 	/*
 	 * @see ILabelProvider#getImage(Object)
@@ -37,6 +38,10 @@ public class SourceElementLabelProvider extends LabelProvider {
 		}
 		else if(element instanceof Subroutine) {
 			//descriptor = PerlImages.ICON_SUBROUTINE;
+			String name = ((Subroutine)element).getName();
+			if(name != null && name.equals("new")) {
+				return imageConstructor;
+			}
 			return imageSub;
 		}
 		else if(element instanceof Module) {

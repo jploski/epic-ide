@@ -1,6 +1,7 @@
 Eclipse Perl Integration: Perl Editor Plugin
 
 Version 0.1.0 alpha  - 
+		* Different icon for new() in Outline (Feature Request 850033)
 		* Perl project builder and Navigator markers added
 		* OverviewRuler summary view/Task markers fixed in editor
 		* Corrected wrong idle timer label (seconds instead of milliseconds) in main preference page

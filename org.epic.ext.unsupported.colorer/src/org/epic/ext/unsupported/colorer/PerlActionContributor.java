@@ -6,7 +6,6 @@
 package org.epic.ext.unsupported.colorer;
 
 
-import org.eclipse.jdt.ui.actions.IJavaEditorActionDefinitionIds;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.ui.IActionBars;
@@ -16,6 +15,7 @@ import org.eclipse.ui.editors.text.TextEditorActionContributor;
 import org.eclipse.ui.texteditor.ITextEditorActionDefinitionIds;
 import org.eclipse.ui.texteditor.RetargetTextEditorAction;
 import org.eclipse.swt.SWT;
+import org.epic.perleditor.actions.IPerlEditorActionDefinitionIds;
 import org.epic.perleditor.editors.PerlEditorMessages;
 
 
@@ -44,10 +44,10 @@ public class PerlActionContributor extends TextEditorActionContributor {
 		fContentAssist.setActionDefinitionId(ITextEditorActionDefinitionIds.CONTENT_ASSIST_PROPOSALS);
 		
 		fComment = new RetargetTextEditorAction(PerlEditorMessages.getResourceBundle(), "Comment.");
-		fComment.setActionDefinitionId(IJavaEditorActionDefinitionIds.COMMENT);
+		fComment.setActionDefinitionId(IPerlEditorActionDefinitionIds.COMMENT);
 
 		fUncomment = new RetargetTextEditorAction(PerlEditorMessages.getResourceBundle(), "Uncomment.");
-		fComment.setActionDefinitionId(IJavaEditorActionDefinitionIds.UNCOMMENT);
+		fComment.setActionDefinitionId(IPerlEditorActionDefinitionIds.UNCOMMENT);
 	
 	}
 	

@@ -18,7 +18,6 @@
       </library>
    </runtime>
    <requires>
-      <import plugin="org.eclipse.jdt.ui"/>
       <import plugin="org.eclipse.ui"/>
       <import plugin="org.eclipse.core.resources"/>
       <import plugin="org.epic.ext.cbg.editor"/>

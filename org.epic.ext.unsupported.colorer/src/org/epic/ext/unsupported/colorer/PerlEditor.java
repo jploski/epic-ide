@@ -23,7 +23,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.jdt.ui.actions.IJavaEditorActionDefinitionIds;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.text.source.ISharedTextColors;
@@ -60,6 +59,7 @@ import org.epic.perleditor.views.model.Module;
 import org.epic.perleditor.views.model.Subroutine;
 import org.epic.perleditor.PerlEditorPlugin;
 
+import org.epic.perleditor.actions.IPerlEditorActionDefinitionIds;
 import org.epic.perleditor.editors.*;
 import net.sf.colorer.eclipse.editors.*;
 
@@ -130,14 +130,14 @@ public class PerlEditor
 		action = new TextOperationAction(
 						 PerlEditorMessages.getResourceBundle(),
 						"Comment.", this, ITextOperationTarget.PREFIX);
-		action.setActionDefinitionId(IJavaEditorActionDefinitionIds.COMMENT);
+		action.setActionDefinitionId(IPerlEditorActionDefinitionIds.COMMENT);
 		setAction("Comment", action);
 
 		// Add uncomment action
 		action = new TextOperationAction(
 		PerlEditorMessages.getResourceBundle(),
 					  "Uncomment.", this, ITextOperationTarget.STRIP_PREFIX);
-		action.setActionDefinitionId(IJavaEditorActionDefinitionIds.UNCOMMENT);
+		action.setActionDefinitionId(IPerlEditorActionDefinitionIds.UNCOMMENT);
 		setAction("Uncomment", action);
 		
 		IDocumentProvider provider = getDocumentProvider();

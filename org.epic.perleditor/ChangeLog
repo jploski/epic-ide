@@ -4,6 +4,7 @@ Eclipse Perl Integration:
 		* Fixed problem with Cygwin (Pathmapper error)
 		
 		Editor:
+		* Empty entries are no longer added to the Perl Include Path
 		* Performance improvements (Outline View redraw enhanced)
 
 Version 0.3.0 - 04-July-2004

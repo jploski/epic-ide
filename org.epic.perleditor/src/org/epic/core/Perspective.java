@@ -52,6 +52,8 @@ public class Perspective implements IPerspectiveFactory {
 	 */
 	public void defineActions(IPageLayout layout) {
 		// Add "new wizards".
+		layout.addNewWizardShortcut("org.epic.newproject.wizard");//$NON-NLS-1$
+		layout.addNewWizardShortcut("org.epic.newfile.wizard");//$NON-NLS-1$
 		layout.addNewWizardShortcut("org.eclipse.ui.wizards.new.folder");//$NON-NLS-1$
 		layout.addNewWizardShortcut("org.eclipse.ui.wizards.new.file");//$NON-NLS-1$
 
@@ -61,6 +63,14 @@ public class Perspective implements IPerspectiveFactory {
 		layout.addShowViewShortcut(IPageLayout.ID_OUTLINE);
 		layout.addShowViewShortcut(IPageLayout.ID_PROP_SHEET);
 		layout.addShowViewShortcut(IPageLayout.ID_TASK_LIST);
+
+		layout.addShowViewShortcut("org.epic.perleditor.views.ExplainErrorsView");//$NON-NLS-1$
+		layout.addShowViewShortcut("org.epic.perleditor.views.PerlDocView");//$NON-NLS-1$
+		layout.addShowViewShortcut("org.epic.core.views.browser.BrowserView");//$NON-NLS-1$
+		
+		// add perspective shortcuts
+		layout.addPerspectiveShortcut("org.eclipse.ui.resourcePerspective");//$NON-NLS-1$
+		layout.addPerspectiveShortcut("org.eclipse.debug.ui.DebugPerspective");//$NON-NLS-1$
 
 		layout.addActionSet(IPageLayout.ID_NAVIGATE_ACTION_SET);
 		layout.addActionSet(IDebugUIConstants.LAUNCH_ACTION_SET);

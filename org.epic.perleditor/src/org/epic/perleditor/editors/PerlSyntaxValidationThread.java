@@ -3,94 +3,93 @@
  *
  *  Contributors:
  *                   Igor Alexeiuk <aie at mailru.com>
- *               
- *
+ *  Modified:             
+ *                   skoehler
  */
 
 package org.epic.perleditor.editors;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.Reader;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.StringTokenizer;
-import java.io.*;
-
-import org.eclipse.jface.text.source.ISourceViewer;
-import org.eclipse.ui.editors.text.TextEditor;
-import org.eclipse.ui.IEditorInput;
-import org.eclipse.core.runtime.IAdaptable;
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.IMarker;
-import org.eclipse.ui.IFileEditorInput;
-
-import java.util.Map;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.List;
+import java.util.Map;
+import java.util.StringTokenizer;
 
-import org.epic.perleditor.editors.util.PerlExecutableUtilities;
+import org.eclipse.core.resources.IMarker;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.jface.text.source.ISourceViewer;
+import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IFileEditorInput;
+import org.eclipse.ui.editors.text.TextEditor;
 import org.epic.perleditor.PerlEditorPlugin;
+import org.epic.perleditor.editors.util.PerlExecutableUtilities;
+import org.epic.perleditor.editors.util.StringReaderThread;
 
 public class PerlSyntaxValidationThread extends Thread {
 	private static final String PERL_CMD_EXT = "-c";
 	private static final String PERL_ERROR_INDICATOR = " at - line ";
-	private static final int READ_BUFFER_SIZE = 128;
+	//private static final int READ_BUFFER_SIZE = 128;
 
 	private static final String[] WARNING_STRINGS =
 		{ "possible", "Useless", "may", "better written as" };
+        
+    private final Object lock1 = new Object();
+    private final Object lock2 = new Object();
+    //get monitors in that order: lock1, lock2
+    //  or else dead-locks occur
 
-	private String text = "";
-	private String previousText = "";
-
-	private boolean stopValidation = false;
-	private boolean validationTerminated = false;
-	private boolean isActive = false;
+	private String code = "";
+    private boolean force = false;
+    private boolean modified = false;
 
 	private TextEditor fTextEditor;
 	private ISourceViewer fSourceViewer;
 
 	private int previousHashCode = 0;
-	// Defaults
-	//private int validationInterval = 2000; //millis <-- No longer used
-	private int waitForTermination = 400; // millis
+	private int waitForTermination = 1000; // millis
 	private int maxErrorsShown = 10;
 
+    private StringReaderThread srt = new StringReaderThread();
 
-	public PerlSyntaxValidationThread(
-		TextEditor textEditor,
-		ISourceViewer viewer) {
+	public PerlSyntaxValidationThread(TextEditor textEditor, ISourceViewer viewer) {
 		super();
-		fTextEditor = textEditor;
-		fSourceViewer = viewer;
+		this.fTextEditor = textEditor;
+		this.fSourceViewer = viewer;
 	}
 
 	public void setText(String text) {
-		if (!isActive)
-			this.text = text;
+        this.setText(text, false);
 	}
 
+    //TODO method should only be called if changes are done
 	public void setText(String text, boolean forceUpdate) {
-		if (!isActive) {
-			this.text = text;
-		}
-
-		if (forceUpdate) {
-			this.previousText = "";
-			this.previousHashCode = 0;
-		}
+        synchronized (this.lock1)
+        {
+            if (forceUpdate || !text.equals(this.code))
+            {
+                this.code = text;
+                this.modified = true;
+                if (forceUpdate)
+                {
+                    synchronized (this.lock2)
+                    {
+                        this.force = true;
+                        this.lock2.notifyAll();
+                    }
+                }
+    
+                this.lock1.notifyAll();
+            }
+        }
 	}
-
-	public String getText() {
-		return text;
-	}
-
-/* No longer used
-	public void setInterval(int millis) {
-		this.validationInterval = millis;
-	}
-
-	public int getInterval() {
-		return validationInterval;
-	}
-*/
 
 	public void setErrorsShown(int number) {
 		this.maxErrorsShown = number;
@@ -100,45 +99,52 @@ public class PerlSyntaxValidationThread extends Thread {
 		return maxErrorsShown;
 	}
 
-	public void dispose() {
-		this.stopValidation = true;
-
-		if (validationTerminated == false) {
-
-			try {
-				Thread.sleep(waitForTermination);
-			} catch (Exception e) {
-			}
-		}
+	public void dispose() throws InterruptedException {
+        this.interrupt();
+        this.join(this.waitForTermination);
 	}
 
 	public void run() {
-		while (stopValidation == false) {
-			try {
+        try
+        {
+    		while (!Thread.interrupted())
+            {
+                String text;
+                synchronized (this.lock1)
+                {
+                    while (!this.modified)
+                        this.lock1.wait();
 
-				this.isActive = true;
-				boolean ret = this.validateSyntax();
+                    this.force = false;
+                    this.modified = false;
+                    text = this.code;
+                }
 
-				this.previousText = this.text;
-				this.isActive = false;
+    			try
+                {
+    				this.validateSyntax(text);
+    			}
+                catch (Exception e) {
+    				e.printStackTrace();
+    			}                
 
-				Thread.sleep(PerlEditorPlugin.getDefault().getPreferenceStore().getInt(PerlEditorPlugin.SYNTAX_VALIDATION_INTERVAL_PREFERENCE) * 1000);
-
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-
-		this.validationTerminated = true;
+                long i = 1000L*PerlEditorPlugin.getDefault().getPreferenceStore().getInt(PerlEditorPlugin.SYNTAX_VALIDATION_INTERVAL_PREFERENCE);
+                synchronized (this.lock2)
+                {
+                    if (!this.force)
+                        this.lock2.wait(i);
+                }
+    		}
+        }
+        catch (InterruptedException e)
+        {
+            e.printStackTrace();
+        }
 	}
 
-	public boolean validateSyntax() {
+	private boolean validateSyntax(String text) {
 
 		Process proc = null;
-
-		if (this.previousText.equals(this.text)) {
-			return true;
-		}
 
 		try {
 			IEditorInput input = fTextEditor.getEditorInput();
@@ -178,6 +184,9 @@ public class PerlSyntaxValidationThread extends Thread {
 
 			InputStream in = proc.getErrorStream();		
 			OutputStream out = proc.getOutputStream();
+            //TODO which charset?
+            Reader inr = new InputStreamReader(in);
+            this.srt.read(inr);
 
             try {			
                 PerlExecutableUtilities.writeStringToStream(text, out);
@@ -186,7 +195,8 @@ public class PerlSyntaxValidationThread extends Thread {
             }
 			out.close();
 			
-			String content =  PerlExecutableUtilities.readStringFromStream(in);			
+			String content = srt.getResult();
+            inr.close();		
 			in.close();
             
             //TODO check if content is empty (indicates error)
@@ -440,9 +450,8 @@ public class PerlSyntaxValidationThread extends Thread {
 	 *
 	 * @return the resource to which to attach the newly created marker
 	 */
-	protected IResource getResource() {
+	private IResource getResource() {
 		IEditorInput input = fTextEditor.getEditorInput();
 		return (IResource) ((IAdaptable) input).getAdapter(IResource.class);
 	}
-
 }

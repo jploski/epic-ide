@@ -6,6 +6,8 @@
  */
 package org.epic.perleditor.editors.util;
 
+import gnu.regexp.RE;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -17,10 +19,12 @@ import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
+import java.util.ResourceBundle;
 import java.util.StringTokenizer;
 
 import org.eclipse.core.resources.IMarker;
@@ -45,13 +49,54 @@ public class PerlValidator {
 	private static final String PERL_CMD_EXT = "-c";
 	private static final String PERL_ERROR_INDICATOR = " at - line ";
 	private static int maxErrorsShown = 10;
-	private static final String[] WARNING_STRINGS =
-		{ "possible", "Useless", "may", "better written as" };
-		
-    private static final int BUF_SIZE = 1024;
+	//	private static final String[] WARNING_STRINGS =
+	//		{ "possible", "Useless", "may", "better written as" };
+	private static HashMap errorMessagesHash = null;
 
-	public static boolean  validate(IResource resource) {
+	private static final int BUF_SIZE = 1024;
+
+	public static boolean validate(IResource resource) {
 		try {
+
+			// Initialize Hash containing possible Warning/Error messages
+			if (errorMessagesHash == null) {
+				errorMessagesHash = new HashMap();
+
+				ResourceBundle errorBundle =
+					ResourceBundle.getBundle(
+						"org.epic.perleditor.editors.errorsAndWarnings");
+
+				RE re;
+
+				// Populate the error messages hash
+				for (Enumeration enum = errorBundle.getKeys();
+					enum.hasMoreElements();
+					) {
+					String index = (String) enum.nextElement();
+					String complete = (String) errorBundle.getObject(index);
+					int tabIndex = complete.indexOf("\t");
+					String key = complete.substring(0, tabIndex);
+					String value = complete.substring(tabIndex + 1);
+
+					String convKey = new String(key);
+
+					// Substitute "( ) [ ]?|*+\" with .
+					re = new RE("[\\(\\)\\[\\]\\?\\|\\*\\+\\\\]");
+					convKey = re.substituteAll(convKey, ".");
+
+					//	Substitute "%s %c %d %lx" with .*
+					re = new RE("%([sdcl][x]{0,1})");
+					convKey = re.substituteAll(convKey, ".*");
+
+					// Substitute %.[0-9]s with .*
+					re = new RE("%\\.[0-9]s");
+					convKey = re.substituteAll(convKey, ".*");
+
+					errorMessagesHash.put(convKey, value);
+				}
+
+			}
+
 			//	Check if resource should be validated
 			IEditorDescriptor defaultEditorDescriptor =
 				PerlEditorPlugin
@@ -59,36 +104,37 @@ public class PerlValidator {
 					.getWorkbench()
 					.getEditorRegistry()
 					.getDefaultEditor(resource.getFullPath().toString());
-					
-			if(defaultEditorDescriptor == null) {
+
+			if (defaultEditorDescriptor == null) {
 				return false;
 			}
 
 			if (!defaultEditorDescriptor.getId().equals(PERL_EDITOR_ID)
-			    ||  resource.getFileExtension().equals(EMB_PERL_FILE_EXTENSION)) {
-					return false;
+				|| resource.getFileExtension().equals(EMB_PERL_FILE_EXTENSION)) {
+				return false;
 			}
-   
-           StringBuffer sourceCode = new StringBuffer();
+
+			StringBuffer sourceCode = new StringBuffer();
 
 			//	Get the file content
 			char[] buf = new char[BUF_SIZE];
-			File inputFile = new File(resource.getLocation().makeAbsolute().toString());
+			File inputFile =
+				new File(resource.getLocation().makeAbsolute().toString());
 			BufferedReader in = new BufferedReader(new FileReader(inputFile));
-			
+
 			int read = 0;
-			while((read = in.read(buf)) > 0) {
-				sourceCode.append(buf, 0,  read);
-			}	
+			while ((read = in.read(buf)) > 0) {
+				sourceCode.append(buf, 0, read);
+			}
 			in.close();
-			
+
 			validate(resource, sourceCode.toString());
-			
+
 		} catch (Exception e) {
 			e.printStackTrace();
 			return false;
 		}
-		
+
 		return true;
 	}
 
@@ -99,7 +145,8 @@ public class PerlValidator {
 		try {
 			// Construct command line parameters
 			List cmdList =
-				PerlExecutableUtilities.getPerlExecutableCommandLine(resource.getProject());
+				PerlExecutableUtilities.getPerlExecutableCommandLine(
+					resource.getProject());
 			cmdList.add(PERL_CMD_EXT);
 
 			if (PerlEditorPlugin.getDefault().getWarningsPreference()) {
@@ -115,7 +162,11 @@ public class PerlValidator {
 
 			// Get working directory -- Fixes Bug: 736631
 			String workingDir =
-				resource.getLocation().makeAbsolute().removeLastSegments(1).toString();
+				resource
+					.getLocation()
+					.makeAbsolute()
+					.removeLastSegments(1)
+					.toString();
 
 			/*
 			 * Due to Java Bug #4763384 sleep for a very small amount of time
@@ -162,6 +213,7 @@ public class PerlValidator {
 			// DEBUG END
 
 			String line = null;
+			String perlDiag = null;
 			List lines = new ArrayList();
 			int index;
 
@@ -192,6 +244,7 @@ public class PerlValidator {
 			// Otherwise lower line number will appear at the end of the list
 			for (int i = lines.size() - 1; i >= 0; i--) {
 				line = (String) lines.get(i);
+				perlDiag = "";
 
 				// Delete filename from error message
 				StringBuffer lineSb = new StringBuffer(line);
@@ -237,10 +290,32 @@ public class PerlValidator {
 					// Check if it's a warning
 					boolean isWarning = false;
 
-					for (int x = 0; x < WARNING_STRINGS.length; x++) {
-						if (truncatedLine.indexOf(WARNING_STRINGS[x]) != -1) {
-							isWarning = true;
+					Object[] keys = errorMessagesHash.keySet().toArray();
+
+					for (int entry = 0; entry < keys.length; entry++) {
+						RE re = new RE((String) keys[entry]);
+
+						String errorMsgOnly =
+							index != -1
+								? truncatedLine.substring(0, index)
+								: truncatedLine;
+
+						if (re.getAllMatches(errorMsgOnly).length > 0) {
+							String value =
+								(String) errorMessagesHash.get(keys[entry]);
+
+							// (W, D & S) are warnings
+							if (value.startsWith("(W")
+								|| value.startsWith("(D")
+								|| value.startsWith("(S")) {
+								isWarning = true;
+							}
+
+							// Not used at the moment
+							perlDiag = value;
+							break;
 						}
+
 					}
 
 					if (isWarning) {
@@ -253,7 +328,18 @@ public class PerlValidator {
 							new Integer(IMarker.SEVERITY_ERROR));
 					}
 
-					attributes.put(IMarker.MESSAGE, line);
+					String diag = "";
+//TODO add diagnostics
+//					if (perlDiag.length() > 0) {
+//						diag = "\n" + perlDiag;
+//						RE re = new RE("\\n");
+//						diag = re.substituteAll(diag, "\n     ");
+////						re = new RE("^\\(.*?\\)");
+////						diag = re.substituteAll(diag, "");
+//						diag += "\n";
+//					}
+
+					attributes.put(IMarker.MESSAGE, line + diag);
 
 					attributes.put(
 						IMarker.LINE_NUMBER,
@@ -316,7 +402,7 @@ public class PerlValidator {
 						attributes.put(IMarker.CHAR_START, new Integer(start));
 						attributes.put(IMarker.CHAR_END, new Integer(end));
 					}
-					
+
 					// Add markers
 					AddEditorMarker ed = new AddEditorMarker();
 					ed.addMarker(resource, attributes, IMarker.PROBLEM);
@@ -332,7 +418,6 @@ public class PerlValidator {
 				ex.printStackTrace();
 			}
 		}
-
 
 	}
 }

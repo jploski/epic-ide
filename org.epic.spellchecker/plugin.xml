@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin
+   id="org.epic.spellchecker"
+   name="SpellChecker for Perl"
+   version="0.1.0"
+   provider-name="EPIC Project"
+   class="org.epic.spellchecker.PerlSpellCheckerPlugin">
+
+   <runtime>
+      <library name="PerlTokenizer.jar">
+         <packages prefixes="org.epic.spellchecker"/>
+      </library>
+   </runtime>
+   <requires>
+      <import plugin="org.eclipse.ui"/>
+      <import plugin="org.eclipse.core.resources"/>
+      <import plugin="org.eclipse.help"/>
+      <import plugin="com.bdaum.SpellChecker"/>
+   </requires>
+
+
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            name="Perl"
+            category="com.bdaum.SpellChecker.preferences.defaultPreferences"
+            class="org.epic.spellchecker.PerlSpellCheckerPreferencePage"
+            id="org.epic.spellchecker.preferencePage">
+      </page>
+   </extension>
+   <extension
+         point="org.eclipse.help.toc">
+      <toc
+            file="toc.xml">
+      </toc>
+   </extension>
+   <extension
+         point="org.eclipse.help.contexts">
+      <contexts
+            file="contexts.xml">
+      </contexts>
+   </extension>
+   <extension
+         id="org.epic.spellchecker.Perl"
+         name="Perl Spell Checker"
+         point="com.bdaum.SpellChecker.documentTokenizer">
+      <tokenizer
+            preferences="org.epic.spellchecker.PerlSpellCheckerPreferences"
+            name="Perl Spell Checker"
+            extensions="pl ipl pm cgi"
+            class="org.epic.spellchecker.PerlWordTokenizer"
+            id="org.epic.spellchecker.PerlWordTokenizer">
+      </tokenizer>
+   </extension>
+
+</plugin>

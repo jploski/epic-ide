@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<contexts> 
+  <context id="java_preferences_context"> 
+    <description>Help for Spell Checker Java Preferences</description> 
+    <topic href="html/JavaPreferences.html" 
+           label="Spell Checker Java Preferences"/> 
+  </context> 
+</contexts>

@@ -1359,9 +1359,11 @@ public class PerlDB implements IDebugElement, ITerminate {
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			return;
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			return;
 		}
 		String line = null;
 		Document doc = new Document(sourceCode.toString());
@@ -1372,6 +1374,7 @@ public class PerlDB implements IDebugElement, ITerminate {
 		} catch (BadLocationException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
+			return;
 		}
 
 		try {
@@ -1381,8 +1384,9 @@ public class PerlDB implements IDebugElement, ITerminate {
 					RESyntax.RE_SYNTAX_PERL5);
 
 			REMatch match = findDelim.getMatch(line);
-
+			if(match == null ) return;
 			delim = match.toString(1);
+			if(delim == null) return;
 			String temp = line;
 			temp.replaceAll("\\" + delim, "xx");
 			RE findRegExp = new RE("([$%@][^\\s]+)[\\s]*=~[\\s]*[m]?" + delim

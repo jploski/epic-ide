@@ -184,7 +184,7 @@ public class PerlMainPreferencePage
 					PerlEditorPlugin.getDefault().getDefaultTaintPreference());
 		interpreterTypeCombo.setText(PerlEditorPlugin.INTERPRETER_TYPE_STANDARD);
 
-		syntaxIntervalSecondsLabel.setText(PerlEditorPlugin.SYNTAX_VALIDATION_INTERVAL_DEFAULT + " seconds");
+		syntaxIntervalSecondsLabel.setText(PerlEditorPlugin.SYNTAX_VALIDATION_INTERVAL_DEFAULT + " milliseconds");
 		syntaxCheckInterval.setSelection(PerlEditorPlugin.SYNTAX_VALIDATION_INTERVAL_DEFAULT);
 	    
 		//colorEditor.loadDefault();

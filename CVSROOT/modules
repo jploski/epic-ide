@@ -33,4 +33,5 @@ org.epic.perleditor					org.epic.perleditor/
 org.epic.regexp						org.epic.regexp/
 org.epic.spellchecker				org.epic.spellchecker/
 org.epic.updatesite					org.epic.updatesite/
+org.epic.feature.main				org.epic.feature.main/
 

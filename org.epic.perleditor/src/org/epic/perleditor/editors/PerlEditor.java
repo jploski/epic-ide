@@ -440,7 +440,7 @@ public class PerlEditor
 	 * @return true if in perl mode, otherwise false
 	 */
 	public boolean isPerlMode() {
-		return getModeName().toLowerCase().equals(PERL_MODE);
+		return getModeName().equalsIgnoreCase(PERL_MODE);
 	}
 	
 	/**

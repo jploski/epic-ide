@@ -441,40 +441,42 @@ public class PerlProjectResourceWizard
 	private static boolean confirmPerspectiveSwitch(
 		IWorkbenchWindow window,
 		IPerspectiveDescriptor finalPersp) {
-		IPreferenceStore store =
-			WorkbenchPlugin.getDefault().getPreferenceStore();
-		String pspm =
-			store.getString(IPreferenceConstants.PROJECT_SWITCH_PERSP_MODE);
-		if (!IPreferenceConstants.PSPM_PROMPT.equals(pspm)) {
-			return true;
-		}
-			MessageDialogWithToggle dialog = MessageDialogWithToggle.openQuestion(window.getShell(), ResourceMessages.getString("NewProject.perspSwitchTitle"), //$NON-NLS-1$
-		ResourceMessages.format("NewProject.perspSwitchMessage", //$NON-NLS-1$
-	new Object[] { finalPersp.getLabel()}), null,
-		// use the default message for the toggle
-		false); // toggle is initially unchecked
-		int result = dialog.getReturnCode();
-		if (result >= 0 && dialog.getToggleState()) {
-			if (result == 0) {
-				// User chose Yes/Don't ask again, so always switch
-				store.setValue(
-					IPreferenceConstants.PROJECT_SWITCH_PERSP_MODE,
-					IPreferenceConstants.PSPM_ALWAYS);
-				// leave PROJECT_OPEN_NEW_PERSPECTIVE as is
-			} else {
-				// User chose No/Don't ask again, so never switch
-				store.setValue(
-					IPreferenceConstants.PROJECT_SWITCH_PERSP_MODE,
-					IPreferenceConstants.PSPM_NEVER);
-				// update PROJECT_OPEN_NEW_PERSPECTIVE to correspond
-				AbstractUIPlugin uiPlugin =
-					(AbstractUIPlugin) Platform.getPlugin(PlatformUI.PLUGIN_ID);
-				uiPlugin.getPreferenceStore().setValue(
-					IWorkbenchPreferenceConstants.PROJECT_OPEN_NEW_PERSPECTIVE,
-					IWorkbenchPreferenceConstants.NO_NEW_PERSPECTIVE);
-			}
-		}
-		return result == 0;
+			// TODO not needed for the moment and causes trouble with Eclipse 3.0 Milestone 5 (has to be fixed)
+//		IPreferenceStore store =
+//			WorkbenchPlugin.getDefault().getPreferenceStore();
+//		String pspm =
+//			store.getString(IPreferenceConstants.PROJECT_SWITCH_PERSP_MODE);
+//		if (!IPreferenceConstants.PSPM_PROMPT.equals(pspm)) {
+//			return true;
+//		}
+//			MessageDialogWithToggle dialog = MessageDialogWithToggle.openQuestion(window.getShell(), ResourceMessages.getString("NewProject.perspSwitchTitle"), //$NON-NLS-1$
+//		ResourceMessages.format("NewProject.perspSwitchMessage", //$NON-NLS-1$
+//	new Object[] { finalPersp.getLabel()}), null,
+//		// use the default message for the toggle
+//		false); // toggle is initially unchecked
+//		int result = dialog.getReturnCode();
+//		if (result >= 0 && dialog.getToggleState()) {
+//			if (result == 0) {
+//				// User chose Yes/Don't ask again, so always switch
+//				store.setValue(
+//					IPreferenceConstants.PROJECT_SWITCH_PERSP_MODE,
+//					IPreferenceConstants.PSPM_ALWAYS);
+//				// leave PROJECT_OPEN_NEW_PERSPECTIVE as is
+//			} else {
+//				// User chose No/Don't ask again, so never switch
+//				store.setValue(
+//					IPreferenceConstants.PROJECT_SWITCH_PERSP_MODE,
+//					IPreferenceConstants.PSPM_NEVER);
+//				// update PROJECT_OPEN_NEW_PERSPECTIVE to correspond
+//				AbstractUIPlugin uiPlugin =
+//					(AbstractUIPlugin) Platform.getPlugin(PlatformUI.PLUGIN_ID);
+//				uiPlugin.getPreferenceStore().setValue(
+//					IWorkbenchPreferenceConstants.PROJECT_OPEN_NEW_PERSPECTIVE,
+//					IWorkbenchPreferenceConstants.NO_NEW_PERSPECTIVE);
+//			}
+//		}
+//		return result == 0;
+		return false;
 	}
 
 	private void addNature(IProject project) {

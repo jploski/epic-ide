@@ -49,6 +49,9 @@ public class PerlEditorPlugin extends AbstractUIPlugin {
 
 	public static final String INTERPRETER_TYPE_CYGWIN = "Cygwin";
 
+	public static final String SYNTAX_VALIDATION_PREFERENCE = "SYNTAX_VALIDATION_PREFERENCE";
+	public static final boolean SYNTAX_VALIDATION_PREFERENCE_DEFAULT = true;
+	
 	public static final String SYNTAX_VALIDATION_INTERVAL_PREFERENCE = "SYNTAX_VALIDATION_IDLE_INTERVAL";
 
 	public static final int SYNTAX_VALIDATION_INTERVAL_DEFAULT = 400;
@@ -231,6 +234,21 @@ public class PerlEditorPlugin extends AbstractUIPlugin {
 
 	public void setWarningsPreference(boolean value) {
 		getPreferenceStore().setValue(WARNINGS_PREFERENCE,
+				value == true ? "1" : "0");
+	}
+	
+	public boolean getSyntaxValidationPreference() {
+		String value = getPreferenceStore().getString(SYNTAX_VALIDATION_PREFERENCE);
+
+		return value.equals("1") ? true : false;
+	}
+
+	public boolean getDefaultSyntaxValidationPreference() {
+		return SYNTAX_VALIDATION_PREFERENCE_DEFAULT;
+	}
+	
+	public void setSyntaxValidationPreference(boolean value) {
+		getPreferenceStore().setValue(SYNTAX_VALIDATION_PREFERENCE,
 				value == true ? "1" : "0");
 	}
 

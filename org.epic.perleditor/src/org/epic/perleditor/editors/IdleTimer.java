@@ -42,6 +42,10 @@ public class IdleTimer extends Thread {
 	public boolean removeListener(Object listener) {
 		return listeners.remove(listener);
 	}
+	
+	public boolean isRegistered(Object obj) {
+		return listeners.indexOf(obj) != -1 ? true : false;
+	}
 
 	public void run() {
 		(

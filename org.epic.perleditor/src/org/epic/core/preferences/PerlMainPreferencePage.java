@@ -22,6 +22,7 @@ public class PerlMainPreferencePage
 	private Text browserLabelText;
 	private Button warningsCheckBox;
 	private Button taintCheckBox;
+	private Button validateCheckBox;
 	private Scale syntaxCheckInterval;
 	private Combo interpreterTypeCombo;
 	private Label syntaxIntervalSecondsLabel;
@@ -151,10 +152,11 @@ public class PerlMainPreferencePage
 				GridData.FILL_BOTH | GridData.VERTICAL_ALIGN_BEGINNING);
 		syntaxIntervalComposite.setLayoutData(data);
 
+		validateCheckBox = new Button(syntaxIntervalComposite, SWT.CHECK);
+		validateCheckBox.setText("Validate source when idle for ");
+		validateCheckBox.setSelection(
+				PerlEditorPlugin.getDefault().getSyntaxValidationPreference());
 
-		Label syncIntevalLabel = new Label(syntaxIntervalComposite, SWT.NONE);
-		syncIntevalLabel.setText("Validate source when idle for ");
-	
 		syntaxCheckInterval = new Scale(syntaxIntervalComposite, SWT.HORIZONTAL);
 		syntaxCheckInterval.setMinimum(1);
 		syntaxCheckInterval.setMaximum(10000);
@@ -205,8 +207,11 @@ public class PerlMainPreferencePage
 
 		browserLabelText.setText(
 			PerlEditorPlugin.getDefault().getDefaultWebBrowserPreference());
-			
-		syntaxIntervalSecondsLabel.setText(PerlEditorPlugin.SYNTAX_VALIDATION_INTERVAL_DEFAULT + " milliseconds");
+		
+		validateCheckBox.setSelection(
+				PerlEditorPlugin.getDefault().getDefaultSyntaxValidationPreference());
+		float intervalDisplay = Math.round(PerlEditorPlugin.SYNTAX_VALIDATION_INTERVAL_DEFAULT/10f)/100f;
+		syntaxIntervalSecondsLabel.setText(intervalDisplay + " seconds ");
 		syntaxCheckInterval.setSelection(PerlEditorPlugin.SYNTAX_VALIDATION_INTERVAL_DEFAULT);
 	    
 		//colorEditor.loadDefault();
@@ -222,6 +227,8 @@ public class PerlMainPreferencePage
 			warningsCheckBox.getSelection());
 		PerlEditorPlugin.getDefault().setTaintPreference(
 					taintCheckBox.getSelection());
+		PerlEditorPlugin.getDefault().setSyntaxValidationPreference(
+				validateCheckBox.getSelection());
 		PerlEditorPlugin.getDefault().getPreferenceStore().setValue(PerlEditorPlugin.INTERPRETER_TYPE_PREFERENCE, interpreterTypeCombo.getText());
 		PerlEditorPlugin.getDefault().getPreferenceStore().setValue(PerlEditorPlugin.SYNTAX_VALIDATION_INTERVAL_PREFERENCE, syntaxCheckInterval.getSelection());
 		PerlEditorPlugin.getDefault().setWebBrowserPreference(

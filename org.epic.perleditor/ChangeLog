@@ -1,6 +1,6 @@
 Eclipse Perl Integration: Perl Editor Plugin
 
-Version 0.1.0 alpha  - 
+Version 0.1.0 alpha  - 13-December-2003
 		* HTML Export Command added to plugin.xml (Export/HTML entry was not 
 		   visible in Source menu)
 		* Fixed compatibility issues with Eclipse 3.0 M5

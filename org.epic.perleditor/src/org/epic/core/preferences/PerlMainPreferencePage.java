@@ -136,7 +136,7 @@ public class PerlMainPreferencePage
 		
 		syntaxIntervalSecondsLabel = new Label(syntaxIntervalComposite, SWT.NONE);
 		int interval = PerlEditorPlugin.getDefault().getPreferenceStore().getInt(PerlEditorPlugin.SYNTAX_VALIDATION_INTERVAL_PREFERENCE) ;
-		syntaxIntervalSecondsLabel.setText(interval + " seconds ");
+		syntaxIntervalSecondsLabel.setText(interval + " seconds" + "   ");
 		syntaxCheckInterval.setSelection(interval);
 		
 		syntaxCheckInterval.addListener (SWT.Selection, new Listener () {

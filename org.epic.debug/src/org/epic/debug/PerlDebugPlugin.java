@@ -233,16 +233,18 @@ public class PerlDebugPlugin extends AbstractUIPlugin {
 	public static String getPerlDebugEnv(DebugTarget fTarget) {
 		String port = null;
 		String host = null;
-		try {
-			host = InetAddress.getLocalHost().getHostAddress();
-		} catch (UnknownHostException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-		;
+//		try {
+//			host = InetAddress.getLocalHost().getHostAddress();
+//		} catch (UnknownHostException e1) {
+//			// TODO Auto-generated catch block
+//			e1.printStackTrace();
+//		}
+//		;
 
 		port = fTarget.getDebugPort();
-
+		
+		/* avoids problems with local software firewall*/
+		host ="127.0.0.1";
 		return (mDebugOptionsEnvPrefix + host + ":" + port + " " + mDebugOptionsValue);
 	}
 

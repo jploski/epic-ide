@@ -177,4 +177,17 @@ public class PerlExecutableUtilities {
 		}
 	}
 
+    /**
+     * Writes all characters from the given String ro the given Stream
+     * 
+     * @param stream
+     * @return
+     * @throws IOException
+     */
+    public static void writeStringToStream(String t, OutputStream stream)
+        throws IOException {
+        //TODO which charset?
+        Writer w = new OutputStreamWriter(stream);
+        w.write(t);
+    }
 }

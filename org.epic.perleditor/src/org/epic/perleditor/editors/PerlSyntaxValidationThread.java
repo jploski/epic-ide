@@ -180,7 +180,7 @@ public class PerlSyntaxValidationThread extends Thread {
 			OutputStream out = proc.getOutputStream();
 
             try {			
-                out.write(text.getBytes());
+                PerlExecutableUtilities.writeStringToStream(text, out);
             } catch (IOException e) {
                 e.printStackTrace();
             }

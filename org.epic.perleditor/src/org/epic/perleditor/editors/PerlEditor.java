@@ -71,6 +71,12 @@ import java.util.Map;
 import java.util.HashMap;
 import org.eclipse.swt.graphics.Color;
 
+/* Eclipse 3.0 extension (uncomment when using Eclipse 3)
+import org.eclipse.ui.editors.text.ILocationProvider;
+import org.epic.core.util.FileUtilities;
+*/
+
+
 /**
  * Perl specific text editor.
  */
@@ -91,7 +97,7 @@ public class PerlEditor
 	private SourceViewer fSourceViewer;
 	private IDocumentProvider fDocumentProvider;
 	private IdleTimer idleTimer;
-	
+
 	private final static String PERL_MODE = "perl";
 
 	/**
@@ -111,9 +117,10 @@ public class PerlEditor
 
 		this.setPreferenceStore(
 			PerlEditorPlugin.getDefault().getPreferenceStore());
-		setKeyBindingScopes(new String[] { "org.epic.perleditor.perlEditorScope" });
-		
-		setRulerContextMenuId("#PerlRulerContext");	
+		setKeyBindingScopes(
+			new String[] { "org.epic.perleditor.perlEditorScope" });
+
+		setRulerContextMenuId("#PerlRulerContext");
 		setEditorContextMenuId("#PerlDocEditorContext");
 	}
 
@@ -124,30 +131,41 @@ public class PerlEditor
 
 	protected void createActions() {
 		super.createActions();
-		 
-		
+
 		Action action;
-        // Create content assist action
-	    action = new ContentAssistAction(PerlEditorMessages.getResourceBundle(),
-											  "ContentAssistProposal.", this);
-		action.setActionDefinitionId(ITextEditorActionDefinitionIds.CONTENT_ASSIST_PROPOSALS);
+		// Create content assist action
+		action =
+			new ContentAssistAction(
+				PerlEditorMessages.getResourceBundle(),
+				"ContentAssistProposal.",
+				this);
+		action.setActionDefinitionId(
+			ITextEditorActionDefinitionIds.CONTENT_ASSIST_PROPOSALS);
 		setAction("org.epic.perleditor.ContentAssist", action);
-				
+
 		// Only enable actions if in Perl mode
-		if(isPerlMode()) {
-		           // Add comment action
-				   action = new TextOperationAction(
-								 PerlEditorMessages.getResourceBundle(),
-								 "Comment.", this, ITextOperationTarget.PREFIX);
-				   action.setActionDefinitionId(IPerlEditorActionDefinitionIds.COMMENT);
-				   setAction("org.epic.perleditor.Comment", action);
-		
-				   // Add uncomment action
-				   action = new TextOperationAction(
-				   PerlEditorMessages.getResourceBundle(),
-						 "Uncomment.", this, ITextOperationTarget.STRIP_PREFIX);
-				   action.setActionDefinitionId(IPerlEditorActionDefinitionIds.UNCOMMENT);
-				   setAction("org.epic.perleditor.Uncomment", action);
+		if (isPerlMode()) {
+			// Add comment action
+			action =
+				new TextOperationAction(
+					PerlEditorMessages.getResourceBundle(),
+					"Comment.",
+					this,
+					ITextOperationTarget.PREFIX);
+			action.setActionDefinitionId(
+				IPerlEditorActionDefinitionIds.COMMENT);
+			setAction("org.epic.perleditor.Comment", action);
+
+			// Add uncomment action
+			action =
+				new TextOperationAction(
+					PerlEditorMessages.getResourceBundle(),
+					"Uncomment.",
+					this,
+					ITextOperationTarget.STRIP_PREFIX);
+			action.setActionDefinitionId(
+				IPerlEditorActionDefinitionIds.UNCOMMENT);
+			setAction("org.epic.perleditor.Uncomment", action);
 		}
 
 		IDocumentProvider provider = getDocumentProvider();
@@ -163,17 +181,18 @@ public class PerlEditor
 			//Thread defaults
 			fValidationThread.start();
 		}
-		
-		if(fValidationThread != null) {
-			fValidationThread.setText(getSourceViewer().getTextWidget().getText());
+
+		if (fValidationThread != null) {
+			fValidationThread.setText(
+				getSourceViewer().getTextWidget().getText());
 		}
 
 		setEditorForegroundColor();
-		
+
 		// Setup idle timer
 		idleTimer = new IdleTimer(this.getSourceViewer(), Display.getCurrent());
 		idleTimer.start();
-		
+
 		// Register the validation thread
 		this.registerIdleListener(fValidationThread);
 
@@ -191,19 +210,19 @@ public class PerlEditor
 				(IResource) ((IAdaptable) input).getAdapter(IResource.class);
 
 			resource.deleteMarkers(IMarker.PROBLEM, true, 1);
-			
-			if(fValidationThread != null) {
+
+			if (fValidationThread != null) {
 				fValidationThread.dispose();
 			}
-			
-			if(idleTimer != null) {
+
+			if (idleTimer != null) {
 				idleTimer.dispose();
 			}
-			
-			if(fOutlinePage != null) {
+
+			if (fOutlinePage != null) {
 				fOutlinePage.dispose();
 			}
-			
+
 			super.dispose();
 		} catch (Exception ex) {
 			ex.printStackTrace();
@@ -268,13 +287,26 @@ public class PerlEditor
 
 	public void doSetInput(IEditorInput input) throws CoreException {
 
+		/* Eclipse 3.0 extension (uncomment when using Eclipse 3)
+		if (input instanceof ILocationProvider) {
+			ILocationProvider l =
+				(ILocationProvider) input.getAdapter(ILocationProvider.class);
+			if (l != null)
+				input = getFileEditorInput(l.getPath(l).makeAbsolute());
+		}
+		*/
+
 		super.doSetInput(input);
-		
+
 		// Set coloring editor mode
 		if (input instanceof IStorageEditorInput) {
-					String filename = ((IStorageEditorInput) input).getStorage().getName();
-					((ColoringSourceViewerConfiguration) getSourceViewerConfiguration()).setFilename(filename);
-				}
+			String filename =
+				((IStorageEditorInput) input).getStorage().getName();
+			(
+				(ColoringSourceViewerConfiguration) getSourceViewerConfiguration())
+					.setFilename(
+				filename);
+		}
 	}
 
 	/** The PerlEditor implementation of this 
@@ -300,9 +332,9 @@ public class PerlEditor
 
 			if (input instanceof IFileEditorInput) {
 				page = new PerlOutlinePage(getSourceViewer());
-				
+
 				this.registerIdleListener(page);
-				
+
 				page.addSelectionChangedListener(this);
 				return page;
 			}
@@ -337,50 +369,50 @@ public class PerlEditor
 		Composite parent,
 		IVerticalRuler ruler,
 		int styles) {
-			fAnnotationAccess = createAnnotationAccess();
+		fAnnotationAccess = createAnnotationAccess();
 
-			ISharedTextColors sharedColors = new SharedTextColors();
+		ISharedTextColors sharedColors = new SharedTextColors();
 
-							fOverviewRuler =
-									new OverviewRuler(
-											fAnnotationAccess,
-											VERTICAL_RULER_WIDTH,
-											sharedColors);
+		fOverviewRuler =
+			new OverviewRuler(
+				fAnnotationAccess,
+				VERTICAL_RULER_WIDTH,
+				sharedColors);
 
-							MarkerAnnotationPreferences fAnnotationPreferences =
-									new MarkerAnnotationPreferences();
+		MarkerAnnotationPreferences fAnnotationPreferences =
+			new MarkerAnnotationPreferences();
 
-							Iterator e =
-									fAnnotationPreferences.getAnnotationPreferences().iterator();
+		Iterator e =
+			fAnnotationPreferences.getAnnotationPreferences().iterator();
 
-							while (e.hasNext()) {
+		while (e.hasNext()) {
 
-									AnnotationPreference preference = (AnnotationPreference) e.next();
+			AnnotationPreference preference = (AnnotationPreference) e.next();
 
-									if (preference.contributesToHeader())
-											fOverviewRuler.addHeaderAnnotationType(
-													preference.getAnnotationType());
+			if (preference.contributesToHeader())
+				fOverviewRuler.addHeaderAnnotationType(
+					preference.getAnnotationType());
 
-							}
+		}
 
-							ISourceViewer sourceViewer =
-									new PerlSourceViewer(
-											parent,
-											ruler,
-											fOverviewRuler,
-											isOverviewRulerVisible(),
-											styles);
+		ISourceViewer sourceViewer =
+			new PerlSourceViewer(
+				parent,
+				ruler,
+				fOverviewRuler,
+				isOverviewRulerVisible(),
+				styles);
 
-							fSourceViewerDecorationSupport =
-									new SourceViewerDecorationSupport(
-											sourceViewer,
-											fOverviewRuler,
-											fAnnotationAccess,
-											sharedColors);
+		fSourceViewerDecorationSupport =
+			new SourceViewerDecorationSupport(
+				sourceViewer,
+				fOverviewRuler,
+				fAnnotationAccess,
+				sharedColors);
 
-							configureSourceViewerDecorationSupport();
+		configureSourceViewerDecorationSupport();
 
-							return sourceViewer;
+		return sourceViewer;
 	}
 
 	/*
@@ -436,11 +468,11 @@ public class PerlEditor
 
 	protected void handleCursorPositionChanged() {
 		super.handleCursorPositionChanged();
-//		revalidateSyntax(false);
-//
-//		if (page != null) {
-//			page.update();
-//		}
+		//		revalidateSyntax(false);
+		//
+		//		if (page != null) {
+		//			page.update();
+		//		}
 	}
 
 	/*
@@ -469,7 +501,7 @@ public class PerlEditor
 	public ISourceViewer getViewer() {
 		return getSourceViewer();
 	}
-	
+
 	/**
 	 * Checks if perlmode is used by the editor
 	 * @return true if in perl mode, otherwise false
@@ -477,17 +509,19 @@ public class PerlEditor
 	public boolean isPerlMode() {
 		return getModeName().equalsIgnoreCase(PERL_MODE);
 	}
-	
+
 	/**
 	 * Returns the node name used by the editor
 	 * @return Mode name
 	 */
-	public String  getModeName() {
-			String modeName = ((PerlSourceViewerConfiguration)getSourceViewerConfiguration()).getMode().getDisplayName();
-			return modeName;
-		}
-		
-		
+	public String getModeName() {
+		String modeName =
+			((PerlSourceViewerConfiguration) getSourceViewerConfiguration())
+				.getMode()
+				.getDisplayName();
+		return modeName;
+	}
+
 	public boolean registerIdleListener(Object obj) {
 		return idleTimer.addListener(obj);
 	}
@@ -502,10 +536,10 @@ public class PerlEditor
 			PerlColorProvider.getColor(rgb));
 	}
 
-    //	TODO For Eclipse 3.0 compatibility
+	//	TODO For Eclipse 3.0 compatibility
 	/**
 	 * Configures the decoration support for this editor's the source viewer.
-     *
+	 *
 	 * @since 2.1
 	 */
 	protected void configureSourceViewerDecorationSupport() {

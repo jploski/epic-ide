@@ -72,6 +72,11 @@ import org.eclipse.swt.graphics.RGB;
 
 import cbg.editor.ColoringSourceViewerConfiguration;
 
+/* Eclipse 3.0 extension (uncomment when using Eclipse 3)
+import org.eclipse.ui.editors.text.ILocationProvider;
+import org.epic.core.util.FileUtilities;
+*/
+
 /**
  * Perl specific text editor.
  */
@@ -248,6 +253,15 @@ public class PerlEditor
 	 */
 
 	public void doSetInput(IEditorInput input) throws CoreException {
+		
+		/* Eclipse 3.0 extension (uncomment when using Eclipse 3)
+		if (input instanceof ILocationProvider) {
+			ILocationProvider l =
+				(ILocationProvider) input.getAdapter(ILocationProvider.class);
+			if (l != null)
+				input = getFileEditorInput(l.getPath(l).makeAbsolute());
+		}
+		*/
 
 		super.doSetInput(input);
 		

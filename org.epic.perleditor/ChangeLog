@@ -1,5 +1,7 @@
 Eclipse Perl Integration: Perl Editor Plugin
 
+Version 0.1.0 alpha  - 
+		* Fixed bug: [ 833114 ] Ctrl+Space does not work on editing Java Source File
 
 Version 0.1.0 alpha  - 29-October-2003
 		* HTML export added

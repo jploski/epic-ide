@@ -439,6 +439,12 @@ public class RegExpView extends ViewPart {
 					styleRange.background = (Color) colorTable.get(color);
 
 					matchText.setStyleRange(styleRange);
+					// Update text position
+					matchText.setTopIndex(styleRange.start);
+					matchText.setCaretOffset(styleRange.start);
+					int offsetFromLine = styleRange.start - matchText.getOffsetAtLine(matchText.getLineAtOffset(styleRange.start));
+					matchText.setHorizontalIndex(offsetFromLine);
+					matchText.redraw();
 
 					if (++color > colorTable.size()) {
 						color = 0;
@@ -692,6 +698,13 @@ public class RegExpView extends ViewPart {
 		styleRangeRegExp.length = pos.getEnd() - pos.getStart();
 
 		regExpText.setStyleRange(styleRangeRegExp);
+		
+		//	Update text position
+		regExpText.setTopIndex(styleRangeRegExp.start);
+		regExpText.setCaretOffset(styleRangeRegExp.start);
+		int offsetFromLine = styleRangeRegExp.start - regExpText.getOffsetAtLine(regExpText.getLineAtOffset(styleRangeRegExp.start));
+		regExpText.setHorizontalIndex(offsetFromLine);
+		regExpText.redraw();
 
 		// Colour the matching text
 		matchText.setStyleRange(null);
@@ -712,6 +725,12 @@ public class RegExpView extends ViewPart {
 					matches[i].getEndIndex(position)
 						- matches[i].getStartIndex(position);
 				matchText.setStyleRange(styleRangeMatch);
+				//	Update text position
+				matchText.setTopIndex(styleRangeMatch.start);
+				matchText.setCaretOffset(styleRangeMatch.start);
+				offsetFromLine = styleRangeMatch.start - matchText.getOffsetAtLine(matchText.getLineAtOffset(styleRangeMatch.start));
+				matchText.setHorizontalIndex(offsetFromLine);
+				matchText.redraw();
 			}
 
 		} else {

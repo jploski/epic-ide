@@ -118,14 +118,14 @@
       <builder id="org.epic.perleditor.perlbuilder" />
       <!-- Builder test END -->
    </extension>
-   <!-- Builder test START -->
+   <!-- Builder START -->
    <extension
       id="perlbuilder" name="Perl Auto Builder" point="org.eclipse.core.resources.builders">
       <builder hasNature="true">
          <run class="org.epic.core.builders.PerlBuilder" />
       </builder>
    </extension>
-   <!-- Builder test END -->
+   <!-- Builder END -->
    <extension
          point="org.eclipse.ui.projectNatureImages">
       <image
@@ -353,7 +353,27 @@
          configuration="org.eclipse.ui.defaultAcceleratorConfiguration">
       </keyBinding>
   </extension> 
-
+  
+  <!-- Decorator extension START -->
+  <extension 
+	    point="org.eclipse.ui.decorators">
+		
+		<decorator
+			adaptable="true"
+			label="Perl"
+			objectClass="org.eclipse.core.resources.IResource"
+			state="true"
+			lightweight="true"
+			class="org.epic.core.decorators.PerlDecorator"
+			id="org.epic.core.decorators.PerlDecorator"
+			location="BOTTOM_RIGHT"> 
+			<description>
+				Perl Decorator
+			</description>		
+           
+		</decorator>
+	</extension>
+  <!-- Decorator extension END -->
 
    <extension
          point="org.eclipse.help.toc">

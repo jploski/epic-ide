@@ -64,6 +64,7 @@ import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 
+import org.epic.perleditor.editors.util.PerlColorProvider;
 import org.epic.perleditor.PerlEditorPlugin;
 import org.epic.perleditor.preferences.preview.*;
 
@@ -466,6 +467,10 @@ public class PerlEditorPreferencePage extends PreferencePage implements IWorkben
 				int topIndex =  fPreviewViewer.getTextWidget().getTopIndex();
 		        int carretOffset = fPreviewViewer.getTextWidget().getCaretOffset();
 				fPreviewViewer.configure(new PreviewSourceViewerConfiguration(fOverlayStore));
+				
+				// Set editor foreground
+				RGB rgb = PreferenceConverter.getColor(fOverlayStore, PreferenceConstants.EDITOR_STRING_COLOR);
+				fPreviewViewer.getTextWidget().setForeground(PerlColorProvider.getColor(rgb));
 				
 				fPreviewViewer.refresh();
 

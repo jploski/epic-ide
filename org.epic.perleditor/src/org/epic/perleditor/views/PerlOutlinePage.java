@@ -97,7 +97,9 @@ public class PerlOutlinePage extends ContentOutlinePage {
 		getTreeViewer().refresh(subroutines, false);
 		getTreeViewer().refresh(modules, false);
 
-		//getTreeViewer().expandAll();
+        // Tree is expanded by default
+		getTreeViewer().expandAll();
+		
 		getControl().setRedraw(true);
 	}
 

@@ -25,6 +25,8 @@
       <import plugin="org.eclipse.debug.core"/>
       <import plugin="org.eclipse.debug.ui"/>
       <import plugin="org.apache.xerces"/>
+      <import plugin="org.eclipse.ui.editors"/>
+      <import plugin="org.eclipse.ui.workbench.texteditor"/>
    </requires>
 
 
@@ -32,10 +34,10 @@
          point="org.eclipse.ui.editors">
       <editor
             name="Epic Perl Editor"
-            icon="icons/epic.gif"
             extensions="pl, ipl, pm, cgi, epl"
-            contributorClass="org.epic.perleditor.editors.PerlActionContributor"
+            icon="icons/epic.gif"
             class="org.epic.perleditor.editors.PerlEditor"
+            contributorClass="org.epic.perleditor.editors.PerlActionContributor"
             id="org.epic.perleditor.editors.PerlEditor">
       </editor>
    </extension>
@@ -62,21 +64,24 @@
             class="org.epic.perleditor.preferences.PerlEditorPreferencePage"
             id="org.epic.perleditor.preferences.EpicPerlEditorPreferencePage">
       </page>
-      <page id="org.epic.perleditor.preferences.EpicPerlTemplatesPreferencePage"
-			name="Templates"
-			category="org.epic.core.preferences.PerlMainPreferencePage"
-			class="org.epic.perleditor.templates.preferences.TemplatePreferencePage">
-   		</page>
-   		<page id="org.epic.perleditor.preferences.SourceFormatterPreferencePage"
-  			name="Source Formatter"
-  			category="org.epic.core.preferences.PerlMainPreferencePage"
- 			 class="org.epic.perleditor.preferences.SourceFormatterPreferencePage">
-     	</page>
-     	<page id="org.epic.perleditor.preferences.CodeAssistPreferencePage"
-  			name="Code Assist"
-  			category="org.epic.core.preferences.PerlMainPreferencePage"
- 			 class="org.epic.perleditor.preferences.CodeAssistPreferencePage">
-     	</page>
+      <page
+            name="Templates"
+            category="org.epic.core.preferences.PerlMainPreferencePage"
+            class="org.epic.perleditor.templates.preferences.TemplatePreferencePage"
+            id="org.epic.perleditor.preferences.EpicPerlTemplatesPreferencePage">
+      </page>
+      <page
+            name="Source Formatter"
+            category="org.epic.core.preferences.PerlMainPreferencePage"
+            class="org.epic.perleditor.preferences.SourceFormatterPreferencePage"
+            id="org.epic.perleditor.preferences.SourceFormatterPreferencePage">
+      </page>
+      <page
+            name="Code Assist"
+            category="org.epic.core.preferences.PerlMainPreferencePage"
+            class="org.epic.perleditor.preferences.CodeAssistPreferencePage"
+            id="org.epic.perleditor.preferences.CodeAssistPreferencePage">
+      </page>
    </extension>
    <extension
          point="org.eclipse.ui.perspectives">
@@ -114,18 +119,46 @@
                class="org.epic.core.PerlProjectNature">
          </run>
       </runtime>
-      <!-- Builder test START -->
-      <builder id="org.epic.perleditor.perlbuilder" />
-      <!-- Builder test END -->
-   </extension>
-   <!-- Builder START -->
-   <extension
-      id="perlbuilder" name="Perl Auto Builder" point="org.eclipse.core.resources.builders">
-      <builder hasNature="true">
-         <run class="org.epic.core.builders.PerlBuilder" />
+<!-- Builder test START -->
+      <builder
+            id="org.epic.perleditor.perlbuilder">
       </builder>
    </extension>
-   <!-- Builder END -->
+   
+  <extension
+         id="perlinkexternalfilesnature"
+         name="Link External Files Nature"
+         point="org.eclipse.core.resources.natures">
+      <runtime>
+         <run
+               class="org.epic.core.PerlLinkExternalFilesNature">
+         </run>
+      </runtime>
+   </extension>
+   <extension
+         point="org.eclipse.ui.projectNatureImages">
+      <image
+            icon="icons/project_link_folder.gif"
+            natureId="org.epic.perleditor.perlinkexternalfilesnature"
+            id="org.epic.core.perlinkexternalfilesnature.image">
+      </image>
+   </extension>
+   
+ 
+   
+<!-- Builder START -->
+   <extension
+         id="perlbuilder"
+         name="Perl Auto Builder"
+         point="org.eclipse.core.resources.builders">
+      <builder
+            hasNature="true">
+         <run
+               class="org.epic.core.builders.PerlBuilder">
+         </run>
+      </builder>
+   </extension>
+<!-- Builder END -->
    <extension
          point="org.eclipse.ui.projectNatureImages">
       <image
@@ -147,234 +180,239 @@
          </filter>
       </page>
    </extension>
-   
-   <!-- Perldoc Perl Editor popup menu definition -->
-<extension point="org.eclipse.ui.popupMenus"> 
-      
-      <!-- Perdoc menu -->
-      <viewerContribution 
-         id="org.epic.perleditor.PerlDocPopup" 
-            targetID="#PerlDocEditorContext" >
+<!-- Perldoc Perl Editor popup menu definition -->
+   <extension
+         point="org.eclipse.ui.popupMenus">
+<!-- Perdoc menu -->
+      <viewerContribution
+            targetID="#PerlDocEditorContext"
+            id="org.epic.perleditor.PerlDocPopup">
          <menu
-            id="PelDocPopupMenu" 
-            path="additions" 
-            label="&amp;Perldoc"> 
-            <separator name="PerlDocGroup"/> 
+               label="&amp;Perldoc"
+               path="additions"
+               id="PelDocPopupMenu">
+            <separator
+                  name="PerlDocGroup">
+            </separator>
          </menu>
          <action
-            id="org.epic.perleditor.popupmenus.PerlDocAction.Faq" 
-            label="FAQ Search"
-            icon="icons/light_bulb.gif"
-            menubarPath="PelDocPopupMenu/PerlDocGroup" 
-            class="org.epic.perleditor.popupmenus.PerlDocAction"> 
+               label="FAQ Search"
+               icon="icons/light_bulb.gif"
+               class="org.epic.perleditor.popupmenus.PerlDocAction"
+               menubarPath="PelDocPopupMenu/PerlDocGroup"
+               id="org.epic.perleditor.popupmenus.PerlDocAction.Faq">
          </action>
          <action
-            id="org.epic.perleditor.popupmenus.PerlDocAction.BuiltinFunction" 
-            label="Builtin Function Documentation"
-            icon="icons/epic.gif"
-            menubarPath="PelDocPopupMenu/PerlDocGroup" 
-            class="org.epic.perleditor.popupmenus.PerlDocAction"> 
-         </action> 
+               label="Builtin Function Documentation"
+               icon="icons/epic.gif"
+               class="org.epic.perleditor.popupmenus.PerlDocAction"
+               menubarPath="PelDocPopupMenu/PerlDocGroup"
+               id="org.epic.perleditor.popupmenus.PerlDocAction.BuiltinFunction">
+         </action>
          <action
-            id="org.epic.perleditor.popupmenus.PerlDocAction.ModuleSource" 
-            label="Module/Program Source"
-            icon="icons/module_node.gif"
-            menubarPath="PelDocPopupMenu/PerlDocGroup" 
-            class="org.epic.perleditor.popupmenus.PerlDocAction"> 
-         </action> 
+               label="Module/Program Source"
+               icon="icons/module_node.gif"
+               class="org.epic.perleditor.popupmenus.PerlDocAction"
+               menubarPath="PelDocPopupMenu/PerlDocGroup"
+               id="org.epic.perleditor.popupmenus.PerlDocAction.ModuleSource">
+         </action>
          <action
-            id="org.epic.perleditor.popupmenus.PerlDocAction.Module" 
-            label="Module/Program Documentation"
-            icon="icons/module_node.gif"
-            menubarPath="PelDocPopupMenu/PerlDocGroup" 
-            class="org.epic.perleditor.popupmenus.PerlDocAction"> 
-         </action> 
-	 </viewerContribution>
+               label="Module/Program Documentation"
+               icon="icons/module_node.gif"
+               class="org.epic.perleditor.popupmenus.PerlDocAction"
+               menubarPath="PelDocPopupMenu/PerlDocGroup"
+               id="org.epic.perleditor.popupmenus.PerlDocAction.Module">
+         </action>
+      </viewerContribution>
    </extension>
-   
-
-  <!-- Associate menus with PerlEditor -->
-   <extension point="org.eclipse.ui.actionSetPartAssociations">
-      <actionSetPartAssociation targetID="org.epic.perleditor.sourcemenu">
-            <part id="org.epic.perleditor.editors.PerlEditor"/>
-       </actionSetPartAssociation>
+<!-- Associate menus with PerlEditor -->
+   <extension
+         point="org.eclipse.ui.actionSetPartAssociations">
+      <actionSetPartAssociation
+            targetID="org.epic.perleditor.sourcemenu">
+         <part
+               id="org.epic.perleditor.editors.PerlEditor">
+         </part>
+      </actionSetPartAssociation>
    </extension>
-
-
-  <extension point="org.eclipse.ui.actionSets">
-    <actionSet id="org.epic.perleditor.sourcemenu"
-                     label="Source Menu">
-			
-        <!-- Content assist -->
-		<action id="org.epic.perleditor.ContentAssist"
-      		menubarPath="edit/additions"
-      		label="Co&amp;ntent Assist"
-			definitionId="org.epic.perleditor.contentassist"
-			retarget="true" />
-			
-			
-	    <!-- Source menu -->
-		<menu
-            id="org.epic.perleditor.source.menu"
-            label="&amp;Source"
-            path="edit">
-            <separator name="editGroup"/>
-            <separator name="exportGroup"/>
+   <extension
+         point="org.eclipse.ui.actionSets">
+      <actionSet
+            label="Source Menu"
+            id="org.epic.perleditor.sourcemenu">
+<!-- Content assist -->
+         <action
+               definitionId="org.epic.perleditor.contentassist"
+               label="Co&amp;ntent Assist"
+               retarget="true"
+               menubarPath="edit/additions"
+               id="org.epic.perleditor.ContentAssist">
+         </action>
+<!-- Source menu -->
+         <menu
+               label="&amp;Source"
+               path="edit"
+               id="org.epic.perleditor.source.menu">
+            <separator
+                  name="editGroup">
+            </separator>
+            <separator
+                  name="exportGroup">
+            </separator>
          </menu>
-             
-         <!-- Export menu -->
-		<menu
-            id="export"
-            label="&amp;Export"
-            path="org.epic.perleditor.source.menu/exportGroup">
-            <separator name="group1"/>
+<!-- Export menu -->
+         <menu
+               label="&amp;Export"
+               path="org.epic.perleditor.source.menu/exportGroup"
+               id="export">
+            <separator
+                  name="group1">
+            </separator>
          </menu>
-                
-		<!-- HTML export -->
-		<action id="org.epic.perleditor.HtmlExport"
-      		menubarPath="org.epic.perleditor.source.menu/export/group1"
-      		label="&amp;HTML"
-			definitionId="org.epic.perleditor.htmlexport"
-			retarget="true" />
-         
-         <!-- Format source action -->
-		<action id="org.epic.perleditor.FormatSource"
-      		menubarPath="org.epic.perleditor.source.menu/editGroup"
-      		label="F&amp;ormat"
-			definitionId="org.epic.perleditor.formatsource"
-			retarget="true" />
-         
-        <!-- Uncomment action -->
-		<action id="org.epic.perleditor.Uncomment"
-      		menubarPath="org.epic.perleditor.source.menu/editGroup"
-      		label="&amp;Uncomment"
-			definitionId="org.epic.perleditor.uncomment"
-			retarget="true" />
-			
-        <!-- Comment action -->
-		<action id="org.epic.perleditor.Comment"
-      		menubarPath="org.epic.perleditor.source.menu/editGroup"
-      		label="Co&amp;mment"
-			definitionId="org.epic.perleditor.comment"
-			retarget="true" />
-
-	</actionSet>
-  </extension>
-
-  <extension point="org.eclipse.ui.commands">
-   <!-- Perl Editor Scope definition -->
-   <scope
-		name="perlEditor Scope"
-		parent="org.eclipse.ui.textEditorScope"
-		description="Perl Editor Scope"
-		id="org.epic.perleditor.perlEditorScope">
-	</scope>
-	
-    <!-- Uncomment command -->
-     <command
-         id="org.epic.perleditor.uncomment"
-         name= "Uncomment"
-         description= "Uncomment Source">
-     </command>
-     <keyBinding
-         string="Ctrl+\"
-         scope="org.epic.perleditor.perlEditorScope"
-         command="org.epic.perleditor.uncomment"
-         configuration="org.eclipse.ui.defaultAcceleratorConfiguration">
+<!-- HTML export -->
+         <action
+               definitionId="org.epic.perleditor.htmlexport"
+               label="&amp;HTML"
+               retarget="true"
+               menubarPath="org.epic.perleditor.source.menu/export/group1"
+               id="org.epic.perleditor.HtmlExport">
+         </action>
+<!-- Format source action -->
+         <action
+               definitionId="org.epic.perleditor.formatsource"
+               label="F&amp;ormat"
+               retarget="true"
+               menubarPath="org.epic.perleditor.source.menu/editGroup"
+               id="org.epic.perleditor.FormatSource">
+         </action>
+<!-- Uncomment action -->
+         <action
+               definitionId="org.epic.perleditor.uncomment"
+               label="&amp;Uncomment"
+               retarget="true"
+               menubarPath="org.epic.perleditor.source.menu/editGroup"
+               id="org.epic.perleditor.Uncomment">
+         </action>
+<!-- Comment action -->
+         <action
+               definitionId="org.epic.perleditor.comment"
+               label="Co&amp;mment"
+               retarget="true"
+               menubarPath="org.epic.perleditor.source.menu/editGroup"
+               id="org.epic.perleditor.Comment">
+         </action>
+      </actionSet>
+   </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+<!-- Perl Editor Scope definition -->
+      <scope
+            name="perlEditor Scope"
+            parent="org.eclipse.ui.textEditorScope"
+            description="Perl Editor Scope"
+            id="org.epic.perleditor.perlEditorScope">
+      </scope>
+<!-- Uncomment command -->
+      <command
+            name="Uncomment"
+            description="Uncomment Source"
+            id="org.epic.perleditor.uncomment">
+      </command>
+      <keyBinding
+            string="Ctrl+\"
+            scope="org.epic.perleditor.perlEditorScope"
+            command="org.epic.perleditor.uncomment"
+            configuration="org.eclipse.ui.defaultAcceleratorConfiguration">
       </keyBinding>
       <keyBinding
-         platform="carbon"
-         string="Command+\"
-         scope="org.epic.perleditor.perlEditorScope"
-         command="org.epic.eclipse.perleditor.uncomment"
-         configuration="org.eclipse.ui.defaultAcceleratorConfiguration">
+            platform="carbon"
+            string="Command+\"
+            scope="org.epic.perleditor.perlEditorScope"
+            command="org.epic.eclipse.perleditor.uncomment"
+            configuration="org.eclipse.ui.defaultAcceleratorConfiguration">
       </keyBinding>
-     <!-- Comment command -->
-     <command
-         id="org.epic.perleditor.comment"
-         name= "Comment"
-         description= "Comment source">
-     </command>
-     <keyBinding
-         string="Ctrl+/"
-         scope="org.epic.perleditor.perlEditorScope"
-         command="org.epic.perleditor.comment"
-         configuration="org.eclipse.ui.defaultAcceleratorConfiguration">
+<!-- Comment command -->
+      <command
+            name="Comment"
+            description="Comment source"
+            id="org.epic.perleditor.comment">
+      </command>
+      <keyBinding
+            string="Ctrl+/"
+            scope="org.epic.perleditor.perlEditorScope"
+            command="org.epic.perleditor.comment"
+            configuration="org.eclipse.ui.defaultAcceleratorConfiguration">
       </keyBinding>
       <keyBinding
-         platform="carbon"
-         string="Command+/"
-         scope="org.epic.perleditor.perlEditorScope"
-         command="org.epic.eclipse.perleditor.comment"
-         configuration="org.eclipse.ui.defaultAcceleratorConfiguration">
+            platform="carbon"
+            string="Command+/"
+            scope="org.epic.perleditor.perlEditorScope"
+            command="org.epic.eclipse.perleditor.comment"
+            configuration="org.eclipse.ui.defaultAcceleratorConfiguration">
       </keyBinding>
-     <!-- Content assist -->
-     <command
-         id="org.epic.perleditor.contentassist"
-         name= "Content Assist"
-         description= "Content Assist">
-     </command>
-     <keyBinding
-         string="Ctrl+Space"
-         scope="org.epic.perleditor.perlEditorScope"
-         command="org.epic.perleditor.contentassist"
-         configuration="org.eclipse.ui.defaultAcceleratorConfiguration">
+<!-- Content assist -->
+      <command
+            name="Content Assist"
+            description="Content Assist"
+            id="org.epic.perleditor.contentassist">
+      </command>
+      <keyBinding
+            string="Ctrl+Space"
+            scope="org.epic.perleditor.perlEditorScope"
+            command="org.epic.perleditor.contentassist"
+            configuration="org.eclipse.ui.defaultAcceleratorConfiguration">
       </keyBinding>
       <keyBinding
-         platform="carbon"
-         string="Command+Space"
-         scope="org.epic.perleditor.perlEditorScope"
-         command="org.epic.perleditor.contentassist"
-         configuration="org.eclipse.ui.defaultAcceleratorConfiguration">
+            platform="carbon"
+            string="Command+Space"
+            scope="org.epic.perleditor.perlEditorScope"
+            command="org.epic.perleditor.contentassist"
+            configuration="org.eclipse.ui.defaultAcceleratorConfiguration">
       </keyBinding>
-     <!--HTML export -->
-     <command
-         id="org.epic.perleditor.htmlexport"
-         name= "HTML Export"
-         description= "HTML Export">
-     </command>
-     <!--Format source -->
-     <command
-         id="org.epic.perleditor.formatsource"
-         name= "Format Source"
-         description= "Format Source">
-     </command>
-     <keyBinding
-         string="Ctrl+Shift+F"
-         scope="org.epic.perleditor.perlEditorScope"
-         command="org.epic.perleditor.formatsource"
-         configuration="org.eclipse.ui.defaultAcceleratorConfiguration">
+<!--HTML export -->
+      <command
+            name="HTML Export"
+            description="HTML Export"
+            id="org.epic.perleditor.htmlexport">
+      </command>
+<!--Format source -->
+      <command
+            name="Format Source"
+            description="Format Source"
+            id="org.epic.perleditor.formatsource">
+      </command>
+      <keyBinding
+            string="Ctrl+Shift+F"
+            scope="org.epic.perleditor.perlEditorScope"
+            command="org.epic.perleditor.formatsource"
+            configuration="org.eclipse.ui.defaultAcceleratorConfiguration">
       </keyBinding>
       <keyBinding
-         platform="carbon"
-         string="Command+Shift+F"
-         scope="org.epic.perleditor.perlEditorScope"
-         command="org.epic.perleditor.formatsource"
-         configuration="org.eclipse.ui.defaultAcceleratorConfiguration">
+            platform="carbon"
+            string="Command+Shift+F"
+            scope="org.epic.perleditor.perlEditorScope"
+            command="org.epic.perleditor.formatsource"
+            configuration="org.eclipse.ui.defaultAcceleratorConfiguration">
       </keyBinding>
-  </extension> 
-  
-  <!-- Decorator extension START -->
-  <extension 
-	    point="org.eclipse.ui.decorators">
-		
-		<decorator
-			adaptable="true"
-			label="Perl"
-			objectClass="org.eclipse.core.resources.IResource"
-			state="true"
-			lightweight="true"
-			class="org.epic.core.decorators.PerlDecorator"
-			id="org.epic.core.decorators.PerlDecorator"
-			location="BOTTOM_RIGHT"> 
-			<description>
-				Perl Decorator
-			</description>		
-           
-		</decorator>
-	</extension>
-  <!-- Decorator extension END -->
-
+   </extension>
+<!-- Decorator extension START -->
+   <extension
+         point="org.eclipse.ui.decorators">
+      <decorator
+            lightweight="true"
+            location="BOTTOM_RIGHT"
+            objectClass="org.eclipse.core.resources.IResource"
+            adaptable="true"
+            label="Perl"
+            class="org.epic.core.decorators.PerlDecorator"
+            state="true"
+            id="org.epic.core.decorators.PerlDecorator">
+         <description>
+            Perl Decorator
+         </description>
+      </decorator>
+   </extension>
+<!-- Decorator extension END -->
    <extension
          point="org.eclipse.help.toc">
       <toc
@@ -382,44 +420,41 @@
             primary="true">
       </toc>
    </extension>
-   
    <extension
          point="org.eclipse.help.contexts">
       <contexts
             file="HelpContexts.xml">
       </contexts>
    </extension>
-   
-   <extension point="org.eclipse.ui.popupMenus">         
-		 <viewerContribution 
-		  		id="org.eclipse.jdt.ui.CompilationUnitEditorPopupActions" 
-		  		targetID="#PerlRulerContext">
-		  		<action
-				   id="org.eclipse.ui.texteditor.TaskRulerAction"
-				   menubarPath="add"
-				   label="Add &amp;Task"
-				   tooltip="Add Task..."
-				            helpContextId="org.eclipse.ui.AddTask_action_context"
-				   class="org.eclipse.ui.texteditor.TaskRulerAction">
-				 </action>
-				 <action
-				   id="org.eclipse.ui.texteditor.BookmarkRulerAction"
-				   menubarPath="add"
-				   label="Add Boo&amp;kmark"
-				   tooltip="Add Bookmark..."
-				            helpContextId="org.eclipse.ui.bookmark_action_context"
-				   class="org.eclipse.ui.texteditor.BookmarkRulerAction">
-		  		</action>
-		 </viewerContribution>
-  </extension>
-
-  <extension
+   <extension
+         point="org.eclipse.ui.popupMenus">
+      <viewerContribution
+            targetID="#PerlRulerContext"
+            id="org.eclipse.jdt.ui.CompilationUnitEditorPopupActions">
+         <action
+               label="Add &amp;Task"
+               helpContextId="org.eclipse.ui.AddTask_action_context"
+               class="org.eclipse.ui.texteditor.TaskRulerAction"
+               tooltip="Add Task..."
+               menubarPath="add"
+               id="org.eclipse.ui.texteditor.TaskRulerAction">
+         </action>
+         <action
+               label="Add Boo&amp;kmark"
+               helpContextId="org.eclipse.ui.bookmark_action_context"
+               class="org.eclipse.ui.texteditor.BookmarkRulerAction"
+               tooltip="Add Bookmark..."
+               menubarPath="add"
+               id="org.eclipse.ui.texteditor.BookmarkRulerAction">
+         </action>
+      </viewerContribution>
+   </extension>
+   <extension
          point="org.eclipse.ui.views">
       <category
             name="EPIC"
             id="org.epic.views">
       </category>
-  </extension>
- 
+   </extension>
 
 </plugin>

@@ -9,6 +9,7 @@ package org.epic.core.util;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.ui.part.FileEditorInput;
@@ -21,31 +22,32 @@ import org.epic.perleditor.PerlEditorPlugin;
  * Window&gt;Preferences&gt;Java&gt;Code Generation&gt;Code and Comments
  */
 public class FileUtilities {
-	static FileEditorInput getFileEditorInput(IPath fPath) {
+	public static FileEditorInput getFileEditorInput(IPath fPath) {
 		IFile iFile = null;
 		IFile[] files =
 			PerlEditorPlugin.getWorkspace().getRoot().findFilesForLocation(
 				fPath);
 
 		if (files.length == 0) {
-			IProject prj =
-				PerlEditorPlugin.getWorkspace().getRoot().getProject(
-					"EPIC_LinkedPerlFiles");
-			if (!prj.exists()) {
-				try {
-					prj.create(null);
-				} catch (Exception e) {
-					System.out.println(e);
-				}
-			}
-
-			try {
-				prj.open(null);
-			} catch (Exception e) {
-				System.out.println(e);
-			}
-
-			long time = System.currentTimeMillis();
+			IProject prj = PerlEditorPlugin.getWorkspace().getRoot().getProject("epic_links");
+						if (!prj.exists())
+						{
+							try{
+							prj.create(null);
+							prj.open(null);
+							IProjectDescription description = prj.getDescription();
+							String[] natures = new String[1];
+							natures[0] = "org.epic.perleditor.perlinkexternalfilesnature";
+							description.setNatureIds(natures);					      
+							prj.setDescription(description, null);
+							}catch(Exception e){System.out.println(e);}
+						}
+						else
+						{
+							try{
+								prj.open(null);
+							}catch(Exception e){System.out.println(e);}
+						}			long time = System.currentTimeMillis();
 			String name;
 			name = Long.toString(time);
 

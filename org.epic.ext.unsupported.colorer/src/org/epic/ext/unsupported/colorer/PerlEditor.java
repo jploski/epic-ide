@@ -1,4 +1,15 @@
 /*
+ *  This is a compatibility version which should work for Eclipse 2.1 and 3.x
+ *  In a later step this should be changed to support only Eclipse 3.x.
+ *  At this point the code should be cleaned up.
+ *  When cleaning up code the class SharedTextColors and the method
+ *  configureSourceViewerDecorationSupport() should be removed and the method 
+ *  createSourceViewer() has to be updated.
+ *  All Methods/Classes subject to change are marked with
+ *  "TODO For Eclipse 3.0 compatibility"
+ */
+
+/*
  * This file is a duplicate of org.epic.perleditor.editors.PerlEditor
  * to allow the use of the Colorer plugin
  * Changes are marked with todo tags!
@@ -23,8 +34,10 @@ import org.eclipse.jface.text.IDocument;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IFileEditorInput;
+import org.eclipse.ui.editors.text.TextEditorPreferenceConstants;
 import org.eclipse.ui.internal.editors.text.EditorsPlugin;
 import org.eclipse.ui.texteditor.AnnotationPreference;
+import org.eclipse.ui.texteditor.DefaultMarkerAnnotationAccess;
 import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.texteditor.MarkerAnnotationPreferences;
 import org.eclipse.ui.texteditor.SourceViewerDecorationSupport;
@@ -43,6 +56,13 @@ import org.epic.perleditor.PerlEditorPlugin;
 
 import org.epic.perleditor.editors.*;
 import net.sf.colorer.eclipse.editors.*;
+
+// TODO For Eclipse 3.0 compatibility
+import org.eclipse.swt.widgets.Display;
+import java.util.Map;
+import java.util.HashMap;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.RGB;
 
 /**
  * Perl specific text editor.
@@ -81,6 +101,8 @@ public class PerlEditor
 			
 
 		this.setPreferenceStore(PerlEditorPlugin.getDefault().getPreferenceStore());	
+		
+		setEditorContextMenuId("#PerlDocEditorContext");
 	}
 
 	/** The <code>PerlEditor</code> implementation of this 
@@ -238,58 +260,41 @@ public class PerlEditor
 	}
 
 	/* Create SourceViewer so we can use the PerlSourceViewer class */
-	protected final ISourceViewer createSourceViewer(
-		Composite parent,
-		IVerticalRuler ruler,
-		int styles) {
+		protected final ISourceViewer createSourceViewer(
+			Composite parent,
+			IVerticalRuler ruler,
+			int styles) {
 
-		super.fAnnotationAccess = createAnnotationAccess();
+			fAnnotationAccess = createAnnotationAccess();
+			ISharedTextColors sharedColors = new SharedTextColors();
 
-		ISharedTextColors sharedColors =
-			EditorsPlugin.getDefault().getSharedTextColors();
+			fOverviewRuler =
+				new OverviewRuler(
+					fAnnotationAccess,
+					VERTICAL_RULER_WIDTH,
+					sharedColors);
+			fOverviewRuler.addHeaderAnnotationType(AnnotationType.WARNING);
+			fOverviewRuler.addHeaderAnnotationType(AnnotationType.ERROR);
 
-		fOverviewRuler =
-			new OverviewRuler(
-				fAnnotationAccess,
-				VERTICAL_RULER_WIDTH,
-				sharedColors);
+			ISourceViewer viewer =
+				new PerlSourceViewer(
+					parent,
+					ruler,
+					fOverviewRuler,
+					isOverviewRulerVisible(),
+					styles);
 
-		MarkerAnnotationPreferences fAnnotationPreferences =
-			new MarkerAnnotationPreferences();
+			fSourceViewerDecorationSupport =
+				new SourceViewerDecorationSupport(
+					viewer,
+					fOverviewRuler,
+					fAnnotationAccess,
+					sharedColors);
+			configureSourceViewerDecorationSupport();
 
-		Iterator e =
-			fAnnotationPreferences.getAnnotationPreferences().iterator();
-
-		while (e.hasNext()) {
-
-			AnnotationPreference preference = (AnnotationPreference) e.next();
-
-			if (preference.contributesToHeader())
-				fOverviewRuler.addHeaderAnnotationType(
-					preference.getAnnotationType());
+			return viewer;
 
 		}
-
-		ISourceViewer sourceViewer =
-			new PerlSourceViewer(
-				parent,
-				ruler,
-				fOverviewRuler,
-				isOverviewRulerVisible(),
-				styles);
-
-		fSourceViewerDecorationSupport =
-			new SourceViewerDecorationSupport(
-				sourceViewer,
-				fOverviewRuler,
-				fAnnotationAccess,
-				sharedColors);
-
-		configureSourceViewerDecorationSupport();
-
-		return sourceViewer;
-
-	}
 
 	/*
 		protected IVerticalRuler createVerticalRuler() {
@@ -380,4 +385,107 @@ public class PerlEditor
 	public ISourceViewer getViewer() {
 		return getSourceViewer();
 	}
+	
+	//	TODO For Eclipse 3.0 compatibility
+	/**
+	 * Configures the decoration support for this editor's the source viewer.
+	 *
+	 * @since 2.1
+	 */
+	protected void configureSourceViewerDecorationSupport() {
+		MarkerAnnotationPreferences fAnnotationPreferences =
+			new MarkerAnnotationPreferences();
+		Iterator e =
+			fAnnotationPreferences.getAnnotationPreferences().iterator();
+		while (e.hasNext())
+			fSourceViewerDecorationSupport.setAnnotationPreference(
+				(AnnotationPreference) e.next());
+		fSourceViewerDecorationSupport.setAnnotationPainterPreferenceKeys(
+			DefaultMarkerAnnotationAccess.UNKNOWN,
+			TextEditorPreferenceConstants.EDITOR_UNKNOWN_INDICATION_COLOR,
+			TextEditorPreferenceConstants.EDITOR_UNKNOWN_INDICATION,
+			TextEditorPreferenceConstants
+				.EDITOR_UNKNOWN_INDICATION_IN_OVERVIEW_RULER,
+			0);
+
+		fSourceViewerDecorationSupport.setCursorLinePainterPreferenceKeys(
+			TextEditorPreferenceConstants.EDITOR_CURRENT_LINE,
+			TextEditorPreferenceConstants.EDITOR_CURRENT_LINE_COLOR);
+		fSourceViewerDecorationSupport.setMarginPainterPreferenceKeys(
+			TextEditorPreferenceConstants.EDITOR_PRINT_MARGIN,
+			TextEditorPreferenceConstants.EDITOR_PRINT_MARGIN_COLOR,
+			TextEditorPreferenceConstants.EDITOR_PRINT_MARGIN_COLUMN);
+		fSourceViewerDecorationSupport.setSymbolicFontName(
+			getFontPropertyPreferenceKey());
+	}
+
+}
+
+// TODO For Eclipse 3.0 compatibility
+/*******************************************************************************
+ * Copyright (c) 2000, 2003 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Common Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/cpl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+
+/*
+ * @see org.eclipse.jface.text.source.ISharedTextColors
+ * @since 2.1
+ */
+class SharedTextColors implements ISharedTextColors {
+
+	/** The display table. */
+	private Map fDisplayTable;
+
+	/** Creates an returns a shared color manager. */
+	public SharedTextColors() {
+		super();
+	}
+
+	/*
+	 * @see ISharedTextColors#getColor(RGB)
+	 */
+	public Color getColor(RGB rgb) {
+		if (rgb == null)
+			return null;
+
+		if (fDisplayTable == null)
+			fDisplayTable = new HashMap(2);
+
+		Display display = Display.getCurrent();
+
+		Map colorTable = (Map) fDisplayTable.get(display);
+		if (colorTable == null) {
+			colorTable = new HashMap(10);
+			fDisplayTable.put(display, colorTable);
+		}
+
+		Color color = (Color) colorTable.get(rgb);
+		if (color == null) {
+			color = new Color(display, rgb);
+			colorTable.put(rgb, color);
+		}
+
+		return color;
+	}
+
+	/*
+	 * @see ISharedTextColors#dispose()
+	 */
+	public void dispose() {
+		if (fDisplayTable != null) {
+			Iterator j = fDisplayTable.values().iterator();
+			while (j.hasNext()) {
+				Iterator i = ((Map) j.next()).values().iterator();
+				while (i.hasNext())
+					 ((Color) i.next()).dispose();
+			}
+		}
+	}
+
 }

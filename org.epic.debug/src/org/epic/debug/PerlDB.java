@@ -43,7 +43,7 @@ public class PerlDB	implements IDebugElement {
 	private boolean debug_cgi = false; 
 /*************************************************/
 	
-	private DebugTarget mTarget;
+	private Target mTarget;
 	private CommandThread mCommandThread;
 	private ServerSocket mServerSocket;
 	private Socket mClientSocket;
@@ -191,52 +191,11 @@ public class PerlDB	implements IDebugElement {
 		mReSessionFinished2 = null;
 		mIsCommandFinished = false;
 		mIsCommandRunning = false;
-		String	startfile = null;
-		String prjName = null;
 		mPendingBreakpoints = new BreakpointMap();
 		mActiveBreakpoints  = new BreakpointMap();
 		
-		try {
-				startfile = mTarget.getLaunch().getLaunchConfiguration().getAttribute(PerlLaunchConfigurationConstants.ATTR_STARTUP_FILE
-					, EMPTY_STRING);
-				prjName =  mTarget.getLaunch().getLaunchConfiguration().getAttribute(PerlLaunchConfigurationConstants.ATTR_PROJECT_NAME
-								, EMPTY_STRING);
-				} catch (Exception ce) {PerlDebugPlugin.log(ce);}
-		IProject prj = PerlDebugPlugin.getWorkspace().getRoot().getProject(prjName);
+	
 		
-		path = prj.getLocation().append(startfile);
-		mWorkingDir =  path.removeLastSegments(1);
-		
-		/************************************/
-		
-		// Construct command line parameters
-		List fCmdList = null;
-		try{
-		
-		//fCmdList = new ArrayList();
-		//fCmdList.add("c:\\perl\\bin\\perl.exe");
-		fCmdList=PerlExecutableUtilities.getPerlExecutableCommandLine(prj);
-		} catch ( Exception e){ System.out.println(e);}
-		
-		fCmdList.add("-d");
-		
-		if (PerlEditorPlugin.getDefault().getWarningsPreference()) {
-			fCmdList.add("-w");
-		}
-		
-		
-		if (PerlEditorPlugin.getDefault().getTaintPreference()) {
-			fCmdList.add("-T");
-		}
-		
-		fCmdList.add(startfile);
-		String[] cmdParams =
-			(String[]) fCmdList.toArray(new String[fCmdList.size()]);
-
-		
-		
-		
-		/************************************/
 		mThreads = new PerlDebugThread[1];
 		mThreads[0]= new PerlDebugThread("Main-Thread",fTarget.getLaunch(),fTarget,this);
 		
@@ -294,10 +253,10 @@ public class PerlDB	implements IDebugElement {
 			}
 			else
 			{
-				mProcess= Runtime.getRuntime().exec(
-				cmdParams,
-				PerlDebugPlugin.getDebugEnv(),
-				new File(mWorkingDir.toString()));
+				
+				mProcess= mTarget.startPerlProcess();
+				mWorkingDir =  mTarget.getWorkingDir();
+				
 			}
 			
 			}catch (Exception e)

@@ -51,13 +51,24 @@ public class LaunchConfigurationDelegate
 		IProgressMonitor monitor)
 		throws CoreException {
 		
-		DebugTarget target;	
+		Target target;	
 		mLaunchConfiguration = configuration;
 		System.out.println("Launch: "+mLaunchConfiguration.getLocation());
 		launch.setSourceLocator(new SourceLocator ());
-		target =new DebugTarget(launch);
-		launch.addDebugTarget( target );
-		target.getDebuger().generateDebugInitEvent();
+		if( launch.getLaunchMode().equals(ILaunchManager.DEBUG_MODE) )
+		{
+			target =new DebugTarget(launch);
+			launch.addDebugTarget( target );
+			((DebugTarget)target).getDebuger().generateDebugInitEvent();
+		}
+		else
+		{
+					target =new RunTarget(launch);
+				launch.addDebugTarget( target );
+		}
+			
+		
+		
 		}
 
 }

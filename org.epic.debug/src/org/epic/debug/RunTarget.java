@@ -1,16 +1,12 @@
 package org.epic.debug;
 
-
-
 import org.eclipse.core.resources.IMarkerDelta;
-
 import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.ILaunch;
-
 import org.eclipse.debug.core.model.IBreakpoint;
 import org.eclipse.debug.core.model.IMemoryBlock;
+import org.eclipse.debug.core.model.IProcess;
 import org.eclipse.debug.core.model.IThread;
-
 
 /**
  * @author ruehl
@@ -20,34 +16,25 @@ import org.eclipse.debug.core.model.IThread;
  * To enable and disable the creation of type comments go to
  * Window>Preferences>Java>Code Generation.
  */
-public class DebugTarget extends Target {
+public class RunTarget extends Target {
 
-	private PerlDB mPerlDB;
+	
 
 	/**
 	 * Constructor for DebugTarget.
 	 */
-	public DebugTarget() {
+	public RunTarget() {
 		super();
 	}
 
 /**
 	 * Constructor for DebugTarget.
 	 */
-	public DebugTarget(ILaunch launch) {
+	public RunTarget(ILaunch launch) {
 		super(launch);
-		try{
-		mPerlDB = new PerlDB(this);
-		}catch (Exception e){System.out.println("Failing to create DB-Process: "+e+" !!!");e.printStackTrace();}
-	}
-	/**
-	 * @see org.eclipse.debug.core.model.IDebugTarget#getProcess()
-	 */
-	
-	public PerlDB getDebuger()
-	{
-		return mPerlDB;
-	}
+		startPerlProcess();
+			}
+
 	
 	
 
@@ -55,20 +42,15 @@ public class DebugTarget extends Target {
 	 * @see org.eclipse.debug.core.model.IDebugTarget#getThreads()
 	 */
 	public IThread[] getThreads() throws DebugException {
-		return mPerlDB.getThreads();
+		return null;
 	}
 
 	/**
 	 * @see org.eclipse.debug.core.model.IDebugTarget#hasThreads()
 	 */
 	public boolean hasThreads() throws DebugException {
-		return(mPerlDB.getThreads() != null );
+		return(false);
 	}
-
-	/**
-	 * @see org.eclipse.debug.core.model.IDebugTarget#getName()
-	 */
-
 
 	/**
 	 * @see org.eclipse.debug.core.model.IDebugTarget#supportsBreakpoint(IBreakpoint)
@@ -84,33 +66,32 @@ public class DebugTarget extends Target {
 		return PerlDebugPlugin.getUniqueIdentifier();
 	}
 	
-
-	/**
-	 * @see org.eclipse.debug.core.model.IDebugElement#getLaunch()
-	 */
-	public ILaunch getLaunch() {
-		return mLaunch;
-	}
-
+	
 	/**
 	 * @see org.eclipse.debug.core.model.ITerminate#canTerminate()
 	 */
 	public boolean canTerminate() {
-		return true;
+		return ! isTerminated();
 	}
 
 	/**
 	 * @see org.eclipse.debug.core.model.ITerminate#isTerminated()
 	 */
 	public boolean isTerminated() {
-		return mPerlDB.isTerminated(this);
+		
+		boolean isRunning = false;
+		try{
+			mJavaProcess.exitValue();
+		} catch (Exception e){  isRunning = true;}
+		
+		return( !isRunning );
 	}
 
 	/**
 	 * @see org.eclipse.debug.core.model.ITerminate#terminate()
 	 */
 	public void terminate() throws DebugException {
-		mPerlDB.terminate(this);
+		mJavaProcess.destroy();
 	}
 
 
@@ -122,28 +103,28 @@ public class DebugTarget extends Target {
 	 * @see org.eclipse.debug.core.model.ISuspendResume#canSuspend()
 	 */
 	public boolean canSuspend() {
-		return mPerlDB.canSuspend(this);
+		return false;
 	}
 
 	/**
 	 * @see org.eclipse.debug.core.model.ISuspendResume#isSuspended()
 	 */
 	public boolean isSuspended() {
-		return mPerlDB.isSuspended(this);
+		return false;
 	}
 
 	/**
 	 * @see org.eclipse.debug.core.model.ISuspendResume#resume()
 	 */
 	public void resume() throws DebugException {
-		 mPerlDB.resume(this);
+		
 	}
 
 	/**
 	 * @see org.eclipse.debug.core.model.ISuspendResume#suspend()
 	 */
 	public void suspend() throws DebugException {
-		mPerlDB.suspend(this);
+		
 	}
 
 	/**
@@ -201,7 +182,7 @@ public class DebugTarget extends Target {
 	public Object getAdapter(Class arg0) {
 		return null;
 	}
-	
-	
 
+
+	
 }

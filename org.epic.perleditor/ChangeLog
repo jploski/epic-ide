@@ -10,6 +10,9 @@ Eclipse Perl Integration:
 		* Fixed bug: [ 996351 ] NullPointer exception during Launch (problems if path to Perl executable has spaces) 
 		
 		Editor:
+		* Added Bracket Matching
+		* Added Default Web-Starter Page
+		* Fixed bug: [ 847291 ] Changes in Preference-Editor caused sometimes a NullPointer exception
 		* Added Refactoring: Extract Subroutine. Uses CPAN module Devel::Refactor.
 		* Added Source Folding for POD and subroutines (Source Folding can be disabled via Editor preferences)
 		* Fixed bug: [ 1017681 ] outline/subroutines leads to wrong line if code contains POD

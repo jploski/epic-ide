@@ -29,8 +29,12 @@ import java.util.StringTokenizer;
 
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.text.Document;
+import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.ui.IEditorDescriptor;
+import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.editors.text.TextEditor;
 import org.epic.core.Constants;
 import org.epic.perleditor.PerlEditorPlugin;
 import org.epic.perleditor.editors.AddEditorMarker;
@@ -97,6 +101,13 @@ public class PerlValidator {
 				}
 	}
 
+	
+	public static boolean validate(TextEditor textEditor, ISourceViewer viewer) {
+		IEditorInput input = textEditor.getEditorInput();
+		IResource resource = (IResource) ((IAdaptable) input).getAdapter(IResource.class);
+		return validate(resource);
+	}
+	
 	public static boolean validate(IResource resource) {
 		try {
 			StringReaderThread srt = new StringReaderThread();
@@ -251,8 +262,9 @@ public class PerlValidator {
 
 			}
 
-			//Delete markers
-			resource.deleteMarkers(IMarker.PROBLEM, true, 1);
+			// Mark problem markers as unused
+			MarkerUtil markerUtil = new MarkerUtil(resource);
+			markerUtil.clearAllUsedFlags(IMarker.PROBLEM);
 
 			// Hash for tracking line severity
 			Map lineHash = new Hashtable();
@@ -302,6 +314,12 @@ public class PerlValidator {
 						if (((String) lines.get(i + 1)).startsWith(" ")) {
 							line += " " + (String) lines.get(i + 1);
 						}
+					}
+					
+					// If marker is already present continue with next line
+					int lineToCheck = Integer.parseInt(lineNr);
+					if(markerUtil.isMarkerPresent(IMarker.PROBLEM, lineToCheck, line, true)) {
+						continue;
 					}
 
 					// Check if it's a warning
@@ -412,11 +430,13 @@ public class PerlValidator {
 					}
 
 					// Add markers
-					AddEditorMarker ed = new AddEditorMarker();
-					ed.addMarker(resource, attributes, IMarker.PROBLEM);
+					markerUtil.addMarker(attributes, IMarker.PROBLEM);
 
 				}
 			}
+			
+			// Remove unused markers
+			markerUtil.removeUnusedMarkers(IMarker.PROBLEM);
 
 		} catch (Exception e) {
 			e.printStackTrace();

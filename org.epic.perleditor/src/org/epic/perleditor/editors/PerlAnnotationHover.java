@@ -1,17 +1,17 @@
 package org.epic.perleditor.editors;
 
-import java.util.Iterator;
 import java.util.List;
-import java.util.ArrayList;
 
 import org.eclipse.core.resources.IMarker;
-import org.eclipse.jface.text.BadLocationException;
-import org.eclipse.jface.text.IDocument;
-import org.eclipse.jface.text.Position;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.jface.text.TextViewer;
 import org.eclipse.jface.text.source.IAnnotationHover;
-import org.eclipse.jface.text.source.IAnnotationModel;
 import org.eclipse.jface.text.source.ISourceViewer;
-import org.eclipse.ui.texteditor.MarkerAnnotation;
+import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.editors.text.TextEditor;
+import org.epic.perleditor.editors.util.MarkerUtil;
 
 /** 
  * The JavaAnnotationHover provides the hover support for java editors.
@@ -20,6 +20,12 @@ import org.eclipse.ui.texteditor.MarkerAnnotation;
 public class PerlAnnotationHover implements IAnnotationHover {
 
 	static final int MAX_INFO_LENGTH = 80;
+	private TextEditor fTextEditor;
+	
+	public  PerlAnnotationHover(TextEditor editor) {
+		super();
+		fTextEditor = editor;
+	}
 
 	/**
 	 * @see org.eclipse.jface.text.source.IAnnotationHover#getHoverInfo(org.eclipse.jface.text.source.ISourceViewer, int)
@@ -27,7 +33,10 @@ public class PerlAnnotationHover implements IAnnotationHover {
 	
 	public String getHoverInfo(ISourceViewer viewer, int line) {
 		String info = null;
-		List markers = getMarkersForLine(viewer, line);
+		
+		IResource resource = (IResource) ((IAdaptable) fTextEditor.getEditorInput()).getAdapter(IResource.class);
+		
+		List markers = MarkerUtil.getMarkersForLine(resource, line+1);
 		if (markers != null) {
 			info = "";
 			for (int i =  0; i < markers.size(); i++) {
@@ -81,81 +90,5 @@ public class PerlAnnotationHover implements IAnnotationHover {
 		return result;
 	}
 
-	/**
-	 * Returns all markers which includes the ruler's line of activity.
-	 */
-	protected List getMarkersForLine(ISourceViewer aViewer, int aLine) {
-		List markers = new ArrayList();
-		IAnnotationModel model = aViewer.getAnnotationModel();
-		if (model != null) {
-			Iterator e = model.getAnnotationIterator();
-			while (e.hasNext()) {
-				Object o = e.next();
-				if (o instanceof MarkerAnnotation) {
-					MarkerAnnotation a = (MarkerAnnotation) o;
-					if (compareRulerLine(model.getPosition(a),
-						aViewer.getDocument(),
-						aLine)
-						!= 0) {
-						markers.add(a.getMarker());
-					}
-				}
-			}
-		}
-		return markers;
-	}
-
-	/**
-	 * Returns one marker which includes the ruler's line of activity.
-	 */
-	protected IMarker getMarkerForLine(ISourceViewer aViewer, int aLine) {
-		IMarker marker = null;
-		IAnnotationModel model = aViewer.getAnnotationModel();
-		if (model != null) {
-			Iterator e = model.getAnnotationIterator();
-			while (e.hasNext()) {
-				Object o = e.next();
-				if (o instanceof MarkerAnnotation) {
-					MarkerAnnotation a = (MarkerAnnotation) o;
-					if (compareRulerLine(model.getPosition(a),
-						aViewer.getDocument(),
-						aLine)
-						!= 0) {
-						marker = a.getMarker();
-					}
-				}
-			}
-		}
-		return marker;
-	}
-
-	/**
-	 * Returns distance of given line to specified position (1 = same line,
-	 * 2 = included in given position, 0 = not related).
-	 */
-	protected int compareRulerLine(
-		Position aPosition,
-		IDocument aDocument,
-		int aLine) {
-		int distance = 0;
-		if (aPosition.getOffset() > -1 && aPosition.getLength() > -1) {
-			try {
-				int markerLine =
-					aDocument.getLineOfOffset(aPosition.getOffset());
-				if (aLine == markerLine) {
-					distance = 1;
-				} else if (
-					markerLine <= aLine
-						&& aLine
-							<= aDocument.getLineOfOffset(
-								aPosition.getOffset()
-									+ aPosition.getLength())) {
-					distance = 2;
-				}
-			} catch (BadLocationException e) {
-			}
-		}
-		return distance;
-	}
 
 }

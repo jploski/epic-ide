@@ -25,9 +25,6 @@ public class PerlSyntaxValidationThread extends Thread implements IdleTimerListe
 	private static final String PERL_CMD_EXT = "-c";
 	private static final String PERL_ERROR_INDICATOR = " at - line ";
 	//private static final int READ_BUFFER_SIZE = 128;
-
-	private static final String[] WARNING_STRINGS =
-		{ "possible", "Useless", "may", "better written as" };
         
     private final Object lock1 = new Object();
 //    private final Object lock2 = new Object();

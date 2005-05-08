@@ -86,7 +86,7 @@ public class PerlSourceViewerConfiguration
 	}
 
 	public IAnnotationHover getAnnotationHover(ISourceViewer sourceViewer) {
-		return new PerlAnnotationHover();
+		return new PerlAnnotationHover(fTextEditor);
 	}
 
 	/*
@@ -186,6 +186,6 @@ public class PerlSourceViewerConfiguration
 	 */
 	public ITextHover getTextHover(ISourceViewer sourceViewer,
 			String contentType) {
-		return new PerlTextHover();
+		return new PerlTextHover(fTextEditor);
 	}
 }

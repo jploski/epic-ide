@@ -3,6 +3,7 @@ package org.epic.perleditor.editors;
 
 
 import org.eclipse.swt.graphics.Point;
+import org.eclipse.ui.editors.text.TextEditor;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.ITextHover;
@@ -21,6 +22,13 @@ import org.eclipse.jface.text.source.ISourceViewer;
 public class PerlTextHover implements ITextHover {
 	
 	private static int MAX_INFO_LENGTH = 80;
+	
+	private TextEditor fTextEditor;
+	
+	public PerlTextHover(TextEditor editor) {
+		super();
+		fTextEditor = editor;
+	}
 
 	public String getHoverInfo(ITextViewer textViewer, IRegion hoverRegion) {
 		String textRes = null;
@@ -51,7 +59,7 @@ public class PerlTextHover implements ITextHover {
 						}
 						else {		
 						     //If no keyword description was found try to show marker info
-						     IAnnotationHover markerAnnotation = new PerlAnnotationHover();
+						     IAnnotationHover markerAnnotation = new PerlAnnotationHover(fTextEditor);
 						     int line = textViewer.getDocument().getLineOfOffset(hoverRegion.getOffset());
 						     textRes = markerAnnotation.getHoverInfo((ISourceViewer) textViewer, line);
 						}

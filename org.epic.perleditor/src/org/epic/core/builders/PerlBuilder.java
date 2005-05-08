@@ -135,6 +135,7 @@ class BuildDeltaVisitor implements IResourceDeltaVisitor
 	{	    
 			switch (delta.getKind())
 			{
+			
 				case IResourceDelta.CHANGED :
 					if (PerlValidator.validate(delta.getResource())
 						|| (delta.getResource().getType() == IResource.PROJECT && delta.getResource().getProject().hasNature(Constants.PERL_NATURE_ID)))

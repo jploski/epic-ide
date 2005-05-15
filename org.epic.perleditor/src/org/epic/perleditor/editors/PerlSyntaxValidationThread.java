@@ -45,7 +45,7 @@ public class PerlSyntaxValidationThread extends Thread implements IdleTimerListe
     private StringReaderThread srt = new StringReaderThread();
 
 	public PerlSyntaxValidationThread(TextEditor textEditor, ISourceViewer viewer) {
-		super();
+		super("PerlSyntaxValidationThread");
 		this.fTextEditor = textEditor;
 		this.fSourceViewer = viewer;
 	}

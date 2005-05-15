@@ -37,7 +37,7 @@ public class PerlToDoMarkerThread extends Thread implements IdleTimerListener, I
 	private String text = null;
 	
 	public PerlToDoMarkerThread(TextEditor textEditor, ISourceViewer viewer) {
-		super();
+		super("PerlToDoMarkerThread");
 		this.fTextEditor = textEditor;
 		this.fSourceViewer = viewer;
 		System.out.println("PerlToDoMarkerThread constructed.");

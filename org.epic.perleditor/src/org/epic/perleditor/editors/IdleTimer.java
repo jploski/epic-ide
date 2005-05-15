@@ -29,6 +29,7 @@ public class IdleTimer extends Thread {
 	private int previousHashCode = 0;
 
 	public IdleTimer(ISourceViewer sourceViewer, Display display) {
+		super("IdleTimer");
 		this.sourceViewer = sourceViewer;
 		this.display = display;
 	}

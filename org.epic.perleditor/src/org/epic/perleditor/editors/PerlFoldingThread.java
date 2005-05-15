@@ -33,7 +33,7 @@ public class PerlFoldingThread extends Thread implements IdleTimerListener {
 	private static final Integer ANNOTATION_EXISTS = new Integer(2);
 
 	public PerlFoldingThread(TextEditor textEditor, ISourceViewer viewer) {
-		super();
+		super("PerlFoldingThread");
 		this.fTextEditor = textEditor;
 		this.fSourceViewer = viewer;
 	}

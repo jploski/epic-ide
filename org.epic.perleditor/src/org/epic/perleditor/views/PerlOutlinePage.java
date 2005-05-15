@@ -118,7 +118,7 @@ public class PerlOutlinePage
 		private String sourceCode;
 		Display display;
 
-		public UpdateThread(Display display) {
+		public UpdateThread(Display display) {			super("PerlOutlinePage");
 			this.display = display;
 		}
 		public void setSourceCode(String source) {

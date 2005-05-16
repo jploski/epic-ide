@@ -27,6 +27,8 @@ public class IdleTimer extends Thread {
 	private int waitForTermination = 1000; // millis
 	private Display display;
 	private int previousHashCode = 0;
+	
+	private boolean isInterrupted = false;
 
 	public IdleTimer(ISourceViewer sourceViewer, Display display) {
 		super("IdleTimer");
@@ -59,7 +61,7 @@ public class IdleTimer extends Thread {
 			}
 		});
 
-		while (!Thread.interrupted()) {
+		while (!Thread.interrupted() && !isInterrupted) {
 			long sleep =
 				PerlEditorPlugin.getDefault().getPreferenceStore().getLong(
 					PerlEditorPlugin.SYNTAX_VALIDATION_INTERVAL_PREFERENCE);
@@ -110,6 +112,7 @@ public class IdleTimer extends Thread {
 
 	public void dispose() throws InterruptedException {
 		this.interrupt();
+		isInterrupted = true; // The this.isInterrupted() call does not seem to work. This is the workaround.
 		this.join(this.waitForTermination);
 	}
 

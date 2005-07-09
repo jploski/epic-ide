@@ -7,6 +7,9 @@
 package org.epic.core.util;
 
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.variables.IStringVariableManager;
+import org.eclipse.core.variables.VariablesPlugin;
 
 import java.io.*;
 import java.util.*;
@@ -53,6 +56,9 @@ public class XMLUtilities {
 				SAXBuilder builder = new SAXBuilder(false);
 				Document doc = builder.build(file);
 
+				// Get the variable manager for substitution
+				IStringVariableManager varMgr = VariablesPlugin.getDefault().getStringVariableManager();
+
 				// Get root element
 				Element root = doc.getRootElement();
 
@@ -64,14 +70,19 @@ public class XMLUtilities {
 					Element element = (Element) iter.next();
 					String path = element.getAttributeValue("path");
 					
-					if(replaceVariables) {
-						String projectDir = project.getLocation().toString();
-						if(path.startsWith("${project_path}")) {
-							path = projectDir + path.substring("${project_path}".length());
+					if (replaceVariables) {
+						try {
+							String expandedPath = varMgr.performStringSubstitution(path);
+							path = expandedPath;
+						} catch (CoreException e) {
+							path = null;
+							e.printStackTrace();
 						}
 					}
-					
-					includes.add(path);
+
+					if (path != null) {
+						includes.add(path);
+					}
 				}
 			}
 		} catch (Exception e) {

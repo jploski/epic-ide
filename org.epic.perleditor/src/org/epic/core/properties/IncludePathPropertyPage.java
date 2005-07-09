@@ -115,8 +115,10 @@ public class IncludePathPropertyPage extends PropertyPage {
 				String dir = dirBrowser.open();
 				if (dir != null) {
 					String projectDir = project.getLocation().toString();
-					if(dir.startsWith(projectDir)) {
-						dir = "${project_path}" + dir.substring(projectDir.length());
+					if (dir.equals(projectDir)) {
+						dir = "${project_loc}";
+					} else if (dir.startsWith(projectDir)) {
+						dir = "${resource_loc:" + project.getFullPath().toString() + dir.substring(projectDir.length()) + "}";
 					}
 					newEntryText.setText(dir);
 					filterPath = dir.substring(0, dir

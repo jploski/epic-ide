@@ -34,8 +34,8 @@ import org.eclipse.ui.texteditor.AbstractMarkerAnnotationModel;
 import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.eclipse.ui.texteditor.IUpdate;
-import org.epic.debug.test.DiffDalog;
-import org.epic.debug.test.Refactoring;
+//import org.epic.debug.test.DiffDalog;
+//import org.epic.debug.test.Refactoring;
 
 public class ManageRegExpBreakpointRulerPropertyAction extends Action
 		implements
@@ -155,17 +155,17 @@ public class ManageRegExpBreakpointRulerPropertyAction extends Action
 public void run() {
 		
 		Shell shell = getTextEditor().getEditorSite().getShell();
-		Refactoring ref = new Refactoring();
-		ref.startWiz();
-		// to be removed
-		((PerlRegExpBreakpoint)getBP(getMarker())).updateIfRecognized();
-		DiffDalog dialog = new DiffDalog(shell); 
-		
-		dialog.open();
-		//org
+//		Refactoring ref = new Refactoring();
+//		ref.startWiz();
+//		// to be removed
 //		((PerlRegExpBreakpoint)getBP(getMarker())).updateIfRecognized();
-//		RegExpBPSettingsDalog dialog = new RegExpBPSettingsDalog(shell, ((PerlRegExpBreakpoint)getBP(getMarker()))); 
+//		DiffDalog dialog = new DiffDalog(shell); 
+//		
 //		dialog.open();
+		
+		((PerlRegExpBreakpoint)getBP(getMarker())).updateIfRecognized();
+		RegExpBPSettingsDalog dialog = new RegExpBPSettingsDalog(shell, ((PerlRegExpBreakpoint)getBP(getMarker()))); 
+		dialog.open();
 	}
 	protected IMarker getMarker() {
 

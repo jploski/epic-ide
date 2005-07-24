@@ -260,12 +260,7 @@ public abstract class DebugTarget extends Target {
 		return null;
 	}
 
-	/**
-	 * @see org.eclipse.core.runtime.IAdaptable#getAdapter(Class)
-	 */
-	public Object getAdapter(Class arg0) {
-		return null;
-	}
+	
 
 	public void shutdown(boolean unregister) {
 		if (mShutDownStarted)

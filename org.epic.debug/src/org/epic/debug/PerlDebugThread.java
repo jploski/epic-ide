@@ -2,6 +2,7 @@ package org.epic.debug;
 
 import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.ILaunch;
+import org.eclipse.debug.core.model.DebugElement;
 import org.eclipse.debug.core.model.IBreakpoint;
 import org.eclipse.debug.core.model.IDebugTarget;
 import org.eclipse.debug.core.model.IStackFrame;
@@ -15,7 +16,7 @@ import org.eclipse.debug.core.model.IThread;
  * To enable and disable the creation of type comments go to
  * Window>Preferences>Java>Code Generation.
  */
-public class PerlDebugThread implements IThread {
+public class PerlDebugThread extends DebugElement implements IThread {
 
 	/**
 	 * Constructor for PerlDebugThread.
@@ -27,17 +28,16 @@ public class PerlDebugThread implements IThread {
 	
 	private IStackFrame [] mFrames;  
 	
-	public PerlDebugThread() {
-		super();
-	}
+
 
 	public PerlDebugThread(String name,ILaunch launch, IDebugTarget debugTarget,PerlDB fPerlDB) {
-		super();
+		super(debugTarget);
 		mName = name;
 		mDebugTarget = debugTarget;
 		mLaunch = launch;
 		mFrames =null;
 		mPerlDB = fPerlDB;
+		fireCreationEvent();
 	}
 
 	/**
@@ -231,8 +231,18 @@ public class PerlDebugThread implements IThread {
 	/**
 	 * @see org.eclipse.core.runtime.IAdaptable#getAdapter(Class)
 	 */
-	public Object getAdapter(Class arg0) {
-		return null;
+	public Object getAdapter(Class adapter) {
+		if (adapter == PerlDebugThread.class) {
+			return this;
+		}
+		if (adapter == StackFrame.class) {
+			try {
+				return (StackFrame)getTopStackFrame();
+			} catch (DebugException e) {
+				// do nothing if not able to get frame
+			}
+		}
+		return super.getAdapter(adapter);
 	}
 	
 	public PerlDB getPerlDB()

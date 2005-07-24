@@ -314,17 +314,7 @@ public class CGITarget extends DebugTarget implements IDebugEventSetListener
 		fireEvent(new DebugEvent(fSource, DebugEvent.CREATE));
 	}
 
-	/**
-	 * Fire a debug event
-	 */
-	private void fireEvent(DebugEvent event)
-	{
-		DebugPlugin manager = DebugPlugin.getDefault();
-		if (manager != null)
-		{
-			manager.fireDebugEventSet(new DebugEvent[] { event });
-		}
-	}
+	
 
 	BrowserDescriptor[] browserDescr ;
 	void startBrowser(int fPort, String  htmlRootFileRel)

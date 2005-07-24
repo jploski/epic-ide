@@ -11,6 +11,7 @@ import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchManager;
+import org.eclipse.debug.core.model.DebugElement;
 import org.eclipse.debug.core.model.IDebugTarget;
 import org.eclipse.debug.core.model.IProcess;
 import org.epic.debug.util.ExecutionArguments;
@@ -25,7 +26,7 @@ import org.epic.perleditor.editors.util.PerlExecutableUtilities;
  * To enable and disable the creation of type comments go to
  * Window>Preferences>Java>Code Generation.
  */
-public abstract class Target implements IDebugTarget
+public abstract class Target extends DebugElement implements IDebugTarget
 {
 
 	private boolean mShutDownStarted;
@@ -46,7 +47,7 @@ public abstract class Target implements IDebugTarget
 	 */
 	public Target()
 	{
-		super();
+		super(null);
 	}
 
 	/**
@@ -54,10 +55,10 @@ public abstract class Target implements IDebugTarget
 		 */
 	public Target(ILaunch launch)
 	{
-		super();
+		super(null);
 		mLaunch = launch;
 		initPath();
-		
+		fireCreationEvent();
 		//	((PerlDebugPlugin)PerlDebugPlugin.getDefault()).registerDebugTarget(this);
 	}
 	
@@ -250,13 +251,13 @@ public abstract class Target implements IDebugTarget
 	{
 		return mStartupFile;
 	}
-	/**
-		 * Fire a debug event marking the creation of this element.
-		 */
-	private void fireCreationEvent()
-	{
-		fireEvent(new DebugEvent(this, DebugEvent.CREATE));
-	}
+//	/**
+//		 * Fire a debug event marking the creation of this element.
+//		 */
+//	private void fireCreationEvent()
+//	{
+//		fireEvent(new DebugEvent(this, DebugEvent.CREATE));
+//	}
 
 	 void fireChangeEvent()
 	{
@@ -267,26 +268,7 @@ public abstract class Target implements IDebugTarget
 		fireEvent(new DebugEvent(this, DebugEvent.CREATE));
 	}
 
-	/**
-	 * Fire a debug event
-	 */
-	private void fireEvent(DebugEvent event)
-	{
-		DebugPlugin manager = DebugPlugin.getDefault();
-		if (manager != null)
-		{
-			manager.fireDebugEventSet(new DebugEvent[] { event });
-		}
-	}
-
-	/**
-		 * Fire a debug event marking the termination of this process.
-		 */
-	void fireTerminateEvent()
-	{
-		fireEvent(new DebugEvent(this, DebugEvent.TERMINATE));
-	}
-
+	
 	public void shutdown()
 	{
 		shutdown(true);
@@ -331,7 +313,16 @@ public abstract class Target implements IDebugTarget
 	
 	
 				
-		
+	/**
+	 * @see IAdaptable#getAdapter(Class)
+	 */
+	public Object getAdapter(Class adapter) {
+		if (adapter == this.getClass()) {
+			return this;
+		}
+		return super.getAdapter(adapter);
+	}
+
 	
 	
 	public IProject getProject() {

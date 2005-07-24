@@ -143,10 +143,10 @@ public class LaunchConfigurationDelegate
 				mTarget.start();
 				if (!mTarget.isTerminated())
 				{
-					mLaunch.addDebugTarget(mTarget);
-					((DebugTargetLocal) mTarget)
-						.getDebuger()
-						.generateDebugInitEvent();
+     				mLaunch.addDebugTarget(mTarget);
+//					((DebugTargetLocal) mTarget)
+//						.getDebuger()
+//						.generateDebugInitEvent();
 				}
 				// Switch to Debug Perspective
 				Perspective.switchPerspective(Constants.DEBUG_PERSPECTIVE_ID);

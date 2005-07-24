@@ -8,6 +8,7 @@ import java.util.ResourceBundle;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.ILaunch;
+import org.eclipse.debug.core.model.DebugElement;
 import org.eclipse.debug.core.model.IDebugTarget;
 import org.eclipse.debug.core.model.IRegisterGroup;
 import org.eclipse.debug.core.model.IStackFrame;
@@ -23,7 +24,7 @@ import org.epic.debug.varparser.PerlDebugVar;
  * To enable and disable the creation of type comments go to
  * Window>Preferences>Java>Code Generation.
  */
-public class StackFrame implements IStackFrame {
+public class StackFrame extends DebugElement implements IStackFrame {
 
 	/**
 	 * Constructor for StackFrame.
@@ -46,9 +47,10 @@ static{
 }
 
    public StackFrame(PerlDebugThread fThread) {
-		super();
+		super(fThread.getDebugTarget());
 		
 		mThread = fThread;
+		mVars = new IVariable[0];
 		}
 	/**
 	 * @see org.eclipse.debug.core.model.IStackFrame#getThread()
@@ -65,6 +67,9 @@ static{
 	 * @see org.eclipse.debug.core.model.IStackFrame#getVariables()
 	 */
 	public IVariable[] getVariables() throws DebugException {
+		if (mVars == null)
+		{ getPerlThread();
+		}
 		return mVars;
 	}
 
@@ -311,7 +316,7 @@ static{
 		if( adapter == this.getClass() )
 			return this;
 		else
-			return null;
+		 return super.getAdapter(adapter);
 	}
 
 	/**
@@ -342,4 +347,6 @@ static{
 		mIP_Path = path;
 	}
 
+	
+	
 }

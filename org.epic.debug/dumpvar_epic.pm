@@ -43,7 +43,7 @@ sub buildName{
 local($text) = @_;
 return $TOKEN_NAME.buildString($text);
 }
-sub main::dumpValue {
+sub dumpValue {
   local %address;
   local $^W=0;
   (print buildString("undef")), return unless defined $_[0];
@@ -445,7 +445,7 @@ sub findsubs {
   $subs{ shift() };
 }
 
-sub main::dumpvar_epic {
+sub dumpvar_epic {
     my ($package,$m,@vars) = @_;
     local(%address,$key,$val,$^W);
     $m=-1;

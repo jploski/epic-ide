@@ -9,6 +9,7 @@ import java.util.Iterator;
 
 import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.ILaunch;
+import org.eclipse.debug.core.model.DebugElement;
 import org.eclipse.debug.core.model.IDebugElement;
 import org.eclipse.debug.core.model.IDebugTarget;
 import org.eclipse.debug.core.model.IValue;
@@ -20,7 +21,7 @@ import org.eclipse.debug.core.model.IVariable;
  * To change the template for this generated type comment go to
  * Window>Preferences>Java>Code Generation>Code and Comments
  */
-public class PerlDebugValue implements IValue {
+public class PerlDebugValue extends DebugElement implements IValue {
 
 	public static int mIsTainted = 1;
 	public static int mValueHasChanged =2;
@@ -120,7 +121,7 @@ public class PerlDebugValue implements IValue {
 	 * 
 	 */
 	public PerlDebugValue(IDebugElement fDebugger) {
-		super();
+		super(fDebugger.getDebugTarget());
 		mValue = null;
 		mType = null;
 		mDebugger = fDebugger;
@@ -203,9 +204,11 @@ public class PerlDebugValue implements IValue {
 	 * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
 	 */
 	public Object getAdapter(Class adapter) {
-			return null;
+		if (adapter == this.getClass()) {
+			return this;
+		}
+		return super.getAdapter(adapter);
 	}
-	
 	public void addVar(PerlDebugVar fVar )
 	{
 		mVars.add(fVar);

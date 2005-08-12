@@ -1,6 +1,7 @@
 package org.epic.debug.varparser;
 import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.ILaunch;
+import org.eclipse.debug.core.model.DebugElement;
 import org.eclipse.debug.core.model.IDebugElement;
 import org.eclipse.debug.core.model.IDebugTarget;
 import org.eclipse.debug.core.model.IValue;
@@ -19,7 +20,7 @@ import org.eclipse.debug.core.model.IVariable;
  * To change the template for this generated type comment go to
  * Window>Preferences>Java>Code Generation>Code and Comments
  */
-public class PerlDebugVar implements IVariable {
+public class PerlDebugVar extends DebugElement implements IVariable {
 
 	private IDebugElement mDebugger;
 	private String mName;
@@ -103,7 +104,7 @@ public class PerlDebugVar implements IVariable {
 	 * 
 	 */
 	public PerlDebugVar(IDebugElement fDebugger, int fScope) {
-		super();
+		super(fDebugger.getDebugTarget());
 		mDebugger = fDebugger;
 		mName = null;
 		mValue = null;
@@ -115,7 +116,7 @@ public class PerlDebugVar implements IVariable {
 	}
 	
 	public PerlDebugVar(IDebugElement fDebugger,int fScope, boolean fHide) {
-			super();
+		super(fDebugger.getDebugTarget());
 			mDebugger = fDebugger;
 			mName = null;
 			mValue = null;
@@ -237,9 +238,11 @@ public class PerlDebugVar implements IVariable {
 	 * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
 	 */
 	public Object getAdapter(Class adapter) {
-		return null;
+		if (adapter == this.getClass()) {
+			return this;
+		}
+		return super.getAdapter(adapter);
 	}
-	
 	public boolean verifyValue(IValue fVal)
 	{
 		return false;

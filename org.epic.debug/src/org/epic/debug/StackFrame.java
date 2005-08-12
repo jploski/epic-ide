@@ -50,7 +50,7 @@ static{
 		super(fThread.getDebugTarget());
 		
 		mThread = fThread;
-		mVars = new IVariable[0];
+		mVars = new PerlDebugVar[0];
 		}
 	/**
 	 * @see org.eclipse.debug.core.model.IStackFrame#getThread()

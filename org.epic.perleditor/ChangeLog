@@ -1,7 +1,10 @@
 Eclipse Perl Integration:
 
 		Debugger
-		* check for errors in scripts before running/debugging
+		* Fixed Bug [1233924] Debugging disabled in eclipse 3.1
+		* Fixed Bug [1257160] Can't Debug ... "Error Parsing Debugger Variables"
+		* Debugger now works with Eclipse 3.1
+		* Check for errors in scripts before running/debugging
 		* Fixed bug [1113326] show STDERROR stream in CGI console window
 		* Fixed bug [1113336] Unable to set Perl include path in CGI debug mode
 		* Fixed bug [1114090] NPE in CGITarget.startBrowser

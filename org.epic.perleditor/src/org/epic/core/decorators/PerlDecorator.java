@@ -137,8 +137,6 @@ public class PerlDecorator extends LabelProvider
 				e1.printStackTrace();
 			}
 		}
-
-		PerlDecoratorManager.removeResource(resource);
 	}
 	public static PerlDecorator getPerlDecorator() {
 		IDecoratorManager decoratorManager = PerlEditorPlugin.getDefault()

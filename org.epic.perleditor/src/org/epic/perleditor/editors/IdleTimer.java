@@ -4,166 +4,151 @@
  */
 package org.epic.perleditor.editors;
 
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
+import org.eclipse.jface.text.DocumentEvent;
+import org.eclipse.jface.text.IDocumentListener;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.jface.text.source.SourceViewer;
-import org.eclipse.swt.custom.VerifyKeyListener;
-import org.eclipse.swt.events.VerifyEvent;
+import org.eclipse.swt.SWTException;
+import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.widgets.Display;
 import org.epic.perleditor.PerlEditorPlugin;
 
 /**
+ * Monitors an editor's document for changes and broadcasts change
+ * notifications to registered listeners. Not every change event is
+ * reported: a configurable time period must pass after the most recent
+ * change before a notification is sent out.
+ * 
  * @author luelljoc
- *
+ * @author jploski
  */
-public class IdleTimer extends Thread {
+public class IdleTimer extends Thread
+{
+	private final ISourceViewer sourceViewer;
+    private final Display display;
+    private final List listeners = new ArrayList();
 
-	private ISourceViewer sourceViewer;
-	private boolean changedSinceLastRun;
-	private List listeners = new ArrayList();
+    private long lastChange = -1L;
 	private int waitForTermination = 1000; // millis
-	private Display display;
-	private int previousHashCode = 0;
-	
-	private boolean isInterrupted = false;
 
-	public IdleTimer(ISourceViewer sourceViewer, Display display) {
+    /**
+     * @param sourceViewer  viewer monitored for document changes
+     * @param display       display to use for broadcasting notifications
+     */
+	public IdleTimer(ISourceViewer sourceViewer, Display display)
+    {
 		super("IdleTimer");
+        assert sourceViewer != null;
+        assert display != null;
+        
 		this.sourceViewer = sourceViewer;
 		this.display = display;
 	}
 
-	public boolean addListener(Object listener) {
-		// To make sure the new listener is update immediately
-		changedSinceLastRun = true;
-		return listeners.add(listener);
+    /**
+     * Registers a listener to receive change notifications.
+     * This operation triggers an immediate notification to all listeners,
+     * regardless of whether the document has changed.
+     */
+	public synchronized void addListener(IdleTimerListener listener)
+    {
+        listeners.add(listener);
+        lastChange = System.currentTimeMillis();
+        notifyAll();
 	}
+    
+    /**
+     * Terminates the thread.
+     */
+    public void dispose() throws InterruptedException
+    {
+        this.interrupt();
+        this.join(this.waitForTermination);
+    }
 
-	public boolean removeListener(Object listener) {
-		return listeners.remove(listener);
-	}
-	
-	public boolean isRegistered(Object obj) {
-		return listeners.indexOf(obj) != -1 ? true : false;
-	}
-
-	public void run() {
-		(
-			(
-				SourceViewer) this
-					.sourceViewer)
-					.appendVerifyKeyListener(new VerifyKeyListener() {
-			public void verifyKey(VerifyEvent event) {
-				changedSinceLastRun = true;
-			}
-		});
-
-		while (!Thread.interrupted() && !isInterrupted) {
-			long sleep =
-				PerlEditorPlugin.getDefault().getPreferenceStore().getLong(
-					PerlEditorPlugin.SYNTAX_VALIDATION_INTERVAL_PREFERENCE);
-
-			if (changedSinceLastRun) {
-
-				Invoker invoker;
-				invoker = null;
-				try {
-					for (int i = 0; i < listeners.size(); i++) {
-						invoker =
-							new Invoker(
-								listeners.get(i),
-								sourceViewer,
-								this.previousHashCode);
-						display.syncExec(invoker);
-					}
-				} catch (Exception ex) {
-					// This might happen if display is no longer available
-				}
-
-				// Get hash from last invoker
-				if (invoker != null)
-					this.previousHashCode = invoker.getHashCode();
-			}
-			changedSinceLastRun = false;
-
-			try {
-				Thread.sleep(sleep);
-			} catch (InterruptedException e) {
-			  //The only reason why an exception is caught here, is that the sleep timer terminated before end
-			  //makes no special reason to print this out! (LeO)
-
-			  //			  e.printStackTrace();
-			}
-		}
+    /**
+     * Unregisters a listener added with addListener.
+     */
+	public synchronized void removeListener(IdleTimerListener listener)
+    {
+		listeners.remove(listener);
 	}
 	
-	/**
-	 * Sets the changedSinceLastRun state of the idle timer.
-	 * If state is <code>true</code> the Idle Timer will notify all registered objects.
-	 * 
-	 * @param state	<code>true</code> if notify registered objects on next run, otherwise <code>false</code>
-	 */
-	public void setChangedSinceLastRun(boolean state) {
-		changedSinceLastRun = state;
+    /**
+     * @return true if the given listener is already registered,
+     *         false otherwise 
+     */
+	public synchronized boolean isRegistered(IdleTimerListener listener)
+    {
+		return listeners.contains(listener);
 	}
 
-	public void dispose() throws InterruptedException {
-		this.interrupt();
-		isInterrupted = true; // The this.isInterrupted() call does not seem to work. This is the workaround.
-		this.join(this.waitForTermination);
-	}
+	public void run()
+    {
+        IDocumentListener changeListener = new IDocumentListener() {
+            public void documentAboutToBeChanged(DocumentEvent event) { }
+            public void documentChanged(DocumentEvent event)
+            {
+                synchronized (IdleTimer.this)
+                {
+                    lastChange = System.currentTimeMillis();
+                    IdleTimer.this.notifyAll();
+                }
+            } };
+        
+        sourceViewer.getDocument().addDocumentListener(changeListener);
+        // we don't ever call removeDocumentListener because the listener
+        // stays registered until the IDocument is disposed together with
+        // the editor
+        
+        try { runImpl(); }
+        catch (InterruptedException e) { /* normal termination */ }
+    }
+    
+    private boolean isEditorVisible()
+    {
+        StyledText widget = ((SourceViewer) sourceViewer).getTextWidget();        
+        return widget != null && widget.isVisible();
+    }
+    
+    private void runImpl() throws InterruptedException
+    {
+        while (!Thread.interrupted())
+        {
+            synchronized (this)
+            {
+                while (lastChange == -1) wait();
 
-	class Invoker implements Runnable {
+                long sleep =
+                    PerlEditorPlugin.getDefault().getPreferenceStore().getLong(
+                        PerlEditorPlugin.SYNTAX_VALIDATION_INTERVAL_PREFERENCE);
 
-		private Object object;
-		private ISourceViewer viewer;
-		private int previousHashCode;
-		private int hashCode = 0;
+                // note that lastChange might be increased by document
+                // changes occuring during the wait
+                while (System.currentTimeMillis() < lastChange + sleep)
+                    wait(sleep);
 
-		public Invoker(
-			Object obj,
-			ISourceViewer viewer,
-			int previousHashCode) {
-			this.object = obj;
-			this.viewer = viewer;
-			this.previousHashCode = previousHashCode;
-		}
+                lastChange = -1L;
+            }
 
-		public int getHashCode() {
-			return hashCode;
-		}
-
-		public void run() {
-
-			try {
-				// Get checksum
-				//hashCode = sourceViewer.getTextWidget().getText().hashCode();
-				hashCode = sourceViewer.getDocument().get().hashCode();
-
-				if (((SourceViewer) viewer).getTextWidget().isVisible()
-					&& hashCode != previousHashCode) {
-					Class c = object.getClass();
-					try {
-						Class[] parameterTypes =
-							new Class[] { ISourceViewer.class };
-						Method m = c.getMethod("onEditorIdle", parameterTypes);
-						Object[] arguments = new Object[] { sourceViewer };
-						m.invoke(object, arguments);
-					} catch (Exception ex) {
-						ex.printStackTrace();
-					}
-				}
-
-			} catch (Exception e) {
-				// This exception might occur if sourceViewer is no longer valid
-				// or a TargetInvocation exception occurs
-				//e.printStackTrace();
-			}
-		}
-
-	}
-
+            try
+            {
+                for (Iterator i = listeners.iterator(); i.hasNext();)
+                {
+                    final IdleTimerListener listener = (IdleTimerListener) i.next();                    
+                    display.syncExec(new Runnable() {
+                        public void run() {
+                            if (isEditorVisible())
+                                listener.onEditorIdle(sourceViewer);
+                        } });
+                }
+            }
+            catch (SWTException e)
+            {
+                // This might happen if display is no longer available
+            }            
+        }
+    }
 }

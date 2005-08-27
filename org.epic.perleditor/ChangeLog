@@ -29,6 +29,9 @@ Eclipse Perl Integration:
 		* Fixed bug: [ 996351 ] NullPointer exception during Launch (problems if path to Perl executable has spaces)
 
 		Editor:
+		* Feature request #1100818 "Errors in Modules should be listed" partly implemented
+		* Improved displaying of compilation errors for files using CGI::Carp
+		* Fixed bug: [ 1106548 ] Projects are now built asynchronously, build progress is reported, a build may be cancelled
 		* Feature request #1114657 "Eclipse variables expansion" implemented by Przemyslaw Wesolek
 		* Perl perspective now has shortcuts to show views, create new items (all related to existing actions)
 		* Fixed several exceptions occuring with closed projects or with unexpected selections

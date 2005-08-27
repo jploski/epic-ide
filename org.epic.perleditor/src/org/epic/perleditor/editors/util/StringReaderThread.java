@@ -11,11 +11,16 @@ public class StringReaderThread extends Thread
     private Reader reader;
     private String result;
     private IOException exception;
+
+    public StringReaderThread(String name)
+    {
+        super("EPIC:StringReader" + name);
+        this.start();
+    }
     
     public StringReaderThread()
     {
-        super();
-        this.start();
+        this("");        
     }
         
     public void dispose() throws InterruptedException {
@@ -92,7 +97,7 @@ public class StringReaderThread extends Thread
                 {
                     this.reader = null;
                     this.result = sb.toString();
-                    this.exception = e;                    
+                    this.exception = e;
                     this.lock.notifyAll();
                 }
             }

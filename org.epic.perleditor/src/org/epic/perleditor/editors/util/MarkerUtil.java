@@ -80,7 +80,7 @@ public class MarkerUtil {
 	   					continue;
 	   				}
 	   			}
-				markers[i].setAttribute(EPIC_MARKER_USED_FLAG, false);
+                markers[i].setAttribute(EPIC_MARKER_USED_FLAG, false);
 			}
 		} catch (CoreException e) {
 			// TODO Auto-generated catch block
@@ -210,8 +210,8 @@ public class MarkerUtil {
 			IMarker[] allMarkers = resource.findMarkers(null, true, IResource.DEPTH_ONE);
 			for(int i = 0; i < allMarkers.length; i++) {
 				IMarker marker = allMarkers[i];
-				int lineNr = ((Integer) marker.getAttribute(IMarker.LINE_NUMBER)).intValue();
-				if(lineNr == aLine) {
+                Integer lineNr = (Integer) marker.getAttribute(IMarker.LINE_NUMBER);
+				if(lineNr != null && lineNr.intValue() == aLine) {
 					markers.add(marker);
 				}
 			}

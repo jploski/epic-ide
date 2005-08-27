@@ -17,7 +17,7 @@ import java.util.ResourceBundle;
 /**
  * Utility class which helps managing messages
  */
-class ResourceMessages {
+public class ResourceMessages {
 	private static final String RESOURCE_BUNDLE= "org.epic.core.messages";//$NON-NLS-1$
 	private static ResourceBundle bundle = ResourceBundle.getBundle(RESOURCE_BUNDLE);
 

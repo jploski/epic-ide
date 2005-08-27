@@ -79,10 +79,6 @@ public class FormatSourceAction extends Action implements
 		//set the new Cursor pos at the beginning of the Line
 		myTextWidget.setCaretOffset(myTextWidget.getOffsetAtLine(myTextWidget.getLineAtOffset(newPosAnchor)));
 		myTextWidget.setTopIndex(myTextWidget.getLineAtOffset(newPosAnchor) - lineOfScreen);
-		// Signal Idel Timer that something has changed since last run
-		if (editor != null) {
-			editor.getIdleTimer(). setChangedSinceLastRun(true);
-		}
 	}
 
 	public void setEditor(PerlEditor editor) {

@@ -1,184 +1,216 @@
-/*
- * Created on Dec 26, 2003
- *
- * To change the template for this generated file go to
- * Window&gt;Preferences&gt;Java&gt;Code Generation&gt;Code and Comments
- */
 package org.epic.core.builders;
 
-import java.util.Map;
+import java.util.*;
 
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.IResourceDelta;
-import org.eclipse.core.resources.IResourceDeltaVisitor;
-import org.eclipse.core.resources.IResourceVisitor;
-import org.eclipse.core.resources.IncrementalProjectBuilder;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.jface.viewers.LabelProviderChangedEvent;
-import org.epic.core.Constants;
-import org.epic.core.decorators.PerlDecorator;
-import org.epic.core.decorators.PerlDecoratorManager;
-import org.epic.perleditor.editors.util.PerlValidator;
+import org.eclipse.core.resources.*;
+import org.eclipse.core.runtime.*;
+import org.eclipse.core.runtime.jobs.IJobManager;
+import org.eclipse.core.runtime.jobs.Job;
+import org.epic.perleditor.PerlEditorPlugin;
 
 /**
+ * Manages incremental and full builds of Perl projects.
+ * The "builds" currently only consist of validation using PerlValidator.
+ * 
+ * @author jploski
  * @author luelljoc
- *
  */
 public class PerlBuilder extends IncrementalProjectBuilder
 {
+    /**
+     * IResource instances representing Perl files that need
+     * to be validated during the current build.
+     */
+    private Set dirtyResources;
 
+    /**
+     * IResource instances representing Perl files that need
+     * to be validated during the current build, excluding those
+     * Perl files that still need to be validated because the
+     * previous build was cancelled.
+     */
+    private Set newDirtyResources;
+    
+    /**
+     * IResource instances whose labels have to be updated after
+     * the current build finishes (normally or by being cancelled).
+     */
+    private Set validatedResources;
+    
 	/**
-	 * 
+	 * No-arg default constructor per IncrementalProjectBuilder specification.
 	 */
 	public PerlBuilder()
 	{
-		super();
 	}
-
-	/* (non-Javadoc)
-	 * @see org.eclipse.core.internal.events.InternalBuilder#build(int, java.util.Map, org.eclipse.core.runtime.IProgressMonitor)
-	 */
+    
 	protected IProject[] build(int kind, Map args, IProgressMonitor monitor)
 		throws CoreException
 	{
-
-		PerlDecorator decorator = PerlDecorator.getPerlDecorator();
-
-		if (kind == IncrementalProjectBuilder.FULL_BUILD)
-		{
-			//System.out.println("Full Build(1)");
-			getProject().accept(new BuildFullVisitor());
-			decorator.fireLabelEvent(
-				new LabelProviderChangedEvent(
-					decorator,
-					PerlDecoratorManager.getSuccessResources().toArray()));
-			//fullBuild(monitor);
-		} else
-		{
-			// Add folders to successResources
-			if(getProject().hasNature(Constants.PERL_NATURE_ID)) {
-				FolderVisitor folderVisitor = new FolderVisitor();
-				try {
-					getProject().accept(folderVisitor);
-				} catch (CoreException e1) {
-					e1.printStackTrace();
-				}
-			}
-			
-			IResourceDelta delta = getDelta(getProject());
-			if (delta == null)
-			{
-				//System.out.println("Full Build(2)");
-				getProject().accept(new BuildFullVisitor());
-
-				try
-				{
-					decorator.fireLabelEvent(
-						new LabelProviderChangedEvent(
-							decorator,
-							PerlDecoratorManager
-								.getSuccessResources()
-								.toArray()));
-				} catch (Exception e)
-				{
-					// This can happen if a newly created project is the first one in the workspace
-					//e.printStackTrace();
-				}
-
-				//fullBuild(monitor);
-			} else
-			{
-				//System.out.println("Incremental Build");
-				try
-				{
-					delta.accept(new BuildDeltaVisitor());
-					decorator.fireLabelEvent(
-						new LabelProviderChangedEvent(
-							decorator,
-							PerlDecoratorManager
-								.getSuccessResources()
-								.toArray()));
-				} catch (CoreException ex)
-				{
-					ex.printStackTrace();
-				}
-				//incrementalBuild(delta, monitor);
-			}
-		}
-		return null;
+        // To maintain a responsive GUI, the actual build is split into
+        // two phases:
+        // phase 1 (this method, blocking, fast) determines which Perl files
+        //         have to be validated
+        // phase 2 (PerlBuilderJob, non-blocking, slow) validates them
+        //         asynchronously
+        
+        try
+        {
+            dirtyResources = new HashSet();
+            newDirtyResources = new HashSet();
+            validatedResources = new HashSet();
+        
+            return buildImpl(kind, args, monitor);
+        }
+        finally
+        {
+            // don't keep unnecessary references
+            dirtyResources = null;
+            newDirtyResources = null;
+            validatedResources = null;
+        }
+    }
+    
+    private IProject[] buildImpl(int kind, Map args, IProgressMonitor monitor)
+        throws CoreException
+    {   
+        cancelPreviousPerlBuilderJob();
+        findDirtyResources(kind);
+        startPerlBuilderJob();
+        
+        return null;
 	}
+    
+    /**
+     * Adds a resource to validatedResources if it is an IProject (label
+     * always updated after build). Otherwise adds it to dirtyResources
+     * and newDirtyResources to schedule it for validation.
+     */
+    private void visitResource(IResource resource)
+    {
+        switch (resource.getType())
+        {
+        case IResource.PROJECT:
+            validatedResources.add(resource);
+            break;
+        case IResource.FILE:
+            validatedResources.remove(resource);
+            dirtyResources.add(resource);
+            newDirtyResources.add(resource);
+            break;
+        }
+    }
+    
+    /**
+     * Cancels the PerlBuilderJob which might still be running
+     * asynchronously, started by the previous build. Schedules
+     * any remaining dirtyResources of that job to be processed
+     * during the current build.
+     */
+    private void cancelPreviousPerlBuilderJob()
+    {
+        IJobManager jobMan = Platform.getJobManager();
+        Job[] jobs = jobMan.find(PerlBuilderJob.JOB_FAMILY);
 
-	protected void startupOnInitialize()
-	{
-		// add builder init logic here
-		try
-		{
-			//TODO provide ProgressMonitor
-			getProject().build(IncrementalProjectBuilder.FULL_BUILD, null);
-		} catch (CoreException e)
-		{
-			e.printStackTrace();
-		}
-	}
+        if (jobs.length == 0) return; // no previous build found
+        
+        jobMan.cancel(PerlBuilderJob.JOB_FAMILY);
+        try { jobMan.join(PerlBuilderJob.JOB_FAMILY, null); }
+        catch (InterruptedException e)
+        {
+            // nobody should interrupt our thread in this state;
+            // if they do anyway, we treat is as a build cancellation
+            throw new OperationCanceledException();
+        }
+        
+        PerlBuilderJob cancelled = (PerlBuilderJob) jobs[0];        
+        dirtyResources.addAll(cancelled.getDirtyResources());
+    }
+    
+    /**
+     * Visits all of project resources or just changed resources (depending
+     * on the build kind) and schedules them for validation by adding them
+     * to the dirtyResources set.
+     */
+    private void findDirtyResources(int buildKind)
+    {
+        try
+        {
+            IResourceDelta delta = getDelta(getProject());
+            
+            if (buildKind == IncrementalProjectBuilder.FULL_BUILD || delta == null)
+                getProject().accept(new BuildFullVisitor());
+            else
+                delta.accept(new BuildDeltaVisitor());
+        }
+        catch (CoreException e)
+        {
+            // this exception should never occur because our visitors
+            // are not supposed to throw
 
-}
+            PerlEditorPlugin.getDefault().getLog().log(
+                new Status(Status.ERROR,
+                    PerlEditorPlugin.getPluginId(),
+                    10000, // TODO: use some sort of constant
+                    "Unexpected exception while building project " +
+                    getProject().getName() +
+                    "; report it as bug in plug-in " +
+                    PerlEditorPlugin.getPluginId(),
+                    e));
+        }
+    }
+    
+    /**
+     * Returns the elements from dirtyResources sorted so that members
+     * of newDirtyResources precede non-members. Validation will occur
+     * in that order, improving responsiveness (under assumption that
+     * incremental builds are "interactive" and thus have higher priority
+     * than "background" full builds).
+     * 
+     * Note: the dirtyResources set is modified as a side effect.
+     */
+    private List getSortedDirtyResources()
+    {
+        List sorted = new ArrayList(dirtyResources.size());
+        
+        sorted.addAll(newDirtyResources);
+        dirtyResources.removeAll(newDirtyResources);
+        sorted.addAll(dirtyResources);
+        
+        return sorted;
+    }
+    
+    /**
+     * Starts an asynchronous, low-priority PerlBuilderJob which does
+     * the actual validation work.
+     */
+    private void startPerlBuilderJob()
+    {
+        Job job = new PerlBuilderJob(
+            getSortedDirtyResources(),
+            validatedResources);
+        
+        job.setPriority(Job.DECORATE);
+        job.schedule();
+    }
+    
+    private class BuildDeltaVisitor implements IResourceDeltaVisitor
+    {
+        public boolean visit(IResourceDelta delta) // does NOT throw CoreException
+        {       
+            if (delta.getKind() == IResourceDelta.CHANGED)
+                visitResource(delta.getResource());
 
-class BuildDeltaVisitor implements IResourceDeltaVisitor
-{
+            return true;
+        }
+    }
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.core.resources.IResourceDeltaVisitor#visit(org.eclipse.core.resources.IResourceDelta)
-	 */
-	public boolean visit(IResourceDelta delta) throws CoreException
-	{	    
-			switch (delta.getKind())
-			{
-			
-				case IResourceDelta.CHANGED :
-					if (PerlValidator.validate(delta.getResource())
-						|| (delta.getResource().getType() == IResource.PROJECT && delta.getResource().getProject().hasNature(Constants.PERL_NATURE_ID)))
-					{
-						PerlDecoratorManager.addSuccessResources(
-							delta.getResource());
-					}
-					break;
-			}
-
-		
-		return true;
-	}
-}
-
-class BuildFullVisitor implements IResourceVisitor
-{
-
-	/* (non-Javadoc)
-	 * @see org.eclipse.core.resources.IResourceVisitor#visit(org.eclipse.core.resources.IResource)
-	 */
-	public boolean visit(IResource resource) throws CoreException
-	{
-		if (PerlValidator.validate(resource)
-			|| (resource.getType() == IResource.PROJECT && resource.getProject().hasNature(Constants.PERL_NATURE_ID)))
-		{
-			PerlDecoratorManager.addSuccessResources(resource);
-		}
-
-		return true;
-	}
-}
-
-class FolderVisitor implements IResourceVisitor {
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.core.resources.IResourceVisitor#visit(org.eclipse.core.resources.IResource)
-	 */
-	public boolean visit(IResource resource) throws CoreException {
-		if(resource.getType() == IResource.FOLDER) {
-			PerlDecoratorManager.addSuccessResources(resource);
-		}
-		return true;
-	}
+    private class BuildFullVisitor implements IResourceVisitor
+    {
+        public boolean visit(IResource resource) // does NOT throw CoreException
+        {
+            visitResource(resource);
+            return true;
+        }
+    }
 }

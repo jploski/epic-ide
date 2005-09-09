@@ -1,42 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.0"?>
-<plugin
-   id="org.epic.perleditor"
-   name="Perl Editor Plug-in"
-   version="0.2.1"
-   provider-name="Epic Project"
-   class="org.epic.perleditor.PerlEditorPlugin">
+<plugin>
 
-   <runtime>
-      <library name="perleditor.jar">
-         <export name="*"/>
-         <packages prefixes="org.epic"/>
-      </library>
-      <library name="gnu-regexp-1.1.4.jar">
-         <export name="*"/>
-      </library>
-      <library name="jdom.jar">
-         <export name="*"/>
-      </library>
-   </runtime>
-   <requires>
-      <import plugin="org.eclipse.jface.text"/>
-      <import plugin="org.eclipse.ui"/>
-      <import plugin="org.eclipse.core.resources"/>
-      <import plugin="org.epic.ext.cbg.editor"/>
-      <import plugin="org.eclipse.debug.core"/>
-      <import plugin="org.eclipse.debug.ui"/>
-      <import plugin="org.eclipse.ui.editors"/>
-      <import plugin="org.eclipse.ui.workbench.texteditor"/>
-      <import plugin="org.eclipse.core.runtime"/>
-      <import plugin="org.eclipse.ui.ide"/>
-      <import plugin="org.eclipse.ui.views"/>
-      <import plugin="org.eclipse.team.core"/>
-      <import plugin="org.eclipse.core.variables"/>
-   </requires>
-
-
-   <extension
+     <extension
          point="org.eclipse.ui.editors">
       <editor
             name="Epic Perl Editor"
@@ -45,6 +11,7 @@
             contributorClass="org.epic.perleditor.editors.PerlActionContributor"
             class="org.epic.perleditor.editors.PerlEditor"
             id="org.epic.perleditor.editors.PerlEditor">
+            <contentTypeBinding contentTypeId="org.epic.perleditor.perl"/>
       </editor>
    </extension>
 <!--
@@ -640,5 +607,14 @@
             id="org.epic.core.views.browser.BrowserView">
       </view>
    </extension>
+    <extension point="org.eclipse.core.runtime.contentTypes">
+		<content-type
+			id="perl"
+			base-type="org.eclipse.core.runtime.text"
+			name="Perl Source File"
+			file-extensions="pl,pm">
+			<describer class="org.epic.core.content.PerlContentDescriber"/>
+		</content-type> 
+    </extension>
 
 </plugin>

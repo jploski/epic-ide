@@ -475,7 +475,8 @@ public class PerlEditorPreferencePage extends PreferencePage implements IWorkben
 
 				int topIndex =  fPreviewViewer.getTextWidget().getTopIndex();
 		        int carretOffset = fPreviewViewer.getTextWidget().getCaretOffset();
-				fPreviewViewer.configure(new PreviewSourceViewerConfiguration(fOverlayStore));
+				fPreviewViewer.unconfigure();
+                fPreviewViewer.configure(new PreviewSourceViewerConfiguration(fOverlayStore));
 				
 				// Set editor foreground
 				RGB rgb = PreferenceConverter.getColor(fOverlayStore, PreferenceConstants.EDITOR_STRING_COLOR);

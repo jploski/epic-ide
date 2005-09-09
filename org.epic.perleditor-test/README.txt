@@ -32,6 +32,9 @@ The test workbench is launched with only EPIC plug-ins (and their dependencies).
 and are therefore fragile: they will fail if you interact with the GUI while
 they are running. Otherwise, they should run clean.
 
+If you wish to test using mock objects, the EasyMock library is included
+in the plug-in's classpath.
+
 Last but not least, the present test suites are very incomplete.
 Keep this in mind when making decisions based on their results.
 

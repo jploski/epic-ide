@@ -34,29 +34,4 @@ public class PreferenceUtil {
 
 		return tabString;
 	}
-
-	/**
-		 * @return
-		 */
-	public static String getIndent() {
-		
-		StringBuffer buf = new StringBuffer();
-		
-		int tabCount = 
-		PerlEditorPlugin.getDefault().getPreferenceStore().getInt(
-			PreferenceConstants.INSERT_TABS_ON_INDENT);
-		boolean useSpaces =
-			PerlEditorPlugin.getDefault().getPreferenceStore().getBoolean(
-				PreferenceConstants.SPACES_INSTEAD_OF_TABS);
-			
-	    String indentString = getTab(0);
-		
-        if (!useSpaces) {
-			for (int i = 0; i < tabCount; i++) {
-				buf.append(indentString);
-			}
-		}
-		
-		return buf.toString();
-	}
 }

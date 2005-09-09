@@ -135,9 +135,16 @@ public class IdleTimer extends Thread
 
             try
             {
-                for (Iterator i = listeners.iterator(); i.hasNext();)
+                IdleTimerListener[] _listeners = new IdleTimerListener[listeners.size()];
+                
+                synchronized (this)
                 {
-                    final IdleTimerListener listener = (IdleTimerListener) i.next();                    
+                    listeners.toArray(_listeners);
+                }
+                
+                for (int i = 0; i < _listeners.length; i++)
+                {
+                    final IdleTimerListener listener = _listeners[i];                    
                     display.syncExec(new Runnable() {
                         public void run() {
                             if (isEditorVisible())

@@ -81,13 +81,8 @@ public class PerlOutlinePage
 				"", "",
 				SourceParser.DO_NOT_DELETE_COMMENT_POD);			  // only valid Moduls are in the Outline		List returnList = new ArrayList();
 	  for (Iterator iter = myModList.iterator(); iter.hasNext();) {      Model listElement = (Model) iter.next();      if (fTextEditor.isNormalText(listElement.getStart())) {        returnList.add(listElement);      }    }	  return returnList;	}
-	public void dispose()  {
-			updateThread.interrupt();
-			try {
-				updateThread.join(this.waitForTermination);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
+	public void dispose()  {            updateThread.dispose();
+
 			super.dispose();
 		}
 
@@ -115,12 +110,12 @@ public class PerlOutlinePage
 
 	class UpdateThread extends Thread {
 		private Object lock = new Object();
-		private String sourceCode;
+		private String sourceCode;                private boolean disposed;
 		Display display;
 
 		public UpdateThread(Display display) {			super("PerlOutlinePage");
 			this.display = display;
-		}
+		}                public void dispose()        {            disposed = true;            interrupt();            try {                join(waitForTermination);            } catch (InterruptedException e) {                e.printStackTrace();            }        }
 		public void setSourceCode(String source) {
 			sourceCode = source;
 		}
@@ -129,7 +124,7 @@ public class PerlOutlinePage
 			try {
 				while (!Thread.interrupted()) {
 					synchronized (this.lock) {
-						this.lock.wait();
+						this.lock.wait();                        if (disposed) break;
 					}
 					display.syncExec(new Invoker(getSubList(sourceCode),
 							getModList(sourceCode)));

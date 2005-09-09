@@ -29,6 +29,11 @@ Eclipse Perl Integration:
 		* Fixed bug: [ 996351 ] NullPointer exception during Launch (problems if path to Perl executable has spaces)
 
 		Editor:
+		* Rewritten bracket matching and smart typing code
+		* Fixed bug: [ 1282601 ] Menu actions not linked to the active editor
+		* Fixed bug: [ 1281422 ] Moving caret up and down doesn't work as expected around { }
+		* Fixed bug: [ 1281415 ] Changing preferences causes an IllegalStateException
+		* Fixed bug: [ 1281410 ] Auto-indent does not work with spaces instead of tabs
 		* Feature request #1100818 "Errors in Modules should be listed" partly implemented
 		* Improved displaying of compilation errors for files using CGI::Carp
 		* Fixed bug: [ 1106548 ] Projects are now built asynchronously, build progress is reported, a build may be cancelled

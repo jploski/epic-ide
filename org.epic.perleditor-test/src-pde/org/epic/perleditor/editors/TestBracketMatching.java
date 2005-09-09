@@ -1,0 +1,45 @@
+package org.epic.perleditor.editors;
+
+import java.util.List;
+
+public class TestBracketMatching extends BasePDETestCase
+{
+    public void testAll() throws Exception
+    {
+        PerlEditor editor = openEditor("EPICTest/Twig.pm");
+        editor._setExactBracketMatching();
+        
+        try
+        {
+            String text = editor._getText();
+    
+            List expected = readLines("test.in/TestBracketMatching-expected.txt");
+            long t1 = System.currentTimeMillis();
+            int j = 0;
+            for (int i = 0; i < text.length() && i < 10000; i++)
+            {
+                char c = text.charAt(i);
+                if (c == '(' || c == '{' || c == '[' || c == '<' ||
+                    c == ')' || c == '}' || c == ']' || c == '>')
+                {
+                    editor._setCaretOffset(i+1);
+                    int offset = editor._getHighlightedBracketOffset();
+                    String actual =
+                        i + " " +
+                        offset + " " +
+                        (offset != -1 ? text.charAt(offset) : '-');
+                    //System.out.println(actual);
+                    assertTrue(j < expected.size());
+                    assertEquals(expected.get(j), actual);
+                    j++;
+                }
+            }
+            long t2 = System.currentTimeMillis();
+            //System.out.println("time: " + (t2-t1)); // 24661 -> 19000
+        }
+        finally
+        {
+            closeEditor(editor);
+        }
+    }
+}

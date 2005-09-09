@@ -1,0 +1,91 @@
+package org.epic.perl.editor.test;
+
+import java.io.*;
+import java.util.*;
+
+import junit.framework.TestCase;
+
+public class BaseTestCase extends TestCase
+{
+    private static final String PROPERTY_PREFIX = "org.epic.perleditor-test.";
+    
+    public void testDummy() { }
+    
+    /**
+     * @param name a short name of the property
+     * @return value of the given property from test.properties
+     */
+    public static String getProperty(String name)
+    {
+        return System.getProperty(PROPERTY_PREFIX + name);
+    }
+    
+    /**
+     * @param path relative to directory containing test.properties
+     * @return corresponding File
+     */
+    protected File getFile(String path)
+    {
+        return new File(
+            new File(getPropertiesPath()).getParentFile(),
+            path);
+    }
+    
+    /**
+     * @param path relative to directory containing test.properties
+     * @return a list of strings represented lines from the specified file
+     */
+    protected List readLines(String path) throws IOException
+    {
+        BufferedReader r = null;
+        
+        try
+        {
+            r = new BufferedReader(new FileReader(getFile(path)));
+            
+            List lines = new ArrayList();
+            String l;
+            while ((l = r.readLine()) != null) lines.add(l);
+            return lines;
+        }
+        finally
+        {
+            if (r != null) try { r.close(); } catch (IOException e) { }
+        }
+    }
+    
+    protected void setUp() throws Exception
+    {
+        super.setUp();
+        setUpTestProperties();
+    }
+    
+    private String getPropertiesPath()
+    {
+        String propertiesPath = getProperty("properties");
+        return propertiesPath != null ? propertiesPath : "test.properties";
+    }
+    
+    private void setUpTestProperties() throws IOException
+    {
+        BufferedInputStream in = null;
+        
+        try
+        {
+            in = new BufferedInputStream(new FileInputStream(getPropertiesPath()));
+            Properties testProperties = new Properties();
+            testProperties.load(in);
+            
+            for (Enumeration e = testProperties.keys(); e.hasMoreElements();)
+            {
+                String key = e.nextElement().toString();
+                String value = testProperties.getProperty(key);
+                System.setProperty(key, value);
+            }
+        }
+        finally
+        {
+            if (in != null) try { in.close(); } catch (IOException e) { }
+        }
+    }
+}

@@ -56,10 +56,17 @@ public class PerlActionContributor extends TextEditorActionContributor {
 		super.setActiveEditor(part);
 		//doSetActiveEditor(part);
 		
+        formatSourceAction.setActiveEditor(formatSourceAction, part);
+        validateSourceAction.setActiveEditor(validateSourceAction, part);
+        openDeclarationAction.setActiveEditor(openDeclarationAction, part);
+        toggleCommentAction.setActiveEditor(toggleCommentAction, part);
+        jump2BracketAction.setActiveEditor(jump2BracketAction, part);
+        perldocAction.setActiveEditor(perldocAction, part);
+        
 		PerlEditor editor = null;
 		if (part instanceof PerlEditor) {
 				editor = (PerlEditor) part;
-				
+                
 				// Only add handlers if in Perl mode
 				if(editor.isPerlMode()) {
 					formatSourceAction.setActionDefinitionId("org.epic.perledior.formatsource");

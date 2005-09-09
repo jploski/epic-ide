@@ -438,6 +438,26 @@ public class PreferenceConstants {
 	public static final String  EDITOR_DIGIT_COLOR_BOLD = IPerlColorConstants.DIGIT_COLOR + EDITOR_BOLD_SUFFIX;
 	public static final String  EDITOR_INVALID_COLOR_BOLD = IPerlColorConstants.INVALID_COLOR + EDITOR_BOLD_SUFFIX;
     
+    /**
+     * A named preference that controls whether bracket matching highlighting is turned on or off.
+     * <p>
+     * Value is of type <code>Boolean</code>.
+     * </p>
+     */
+    public final static String EDITOR_MATCHING_BRACKETS= "matchingBrackets"; //$NON-NLS-1$
+
+    /**
+     * A named preference that holds the color used to highlight matching brackets.
+     * <p>
+     * Value is of type <code>String</code>. A RGB color value encoded as a string 
+     * using class <code>PreferenceConverter</code>
+     * </p>
+     * 
+     * @see org.eclipse.jface.resource.StringConverter
+     * @see org.eclipse.jface.preference.PreferenceConverter
+     */
+    public final static String EDITOR_MATCHING_BRACKETS_COLOR=  "matchingBracketsColor"; //$NON-NLS-1$
+
 
 	/**
 		 * Initializes the given preference store with the default values.
@@ -514,7 +534,9 @@ public class PreferenceConstants {
 			store.setDefault(PreferenceConstants.AUTO_COMPLETION_BRACKET2, true);
 			store.setDefault(PreferenceConstants.AUTO_COMPLETION_BRACKET3, true);
 			store.setDefault(PreferenceConstants.AUTO_COMPLETION_BRACKET4, true);
-		
+            
+            store.setDefault(PreferenceConstants.EDITOR_MATCHING_BRACKETS, true);
+            PreferenceConverter.setDefault(store, PreferenceConstants.EDITOR_MATCHING_BRACKETS_COLOR, new RGB(192, 192,192));
 		
 		    // Syntay highlighting
 			PreferenceConverter.setDefault(store, PreferenceConstants.EDITOR_STRING_COLOR, new RGB(0, 0, 0));

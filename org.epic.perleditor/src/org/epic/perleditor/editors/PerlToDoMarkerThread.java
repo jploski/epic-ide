@@ -140,7 +140,16 @@ public class PerlToDoMarkerThread extends Thread implements IdleTimerListener, I
 				
 				int currentPos = -1;
 				
-				IRegion findResult = findAdapter.find(currentPos + 1, currentToDoString, true, !(store.getBoolean(ID_IGNORE_CASE)), false, true);
+				IRegion findResult = (findAdapter.length() > 0)
+                    ? findAdapter.find(
+                        currentPos + 1,
+                        currentToDoString,
+                        true,
+                        !(store.getBoolean(ID_IGNORE_CASE)),
+                        false,
+                        true)
+                    : null;
+
 				while (findResult != null) {
 					currentPos = findResult.getOffset();
 										

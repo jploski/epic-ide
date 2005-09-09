@@ -250,7 +250,7 @@ public class PerlAutoIndentStrategy extends DefaultAutoIndentStrategy {
 				if (getBracketCount(document, start, command.offset, true)
 					> 0) {
 					// Indent as many tabs as specified in preferences
-					buf.append(PreferenceUtil.getIndent());
+					buf.append(PreferenceUtil.getTab(0));
 				}
 			}
 			command.text = buf.toString();

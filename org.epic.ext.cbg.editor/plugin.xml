@@ -3,7 +3,7 @@
 <plugin
    id="org.epic.ext.cbg.editor"
    name="Syntax Coloring  Editor Plugin"
-   version="0.3.2"
+   version="0.3.3"
    provider-name="Chris Grindstaff (extensions by EPIC Project)"
    class="cbg.editor.EditorPlugin">
 

@@ -735,22 +735,19 @@ public class PerlEditor extends TextEditor implements
      */
     public int findMatchingBracket(final IDocument document, final int offset)
     {
-        synchronized (fBracketMatcher)
-        {
-            final int[] ret = new int[1];
-            getSourceViewer().getTextWidget().getDisplay().syncExec(new Runnable() {
-                public void run() {        
-                    IRegion matchRegion = fBracketMatcher.match(document, offset);
-                    
-                    if (matchRegion == null) ret[0] = -1;
-                    else ret[0] =
-                        matchRegion.getOffset() == offset - 1
-                        ? matchRegion.getOffset() + matchRegion.getLength() - 1
-                        : matchRegion.getOffset();
-                } });
-    
-            return ret[0];
-        }
+        final int[] ret = new int[1];
+        getSourceViewer().getTextWidget().getDisplay().syncExec(new Runnable() {
+            public void run() {        
+                IRegion matchRegion = fBracketMatcher.match(document, offset);
+                
+                if (matchRegion == null) ret[0] = -1;
+                else ret[0] =
+                    matchRegion.getOffset() == offset - 1
+                    ? matchRegion.getOffset() + matchRegion.getLength() - 1
+                    : matchRegion.getOffset();
+            } });
+
+        return ret[0];
     }
 
     /**
@@ -778,15 +775,16 @@ public class PerlEditor extends TextEditor implements
     {
         int offset = getSourceViewer().getTextWidget().getCaretOffset();
 
-        synchronized (fBracketMatcher)
-        {
-            fBracketMatcher.match(getSourceViewer().getDocument(), offset);
-            
-            return
-                offset - 1 == fBracketMatcher.getStartPos()
-                ? fBracketMatcher.getEndPos()
-                : fBracketMatcher.getStartPos();
-        }
+        PerlPairMatcher matcher =
+            new PerlPairMatcher(PerlEditorPlugin.getDefault().getLog());
+        
+        matcher.setViewer(null);
+        matcher.match(getSourceViewer().getDocument(), offset);
+        
+        return
+            offset - 1 == matcher.getStartPos()
+            ? matcher.getEndPos()
+            : matcher.getStartPos();
     }
     
     /**

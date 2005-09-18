@@ -26,6 +26,8 @@ results).
 The tests from "src-pde" require a preconfigured workspace as their fixture.
 This workspace is kept in CVS (org.epic.perleditor-test/workspace). The path
 to this workspace must be specified in the PDE JUnit run configuration.
+While performing this step, do not forget to uncheck the "Clear workspace
+data before launching" checkbox or the workspace directory will be destroyed!
 The test workbench is launched with only EPIC plug-ins (and their dependencies).
 
 (Some of) the "src-pde" tests simulate user input through Display.postEvent

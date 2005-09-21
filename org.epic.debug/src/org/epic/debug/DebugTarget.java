@@ -24,7 +24,8 @@ import org.epic.perleditor.PerlEditorPlugin;
 public abstract class DebugTarget extends Target {
 
 	private boolean mShutDownStarted;
-
+	
+	private final static IThread[] mNoThreads = new IThread[1];
 	RemotePort mDebugPort;
 
 	protected PerlDB mPerlDB;
@@ -110,7 +111,7 @@ public abstract class DebugTarget extends Target {
 	 */
 	public IThread[] getThreads() throws DebugException {
 		if (mPerlDB == null)
-			return null;
+			return mNoThreads;
 		return mPerlDB.getThreads();
 	}
 

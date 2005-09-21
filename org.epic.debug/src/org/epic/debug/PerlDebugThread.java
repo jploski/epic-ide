@@ -27,6 +27,7 @@ public class PerlDebugThread extends DebugElement implements IThread {
 	private PerlDB			mPerlDB;
 	
 	private IStackFrame [] mFrames;  
+	private  final static IBreakpoint[] mNoBreakpoints = new IBreakpoint[1];
 	
 
 
@@ -86,11 +87,12 @@ public class PerlDebugThread extends DebugElement implements IThread {
 		
 	}
 
+
 	/**
 	 * @see org.eclipse.debug.core.model.IThread#getBreakpoints()
 	 */
 	public IBreakpoint[] getBreakpoints() {
-		return null;
+		return mNoBreakpoints;
 	}
 
 	/**

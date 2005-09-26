@@ -1,9 +1,26 @@
 package org.epic.perleditor.editors.perl;
 
-import java.util.*;
-import java.io.*;
+import gnu.regexp.RE;
+import gnu.regexp.REMatch;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.StringTokenizer;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.eclipse.jface.text.BadLocationException;
+import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.text.TextPresentation;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
@@ -11,14 +28,8 @@ import org.eclipse.jface.text.contentassist.IContentAssistProcessor;
 import org.eclipse.jface.text.contentassist.IContextInformation;
 import org.eclipse.jface.text.contentassist.IContextInformationPresenter;
 import org.eclipse.jface.text.contentassist.IContextInformationValidator;
-import org.eclipse.ui.editors.text.TextEditor;
 import org.eclipse.ui.IFileEditorInput;
-
-import org.eclipse.jface.text.IDocument;
-
-import gnu.regexp.RE;
-import gnu.regexp.REMatch;
-
+import org.eclipse.ui.editors.text.TextEditor;
 import org.epic.perleditor.PerlEditorPlugin;
 import org.epic.perleditor.editors.util.PerlExecutableUtilities;
 import org.epic.perleditor.preferences.CodeAssistPreferences;
@@ -26,6 +37,7 @@ import org.epic.perleditor.templates.ContextType;
 import org.epic.perleditor.templates.ContextTypeRegistry;
 import org.epic.perleditor.templates.TemplateEngine;
 import org.epic.perleditor.templates.perl.IPerlCompletionProposal;
+import org.epic.perleditor.templates.perl.ModuleCompletionHelper;
 import org.epic.perleditor.templates.perl.PerlCompletionProposalComparator;
 import org.epic.perleditor.templates.perl.SubroutineEngine;
 import org.epic.perleditor.templates.perl.VariableEngine;
@@ -107,69 +119,94 @@ public class PerlCompletionProcessor implements IContentAssistProcessor {
 		ITextViewer viewer,
 		int documentOffset) {
 
-		String className = getClassName(viewer, documentOffset);
-
-		if (className != null) {
-
-			List proposals = getProposalsForClassname(className);
-
-			IPerlCompletionProposal[] subroutineResults =
-				new IPerlCompletionProposal[0];
-			SubroutineEngine subroutineEngine;
-			ContextType contextType = ContextTypeRegistry.getInstance().getContextType("perl"); //$NON-NLS-1$
-			if (contextType != null) {
-				subroutineEngine = new SubroutineEngine(contextType);
-				subroutineEngine.complete(
-					viewer,
-					documentOffset,
-					(String[]) proposals.toArray(new String[0]));
-				subroutineResults = subroutineEngine.getResults();
-			}
-			return subroutineResults;
-		} else {
-			IPerlCompletionProposal[] varsResults =	new IPerlCompletionProposal[0];
-			boolean inspectVars = PerlEditorPlugin.getDefault().getPreferenceStore().getBoolean(CodeAssistPreferences.INSPECT_VARIABLES);
-			if(inspectVars) {
-				//Get variables
-				List variables;
-				variables = getCompletionVariables(viewer, documentOffset);
-				VariableEngine varsEngine;
+		// get the current document's text
+		IDocument document = viewer.getDocument();
+		String text = null;
+		try {
+			text = document.get(0, documentOffset);
+		} catch (BadLocationException ble) {
+			// TODO what to do here?
+		}
+		
+		// try to find out what we should present as completion options
+		
+		// do we need module completion?
+		Pattern pattern = Pattern.compile(".*use\\s*(.*)$", Pattern.MULTILINE | Pattern.DOTALL);
+		Matcher matcher = pattern.matcher(text);
+		if (matcher.matches()) {
+			// --> show modules
+			String moduleNameFragment = matcher.group(1);
+			
+			ModuleCompletionHelper completionHelper = ModuleCompletionHelper.getInstance();
+			return completionHelper.getProposals(moduleNameFragment, documentOffset, viewer);
+		}
+		else {
+			String className = getClassName(documentOffset, null);
+			if (className != null) {
+	
+				List proposals = getProposalsForClassname(className);
+	
+				IPerlCompletionProposal[] subroutineResults =
+					new IPerlCompletionProposal[0];
+				SubroutineEngine subroutineEngine;
 				ContextType contextType = ContextTypeRegistry.getInstance().getContextType("perl"); //$NON-NLS-1$
 				if (contextType != null) {
-					varsEngine = new VariableEngine(contextType);
-					varsEngine.complete(
+					subroutineEngine = new SubroutineEngine(contextType);
+					subroutineEngine.complete(
 						viewer,
 						documentOffset,
-						(String[]) variables.toArray(new String[0]));
-					varsResults = varsEngine.getResults();
+						(String[]) proposals.toArray(new String[0]));
+					subroutineResults = subroutineEngine.getResults();
 				}
+				return subroutineResults;
+			} else {
+				// we're not inside a class
+				
+				// variables
+				IPerlCompletionProposal[] varsResults =	new IPerlCompletionProposal[0];
+				boolean inspectVars = PerlEditorPlugin.getDefault().getPreferenceStore().getBoolean(CodeAssistPreferences.INSPECT_VARIABLES);
+				if(inspectVars) {
+					//Get variables
+					List variables;
+					variables = getCompletionVariables(viewer, documentOffset);
+					VariableEngine varsEngine;
+					ContextType contextType = ContextTypeRegistry.getInstance().getContextType("perl"); //$NON-NLS-1$
+					if (contextType != null) {
+						varsEngine = new VariableEngine(contextType);
+						varsEngine.complete(
+							viewer,
+							documentOffset,
+							(String[]) variables.toArray(new String[0]));
+						varsResults = varsEngine.getResults();
+					}
+				}
+	
+				// templates
+				fTemplateEngine.reset();
+				fTemplateEngine.complete(viewer, documentOffset);
+				IPerlCompletionProposal[] templateResults =
+					fTemplateEngine.getResults();
+	
+				// concatenate arrays
+				IPerlCompletionProposal[] result;
+				result =
+					new IPerlCompletionProposal[templateResults.length
+						+ varsResults.length];
+				System.arraycopy(
+					templateResults,
+					0,
+					result,
+					0,
+					templateResults.length);
+				System.arraycopy(
+					varsResults,
+					0,
+					result,
+					templateResults.length,
+					varsResults.length);
+	
+				return sort(result);
 			}
-
-			fTemplateEngine.reset();
-			fTemplateEngine.complete(viewer, documentOffset);
-			IPerlCompletionProposal[] templateResults =
-				fTemplateEngine.getResults();
-
-			//			concatenate arrays
-			IPerlCompletionProposal[] result;
-			result =
-				new IPerlCompletionProposal[templateResults.length
-					+ varsResults.length];
-			System.arraycopy(
-				templateResults,
-				0,
-				result,
-				0,
-				templateResults.length);
-			System.arraycopy(
-				varsResults,
-				0,
-				result,
-				templateResults.length,
-				varsResults.length);
-
-			return sort(result);
-
 		}
 
 		//return result;
@@ -306,19 +343,17 @@ public class PerlCompletionProcessor implements IContentAssistProcessor {
 		return null;
 	}
 
-	private String getClassName(ITextViewer viewer, int documentOffset) {
+	private String getClassName(int documentOffset, IDocument document) {
 		String objName = null;
 		String className = null;
 
 		try {
-			IDocument document = viewer.getDocument();
-
 			// Calculate documentOffset
 			String specialChars = "_"; // "_" can be contained in classname
 
 			documentOffset =
 				getCompletionStartOffset(
-					viewer.getDocument(),
+					document,
 					documentOffset,
 					specialChars);
 

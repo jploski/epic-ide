@@ -27,6 +27,7 @@ import org.epic.core.util.FileUtilities;
 import org.epic.perleditor.PerlEditorPlugin;
 import org.epic.perleditor.editors.util.PerlColorProvider;
 import org.epic.perleditor.preferences.PreferenceConstants;
+import org.epic.perleditor.templates.perl.ModuleCompletionHelper;
 import org.epic.perleditor.views.PerlOutlinePage;
 import org.epic.perleditor.views.model.*;
 
@@ -129,6 +130,10 @@ public class PerlEditor extends TextEditor implements
         
         fBracketMatcher.setViewer(fSourceViewer);
         fBracketInserter.setViewer(fSourceViewer);
+        
+        ModuleCompletionHelper completionHelper = 
+        	ModuleCompletionHelper.getInstance();
+        completionHelper.scanForModules(this);
         
         if (fValidationThread == null && isPerlMode())
         {

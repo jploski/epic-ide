@@ -192,8 +192,6 @@ public class MarkerUtil {
 			}
 	   }
 	   
-	   System.out.println("Line: " + line + " Text: " + text + " Already Present: " + found);
-	   
 	   return found;
 	}
 	

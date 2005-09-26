@@ -1,6 +1,6 @@
 <html><head><META http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Working with the Perl Editor</title><meta content="DocBook XSL Stylesheets V1.65.1" name="generator"><link rel="home" href="index.html" title="  EPIC - User's Guide"><link rel="up" href="index.html" title="  EPIC - User's Guide"><link rel="previous" href="ar01s04.html" title="Eclipse Basics"><link rel="next" href="ar01s06.html" title="Using the Perl Debugger"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table summary="Navigation header" width="100%"><tr><th align="center" colspan="3">Working with the Perl Editor</th></tr><tr><td align="left" width="20%"><a accesskey="p" href="ar01s04.html">Prev</a>&nbsp;</td><th align="center" width="60%">&nbsp;</th><td align="right" width="20%">&nbsp;<a accesskey="n" href="ar01s06.html">Next</a></td></tr></table><hr></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="N10455"></a>Working with the Perl Editor</h2></div></div><div></div></div><div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="N10459"></a>Syntax Check</h3></div></div><div></div></div><p>
 EPIC performs on the fly syntax check of Perl source
-files. In order for the Syntax Check to work the Perl Interpreter has
+files. In order for the Syntax Check to work, the Perl Interpreter has
 to be set up correctly (see <span class="emphasis"><em>Setting up Preferences</em></span>). 
       </p><p>
 
@@ -8,7 +8,7 @@ The Syntax Check is performed after a defined idle period, after the
 user has stopped typing. This idle period can be configured in the
 preferences.
       </p><p>
-When an error/warning has been found the editor
+When an error/warning has been found, the editor
 displays the appropriate icon in the annotation ruler (the gray bar on
 the left side of the editor), underlines the error in the source and
 inserts a marker into the<span class="emphasis"><em> Problems View</em></span> window.
@@ -16,6 +16,7 @@ inserts a marker into the<span class="emphasis"><em> Problems View</em></span> w
       </p><p>
 
 A syntax check can be enforced by pressing <span class="bold"><b>Shift+F5</b></span>.
+It is also triggered automatically by saving a source file.
       </p><p>
       </p><p>
         <div class="informalfigure"><div class="mediaobject"><img src="images/syntax_check_1.gif"></div></div>
@@ -25,11 +26,11 @@ A syntax check can be enforced by pressing <span class="bold"><b>Shift+F5</b></s
       </p><p>
       </p></div><div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="N10483"></a>Explain Errors and Warnings</h3></div></div><div></div></div><p>
 
-In addition to displaying warnings and errors the editor is capable of
-explaining Errors and Warnings.
+In addition to displaying warnings and errors, the editor is capable of
+explaining them in more detail.
       </p><p>
 
-To get an Error/Warning explanation right-click the Error/Warning icon
+To get an Error/Warning explanation, right-click the Error/Warning icon
 and select Explain <span class="emphasis"><em>Errors/Warnings</em></span> from the dropdown menu.
       </p><p>
       </p><p>
@@ -60,8 +61,8 @@ specific SUBroutine.
       </p><p>
 
 The search first determines what is selected. If no text is selected,
-under the current cursor-position it is attempted to find a name which
-might be a SUBroutine. The selection cause an Error 
+it is attempted to find a subroutine name under the current cursor-position.
+The action might cause an error
       </p><p>
       </p><p>
         <div class="informalfigure"><div class="mediaobject"><img src="images/OpenDeclaration_Error.gif"></div></div>
@@ -69,11 +70,13 @@ might be a SUBroutine. The selection cause an Error
       </p><p>
       </p><p>
 
-- only special characters were found 
+- if only special characters were found 
       </p><p>
       </p><p>
 
-- only numbers could be detected The SUBroutine is searched first
+- if only numbers could be detected
+
+The SUBroutine is first searched for
 locally, next in the 'require'-file. Before a new file is scanned
 through the packages are also inspected. If the located SUB is not in
 the current editor, the location is opened automatically and

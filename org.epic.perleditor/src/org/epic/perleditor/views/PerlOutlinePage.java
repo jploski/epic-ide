@@ -69,7 +69,7 @@ public class PerlOutlinePage
 				"^[\\s]*sub\\s+([^\\n\\r{#]+)",
 				"", "",
 				SourceParser.DO_NOT_DELETE_COMMENT_POD);	  // only valid Subs are in the Outline      List returnList = new ArrayList();
-	  for (Iterator iter = mySubList.iterator(); iter.hasNext();) {      Model listElement = (Model) iter.next();      if (fTextEditor.isNormalText(listElement.getStart())) {        returnList.add(listElement);      }    }	  return returnList;
+	  for (Iterator iter = mySubList.iterator(); iter.hasNext();) {      Model listElement = (Model) iter.next();      if (fTextEditor.isNormalText(listElement.getStart()) ||          listElement.getName().equals("new")) {        returnList.add(listElement);      }    }	  return returnList;
 	}
 	public List getModList() {
 		//return getModList(input.getTextWidget().getText());

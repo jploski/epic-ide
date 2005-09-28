@@ -29,6 +29,7 @@ Eclipse Perl Integration:
 		* Fixed bug: [ 996351 ] NullPointer exception during Launch (problems if path to Perl executable has spaces)
 
 		Editor:
+		* Fixed bug: [ 1295065 ] sub new not displayed in outline
 		* Fixed bug: [ 1276748 ] Filetest operators break syntax highlighting
 		* Rewritten bracket matching and smart typing code
 		* Fixed bug: [ 1282601 ] Menu actions not linked to the active editor

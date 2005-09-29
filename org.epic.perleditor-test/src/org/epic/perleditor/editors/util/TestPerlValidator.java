@@ -37,5 +37,11 @@ public class TestPerlValidator extends BaseTestCase
             "Subroutine foo redefined at /blah/X.pm line 65.",
             pline.getMessage());
         assertEquals(22, pline.getLineNumber());
+        
+        // test case for bug #1307071
+        line = "syntax error at bug1307071.pl line 9, near \"if {\"";
+        pline = new PerlValidatorBase.ParsedErrorLine(line, new Log());
+        assertEquals("syntax error", pline.getMessage()); // could be better...
+        assertEquals(9, pline.getLineNumber());
     }
 }

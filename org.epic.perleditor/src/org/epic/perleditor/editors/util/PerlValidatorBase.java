@@ -415,7 +415,7 @@ abstract class PerlValidatorBase
     protected static class ParsedErrorLine
     {
         private static final Pattern errorLineNoPattern =
-            Pattern.compile("^(.*) at (\\S+) line (\\d+)\\.$");
+            Pattern.compile("^(.*) at (\\S+) line (\\d+)[\\.,]");
 
         private static final Pattern cgiCarpPattern =
             Pattern.compile("^\\[.*?\\] \\S+: (.*)");

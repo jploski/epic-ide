@@ -1,7 +1,6 @@
 Eclipse Perl Integration:
 
-		Debugger
-		* Fixed Bug [1307071] syntax validation / error marking is not greedy enough
+		Debugger		
 		* Fixed Bug [1233924] Debugging disabled in eclipse 3.1
 		* Fixed Bug [1257160] Can't Debug ... "Error Parsing Debugger Variables"
 		* Debugger now works with Eclipse 3.1
@@ -30,6 +29,8 @@ Eclipse Perl Integration:
 		* Fixed bug: [ 996351 ] NullPointer exception during Launch (problems if path to Perl executable has spaces)
 
 		Editor:
+		* Fixed Bug [1305170] Syntax highlighting broken after regexp
+		* Fixed Bug [1307071] syntax validation / error marking is not greedy enough
 		* Fixed bug: [ 1295065 ] sub new not displayed in outline
 		* Fixed bug: [ 1276748 ] Filetest operators break syntax highlighting
 		* Rewritten bracket matching and smart typing code

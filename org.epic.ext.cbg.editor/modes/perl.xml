@@ -46,14 +46,14 @@
 		<SEQ TYPE="KEYWORD2">$"</SEQ>
 
 		<SPAN TYPE="KEYWORD2" NO_LINE_BREAK="FALSE" MATCH_BRACKET="TRUE">
-	<GROUP>${</GROUP>
-	<GROUP>@{</GROUP>
-	<GROUP>%{</GROUP>
+			<GROUP>${</GROUP>
+			<GROUP>@{</GROUP>
+			<GROUP>%{</GROUP>
 			<END>}</END>
 		</SPAN>
 
-		<SEQ TYPE="NULL">\"</SEQ>   <!-- To avoid inproper Quote spanning -->
-		<SEQ TYPE="NULL">\*</SEQ>   <!-- To avoid inproper Quote spanning -->
+		<SEQ TYPE="NULL">\"</SEQ>    <!-- To avoid inproper Quote spanning -->
+		<SEQ TYPE="NULL">\*</SEQ>    <!-- To avoid inproper Quote spanning -->
 		<SEQ TYPE="NULL">$::</SEQ>   <!-- To avoid inproper Marks -->
 		<SEQ TYPE="NULL">@::</SEQ>   <!-- To avoid inproper Marks -->
 		<SEQ TYPE="NULL">%::</SEQ>   <!-- To avoid inproper Marks -->
@@ -130,7 +130,7 @@
 		<SEQ TYPE="NULL">]</SEQ>
 		<SEQ TYPE="NULL">[</SEQ>
 		<SEQ TYPE="NULL">:</SEQ>
-	<SEQ TYPE="KEYWORD1">
+		<SEQ TYPE="KEYWORD1">
 			<GROUP>BEGIN</GROUP>
 			<GROUP>END</GROUP>
 			<GROUP>caller</GROUP>
@@ -163,7 +163,7 @@
 			<GROUP>while</GROUP>
 		</SEQ>
 		
-	<SEQ TYPE="KEYWORD2">
+		<SEQ TYPE="KEYWORD2">
 			<GROUP>closedir</GROUP>
 			<GROUP>for</GROUP>
 			<GROUP>lcfirst</GROUP>
@@ -179,9 +179,9 @@
 			<GROUP>times</GROUP>
 			<GROUP>ucfirst</GROUP>
 			<GROUP>waitpid</GROUP>
-	</SEQ>
+		</SEQ>
 	
-	<SEQ TYPE="KEYWORD3">
+		<SEQ TYPE="KEYWORD3">
 			<GROUP>__FILE__</GROUP>
 			<GROUP>__LINE__</GROUP>
 			<GROUP>__PACKAGE__</GROUP>
@@ -350,8 +350,8 @@
 			<GROUP>wait</GROUP>
 			<GROUP>warn</GROUP>
 			<GROUP>write</GROUP>
-	</SEQ>
-	<SEQ TYPE="OPERATOR">
+		</SEQ>
+		<SEQ TYPE="OPERATOR">
 			<GROUP>and</GROUP>
 			<GROUP>cmp</GROUP>
 			<GROUP>eq</GROUP>
@@ -361,10 +361,8 @@
 			<GROUP>not</GROUP>
 			<GROUP>or</GROUP>
 			<GROUP>xor</GROUP>
-	</SEQ>
-	<SEQ TYPE="OPERATOR">x</SEQ>
-
-
+		</SEQ>
+		<SEQ TYPE="OPERATOR">x</SEQ>
 		<SPAN TYPE="LITERAL2" 
 			REQUIRE_WHITESPACE_BEFORE ="TRUE" 
 			REQUIRE_WHITESPACE_AFTER ="TRUE" >
@@ -373,24 +371,32 @@
 		</SPAN>
 
 		<!-- RegExps -->
-		<SPAN TYPE="LITERAL2" NO_LINE_BREAK="FALSE" 
-              DYNAMIC_TAGGING="TRUE" DELIMITER_MAX_CHAR="1" 
+		<SPAN TYPE="LITERAL2" 
+			  NO_LINE_BREAK="FALSE" 
+              DYNAMIC_TAGGING="TRUE"
+			  DELIMITER_MAX_CHAR="1" 
 			  DELIMITER_TAG_CHARS=":NO_LETTER_OR_DIGITS:"
               OPTIONAL_MODIFIER = "cgimosx">
 			<GROUP>m</GROUP>
 			<END></END>
 		</SPAN> 
 
-		<SPAN TYPE="LITERAL2" NO_LINE_BREAK="FALSE" NO_OF_MULTIPLE_ENDTAG="2" 
-              DYNAMIC_TAGGING="TRUE" DELIMITER_MAX_CHAR="1"
+		<SPAN TYPE="LITERAL2"
+			  NO_LINE_BREAK="FALSE"
+			  NO_OF_MULTIPLE_ENDTAG="2" 
+              DYNAMIC_TAGGING="TRUE"
+			  DELIMITER_MAX_CHAR="1"
 			  DELIMITER_TAG_CHARS=":NO_LETTER_OR_DIGITS:"
               OPTIONAL_MODIFIER = "egimosx">
 			<GROUP>s</GROUP>
 			<END></END>
 		</SPAN> 
 
-		<SPAN TYPE="LITERAL2" NO_LINE_BREAK="FALSE" NO_OF_MULTIPLE_ENDTAG="2" 
-              DYNAMIC_TAGGING="TRUE" DELIMITER_MAX_CHAR="1"
+		<SPAN TYPE="LITERAL2"
+			  NO_LINE_BREAK="FALSE"
+			  NO_OF_MULTIPLE_ENDTAG="2" 
+              DYNAMIC_TAGGING="TRUE"
+			  DELIMITER_MAX_CHAR="1"
 			  DELIMITER_TAG_CHARS=":NO_LETTER_OR_DIGITS:"
               OPTIONAL_MODIFIER = "cds">
 			<GROUP>y</GROUP>
@@ -399,39 +405,44 @@
 		</SPAN> 
 
 		<!-- Quotes not RegExps  -->
-		<SPAN TYPE="LITERAL2" NO_LINE_BREAK="FALSE" 
-              DYNAMIC_TAGGING="TRUE" DELIMITER_MAX_CHAR="1"
-			  DELIMITER_TAG_CHARS=":LETTER_OR_DIGITS:"
-        >
+		<SPAN TYPE="LITERAL2"
+			  NO_LINE_BREAK="FALSE" 
+              DYNAMIC_TAGGING="TRUE"
+			  DELIMITER_MAX_CHAR="1"
+			  DELIMITER_TAG_CHARS=":LETTER_OR_DIGITS:">
 			<GROUP>qq</GROUP>
 			<GROUP>qx</GROUP>
 			<GROUP>qw</GROUP>
 			<END></END>
 		</SPAN> 
-		<SPAN TYPE="LITERAL2" NO_LINE_BREAK="FALSE" 
-              DYNAMIC_TAGGING="TRUE" DELIMITER_MAX_CHAR="1"
+		<SPAN TYPE="LITERAL2"
+			  NO_LINE_BREAK="FALSE" 
+              DYNAMIC_TAGGING="TRUE"
+			  DELIMITER_MAX_CHAR="1"
 			  DELIMITER_TAG_CHARS=":LETTER_OR_DIGITS:"
-			  OPTIONAL_MODIFIER = "imosx"
-        >
+			  OPTIONAL_MODIFIER = "imosx">
 			<GROUP>qr</GROUP>
 			<END></END>
 		</SPAN> 
-		<SPAN TYPE="LITERAL2" NO_LINE_BREAK="FALSE" 
-              DYNAMIC_TAGGING="TRUE" DELIMITER_MAX_CHAR="1"
-			  DELIMITER_TAG_CHARS=":LETTER_OR_DIGITS:"
-        >
+		<SPAN TYPE="LITERAL2"
+			  NO_LINE_BREAK="FALSE" 
+              DYNAMIC_TAGGING="TRUE"
+			  DELIMITER_MAX_CHAR="1"
+			  DELIMITER_TAG_CHARS=":LETTER_OR_DIGITS:">
 			<GROUP>q</GROUP>
 			<END></END>
 		</SPAN> 
 
 <!--    the normal Match at the End - should be checked if it works -->
-    <SPAN TYPE="LITERAL2" NO_LINE_BREAK="TRUE" REQUIRE_END_TAG="TRUE"
+		<SPAN TYPE="LITERAL2"
+			  NO_LINE_BREAK="TRUE"
+			  REQUIRE_END_TAG="TRUE"
               DYNAMIC_TAGGING="FALSE" 
 			  DELIMITER_TAG_CHARS=":NO_LETTER_OR_DIGITS:"
               OPTIONAL_MODIFIER = "cgimosx">
 			<BEGIN>/</BEGIN>
 			<END>/</END>
-		</SPAN> 
+		</SPAN>
 
 		<SEQ TYPE="OPERATOR">/</SEQ>
 		<SEQ TYPE="OPERATOR">&lt;&lt;=</SEQ>

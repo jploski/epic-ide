@@ -111,7 +111,7 @@ public class ExtendedPatternRule extends PatternRule {
 	      ignoreEscape = false;
 	    } else {
 	      rquDelimNonEscape = false;
-	      ignoreEscape = false;
+	      ignoreEscape = true; // experimental fix for bug #1305170
 	    }
 	    //works
 	    if (countDelimterChars.indexOf(":EMPTY_AS_LINEFEED:") >= 0) {

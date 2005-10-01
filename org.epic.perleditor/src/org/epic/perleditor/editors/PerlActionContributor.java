@@ -1,112 +1,60 @@
 package org.epic.perleditor.editors;
 
-
-import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.editors.text.TextEditorActionContributor;
-
-import org.epic.perleditor.actions.ExportHtmlSourceAction;
-import org.epic.perleditor.actions.FormatSourceAction;
-import org.epic.perleditor.actions.Jump2BracketAction;
-import org.epic.perleditor.actions.ToggleCommentAction;
-import org.epic.perleditor.actions.ValidateSourceAction;
-import org.epic.perleditor.popupmenus.OpenDeclaration;
-import org.epic.perleditor.popupmenus.PerlDocAction;
-
+import org.eclipse.ui.texteditor.ITextEditor;
 
 /**
- * Contributes interesting Java actions to the desktop's Edit menu and the toolbar.
+ * Associates global action handlers contributed via actionSets
+ * in the plug-in's manifest with their PerlEditorAction counterparts
+ * in the currently active PerlEditor. 
  */
-public class PerlActionContributor extends TextEditorActionContributor {
-
-	protected FormatSourceAction formatSourceAction;
-	protected ExportHtmlSourceAction htmExportAction;
-	protected ValidateSourceAction validateSourceAction;
-	protected OpenDeclaration openDeclarationAction;
-	protected ToggleCommentAction toggleCommentAction;
-	protected Jump2BracketAction jump2BracketAction;
-	protected PerlDocAction perldocAction;
-
-	/**
-	 * Default constructor.
-	 */
-	public PerlActionContributor() {
-		super();
-		formatSourceAction = new FormatSourceAction();
-		htmExportAction = new ExportHtmlSourceAction();
-		validateSourceAction = new ValidateSourceAction();
-		openDeclarationAction = new OpenDeclaration();
-		toggleCommentAction = new ToggleCommentAction();
-		jump2BracketAction = new Jump2BracketAction();
-		perldocAction = new PerlDocAction();
-		//formatSourceAction.setActionDefinitionId("org.epic.perledior.formatsource");
+public class PerlActionContributor extends TextEditorActionContributor
+{
+	public PerlActionContributor()
+    {
 	}
 
-	/*
-	 * @see IEditorActionBarContributor#init(IActionBars)
-	 */
-	public void init(IActionBars bars) {
-		super.init(bars);
-	}
-
-	/*
-	 * @see IEditorActionBarContributor#setActiveEditor(IEditorPart)
-	 */
-	public void setActiveEditor(IEditorPart part) {
+	public void setActiveEditor(IEditorPart part)
+    {
 		super.setActiveEditor(part);
-		//doSetActiveEditor(part);
-		
-        formatSourceAction.setActiveEditor(formatSourceAction, part);
-        validateSourceAction.setActiveEditor(validateSourceAction, part);
-        openDeclarationAction.setActiveEditor(openDeclarationAction, part);
-        toggleCommentAction.setActiveEditor(toggleCommentAction, part);
-        jump2BracketAction.setActiveEditor(jump2BracketAction, part);
-        perldocAction.setActiveEditor(perldocAction, part);
+        if (!(part instanceof PerlEditor)) return;
         
-		PerlEditor editor = null;
-		if (part instanceof PerlEditor) {
-				editor = (PerlEditor) part;
-                
-				// Only add handlers if in Perl mode
-				if(editor.isPerlMode()) {
-					formatSourceAction.setActionDefinitionId("org.epic.perledior.formatsource");
-					formatSourceAction.setEditor(editor);
-					
-					htmExportAction.setActionDefinitionId("org.epic.perleditor.htmlexport");
-				}
-						
-				IActionBars bars= getActionBars();
-				bars.setGlobalActionHandler("org.epic.perleditor.ContentAssist", getAction(editor, "org.epic.perleditor.ContentAssist"));
-
-				
-				if(editor.isPerlMode()) {
-					bars.setGlobalActionHandler("org.epic.perleditor.ToggleComment", toggleCommentAction);
-					bars.setGlobalActionHandler("org.epic.perleditor.FormatSource", formatSourceAction);
-					bars.setGlobalActionHandler("org.epic.perleditor.HtmlExport", htmExportAction);
-					bars.setGlobalActionHandler("org.epic.perleditor.ValidateSyntax", validateSourceAction);
-					bars.setGlobalActionHandler("org.epic.perleditor.popupmenus.OpenSubAction", openDeclarationAction);
-					bars.setGlobalActionHandler("org.epic.perleditor.Jump2Bracket", jump2BracketAction);
-					bars.setGlobalActionHandler("org.epic.perleditor.popupmenus.PerlDocAction", perldocAction);
-				}
-				else {
-					bars.setGlobalActionHandler("org.epic.perleditor.FormatSource", null);
-					bars.setGlobalActionHandler("org.epic.perleditor.HtmlExport", null);
-					bars.setGlobalActionHandler("org.epic.perleditor.ValidateSyntax", null);
-					bars.setGlobalActionHandler("org.epic.perleditor.popupmenus.OpenSubAction", null);
-					bars.setGlobalActionHandler("org.epic.perleditor.ToggleComment", null);
-					bars.setGlobalActionHandler("org.epic.perleditor.Jump2Bracket", null);
-					bars.setGlobalActionHandler("org.epic.perleditor.popupmenus.PerlDocAction", null);
-				}
-		}
-				
-		
+        PerlEditor editor = (PerlEditor) part;
+        
+        if (editor.isPerlMode())
+        {   
+            setGlobalActionHandler(editor, PerlEditorActionIds.CONTENT_ASSIST);
+            setGlobalActionHandler(editor, PerlEditorActionIds.HTML_EXPORT);
+            setGlobalActionHandler(editor, PerlEditorActionIds.VALIDATE_SYNTAX);
+            setGlobalActionHandler(editor, PerlEditorActionIds.FORMAT_SOURCE);
+            setGlobalActionHandler(editor, PerlEditorActionIds.TOGGLE_COMMENT);
+            setGlobalActionHandler(editor, PerlEditorActionIds.OPEN_SUB);
+            setGlobalActionHandler(editor, PerlEditorActionIds.PERL_DOC);
+            setGlobalActionHandler(editor, PerlEditorActionIds.MATCHING_BRACKET);                           
+        }
+        else
+        {
+            resetGlobalActionHandler(PerlEditorActionIds.CONTENT_ASSIST);
+            resetGlobalActionHandler(PerlEditorActionIds.HTML_EXPORT);
+            resetGlobalActionHandler(PerlEditorActionIds.VALIDATE_SYNTAX);
+            resetGlobalActionHandler(PerlEditorActionIds.FORMAT_SOURCE);
+            resetGlobalActionHandler(PerlEditorActionIds.TOGGLE_COMMENT);
+            resetGlobalActionHandler(PerlEditorActionIds.OPEN_SUB);
+            resetGlobalActionHandler(PerlEditorActionIds.PERL_DOC);
+            resetGlobalActionHandler(PerlEditorActionIds.MATCHING_BRACKET);
+        }
+        getActionBars().updateActionBars();
 	}
-
-	/*
-	 * @see IEditorActionBarContributor#dispose()
-	 */
-	public void dispose() {
-		formatSourceAction.setEditor(null);
-		super.dispose();
-	}
+    
+    private void resetGlobalActionHandler(String perlActionID)
+    {
+        getActionBars().setGlobalActionHandler(perlActionID, null);
+    }
+    
+    private void setGlobalActionHandler(ITextEditor perlEditor, String perlActionID)
+    {
+        getActionBars().setGlobalActionHandler(
+            perlActionID, getAction(perlEditor, perlActionID));
+    }
 }

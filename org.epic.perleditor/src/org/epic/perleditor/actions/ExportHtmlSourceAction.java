@@ -1,106 +1,79 @@
 package org.epic.perleditor.actions;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.StringTokenizer;
+import java.util.*;
 
-import org.eclipse.jface.action.Action;
-import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.DirectoryDialog;
 import org.eclipse.ui.IFileEditorInput;
-import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.epic.perleditor.PerlEditorPlugin;
+import org.epic.perleditor.editors.PerlEditor;
+import org.epic.perleditor.editors.PerlEditorActionIds;
 import org.epic.perleditor.editors.util.SourceFormatter;
 import org.epic.perleditor.preferences.SourceFormatterPreferences;
 
-public class ExportHtmlSourceAction extends Action implements org.eclipse.ui.IWorkbenchWindowActionDelegate {
+public class ExportHtmlSourceAction extends PerlEditorAction
+{
+    private static String lastSelectedDir;
 
-	static private String lastSelectedDir = null;
-	/**
-	 * Constructs and updates the action.
-	 */
-	public ExportHtmlSourceAction() {
-		super();
-	}
-	
-	public void run(IAction action) {
-		run();
-	}
+    public ExportHtmlSourceAction()
+    {
+    }
+    
+    public ExportHtmlSourceAction(PerlEditor editor)
+    {
+        super(editor);
+    }
 
-	public void run() {
-		String filePath =
-			((IFileEditorInput) PlatformUI
-				.getWorkbench()
-				.getActiveWorkbenchWindow()
-				.getActivePage()
-				.getActiveEditor()
-				.getEditorInput())
-				.getFile()
-				.getLocation()
-				.makeAbsolute()
-				.toString();
-		
-				
-		// Display directory dialog
-		DirectoryDialog directoryDialog = new DirectoryDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), SWT.SAVE);
-		directoryDialog.setText("Select Output Directory");
-		directoryDialog.setMessage("HTML Export...");
-		
-		directoryDialog.setFilterPath(lastSelectedDir);
-		
-		String outputDir = directoryDialog.open();
-		
-		
-		if(outputDir != null) {
-			lastSelectedDir = outputDir;
-			
-			// Export options
-			List cmdList = new ArrayList();
-			
-			cmdList.add("-html");
-			cmdList.add("-opath");
-			cmdList.add(outputDir);
-			
-			// Add additional options
-			IPreferenceStore store = PerlEditorPlugin.getDefault().getPreferenceStore();
-			StringTokenizer st = new StringTokenizer(store.getString(SourceFormatterPreferences.HTML_EXPORT_OPTIONS));
-			while (st.hasMoreTokens()) {
-				cmdList.add(st.nextToken());
-			}
-			
-			// last thing has to be the input file name
-			cmdList.add(filePath);
+    public void run()
+    {
+        PerlEditor editor = getEditor();
+        IFileEditorInput editorInput = (IFileEditorInput) editor.getEditorInput();
+        String filePath =
+            editorInput.getFile().getLocation().makeAbsolute().toString();
 
-			new SourceFormatter().doConversion(null, cmdList);
+        // Display directory dialog
+        DirectoryDialog directoryDialog = new DirectoryDialog(
+            PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
+            SWT.SAVE);
+        directoryDialog.setText("Select Output Directory");
+        directoryDialog.setMessage("HTML Export...");
 
-		}
-	}
+        directoryDialog.setFilterPath(lastSelectedDir);
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.ui.IWorkbenchWindowActionDelegate#dispose()
-	 */
-	public void dispose() {
-		
-	}
+        String outputDir = directoryDialog.open();
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.ui.IWorkbenchWindowActionDelegate#init(org.eclipse.ui.IWorkbenchWindow)
-	 */
-	public void init(IWorkbenchWindow window) {
-		
-	}
+        if (outputDir != null)
+        {
+            lastSelectedDir = outputDir;
 
-	
+            // Export options
+            List cmdList = new ArrayList();
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.ui.IActionDelegate#selectionChanged(org.eclipse.jface.action.IAction, org.eclipse.jface.viewers.ISelection)
-	 */
-	public void selectionChanged(IAction action, ISelection selection) {
-		
-	}
+            cmdList.add("-html");
+            cmdList.add("-opath");
+            cmdList.add(outputDir);
 
+            // Add additional options
+            IPreferenceStore store =
+                PerlEditorPlugin.getDefault().getPreferenceStore();
+            StringTokenizer st = new StringTokenizer(
+                store.getString(SourceFormatterPreferences.HTML_EXPORT_OPTIONS));
+            while (st.hasMoreTokens())
+            {
+                cmdList.add(st.nextToken());
+            }
+
+            // last thing has to be the input file name
+            cmdList.add(filePath);
+
+            new SourceFormatter().doConversion(null, cmdList);
+        }
+    }
+
+    protected String getPerlActionId()
+    {
+        return PerlEditorActionIds.HTML_EXPORT;
+    }
 }

@@ -308,6 +308,7 @@
    </extension>
    <extension
          point="org.eclipse.ui.actionSets">
+<!-- Remember to update class PerlEditorActionIds when adding new actions! -->
       <actionSet
             label="Source Menu"
             id="org.epic.perleditor.sourcemenu">
@@ -404,11 +405,12 @@
          
       </actionSet>
    </extension>
+<!-- Remember to update class PerlEditorCommandIds when adding new commands! -->
    <extension
          point="org.eclipse.ui.commands">
 <!-- Perl Editor Scope definition -->
       <scope
-            name="perlEditor Scope"
+            name="In Perl Editor"
             parent="org.eclipse.ui.textEditorScope"
             description="Perl Editor Scope"
             id="org.epic.perleditor.perlEditorScope">
@@ -416,7 +418,7 @@
 
 <!-- Toggle Comment command -->
       <command
-            name="ToggleComment"
+            name="Toggle Comment"
             description="Toggle Comment source"
             id="org.epic.perleditor.togglecomment">
       </command>
@@ -431,25 +433,6 @@
             string="Command+/"
             scope="org.epic.perleditor.perlEditorScope"
             command="org.epic.eclipse.perleditor.togglecomment"
-            configuration="org.eclipse.ui.defaultAcceleratorConfiguration">
-      </keyBinding>
-<!-- Content assist -->
-      <command
-            name="Content Assist"
-            description="Content Assist"
-            id="org.epic.perleditor.contentassist">
-      </command>
-      <keyBinding
-            string="Ctrl+Space"
-            scope="org.epic.perleditor.perlEditorScope"
-            command="org.epic.perleditor.contentassist"
-            configuration="org.eclipse.ui.defaultAcceleratorConfiguration">
-      </keyBinding>
-      <keyBinding
-            platform="carbon"
-            string="Command+Space"
-            scope="org.epic.perleditor.perlEditorScope"
-            command="org.epic.perleditor.contentassist"
             configuration="org.eclipse.ui.defaultAcceleratorConfiguration">
       </keyBinding>
 <!--HTML export -->
@@ -491,7 +474,7 @@
       </keyBinding>
       <command
             description="Opens the SUBs declaration"
-            name="OpenDeclaration"
+            name="Open Declaration"
             id="org.epic.perleditor.openDeclaration"/>
       <keyBinding
             string="F3"

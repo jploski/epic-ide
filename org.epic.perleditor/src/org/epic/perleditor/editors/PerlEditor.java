@@ -25,7 +25,10 @@ import org.eclipse.ui.texteditor.*;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 import org.epic.core.util.FileUtilities;
 import org.epic.perleditor.PerlEditorPlugin;
+import org.epic.perleditor.actions.*;
 import org.epic.perleditor.editors.util.PerlColorProvider;
+import org.epic.perleditor.popupmenus.OpenDeclaration;
+import org.epic.perleditor.popupmenus.PerlDocAction;
 import org.epic.perleditor.preferences.PreferenceConstants;
 import org.epic.perleditor.templates.perl.ModuleCompletionHelper;
 import org.epic.perleditor.views.PerlOutlinePage;
@@ -115,13 +118,44 @@ public class PerlEditor extends TextEditor implements
         super.createActions();
 
         Action action;
-        // Create content assist action
+
         action = new ContentAssistAction(
             PerlEditorMessages.getResourceBundle(), "ContentAssistProposal.",
             this);
-        action
-            .setActionDefinitionId(ITextEditorActionDefinitionIds.CONTENT_ASSIST_PROPOSALS);
+        action.setActionDefinitionId(PerlEditorCommandIds.CONTENT_ASSIST);
         setAction("org.epic.perleditor.ContentAssist", action);
+        
+        action = new Jump2BracketAction(this);
+        action.setActionDefinitionId(PerlEditorCommandIds.MATCHING_BRACKET);
+        setAction(action.getId(), action);
+        
+        action = new FormatSourceAction(this);
+        action.setActionDefinitionId(PerlEditorCommandIds.FORMAT_SOURCE);
+        setAction(action.getId(), action);
+        
+        action = new ExportHtmlSourceAction(this);
+        action.setActionDefinitionId(PerlEditorCommandIds.HTML_EXPORT);
+        setAction(action.getId(), action);
+        
+        action = new ValidateSourceAction(this);
+        action.setActionDefinitionId(PerlEditorCommandIds.VALIDATE_SYNTAX);
+        setAction(action.getId(), action);
+        
+        action = new OpenDeclaration(this);
+        action.setActionDefinitionId(PerlEditorCommandIds.OPEN_SUB);
+        setAction(action.getId(), action);
+        
+        action = new ToggleCommentAction(this);
+        action.setActionDefinitionId(PerlEditorCommandIds.TOGGLE_COMMENT);
+        setAction(action.getId(), action);
+        
+        action = new PerlDocAction(this);
+        action.setActionDefinitionId(PerlEditorCommandIds.PERL_DOC);
+        setAction(action.getId(), action);
+        
+        // TODO: the following initialization steps have nothing to do with
+        // the purpose of createActions and should be moved to a more sensible
+        // location
 
         IDocumentProvider provider = getDocumentProvider();
         document = provider.getDocument(getEditorInput());
@@ -816,5 +850,23 @@ public class PerlEditor extends TextEditor implements
     public void _setExactBracketMatching()
     {
         fBracketMatcher.setViewer(null);
+    }
+
+    /**
+     * For test purposes only.
+     */
+    public void _selectText(String text)
+    {
+        if (text.length() == 0)
+        {
+            getSelectionProvider().setSelection(TextSelection.emptySelection());
+        }
+        else
+        {        
+            int i = getSourceViewer().getDocument().get().indexOf(text);
+            if (i == -1) throw new RuntimeException(
+                "text \"" + text + "\" not found in editor");
+            getSelectionProvider().setSelection(new TextSelection(i, text.length()));
+        }
     }
 }

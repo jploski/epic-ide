@@ -1,71 +1,26 @@
 package org.epic.perleditor.actions;
 
-import org.eclipse.jface.action.Action;
-import org.eclipse.jface.action.IAction;
-import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.ui.IEditorPart;
-import org.eclipse.ui.IWorkbenchWindow;
-import org.eclipse.ui.PlatformUI;
 import org.epic.perleditor.editors.PerlEditor;
+import org.epic.perleditor.editors.PerlEditorActionIds;
 
-public class ValidateSourceAction extends Action implements
-		org.eclipse.ui.IWorkbenchWindowActionDelegate, org.eclipse.ui.IEditorActionDelegate {
-
-	static private String lastSelectedDir = null;
-
-	/**
-	 * Constructs and updates the action.
-	 */
-	public ValidateSourceAction() {
-		super();
+public class ValidateSourceAction extends PerlEditorAction
+{
+    public ValidateSourceAction()
+    {
+    }
+    
+	public ValidateSourceAction(PerlEditor editor)
+    {
+        super(editor);
 	}
 
-	public void run(IAction action) {
-		run();
-	}
+	public void run()
+    {
+		getEditor().revalidateSyntax(true);
+    }
 
-	public void run() {
-		IEditorPart activeEditor = PlatformUI.getWorkbench()
-				.getActiveWorkbenchWindow().getActivePage().getActiveEditor();
-		if(activeEditor instanceof PerlEditor) {
-			((PerlEditor) activeEditor).revalidateSyntax(true);
-		}
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.ui.IWorkbenchWindowActionDelegate#dispose()
-	 */
-	public void dispose() {
-
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.ui.IWorkbenchWindowActionDelegate#init(org.eclipse.ui.IWorkbenchWindow)
-	 */
-	public void init(IWorkbenchWindow window) {
-
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.ui.IActionDelegate#selectionChanged(org.eclipse.jface.action.IAction,
-	 *      org.eclipse.jface.viewers.ISelection)
-	 */
-	public void selectionChanged(IAction action, ISelection selection) {
-
-	}
-
-	/* (non-Javadoc)
-	 * @see org.eclipse.ui.IEditorActionDelegate#setActiveEditor(org.eclipse.jface.action.IAction, org.eclipse.ui.IEditorPart)
-	 */
-	public void setActiveEditor(IAction action, IEditorPart targetEditor) {
-		// TODO Auto-generated method stub
-		
-	}
-
+    protected String getPerlActionId()
+    {
+        return PerlEditorActionIds.VALIDATE_SYNTAX;
+    }
 }

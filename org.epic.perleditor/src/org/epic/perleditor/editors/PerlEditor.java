@@ -40,11 +40,14 @@ import cbg.editor.ColoringSourceViewerConfiguration;
  * Perl specific text editor.
  */
 
-public class PerlEditor extends TextEditor implements
-    ISelectionChangedListener, IPropertyChangeListener
+public class PerlEditor extends TextEditor
+    implements ISelectionChangedListener, IPropertyChangeListener
 {
-
-    // implements ISelectionChangedListener {
+    /**
+     * Editor id, as declared in the plug-in manifest.
+     */
+    public static final String PERL_EDITOR_ID =
+        "org.epic.perleditor.editors.PerlEditor";
 
     /** The outline page */
     private PerlContentOutlinePage fOutlinePage;
@@ -120,10 +123,11 @@ public class PerlEditor extends TextEditor implements
         Action action;
 
         action = new ContentAssistAction(
-            PerlEditorMessages.getResourceBundle(), "ContentAssistProposal.",
+            PerlEditorMessages.getResourceBundle(),
+            "ContentAssistProposal.",
             this);
         action.setActionDefinitionId(PerlEditorCommandIds.CONTENT_ASSIST);
-        setAction("org.epic.perleditor.ContentAssist", action);
+        setAction(PerlEditorActionIds.CONTENT_ASSIST, action);
         
         action = new Jump2BracketAction(this);
         action.setActionDefinitionId(PerlEditorCommandIds.MATCHING_BRACKET);

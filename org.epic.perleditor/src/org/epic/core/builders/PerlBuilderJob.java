@@ -80,9 +80,7 @@ class PerlBuilderJob extends Job
     }
     
     protected IStatus run(IProgressMonitor monitor)
-    {
-        PerlDecorator decorator = PerlDecorator.getPerlDecorator();
-        
+    {        
         monitor.beginTask("", dirtyResources.size());
         for (Iterator i = dirtyResources.iterator(); i.hasNext();)
         {
@@ -94,9 +92,14 @@ class PerlBuilderJob extends Job
             monitor.worked(1);
         }
         monitor.done();       
-        
-        decorator.fireLabelEvent(new LabelProviderChangedEvent(
-            decorator, validatedResources.toArray()));
+
+        PerlDecorator decorator = PerlDecorator.getPerlDecorator();
+        if (decorator != null)
+        {
+            decorator.fireLabelEvent(
+                new LabelProviderChangedEvent(
+                    decorator, validatedResources.toArray()));
+        }
         
         if (monitor.isCanceled()) return Status.CANCEL_STATUS;
         else return Status.OK_STATUS;

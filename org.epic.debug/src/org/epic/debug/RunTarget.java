@@ -52,7 +52,7 @@ public class RunTarget extends Target {
 	 * @see org.eclipse.debug.core.model.IDebugTarget#getThreads()
 	 */
 	public IThread[] getThreads() throws DebugException {
-		return null;
+		return new IThread[0];
 	}
 
 	/**

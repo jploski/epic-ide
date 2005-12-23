@@ -119,14 +119,25 @@ class PerlBuilderJob extends Job
                 markParentFoldersUpdated(resource);
             }
         }
-        catch (Exception e)
+        catch (CoreException e)
         {
+            PerlEditorPlugin.getDefault().getLog().log(
+                new MultiStatus(
+                    PerlEditorPlugin.getPluginId(),
+                    IStatus.OK,
+                    new IStatus[] { e.getStatus() },
+                    "An unexpected exception occurred while validating " +
+                    resource.getProjectRelativePath(),
+                    e));
+        }
+        catch (Exception e)
+        {   
             // TODO: it would be better to add info about the exception
             // as a special error marker on the resource...
             PerlEditorPlugin.getDefault().getLog().log(
                 new Status(Status.ERROR,
                     PerlEditorPlugin.getPluginId(),
-                    10002, // TODO: use some sort of constant
+                    IStatus.OK,
                     "An unexpected exception occurred while validating " +
                     resource.getProjectRelativePath(),
                     e));

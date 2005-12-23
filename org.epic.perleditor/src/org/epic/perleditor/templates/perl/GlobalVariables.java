@@ -8,7 +8,7 @@ import java.text.DateFormat;
 import java.util.Calendar;
 
 import org.eclipse.ui.PlatformUI;
-import org.epic.perleditor.editors.util.PerlExecutableUtilities;
+import org.epic.core.util.PerlExecutableUtilities;
 import org.epic.perleditor.templates.SimpleTemplateVariable;
 import org.epic.perleditor.templates.TemplateContext;
 
@@ -117,7 +117,7 @@ public class GlobalVariables {
 			setResolved(true);
 		}
 		public String evaluate(TemplateContext context) {
-			 return (String) PerlExecutableUtilities.getPerlExecutableCommandLine().get(0);
+			 return (String) PerlExecutableUtilities.getPerlCommandLine().get(0);
 		}
 	}
 }

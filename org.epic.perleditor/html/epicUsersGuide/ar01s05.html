@@ -10,7 +10,7 @@ preferences.
       </p><p>
 When an error/warning has been found, the editor
 displays the appropriate icon in the annotation ruler (the gray bar on
-the left side of the editor), underlines the error in the source and
+the left side of the editor), underlines the error in the source, and
 inserts a marker into the<span class="emphasis"><em> Problems View</em></span> window.
       </p><p>
       </p><p>
@@ -49,9 +49,8 @@ View</em></span>.
       </p><p>
       </p><p>
       </p></div><div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="N104B3"></a>Open SUB Declaration</h3></div></div><div></div></div><p>
-
 Open SUB Declaration allows the user to search for the declaration of a
-specific SUBroutine. 
+specific SUBroutine.
       </p><p>
       </p><p>
         <div class="informalfigure"><div class="mediaobject"><img src="images/OpenDeclaration_Menu.gif"></div></div>
@@ -59,28 +58,20 @@ specific SUBroutine.
       </p><p>
       </p><p>
       </p><p>
-
 The search first determines what is selected. If no text is selected,
-it is attempted to find a subroutine name under the current cursor-position.
-The action might cause an error
+it attempts to find a subroutine name at the current cursor position.
+The search will fail if no subroutine name is selected.
       </p><p>
       </p><p>
-        <div class="informalfigure"><div class="mediaobject"><img src="images/OpenDeclaration_Error.gif"></div></div>
-
+Due to the dynamic nature of Perl programs, the search is not entirely
+reliable. For subroutine names qualified by a package prefix, an attempt
+will be made to locate the appropriately named module file using the @INC path.
+For unqualified subroutine names, the search will first occur in the current
+editor and then extend to modules referenced by 'use' statements.
       </p><p>
       </p><p>
-
-- if only special characters were found 
-      </p><p>
-      </p><p>
-
-- if only numbers could be detected
-
-The SUBroutine is first searched for
-locally, next in the 'require'-file. Before a new file is scanned
-through the packages are also inspected. If the located SUB is not in
-the current editor, the location is opened automatically and
-highlighted. 
+If the subroutine declaration is found in a file inside workspace,
+it will be highlighted in an existing or new editor.
       </p><p>
       </p><p>
         <div class="informalfigure"><div class="mediaobject"><img src="images/OpenDeclaration_Found.gif"></div></div>
@@ -88,24 +79,13 @@ highlighted.
       </p><p>
       </p><p>
       </p><p>
-        <span class="bold"><b>NOTE 1:</b></span> The files in the 'require'-statement are case-sensitive!
-      </p><p>
-      </p><p>
-        <span class="bold"><b>NOTE 2:</b></span> The search is editor-based, i.e. if the file in the
-require-statement is already opened, the content of this editor is
-taken instead of the file-content. This effect includes unsaved changes
-into search-scope! 
-      </p><p>
-      </p><p>
- 
-      </p><p>
       </p></div><div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="N10503"></a>Perldoc</h3></div></div><div></div></div><p>
 
-To retrieve Perldoc information select a keyword or text and choose <span class="bold"><b><span class="emphasis"><em>Perldoc</em></span></b></span>
+To retrieve Perldoc information, select a keyword or text and choose <span class="bold"><b><span class="emphasis"><em>Perldoc</em></span></b></span>
 from the context menu or press <span class="bold"><b>Shift+Ctrl+H</b></span>.
       </p><p>
 
-If nothing is selected an input dialog will appear.
+If nothing is selected, an input dialog will appear.
       </p><p>
       </p><p>
         <div class="informalfigure"><div class="mediaobject"><img src="images/perldoc_1.gif"></div></div>
@@ -113,7 +93,7 @@ If nothing is selected an input dialog will appear.
       </p><p>
       </p><p>
 
-If Perldoc entries are found they are displayed inside the <span class="emphasis"><em>Perldoc
+If Perldoc entries are found, they are displayed inside the <span class="emphasis"><em>Perldoc
 View</em></span>.
       </p><p>
       </p><p>
@@ -121,7 +101,7 @@ View</em></span>.
 
       </p><p>
       </p><p>
-        <span class="bold"><b>NOTE:</b></span> Perldoc has to be installed available in the system PATH,
+        <span class="bold"><b>NOTE:</b></span> Perldoc has to be installed and available in the system PATH,
 otherwise this feature will not work.
       </p><p>
       </p><p>
@@ -129,10 +109,10 @@ otherwise this feature will not work.
 
 Apart from Perldoc support a quick reference feature is available. This
 feature has the advantage that no perldoc has to be installed on the
-system but does not provide as many information as perldoc.
+system but does not provide as much information as perldoc.
       </p><p>
 
-To view the Quick Reference select a keyword and move the mouse pointer
+To view the Quick Reference, select a keyword and move the mouse pointer
 over the selection.
       </p><p>
 
@@ -383,10 +363,12 @@ is needed.
       </p><p>
       </p><p>
       </p></div><div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="N10729"></a>Outline View</h3></div></div><div></div></div><p>
-
-The Outline View displays modules and subroutines. By clicking on the
-module/subroutine name the editor will jump to the appropriate position
-in the source code.
+The Outline View displays packages and subroutines defined in the
+edited file. Modules referenced by 'use' statements are also shown.
+By clicking on the module/subroutine name the editor will jump to
+the appropriate position in the source code. When the cursor is moved
+inside of a subroutine's definition, the subroutine will become selected
+in the Outline.
       </p><p>
 
 Subroutines named <span class="emphasis"><em>new</em></span> will get a different icon.

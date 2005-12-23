@@ -1,4 +1,4 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
   <meta content="text/html; charset=ISO-8859-1"
@@ -10,7 +10,7 @@
 </h1>
 <h2>Prerequisites</h2>
 <h3>Eclipse</h3>
-Before installing the EPIC plug-in Eclipse version 3.0 or higher has to
+Before installing the EPIC plug-in Eclipse version 3.1 or higher has to
 be installed.<br>
 Eclipse comes in two flavors. The <i>SDK</i> version contains Java
 IDE components and is much larger than the <i>Platform</i> version. If
@@ -26,22 +26,22 @@ Eclipse can be downloaded from <a href="http://www.eclipse.org">www.eclipse.org<
 <h3>Perl</h3>
 In order to have all EPIC features like Syntax Checking, Source
 Formatting
-etc. a perl interpreter is needed. In principle any Perl interpreter
+etc. a Perl interpreter is needed. In principle any Perl interpreter
 can
-be used. To use debugging within eclipse Perl version 5.8.x or
+be used. To use debugging within Eclipse, Perl version 5.8.x or
 5.6.x&nbsp;
 is required. For further requirements concerning the debugger see&nbsp;
-<a href="#Setting_up_the_Debugger">Setting up the Debugger</a> .<br>
+<a href="#Setting_up_the_Debugger">Setting up the Debugger</a>.<br>
 Most *nix/Linux installations will provide Perl interpreters out of the
 box.<br>
-For Window, Perl can be downloaded from <a
+Perl for Windows can be downloaded from <a
  href="http://www.activestate.com">www.activestate.com</a>.<br>
 <br>
 <br>
 <h3>Considerations when using Cygwin</h3>
 Make sure that the mount command is available and that it is in your
-system path. As mount is a standard component of Cygwin this usually
-only have&nbsp; to add the cygwin\bin directory to your system path.<br>
+system path. As mount is a standard component of Cygwin, you usually
+just have to add the cygwin\bin directory to your system path.<br>
 <br>
 <h2>Installation<br>
 </h2>
@@ -65,7 +65,7 @@ Select <b>Search for new features to install</b> an press <b>Next</b>.<br>
 Press the <b>Add Update Site...</b> button for a remote installation
 via HTTP or the <b>Add Local Site...</b> button if the Update Site is
 available locally.<br>
-When installing EPIC from remote enter any desired <i>Name</i> and the
+When installing EPIC from remote, enter any desired <i>Name</i> and the
 <i>URL </i> <i><b>http://e-p-i-c.sf.net/updates</b></i>.<br>
 <br>
 <div align="center"><img src="images/updates_2.gif"
@@ -76,7 +76,7 @@ When installing EPIC from remote enter any desired <i>Name</i> and the
 Tick the newly created site and press the <b>Next</b> button.<br>
 Follow the instructions of the install wizard. The warning about the
 installation of an unsigned feature can be ignored.<br>
-After installation Eclipse has to be restarted.<br>
+Eclipse has to be restarted after installation.<br>
 <br>
 Now the EPIC installation should be complete.<br>
 <br>
@@ -94,8 +94,8 @@ Click on <i>Perl EPIC </i>to open the General Preferences page.<br>
 General preferences include the location of the Perl interpreter, the
 option to enable warnings, taint mode and the interval of the source
 validation.<br>
-The validation interval indicated when to start validation after the
-editor is idle.<br>
+The validation interval indicates when to start validation after the
+editor becomes idle.<br>
 Apart from the standard interpreter type, the type can be switched to <i>Cygwin</i>.
 In this case the @INC path is mapped to be Cygwin compliant.<br>
 <br>
@@ -175,7 +175,7 @@ working with the&nbsp; Perl Editor.<br>
 <div align="left">How Templates are use is covered in <i>Working with
 the Perl Editor</i>. The Templates Preference page allows the creation,
 import and export of Templates.<br>
-On export Templates are stored in XML format.<br>
+Exported Templates are stored in XML format.<br>
 <br>
 <font color="#000000"><br>
 </font>
@@ -252,7 +252,8 @@ Navigator view: <img
 <h2>Perl Include Path</h2>
 To add entries to a project's Perl Include Path (@INC), right click on the project icon
 and select <b>Properties...<br>
-<span style="font-weight: bold;"></span></b>Standard Eclipse variables
+<span style="font-weight: bold;"></span></b>Unless absolute paths are entered,
+they are interpreted as relative to the project folder. Standard Eclipse variables
 (e.g. <span style="font-family: monospace;"> </span><code>${project_loc}</code>)
 can be used.<b><br>
 <br>
@@ -492,7 +493,7 @@ user has stopped typing. This idle period can be configured in the
 preferences.<br>
 <div align="left">When an error/warning has been found, the editor
 displays the appropriate icon in the annotation ruler (the gray bar on
-the left side of the editor), underlines the error in the source and
+the left side of the editor), underlines the error in the source, and
 inserts a marker into the<i> Problems View</i> window.<br>
 <br>
 A syntax check can be enforced by pressing <b>Shift+F5</b>.
@@ -511,7 +512,7 @@ explaining them in more detail.<br>
 To get an Error/Warning explanation, right-click the Error/Warning icon
 and select Explain <i>Errors/Warnings</i> from the dropdown menu.<br>
 <br>
-<div align="center"><img alt="Explaint Errors/Warnings popup"
+<div align="center"><img alt="Explain Errors/Warnings popup"
  src="images/explain_1.gif" height="157" width="272"><br>
 </div>
 <br>
@@ -532,59 +533,49 @@ specific SUBroutine. <br>
 <br>
 <br>
 The search first determines what is selected. If no text is selected,
-it is attempted to find a subroutine name under the current cursor-position.
-The action might cause an error <br>
+it attempts to find a subroutine name at the current cursor position.
+The search will fail if no subroutine name is selected.
 <br>
-<img alt="" src="images/OpenDeclaration_Error.gif" height="146"
- width="441"><br>
 <br>
-- if only special characters were found <br>
+Due to the dynamic nature of Perl programs, the search is not entirely
+reliable. For subroutine names qualified by a package prefix, an attempt
+will be made to locate the appropriately named module file using the @INC path.
+For unqualified subroutine names, the search will first occur in the current
+editor and then extend to modules referenced by 'use' statements.
 <br>
-- ifonly numbers could be detected
-
-The SUBroutine is first searched for
-locally, next in the 'require'-file. Before a new file is scanned
-through the packages are also inspected. If the located SUB is not in
-the current editor, the location is opened automatically and
-highlighted. <br>
+<br>
+If the subroutine declaration is found in a file inside workspace,
+it will be highlighted in an existing or new editor.
+<br>
 <br>
 <img alt="" src="images/OpenDeclaration_Found.gif" height="88"
  width="448"><br>
 <br>
 <br>
-<b>NOTE 1:</b> The files in the 'require'-statement are case-sensitive!<br>
-<br>
-<b>NOTE 2:</b> The search is editor-based, i.e. if the file in the
-require-statement is already opened, the content of this editor is
-taken instead of the file-content. This effect includes unsaved changes
-into search-scope! <br>
-<div class="informalfigure"><br>
-<p> </p>
-<p> </p>
 <h2>Perldoc</h2>
-To retrieve Perldoc information select a keyword or text and choose <b><i>Perldoc</i></b>
+To retrieve Perldoc information, select a keyword or text and choose <b><i>Perldoc</i></b>
 from the context menu or press <b>Shift+Ctrl+H</b>.<br>
-If nothing is selected an input dialog will appear.<br>
+If nothing is selected, an input dialog will appear.<br>
 <br>
 <div align="center"><img src="images/perldoc_1.gif"
  alt="Perldoc Context Menu" height="328" width="238"><br>
 </div>
 <br>
-If Perldoc entries are found they are displayed inside the <i>Perldoc
+If Perldoc entries are found, they are displayed inside the <i>Perldoc
 View</i>.<br>
 <br>
 <div align="center"><img src="images/perldoc_2.gif" alt="Perldoc View"
  height="343" width="589"><br>
 </div>
 <br>
-<b>NOTE:</b> Perldoc has to be installed available in the system PATH,
+<b>NOTE:</b> Perldoc has to be installed and available in the system PATH,
 otherwise this feature will not work.<br>
 <br>
 <h2>Quick Reference</h2>
-Apart from Perldoc support a quick reference feature is available. This
+Apart from Perldoc support, a quick reference feature is available. This
 feature has the advantage that no perldoc has to be installed on the
-system but does not provide as many information as perldoc.<br>
-To view the Quick Reference select a keyword and move the mouse pointer
+system but does not provide as much information as perldoc.<br>
+To view the Quick Reference, select a keyword and move the mouse pointer
 over the selection.<br>
 A tooltip with a short description of the keyword should appear.<br>
 <br>
@@ -768,9 +759,13 @@ preference page.<br>
 is needed.<br>
 <br>
 <h2>Outline View</h2>
-The Outline View displays modules and subroutines. By clicking on the
-module/subroutine name the editor will jump to the appropriate position
-in the source code.<br>
+The Outline View displays packages and subroutines defined in the
+edited file. Modules referenced by 'use' statements are also shown.
+By clicking on the module/subroutine name the editor will jump to
+the appropriate position in the source code. When the cursor is moved
+inside of a subroutine's definition, the subroutine will become selected
+in the Outline.<br>
+<br>
 Subroutines named <i>new</i> will get a different icon.<br>
 <br>
 <div align="center"><img alt="Outline View"
@@ -1300,6 +1295,8 @@ sub dummy<br>
 Part of this document is taken from the official Eclipse documentation
 provided by the Eclipse project and IBM.<br>
 <br>
+EPIC uses the public domain ANTLR 2 library developed by Terence Parr
+and others in the <a href="http://www.antlr.org">ANTLR project</a>.
 </div>
 </div>
 </div>

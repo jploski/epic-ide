@@ -1,0 +1,118 @@
+<?xml version='1.0' ?> 
+<settings>
+  <resource name='src/org/epic/core/parser/perl.g'>
+    <property name='traceTreeParser' value='false' />
+    <property name='noTrace' value='true' />
+    <property name='output' value='' />
+    <property name='diagnosticOutput' value='false' />
+    <property name='superGrammars' value='' />
+    <property name='installSmap' value='false' />
+    <property name='docbookOutput' value='false' />
+    <property name='traceLexer' value='false' />
+    <property name='debug' value='false' />
+    <property name='traceParser' value='false' />
+    <property name='normalOuput' value='true' />
+    <property name='trace' value='false' />
+    <property name='htmlOutput' value='false' />
+    <property name='cleanWarnings' value='true' />
+  </resource>
+  <resource name='**ANTLR-ECLIPSE-PLUGIN**'>
+    <property name='pluginVersion' value='2.7.6' />
+  </resource>
+  <resource name='src/org/epic/core/parser/expectHereDocEnd.g'>
+    <property name='traceTreeParser' value='false' />
+    <property name='noTrace' value='true' />
+    <property name='output' value='' />
+    <property name='diagnosticOutput' value='false' />
+    <property name='superGrammars' value='' />
+    <property name='installSmap' value='false' />
+    <property name='docbookOutput' value='false' />
+    <property name='traceLexer' value='false' />
+    <property name='debug' value='false' />
+    <property name='traceParser' value='false' />
+    <property name='normalOuput' value='true' />
+    <property name='trace' value='false' />
+    <property name='htmlOutput' value='false' />
+    <property name='cleanWarnings' value='true' />
+  </resource>
+  <resource name='src/org/epic/core/parser/expectSubstExpr.g'>
+    <property name='traceTreeParser' value='false' />
+    <property name='noTrace' value='true' />
+    <property name='output' value='' />
+    <property name='diagnosticOutput' value='false' />
+    <property name='superGrammars' value='' />
+    <property name='installSmap' value='false' />
+    <property name='docbookOutput' value='false' />
+    <property name='traceLexer' value='false' />
+    <property name='debug' value='false' />
+    <property name='traceParser' value='false' />
+    <property name='normalOuput' value='true' />
+    <property name='trace' value='false' />
+    <property name='htmlOutput' value='false' />
+    <property name='cleanWarnings' value='true' />
+  </resource>
+  <resource name='src/org/epic/core/parser/expectString.g'>
+    <property name='traceTreeParser' value='false' />
+    <property name='noTrace' value='true' />
+    <property name='output' value='' />
+    <property name='diagnosticOutput' value='false' />
+    <property name='superGrammars' value='' />
+    <property name='installSmap' value='false' />
+    <property name='docbookOutput' value='false' />
+    <property name='traceLexer' value='false' />
+    <property name='debug' value='false' />
+    <property name='traceParser' value='false' />
+    <property name='normalOuput' value='true' />
+    <property name='trace' value='false' />
+    <property name='htmlOutput' value='false' />
+    <property name='cleanWarnings' value='true' />
+  </resource>
+  <resource name='src/org/epic/core/parser/expectStringSuffix.g'>
+    <property name='traceTreeParser' value='false' />
+    <property name='noTrace' value='true' />
+    <property name='output' value='' />
+    <property name='diagnosticOutput' value='false' />
+    <property name='superGrammars' value='' />
+    <property name='installSmap' value='false' />
+    <property name='docbookOutput' value='false' />
+    <property name='traceLexer' value='false' />
+    <property name='debug' value='false' />
+    <property name='traceParser' value='false' />
+    <property name='normalOuput' value='true' />
+    <property name='trace' value='false' />
+    <property name='htmlOutput' value='false' />
+    <property name='cleanWarnings' value='true' />
+  </resource>
+  <resource name='src/org/epic/core/parser/pod.g'>
+    <property name='traceTreeParser' value='false' />
+    <property name='noTrace' value='true' />
+    <property name='output' value='' />
+    <property name='diagnosticOutput' value='false' />
+    <property name='superGrammars' value='' />
+    <property name='installSmap' value='false' />
+    <property name='docbookOutput' value='false' />
+    <property name='traceLexer' value='false' />
+    <property name='debug' value='false' />
+    <property name='traceParser' value='false' />
+    <property name='normalOuput' value='true' />
+    <property name='trace' value='false' />
+    <property name='htmlOutput' value='false' />
+    <property name='cleanWarnings' value='true' />
+  </resource>
+  <resource name='src/org/epic/core/parser/expectStringEnd.g'>
+    <property name='traceTreeParser' value='false' />
+    <property name='noTrace' value='true' />
+    <property name='output' value='' />
+    <property name='diagnosticOutput' value='false' />
+    <property name='superGrammars' value='' />
+    <property name='installSmap' value='false' />
+    <property name='docbookOutput' value='false' />
+    <property name='traceLexer' value='false' />
+    <property name='debug' value='false' />
+    <property name='traceParser' value='false' />
+    <property name='normalOuput' value='true' />
+    <property name='trace' value='false' />
+    <property name='htmlOutput' value='false' />
+    <property name='cleanWarnings' value='true' />
+  </resource>
+</settings>

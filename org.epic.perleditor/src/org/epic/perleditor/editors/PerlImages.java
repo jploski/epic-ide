@@ -14,8 +14,9 @@ public class PerlImages
    public static final ImageDescriptor ICON_EDITOR;
    public static final ImageDescriptor ICON_SUBROUTINE;
    public static final ImageDescriptor ICON_SUBROUTINE_NODE;
-   public static final ImageDescriptor ICON_MODULE;
-   public static final ImageDescriptor ICON_MODULE_NODE;
+   public static final ImageDescriptor ICON_PACKAGE_NODE;
+   public static final ImageDescriptor ICON_USE;
+   public static final ImageDescriptor ICON_USE_NODE;
    public static final ImageDescriptor ICON_VARIABLE;
    public static final ImageDescriptor ICON_CONSTRUCTOR;
    public static final ImageDescriptor ICON_SEARCH;
@@ -33,8 +34,9 @@ public class PerlImages
 	  ICON_EDITOR = createImageDescriptor(iconPath + "epic.gif"); 
 	  ICON_SUBROUTINE = createImageDescriptor(iconPath + "subroutine.gif");
 	  ICON_SUBROUTINE_NODE = createImageDescriptor(iconPath + "subroutine_node.gif");
-	  ICON_MODULE = createImageDescriptor(iconPath + "module.gif");
-	  ICON_MODULE_NODE = createImageDescriptor(iconPath + "module_node.gif");
+	  ICON_PACKAGE_NODE = createImageDescriptor(iconPath + "package_node.gif");
+      ICON_USE = createImageDescriptor(iconPath + "use.gif");
+      ICON_USE_NODE = createImageDescriptor(iconPath + "use_node.gif");
 	  ICON_VARIABLE = createImageDescriptor(iconPath + "variable.gif");
 	  ICON_CONSTRUCTOR = createImageDescriptor(iconPath + "constructor.gif");
 	  ICON_SEARCH = createImageDescriptor(iconPath + "search.gif");

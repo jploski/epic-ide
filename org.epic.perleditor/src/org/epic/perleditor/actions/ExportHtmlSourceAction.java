@@ -2,6 +2,7 @@ package org.epic.perleditor.actions;
 
 import java.util.*;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.DirectoryDialog;
@@ -68,7 +69,16 @@ public class ExportHtmlSourceAction extends PerlEditorAction
             // last thing has to be the input file name
             cmdList.add(filePath);
 
-            new SourceFormatter().doConversion(null, cmdList);
+            try
+            {
+                new SourceFormatter().doConversion(
+                    editor.getViewer().getDocument().get(),
+                    cmdList);
+            }
+            catch (CoreException e)
+            {
+                PerlEditorPlugin.getDefault().getLog().log(e.getStatus());
+            }
         }
     }
 

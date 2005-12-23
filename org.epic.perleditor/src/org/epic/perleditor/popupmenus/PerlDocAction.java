@@ -1,5 +1,6 @@
 package org.epic.perleditor.popupmenus;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.text.TextSelection;
 import org.eclipse.jface.window.Window;
@@ -63,7 +64,12 @@ public class PerlDocAction extends PerlEditorAction
         {
 			e.printStackTrace();
 		}
-		view.search(selection, editor);
+        
+        try { view.search(selection, editor); }
+        catch (CoreException e)
+        {
+            PerlEditorPlugin.getDefault().getLog().log(e.getStatus());
+        }
 	}
 
     protected String getPerlActionId()

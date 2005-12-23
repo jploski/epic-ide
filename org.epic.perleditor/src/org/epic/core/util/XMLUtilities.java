@@ -72,6 +72,12 @@ public class XMLUtilities {
 					
 					if (replaceVariables) {
 						try {
+                            // TODO: variable substitution is buggy/unsuitable for
+                            // our purposes, as it only works in context of a selected
+                            // resource (see ResourceResolver.java:40); however,
+                            // we don't guarantee that there is any resource selected,
+                            // leading to exceptions (or the selected resource may
+                            // be something accidental, leading to erratic behaviour)
 							String expandedPath = varMgr.performStringSubstitution(path);
 							path = expandedPath;
 						} catch (CoreException e) {

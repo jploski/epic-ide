@@ -145,7 +145,7 @@ public class StatusInfo implements IStatus {
 	public String getPlugin() {
 		// TODO
 		//return JavaUI.ID_PLUGIN;
-		return "org.epic.perdeditor";
+		return "org.epic.perleditor";
 	}
 
 	/**

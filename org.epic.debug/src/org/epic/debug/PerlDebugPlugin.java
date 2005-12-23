@@ -3,7 +3,6 @@ package org.epic.debug;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.URL;
@@ -17,11 +16,7 @@ import java.util.StringTokenizer;
 
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.IPluginDescriptor;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.MultiStatus;
-import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.*;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.IDebugEventSetListener;
 import org.eclipse.jface.dialogs.ErrorDialog;
@@ -29,8 +24,8 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
+import org.epic.core.util.PerlExecutor;
 import org.epic.debug.util.LogWriter;
-import org.epic.perleditor.editors.util.PerlExecutableUtilities;
 
 /**
  * The main plugin class to be used in the desktop.
@@ -159,110 +154,36 @@ public class PerlDebugPlugin extends AbstractUIPlugin {
 		log(new Status(fSeverity, getUniqueIdentifier(), 0, fText, fException));
 		errorDialog(fText, result);
 	}
+    
+    private static List runHelperScript(String scriptName) throws CoreException
+    {
+        PerlExecutor executor = new PerlExecutor();
+        try
+        {
+            List args = new ArrayList(1);
+            args.add(PerlDebugPlugin.getPlugInDir() + scriptName);            
+            return executor.execute(
+                new File(PerlDebugPlugin.getPlugInDir()),
+                args,
+                "").getStdoutLines();
+        }
+        finally { executor.dispose(); }
+    }
 
-	static String[] createEnvArrays(Target fTarget) {
-		Process proc = null;
-		String env = null;
-		String[] debugEnv;
-		int count;
-		//String command[]= {PerlExecutableUtilities.getPerlExecPath(),
-		// "-e","'while(($k,$v)= each %ENV){ print\"$k=$v\\n\";}'"};
-		//String command = "while(($k,$v)= each %ENV){ print\"$k=$v\\n\";}";
-		String command[]= {PerlExecutableUtilities.getPerlExecPath(),PerlDebugPlugin.getPlugInDir()+"get_env.pl"};
-		try {
+	static String[] createEnvArrays(Target fTarget) throws CoreException
+    {
+        List outputLines = runHelperScript("get_env.pl");
 
-			proc = Runtime.getRuntime().exec(
-					command);
-		
-			Thread.sleep(1);
+        mSystemEnv = (String[]) outputLines.toArray(new String[outputLines.size()]);
+        
+        if (fTarget instanceof DebugTarget)
+            outputLines.add(getPerlDebugEnv((DebugTarget) fTarget));
 
-		//	InputStream in = proc.getInputStream();
-
-		
-
-		proc.getErrorStream().close();
-		} catch (Exception e) {
-			getDefault().logError("Error reading environment: check Perl executable preference !");
-		}
-		InputStream in = proc.getInputStream();
-
-		try {
-			env = PerlExecutableUtilities.readStringFromStream(in);
-			in.close();
-		} catch (IOException e1) {
-			e1.printStackTrace();
-		}
-
-		StringTokenizer s = new StringTokenizer(env, "\r\n");
-		count = s.countTokens();
-
-		mSystemEnv = new String[count];
-		if (fTarget instanceof DebugTarget)
-			debugEnv = new String[count + 1];
-		else
-			debugEnv = new String[count];
-
-		String token;
-
-		for (int x = 0; x < count; ++x) {
-			token = s.nextToken();
-			mSystemEnv[x] = token;
-			debugEnv[x] = token;
-		}
-
-		if (fTarget instanceof DebugTarget)
-			debugEnv[count] = getPerlDebugEnv((DebugTarget) fTarget);
-		return debugEnv;
-		//mDebugEnv[count+1] = "PERL5DB=BEGIN {require'perl5db.pl'}";
+        return (String[]) outputLines.toArray(new String[outputLines.size()]);
 	}
-
 	
-	
-	
-	public static void createDefaultIncPath(List fInc) {
-		Process proc = null;
-		String erg = null;
-		int count;
-		//String command[]= {PerlExecutableUtilities.getPerlExecPath(),
-		// "-e","'while(($k,$v)= each %ENV){ print\"$k=$v\\n\";}'"};
-		//String command = "while(($k,$v)= each %ENV){ print\"$k=$v\\n\";}";
-		String command[]= {PerlExecutableUtilities.getPerlExecPath(),PerlDebugPlugin.getPlugInDir()+"get_inc.pl"};
-		try {
-
-			proc = Runtime.getRuntime().exec(
-					command);
-		
-			Thread.sleep(1);
-
-		//	InputStream in = proc.getInputStream();
-
-		
-
-		proc.getErrorStream().close();
-		} catch (Exception e) {
-			getDefault().logError("Error reading include path: check Perl executable preference !");
-		}
-		InputStream in = proc.getInputStream();
-
-		try {
-			erg = PerlExecutableUtilities.readStringFromStream(in);
-			in.close();
-		} catch (IOException e1) {
-			e1.printStackTrace();
-		}
-
-		StringTokenizer s = new StringTokenizer(erg, "\r\n");
-		count = s.countTokens();
-
-		
-
-		String token;
-
-		for (int x = 0; x < count; ++x) {
-			token = s.nextToken();
-					fInc.add(token);
-		}
-
+	public static void createDefaultIncPath(List fInc) throws CoreException {
+        fInc.addAll(runHelperScript("get_inc.pl"));
 	}
 
 	public static String getPerlDebugEnv(DebugTarget fTarget) {
@@ -417,7 +338,7 @@ public class PerlDebugPlugin extends AbstractUIPlugin {
 		return (mSystemEnv);
 	}
 
-	public static String[] getDebugEnv(Target fTarget) {
+	public static String[] getDebugEnv(Target fTarget) throws CoreException {
 		return (createEnvArrays(fTarget));
 	}
 

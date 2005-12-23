@@ -432,8 +432,18 @@ public class RemoteTarget extends DebugTarget implements IDebugEventSetListener
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		mMapper.initInc(fDB);
-		mMapper.print();
+        try
+        {
+    		mMapper.initInc(fDB);
+            mMapper.print();
+        }
+        catch (CoreException e)
+        {
+            // an instance of the famous callback problem in exception handling
+            // we panic
+            PerlDebugPlugin.getDefault().logError(
+                "Could not initialize RemoteTarget", e);
+        }
 	}
 	
 	public class CreateDebugPackageJob extends Job {

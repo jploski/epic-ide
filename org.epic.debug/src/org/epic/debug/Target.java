@@ -14,9 +14,10 @@ import org.eclipse.debug.core.ILaunchManager;
 import org.eclipse.debug.core.model.DebugElement;
 import org.eclipse.debug.core.model.IDebugTarget;
 import org.eclipse.debug.core.model.IProcess;
+import org.epic.core.PerlCore;
+import org.epic.core.util.PerlExecutableUtilities;
 import org.epic.debug.util.ExecutionArguments;
 import org.epic.perleditor.PerlEditorPlugin;
-import org.epic.perleditor.editors.util.PerlExecutableUtilities;
 
 /**
  * @author ruehl
@@ -138,7 +139,7 @@ public abstract class Target extends DebugElement implements IDebugTarget
 		IPath path = mProjectDir.append(startfile);
 		mWorkingDir = path.removeLastSegments(1);
 		mStartupFile = path.lastSegment();
-		mStartupFileAbsolut = prj.findMember(startfile).getLocation().toString();
+		mStartupFileAbsolut = path.toString();
 	}
 	
 	Process startPerlProcess()
@@ -178,7 +179,8 @@ public abstract class Target extends DebugElement implements IDebugTarget
 		try
 		{
 			fCmdList =
-				PerlExecutableUtilities.getPerlExecutableCommandLine(prj);
+				PerlExecutableUtilities.getPerlCommandLine(
+                    PerlCore.create(prj));
 		} catch (Exception e)
 		{
 			PerlDebugPlugin.getDefault().logError(
@@ -220,7 +222,8 @@ public abstract class Target extends DebugElement implements IDebugTarget
 					cmdParams,
 					PerlDebugPlugin.getDebugEnv(this),
 					new File(workingDir.toString()));
-		} catch (IOException e1)
+		}
+        catch (Exception e1)
 		{
 			PerlDebugPlugin.getDefault().logError(
 				"Could not start Debug Process!",

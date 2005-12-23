@@ -4,8 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
-import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.*;
 import org.epic.debug.PerlDB;
 import org.epic.debug.PerlDebugPlugin;
 
@@ -101,11 +100,10 @@ public class PathMapper {
 		return(null);
 	}
 
-	public void initInc(PerlDB fDB)
+	public void initInc(PerlDB fDB) throws CoreException
 	{
 		PerlDebugPlugin.createDefaultIncPath(mIncLocal);
 		fDB.getRemoteInc(mIncRemote);
-	
 	}
 	
 	public void print()

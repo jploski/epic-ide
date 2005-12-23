@@ -26,11 +26,12 @@ import org.eclipse.help.internal.browser.BrowserManager;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
+import org.epic.core.PerlCore;
+import org.epic.core.util.PerlExecutableUtilities;
 import org.epic.core.views.browser.BrowserView;
 import org.epic.debug.cgi.CustomBrowser;
 import org.epic.debug.util.CGIProxy;
 import org.epic.debug.util.RemotePort;
-import org.epic.perleditor.editors.util.PerlExecutableUtilities;
 
 /**
  * @author ruehl
@@ -169,7 +170,9 @@ public class CGITarget extends DebugTarget implements IDebugEventSetListener
 		/* start web-server */
 		/* create config file */
 
-		
+        String perlPath = PerlExecutableUtilities.getPerlInterpreterPath();
+        if (perlPath == null) perlPath = ""; // TODO report an error?
+        
 		brazilProps.append(
 			"\ncgi.Debug="
 				+ mDebug
@@ -187,13 +190,13 @@ public class CGITarget extends DebugTarget implements IDebugEventSetListener
 //				+ htmlRootFileRel
 //				+ "\n"
 				+ "cgi.executable="
-				+ PerlExecutableUtilities.getPerlExecPath()
+				+ perlPath
 				+ "\n"
 				+ "cgi.suffix="+cgiFileExtension
 				+"\n"
 				+ "cgi.DebugInclude="+" -I"+PerlDebugPlugin.getPlugInDir());
 		
-		List list = PerlExecutableUtilities.getPerlIncPath(project);
+		List list = PerlExecutableUtilities.getPerlIncArgs(PerlCore.create(project));
 		Iterator i = list.iterator();
 		int x= 0;
 		while(i.hasNext())

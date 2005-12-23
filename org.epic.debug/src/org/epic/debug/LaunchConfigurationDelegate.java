@@ -9,6 +9,7 @@ import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchManager;
 import org.epic.core.Constants;
 import org.epic.core.Perspective;
+import org.epic.perleditor.PerlEditorPlugin;
 
 /**
  * @author ruehl
@@ -136,6 +137,9 @@ public class LaunchConfigurationDelegate
 			//			mLaunch.addDebugTarget(mTarget);
 			//((DebugTarget) mTarget).getDebuger().generateDebugInitEvent();
 		} else
+        {
+            if (!PerlEditorPlugin.getDefault().requirePerlInterpreter(true)) return;
+            
 			if (launch.getLaunchMode().equals(ILaunchManager.DEBUG_MODE))
 			{
 				mTarget = new DebugTargetLocal(launch);
@@ -156,7 +160,7 @@ public class LaunchConfigurationDelegate
 				mTarget.start();
 				mLaunch.addDebugTarget(mTarget);
 			}
-
+        }
 	}
 
 	/**

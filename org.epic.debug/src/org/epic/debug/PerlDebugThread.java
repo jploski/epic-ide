@@ -70,7 +70,7 @@ public class PerlDebugThread extends DebugElement implements IThread {
 	 * @see org.eclipse.debug.core.model.IThread#getTopStackFrame()
 	 */
 	public IStackFrame getTopStackFrame() throws DebugException {
-		return mFrames[0];
+		return mFrames != null ? mFrames[0] : null;
 	}
 
 	/**
@@ -226,7 +226,7 @@ public class PerlDebugThread extends DebugElement implements IThread {
 	 */
 	public void terminate() throws DebugException {
 		System.out.println("DEbugperl-Thread: terminating\n");
-		mPerlDB.terminate(this);
+		mPerlDB.terminate();
 	}
 	
 

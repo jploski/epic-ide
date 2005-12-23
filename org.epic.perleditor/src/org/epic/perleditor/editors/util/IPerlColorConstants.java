@@ -36,6 +36,6 @@ public interface IPerlColorConstants {
 	String FUNCTION_COLOR = "functionColor";
 	String MARKUP_COLOR = "markupColor";
 	String OPERATOR_COLOR ="operatorColor";
-	String DIGIT_COLOR = "digitColor";
+	String NUMBER_COLOR = "numberColor";
 	String INVALID_COLOR = "invalidColor";
 }

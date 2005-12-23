@@ -1,96 +1,219 @@
 package org.epic.core.util;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.StringTokenizer;
+import java.io.*;
+import java.util.*;
 
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.*;
 import org.eclipse.ui.IFileEditorInput;
-import org.eclipse.ui.editors.text.TextEditor;
-import org.epic.perleditor.editors.util.PerlExecutableUtilities;
+import org.eclipse.ui.texteditor.ITextEditor;
+import org.epic.core.PerlCore;
+import org.epic.core.PerlProject;
+import org.epic.perleditor.PerlEditorPlugin;
 
-public class PerlExecutor {
+/**
+ * Responsible for execution of external, non-interactive Perl processes
+ * which expect input in form of command-line parameters and stdin and
+ * provide output through stdout and/or stderr.
+ * 
+ * @author jploski
+ */
+public class PerlExecutor
+{
+    private boolean disposed;
+    private final ProcessExecutor executor;
+    
+    /**
+     * Creates a new PerlExecutor.
+     */
+    public PerlExecutor()
+    {
+        this(false);
+    }
+    
+    /**
+     * This constructor helps with testing, other clients should not use it.
+     */
+    public PerlExecutor(ProcessExecutor executor)
+    {
+        this.executor = executor;
+    }
+    
+    /**
+     * This constructor is for PerlValidator's use, other clients should
+     * have no need to use it.
+     * 
+     * @param ignoreBrokenPipe
+     *        see {@link ProcessExecutor#ignoreBrokenPipe}
+     */
+    public PerlExecutor(boolean ignoreBrokenPipe)
+    {
+        executor = new ProcessExecutor(); // TODO: charset?
+        if (ignoreBrokenPipe) executor.ignoreBrokenPipe();
+    }
+    
+    /**
+     * Releases resources held by this PerlExecutor.
+     * This PerlExecutor must no longer be used after dispose. 
+     */
+    public void dispose()
+    {
+        disposed = true;
+        executor.dispose();
+    }
+    
+    /**
+     * Executes the Perl interpreter in the given working directory
+     * with the given command-line parameters and input.
+     * The execution is project-neutral, controlled only by global preferences.
+     * 
+     * @param workingDir    working directory for the interpreter
+     * @param args          command-line arguments (Strings)
+     * @param input         input passed to the interpreter via stdin
+     */
+    public ProcessOutput execute(File workingDir, List args, String input)
+        throws CoreException
+    {
+        if (disposed) throw new IllegalStateException("PerlExecutor disposed");
+        
+        List commandLine = PerlExecutableUtilities.getPerlCommandLine();
+        if (args != null) commandLine.addAll(args);
+        
+        try
+        {
+            return executor.execute(commandLine, input, workingDir);
+        }
+        catch (InterruptedException e) { throwCoreException(e); return null;}
+        catch (IOException e) { throwCoreException(e, commandLine); return null; }
+    }
+    
+    /**
+     * Executes a Perl script within the context of the given Perl project.
+     * Project settings control the execution.
+     * 
+     * @param project     project
+     * @param args        additional command-line arguments for the Perl interpreter,
+     *                    or null if none
+     * @param sourceCode  source code of the script
+     */
+    public ProcessOutput execute(PerlProject project, List args, String sourceCode)
+        throws CoreException
+    {
+        return execute(project.getProject(), args, sourceCode);
+    }
+    
+    /**
+     * Executes a Perl script contained in the given resource.
+     * This resource is asusmed to be contained in a Perl project.
+     * Project settings control the execution.
+     * 
+     * @param resource    script resource
+     * @param args        additional command-line arguments for the Perl interpreter,
+     *                    or null if none
+     * @param sourceCode  source code of the script
+     */
+    public ProcessOutput execute(IResource resource, List args, String sourceCode)
+        throws CoreException
+    {
+        if (disposed) throw new IllegalStateException("PerlExecutor disposed");       
+        if (sourceCode.length() < 1) return new ProcessOutput("", "");
+        
+        PerlProject project = PerlCore.create(resource.getProject());
+        List commandLine = getPerlCommandLine(project);
+        if (args != null) commandLine.addAll(args);
 
-	private TextEditor fTextEditor;
+        try
+        {
+            return executor.execute(
+                commandLine, sourceCode, getPerlWorkingDir(resource));
+        }
+        catch (InterruptedException e) { throwCoreException(e); return null;}
+        catch (IOException e) { throwCoreException(e, commandLine); return null; }
+    }
+    
+    /**
+     * Executes a Perl script within the context of the given text editor.
+     * This method is a shorthand for {@link #execute(IResource, List, String)}.
+     * 
+     * @param editor      parent folder of the edited file is used
+     *                    as working directory for the Perl interpreter
+     * @param args        additional command-line arguments for the Perl interpreter,
+     *                    or null if none
+     * @param sourceCode  source code of the script
+     */
+    public ProcessOutput execute(ITextEditor editor, List args, String sourceCode)
+        throws CoreException
+    {
+        return execute(
+            ((IFileEditorInput) editor.getEditorInput()).getFile(),
+            args,
+            sourceCode);
+    }
 
-	public PerlExecutor(TextEditor textEditor) {
-		super();
-		this.fTextEditor = textEditor;
-	}
-
-	public String[] execute(String perlCode) {
-		ArrayList al = new ArrayList();
-		
-		try {
-
-			// Construct command line parameters
-			List cmdList =
-				PerlExecutableUtilities.getPerlExecutableCommandLine(
-					fTextEditor);
-			
-			String[] cmdParams =
-				(String[]) cmdList.toArray(new String[cmdList.size()]);
-			
-
-			//Get working directory -- Fixes Bug: 736631
-			String workingDir =
-				((IFileEditorInput) fTextEditor.getEditorInput())
-					.getFile()
-					.getLocation()
-					.makeAbsolute()
-					.removeLastSegments(1)
-					.toString();
-			
-			/*
-			 * Due to Java Bug #4763384 sleep for a very small amount of time
-			 * immediately after starting the subprocess
-			 */
-			Process proc =
-				Runtime.getRuntime().exec(
-					cmdParams,
-					null,
-					new File(workingDir));
-			Thread.sleep(1);
-
-			proc.getErrorStream().close();
-			InputStream in = proc.getInputStream();
-			OutputStream out = proc.getOutputStream();
-			//TODO which charset?
-			Writer outw = new OutputStreamWriter(out);
-
-			try {
-				outw.write(perlCode);
-				outw.write(0x1a); //this should avoid problem with Win98
-				outw.flush();
-			} catch (IOException ex) {
-				ex.printStackTrace();
-			}
-			out.close();
-
-			String content = PerlExecutableUtilities.readStringFromStream(in);
-			in.close();
-
-			String line;
-			StringTokenizer st = new StringTokenizer(content, "\n");
-			while (st.hasMoreTokens()) {
-				line = st.nextToken();
-				if (line.indexOf("\r") != -1) {
-					line = line.substring(0, line.indexOf("\r"));
-				}
-
-				al.add(line);
-			}
-
-		} catch (Exception ex) {
-			ex.printStackTrace();
-		}
-		
-		return (String[]) al.toArray(new String[0]);
-	}
-	
+    protected List getPerlCommandLine(PerlProject project)
+    {
+        return PerlExecutableUtilities.getPerlCommandLine(project);
+    }
+    
+    protected File getPerlWorkingDir(IPath resourceLocation)
+    {
+        return new File(
+            resourceLocation
+                .makeAbsolute()
+                .removeLastSegments(1)
+                .toString());
+    }
+    
+    protected File getPerlWorkingDir(IResource resource)
+    {
+        return getPerlWorkingDir(resource.getLocation());        
+    }
+    
+    private void throwCoreException(InterruptedException e)
+        throws CoreException
+    {
+        // InterruptedExceptions during execute happen when the operation
+        // is aborted (and therefore fails). They should not occur during
+        // normal operation, but do not necessarily indicate misconfigurations
+        // or bugs.
+        
+        Status status = new Status(
+            Status.WARNING,
+            PerlEditorPlugin.getPluginId(),
+            IStatus.OK,
+            "Execution of a Perl process was aborted.",
+            e);
+        throw new CoreException(status);
+    }
+    
+    private void throwCoreException(IOException e, List commandLine)
+        throws CoreException
+    {
+        // An IOException during execute means that the Perl process could
+        // either not start (most likely misconfiguration) or aborted in
+        // an unexpected manner (which is beyond our control). We report
+        // this as a severe error.
+        
+        Status status = new Status(
+            Status.ERROR,
+            PerlEditorPlugin.getPluginId(),
+            IStatus.OK,
+            "Failed to execute command line: " + getCommandLineString(commandLine),
+            e);
+        throw new CoreException(status);
+    }
+    
+    private String getCommandLineString(List commandLine)
+    {
+        StringBuffer buf = new StringBuffer();
+        
+        for (Iterator i = commandLine.iterator(); i.hasNext();)
+        {
+            if (buf.length() > 0) buf.append(' ');            
+            String str = (String) i.next();
+            str = '"' + str.replaceAll("\"", "\\\"") + '"';
+            buf.append(str);
+        }
+        return buf.toString();
+    }
 }

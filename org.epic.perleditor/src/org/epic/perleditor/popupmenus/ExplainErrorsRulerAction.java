@@ -6,9 +6,7 @@
  */
 package org.epic.perleditor.popupmenus;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.runtime.CoreException;
@@ -17,10 +15,7 @@ import org.eclipse.jface.text.source.IAnnotationModel;
 import org.eclipse.jface.text.source.IVerticalRulerInfo;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
-import org.eclipse.ui.texteditor.IDocumentProvider;
-import org.eclipse.ui.texteditor.ITextEditor;
-import org.eclipse.ui.texteditor.IUpdate;
-import org.eclipse.ui.texteditor.MarkerAnnotation;
+import org.eclipse.ui.texteditor.*;
 import org.epic.perleditor.PerlEditorPlugin;
 import org.epic.perleditor.views.ExplainErrorsView;
 
@@ -30,16 +25,16 @@ import org.epic.perleditor.views.ExplainErrorsView;
  * To change the template for this generated type comment go to
  * Window&gt;Preferences&gt;Java&gt;Code Generation&gt;Code and Comments
  */
-public class ExplainErrorsRulerAction extends Action implements IUpdate {
+public class ExplainErrorsRulerAction extends ResourceAction implements IUpdate {
 	
 	IVerticalRulerInfo ruler;
 	ITextEditor editor;
 	ArrayList markers;
 
 	public ExplainErrorsRulerAction(IVerticalRulerInfo ruler, ITextEditor editor) {
+        super(PopupMessages.getBundle(), "ExplainErrorsRulerAction.");
 		this.ruler = ruler;
 		this.editor = editor;
-		getMarkersForLine(ruler.getLineOfLastMouseButtonActivity()+1);
 	}
 	
 	/**
@@ -66,6 +61,7 @@ public class ExplainErrorsRulerAction extends Action implements IUpdate {
 	 * @see org.eclipse.ui.texteditor.IUpdate#update()
 	 */
 	public void update() {
+        getMarkersForLine(ruler.getLineOfLastMouseButtonActivity()+1);
 		setEnabled(markers.size() > 0 ? true : false);
 	}
 	
@@ -87,7 +83,7 @@ public class ExplainErrorsRulerAction extends Action implements IUpdate {
 					try {
 						IMarker marker = a.getMarker();
 						int markerLineNumber = ((Integer) marker.getAttribute(IMarker.LINE_NUMBER)).intValue();
-						if (marker.getType() == IMarker.PROBLEM && markerLineNumber == aLine) {
+						if (marker.getType().equals(IMarker.PROBLEM) && markerLineNumber == aLine) {
 							markers.add(marker);
 							//System.out.println("Marker: " + marker.getAttribute(IMarker.MESSAGE));
 						}

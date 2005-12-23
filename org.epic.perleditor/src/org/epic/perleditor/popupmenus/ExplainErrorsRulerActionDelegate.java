@@ -28,7 +28,4 @@ public class ExplainErrorsRulerActionDelegate
 			IVerticalRulerInfo rulerInfo) {
 		return new ExplainErrorsRulerAction(rulerInfo, editor);
 	}
-
-	
-
 }

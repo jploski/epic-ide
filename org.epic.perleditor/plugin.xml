@@ -189,10 +189,12 @@
   	  </objectContribution>
 	   <!-- Explain Errors/Warnings popup menu entry -->
   	   <viewerContribution
-            targetID="#PerlRulerContext"
+            targetID="#TextRulerContext"
             id="org.epic.perleditor.ExplainRulerPopupActions">
+         <!-- Note: the real label of ExplainErrorsRulerActionDelegate
+              is set by ExplainErrorsRulerAction from a ResourceBundle -->
          <action
-               label="Explain Errors/Warnings"
+               label="%ExplainErrorsRulerAction.label"
                icon="icons/light_bulb.gif"
                class="org.epic.perleditor.popupmenus.ExplainErrorsRulerActionDelegate"
                menubarPath="explain"
@@ -314,7 +316,7 @@
             id="org.epic.perleditor.sourcemenu">
 <!-- Content assist -->
          <action
-               definitionId="org.epic.perleditor.contentassist"
+               definitionId="org.eclipse.ui.edit.text.contentAssist.proposals"
                label="Co&amp;ntent Assist"
                retarget="true"
                menubarPath="edit/additions"

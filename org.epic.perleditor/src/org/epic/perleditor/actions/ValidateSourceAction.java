@@ -16,7 +16,7 @@ public class ValidateSourceAction extends PerlEditorAction
 
 	public void run()
     {
-		getEditor().revalidateSyntax(true);
+		getEditor().revalidateSyntax();
     }
 
     protected String getPerlActionId()

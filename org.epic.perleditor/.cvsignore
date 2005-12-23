@@ -2,3 +2,6 @@
 bin
 build
 dist
+build.xml
+perleditor.jar
+perleditorsrc.zip

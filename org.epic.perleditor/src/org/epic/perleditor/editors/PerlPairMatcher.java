@@ -11,8 +11,7 @@
  *******************************************************************************/
 package org.epic.perleditor.editors;
 
-import org.eclipse.core.runtime.ILog;
-import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.*;
 import org.eclipse.jface.text.*;
 import org.eclipse.jface.text.source.ICharacterPairMatcher;
 import org.eclipse.jface.text.source.ISourceViewer;
@@ -146,7 +145,7 @@ public class PerlPairMatcher implements ICharacterPairMatcher
             log.log(
                 new Status(Status.ERROR,
                     PerlEditorPlugin.getPluginId(),
-                    10004, // TODO: use some sort of constant
+                    IStatus.OK,
                     "Unexpected exception; report it as a bug " +
                     "in plug-in " + PerlEditorPlugin.getPluginId(),
                     e));

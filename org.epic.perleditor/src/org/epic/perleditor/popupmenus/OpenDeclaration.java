@@ -1,45 +1,55 @@
 package org.epic.perleditor.popupmenus;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Vector;
+import java.io.*;
+import java.util.*;
+
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.*;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.text.TextSelection;
-import org.eclipse.jface.text.source.ISourceViewer;
+import org.eclipse.jface.text.*;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.IEditorInput;
-import org.eclipse.ui.IEditorReference;
-import org.eclipse.ui.IWorkbenchPage;
-import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.*;
 import org.eclipse.ui.part.FileEditorInput;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IAdaptable;
+import org.epic.core.PerlCore;
+import org.epic.core.PerlProject;
+import org.epic.core.model.*;
+import org.epic.core.model.Package;
 import org.epic.perleditor.PerlEditorPlugin;
 import org.epic.perleditor.actions.PerlEditorAction;
-import org.epic.perleditor.editors.PerlEditor;
-import org.epic.perleditor.editors.PerlEditorActionIds;
-import org.epic.perleditor.editors.perl.PerlCompletionProcessor;
-import org.epic.perleditor.views.model.Model;
-import org.epic.perleditor.views.util.*;
-// import org.epic.perleditor.PerlEditorPlugin;
+import org.epic.perleditor.editors.*;
 
 /**
- * This Class opens the Declaration of a Perl Subroutine the class is derived
- * from the cursor postion resp. what is selected the search order is first
- * in the current file, next in the require statments,  and finally in the
- * Packages
+ * Attempts to find and open declaration of a selected subroutine or,
+ * if no selection exists, of the subroutine over whose invocation
+ * the caret is located. This action is based on some heuristics
+ * and is thus not reliable:
+ * 
+ * <ol>
+ * <li>If the selected subroutine's name starts with a module prefix,
+ *     only the referenced module is searched. This assumes the common case
+ *     and does not take into account that one may actually define
+ *     subroutines belonging to any package anywhere (with multiple
+ *     packages in a single module file).
+ * </li>
+ * <li>Otherwise, search the active editor's source text.</li>
+ * <li>Then search in modules referenced by 'use'.</li>
+ * </ol>
+ * 
+ * The search heuristics used here will, of course, fail in many circumstances,
+ * especially when applied to method invocations in OO Perl code. This has to
+ * be considered a known (and extremely difficult to overcome) limitation. 
+ * 
+ * If the subroutine is found in an external file (i.e. not in the active
+ * editor), an attempt is made to open this file in the editor. However,
+ * this only works with module files that are located in the workspace.
+ * For other files, a hint about the file's location will be displayed (for now).
  *  
- * @author LeO
+ * @author LeO (original implementation)
+ * @author jploski (complete rewrite)
  */
 public class OpenDeclaration extends PerlEditorAction
 {
-    private IResource resource;
-
     public OpenDeclaration()
     {
     }
@@ -49,423 +59,366 @@ public class OpenDeclaration extends PerlEditorAction
         super(editor);
     }
 
+    /**
+     * Runs the action using the given selection within the editor.
+     */
+    public void run(ITextSelection selection)
+    {
+        runWithFullSubName(getSelectedSubName(selection));
+    }
+    
+    /**
+     * Runs the action based on the current selection in the editor.
+     */
     public void run()
     {
-        System.out.println("LeO was here");
-        String selection;
-        List currentFileList = null;
-        int[] searchResults = new int[3];
-        Vector fileSet = new Vector();
-        String fileElement = "";
-        IFile checkFile = null;
-
-        PerlEditor editor = getEditor();
-        String text = editor.getDocumentProvider().getDocument(
-            editor.getEditorInput()).get();
-
-        selection = getCurrentSelection(editor, text);
-
-        if (selection.length() == 0)
+        runWithFullSubName(getSelectedSubName(
+            (ITextSelection) getEditor().getSelectionProvider().getSelection()));
+    }
+    
+    /**
+     * @param subName
+     *        subroutine name, optionally prefixed by a module name
+     * @throws CoreException 
+     */
+    private void runWithFullSubName(String subName)
+    {
+        try { _runWithFullSubName(subName); }
+        catch (CoreException e)
         {
-            messageBox("No valid selection found",
-                "Within the selection scope no valid SUB-name could be located!");
+            getLog().log(e.getStatus());
+        }
+    }
+    
+    private void _runWithFullSubName(String subName) throws CoreException
+    {   
+        if (subName == null)
+        {
+            messageBox(
+                "No subroutine name selected",
+                "No valid SUB-name could be located within the selection scope.");
             return;
         }
-
-        // get the file-list from the require-statement
-
-        String requireRegExpr = "^[\\s]*require\\s+[\"']([^\\s]*.*?)[\"']";
-        IWorkbenchPage myPage =
-            PerlEditorPlugin.getWorkbenchWindow().getActivePage();
-        IEditorReference[] myEditors = myPage.getEditorReferences();
-        IEditorInput input = editor.getEditorInput();
-
-        resource = (IResource) ((IAdaptable) input)
-            .getAdapter(IResource.class);
-
-        String editorID = PerlEditorPlugin.getDefault().getWorkbench()
-            .getEditorRegistry()
-            .getDefaultEditor(resource.getFullPath().toString()).getId();
-
-        // we don't wanna search the current editor again.
-
-        fileSet.add(myPage.getActiveEditor().getTitle());
-
-        int maxLen = fileSet.size();
-        for (int currentPosition = 0; currentPosition < maxLen; currentPosition++)
+        
+        if (subName.indexOf("::") != -1)
         {
-            // since we have the text from the current active Editor
-            // already, we don't retrieve it again!
-
-            if (currentPosition > 0)
+            int lastSepIndex = subName.lastIndexOf("::");
+            String modulePrefix = subName.substring(0, lastSepIndex);
+            subName = subName.substring(lastSepIndex + 2); 
+            File moduleFile = findModuleFile(modulePrefix);
+            
+            if (moduleFile != null)
             {
-                fileElement = (String) fileSet.get(currentPosition);
-                text = "";
-                checkFile = null;
-
-                for (int i = 0; i < myEditors.length; i++)
+                if (searchModuleFile(moduleFile, subName)) return;
+            }
+            else messageBox(
+                "Module file not found",
+                "Could not locate module file for prefix " + modulePrefix);
+        }
+        else
+        {
+            IRegion match = findSubDeclaration(
+                getEditor().getSourceFile(), subName);
+            
+            if (match != null)
+            {
+                getEditor().selectAndReveal(match.getOffset(), match.getLength());
+                return;
+            }
+            else
+            {
+                String[] usedModules = findUsedModules(getEditor().getSourceFile());
+                for (int i = 0; i < usedModules.length; i++)
                 {
-                    if (myEditors[i].getTitle().equalsIgnoreCase(fileElement))
+                    File moduleFile = findModuleFile(usedModules[i]);
+                    if (moduleFile != null)
                     {
-                        editor = (PerlEditor) myEditors[i].getEditor(true);
-                        text = editor.getDocumentProvider().getDocument(
-                            editor.getEditorInput()).get();
-                        break;
+                        if (searchModuleFile(moduleFile, subName)) return;
                     }
                 }
+                // TODO add require traversal?
             }
-
-            if (text.length() == 0)
-            {
-                // no text found in the Editors => let's search the file
-                checkFile = resource.getProject().getFile(fileElement);
-                text = textFromFile(checkFile);
-            }
-
-            if (text.length() > 0)
-            {
-                searchResults = searchSelection(text, selection);
-
-                if (searchResults[0] == 1)
-                {
-                    if (checkFile != null)
-                    {
-                        // neuen Editor aufmachen mit dem File in String
-                        // 'test'
-
-                        IEditorInput inputNew = new FileEditorInput(
-                            checkFile);
-
-                        try
-                        {
-                            editor = (PerlEditor) myPage.openEditor(
-                                inputNew, editorID);
-
-                            // Perform the Search twice, in case after
-                            // loading the LineFeed has changed!
-
-                            text = editor.getDocumentProvider().getDocument(
-                                editor.getEditorInput()).get();
-                            searchResults = searchSelection(text, selection);
-                        }
-                        catch (PartInitException e1)
-                        {
-                            // TODO Auto-generated catch block
-                            // should not happen, because we have already
-                            // read the input from the file
-                            e1.printStackTrace();
-                        }
-                    }
-
-                    editor.selectAndReveal(searchResults[1], searchResults[2]);
-                    myPage.activate(editor);
-                    return; // we have found the selection in current Editor!
-                }
-
-                // there is only something to add, if some text is there
-                currentFileList = SourceParser.getElements(text,
-                    requireRegExpr, "", "", true);
-                addFileName(currentFileList, fileSet);
-            }
-
-            if (fileSet.size() == 0) break;
-            maxLen = fileSet.size(); // get the new size
         }
-
-        // nothing found, otherwise we would have returned already!
-
-        String strRequire = "";
-
-        if (fileSet.size() > 1 || currentFileList.size() > 0)
-        {
-            strRequire = "\n\n"
-                + "NOTE: The 'require' file-list is case-sensitive!";
-        }
-
-        messageBox("No definition found", "Cannot locate definiton '"
-            + selection + "'" + strRequire);
+        
+        messageBox(
+            "Declaration not found",
+            "Could not locate declaration for \"" + subName + "\"");
     }
 
-    /**
-     * 
-     * @param Title
-     * 
-     */
-    private void messageBox(String Title, String ErrorMessage)
+    private void messageBox(String title, String message)
     {
         Shell shell;
         shell = PerlEditorPlugin.getWorkbenchWindow().getShell();
-        MessageDialog.openInformation(shell, Title, ErrorMessage);
+        MessageDialog.openInformation(shell, title, message);
     }
-
-    /**
-     * 
-     * Adds all the Filenames - unique - no doubles!
-     * 
-     * @param currentFileList
-     * 
-     * @param fileSet
-     * 
-     */
-    private void addFileName(List currentFileList, Vector fileSet)
-    {
-        String fileElement;
-
-        if (currentFileList.size() > 0)
-        {
-            // something to add
-            for (int j = 0; j < currentFileList.size(); j++)
-            {
-                fileElement = ((Model) currentFileList.get(j)).getName();
-                int i = 0;
-
-                while (i < fileSet.size() && fileElement.length() > 0)
-                {
-                    if (fileSet.elementAt(i).equals(fileElement))
-                    {
-                        fileElement = "";
-                    }
-                    i++;
-                }
-
-                if (fileElement.length() > 0)
-                {
-                    fileSet.add(fileElement);
-                }
-            }
-        }
-        System.out.println("fileset = " + fileSet);
-    }
-
-    /**
-     * 
-     * @param fileName =
-     *            Name of the File
-     * 
-     * @return text = Content of the File
-     * 
-     */
-    private String textFromFile(IFile myFile)
-    {
-        String fileText = "";
-        String NextLine = "";
-
-        try
-        {
-            BufferedReader textIn = new BufferedReader(
-            new InputStreamReader(myFile.getContents()));
-
-            while (true)
-            {
-                try
-                {
-                    NextLine = textIn.readLine();
-                }
-                catch (IOException e1)
-                {
-                    // TODO Auto-generated catch block
-                    e1.printStackTrace();
-                }
-
-                if (NextLine == null) break;
-                fileText += NextLine + "\n";
-            }
-
-            try
-            {
-                textIn.close();
-            }
-            catch (IOException e1)
-            {
-                // TODO Auto-generated catch block
-                e1.printStackTrace();
-            }
-
-        }
-        catch (CoreException e)
-        {
-            // most likely the file does not exists!
-            System.out.println("Exception: " + e.getMessage());
-        }
-        return fileText;
-    }
-
-    /**
-     * 
-     * @param text
-     * 
-     * @return [found (no=0, yes=1), startOffset, endOffset]
-     * 
-     */
-    private int[] searchSelection(String text, String selection)
-    {
-        List subList;
-        if (selection.indexOf("(") == -1)
-        {
-            selection += "("; // to mark the beginning of the Sub
-        }
-
-        // retrieve all Subs
-        // fix [1111483 ] to find as well 'sub test #comment'
-        subList = SourceParser.getElements(text,
-            "^[\\s]*sub\\s+([^\\n\\r{#]+)", "", "", false);
-
-        if (subList != null)
-        {
-            StringBuffer subName = new StringBuffer();
-            int subLength = 0;
-
-            for (int i = 0; i < subList.size(); i++)
-            {
-                Model model = (Model) subList.get(i);
-                subName.setLength(0);
-                subLength = model.getName().indexOf("(");
-                if (subLength == -1)
-                {
-                    subName.append(model.getName().replaceAll(" ", "") + "(");
-                }
-                else
-                {
-                    subName.append(model.getName().replaceAll(" ", ""));
-                    subName.setLength(subLength);
-                }
-
-                /**
-                 * The subname has to start at first pos, otherwise it's only a
-                 * substring, e.g. $1=b(); sub ab($$) { should not be found!!!
-                 */
-                if (subName.indexOf(selection) == 0)
-                {
-                    // we found the place we are searching for
-                    return new int[] {
-                        1, model.getStart(), model.getLength() };
-                }
-            }
-        }
-
-        // retrieve all Packages
-
-        subList = SourceParser.getElements(text,
-            "^[\\s]*use\\s+([^\\s]*[A-Z]+[^;\\s\\n\\r]*)", "", "", false);
-        if (subList != null)
-        {
-            List proposals;
-            PerlCompletionProcessor myComplete = new PerlCompletionProcessor();
-
-            for (int i = 0; i < subList.size(); i++)
-            {
-                Model model = (Model) subList.get(i);
-
-                // get the subs from the Packages
-
-                proposals = myComplete.getProposalsForClassname(
-                    getEditor(), model.getName());
-
-                System.out.println("For class: " + model.getName()
-                    + " we have subs: " + proposals);
-
-                for (Iterator iter = proposals.iterator(); iter.hasNext();)
-                {
-                    String subClass = (String) iter.next();
-
-                    // same mechanism as before
-                    if (subClass.indexOf(selection) == 0)
-                    {
-                        // we found the place we are searching for
-                        return new int[]
-                        { 1, model.getStart(), model.getLength() };
-
-                    }
-                }
-            }
-        }
-
-        return new int[] { 0, 0, 0 };
-    }
-
-    /**
-     * 
-     * Retrieves the current Selection and returns the value
-     * 
-     * 
-     * 
-     * @param editor
-     * 
-     * @param text
-     * 
-     */
-    private String getCurrentSelection(PerlEditor editor, String text)
-    {
-        String selection = ((TextSelection) getEditor().getSelectionProvider()
-            .getSelection()).getText();
-
-        if (selection.length() == 0)
-        {
-            ISourceViewer viewer = editor.getViewer();
-            int cursorPosition = viewer.getTextWidget().getCaretOffset();
-            int maxLength = viewer.getTextWidget().getCharCount() - 1;
-            int selectionStart = cursorPosition - 1;
-            int selectionEnd = cursorPosition;
-
-            // search in front the first letter
-
-            boolean endSearch = false;
-            String allowedSubChar = "_";
-
-            while (selectionStart >= 0 && !endSearch)
-            {
-                if (!Character.isLetterOrDigit(text.charAt(selectionStart)))
-                {
-                    // include also allowed special characters for sub-names
-                    if (allowedSubChar.indexOf(text.charAt(selectionStart)) < 0)
-                    {
-                        endSearch = true;
-                    }
-                }
-
-                if (!endSearch) --selectionStart;
-            }
-            
-            endSearch = false;
-            // search at the end for the last letter
-            while (selectionEnd <= maxLength && !endSearch)
-            {
-                if (!Character.isLetterOrDigit(text.charAt(selectionEnd)))
-                {
-                    // include also allowed special characters for sub-names
-
-                    if (allowedSubChar.indexOf(text.charAt(selectionEnd)) < 0)
-                    {
-                        endSearch = true;
-                    }
-                }
-                if (!endSearch) ++selectionEnd;
-            }
-
-            selection = text.substring(++selectionStart, selectionEnd);
-            System.out.println("selection=" + selection);
-        }
-
-        try
-        {
-            Integer.parseInt(selection);
-            // Selection is only numbers => should Not be selected
-            selection = "";
-        }
-        catch (NumberFormatException nfe)
-        {
-            // Selection is only special character => should Not be selected
-            if (selection.length() == 1
-                && !Character.isLetter(selection.charAt(0)))
-            {
-                selection = "";
-            }
-        }
-        return selection;
-    }
-
+    
     protected String getPerlActionId()
     {
         return PerlEditorActionIds.OPEN_SUB;
+    }
+    
+    private File findModuleFile(String moduleName) throws CoreException
+    {
+        if (moduleName.length() == 0) return null;
+        
+        String fileSep = File.separatorChar == '\\' ? "\\\\" : File.separator;
+        String modulePath = moduleName.replaceAll("::", fileSep) + ".pm";
+        List dirs = getProject().getEffectiveIncPath();
+        
+        for (Iterator i = dirs.iterator(); i.hasNext();)
+        {
+            File f = new File((File) i.next(), modulePath);
+            if (f.exists() && f.isFile()) return f;
+        }
+        return null;
+    } 
+    
+    /**
+     * @return the region where the sub name was found,
+     *         or null if not found
+     */
+    private IRegion findSubDeclaration(SourceFile sourceFile, String subName)
+        throws CoreException
+    {
+        for (Iterator i = sourceFile.getSubs(); i.hasNext();)
+        {
+            Subroutine sub = (Subroutine) i.next();
+            if (sub.getName().equals(subName))
+                return new Region(sub.getOffset(), sub.getLength());
+        }
+        return null;
+    }
+    
+    /**
+     * @return names of modules referenced by 'use' statements from
+     *         the given source text
+     */
+    private String[] findUsedModules(SourceFile sourceFile) throws CoreException
+    {
+        List names = new ArrayList();
+        for (Iterator j = sourceFile.getPackages().iterator(); j.hasNext();)
+        {
+            Package pkg = (Package) j.next();
+            for (Iterator i = pkg.getUses().iterator(); i.hasNext();)
+                names.add(((ISourceElement) i.next()).getName());
+        }
+        return (String[]) names.toArray(new String[names.size()]);
+    }
+    
+    /**
+     * @return project with the edited source file from which
+     *         OpenDeclaration was invoked
+     */
+    private PerlProject getProject()
+    {
+        IEditorInput input = getEditor().getEditorInput();
+        IResource resource = (IResource) ((IAdaptable) input)
+            .getAdapter(IResource.class);
+        
+        return PerlCore.create(resource.getProject());
+    }
+    
+    /**
+     * @return edited source document of the editor from which
+     *         OpenDeclaration was invoked
+     */
+    private IDocument getSourceDocument()
+    {
+        return getSourceDocument(getEditor());
+    }
+    
+    /**
+     * @return document for the given source file, partitioned by PerlPartitioner
+     */
+    private IDocument getSourceDocument(File file) throws IOException
+    {
+        StringWriter sw = new StringWriter();        
+        BufferedReader r = null;
+        
+        try
+        {
+            r = new BufferedReader(new InputStreamReader(
+                new FileInputStream(file), "ISO-8859-1")); // TODO use which encoding?
+            
+            char[] buf = new char[4096];
+            int bread;
+            while ((bread = r.read(buf)) > 0) sw.write(buf, 0, bread);
+            Document doc = new Document(sw.toString());
+            PerlPartitioner p = new PerlPartitioner();
+            doc.setDocumentPartitioner(p);
+            p.connect(doc);
+            return doc;
+        }
+        finally
+        {
+            if (r != null) try { r.close(); } catch (IOException e) { }
+        }
+    }
+    
+    /**
+     * @return edited source document in the given editor
+     */
+    private IDocument getSourceDocument(PerlEditor editor)
+    {
+        return editor.getDocumentProvider().getDocument(editor.getEditorInput());
+    }
+
+    /**
+     * Returns the currently selected subroutine name, including the package
+     * name prefix (if present).
+     * <p>
+     * If the supplied selection's length is 0, the offset is treated as the
+     * caret position and the enclosing partition is returned as the subroutine
+     * name.
+     * 
+     * @return selected subroutine name or null if none is selected
+     */
+    private String getSelectedSubName(ITextSelection selection)
+    {
+        // Note that we rely heavily on the correct partitioning delivered
+        // by PerlPartitioner. When in doubt, fix PerlPartitioner instead of
+        // adding workarounds here.
+
+        IDocument doc = getSourceDocument();
+
+        try
+        {
+            ITypedRegion partition = doc.getPartition(selection.getOffset());
+            if (!partition.getType().equals(PartitionTypes.DEFAULT)) return null;
+            else return doc.get(partition.getOffset(), partition.getLength());
+        }
+        catch (BadLocationException e)
+        {
+            return null; // should never happen
+        }
+    }
+    
+    /**
+     * Searches the given editor for a declaration of the given sub.
+     * If found, the declaration is highlighted.
+     *
+     * @return true if the declaration was found; false otherwise
+     */
+    private boolean searchEditor(PerlEditor editor, String subName)
+        throws CoreException
+    {
+        SourceFile sourceFile = editor.getSourceFile();
+        sourceFile.parse();
+        IRegion match = findSubDeclaration(sourceFile, subName);
+        
+        if (match != null)
+        {
+            editor.getSite().getPage().activate(editor);
+            editor.selectAndReveal(match.getOffset(), match.getLength());
+            return true;
+        }
+        else return false;
+    }
+    
+    /**
+     * Searches a module file for a declaration of the given sub.
+     * The file is read from disk and might be external to the workspace.
+     * 
+     * @return true if the declaration was found; false otherwise
+     */
+    private boolean searchExternalFile(File moduleFile, String subName)
+        throws CoreException
+    {
+        try
+        {
+            SourceFile sourceFile = new SourceFile(
+                getLog(), getSourceDocument(moduleFile));
+            sourceFile.parse();
+
+            IRegion match = findSubDeclaration(sourceFile, subName);
+            return match != null;
+        }
+        catch (IOException e)
+        {
+            getLog().log(new Status(
+                IStatus.ERROR,
+                PerlEditorPlugin.getPluginId(),
+                IStatus.OK,
+                "Could not read module file " + moduleFile.getAbsolutePath(),
+                e));
+            return false;
+        }
+    }
+    
+    /**
+     * Searches the given module file for a declaration of the given sub.
+     * The search first occurs in already open editors containing that file.
+     * If the declaration is found, an attempt is made to open it in an editor,
+     * if not possible, displays a message about the file's location.
+     * 
+     * @return true if the declaration was found; false otherwise
+     */
+    private boolean searchModuleFile(File moduleFile, String subName)
+        throws CoreException
+    {
+        IPath path = Path.fromOSString(moduleFile.getAbsolutePath());
+        IFile fileInWorkspace = getProject().getProject()
+            .getWorkspace().getRoot().getFileForLocation(path);
+        
+        if (fileInWorkspace != null)
+            return searchModuleFile(moduleFile, fileInWorkspace, subName);
+        else
+        {
+            if (searchExternalFile(moduleFile, subName))
+            {
+                messageBox(
+                    "Definition found in external module",
+                    "A potential definition of " + subName +
+                    " was found in file " + moduleFile.getAbsolutePath() +
+                    " outside of the workspace. EPIC cannot open such external" +
+                    " files in the editor yet.");
+                return true;
+            }
+            else return false;
+        }
+    }
+    
+    /**
+     * Just like {@link #searchModuleFile(File, String)}, but takes into account
+     * that the module file to be searched is contained in the workspace.
+     */
+    private boolean searchModuleFile(
+        File moduleFile,
+        IFile fileInWorkspace,
+        String subName) throws CoreException
+    {
+        IWorkbenchPage page = getEditor().getSite().getPage();
+        IEditorPart editor = page.findEditor(new FileEditorInput(fileInWorkspace));
+        
+        if (editor instanceof PerlEditor)
+        {
+            return searchEditor((PerlEditor) editor, subName);
+        }
+        else
+        {
+            if (!searchExternalFile(moduleFile, subName)) return false;
+
+            try
+            {
+                FileEditorInput input = new FileEditorInput(fileInWorkspace);
+                PerlEditor newEditor = (PerlEditor)
+                    getEditor().getSite().getPage().openEditor(
+                        input,
+                        getEditor().getSite().getId());
+                
+                return searchEditor(newEditor, subName);
+            }
+            catch (PartInitException e)
+            {
+                getLog().log(new Status(
+                    IStatus.ERROR,
+                    PerlEditorPlugin.getPluginId(),
+                    IStatus.OK,
+                    "Problems encountered while opening editor for " +
+                    moduleFile.getAbsolutePath(),
+                    e));
+                return false;
+            }
+        }   
     }
 }

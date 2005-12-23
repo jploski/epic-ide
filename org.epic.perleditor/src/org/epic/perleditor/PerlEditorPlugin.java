@@ -1,21 +1,27 @@
 package org.epic.perleditor;
 
-import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.ui.IWorkbenchWindow;
-import org.eclipse.ui.plugin.*;
-//import org.eclipse.core.runtime.*;
-import org.eclipse.core.resources.*;
-import org.eclipse.team.core.IFileTypeInfo;
-import org.eclipse.team.core.Team;
+import java.io.File;
 import java.util.*;
 
+import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.*;
+import org.eclipse.jface.dialogs.ErrorDialog;
+import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.jface.preference.PreferenceConverter;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.RGB;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.team.core.IFileTypeInfo;
+import org.eclipse.team.core.Team;
+import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.plugin.AbstractUIPlugin;
+import org.eclipse.ui.texteditor.IDocumentProvider;
+import org.epic.core.util.PerlExecutor;
 import org.epic.perleditor.editors.PerlDocumentProvider;
-import org.epic.perleditor.preferences.CodeAssistPreferences;
-import org.epic.perleditor.preferences.PreferenceConstants;
-import org.epic.perleditor.preferences.SourceFormatterPreferences;
-import org.epic.perleditor.preferences.TaskTagPreferences;
-
-import cbg.editor.ColoringEditorTools;
+import org.epic.perleditor.editors.util.PerlColorProvider;
+import org.epic.perleditor.preferences.*;
+import org.osgi.framework.BundleContext;
 
 /**
  * The main plugin class to be used in the desktop.
@@ -26,6 +32,8 @@ public class PerlEditorPlugin extends AbstractUIPlugin {
 
 	//Resource bundle.
 	private ResourceBundle resourceBundle;
+    
+    private PerlColorProvider colorProvider = new PerlColorProvider();
 
 	public static final String PERL_EXECUTABLE_PREFERENCE = "PERL_EXECUTABLE";
 
@@ -56,9 +64,10 @@ public class PerlEditorPlugin extends AbstractUIPlugin {
 
 	public static final int SYNTAX_VALIDATION_INTERVAL_DEFAULT = 400;
 
-	private PerlDocumentProvider fDocumentProvider;
+	private IDocumentProvider fDocumentProvider;
 
-	private ColoringEditorTools editorTools;
+    private boolean requirePerlCheckPassed;
+    private boolean requirePerlErrorDisplayed;
 
 	/**
 	 * The constructor.
@@ -96,6 +105,24 @@ public class PerlEditorPlugin extends AbstractUIPlugin {
 
 		Team.setAllTypes(extensions, types);
 	}
+    
+    /**
+     * Returns a color with the requested RGB value.
+     */
+    public Color getColor(RGB rgb)
+    {
+        return colorProvider.getColor(rgb);
+    }
+
+    /**
+     * Returns a color represented by the given preference setting.
+     */
+    public Color getColor(String preferenceKey)
+    {
+        return getColor(
+            PreferenceConverter.getColor(getPreferenceStore(), preferenceKey)
+            ); 
+    }
 
 	/**
 	 * Returns the shared instance.
@@ -140,12 +167,6 @@ public class PerlEditorPlugin extends AbstractUIPlugin {
 		return window;
 	}
 
-	public ColoringEditorTools getEditorTools() {
-		if (editorTools == null)
-			editorTools = new ColoringEditorTools();
-		return editorTools;
-	}
-
 	/**
 	 * Initializes a preference store with default preference values for this
 	 * plug-in.
@@ -160,16 +181,14 @@ public class PerlEditorPlugin extends AbstractUIPlugin {
 						INTERPRETER_TYPE_STANDARD);
 		store.setDefault(SYNTAX_VALIDATION_INTERVAL_PREFERENCE,
 				SYNTAX_VALIDATION_INTERVAL_DEFAULT);
+        store.setDefault(
+            PreferenceConstants.EDITOR_SYNC_OUTLINE_ON_CURSOR_MOVE,
+            true);
 		SourceFormatterPreferences.initializeDefaultValues(store);
 		CodeAssistPreferences.initializeDefaultValues(store);
 		TaskTagPreferences.initializeDefaults(store);
 	}
 
-	/**
-	 * Return the bad words preference as an array of Strings.
-	 * 
-	 * @return String[]
-	 */
 	public String getExecutablePreference() {
 		return getPreferenceStore().getString(PERL_EXECUTABLE_PREFERENCE);
 	}
@@ -178,22 +197,13 @@ public class PerlEditorPlugin extends AbstractUIPlugin {
 		return PERL_EXECUTABLE_DEFAULT;
 	}
 
-	/**
-	 * Set the bad words preference
-	 * 
-	 * @param String []
-	 *            elements - the Strings to be converted to the preference value
-	 */
 	public void setExecutablePreference(String value) {
 
 		getPreferenceStore().setValue(PERL_EXECUTABLE_PREFERENCE, value);
+        requirePerlErrorDisplayed = false;
+        checkForPerlInterpreter(true);
 	}
 
-	/**
-	 * Return the bad words preference as an array of Strings.
-	 * 
-	 * @return String[]
-	 */
 	public String getWebBrowserPreference() {
 		return getPreferenceStore().getString(WEB_BROWSER_PREFERENCE);
 	}
@@ -256,9 +266,107 @@ public class PerlEditorPlugin extends AbstractUIPlugin {
 		return getDefault().getBundle().getSymbolicName();
 	}
 
-	public synchronized PerlDocumentProvider getDocumentProvider() {
+	public synchronized IDocumentProvider getDocumentProvider() {
 		if (fDocumentProvider == null)
 			fDocumentProvider = new PerlDocumentProvider();
 		return fDocumentProvider;
 	}
+    
+    /**
+     * @return false if no valid Perl interpreter has been available in
+     *         Preferences since the plug-in's activation;
+     *         true otherwise
+     */
+    public boolean hasPerlInterpreter()
+    {
+        return requirePerlCheckPassed;
+    }
+    
+    /**
+     * Same as {@link #hasPerlInterpreter}, but displays an error dialog
+     * if false is returned.
+     * 
+     * @param interactive
+     *        true, if the check is performed in context of a user-requested
+     *        action, false if the check is performed in context of a background
+     *        operation
+     */
+    public boolean requirePerlInterpreter(boolean interactive)
+    {
+        if (!requirePerlCheckPassed) checkForPerlInterpreter(interactive);
+        return requirePerlCheckPassed;
+    }
+    
+    /**
+     * Checks that a valid Perl interpreter is specified in Preferences
+     * and updates the requirePerlCheckPassed flag. Displays an error dialog
+     * if the check does not pass (but only once for background ops,
+     * until Preferences are updated).
+     */
+    private void checkForPerlInterpreter(boolean interactive)
+    {   
+        final String ERROR_TITLE = "Missing Perl interpreter";
+        final String ERROR_MSG =
+            "To operate correctly, EPIC requires a Perl interpreter. " +
+            "Check your configuration settings (\"Window/Preferences/Perl EPIC\").";
+        
+        PerlExecutor executor = new PerlExecutor();
+        try
+        {
+            List args = new ArrayList(1);
+            args.add("-v");
+            if (executor.execute(new File("."), args, "")
+                .stdout.indexOf("This is perl") != -1)
+            {
+                requirePerlCheckPassed = true;
+            }
+            else
+            {
+                Status status = new Status(
+                    IStatus.ERROR,
+                    getPluginId(),
+                    IStatus.OK,
+                    "The executable specified in EPIC Preferences " +
+                    "does not appear to be a valid Perl interpreter.",
+                    null);
+                    
+                getLog().log(status);
+                if (!requirePerlErrorDisplayed || interactive)
+                {
+                    requirePerlErrorDisplayed = true;
+                    showErrorDialog(ERROR_TITLE, ERROR_MSG, status);
+                }
+                requirePerlCheckPassed = false;
+            }
+        }
+        catch (CoreException e)
+        {
+            getLog().log(e.getStatus());
+            if (!requirePerlErrorDisplayed || interactive)
+            {
+                requirePerlErrorDisplayed = true;
+                showErrorDialog(ERROR_TITLE, ERROR_MSG, e.getStatus());
+            }
+            requirePerlCheckPassed = false;
+        }
+        finally { executor.dispose(); }
+    }
+    
+    private void showErrorDialog(
+        final String title,
+        final String msg,
+        final IStatus status)
+    {
+        Display.getDefault().asyncExec(new Runnable() {
+            public void run() {
+                ErrorDialog.openError(null, title, msg, status);
+            } });
+    }
+    
+    public void stop(BundleContext context)
+        throws Exception
+    {
+        colorProvider.dispose();
+        super.stop(context);
+    }
 }

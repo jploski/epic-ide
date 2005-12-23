@@ -22,6 +22,11 @@ public class PopupMessages {
 
 	private PopupMessages() {
 	}
+    
+    public static ResourceBundle getBundle()
+    {
+        return fgResourceBundle;
+    }
 
 	public static String getString(String key) {
 		try {

@@ -62,6 +62,15 @@ public class PreferenceConstants {
 	 */
 	public final static String EDITOR_PRINT_MARGIN= "printMargin"; //$NON-NLS-1$
 	
+    /**
+     * A named preference that controls whether the outline view selection
+     * should stay in sync with with the element at the current cursor position.
+     * <p>
+     * Value is of type <code>Boolean</code>.
+     * </p>
+     */
+    public final static String EDITOR_SYNC_OUTLINE_ON_CURSOR_MOVE= "syncOutlineOnCursorMove"; //$NON-NLS-1$
+    
 	/**
 	 * A named preference that controls whether source folding is turned on or off.
 	 * <p>
@@ -409,7 +418,7 @@ public class PreferenceConstants {
 	public static final String EDITOR_BOLD_SUFFIX= "Bold";
 
 	public static final String  EDITOR_STRING_COLOR = IPerlColorConstants.STRING_COLOR;
-	public static final  String  EDITOR_KEYWORD1_COLOR = IPerlColorConstants.KEYWORD1_COLOR;
+	public static final String  EDITOR_KEYWORD1_COLOR = IPerlColorConstants.KEYWORD1_COLOR;
 	public static final String  EDITOR_KEYWORD2_COLOR = IPerlColorConstants.KEYWORD2_COLOR;
 	public static final String  EDITOR_KEYWORD3_COLOR =IPerlColorConstants.KEYWORD3_COLOR;
 	public static final String  EDITOR_COMMENT1_COLOR = IPerlColorConstants.COMMENT1_COLOR;
@@ -420,7 +429,7 @@ public class PreferenceConstants {
 	public static final String  EDITOR_FUNCTION_COLOR = IPerlColorConstants.FUNCTION_COLOR;
 	public static final String  EDITOR_MARKUP_COLOR = IPerlColorConstants.MARKUP_COLOR;
 	public static final String  EDITOR_OPERATOR_COLOR = IPerlColorConstants.OPERATOR_COLOR;
-	public static final String  EDITOR_DIGIT_COLOR = IPerlColorConstants.DIGIT_COLOR;
+	public static final String  EDITOR_NUMBER_COLOR = IPerlColorConstants.NUMBER_COLOR;
 	public static final String  EDITOR_INVALID_COLOR = IPerlColorConstants.INVALID_COLOR;
 	
 	public static final String  EDITOR_STRING_COLOR_BOLD = IPerlColorConstants.STRING_COLOR + EDITOR_BOLD_SUFFIX;
@@ -435,7 +444,7 @@ public class PreferenceConstants {
 	public static final String  EDITOR_FUNCTION_COLOR_BOLD = IPerlColorConstants.FUNCTION_COLOR + EDITOR_BOLD_SUFFIX;
 	public static final String  EDITOR_MARKUP_COLOR_BOLD = IPerlColorConstants.MARKUP_COLOR + EDITOR_BOLD_SUFFIX;
 	public static final String  EDITOR_OPERATOR_COLOR_BOLD = IPerlColorConstants.OPERATOR_COLOR + EDITOR_BOLD_SUFFIX;
-	public static final String  EDITOR_DIGIT_COLOR_BOLD = IPerlColorConstants.DIGIT_COLOR + EDITOR_BOLD_SUFFIX;
+	public static final String  EDITOR_NUMBER_COLOR_BOLD = IPerlColorConstants.NUMBER_COLOR + EDITOR_BOLD_SUFFIX;
 	public static final String  EDITOR_INVALID_COLOR_BOLD = IPerlColorConstants.INVALID_COLOR + EDITOR_BOLD_SUFFIX;
     
     /**
@@ -575,8 +584,8 @@ public class PreferenceConstants {
 			PreferenceConverter.setDefault(store, PreferenceConstants.EDITOR_OPERATOR_COLOR, new RGB(178, 34, 0));
 			store.setDefault(PreferenceConstants.EDITOR_OPERATOR_COLOR_BOLD, false);
 			
-			PreferenceConverter.setDefault(store, PreferenceConstants.EDITOR_DIGIT_COLOR, new RGB(160, 32, 0));
-			store.setDefault(PreferenceConstants.EDITOR_DIGIT_COLOR_BOLD, false);
+			PreferenceConverter.setDefault(store, PreferenceConstants.EDITOR_NUMBER_COLOR, new RGB(160, 32, 0));
+			store.setDefault(PreferenceConstants.EDITOR_NUMBER_COLOR_BOLD, false);
 			
 			PreferenceConverter.setDefault(store, PreferenceConstants.EDITOR_INVALID_COLOR, new RGB(178, 0, 34));
 			store.setDefault(PreferenceConstants.EDITOR_INVALID_COLOR_BOLD, false);

@@ -133,6 +133,11 @@ public class PerlValidatorErrors
         {
             return warning;
         }
+        
+        public String toString()
+        {
+            return descr;
+        }
 
         /**
          * Only used by the enclosing outer class. 

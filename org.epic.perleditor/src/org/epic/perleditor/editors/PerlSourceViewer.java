@@ -19,6 +19,11 @@ public class PerlSourceViewer extends ProjectionViewer {
 		int styles) {
 		super(parent, ruler, overviewRuler, showAnnotationsOverview, styles);
 	}
+    
+    IVerticalRuler _getVerticalRuler()
+    {
+        return super.getVerticalRuler();
+    }
 
 	protected void customizeDocumentCommand(DocumentCommand command) {
 		try {

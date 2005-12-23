@@ -18,6 +18,7 @@ import org.epic.perleditor.templates.ui.util.SWTUtil;
 //import net.sourceforge.phpdt.ui.text.JavaTextTools;
 import org.epic.perleditor.PerlEditorPlugin;
 //import net.sourceforge.phpeclipse.phpeditor.PHPEditorEnvironment;
+import org.epic.perleditor.editors.PerlPartitioner;
 import org.epic.perleditor.editors.PerlSourceViewerConfiguration;
 
 import org.eclipse.core.runtime.CoreException;
@@ -61,9 +62,6 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
-
-import cbg.editor.ColoringPartitionScanner;
-import cbg.editor.Modes;
 
 public class TemplatePreferencePage
   extends PreferencePage
@@ -362,16 +360,13 @@ public class TemplatePreferencePage
       new SourceViewer(parent, null, SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL);
     //JavaTextTools tools = PerlEditorPlugin.getDefault().getJavaTextTools();
     IDocument document = new Document();
-    //IDocumentPartitioner partitioner = tools.createDocumentPartitioner();
-    // TODO Changed (check)
-	ColoringPartitionScanner scanner = new ColoringPartitionScanner(Modes.getMode("perl.xml"));
-	IDocumentPartitioner partitioner = new org.eclipse.jface.text.rules.DefaultPartitioner(scanner, scanner.getContentTypes());
+    IDocumentPartitioner partitioner = new PerlPartitioner();
+
     document.setDocumentPartitioner(partitioner);
     partitioner.connect(document);
 
     // TODO changed check
 	PerlSourceViewerConfiguration sourceViewerConfiguration = new PerlSourceViewerConfiguration(PerlEditorPlugin.getDefault().getPreferenceStore(), null);
-	sourceViewerConfiguration.setMode(Modes.getMode("perl.xml"));
 	viewer.configure(sourceViewerConfiguration);
     //viewer.configure(new PerlSourceViewerConfiguration(tools, null));
     // (tools, null));

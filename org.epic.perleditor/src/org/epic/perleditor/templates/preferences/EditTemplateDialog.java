@@ -21,12 +21,12 @@ import org.epic.perleditor.templates.ui.dialog.StatusInfo;
 import org.epic.perleditor.templates.TemplateVariableProcessor;
 import org.epic.perleditor.templates.ui.util.SWTUtil;
 //import net.sourceforge.phpdt.ui.text.JavaTextTools;
+import org.epic.perleditor.editors.PerlPartitioner;
+import org.epic.perleditor.editors.PerlSourceViewerConfiguration;
 import org.epic.perleditor.preferences.PreferenceConstants;
-import org.epic.perleditor.preferences.preview.PreviewSourceViewerConfiguration;
 //import net.sourceforge.phpeclipse.IPreferenceConstants;
 import org.epic.perleditor.PerlEditorPlugin;
 //import net.sourceforge.phpeclipse.phpeditor.PHPSourceViewerConfiguration;
-import org.epic.perleditor.editors.util.PerlColorProvider;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.Action;
@@ -81,16 +81,12 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.texteditor.ITextEditorActionConstants;
 import org.eclipse.ui.texteditor.IUpdate;
 
-import cbg.editor.ColoringPartitionScanner;
-import cbg.editor.Modes;
-
 /**
  * Dialog to edit a template.
  */
 public class EditTemplateDialog extends StatusDialog {
 
-	//private static class SimpleJavaSourceViewerConfiguration extends PerlSourceViewerConfiguration {
-	private static class SimpleJavaSourceViewerConfiguration extends PreviewSourceViewerConfiguration {
+	private static class SimpleJavaSourceViewerConfiguration extends PerlSourceViewerConfiguration {
 
 		private final IContentAssistProcessor fProcessor;
 
@@ -99,7 +95,7 @@ public class EditTemplateDialog extends StatusDialog {
 	SimpleJavaSourceViewerConfiguration(IContentAssistProcessor processor) {
 		// TODO CHANGED
         //super(tools, null);
-		super(PerlEditorPlugin.getDefault().getPreferenceStore());
+		super(PerlEditorPlugin.getDefault().getPreferenceStore(), null);
 		fProcessor= processor;
 	}
 		
@@ -129,7 +125,7 @@ public class EditTemplateDialog extends StatusDialog {
 			
 			//Color background= createColor(store, IPreferenceConstants.PROPOSALS_BACKGROUND, display);	
 			//Color background= createColor(store, PreferenceConstants.EDITOR_BACKGROUND_COLOR, display);
-			Color background = PerlColorProvider.getColor(new RGB(254, 241, 233));	
+			Color background = PerlEditorPlugin.getDefault().getColor(new RGB(254, 241, 233));	
 			assistant.setContextInformationPopupBackground(background);
 			assistant.setContextSelectorBackground(background);
 			assistant.setProposalSelectorBackground(background);
@@ -345,23 +341,13 @@ public class EditTemplateDialog extends StatusDialog {
 
 	private SourceViewer createEditor(Composite parent) {
 		SourceViewer viewer= new SourceViewer(parent, null, SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL);
-	  //TODO TEXTTOOLS ?
-	  //JavaTextTools tools= PHPeclipsePlugin.getDefault().getJavaTextTools();
-		IDocument document= new Document(fTemplate.getPattern());
-		//IDocumentPartitioner partitioner= tools.createDocumentPartitioner();
-//		TODO Changed (check)
-		 ColoringPartitionScanner scanner = new ColoringPartitionScanner(Modes.getMode("perl.xml"));
-		 
-		 // Do not restrict content assist to partitions
-		//IDocumentPartitioner partitioner = new org.eclipse.jface.text.rules.DefaultPartitioner(scanner, scanner.getContentTypes());
-		IDocumentPartitioner partitioner = new org.eclipse.jface.text.rules.DefaultPartitioner(scanner, new String[] {});
+		IDocument document= new Document(fTemplate.getPattern());		 
+		IDocumentPartitioner partitioner = new PerlPartitioner();
 		
 		document.setDocumentPartitioner(partitioner);
 		partitioner.connect(document);		
-	//	viewer.configure(new SimpleJavaSourceViewerConfiguration(tools, null, fProcessor));
-		//viewer.configure(new SimpleJavaSourceViewerConfiguration(tools, fProcessor));
 		viewer.configure(new SimpleJavaSourceViewerConfiguration(fProcessor));
-    viewer.setEditable(true);
+        viewer.setEditable(true);
 		viewer.setDocument(document);
 		
 		Font font= JFaceResources.getFontRegistry().get(JFaceResources.TEXT_FONT);

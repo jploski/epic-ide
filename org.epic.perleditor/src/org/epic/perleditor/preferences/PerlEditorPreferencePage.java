@@ -65,12 +65,9 @@ import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 
-import org.epic.perleditor.editors.util.PerlColorProvider;
 import org.epic.perleditor.PerlEditorPlugin;
-import org.epic.perleditor.preferences.preview.*;
-
-import cbg.editor.ColoringPartitionScanner;
-import cbg.editor.Modes;
+import org.epic.perleditor.editors.PerlPartitioner;
+import org.epic.perleditor.editors.PerlSourceViewerConfiguration;
 
 /*
  * The page for setting the editor options.
@@ -139,8 +136,8 @@ public class PerlEditorPreferencePage extends PreferencePage implements IWorkben
 		new OverlayPreferenceStore.OverlayKey(OverlayPreferenceStore.BOOLEAN, PreferenceConstants.EDITOR_MARKUP_COLOR_BOLD),
 		new OverlayPreferenceStore.OverlayKey(OverlayPreferenceStore.STRING, PreferenceConstants.EDITOR_OPERATOR_COLOR),
 		new OverlayPreferenceStore.OverlayKey(OverlayPreferenceStore.BOOLEAN, PreferenceConstants.EDITOR_OPERATOR_COLOR_BOLD),
-		new OverlayPreferenceStore.OverlayKey(OverlayPreferenceStore.STRING, PreferenceConstants.EDITOR_DIGIT_COLOR),
-		new OverlayPreferenceStore.OverlayKey(OverlayPreferenceStore.BOOLEAN, PreferenceConstants.EDITOR_DIGIT_COLOR_BOLD),
+		new OverlayPreferenceStore.OverlayKey(OverlayPreferenceStore.STRING, PreferenceConstants.EDITOR_NUMBER_COLOR),
+		new OverlayPreferenceStore.OverlayKey(OverlayPreferenceStore.BOOLEAN, PreferenceConstants.EDITOR_NUMBER_COLOR_BOLD),
 		new OverlayPreferenceStore.OverlayKey(OverlayPreferenceStore.STRING, PreferenceConstants.EDITOR_INVALID_COLOR),
 		new OverlayPreferenceStore.OverlayKey(OverlayPreferenceStore.BOOLEAN, PreferenceConstants.EDITOR_INVALID_COLOR_BOLD),
 		
@@ -181,7 +178,7 @@ public class PerlEditorPreferencePage extends PreferencePage implements IWorkben
 	};
 	
 	private final String[][] fSyntaxColorListModel= new String[][] {
-		{ PreferencesMessages.getString("PerlEditorPreferencePage.nullColor"), PreferenceConstants.EDITOR_STRING_COLOR},
+		{ PreferencesMessages.getString("PerlEditorPreferencePage.nullColor"), PreferenceConstants.EDITOR_FOREGROUND_COLOR},
 		{ PreferencesMessages.getString("PerlEditorPreferencePage.keyword1Color"), PreferenceConstants.EDITOR_KEYWORD1_COLOR},
 		{ PreferencesMessages.getString("PerlEditorPreferencePage.keyword2Color"), PreferenceConstants.EDITOR_KEYWORD2_COLOR},
 		{ PreferencesMessages.getString("PerlEditorPreferencePage.keyword3Color"), PreferenceConstants.EDITOR_KEYWORD3_COLOR},
@@ -193,7 +190,7 @@ public class PerlEditorPreferencePage extends PreferencePage implements IWorkben
 		{ PreferencesMessages.getString("PerlEditorPreferencePage.functionColor"), PreferenceConstants.EDITOR_FUNCTION_COLOR},
 		{ PreferencesMessages.getString("PerlEditorPreferencePage.markupColor"), PreferenceConstants.EDITOR_MARKUP_COLOR},
 		{ PreferencesMessages.getString("PerlEditorPreferencePage.operatorColor"), PreferenceConstants.EDITOR_OPERATOR_COLOR},
-		{ PreferencesMessages.getString("PerlEditorPreferencePage.digitColor"), PreferenceConstants.EDITOR_DIGIT_COLOR},
+		{ PreferencesMessages.getString("PerlEditorPreferencePage.numberColor"), PreferenceConstants.EDITOR_NUMBER_COLOR},
 	    { PreferencesMessages.getString("PerlEditorPreferencePage.invalidColor"), PreferenceConstants.EDITOR_INVALID_COLOR},
 	};
 	
@@ -255,10 +252,8 @@ public class PerlEditorPreferencePage extends PreferencePage implements IWorkben
 	private Button fBoldCheckBox;
 	private SourceViewer fPreviewViewer;
 	private Color fBackgroundColor;
-    private Control fAutoInsertDelayText;
 	private Button fShowInTextCheckBox;
 	private Button fShowInOverviewRulerCheckBox;
-	private Text fBrowserLikeLinksKeyModifierText;
 	private Button fCompletionInsertsRadioButton;
 	private Button fCompletionOverwritesRadioButton;
 	
@@ -440,10 +435,8 @@ public class PerlEditorPreferencePage extends PreferencePage implements IWorkben
 	}
 	
 	private Control createPreviewer(Composite parent) {
-		fPreviewViewer= new SourceViewer(parent, null, SWT.V_SCROLL | SWT.H_SCROLL | SWT.BORDER);
-		
-		fPreviewViewer.configure(new PreviewSourceViewerConfiguration(fOverlayStore));
-
+		fPreviewViewer= new SourceViewer(parent, null, SWT.V_SCROLL | SWT.H_SCROLL | SWT.BORDER);		
+		fPreviewViewer.configure(new PerlSourceViewerConfiguration(fOverlayStore, null));
 		fPreviewViewer.getTextWidget().setFont(JFaceResources.getFontRegistry().get(JFaceResources.TEXT_FONT));
 		fPreviewViewer.setEditable(false);
 		
@@ -452,13 +445,7 @@ public class PerlEditorPreferencePage extends PreferencePage implements IWorkben
 		String content= loadPreviewContentFromFile("ColorSettingPreviewCode.txt"); //$NON-NLS-1$
 
 		IDocument document= new Document(content);
-		
-		//IDocumentPartitioner partitioner= fPerlTextTools.createDocumentPartitioner();
-		//partitioner.connect(document);
-		//document.setDocumentPartitioner(partitioner);
-		//String[] TYPES= new String[] {PerlPartitionScanner.PERL_MULTI_LINE_COMMENT, PerlPartitionScanner.PERL_POD_COMMENT };
-		ColoringPartitionScanner scanner = new ColoringPartitionScanner(Modes.getMode("perl.xml"));
-		IDocumentPartitioner partitioner = new org.eclipse.jface.text.rules.DefaultPartitioner(scanner, scanner.getContentTypes());
+		IDocumentPartitioner partitioner = new PerlPartitioner(); 
 		partitioner.connect(document);
 		document.setDocumentPartitioner(partitioner);
 	
@@ -474,19 +461,17 @@ public class PerlEditorPreferencePage extends PreferencePage implements IWorkben
 				}
 
 				int topIndex =  fPreviewViewer.getTextWidget().getTopIndex();
-		        int carretOffset = fPreviewViewer.getTextWidget().getCaretOffset();
+		        int caretOffset = fPreviewViewer.getTextWidget().getCaretOffset();
 				fPreviewViewer.unconfigure();
-                fPreviewViewer.configure(new PreviewSourceViewerConfiguration(fOverlayStore));
+                fPreviewViewer.configure(new PerlSourceViewerConfiguration(fOverlayStore, null));
 				
 				// Set editor foreground
-				RGB rgb = PreferenceConverter.getColor(fOverlayStore, PreferenceConstants.EDITOR_STRING_COLOR);
-				fPreviewViewer.getTextWidget().setForeground(PerlColorProvider.getColor(rgb));
+				fPreviewViewer.getTextWidget().setForeground(
+                    PerlEditorPlugin.getDefault().getColor(PreferenceConstants.EDITOR_STRING_COLOR));
 				
 				fPreviewViewer.refresh();
-
 				fPreviewViewer.getTextWidget().setTopIndex(topIndex);
-				fPreviewViewer.getTextWidget().setCaretOffset(carretOffset);
-				
+				fPreviewViewer.getTextWidget().setCaretOffset(caretOffset);				
 				fPreviewViewer.invalidateTextPresentation();
 			}
 		});

@@ -1,437 +1,280 @@
 package org.epic.perleditor.editors.perl;
 
-import gnu.regexp.RE;
-import gnu.regexp.REMatch;
-
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.StringTokenizer;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.eclipse.jface.text.BadLocationException;
-import org.eclipse.jface.text.IDocument;
-import org.eclipse.jface.text.ITextViewer;
-import org.eclipse.jface.text.TextPresentation;
-import org.eclipse.jface.text.contentassist.ICompletionProposal;
-import org.eclipse.jface.text.contentassist.IContentAssistProcessor;
-import org.eclipse.jface.text.contentassist.IContextInformation;
-import org.eclipse.jface.text.contentassist.IContextInformationPresenter;
-import org.eclipse.jface.text.contentassist.IContextInformationValidator;
-import org.eclipse.ui.IFileEditorInput;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jface.text.*;
+import org.eclipse.jface.text.contentassist.*;
 import org.eclipse.ui.editors.text.TextEditor;
+import org.epic.core.model.ISourceElement;
+import org.epic.core.util.PerlExecutor;
 import org.epic.perleditor.PerlEditorPlugin;
-import org.epic.perleditor.editors.util.PerlExecutableUtilities;
 import org.epic.perleditor.preferences.CodeAssistPreferences;
-import org.epic.perleditor.templates.ContextType;
-import org.epic.perleditor.templates.ContextTypeRegistry;
-import org.epic.perleditor.templates.TemplateEngine;
-import org.epic.perleditor.templates.perl.IPerlCompletionProposal;
-import org.epic.perleditor.templates.perl.ModuleCompletionHelper;
-import org.epic.perleditor.templates.perl.PerlCompletionProposalComparator;
-import org.epic.perleditor.templates.perl.SubroutineEngine;
-import org.epic.perleditor.templates.perl.VariableEngine;
-import org.epic.perleditor.views.model.Model;
-import org.epic.perleditor.views.util.SourceParser;
+import org.epic.perleditor.templates.*;
+import org.epic.perleditor.templates.perl.*;
 
 /**
  * Perl completion processor.
  */
-public class PerlCompletionProcessor implements IContentAssistProcessor {
+public class PerlCompletionProcessor implements IContentAssistProcessor
+{        
+    private static final IPerlCompletionProposal[] NO_PROPOSALS =
+        new IPerlCompletionProposal[0];
+    
+    // package-scope to enable unit testing
+    static Pattern MODULE_PREFIX_PATTERN = Pattern.compile("([A-Za-z0-9_]+(::|->))+");
+    static Pattern VAR_PREFIX_PATTERN = Pattern.compile("\\$[A-Za-z0-9_]+(::|->)$");
+    
+	private final IContextInformationValidator fValidator = new Validator();
+    private final PerlCompletionProposalComparator fComparator = new PerlCompletionProposalComparator();    
+    private final TextEditor fTextEditor;
+	private final TemplateEngine fTemplateEngine;
 
-	/**
-	 * Simple content assist tip closer. The tip is valid in a range
-	 * of 5 characters around its popup location.
-	 */
-	protected static class Validator
-		implements IContextInformationValidator, IContextInformationPresenter {
-
-		protected int fInstallOffset;
-
-		/*
-		 * @see IContextInformationValidator#isContextInformationValid(int)
-		 */
-		public boolean isContextInformationValid(int offset) {
-			return Math.abs(fInstallOffset - offset) < 5;
-		}
-
-		/*
-		 * @see IContextInformationValidator#install(IContextInformation, ITextViewer, int)
-		 */
-		public void install(
-			IContextInformation info,
-			ITextViewer viewer,
-			int offset) {
-			fInstallOffset = offset;
-
-		}
-
-		/*
-		 * @see org.eclipse.jface.text.contentassist.IContextInformationPresenter#updatePresentation(int, TextPresentation)
-		 */
-		public boolean updatePresentation(
-			int documentPosition,
-			TextPresentation presentation) {
-			return false;
-		}
-	}
-
-	protected IContextInformationValidator fValidator = new Validator();
-	private TextEditor fTextEditor = null;
-
-	private TemplateEngine fTemplateEngine;
-	private PerlCompletionProposalComparator fComparator;
-
-
-	/*
-	 * Constructor
-	 */
-	public PerlCompletionProcessor(TextEditor textEditor) {
+	public PerlCompletionProcessor(TextEditor textEditor) 
+    {
 		fTextEditor = textEditor;
 
-		ContextType contextType = ContextTypeRegistry.getInstance().getContextType("perl"); //$NON-NLS-1$
-		if (contextType != null)
-			fTemplateEngine = new TemplateEngine(contextType);
-
-		fComparator = new PerlCompletionProposalComparator();
+		ContextType contextType = getContextType();
+		if (contextType != null) fTemplateEngine = new TemplateEngine(contextType);
+        else fTemplateEngine = null;
 	}
-	/**
-   * 
-   */
-  public PerlCompletionProcessor() {
-    
-    // nothing to do cause, it's only required for OpenDeclaration
-  }
-  /* 
-	 * Method declared on IContentAssistProcessor
-	 */
-	public ICompletionProposal[] computeCompletionProposals(
-		ITextViewer viewer,
-		int documentOffset) {
 
-		// get the current document's text
+	public ICompletionProposal[] computeCompletionProposals(
+		ITextViewer viewer, int documentOffset)
+    {
+		// get the current document's text, up to caret position
 		IDocument document = viewer.getDocument();
-		String text = null;
-		try {
-			text = document.get(0, documentOffset);
-		} catch (BadLocationException ble) {
+		String lastTextLine = null;
+		try
+        {
+            int lastLine = document.getLineOfOffset(documentOffset);
+            lastTextLine = document.get(
+                document.getLineOffset(lastLine),
+                document.getLineLength(lastLine));
+        }
+        catch (BadLocationException ble)
+        {
 			// TODO what to do here?
 		}
-		
-		// try to find out what we should present as completion options
-		
-		// do we need module completion?
-		Pattern pattern = Pattern.compile(".*use\\s*(.*)$", Pattern.MULTILINE | Pattern.DOTALL);
-		Matcher matcher = pattern.matcher(text);
-		if (matcher.matches()) {
-			// --> show modules
-			String moduleNameFragment = matcher.group(1);
-			
-			ModuleCompletionHelper completionHelper = ModuleCompletionHelper.getInstance();
-			return completionHelper.getProposals(moduleNameFragment, documentOffset, viewer);
-		}
-		else {
-			String className = getClassName(documentOffset, null);
-			if (className != null) {
-	
-				List proposals = getProposalsForClassname(className);
-	
-				IPerlCompletionProposal[] subroutineResults =
-					new IPerlCompletionProposal[0];
-				SubroutineEngine subroutineEngine;
-				ContextType contextType = ContextTypeRegistry.getInstance().getContextType("perl"); //$NON-NLS-1$
-				if (contextType != null) {
-					subroutineEngine = new SubroutineEngine(contextType);
-					subroutineEngine.complete(
-						viewer,
-						documentOffset,
-						(String[]) proposals.toArray(new String[0]));
-					subroutineResults = subroutineEngine.getResults();
-				}
-				return subroutineResults;
-			} else {
-				// we're not inside a class
-				
-				// variables
-				IPerlCompletionProposal[] varsResults =	new IPerlCompletionProposal[0];
-				boolean inspectVars = PerlEditorPlugin.getDefault().getPreferenceStore().getBoolean(CodeAssistPreferences.INSPECT_VARIABLES);
-				if(inspectVars) {
-					//Get variables
-					List variables;
-					variables = getCompletionVariables(viewer, documentOffset);
-					VariableEngine varsEngine;
-					ContextType contextType = ContextTypeRegistry.getInstance().getContextType("perl"); //$NON-NLS-1$
-					if (contextType != null) {
-						varsEngine = new VariableEngine(contextType);
-						varsEngine.complete(
-							viewer,
-							documentOffset,
-							(String[]) variables.toArray(new String[0]));
-						varsResults = varsEngine.getResults();
-					}
-				}
-	
-				// templates
-				fTemplateEngine.reset();
-				fTemplateEngine.complete(viewer, documentOffset);
-				IPerlCompletionProposal[] templateResults =
-					fTemplateEngine.getResults();
-	
-				// concatenate arrays
-				IPerlCompletionProposal[] result;
-				result =
-					new IPerlCompletionProposal[templateResults.length
-						+ varsResults.length];
-				System.arraycopy(
-					templateResults,
-					0,
-					result,
-					0,
-					templateResults.length);
-				System.arraycopy(
-					varsResults,
-					0,
-					result,
-					templateResults.length,
-					varsResults.length);
-	
-				return sort(result);
-			}
-		}
 
-		//return result;
-		//return subroutineResults;
+        String moduleNamePrefix = getModuleNamePrefix(lastTextLine); 
+		if (moduleNamePrefix != null)
+        {
+            return computeModuleNameProposals(
+                viewer, documentOffset, moduleNamePrefix);
+        }
+		else
+        {
+			String className = getClassName(documentOffset, document);
+			return className != null
+                ? computeMethodProposals(viewer, documentOffset, className)
+                : sort(concatenate(
+                    computeVariableProposals(viewer, documentOffset),
+                    computeTemplateProposals(viewer, documentOffset)
+                    ));
+		}
 	}
+    
+    public IContextInformation[] computeContextInformation(
+        ITextViewer viewer,
+        int documentOffset)
+    {
+        return null;
+    }
+
+    public char[] getCompletionProposalAutoActivationCharacters()
+    {
+        String activationChars  = PerlEditorPlugin.getDefault().getPreferenceStore().getString(CodeAssistPreferences.AUTO_ACTIVATION_CHARS);
+        return activationChars.toCharArray();
+    }
+
+    public char[] getContextInformationAutoActivationCharacters()
+    {
+        return null;
+    }
+
+    public IContextInformationValidator getContextInformationValidator()
+    {
+        return fValidator;
+    }
+
+    public String getErrorMessage()
+    {
+        return null;
+    }
+
+    private ICompletionProposal[] computeMethodProposals(
+        ITextViewer viewer, int documentOffset, String className)
+    {
+        List proposals = getProposalsForClassname(className);
+        
+        ContextType contextType = getContextType();
+        if (contextType != null)
+        {
+            SubroutineEngine subroutineEngine = new SubroutineEngine(contextType);
+            subroutineEngine.complete(
+                viewer,
+                documentOffset,
+                (String[]) proposals.toArray(new String[proposals.size()]));
+            return subroutineEngine.getResults();
+        }
+        else return new IPerlCompletionProposal[0];
+    }
+    
+    private ICompletionProposal[] computeModuleNameProposals(
+        ITextViewer viewer, int documentOffset, String moduleNamePrefix)
+    {   
+        ModuleCompletionHelper completionHelper = ModuleCompletionHelper.getInstance();
+        return completionHelper.getProposals(moduleNamePrefix, documentOffset, viewer);
+    }
+    
+    private IPerlCompletionProposal[] computeTemplateProposals(
+        ITextViewer viewer, int documentOffset)
+    {
+        fTemplateEngine.reset();
+        fTemplateEngine.complete(viewer, documentOffset);
+        return fTemplateEngine.getResults();
+    }
+
+    private IPerlCompletionProposal[] computeVariableProposals(ITextViewer viewer, int documentOffset)
+    {
+        if (!PerlEditorPlugin.getDefault().getPreferenceStore().getBoolean(
+            CodeAssistPreferences.INSPECT_VARIABLES)) return NO_PROPOSALS;
+        
+        ContextType contextType = getContextType();
+        if (contextType == null) return NO_PROPOSALS;
+
+    	Set variables = getCompletionVariables(viewer, documentOffset);
+    	VariableEngine varsEngine = new VariableEngine(contextType);
+
+		varsEngine.complete(
+			viewer,
+			documentOffset,
+			(String[]) variables.toArray(new String[variables.size()]));
+
+        return varsEngine.getResults();
+    }
 
 	/**
 	 * Gets variable/filedescriptor info from source file
-	 * @param viewer
-	 * @param documentOffset
-	 * @return
 	 */
-	private List getCompletionVariables(
-		ITextViewer viewer,
-		int documentOffset) {
-
-		String VARIABLE_REGEXP = "([$@%][a-z0-9A-Z_]+)\\s*[=;]";
-		String FILEHANDLE_REGEXP =
-			"open[a-z]*\\s*?\\s*?[(]\\s*?([A-Z_0-9]+)\\s*?[,]";
-
+	private Set getCompletionVariables(
+		ITextViewer viewer, int documentOffset)
+    {
 		List variablesModel = new ArrayList();
-		List variables = new ArrayList();
+		Set variables = new HashSet();
 
 		String variableChars = "%$@";
 		String filehandleChars = "<";
 
-		try {
-
-			documentOffset =
-				getCompletionStartOffset(
-					viewer.getDocument(),
-					documentOffset,
-					variableChars + filehandleChars);
+		try
+        {
+			documentOffset = getCompletionStartOffset(
+                viewer.getDocument(),
+                documentOffset,
+                variableChars + filehandleChars);
 
 			String key = viewer.getDocument().get(documentOffset, 1);
-			if (variableChars.indexOf(key) != -1) {
-				String regexp = VARIABLE_REGEXP;
+			if (variableChars.indexOf(key) != -1)
+            {
 				variablesModel =
 					SourceParser.getElements(
 						viewer.getDocument(),
-						regexp,
+                        "([$@%][a-z0-9A-Z_]+)\\s*[=;]",
 						"",
 						"",
 						true);
-			} else if (filehandleChars.indexOf(key) != -1) {
-				String regexp = FILEHANDLE_REGEXP;
+			}
+            else if (filehandleChars.indexOf(key) != -1)
+            {
 				variablesModel =
 					SourceParser.getElements(
 						viewer.getDocument(),
-						regexp,
+                        "open[a-z]*\\s*?\\s*?[(]\\s*?([A-Z_0-9]+)\\s*?[,]",
 						"<",
 						">",
 						true);
 			}
 
-			Map alreadyInserted = new HashMap();
-			for (Iterator iterate = variablesModel.iterator();
-				iterate.hasNext();
-				) {
-				Model model = (Model) iterate.next();
-				String element = model.getName();
+			for (Iterator i = variablesModel.iterator(); i.hasNext();)
+            {
+				ISourceElement elem = (ISourceElement) i.next();
+				String name = elem.getName();
 
 				// Only insert variables once
-				if (alreadyInserted.get(element) == null) {
-					variables.add(element);
-					alreadyInserted.put(element, "");
-					
-					String elementAdditional = null;
+				if (!variables.contains(name))
+                {
+					variables.add(name);
 
-					if (element.startsWith("@")) {
-						elementAdditional = "$" + element.substring(1) + "[]";
-					} else if (element.startsWith("%")) {
-						elementAdditional = "$" + element.substring(1) + "{}";
-					}
-					if (elementAdditional != null && alreadyInserted.get(elementAdditional) == null) {
-						variables.add(elementAdditional);
-						alreadyInserted.put(elementAdditional, "");
-					}
-					
+					if (name.startsWith("@"))
+                        variables.add("$" + name.substring(1) + "[]");
+                    else if (name.startsWith("%"))
+						variables.add("$" + name.substring(1) + "{}");
 				}
-
 			}
-
-		} catch (BadLocationException ex) {
-			ex.printStackTrace();
+		}
+        catch (BadLocationException ex)
+        {
+			ex.printStackTrace(); // TODO log it
 		}
 		return variables;
 	}
-	/* 
-	 * Method declared on IContentAssistProcessor
-	 */
-	public IContextInformation[] computeContextInformation(
-		ITextViewer viewer,
-		int documentOffset) {
-		IContextInformation[] result = new IContextInformation[5];
-		/*
-		for (int i= 0; i < result.length; i++)
-			result[i]= new ContextInformation(
-				MessageFormat.format(PerlEditorMessages.getString("CompletionProcessor.ContextInfo.display.pattern"), new Object[] { new Integer(i), new Integer(documentOffset) }),  //$NON-NLS-1$
-				MessageFormat.format(PerlEditorMessages.getString("CompletionProcessor.ContextInfo.value.pattern"), new Object[] { new Integer(i), new Integer(documentOffset - 5), new Integer(documentOffset + 5)})); //$NON-NLS-1$
-		*/
-		return result;
-	}
 
-	/* 
-	 * Method declared on IContentAssistProcessor
-	 */
-	public char[] getCompletionProposalAutoActivationCharacters() {
-		String activationCharas  = PerlEditorPlugin.getDefault().getPreferenceStore().getString(CodeAssistPreferences.AUTO_ACTIVATION_CHARS);
-		return activationCharas.toCharArray();
-		//return ">:<$@%".toCharArray();
-		//return new char[] { '>', ':', '<', '$', '@', '%' };
-	}
-
-	/* 
-	 * Method declared on IContentAssistProcessor
-	 */
-	public char[] getContextInformationAutoActivationCharacters() {
-		//return new char[] { '#' };
-		return null;
-	}
-
-	/* 
-	 * Method declared on IContentAssistProcessor
-	 */
-	public IContextInformationValidator getContextInformationValidator() {
-		return fValidator;
-	}
-
-	/* 
-	 * Method declared on IContentAssistProcessor
-	 */
-	public String getErrorMessage() {
-		return null;
-	}
-
-	private String getClassName(int documentOffset, IDocument document) {
-		String objName = null;
-		String className = null;
-
-		try {
-			// Calculate documentOffset
-			String specialChars = "_"; // "_" can be contained in classname
-
+	private String getClassName(int documentOffset, IDocument document)
+    {
+		try
+        {
+            // Find offset just after the -> or :: for which completion is requested 
 			documentOffset =
-				getCompletionStartOffset(
-					document,
-					documentOffset,
-					specialChars);
+                getCompletionStartOffset(document, documentOffset, "_");
 
 			String text = document.get(0, documentOffset);
-			if (!text.endsWith("->") && !text.endsWith("::")) {
-				return null;
-			}
+			if (!text.endsWith("->") && !text.endsWith("::")) return null;
 
 			// Get the object name
-			int line = document.getLineOfOffset(documentOffset);
-			String lineContent = text.substring(document.getLineOffset(line));
+			int lineNo = document.getLineOfOffset(documentOffset);
+			String line = text.substring(document.getLineOffset(lineNo));
 
 			// Lines can end with "->" of "::"
-			RE refType = new RE("\\$[a-zA-Z]+(->|::)$");
+            if (VAR_PREFIX_PATTERN.matcher(line).find())
+            {
+				String objName = line.substring(line.lastIndexOf('$'));
 
-			if (refType.getAllMatches(lineContent).length > 0) {
-				RE re;
+                objName = objName.indexOf("->") != -1
+                    ? objName.substring(0, objName.indexOf("->"))
+                    : objName.substring(0, objName.indexOf("::"));
 
-				re = new RE("\\s*=\\s*(.*::.*)->$");
-				REMatch[] found = re.getAllMatches(text);
-
-				if (found.length > 0) {
-					className = found[0].toString(1);
-				} else {
-					objName =
-						lineContent.substring(lineContent.lastIndexOf("$"));
-
-					if (objName.indexOf("->") != -1) {
-						objName = objName.substring(0, objName.indexOf("->"));
-					} else {
-						objName = objName.substring(0, objName.indexOf("::"));
-					}
-
-					// **** Get the classname ***
-					//re = new RE("\\" + objName + "\\s*=\\s*(.*?)(->|::)[a-zA-Z]+\\(");
-					re =
-						new RE(
-							"\\"
-								+ objName
-								+ "\\s*=\\s*([a-zA-Z:->]+)(->|::|;)");
-					REMatch[] matches = re.getAllMatches(text);
-
-					if (matches.length == 0) {
-						return null;
-					}
-
-					// Get only last match
-					className = matches[matches.length - 1].toString(1);
-				}
-
-			} else {
-
-				RE re = new RE("([a-z|A-Z]+::.+?)(::|->)$");
-				REMatch[] matches = re.getAllMatches(lineContent);
-				if (matches.length > 0) {
-					className = matches[0].toString(1);
-				} else {
-					return null;
-				}
-
+				// **** Get the classname ***
+                Pattern p = Pattern.compile(
+                    "\\" + objName + "\\s*=\\s*([a-zA-Z:->]+)(->|::|;)");
+                Matcher m = p.matcher(text);
+                
+                String className = null;
+                while (m.find()) className = m.group(1);
+                return className;
 			}
-		} catch (Exception ex) {
-			return null;
+            else
+            {
+                Matcher m = MODULE_PREFIX_PATTERN.matcher(line);
+                if (m.find())
+                {
+                    // strip -> or :: from the end
+                    String str = m.group(0);
+                    return str.substring(0, str.length()-2); 
+                }
+                else return null;
+			}
 		}
-
-		return className;
-	}
-
-	public final List getProposalsForClassname(TextEditor fTextEditor, String className){
-	  this.fTextEditor = fTextEditor ;
-	  return getProposalsForClassname(className);
+        catch (Exception ex)
+        {
+			return null; // TODO error handling
+		}
 	}
 	
-	private List getProposalsForClassname(
-		String className) {
-		List result = new ArrayList();
-	//	int READ_BUFFER_SIZE = 128;
-
+    private List getProposalsForClassname(String className)
+    {
 		String perlCode =
 			"use "
 				+ className
@@ -450,119 +293,112 @@ public class PerlCompletionProcessor implements IContentAssistProcessor {
 				+ "   }\n"
 				+ "}\n";
 
-		try {
-
-			//			Construct command line parameters
-			List cmdList =
-				PerlExecutableUtilities.getPerlExecutableCommandLine(
-					fTextEditor);
-
-			String[] cmdParams =
-				(String[]) cmdList.toArray(new String[cmdList.size()]);
-
-			//Get working directory -- Fixes Bug: 736631
-			String workingDir =
-				((IFileEditorInput) fTextEditor.getEditorInput())
-					.getFile()
-					.getLocation()
-					.makeAbsolute()
-					.removeLastSegments(1)
-					.toString();
-
-			/*
-			 * Due to Java Bug #4763384 sleep for a very small amount of time
-			 * immediately after starting the subprocess
-			 */
-			Process proc =
-				Runtime.getRuntime().exec(
-					cmdParams,
-					null,
-					new File(workingDir));
-			Thread.sleep(1);
-
-			proc.getErrorStream().close();
-			InputStream in = proc.getInputStream();
-			OutputStream out = proc.getOutputStream();
-			//TODO which charset?
-			Writer outw = new OutputStreamWriter(out);
-
-			try {
-				outw.write(perlCode);
-				outw.write(0x1a); //this should avoid problem with Win98
-				outw.flush();
-			} catch (IOException ex) {
-				ex.printStackTrace();
-			}
-			out.close();
-
-			String content = PerlExecutableUtilities.readStringFromStream(in);
-			in.close();
-
-			String line;
-			StringTokenizer st = new StringTokenizer(content, "\n");
-			while (st.hasMoreTokens()) {
-				line = st.nextToken();
-				if (line.indexOf("\r") != -1) {
-					line = line.substring(0, line.indexOf("\r"));
-				}
-
-				result.add(line);
-			}
-
-		} catch (Exception ex) {
-			ex.printStackTrace();
-		} finally {
-			try {
-
-			} catch (Exception ex) {
-				ex.printStackTrace();
-			}
-		}
-
-		return result;
-
+        PerlExecutor executor = new PerlExecutor();
+		try
+        {
+            return executor.execute(fTextEditor, null, perlCode).getStdoutLines();
+        }
+        catch (CoreException e)
+        {
+            PerlEditorPlugin.getDefault().getLog().log(e.getStatus());
+            return new ArrayList();
+        }
+        finally
+        {
+            executor.dispose();
+        }
 	}
 
 	/**
-	* Order the given proposals.
-	*/
-	private IPerlCompletionProposal[] sort(IPerlCompletionProposal[] proposals) {
+	 * Orders the given proposals.
+	 */
+	private IPerlCompletionProposal[] sort(IPerlCompletionProposal[] proposals)
+    {
 		Arrays.sort(proposals, fComparator);
 		return proposals;
 	}
 
 	/**
-	 * Returns the content assist start offset
-	 * 
-	 * @param document
-	 * @param documentOffset
-	 * @param specialChars
+	 * Finds the content assist start offset: the offset just after
+     * the sequence of characters triggering the completion. For example,
+     * if the completion was requested after typing "$foo->ab", the method
+     * would return the offset just after "$foo->".
+     *
+     * @param document      document in which completion was requested
+     * @param caretOffset   offset at which completion was requested
 	 * @return offset
-	 * @throws BadLocationException
 	 */
 	private int getCompletionStartOffset(
 		IDocument document,
-		int documentOffset,
-		String specialChars)
-		throws BadLocationException {
-		while (((documentOffset != 0)
-			&& Character.isUnicodeIdentifierPart(
-				document.getChar(documentOffset - 1)))
-			|| ((documentOffset != 0)
-				&& specialChars.indexOf(document.getChar(documentOffset - 1))
-					!= (-1))) {
-			documentOffset--;
-		}
-
-		if (((documentOffset != 0)
-			&& Character.isUnicodeIdentifierStart(
-				document.getChar(documentOffset - 1)))
-			|| ((documentOffset != 0)
-				&& specialChars.indexOf(document.getChar(documentOffset - 1))
-					!= (-1))) {
-			documentOffset--;
-		}
-
-		return documentOffset;
+		int caretOffset,
+        String specialChars)
+		throws BadLocationException
+    {
+		while (stepLeft(document, caretOffset, specialChars)) caretOffset--;
+		if (stepLeft(document, caretOffset, specialChars)) caretOffset--;
+		return caretOffset;
 	}
+    
+    private ContextType getContextType()
+    {
+        return ContextTypeRegistry.getInstance().getContextType("perl"); //$NON-NLS-1$
+    }
+    
+    private String getModuleNamePrefix(String line)
+    {
+        Pattern pattern = Pattern.compile(
+            ".*use\\s*(.*)$", Pattern.MULTILINE | Pattern.DOTALL);
+        Matcher matcher = pattern.matcher(line);
+        return matcher.matches() ? matcher.group(1) : null;
+    }
+    
+    private boolean stepLeft(IDocument doc, int offset, String specialChars)
+        throws BadLocationException
+    {
+        return
+            offset != 0 &&
+            (Character.isUnicodeIdentifierPart(doc.getChar(offset - 1)) ||
+            specialChars.indexOf(doc.getChar(offset - 1)) != -1);
+    }
+    
+    private static IPerlCompletionProposal[] concatenate(
+        IPerlCompletionProposal[] a,
+        IPerlCompletionProposal[] b)
+    {   
+        IPerlCompletionProposal[] result =
+            new IPerlCompletionProposal[b.length + a.length];
+        System.arraycopy(b, 0, result, 0, b.length);
+        System.arraycopy(a, 0, result, b.length, a.length);
+        return result;
+    }
+
+    /**
+     * Simple content assist tip closer. The tip is valid in a range
+     * of 5 characters around its popup location.
+     */
+    private static class Validator
+        implements IContextInformationValidator, IContextInformationPresenter
+    {
+        protected int fInstallOffset;
+
+        public boolean isContextInformationValid(int offset)
+        {
+            return Math.abs(fInstallOffset - offset) < 5;
+        }
+
+        public void install(
+            IContextInformation info,
+            ITextViewer viewer,
+            int offset)
+        {
+            fInstallOffset = offset;
+        }
+
+        public boolean updatePresentation(
+            int documentPosition,
+            TextPresentation presentation)
+        {
+            return false;
+        }
+    }
 }

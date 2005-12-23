@@ -61,6 +61,11 @@ public class ExplainErrorsView extends ViewPart {
 		black = new Color(parent.getDisplay(), 0, 0, 0);
 
 	}
+    
+	public String getText()
+    {
+        return explanationText.getText();
+    }
 
 	/*
 	 * (non-Javadoc)

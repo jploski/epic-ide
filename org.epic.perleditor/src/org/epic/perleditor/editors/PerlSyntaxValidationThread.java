@@ -1,9 +1,10 @@
 package org.epic.perleditor.editors;
 
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.*;
 import org.eclipse.jface.text.*;
 import org.eclipse.jface.text.source.ISourceViewer;
+import org.epic.core.util.StringReaderThread;
 import org.epic.perleditor.PerlEditorPlugin;
 import org.epic.perleditor.editors.util.*;
 
@@ -22,14 +23,6 @@ public class PerlSyntaxValidationThread
     private IResource resource;
     private IDocument document;
     private String code;
-    
-/*    private final IDocumentListener documentListener = new IDocumentListener() {
-        public void documentAboutToBeChanged(DocumentEvent event) { }
-        public void documentChanged(DocumentEvent event)
-        {
-            synchronized (lock) { modified = true; }
-        }
-    };*/    
 
     private StringReaderThread srt = new StringReaderThread();
 
@@ -89,14 +82,16 @@ public class PerlSyntaxValidationThread
             }
             
             try { PerlValidator.instance().validate(resource, text); }
-            catch (PerlValidatorException e)
+            catch (CoreException e)
             {
-                if (++exceptions < 5) // avoid spamming the log spamming
+                if (PerlEditorPlugin.getDefault().hasPerlInterpreter() &&
+                    ++exceptions < 5) // avoid spamming the log
                 {
                     PerlEditorPlugin.getDefault().getLog().log(
-                        new Status(Status.ERROR,
+                        new MultiStatus(
                             PerlEditorPlugin.getPluginId(),
-                            10004, // TODO: use some sort of constant
+                            IStatus.OK,
+                            new IStatus[] { e.getStatus() },
                             "An unexpected exception occurred while validating " +
                             resource.getProjectRelativePath(),
                             e));

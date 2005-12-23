@@ -1,9 +1,11 @@
 package org.epic.perleditor.actions;
 
+import org.eclipse.core.runtime.ILog;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.*;
+import org.epic.perleditor.PerlEditorPlugin;
 import org.epic.perleditor.editors.PerlEditor;
 
 /**
@@ -78,6 +80,15 @@ public abstract class PerlEditorAction extends Action
     protected final PerlEditor getEditor()
     {
         return editor;
+    }
+    
+    /**
+     * @return the log that could be used for reporting problems during
+     *         the action
+     */
+    protected ILog getLog()
+    {
+        return PerlEditorPlugin.getDefault().getLog();
     }
     
     /**

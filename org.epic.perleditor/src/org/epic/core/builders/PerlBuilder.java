@@ -73,11 +73,14 @@ public class PerlBuilder extends IncrementalProjectBuilder
     
     private IProject[] buildImpl(int kind, Map args, IProgressMonitor monitor)
         throws CoreException
-    {   
-        cancelPreviousPerlBuilderJob();
-        findDirtyResources(kind);
-        startPerlBuilderJob();
-        
+    {
+        if (PerlEditorPlugin.getDefault().requirePerlInterpreter(false))
+        {
+            cancelPreviousPerlBuilderJob();
+            findDirtyResources(kind);
+            startPerlBuilderJob();
+        }
+        else { /* it makes no sense to even attempt a build without perl */ }
         return null;
 	}
     
@@ -151,7 +154,7 @@ public class PerlBuilder extends IncrementalProjectBuilder
             PerlEditorPlugin.getDefault().getLog().log(
                 new Status(Status.ERROR,
                     PerlEditorPlugin.getPluginId(),
-                    10000, // TODO: use some sort of constant
+                    IStatus.OK,
                     "Unexpected exception while building project " +
                     getProject().getName() +
                     "; report it as bug in plug-in " +

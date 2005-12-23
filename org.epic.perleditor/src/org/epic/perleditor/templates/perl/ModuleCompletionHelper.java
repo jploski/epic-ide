@@ -1,9 +1,11 @@
 package org.epic.perleditor.templates.perl;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.ITextViewer;
@@ -13,6 +15,7 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.ui.editors.text.TextEditor;
 import org.epic.core.util.PerlExecutor;
+import org.epic.perleditor.PerlEditorPlugin;
 import org.epic.perleditor.templates.ui.LinkedPositionManager;
 import org.epic.perleditor.templates.ui.LinkedPositionUI;
 
@@ -63,13 +66,18 @@ public class ModuleCompletionHelper  {
 		perlCode = sb.toString();
 	}
 	
-	public void scanForModules(TextEditor textEditor) {
-		
-		ArrayList al = new ArrayList();
-		
-		PerlExecutor executor = new PerlExecutor(textEditor);
+	public void scanForModules(TextEditor textEditor) throws CoreException {
+        if (!PerlEditorPlugin.getDefault().requirePerlInterpreter(false)) return;
+        
+		PerlExecutor executor = new PerlExecutor();
 		synchronized (ModuleCompletionHelper.class) { 
-			moduleNames = executor.execute(perlCode);
+            try
+            {
+                List names =
+                    executor.execute(textEditor, null, perlCode).getStdoutLines();
+                moduleNames = (String[]) names.toArray(new String[names.size()]);
+            }
+            finally { executor.dispose(); }
 		}
 	}
 	
@@ -77,6 +85,7 @@ public class ModuleCompletionHelper  {
 			String moduleNameFragment, int documentOffset,
 			ITextViewer viewer
 	) {
+        if (moduleNames == null) return new ICompletionProposal[0];
 		synchronized (ModuleCompletionHelper.class) {
 			ArrayList al = new ArrayList();
 			

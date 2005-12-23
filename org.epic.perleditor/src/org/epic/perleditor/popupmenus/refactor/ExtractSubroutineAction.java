@@ -6,15 +6,10 @@
  */
 package org.epic.perleditor.popupmenus.refactor;
 
-import java.io.File;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
-import java.net.URL;
-import java.util.List;
+import java.io.*;
+import java.util.Collections;
 
-import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.InputDialog;
@@ -31,8 +26,8 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 import org.eclipse.ui.editors.text.TextEditor;
 import org.eclipse.ui.texteditor.ITextEditor;
+import org.epic.core.util.PerlExecutor;
 import org.epic.perleditor.PerlEditorPlugin;
-import org.epic.perleditor.editors.util.PerlExecutableUtilities;
 import org.epic.perleditor.editors.util.SourceFormatter;
 import org.eclipse.jface.text.FindReplaceDocumentAdapter;
 
@@ -69,7 +64,15 @@ public class ExtractSubroutineAction extends Action implements
 	 * 
 	 * @see org.eclipse.ui.IActionDelegate#run(org.eclipse.jface.action.IAction)
 	 */
-	public void run(IAction action) {
+    public void run(IAction action) {
+        try { runImpl(action); }
+        catch (CoreException e)
+        {
+            PerlEditorPlugin.getDefault().getLog().log(e.getStatus());
+        }
+    }
+    
+	private void runImpl(IAction action) throws CoreException {
 
 		String subroutineName;
 
@@ -178,7 +181,7 @@ public class ExtractSubroutineAction extends Action implements
 	}
 
 	private String getSubroutineCallAndCode(String codeSnippet, String subName,
-			String delimiter) {
+			String delimiter) throws CoreException {
 
 		codeSnippet = codeSnippet.replaceAll("'", "\\\\'");
 		subName = subName.replaceAll("'", "\\\\'");
@@ -189,52 +192,13 @@ public class ExtractSubroutineAction extends Action implements
 				+ "print $refactory->get_sub_call() . \"" + delimiter
 				+ "\" . $refactory->get_new_code();";
 
-		String content = null;
-
-		try {
-
-			//			Construct command line parameters
-			List cmdList = PerlExecutableUtilities
-					.getPerlExecutableCommandLine((TextEditor) fTextEditor);
-
-			String[] cmdParams = (String[]) cmdList.toArray(new String[cmdList
-					.size()]);
-
-			URL installURL = PerlEditorPlugin.getDefault().getBundle().getEntry("/");
-			URL perlModulesURL = Platform.resolve(new URL(installURL,
-					"perlutils/modules"));
-
-			/*
-			 * Due to Java Bug #4763384 sleep for a very small amount of time
-			 * immediately after starting the subprocess
-			 */
-			Process proc = Runtime.getRuntime().exec(cmdParams, null,
-					new File(perlModulesURL.getPath()));
-			Thread.sleep(1);
-
-			proc.getErrorStream().close();
-			InputStream in = proc.getInputStream();
-			OutputStream out = proc.getOutputStream();
-			//TODO which charset?
-			Writer outw = new OutputStreamWriter(out);
-
-			try {
-				outw.write(perlCode);
-				outw.write(0x1a); //this should avoid problem with Win98
-				outw.flush();
-			} catch (Exception ex) {
-				ex.printStackTrace();
-			}
-			out.close();
-
-			content = PerlExecutableUtilities.readStringFromStream(in);
-			in.close();
-
-		} catch (Exception ex) {
-			ex.printStackTrace();
-		}
-
-		return content;
+        PerlExecutor executor = new PerlExecutor();      
+        try
+        {
+            return executor.execute(
+                fTextEditor, Collections.EMPTY_LIST, perlCode).stdout;
+        }
+        finally { executor.dispose(); }
 	}
 	
 	private String getLineSeparator(String text) {

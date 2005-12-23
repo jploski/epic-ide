@@ -1,6 +1,5 @@
 package org.epic.perleditor.editors.util;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.*;
 import java.util.List;
@@ -13,6 +12,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.ui.IEditorDescriptor;
 import org.epic.core.Constants;
+import org.epic.core.util.PerlExecutor;
 import org.epic.perleditor.PerlEditorPlugin;
 
 /**
@@ -20,8 +20,6 @@ import org.epic.perleditor.PerlEditorPlugin;
  * an instance of it. 
  * 
  * TODO: document this class; much refactoring still needed
- * TODO: set markers on resources for which errors are reported, not on resources
- *       whose validation output the report
  * 
  * @author luelljoc
  * @author jploski
@@ -32,7 +30,7 @@ public class PerlValidator extends PerlValidatorBase
     
     private PerlValidator()
     {
-        super(PerlEditorPlugin.getDefault().getLog());
+        super(PerlEditorPlugin.getDefault().getLog(), new PerlExecutor(true));
     }
     
     /**
@@ -57,7 +55,7 @@ public class PerlValidator extends PerlValidatorBase
      *            if the source text of the resource could not be read
      */
 	public synchronized boolean validate(IResource resource)
-        throws PerlValidatorException, IOException
+        throws CoreException, IOException
     {
 		IEditorDescriptor defaultEditorDescriptor =
 			PerlEditorPlugin
@@ -115,28 +113,17 @@ public class PerlValidator extends PerlValidatorBase
         return errorResource != null ? errorResource : resource;
     }
     
-    protected List getPerlCommandLine(IResource resource)
+    protected List getPerlArgs()
     {
-        List cmdList = PerlExecutableUtilities.getPerlExecutableCommandLine(
-            resource.getProject());        
+        List args = super.getPerlArgs();        
     
         if (PerlEditorPlugin.getDefault().getWarningsPreference())
-            cmdList.add("-w");
+            args.add("-w");
     
         if (PerlEditorPlugin.getDefault().getTaintPreference())
-            cmdList.add("-T");
+            args.add("-T");
     
-        return cmdList;
-    }
-    
-    protected File getPerlWorkingDir(IResource resource)
-    {
-        return new File(
-            resource
-                .getLocation()
-                .makeAbsolute()
-                .removeLastSegments(1)
-                .toString());
+        return args;
     }
     
     protected boolean isProblemMarkerPresent(

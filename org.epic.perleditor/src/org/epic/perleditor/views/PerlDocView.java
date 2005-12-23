@@ -1,11 +1,8 @@
 package org.epic.perleditor.views;
 
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
-import java.util.List;
+import java.io.*;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.FindReplaceDocumentAdapter;
@@ -29,10 +26,10 @@ import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Widget;
-import org.eclipse.ui.editors.text.TextEditor;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.texteditor.ITextEditor;
-import org.epic.perleditor.editors.util.PerlExecutableUtilities;
+import org.epic.core.util.PerlExecutor;
+import org.epic.perleditor.PerlEditorPlugin;
 import org.epic.perleditor.popupmenus.PopupMessages;
 import org.epic.perleditor.editors.PerlImages;
 
@@ -164,17 +161,28 @@ public class PerlDocView extends ViewPart {
 	      highlightButton.addListener(SWT.Selection, listener);
 	      highlightText.addKeyListener(keyListener);
 	}
-
+    
+    /**
+     * For test purposes only.
+     */
+    public String getDisplayedText(int tabNo)
+    {
+        return sourceViewers[tabNo].getTextWidget().getText();
+    }
 	
 	public void search() {
-		search(searchPerldocText.getText());
+        try { search(searchPerldocText.getText()); }
+        catch (CoreException e)
+        {
+            PerlEditorPlugin.getDefault().getLog().log(e.getStatus());
+        }
 	}
 	
-	public void search(String searchText) {
+	public void search(String searchText) throws CoreException {
 		search(searchText, null);
 	}
 	
-	public void search(String searchText, ITextEditor textEditor) {
+	public void search(String searchText, ITextEditor textEditor) throws CoreException {
 		
 		if(searchText.trim().length() == 0) {
 			return;
@@ -239,11 +247,7 @@ public class PerlDocView extends ViewPart {
 		}
 	}
 	
-	private String getPerlDoc(String option, String searchText) {
-		return getPerlDoc(option, searchText, null);
-	}
-	
-	private String getPerlDoc(String option, String searchText, ITextEditor textEditor) {
+	private String getPerlDoc(String option, String searchText, ITextEditor textEditor) throws CoreException {
 
 		String perlCode =
 			"use Env qw(@PERL5LIB);\n\n"
@@ -253,65 +257,13 @@ public class PerlDocView extends ViewPart {
 				+ " \""
 				+ searchText
 				+ "\"');";
-
-		String content = "";
-		
-
-		try {
-
-			//			Construct command line parameters
-			List cmdList;
-			
-			if(textEditor != null) {
-			   cmdList = PerlExecutableUtilities.getPerlExecutableCommandLine(
-					(TextEditor) textEditor);
-			}
-			else {
-				cmdList = PerlExecutableUtilities.getPerlExecutableCommandLine();
-			}
-
-			String[] cmdParams =
-				(String[]) cmdList.toArray(new String[cmdList.size()]);
-
-			//Get working directory -- Fixes Bug: 736631
-//			String workingDir =
-//				((IFileEditorInput) textEditor.getEditorInput())
-//					.getFile()
-//					.getLocation()
-//					.makeAbsolute()
-//					.removeLastSegments(1)
-//					.toString();
-
-//			Process proc = Runtime.getRuntime().exec(cmdParams, null, new File(workingDir));
-//Juergen bitte testen
-			Process proc = Runtime.getRuntime().exec(cmdParams);
-			/*
-			 * Due to Java Bug #4763384 sleep for a very small amount of time
-			 * immediately after starting the subprocess
-			 */
-			Thread.sleep(1);
-
-            proc.getErrorStream().close();
-			InputStream in = proc.getInputStream();
-			OutputStream out = proc.getOutputStream();
-            //TODO which charset?
-            Writer outw = new OutputStreamWriter(out);
-
-			try {
-                outw.write(perlCode);
-                outw.write(0x1a);  //this should avoid problem with Win98
-                outw.flush();
-			} catch (Exception ex) {
-				ex.printStackTrace();
-			}
-            out.close();
-			content = PerlExecutableUtilities.readStringFromStream(in);
-			in.close();
-		} catch (Exception ex) {
-			ex.printStackTrace();
-		}
-
-		return content;
+        
+        PerlExecutor executor = new PerlExecutor();
+        try
+        {
+            return executor.execute(textEditor, null, perlCode).stdout;
+        }
+        finally { executor.dispose(); }
 	}
 	
 	/**

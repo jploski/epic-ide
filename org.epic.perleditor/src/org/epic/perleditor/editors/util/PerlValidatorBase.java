@@ -11,6 +11,7 @@ import org.eclipse.core.runtime.*;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.Document;
 import org.epic.core.Constants;
+import org.epic.core.util.PerlExecutor;
 import org.epic.perleditor.PerlEditorPlugin;
 
 /**
@@ -25,16 +26,18 @@ import org.epic.perleditor.PerlEditorPlugin;
 abstract class PerlValidatorBase
 {
     private static final boolean DEBUG = true;
-	private static int maxErrorsShown = 10;
+	private static int maxErrorsShown = 500;
     private static final int BUF_SIZE = 1024;
     
     private final ILog log;
 	private final PerlValidatorErrors errors;
-    private final StringReaderThread srt = new StringReaderThread(":PerlValidator");
+    private final PerlExecutor executor;
 	
-    protected PerlValidatorBase(ILog log)
+    protected PerlValidatorBase(ILog log, PerlExecutor executor)
     {
         this.log = log;
+        this.executor = executor;
+        
         errors = new PerlValidatorErrors();
     }
     
@@ -43,13 +46,13 @@ abstract class PerlValidatorBase
      * IResource.
      */
 	public synchronized void validate(IResource resource, String sourceCode)
-        throws PerlValidatorException
+        throws CoreException
     {
         String perlOutput = runPerl(resource, sourceCode);
 
         if (DEBUG) printPerlOutput(perlOutput);
 
-		//TODO check if content is empty (indicates error)           
+		//TODO check if perlOutput is empty (indicates error)           
 
 		// Mark problem markers as unused
         //
@@ -133,8 +136,16 @@ abstract class PerlValidatorBase
                     }
                     catch (IOException e)
                     {
+                        Status status = new Status(
+                            Status.ERROR,
+                            PerlEditorPlugin.getPluginId(),
+                            IStatus.OK,
+                            "Could not read source file of resource: " +
+                            errorResource.getLocation() + ". Error markers will " +
+                            "be incorrect for this resource.",
+                            e);
                         // trouble reading the other file's source code
-                        throw new PerlValidatorException(e);
+                        throw new CoreException(status);
                     }
                 }
             }
@@ -146,14 +157,7 @@ abstract class PerlValidatorBase
 	}
     
     protected abstract void addMarker(IResource resource, Map attributes);
-    
-    /**
-     * This method is to be overridden only in testing environment.
-     * Invoked whenever an IOException (hopefully just a "broken pipe")
-     * occurs during communication with Perl.
-     */
-    protected void brokenPipe(IOException e) { }
-    
+
     protected abstract void clearAllUsedMarkers(IResource resource);
 
     protected IResource getErrorResource(ParsedErrorLine line, IResource resource)
@@ -161,9 +165,12 @@ abstract class PerlValidatorBase
         return line.isLocalError() ? resource : null;
     }
     
-    protected abstract List getPerlCommandLine(IResource resource);
-    
-    protected abstract File getPerlWorkingDir(IResource resource);
+    protected List getPerlArgs()
+    {
+        List args = new ArrayList();
+        args.add("-c");
+        return args;
+    }
     
     protected abstract boolean isProblemMarkerPresent(
         ParsedErrorLine line, IResource resource);
@@ -275,89 +282,9 @@ abstract class PerlValidatorBase
      * @return stderr output of the Perl interpreter
      */
     private String runPerl(IResource resource, String sourceCode)
-        throws PerlValidatorException
+        throws CoreException
     {
-        if (sourceCode.length() < 1) return "";
-        
-        // Construct command line parameters
-        List cmdList = getPerlCommandLine(resource);
-        cmdList.add("-c");
-    
-        String[] cmdParams =
-            (String[]) cmdList.toArray(new String[cmdList.size()]);
-    
-        // Get working directory -- Fixes Bug: 736631
-        File workingDir = getPerlWorkingDir(resource);
-                
-        Process proc = null;
-        
-        try
-        {
-            proc = Runtime.getRuntime().exec(cmdParams, null, workingDir);
-
-            /*
-             * Due to Java Bug #4763384 sleep for a very small amount of time
-             * immediately after starting the subprocess
-             */
-            try { Thread.sleep(1); }
-            catch (InterruptedException e)
-            {
-                // believe it or not, InterruptedException sometimes occurs here
-                // we can't help it ... ignore
-            }
-
-            proc.getInputStream().close();
-            InputStream in = proc.getErrorStream();
-            OutputStream out = proc.getOutputStream();
-            //TODO which charset?
-            Reader inr = new InputStreamReader(in);
-            Writer outw = new OutputStreamWriter(out);
-        
-            srt.read(inr);
-        
-            // The first character is written to check that the output stream
-            // is ready and not throwing exceptions...
-            outw.write(sourceCode.charAt(0));
-            outw.flush();
-            
-            // The remaining write operation will often result in
-            // a "broken pipe" IOException because Perl does not wait
-            // until WE close the stream (and Java unfortunately treats
-            // this condition as an exception). To make things worse, there is
-            // no way to detect that the thrown exception is indeed a "broken
-            // pipe": there is no error code (not even platform-specific one),
-            // and the error message carried by the exception is localized.
-            try 
-            {
-                outw.write(sourceCode.substring(1));
-                outw.write(0x1a); //this should avoid problem with Win98
-                outw.flush();
-            }
-            catch (IOException e)
-            {
-                /* let's hope it's just a broken pipe */
-                brokenPipe(e); // call it to support testing for this condition
-            }
-
-            out.close();
-                
-            String content = srt.getResult();
-            inr.close();
-            in.close();
-            return content;
-        }
-        catch (InterruptedException e)
-        {
-            if (proc != null) proc.destroy();
-            throw new PerlValidatorException(e);
-        }
-        catch (IOException e)
-        {
-            try { System.err.println(srt.getResult()); }
-            catch (Exception _e) { _e.printStackTrace(); } 
-            if (proc != null) proc.destroy();
-            throw new PerlValidatorException(e);
-        }
+        return executor.execute(resource, getPerlArgs(), sourceCode).stderr;
     }       
     
     private void underlineError(
@@ -376,7 +303,7 @@ abstract class PerlValidatorBase
             log.log(
                 new Status(Status.ERROR,
                     PerlEditorPlugin.getPluginId(),
-                    10001, // TODO: use some sort of constant
+                    IStatus.OK,
                     "Unexpected exception in PerlValidator.underlineError: " +
                     resource.getFullPath() + ", lineNo: " + lineNo +
                     "; report it as bug in plug-in " +
@@ -466,6 +393,11 @@ abstract class PerlValidatorBase
             return "-".equals(path);
         }
         
+        public String toString()
+        {
+            return msg + ", " + path + ":" + lineNo;
+        }
+        
         private int parseInt(String str)
         {
             try { return Integer.parseInt(str); }
@@ -475,7 +407,7 @@ abstract class PerlValidatorBase
                 log.log(
                     new Status(Status.ERROR,
                         PerlEditorPlugin.getPluginId(),
-                        10003, // TODO: use some sort of constant
+                        IStatus.OK,
                         "Could not parse line number contained in Perl " +
                         "error message {" + line + "}; report it as a bug " +
                         "in plug-in " + PerlEditorPlugin.getPluginId(),

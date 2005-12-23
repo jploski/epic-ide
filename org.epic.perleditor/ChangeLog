@@ -29,6 +29,27 @@ Eclipse Perl Integration:
 		* Fixed bug: [ 996351 ] NullPointer exception during Launch (problems if path to Perl executable has spaces)
 
 		Editor:
+		* Outline now supports multiple package declarations per file
+		* Outline selection now reflects caret position in the editor
+		* Replaced use of org.epic.ext.cbg.editor with a custom ANTLR-based lexer
+		* Partially fixed Bug [ 1345811 ] typing quotes (',") takes forever in 0.3.12
+		* Partially fixed Bug [ 1306168 ] Open SUB Declaration doesn't work as advertised
+		* Partially fixed Bug [ 1256511 ] Text Highlighting does not consider escape character
+		* Fixed Bug [ 1366386 ] use of word 'quote' breaks syntax highlighting
+		* Fixed Bug [ 1363498 ] Toggle Comment via key shortcut does not work
+		* Fixed Bug [ 1363365 ] Outline doesn't heed __END__ token
+		* Fixed Bug [ 1360594 ] syntax highlighting and "_" character in hash key
+		* Fixed Bug [ 1354177 ] Single Quote and regular expressions
+		* Fixed Bug [ 1334523 ] Quickdiff does not work
+		* Fixed Bug [ 1333812 ] error during file save
+		* Fixed Bug [ 1321329 ] Folding does not work reliably in 0.3.12
+		* Fixed Bug [ 1320512 ] Opening Perl editor very slow
+		* Fixed Bug [ 1316066 ] ResourceException for each closed project at startup
+		* Fixed Bug [ 1314702 ] Problem in strings srottak@gmail.com
+		* Fixed Bug [ 1312851 ] qr// problems with quotes
+		* Fixed Bug [ 1309321 ] # in reg exp makes rest of line look like a comment
+		* Fixed Bug [ 1285425 ] Wrong View with perl "fork()"
+		* Fixed Bug [ 1232049 ] code after fork highlighted till end of text
 		* Fixed Bug [1305170] Syntax highlighting broken after regexp
 		* Fixed Bug [1307071] syntax validation / error marking is not greedy enough
 		* Fixed bug: [ 1295065 ] sub new not displayed in outline

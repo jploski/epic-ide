@@ -2734,7 +2734,7 @@ sub simplify  { my $t= shift; $t->root->simplify( @_);  }
 sub subs_text { my $t= shift; $t->root->subs_text( @_); }
 sub trim      { my $t= shift; $t->root->trim( @_);      }
 
-#end-extract twig_document
+ #end-extract twig_document
 
 sub set_keep_encoding
   { return XML::Twig::Elt::set_keep_encoding( @_); }
@@ -6917,8 +6917,8 @@ BEGIN {
                 }
               else
                 { $string=~ s{([$quote<&])}{$XML::Twig::base_ent{$1}}g; 
- 								  $string=~ s{\Q]]>}{]]&gt;}g;
- 								}
+                  $string=~ s{\Q]]>}{]]&gt;}g;
+                }
             }
           return $output_text_filter ? $output_text_filter->( $string) : $string;
         }
@@ -8652,7 +8652,7 @@ B<Note>: comments in the middle of a text element such as
 
   <p>text <!-- comment --> more text --></p>
 
-are kept at their original position in the text. Using ˝"print"
+are kept at their original position in the text. Using ??"print"
 methods like C<print> or C<sprint> will return the comments in the
 text. Using C<text> or C<field> on the other hand will not.
 
@@ -9194,7 +9194,7 @@ Returns the size of the context list.
 
 =item in_element
 
-Returns true if NAME is equal to the name of the innermost cur‐
+Returns true if NAME is equal to the name of the innermost cur???
 rently opened element. If namespace processing is being used and
 you want to check against a name that may be in a namespace, then
 use the generate_ns_name method to create the NAME argument.
@@ -9203,13 +9203,13 @@ use the generate_ns_name method to create the NAME argument.
 
 Returns the number of times the given name appears in the context
 list.  If namespace processing is being used and you want to check
-against a name that may be in a namespace, then use the gener‐
+against a name that may be in a namespace, then use the gener???
 ate_ns_name method to create the NAME argument.
 
 =item context
 
 Returns a list of element names that represent open elements, with
-the last one being the innermost. Inside start and end tag han‐
+the last one being the innermost. Inside start and end tag han???
 dlers, this will be the tag of the parent element.
 
 =item current_line
@@ -9244,7 +9244,7 @@ with those tags.
 
 =item element_index
 
-Returns an integer that is the depth-first visit order of the cur‐
+Returns an integer that is the depth-first visit order of the cur???
 rent element. This will be zero outside of the root element. For
 example, this will return 1 when called from the start handler for
 the root element start tag.

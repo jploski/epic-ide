@@ -1,5 +1,11 @@
-#Fri Sep 09 00:03:06 CEST 2005
-USE_TAINT_MODE=0
+#Sat Dec 24 00:59:08 CET 2005
+PERL_EXECUTABLE="/usr/bin/perl"
 SHOW_WARNINGS=0
+autoCompletionBracket4=false
+autoCompletionBracket3=false
+autoCompletionBracket2=false
+autoCompletionBracket1=false
 SYNTAX_VALIDATION_PREFERENCE=0
+SYNTAX_VALIDATION_IDLE_INTERVAL=2000
 eclipse.preferences.version=1
+USE_TAINT_MODE=0

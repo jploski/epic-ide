@@ -9,11 +9,16 @@ if ($foo)
             while ($foo)
             {
                 
-                bzzt
+                #bzzt
                 # this is { { co mme} nt
                 # moment } aahhh
                 
                 print 'this is { {a t}est';
+                {
+                my $foobar;
+                
+                $bzz = "foobar!";{ {   }  }
+                $i++;
                 
                 print <<EOT;
                 this { is a comment
@@ -58,6 +63,10 @@ if ($zoo)
 		if ($bar) {
 		}
 	}
+}
+
+sub flooz
+{
 }
 
 sub foobar

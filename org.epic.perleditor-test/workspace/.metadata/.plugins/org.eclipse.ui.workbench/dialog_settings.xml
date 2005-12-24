@@ -1,7 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section name="Workbench">
+	<section name="ShowViewDialog">
+		<item key="ShowViewDialog.STORE_SELECTED_VIEW_ID" value="org.eclipse.pde.runtime.LogView"/>
+		<list key="ShowViewDialog.STORE_EXPANDED_CATEGORIES_ID">
+			<item value="org.eclipse.pde.runtime"/>
+		</list>
+	</section>
 	<section name="org.eclipse.ui.internal.dialogs.FilteredComboTree">
 		<list key="search">
+			<item value="quick"/>
+			<item value="ed"/>
+			<item value="EPIC"/>
+			<item value="number"/>
+			<item value="line"/>
 			<item value="content"/>
 			<item value="assoc"/>
 		</list>

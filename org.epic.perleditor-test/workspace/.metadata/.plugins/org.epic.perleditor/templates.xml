@@ -1,2 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<templates/>
+<templates><template name="for" description="For loop" context="perl" enabled="true">for($$${var}=0; $$${var} &lt; ${max}; $$${var}++) {
+	${cursor}
+}</template></templates>

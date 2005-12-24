@@ -5,13 +5,14 @@ import java.util.List;
 public class TestBracketMatching extends BasePDETestCase
 {
     public void testAll() throws Exception
-    {
+    {               
         PerlEditor editor = openEditor("EPICTest/Twig.pm");
-        editor._setExactBracketMatching();
+        PerlEditor.TestInterface testIface = editor.getTestInterface();
+        testIface.setExactBracketMatching();
         
         try
         {
-            String text = editor._getText();
+            String text = testIface.getText();
     
             List expected = readLines("test.in/TestBracketMatching-expected.txt");
             long t1 = System.currentTimeMillis();
@@ -22,8 +23,8 @@ public class TestBracketMatching extends BasePDETestCase
                 if (c == '(' || c == '{' || c == '[' || c == '<' ||
                     c == ')' || c == '}' || c == ']' || c == '>')
                 {
-                    editor._setCaretOffset(i+1);
-                    int offset = editor._getHighlightedBracketOffset();
+                    testIface.setCaretOffset(i+1);
+                    int offset = testIface.getHighlightedBracketOffset();
                     String actual =
                         i + " " +
                         offset + " " +

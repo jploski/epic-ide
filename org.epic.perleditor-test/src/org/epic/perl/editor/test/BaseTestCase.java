@@ -33,6 +33,31 @@ public class BaseTestCase extends TestCase
     
     /**
      * @param path relative to directory containing test.properties
+     * @return contents of the specified file as string
+     */
+    protected String readFile(String path) throws IOException
+    {
+        StringWriter sw = new StringWriter();        
+        BufferedReader r = null;
+        
+        try
+        {
+            r = new BufferedReader(new InputStreamReader(
+                new FileInputStream(getFile(path)), "ISO-8859-1"));
+            
+            char[] buf = new char[4096];
+            int bread;
+            while ((bread = r.read(buf)) > 0) sw.write(buf, 0, bread);
+            return sw.toString();
+        }
+        finally
+        {
+            if (r != null) try { r.close(); } catch (IOException e) { }
+        }
+    }
+    
+    /**
+     * @param path relative to directory containing test.properties
      * @return a list of strings represented lines from the specified file
      */
     protected List readLines(String path) throws IOException

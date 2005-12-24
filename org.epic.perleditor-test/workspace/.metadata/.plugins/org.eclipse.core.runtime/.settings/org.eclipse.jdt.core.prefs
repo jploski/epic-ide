@@ -1,0 +1,4 @@
+#Sat Nov 05 21:04:34 CET 2005
+eclipse.preferences.version=1
+org.eclipse.jdt.core.builder.resourceCopyExclusionFilter=,*.g
+org.eclipse.jdt.core.classpathVariable.ANTLR_HOME=/linux2/home/jpl/eclipse-3.1/plugins/org.antlr_2.7.6.b2

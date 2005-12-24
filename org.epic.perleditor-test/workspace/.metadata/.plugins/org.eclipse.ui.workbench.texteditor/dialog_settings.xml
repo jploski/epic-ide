@@ -3,16 +3,28 @@
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog">
 		<item key="wholeword" value="false"/>
 		<item key="incremental" value="false"/>
-		<item key="isRegEx" value="false"/>
-		<item key="y" value="363"/>
-		<item key="selection" value="twig_handl"/>
-		<item key="wrap" value="false"/>
+		<item key="isRegEx" value="true"/>
+		<item key="y" value="473"/>
+		<item key="selection" value="&#x0A;="/>
+		<item key="wrap" value="true"/>
+		<item key="x" value="503"/>
 		<item key="casesensitive" value="false"/>
-		<item key="x" value="498"/>
 		<list key="findhistory">
-			<item value="twig_handl"/>
+			<item value="\n="/>
+			<item value="next_sibling"/>
+			<item value="foo"/>
+			<item value="a"/>
+			<item value="funky"/>
+			<item value="parseurl"/>
+			<item value="sub cmp"/>
+			<item value="parse_url"/>
 		</list>
-		<list key="replacehistory" value="twig_handl">
+		<list key="replacehistory" value="parse_url">
+			<item value="bar"/>
+			<item value="X"/>
+			<item value="haha"/>
 		</list>
+	</section>
+	<section name="FindReplaceDialog.completion_proposal_size">
 	</section>
 </section>

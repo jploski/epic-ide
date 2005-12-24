@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<launchConfiguration type="org.epic.debug.launchConfigurationPerl">
+<stringAttribute key="ATTR_PROGRAM_PARAMETERS" value=""/>
+<stringAttribute key="ATTR_STARTUP_FILE" value="test_OpenSub.pl"/>
+<stringAttribute key="ATTR_PROJECT_NAME" value="EPICTest"/>
+</launchConfiguration>

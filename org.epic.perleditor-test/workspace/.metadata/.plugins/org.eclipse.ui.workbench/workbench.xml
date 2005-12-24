@@ -1,15 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<workbench version="2.0">
+<workbench version="2.0" progressCount="13">
 <workbenchAdvisor/>
-<window x="0" y="0" width="1024" height="768">
+<window x="0" y="0" width="1208" height="1024">
 <fastViewData fastViewLocation="1024"/>
 <perspectiveBar>
-<itemSize x="160"/>
+<itemSize x="97"/>
 </perspectiveBar>
 <coolbarLayout locked="0">
 <coolItem id="group.file" itemType="typeGroupMarker"/>
 <coolItem id="org.eclipse.ui.workbench.file" itemType="typeToolBarContribution" x="96" y="26"/>
 <coolItem id="additions" itemType="typeGroupMarker"/>
+<coolItem id="org.eclipse.debug.ui.launchActionSet" itemType="typeToolBarContribution" x="112" y="26"/>
+<coolItem id="org.eclipse.jdt.ui.JavaElementCreationActionSet" itemType="typeToolBarContribution" x="96" y="26"/>
+<coolItem id="org.eclipse.search.searchActionSet" itemType="typeToolBarContribution" x="36" y="26"/>
 <coolItem id="group.nav" itemType="typeGroupMarker"/>
 <coolItem id="org.eclipse.ui.workbench.navigate" itemType="typeToolBarContribution" x="104" y="26"/>
 <coolItem id="group.editor" itemType="typeGroupMarker"/>
@@ -17,7 +20,7 @@
 <coolItem id="group.help" itemType="typeGroupMarker"/>
 <coolItem id="org.eclipse.ui.workbench.help" itemType="typeToolBarContribution" x="-1" y="-1"/>
 </coolbarLayout>
-<page label="Workspace - Resource" focus="true">
+<page label="Workspace - Perl" focus="true">
 <editors>
 <editorArea activeWorkbook="DefaultEditorWorkbook">
 <info part="DefaultEditorWorkbook">
@@ -28,73 +31,87 @@
 </editorArea>
 </editors>
 <views>
-<view id="org.eclipse.ui.views.TaskList" partName="Tasks">
-<viewState columnWidth0="19" columnWidth1="19" columnWidth2="200" columnWidth3="75" columnWidth4="150" columnWidth5="274" verticalPosition="0" horizontalPosition="0">
-<selection/>
-</viewState>
-</view>
-<view id="org.eclipse.ui.views.ContentOutline" partName="Outline">
-<viewState/>
+<view id="org.eclipse.ui.views.TaskList" partName="Tasks"/>
+<view id="org.eclipse.ui.views.ContentOutline" partName="Outline"/>
+<view id="org.eclipse.pde.runtime.LogView" partName="Error Log">
+<viewState useLimit="true" limit="50" info="true" warning="true" error="true" allSessions="true" column2="793" column3="150" column4="540" activate="true" orderValue="-1" orderType="2"/>
 </view>
 <view id="org.eclipse.ui.views.ResourceNavigator" partName="Navigator">
 <viewState sorter="1" LINK_NAVIGATOR_TO_EDITOR="0">
 <filters>
+<filter element="*.class" isEnabled="false"/>
 <filter element=".*" isEnabled="false"/>
 </filters>
+<expanded>
+<element path="/EPICTest"/>
+<element path="/EPICTest/lib"/>
+</expanded>
+<selection>
+<element path="/EPICTest/Twig.pm"/>
+</selection>
 </viewState>
 </view>
 </views>
-<perspectives activePerspective="org.eclipse.ui.resourcePerspective" activePart="org.eclipse.ui.views.ResourceNavigator">
+<perspectives activePerspective="org.epic.core.Perspective" activePart="org.eclipse.ui.views.ResourceNavigator">
 <perspective version="0.016" editorAreaVisible="1" fixed="0">
-<descriptor id="org.eclipse.ui.resourcePerspective" label="Resource" class="org.eclipse.ui.internal.ide.ResourcePerspective"/>
+<descriptor id="org.epic.core.Perspective" label="Perl" class="org.epic.core.Perspective"/>
+<alwaysOnActionSet id="org.eclipse.ui.externaltools.ExternalToolsSet"/>
+<alwaysOnActionSet id="org.eclipse.search.searchActionSet"/>
 <alwaysOnActionSet id="org.eclipse.ui.edit.text.actionSet.openExternalFile"/>
 <alwaysOnActionSet id="org.eclipse.ui.edit.text.actionSet.navigation"/>
 <alwaysOnActionSet id="org.eclipse.ui.edit.text.actionSet.convertLineDelimitersTo"/>
 <alwaysOnActionSet id="org.eclipse.ui.actionSet.keyBindings"/>
 <alwaysOnActionSet id="org.eclipse.update.ui.softwareUpdates"/>
 <alwaysOnActionSet id="org.eclipse.ui.NavigateActionSet"/>
+<alwaysOnActionSet id="org.eclipse.debug.ui.launchActionSet"/>
 <show_view_action id="org.eclipse.ui.views.ResourceNavigator"/>
 <show_view_action id="org.eclipse.ui.views.BookmarkView"/>
 <show_view_action id="org.eclipse.ui.views.ContentOutline"/>
 <show_view_action id="org.eclipse.ui.views.PropertySheet"/>
-<show_view_action id="org.eclipse.ui.views.ProblemView"/>
 <show_view_action id="org.eclipse.ui.views.TaskList"/>
+<show_view_action id="org.epic.perleditor.views.ExplainErrorsView"/>
+<show_view_action id="org.epic.perleditor.views.PerlDocView"/>
+<show_view_action id="org.epic.core.views.browser.BrowserView"/>
+<new_wizard_action id="org.epic.newproject.wizard"/>
+<new_wizard_action id="org.epic.newfile.wizard"/>
 <new_wizard_action id="org.eclipse.ui.wizards.new.folder"/>
 <new_wizard_action id="org.eclipse.ui.wizards.new.file"/>
-<new_wizard_action id="org.eclipse.ui.editors.wizards.UntitledTextFileWizard"/>
+<perspective_action id="org.eclipse.ui.resourcePerspective"/>
+<perspective_action id="org.eclipse.debug.ui.DebugPerspective"/>
 <view id="org.eclipse.ui.views.ResourceNavigator"/>
 <view id="org.eclipse.ui.views.ContentOutline"/>
 <view id="org.eclipse.ui.views.TaskList"/>
+<view id="org.eclipse.pde.runtime.LogView"/>
 <layout>
 <mainWindow>
 <info part="topLeft" folder="true">
 <folder activePageID="org.eclipse.ui.views.ResourceNavigator" expanded="2" appearance="2">
 <page label="Navigator" content="org.eclipse.ui.views.ResourceNavigator"/>
 <page label="LabelNotFound" content="org.eclipse.ui.views.BookmarkView"/>
-<presentation id="org.eclipse.ui.presentations.WorkbenchPresentationFactory">
-<part id="0"/>
-</presentation>
-</folder>
-</info>
-<info part="stickyFolderRight" relative="topLeft" relationship="2" ratioLeft="756" ratioRight="252" ratio="0.75" folder="true">
-<folder expanded="2" appearance="2">
-<page label="LabelNotFound" content="org.eclipse.ui.internal.introview"/>
-</folder>
-</info>
-<info part="org.eclipse.ui.editorss" relative="topLeft" relationship="2" ratioLeft="262" ratioRight="746" ratio="0.25992063"/>
-<info part="bottomRight" relative="org.eclipse.ui.editorss" relationship="4" ratioLeft="411" ratioRight="213" ratio="0.65865386" folder="true">
-<folder activePageID="org.eclipse.ui.views.TaskList" expanded="2" appearance="2">
-<page label="Tasks" content="org.eclipse.ui.views.TaskList"/>
-<presentation id="org.eclipse.ui.presentations.WorkbenchPresentationFactory">
-<part id="0"/>
-</presentation>
-</folder>
-</info>
-<info part="bottomLeft" relative="topLeft" relationship="4" ratioLeft="312" ratioRight="312" ratio="0.5" folder="true">
-<folder activePageID="org.eclipse.ui.views.ContentOutline" expanded="2" appearance="2">
 <page label="Outline" content="org.eclipse.ui.views.ContentOutline"/>
 <presentation id="org.eclipse.ui.presentations.WorkbenchPresentationFactory">
 <part id="0"/>
+<part id="1"/>
+</presentation>
+</folder>
+</info>
+<info part="stickyFolderRight" relative="topLeft" relationship="2" ratioLeft="903" ratioRight="301" ratio="0.75" folder="true">
+<folder expanded="2" appearance="2">
+<page label="LabelNotFound" content="org.eclipse.help.ui.HelpView"/>
+<page label="LabelNotFound" content="org.eclipse.ui.internal.introview"/>
+<page label="LabelNotFound" content="org.eclipse.ui.cheatsheets.views.CheatSheetView"/>
+</folder>
+</info>
+<info part="org.eclipse.ui.editorss" relative="topLeft" relationship="2" ratioLeft="313" ratioRight="891" ratio="0.2599668"/>
+<info part="org.eclipse.ui.internal.ViewStack@1fce2f2" relative="org.eclipse.ui.editorss" relationship="4" ratioLeft="595" ratioRight="307" ratio="0.65964526" folder="true">
+<folder activePageID="org.eclipse.pde.runtime.LogView" expanded="2" appearance="2">
+<page label="Tasks" content="org.eclipse.ui.views.TaskList"/>
+<page label="Error Log" content="org.eclipse.pde.runtime.LogView"/>
+<page label="LabelNotFound" content="org.epic.perleditor.views.ExplainErrorsView"/>
+<page label="LabelNotFound" content="org.epic.perleditor.views.PerlDocView"/>
+<presentation id="org.eclipse.ui.presentations.WorkbenchPresentationFactory">
+<part id="0"/>
+<part id="1"/>
 </presentation>
 </folder>
 </info>
@@ -104,41 +121,221 @@
 </perspectives>
 <navigationHistory>
 <editors>
+<editor id="org.epic.perleditor.editors.PerlEditor" factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/EPICTest/test_OpenSub.pl"/>
+<editor id="org.epic.perleditor.editors.PerlEditor" factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/EPICTest/lib/TestOpenSub.pm"/>
+<editor id="org.epic.perleditor.editors.PerlEditor" factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/EPICTest/lib/TestOpenSub.pm"/>
+<editor id="org.epic.perleditor.editors.PerlEditor" factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/EPICTest/lib/TestOpenSub.pm"/>
+<editor id="org.epic.perleditor.editors.PerlEditor" factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/EPICTest/test_ExplainErrors.pl"/>
+<editor id="org.epic.perleditor.editors.PerlEditor" factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/EPICTest/test_OpenSub.pl"/>
+<editor id="org.epic.perleditor.editors.PerlEditor" factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/EPICTest/test_PerlDoc.pl"/>
+<editor id="org.epic.perleditor.editors.PerlEditor" factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/EPICTest/test_ExplainErrors.pl"/>
 <editor id="org.epic.perleditor.editors.PerlEditor" factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/EPICTest/empty.pl"/>
 <editor id="org.epic.perleditor.editors.PerlEditor" factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/EPICTest/Twig.pm"/>
-<editor id="org.epic.perleditor.editors.PerlEditor" factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/EPICTest/empty.pl"/>
 </editors>
-<item historyLabel="empty.pl" index="0">
+<item historyLabel="test_OpenSub.pl" index="0">
 <position/>
 </item>
-<item historyLabel="Twig.pm" index="1">
-<position x="78" y="0" info="not_deleted"/>
-</item>
-<item historyLabel="empty.pl" index="2">
+<item historyLabel="TestOpenSub.pm" index="1">
 <position/>
 </item>
-<item active="true" historyLabel="Twig.pm" index="1">
-<position x="78" y="0" info="not_deleted"/>
+<item historyLabel="test_OpenSub.pl" index="0">
+<position x="262" y="8" info="not_deleted"/>
+</item>
+<item historyLabel="TestOpenSub.pm" index="1">
+<position/>
+</item>
+<item historyLabel="test_OpenSub.pl" index="0">
+<position x="264" y="0" info="not_deleted"/>
+</item>
+<item historyLabel="TestOpenSub.pm" index="1">
+<position/>
+</item>
+<item historyLabel="test_OpenSub.pl" index="0">
+<position x="264" y="0" info="not_deleted"/>
+</item>
+<item historyLabel="TestOpenSub.pm" index="1">
+<position/>
+</item>
+<item historyLabel="test_OpenSub.pl" index="0">
+<position x="264" y="0" info="not_deleted"/>
+</item>
+<item historyLabel="TestOpenSub.pm" index="1">
+<position/>
+</item>
+<item historyLabel="test_OpenSub.pl" index="0">
+<position/>
+</item>
+<item historyLabel="TestOpenSub.pm" index="2">
+<position/>
+</item>
+<item historyLabel="test_OpenSub.pl" index="0">
+<position/>
+</item>
+<item historyLabel="TestOpenSub.pm" index="2">
+<position/>
+</item>
+<item historyLabel="test_OpenSub.pl" index="0">
+<position x="274" y="0" info="not_deleted"/>
+</item>
+<item historyLabel="TestOpenSub.pm" index="2">
+<position/>
+</item>
+<item historyLabel="TestOpenSub.pm" index="2">
+<position/>
+</item>
+<item historyLabel="test_OpenSub.pl" index="0">
+<position/>
+</item>
+<item historyLabel="TestOpenSub.pm" index="2">
+<position/>
+</item>
+<item historyLabel="test_OpenSub.pl" index="0">
+<position/>
+</item>
+<item historyLabel="TestOpenSub.pm" index="2">
+<position/>
+</item>
+<item historyLabel="TestOpenSub.pm" index="2">
+<position/>
+</item>
+<item historyLabel="TestOpenSub.pm" index="2">
+<position/>
+</item>
+<item historyLabel="TestOpenSub.pm" index="2">
+<position/>
+</item>
+<item historyLabel="TestOpenSub.pm" index="2">
+<position/>
+</item>
+<item historyLabel="TestOpenSub.pm" index="2">
+<position/>
+</item>
+<item historyLabel="TestOpenSub.pm" index="2">
+<position/>
+</item>
+<item historyLabel="test_OpenSub.pl" index="0">
+<position/>
+</item>
+<item historyLabel="TestOpenSub.pm" index="2">
+<position/>
+</item>
+<item historyLabel="test_OpenSub.pl" index="0">
+<position/>
+</item>
+<item historyLabel="test_OpenSub.pl" index="0">
+<position/>
+</item>
+<item historyLabel="TestOpenSub.pm" index="3">
+<position/>
+</item>
+<item historyLabel="TestOpenSub.pm" index="3">
+<position/>
+</item>
+<item historyLabel="test_ExplainErrors.pl" index="4">
+<position/>
+</item>
+<item historyLabel="test_OpenSub.pl" index="5">
+<position x="274" y="0" info="not_deleted"/>
+</item>
+<item historyLabel="test_OpenSub.pl" index="5">
+<position x="96" y="0" info="not_deleted"/>
+</item>
+<item historyLabel="test_PerlDoc.pl" index="6">
+<position/>
+</item>
+<item historyLabel="test_OpenSub.pl" index="5">
+<position x="96" y="0" info="not_deleted"/>
+</item>
+<item historyLabel="test_ExplainErrors.pl" index="7">
+<position/>
+</item>
+<item historyLabel="empty.pl" index="8">
+<position/>
+</item>
+<item historyLabel="Twig.pm" index="9">
+<position/>
+</item>
+<item historyLabel="Twig.pm" index="9">
+<position/>
+</item>
+<item historyLabel="Twig.pm" index="9">
+<position/>
+</item>
+<item historyLabel="Twig.pm" index="9">
+<position/>
+</item>
+<item historyLabel="Twig.pm" index="9">
+<position/>
+</item>
+<item historyLabel="Twig.pm" index="9">
+<position/>
+</item>
+<item historyLabel="Twig.pm" index="9">
+<position/>
+</item>
+<item historyLabel="Twig.pm" index="9">
+<position/>
+</item>
+<item historyLabel="Twig.pm" index="9">
+<position/>
+</item>
+<item active="true" historyLabel="Twig.pm" index="9">
+<position/>
 </item>
 </navigationHistory>
-<stickyState/>
+<stickyState>
+<perspective IMemento.internal.id="org.epic.core.Perspective"/>
+</stickyState>
 <input factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/" type="8"/>
 </page>
 <workbenchWindowAdvisor/>
 <actionBarAdvisor/>
 </window>
 <mruList>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.epic.perleditor.editors.PerlEditor" name="test_Folding.pl" tooltip="EPICTest/test_Folding.pl">
+<persistable path="/EPICTest/test_Folding.pl"/>
+</file>
 <file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.epic.perleditor.editors.PerlEditor" name="Twig.pm" tooltip="EPICTest/Twig.pm">
 <persistable path="/EPICTest/Twig.pm"/>
+</file>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.epic.perleditor.editors.PerlEditor" name="test_ExplainErrors.pl" tooltip="EPICTest/test_ExplainErrors.pl">
+<persistable path="/EPICTest/test_ExplainErrors.pl"/>
+</file>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.epic.perleditor.editors.PerlEditor" name="test_PerlDoc.pl" tooltip="EPICTest/test_PerlDoc.pl">
+<persistable path="/EPICTest/test_PerlDoc.pl"/>
 </file>
 <file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.epic.perleditor.editors.PerlEditor" name="empty.pl" tooltip="EPICTest/empty.pl">
 <persistable path="/EPICTest/empty.pl"/>
 </file>
-<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.ui.DefaultTextEditor" name="foo" tooltip="EPICTest/foo">
-<persistable path="/EPICTest/foo"/>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.epic.perleditor.editors.PerlEditor" name="TestOpenSub.pm" tooltip="EPICTest/lib/TestOpenSub.pm">
+<persistable path="/EPICTest/lib/TestOpenSub.pm"/>
 </file>
-<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.epic.perleditor.editors.PerlEditor" name="test.pl" tooltip="EPICTest/test.pl">
-<persistable path="/EPICTest/test.pl"/>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.epic.perleditor.editors.PerlEditor" name="test_OpenSub.pl" tooltip="EPICTest/test_OpenSub.pl">
+<persistable path="/EPICTest/test_OpenSub.pl"/>
+</file>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.epic.perleditor.editors.PerlEditor" name="TestPackage.pm" tooltip="EPICTest/lib/TestPackage.pm">
+<persistable path="/EPICTest/lib/TestPackage.pm"/>
+</file>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.epic.perleditor.editors.PerlEditor" name="test_Completion.pl" tooltip="EPICTest/test_Completion.pl">
+<persistable path="/EPICTest/test_Completion.pl"/>
+</file>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.epic.perleditor.editors.PerlEditor" name="TestFolding.pm" tooltip="EPICTest/lib/TestFolding.pm">
+<persistable path="/EPICTest/lib/TestFolding.pm"/>
+</file>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.epic.perleditor.editors.PerlEditor" name="TestCompletion.pm" tooltip="EPICTest/lib/TestCompletion.pm">
+<persistable path="/EPICTest/lib/TestCompletion.pm"/>
+</file>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.epic.perleditor.editors.PerlEditor" name="x.pl" tooltip="EPICTest/x.pl">
+<persistable path="/EPICTest/x.pl"/>
+</file>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.epic.perleditor.editors.PerlEditor" name="syntax.pl" tooltip="EPICTest/syntax.pl">
+<persistable path="/EPICTest/syntax.pl"/>
+</file>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.epic.perleditor.editors.PerlEditor" name="Display.pm" tooltip="EPICTest/Display.pm">
+<persistable path="/EPICTest/Display.pm"/>
+</file>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.epic.perleditor.editors.PerlEditor" name="Functions.pm" tooltip="EPICTest/Functions.pm">
+<persistable path="/EPICTest/Functions.pm"/>
 </file>
 </mruList>
 </workbench>

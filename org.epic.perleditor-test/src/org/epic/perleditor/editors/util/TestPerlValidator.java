@@ -1,5 +1,8 @@
 package org.epic.perleditor.editors.util;
 
+import org.easymock.MockControl;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
 import org.epic.perl.editor.test.BaseTestCase;
 import org.epic.perl.editor.test.Log;
 
@@ -7,22 +10,33 @@ public class TestPerlValidator extends BaseTestCase
 {
     public void testBrokenPipe() throws Exception
     {
-        /*
+        MockControl cMockProject = MockControl.createControl(IProject.class);
+        IProject mockProject = (IProject) cMockProject.getMock();
+        cMockProject.replay();
+        
         MockControl cMockResource = MockControl.createControl(IResource.class);
         IResource mockResource = (IResource) cMockResource.getMock();
-        
+        mockResource.getProject();
+        cMockResource.setReturnValue(mockProject);
         cMockResource.replay();
-        */
 
         // We expect a "broken pipe" IOException when feeding a large
         // piece of source code containing an error in the header to
         // the Perl interpreter:
-        PerlValidatorStub validator = new PerlValidatorStub();        
-        validator.validate(
-            null,
-            validator.readSourceFile(getFile("test.in/Tool.pm").getAbsolutePath()));
+        PerlValidatorStub validator = new PerlValidatorStub();
         
-        assertTrue(validator.gotBrokenPipe);
+        try
+        {         
+            validator.validate(
+                mockResource,
+                validator.readSourceFile(getFile("test.in/Tool.pm").getAbsolutePath()));
+        
+            assertTrue(PerlValidatorStub.gotBrokenPipe);
+        }
+        finally
+        {
+            validator.dispose();
+        }
     }
     
     public void testParsedErrorLine()

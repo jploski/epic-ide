@@ -1,0 +1,254 @@
+0:22:COMMENT:{# bug 1232049, 1285425}
+22:1:__dftl_partition_content_type:{
+}
+23:2:KEYWORD1:{my}
+25:1:__dftl_partition_content_type:{ }
+26:4:VARIABLE:{$pid}
+30:1:OPERATOR:{;}
+31:1:__dftl_partition_content_type:{
+}
+32:2:KEYWORD1:{if}
+34:1:__dftl_partition_content_type:{ }
+35:1:OPERATOR:{(}
+36:4:VARIABLE:{$pid}
+40:1:OPERATOR:{=}
+41:4:KEYWORD2:{fork}
+45:1:OPERATOR:{(}
+46:1:OPERATOR:{)}
+47:1:OPERATOR:{)}
+48:1:__dftl_partition_content_type:{ }
+49:1:OPERATOR:{{}
+50:1:__dftl_partition_content_type:{
+}
+51:5:KEYWORD2:{print}
+56:1:__dftl_partition_content_type:{ }
+57:1:LITERAL1:{"}
+58:22:LITERAL1:{Never should be here\n}
+80:1:LITERAL1:{"}
+81:1:OPERATOR:{;}
+82:1:__dftl_partition_content_type:{
+}
+83:4:KEYWORD1:{exit}
+87:1:__dftl_partition_content_type:{ }
+88:1:OPERATOR:{-}
+89:1:NUMBER:{1}
+90:1:OPERATOR:{;}
+91:1:__dftl_partition_content_type:{
+}
+92:1:OPERATOR:{}}
+93:2:__dftl_partition_content_type:{
+
+}
+95:13:COMMENT:{# bug 1309321}
+108:1:__dftl_partition_content_type:{
+}
+109:2:KEYWORD1:{if}
+111:1:__dftl_partition_content_type:{ }
+112:1:OPERATOR:{(}
+113:2:VARIABLE:{$_}
+115:1:__dftl_partition_content_type:{ }
+116:2:OPERATOR:{!~}
+118:1:__dftl_partition_content_type:{ }
+119:1:LITERAL2:{/}
+120:10:LITERAL2:{(^#|^\s*$)}
+130:1:LITERAL2:{/}
+131:1:OPERATOR:{)}
+132:1:__dftl_partition_content_type:{ }
+133:1:OPERATOR:{{}
+134:1:__dftl_partition_content_type:{ }
+135:6:VARIABLE:{$hello}
+141:1:__dftl_partition_content_type:{ }
+142:1:OPERATOR:{=}
+143:1:__dftl_partition_content_type:{ }
+144:1:__dftl_partition_content_type:{x}
+145:1:OPERATOR:{;}
+146:1:__dftl_partition_content_type:{ }
+147:1:OPERATOR:{}}
+148:3:__dftl_partition_content_type:{ 
+
+}
+151:13:COMMENT:{# bug 1312851}
+164:1:__dftl_partition_content_type:{
+}
+165:2:KEYWORD1:{my}
+167:1:__dftl_partition_content_type:{ }
+168:8:VARIABLE:{$result1}
+176:1:OPERATOR:{=}
+177:1:__dftl_partition_content_type:{ }
+178:5:VARIABLE:{$self}
+183:2:OPERATOR:{->}
+185:16:__dftl_partition_content_type:{executeSQLSelect}
+201:1:OPERATOR:{(}
+202:5:__dftl_partition_content_type:{query}
+207:2:OPERATOR:{=>}
+209:4:VARIABLE:{$SQL}
+213:1:OPERATOR:{)}
+214:1:OPERATOR:{;}
+215:2:__dftl_partition_content_type:{
+
+}
+217:13:COMMENT:{# bug 1314702}
+230:1:__dftl_partition_content_type:{
+}
+231:8:VARIABLE:{$session}
+239:1:OPERATOR:{{}
+240:5:__dftl_partition_content_type:{qtype}
+245:1:OPERATOR:{}}
+246:1:__dftl_partition_content_type:{ }
+247:1:OPERATOR:{=}
+248:1:__dftl_partition_content_type:{ }
+249:1:LITERAL1:{'}
+250:8:LITERAL1:{database}
+258:1:LITERAL1:{'}
+259:1:OPERATOR:{;}
+260:2:__dftl_partition_content_type:{
+
+}
+262:13:COMMENT:{# bug 1354177}
+275:1:__dftl_partition_content_type:{
+}
+276:9:VARIABLE:{$filename}
+285:2:OPERATOR:{=~}
+287:1:LITERAL2:{s}
+288:1:LITERAL2:{/}
+289:1:LITERAL2:{'}
+290:1:LITERAL2:{/}
+291:1:LITERAL2:{_}
+292:1:LITERAL2:{/}
+293:1:LITERAL2:{g}
+294:1:OPERATOR:{;}
+295:1:__dftl_partition_content_type:{
+}
+296:3:KEYWORD1:{use}
+299:1:__dftl_partition_content_type:{ }
+300:10:__dftl_partition_content_type:{File::Copy}
+310:1:OPERATOR:{;}
+311:1:__dftl_partition_content_type:{
+}
+312:4:__dftl_partition_content_type:{copy}
+316:1:OPERATOR:{(}
+317:1:__dftl_partition_content_type:{ }
+318:1:LITERAL1:{"}
+319:24:LITERAL1:{$OrigDrive:$TempFileName}
+343:1:LITERAL1:{"}
+344:1:OPERATOR:{,}
+345:1:__dftl_partition_content_type:{ }
+346:1:LITERAL1:{"}
+347:15:LITERAL1:{$dir\\$filename}
+362:1:LITERAL1:{"}
+363:1:__dftl_partition_content_type:{ }
+364:1:OPERATOR:{)}
+365:1:OPERATOR:{;}
+366:2:__dftl_partition_content_type:{
+
+}
+368:13:COMMENT:{# bug 1360594}
+381:1:__dftl_partition_content_type:{
+}
+382:2:KEYWORD1:{my}
+384:1:__dftl_partition_content_type:{ }
+385:5:VARIABLE:{$test}
+390:1:__dftl_partition_content_type:{ }
+391:1:OPERATOR:{=}
+392:1:__dftl_partition_content_type:{ }
+393:2:VARIABLE:{$h}
+395:2:OPERATOR:{->}
+397:1:OPERATOR:{{}
+398:4:__dftl_partition_content_type:{m_id}
+402:1:OPERATOR:{}}
+403:1:OPERATOR:{;}
+404:1:__dftl_partition_content_type:{
+}
+405:5:VARIABLE:{$test}
+410:1:__dftl_partition_content_type:{ }
+411:1:OPERATOR:{=}
+412:1:__dftl_partition_content_type:{ }
+413:1:LITERAL1:{'}
+414:4:LITERAL1:{test}
+418:1:LITERAL1:{'}
+419:1:OPERATOR:{;}
+420:2:__dftl_partition_content_type:{
+
+}
+422:13:COMMENT:{# bug 1256511}
+435:1:__dftl_partition_content_type:{
+}
+436:1:LITERAL2:{/}
+437:22:LITERAL2:{^\s*\"(\w+)\"=\"(.*)\"}
+459:1:LITERAL2:{/}
+460:1:OPERATOR:{;}
+461:2:__dftl_partition_content_type:{
+
+}
+463:13:COMMENT:{# bug 1175560}
+476:1:__dftl_partition_content_type:{
+}
+477:2:VARIABLE:{$x}
+479:2:OPERATOR:{->}
+481:6:__dftl_partition_content_type:{format}
+487:1:OPERATOR:{(}
+488:1:OPERATOR:{)}
+489:1:OPERATOR:{;}
+490:2:__dftl_partition_content_type:{
+
+}
+492:13:COMMENT:{# bug 1175501}
+505:1:__dftl_partition_content_type:{
+}
+506:2:VARIABLE:{$x}
+508:1:__dftl_partition_content_type:{ }
+509:1:OPERATOR:{=}
+510:1:__dftl_partition_content_type:{ }
+511:1:NUMBER:{1}
+512:1:__dftl_partition_content_type:{ }
+513:1:OPERATOR:{?}
+514:1:__dftl_partition_content_type:{ }
+515:1:LITERAL1:{"}
+516:1:LITERAL1:{?}
+517:1:LITERAL1:{"}
+518:1:__dftl_partition_content_type:{ }
+519:1:OPERATOR:{:}
+520:1:__dftl_partition_content_type:{ }
+521:1:LITERAL1:{"}
+522:1:LITERAL1:{x}
+523:1:LITERAL1:{"}
+524:1:OPERATOR:{;}
+525:2:__dftl_partition_content_type:{
+
+}
+527:13:COMMENT:{# bug 1305170}
+540:1:__dftl_partition_content_type:{
+}
+541:2:KEYWORD1:{if}
+543:1:__dftl_partition_content_type:{ }
+544:1:OPERATOR:{(}
+545:5:VARIABLE:{$path}
+550:1:__dftl_partition_content_type:{ }
+551:2:OPERATOR:{=~}
+553:1:__dftl_partition_content_type:{ }
+554:1:LITERAL2:{m}
+555:1:LITERAL2:{/}
+556:2:LITERAL2:{\/}
+558:1:LITERAL2:{/}
+559:1:LITERAL2:{s}
+560:1:__dftl_partition_content_type:{ }
+561:1:OPERATOR:{)}
+562:1:__dftl_partition_content_type:{ }
+563:1:OPERATOR:{{}
+564:1:__dftl_partition_content_type:{ }
+565:4:VARIABLE:{$sep}
+569:1:__dftl_partition_content_type:{ }
+570:1:OPERATOR:{=}
+571:1:__dftl_partition_content_type:{ }
+572:1:LITERAL1:{'}
+573:1:LITERAL1:{/}
+574:1:LITERAL1:{'}
+575:1:OPERATOR:{;}
+576:1:__dftl_partition_content_type:{ }
+577:1:OPERATOR:{}}
+578:2:__dftl_partition_content_type:{
+
+}
+580:42:COMMENT:{# $something =~ m/#/; looks like a comment}
+622:1:__dftl_partition_content_type:{
+}

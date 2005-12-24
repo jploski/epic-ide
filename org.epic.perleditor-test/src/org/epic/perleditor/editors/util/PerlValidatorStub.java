@@ -5,6 +5,9 @@ import java.io.IOException;
 import java.util.*;
 
 import org.eclipse.core.resources.IResource;
+import org.epic.core.PerlProject;
+import org.epic.core.util.PerlExecutor;
+import org.epic.core.util.ProcessExecutor;
 import org.epic.perl.editor.test.BaseTestCase;
 import org.epic.perl.editor.test.Log;
 
@@ -17,43 +20,58 @@ import org.epic.perl.editor.test.Log;
  */
 public class PerlValidatorStub extends PerlValidatorBase
 {
-    public boolean gotBrokenPipe;
+    private static ProcessExecutor processExecutor;
+    private static PerlExecutor perlExecutor;
+    
+    public static boolean gotBrokenPipe;
+    
+    static
+    {
+        processExecutor = new ProcessExecutor() {
+            protected void brokenPipe(IOException e)
+                throws IOException
+            {
+                if (e.getMessage().indexOf("Broken pipe") == 0 ||
+                    e.getMessage().indexOf("Die Pipe wurde beendet") == 0)
+                {
+                    PerlValidatorStub.gotBrokenPipe = true;
+                }
+                else throw new RuntimeException(e);
+            } };
+            
+        perlExecutor = new PerlExecutor(processExecutor) {
+            protected List getPerlCommandLine(PerlProject project)
+            {
+                List ret = new ArrayList();
+                ret.add(BaseTestCase.getProperty("perl"));
+                ret.add("-Itest.in");
+                ret.add("-c");
+                return ret;
+            }
+            
+            protected File getPerlWorkingDir(IResource resource)
+            {
+                return new File(".");
+            }
+        };
+    }
 
     public PerlValidatorStub()
     {
-        super(new Log());
+        super(new Log(), perlExecutor);
+    }
+    
+    public void dispose()
+    {
+        perlExecutor.dispose();
     }
     
     protected void addMarker(IResource resource, Map attributes)
     {                
     }
     
-    protected void brokenPipe(IOException e)
-    {
-        if (e.getMessage().indexOf("Broken pipe") == 0 ||
-            e.getMessage().indexOf("Die Pipe wurde beendet") == 0)
-        {
-            gotBrokenPipe = true;
-        }
-        else throw new RuntimeException(e);
-    }
-
     protected void clearAllUsedMarkers(IResource resource)
     {
-    }
-
-    protected List getPerlCommandLine(IResource resource)
-    {
-        List ret = new ArrayList();
-        ret.add(BaseTestCase.getProperty("perl"));
-        ret.add("-Itest.in");
-        ret.add("-c");
-        return ret;
-    }
-
-    protected File getPerlWorkingDir(IResource resource)
-    {
-        return new File(".");
     }
 
     protected boolean isProblemMarkerPresent(ParsedErrorLine line, IResource resource)

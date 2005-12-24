@@ -1,9 +1,9 @@
-#Sun Sep 04 14:41:28 CEST 2005
+#Wed Dec 21 19:46:57 CET 2005
 useQuickDiffPrefPage=true
 tabWidthPropagated=true
 org.eclipse.jdt.ui.javadoclocations.migrated=true
 useAnnotationsPrefPage=true
-org.eclipse.jface.textfont=1|Monospace|10|0|GTK|1|;
+org.eclipse.jface.textfont=1|Monospace|9|0|GTK|1|;
 org.eclipse.jdt.ui.editor.tab.width=
 org.eclipse.jdt.ui.formatterprofiles.version=8
 eclipse.preferences.version=1

@@ -285,7 +285,12 @@ public class OpenDeclaration extends PerlEditorAction
         {
             ITypedRegion partition = doc.getPartition(selection.getOffset());
             if (!partition.getType().equals(PartitionTypes.DEFAULT)) return null;
-            else return doc.get(partition.getOffset(), partition.getLength());
+            else
+            {
+                String subName =
+                    doc.get(partition.getOffset(), partition.getLength());
+                return subName.indexOf('&') == 0 ? subName.substring(1) : subName;
+            }
         }
         catch (BadLocationException e)
         {

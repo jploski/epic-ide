@@ -15,6 +15,7 @@ public abstract class PerlLexerBase extends LexerBase
 {   
     protected static Set KEYWORDS1;
     protected static Set KEYWORDS2;
+    protected static Set OPERATORS;
     protected int pc; // current curly brace nesting level
     protected boolean qmarkRegexp;
     protected boolean slashRegexp;
@@ -29,6 +30,7 @@ public abstract class PerlLexerBase extends LexerBase
     {
         KEYWORDS1 = new HashSet();
         KEYWORDS2 = new HashSet();
+        OPERATORS = new HashSet();
         
         initKeywords(KEYWORDS1, new String[] { 
             "BEGIN", "END", "bless", "caller", "continue", "dbmclose",
@@ -73,6 +75,10 @@ public abstract class PerlLexerBase extends LexerBase
             "time", "truncate", "uc", "umask", "undef", "unlink",
             "unpack", "unshift", "utime", "values", "vec",
             "wait", "warn", "write" });
+        
+        initKeywords(OPERATORS, new String[] {
+            "lt", "gt", "le", "ge", "eq", "ne", "cmp", "not",
+            "and", "or", "xor", "x" });
     }
     
     protected PerlLexerBase()

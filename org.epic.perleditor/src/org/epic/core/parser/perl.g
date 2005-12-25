@@ -45,21 +45,12 @@ OPEN_BQUOTE: '`'  { getParent().expectStringEnd('`'); };
 OPEN_SQUOTE: '\'' {	getParent().expectStringEnd('\''); };
 OPEN_DQUOTE: '"'  { getParent().expectStringEnd('"'); };
 
-MUL_LBRACE_SPECIAL_VAR:     "*<"  { $setType(PerlTokenTypes.SPECIAL_VAR); glob = false; };
-MUL_SLASH_SPECIAL_VAR:      "*/"  { $setType(PerlTokenTypes.SPECIAL_VAR); glob = false; };
-MUL_QMARK_SPECIAL_VAR:      "*?"  { $setType(PerlTokenTypes.SPECIAL_VAR); glob = false; };
-MUL_DQUOTE_SPECIAL_VAR:     "*\"" { $setType(PerlTokenTypes.SPECIAL_VAR); glob = false; };
-DOLLAR_DOLLAR_SPECIAL_VAR:  "$$"  { $setType(PerlTokenTypes.SPECIAL_VAR); glob = false; };
-DOLLAR_DOLLAR_SPECIAL_VAR_M:"$$m" { $setType(PerlTokenTypes.SPECIAL_VAR); glob = false; };
-DOLLAR_DOLLAR_SPECIAL_VAR_S:"$$s" { $setType(PerlTokenTypes.SPECIAL_VAR); glob = false; };
-DOLLAR_BQUOTE_SPECIAL_VAR:  "$`"  { $setType(PerlTokenTypes.SPECIAL_VAR); glob = false; };
-DOLLAR_DQUOTE_SPECIAL_VAR:  "$\"" { $setType(PerlTokenTypes.SPECIAL_VAR); glob = false; };
-DOLLAR_SQUOTE_SPECIAL_VAR:  "$'"  { $setType(PerlTokenTypes.SPECIAL_VAR); glob = false; };
-DOLLAR_PERCENT_SPECIAL_VAR: "$%"  { $setType(PerlTokenTypes.SPECIAL_VAR); glob = false; };
-DOLLAR_SLASH_SPECIAL_VAR:   "$/"  { $setType(PerlTokenTypes.SPECIAL_VAR); glob = false; };
-DOLLAR_COMMA_SPECIAL_VAR:   "$,"  { $setType(PerlTokenTypes.SPECIAL_VAR); glob = false; };
-DOLLAR_QMARK_SPECIAL_VAR:   "$?"  { $setType(PerlTokenTypes.SPECIAL_VAR); glob = false; };
-DOLLAR_SEMI_SPECIAL_VAR:    "$;"  { $setType(PerlTokenTypes.SPECIAL_VAR); glob = false; };
+SPECIAL_VAR
+	: ("*<" | "*/" | "*?" | "*\""
+	| "$$" | "$$m" | "$$s" | "$`" | "$\"" | "$'" | "$%" | "$/" | "$," | "$?"
+	| "$;" | "$[" | "$]")
+	{ glob = false; }
+	;
 
 OPER_AND:    "&&" { $setToken(createOperatorToken(PerlTokenTypes.OPER_AND, "&&")); };
 OPER_OR:     "||" { $setToken(createOperatorToken(PerlTokenTypes.OPER_OR, "||")); };
@@ -207,6 +198,10 @@ OPER_DOT
 	: '.'
 	{ $setToken(createOperatorToken(PerlTokenTypes.OPER_DOT, ".")); };
 
+OPER_BSLASH
+	: '\\'
+	{ $setToken(createOperatorToken(PerlTokenTypes.OPER_BSLASH, "\\")); };
+
 OPEN_PAREN
 	: '('
 	{
@@ -227,15 +222,11 @@ FORMAT_STMT
 	: { format }? "=" ~('>') (~(';'))* SEMI
 	;
 
-protected SPECIAL_VAR: ;
-
 protected VAR_WITH_CURLY
 	: (VAR (WS)? '{')
 	=> VAR (WS)? { getParent().expectString(); }
 	| (VAR)
 	=> VAR;
-
-REF: { !proto }? '\\' (WORD | VAR);
 
 VAR
 	: { !proto }? VAR_START (ID | CURLY | '@')
@@ -293,6 +284,42 @@ protected NUMBER
 	};
 
 protected WORD
+	: ID
+	{
+		String str = $getText;
+		
+		if ("use".equals(str)) $setType(PerlTokenTypes.KEYWORD_USE);
+		else if ("sub".equals(str)) { afterSub = proto = true; $setType(PerlTokenTypes.KEYWORD_SUB); }
+		else if ("package".equals(str)) { $setType(PerlTokenTypes.KEYWORD_PACKAGE); }
+		else if ("format".equals(str)) { format = true; $setType(PerlTokenTypes.KEYWORD_FORMAT); }
+		else if ("__END__".equals(str)) { $setType(Token.EOF_TYPE); }
+		else if ("__DATA__".equals(str)) { $setType(Token.EOF_TYPE); }
+		else if (!afterSub)
+		{
+			if (KEYWORDS1.contains(str))
+    		{
+    			glob = true;
+    			$setType(PerlTokenTypes.KEYWORD1);
+    		}
+    		else if (KEYWORDS2.contains(str))
+    		{
+    			glob = str.equals("unlink");
+    			$setType(PerlTokenTypes.KEYWORD2);
+    		}
+    		else if (OPERATORS.contains(str))
+    		{
+    			glob = false;
+    			$setToken(createOperatorToken(PerlTokenTypes.OPER_OTHER, str));
+    		}
+		}
+		else glob = false;
+		
+		slashRegexp = !afterArrow;
+		qmarkRegexp = afterArrow = false;
+	}
+	;
+
+protected ID
 	: { afterColon = false; } (
 	{
 		// keep going if we have "::", break on ":"
@@ -304,30 +331,6 @@ protected WORD
 		}
 		else afterColon = false;
 	} WORD_CHAR)+
-	{
-		String str = $getText;
-		
-		if ("use".equals(str)) $setType(PerlTokenTypes.KEYWORD_USE);
-		else if ("sub".equals(str)) { afterSub = proto = true; $setType(PerlTokenTypes.KEYWORD_SUB); }
-		else if ("package".equals(str)) { $setType(PerlTokenTypes.KEYWORD_PACKAGE); }
-		else if ("format".equals(str)) { format = true; $setType(PerlTokenTypes.KEYWORD_FORMAT); }
-		else if ("__END__".equals(str)) { $setType(Token.EOF_TYPE); }
-		else if ("__DATA__".equals(str)) { $setType(Token.EOF_TYPE); }
-		else if (!afterSub && KEYWORDS1.contains(str))
-		{
-			glob = true;
-			$setType(PerlTokenTypes.KEYWORD1);
-		}
-		else if (!afterSub && KEYWORDS2.contains(str))
-		{
-			glob = str.equals("unlink");
-			$setType(PerlTokenTypes.KEYWORD2);
-		}
-		else glob = false;
-		
-		slashRegexp = !afterArrow;
-		qmarkRegexp = afterArrow = false;
-	}
 	;
 
 protected WORD_CHAR
@@ -340,10 +343,6 @@ protected CURLY
 	: '{'
 	( CURLY | NEWLINE | ~('}' | '\uFFFF'))*
 	('}' | '\uFFFF'!)
-	;
-
-protected ID
-	: ( { if (LA(1) == ':' && LA(2) != ':') break; } WORD_CHAR)*
 	;
 
 protected VAR_START

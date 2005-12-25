@@ -25,9 +25,8 @@ OPEN_QUOTE: OPEN_QUOTE1 | OPEN_QUOTE2;
 COMMENT: { expectComment }? '#' (NOTNEWLINE)* NEWLINE!;
 WS: (' ' | '\t' | NEWLINE)+ { expectComment = true; };
 
-protected
-OPEN_QUOTE1:
-	('{' | '[' | '(')
+protected OPEN_QUOTE1
+	: ('{' | '[' | '(' | '<')
 	{
 		expectComment = false;
 		getParent().pop();
@@ -37,9 +36,8 @@ OPEN_QUOTE1:
 	}
 	;
 
-protected	
-OPEN_QUOTE2:
-	~('\t' | ' ' | '\n' | '\r' | '{' | '[' | '(')
+protected OPEN_QUOTE2
+	: ~('\t' | ' ' | '\n' | '\r' | '{' | '[' | '(' | '<')
 	{
 		expectComment = false;
 		getParent().pop();

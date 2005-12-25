@@ -36,3 +36,5 @@ $x = 1 ? "?" : "x";
 if ($path =~ m/\//s ) { $sep = '/'; }
 
 # $something =~ m/#/; looks like a comment
+
+$x =~ s<foo>'bar'; # comment

@@ -252,3 +252,19 @@
 580:42:COMMENT:{# $something =~ m/#/; looks like a comment}
 622:1:__dftl_partition_content_type:{
 }
+623:1:__dftl_partition_content_type:{
+}
+624:2:VARIABLE:{$x}
+626:1:__dftl_partition_content_type:{ }
+627:2:OPERATOR:{=~}
+629:1:__dftl_partition_content_type:{ }
+630:1:LITERAL2:{s}
+631:1:LITERAL2:{<}
+632:3:LITERAL2:{foo}
+635:1:LITERAL2:{>}
+636:1:LITERAL2:{'}
+637:3:LITERAL2:{bar}
+640:1:LITERAL2:{'}
+641:1:OPERATOR:{;}
+642:1:__dftl_partition_content_type:{ }
+643:9:COMMENT:{# comment}

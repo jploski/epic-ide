@@ -394,8 +394,8 @@ public class PerlPartitioner implements
                 IStatus.ERROR,
                 PerlEditorPlugin.getPluginId(),
                 IStatus.OK,
-                "Could not parse document. Report this exception as " +
-                "a bug, including the document fragment which triggers it, " +
+                "Could not parse source file. Report this exception as " +
+                "a bug, including the text fragment which triggers it, " +
                 "if possible.",
                 e
                 ));

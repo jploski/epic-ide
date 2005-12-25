@@ -6,7 +6,7 @@ exit -1;
 }
 
 # bug 1309321
-if ($_ !~ /(^#|^\s*$)/) { $hello = x; } 
+if ($_ !~ /(^#|^\s*$)/) { $hello = 1; } 
 
 # bug 1312851
 my $result1= $self->executeSQLSelect(query=>$SQL);

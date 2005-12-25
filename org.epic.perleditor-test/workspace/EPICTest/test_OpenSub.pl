@@ -25,4 +25,4 @@ sub   _baz_zz($$)    { print "foo"; }
 		{ foo(); }
 =cut
 
-other_sub(some_sub());
+other_sub(&some_sub());

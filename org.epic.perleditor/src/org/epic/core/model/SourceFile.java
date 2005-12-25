@@ -181,7 +181,8 @@ public class SourceFile
             Subroutine sub = (Subroutine) subStack.peek();
             if (blockLevel-1 > sub.getBlockLevel()) return;
             subStack.pop();
-            sub.setCloseCurly((CurlyToken) t);
+            if (t instanceof CurlyToken) // could be false on finish()
+                sub.setCloseCurly((CurlyToken) t);
         }
         
         private Package getCurrentPackage()

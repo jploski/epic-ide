@@ -92,7 +92,7 @@ public class Subroutine implements IMultilineElement
 
     public int getEndLine()
     {
-        return closeCurly.getLine()-1;
+        return closeCurly != null ? closeCurly.getLine()-1 : getStartLine();
     }
 
     public int getStartLine()

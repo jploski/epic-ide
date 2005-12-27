@@ -90,6 +90,13 @@ public class PerlMultiLexer extends TokenStreamSelector
         return mainLexer.getCurlyLevel();
     }
     
+    public void recover()
+    {
+        LexerSharedInputState inputState = mainLexer.getInputState();
+        if (inputState instanceof PerlLexerSharedInputState)
+            ((PerlLexerSharedInputState) inputState).recover();
+    }
+    
     public void reset(
         Reader reader,
         IDocument doc,
@@ -241,6 +248,20 @@ public class PerlMultiLexer extends TokenStreamSelector
                 // ...which should never occur if we have no bugs.
                 throw new RuntimeException(e);
             }
+        }
+        
+        public void recover()
+        {
+            try
+            {
+                for (;;)
+                {
+                    char c = input.LA(1);
+                    if (c == '\r' || c == '\n' || c == '\uFFFF') break;
+                    else { input.consume(); column++; }
+                }
+            }
+            catch (CharStreamException e) { /* can't happen */ } 
         }
     }
 }

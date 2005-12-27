@@ -105,7 +105,7 @@ public abstract class PerlLexerBase extends LexerBase
         super.setInputState(state);
         pc = 0;
         qmarkRegexp = slashRegexp = glob = afterArrow = afterSub = format =
-            proto = afterColon = false;
+            afterColon = false;
     }
     
     protected CurlyToken createCurlyToken(int type, String text)

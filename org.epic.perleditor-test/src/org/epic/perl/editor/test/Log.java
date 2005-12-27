@@ -20,6 +20,11 @@ public class Log implements ILog
         System.err.println(status.getMessage());        
         Throwable t = status.getException();
         if (t != null) t.printStackTrace();
+        if (status.getSeverity() == IStatus.ERROR)
+        {
+            if (t != null) throw new RuntimeException(t);
+            else throw new RuntimeException(status.getMessage());
+        }
     }
 
     public void removeLogListener(ILogListener listener)

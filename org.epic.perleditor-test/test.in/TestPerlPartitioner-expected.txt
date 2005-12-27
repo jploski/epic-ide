@@ -268,3 +268,92 @@
 641:1:OPERATOR:{;}
 642:1:__dftl_partition_content_type:{ }
 643:9:COMMENT:{# comment}
+652:1:__dftl_partition_content_type:{
+}
+653:1:__dftl_partition_content_type:{
+}
+654:1:OPERATOR:{*}
+655:3:__dftl_partition_content_type:{foo}
+658:1:__dftl_partition_content_type:{ }
+659:1:OPERATOR:{=}
+660:1:__dftl_partition_content_type:{ }
+661:1:NUMBER:{5}
+662:1:OPERATOR:{;}
+663:4:__dftl_partition_content_type:{    }
+667:69:COMMENT:{# TODO *foo should be a variable, not operator * followed by bareword}
+736:1:__dftl_partition_content_type:{
+}
+737:2:VARIABLE:{$x}
+739:1:__dftl_partition_content_type:{ }
+740:1:OPERATOR:{=}
+741:1:__dftl_partition_content_type:{ }
+742:1:NUMBER:{2}
+743:1:OPERATOR:{*}
+744:1:NUMBER:{5}
+745:1:OPERATOR:{;}
+746:4:__dftl_partition_content_type:{    }
+750:40:COMMENT:{# * is an operator, *5 is not a variable}
+790:1:__dftl_partition_content_type:{
+}
+791:2:VARIABLE:{$y}
+793:1:__dftl_partition_content_type:{ }
+794:1:OPERATOR:{=}
+795:1:__dftl_partition_content_type:{ }
+796:1:NUMBER:{5}
+797:2:OPERATOR:{**}
+799:2:VARIABLE:{$x}
+801:1:OPERATOR:{;}
+802:2:__dftl_partition_content_type:{  }
+804:38:COMMENT:{# ** is an operator, *$ not a variable}
+842:1:__dftl_partition_content_type:{
+}
+843:1:VARIABLE:{$}
+844:1:__dftl_partition_content_type:{ }
+845:1:OPERATOR:{x}
+846:1:__dftl_partition_content_type:{ }
+847:1:OPERATOR:{=}
+848:1:__dftl_partition_content_type:{ }
+849:2:NUMBER:{10}
+851:1:OPERATOR:{;}
+852:4:__dftl_partition_content_type:{    }
+856:73:COMMENT:{# TODO "$ x" should be a variable, same as "$x"; 'x' not an operator here}
+929:1:__dftl_partition_content_type:{
+}
+930:3:KEYWORD1:{sub}
+933:1:__dftl_partition_content_type:{ }
+934:3:__dftl_partition_content_type:{abc}
+937:1:OPERATOR:{(}
+938:4:__dftl_partition_content_type:{$$;@}
+942:1:OPERATOR:{)}
+943:1:__dftl_partition_content_type:{ }
+944:1:OPERATOR:{{}
+945:1:__dftl_partition_content_type:{ }
+946:1:OPERATOR:{}}
+947:2:__dftl_partition_content_type:{  }
+949:19:COMMENT:{# $$;@ is prototype}
+968:1:__dftl_partition_content_type:{
+}
+969:3:VARIABLE:{@$x}
+972:1:__dftl_partition_content_type:{ }
+973:1:OPERATOR:{=}
+974:1:__dftl_partition_content_type:{ }
+975:3:VARIABLE:{@$y}
+978:1:OPERATOR:{;}
+979:3:__dftl_partition_content_type:{   }
+982:24:COMMENT:{# @$x, @$y are variables}
+1006:1:__dftl_partition_content_type:{
+}
+1007:2:KEYWORD1:{my}
+1009:1:__dftl_partition_content_type:{ }
+1010:2:VARIABLE:{$b}
+1012:1:__dftl_partition_content_type:{ }
+1013:1:OPERATOR:{=}
+1014:1:__dftl_partition_content_type:{ }
+1015:2:VARIABLE:{$y}
+1017:1:__dftl_partition_content_type:{ }
+1018:1:OPERATOR:{%}
+1019:1:__dftl_partition_content_type:{ }
+1020:2:VARIABLE:{$x}
+1022:1:OPERATOR:{;}
+1023:1:__dftl_partition_content_type:{ }
+1024:76:COMMENT:{# % is the modulo operator, not part of the "% $y" variable, cf. "$ x" above}

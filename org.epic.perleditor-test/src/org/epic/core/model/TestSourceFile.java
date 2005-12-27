@@ -3,6 +3,7 @@ package org.epic.core.model;
 import java.io.IOException;
 import java.util.Iterator;
 
+import org.eclipse.core.runtime.ILog;
 import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.IDocument;
 import org.epic.perl.editor.test.BaseTestCase;
@@ -29,7 +30,7 @@ public class TestSourceFile extends BaseTestCase
         IDocument doc = new Document(readFile(inFile));
         String expected = readFile(outFile);
         
-        PerlPartitioner partitioner = new PerlPartitioner();
+        PerlPartitioner partitioner = new PerlPartitioner(new Log());
         doc.setDocumentPartitioner(partitioner);
         partitioner.connect(doc);
         

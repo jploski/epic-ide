@@ -38,3 +38,11 @@ if ($path =~ m/\//s ) { $sep = '/'; }
 # $something =~ m/#/; looks like a comment
 
 $x =~ s<foo>'bar'; # comment
+
+*foo = 5;    # TODO *foo should be a variable, not operator * followed by bareword
+$x = 2*5;    # * is an operator, *5 is not a variable
+$y = 5**$x;  # ** is an operator, *$ not a variable
+$ x = 10;    # TODO "$ x" should be a variable, same as "$x"; 'x' not an operator here
+sub abc($$;@) { }  # $$;@ is prototype
+@$x = @$y;   # @$x, @$y are variables
+my $b = $y % $x; # % is the modulo operator, not part of the "% $y" variable, cf. "$ x" above

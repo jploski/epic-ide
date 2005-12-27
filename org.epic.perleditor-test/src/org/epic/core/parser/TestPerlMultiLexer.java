@@ -17,7 +17,7 @@ public class TestPerlMultiLexer extends BaseTestCase
     
     /*
     public void testSelectedCase() throws Exception
-    {        
+    {
         _testFile(
             "workspace/EPICTest/x.pl",
             new PrintWriter(new OutputStreamWriter(System.out), true));   
@@ -77,9 +77,9 @@ public class TestPerlMultiLexer extends BaseTestCase
 
         int i = 0;
         Token t;
-        while ((t = selector.nextToken()).getType() != Token.EOF_TYPE)
+        while ((t = nextToken(selector)).getType() != Token.EOF_TYPE)
         {
-            System.err.println(path + ": " + i + ":" + token2String(t) + " " + t.getClass());
+//            System.err.println(path + ": " + i + ":" + token2String(t) + " " + t.getClass());
             i++;
         }
         tokenCounts.add(new Integer(i));
@@ -106,6 +106,22 @@ public class TestPerlMultiLexer extends BaseTestCase
             String name = st.nextToken();
             Integer value = new Integer(st.nextToken());            
             tokenNames.put(value, name);
+        }
+    }
+    
+    private PerlToken nextToken(PerlMultiLexer lexer) throws TokenStreamException
+    {
+        try
+        {
+            return (PerlToken) lexer.nextToken();
+        }
+        catch (TokenStreamException e)
+        {
+            lexer.recover();
+            System.err.println(
+                "WARNING: PerlMultiLexer recovery performed at " +
+                e.getMessage()); // TODO log it when in development mode?
+            return (PerlToken) lexer.nextToken();
         }
     }
     

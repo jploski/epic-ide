@@ -2,12 +2,13 @@ package org.epic.perleditor.editors;
 
 import org.eclipse.jface.text.*;
 import org.epic.perl.editor.test.BaseTestCase;
+import org.epic.perl.editor.test.Log;
 
 public class TestPerlPartitioner extends BaseTestCase
 {
     public void testSyntax() throws Exception
     {
-        PerlPartitioner partitioner = new PerlPartitioner();
+        PerlPartitioner partitioner = new PerlPartitioner(new Log());
         IDocument doc = new Document(readFile("workspace/EPICTest/syntax.pl"));
         
         doc.setDocumentPartitioner(partitioner);

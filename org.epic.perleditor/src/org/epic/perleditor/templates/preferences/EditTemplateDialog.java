@@ -4,52 +4,16 @@
  */
 package org.epic.perleditor.templates.preferences;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
-import java.util.Vector;
-
-import org.epic.perleditor.templates.ContextTypeRegistry;
-import org.epic.perleditor.templates.Template;
-import org.epic.perleditor.templates.TemplateMessages;
-import org.epic.perleditor.templates.TemplateTranslator;
-
-import org.epic.perleditor.templates.ui.dialog.StatusDialog;
-import org.epic.perleditor.templates.ui.dialog.StatusInfo;
-import org.epic.perleditor.templates.TemplateVariableProcessor;
-import org.epic.perleditor.templates.ui.util.SWTUtil;
-//import net.sourceforge.phpdt.ui.text.JavaTextTools;
-import org.epic.perleditor.editors.PerlPartitioner;
-import org.epic.perleditor.editors.PerlSourceViewerConfiguration;
-import org.epic.perleditor.preferences.PreferenceConstants;
-//import net.sourceforge.phpeclipse.IPreferenceConstants;
-import org.epic.perleditor.PerlEditorPlugin;
-//import net.sourceforge.phpeclipse.phpeditor.PHPSourceViewerConfiguration;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jface.action.Action;
-import org.eclipse.jface.action.GroupMarker;
-import org.eclipse.jface.action.IAction;
-import org.eclipse.jface.action.IMenuListener;
-import org.eclipse.jface.action.IMenuManager;
-import org.eclipse.jface.action.MenuManager;
-import org.eclipse.jface.action.Separator;
+import org.eclipse.jface.action.*;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.PreferenceConverter;
 import org.eclipse.jface.resource.JFaceResources;
-import org.eclipse.jface.text.Document;
-import org.eclipse.jface.text.IDocument;
-import org.eclipse.jface.text.IDocumentPartitioner;
-import org.eclipse.jface.text.ITextListener;
-import org.eclipse.jface.text.ITextOperationTarget;
-import org.eclipse.jface.text.ITextViewer;
-import org.eclipse.jface.text.ITextViewerExtension;
-import org.eclipse.jface.text.TextEvent;
-import org.eclipse.jface.text.contentassist.ContentAssistant;
-import org.eclipse.jface.text.contentassist.IContentAssistProcessor;
-import org.eclipse.jface.text.contentassist.IContentAssistant;
+import org.eclipse.jface.text.*;
+import org.eclipse.jface.text.contentassist.*;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.jface.text.source.SourceViewer;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -57,29 +21,21 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.custom.VerifyKeyListener;
-import org.eclipse.swt.events.KeyEvent;
-import org.eclipse.swt.events.KeyListener;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
-import org.eclipse.swt.events.VerifyEvent;
-import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.Font;
-import org.eclipse.swt.graphics.RGB;
+import org.eclipse.swt.events.*;
+import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Combo;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Menu;
-import org.eclipse.swt.widgets.Shell;
-import org.eclipse.swt.widgets.Text;
+import org.eclipse.swt.widgets.*;
 import org.eclipse.ui.texteditor.ITextEditorActionConstants;
 import org.eclipse.ui.texteditor.IUpdate;
+import org.epic.perleditor.PerlEditorPlugin;
+import org.epic.perleditor.editors.PerlPartitioner;
+import org.epic.perleditor.editors.PerlSourceViewerConfiguration;
+import org.epic.perleditor.preferences.PreferenceConstants;
+import org.epic.perleditor.templates.*;
+import org.epic.perleditor.templates.ui.dialog.StatusDialog;
+import org.epic.perleditor.templates.ui.dialog.StatusInfo;
+import org.epic.perleditor.templates.ui.util.SWTUtil;
 
 /**
  * Dialog to edit a template.
@@ -342,7 +298,8 @@ public class EditTemplateDialog extends StatusDialog {
 	private SourceViewer createEditor(Composite parent) {
 		SourceViewer viewer= new SourceViewer(parent, null, SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL);
 		IDocument document= new Document(fTemplate.getPattern());		 
-		IDocumentPartitioner partitioner = new PerlPartitioner();
+		IDocumentPartitioner partitioner =
+            new PerlPartitioner(PerlEditorPlugin.getDefault().getLog());
 		
 		document.setDocumentPartitioner(partitioner);
 		partitioner.connect(document);		

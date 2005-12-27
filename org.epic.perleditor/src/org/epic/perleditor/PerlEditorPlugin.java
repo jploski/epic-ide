@@ -263,7 +263,10 @@ public class PerlEditorPlugin extends AbstractUIPlugin {
 	}
 
 	public static String getPluginId() {
-		return getDefault().getBundle().getSymbolicName();
+        PerlEditorPlugin plugin = getDefault();
+		return plugin != null
+            ? plugin.getBundle().getSymbolicName()
+            : "org.epic.perleditor";
 	}
 
 	public synchronized IDocumentProvider getDocumentProvider() {

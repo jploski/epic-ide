@@ -24,6 +24,7 @@ public class PerlPartitioner implements
 {
     private final Object TOKENS_LOCK = new Object();
     private final PerlMultiLexer lexer = new PerlMultiLexer();
+    private final ILog log;
     
     private IDocument doc;
     private boolean ignoreDocumentChangedEvent;
@@ -34,8 +35,9 @@ public class PerlPartitioner implements
     private int lastUnaffectedTokenI = -1;
     private int syncTokenI = -1;
     
-    public PerlPartitioner()
+    public PerlPartitioner(ILog log)
     {
+        this.log = log;
         tokens = new TokensList();
     }    
     
@@ -348,7 +350,7 @@ public class PerlPartitioner implements
         try
         {
             PerlToken t;
-            while ((t = (PerlToken) lexer.nextToken()).getType() != Token.EOF_TYPE)
+            while ((t = nextToken(lexer)).getType() != Token.EOF_TYPE)
             {
                 if (t.equals(sync))
                 {
@@ -390,7 +392,7 @@ public class PerlPartitioner implements
         }
         catch (TokenStreamException e)
         {
-            getLog().log(new Status(
+            log.log(new Status(
                 IStatus.ERROR,
                 PerlEditorPlugin.getPluginId(),
                 IStatus.OK,
@@ -403,11 +405,6 @@ public class PerlPartitioner implements
         
         initialized = true;
         return new Region(parseStartOffset, doc.getLength() - parseStartOffset);    
-    }
-    
-    private ILog getLog()
-    {
-        return PerlEditorPlugin.getDefault().getLog();
     }
     
     private ITypedRegion getPartitionImpl(int offset, boolean preferOpenPartitions)
@@ -500,6 +497,7 @@ public class PerlPartitioner implements
         case PerlTokenTypes.KEYWORD2:
             return PartitionTypes.KEYWORD2;
         case PerlTokenTypes.VAR:
+        case PerlTokenTypes.SPECIAL_VAR:
             return PartitionTypes.VARIABLE;
         case PerlTokenTypes.OPEN_SQUOTE:
         case PerlTokenTypes.OPEN_DQUOTE:
@@ -549,6 +547,22 @@ public class PerlPartitioner implements
         }
         System.err.println("---- end of computePartitioning");
 
+    }
+    
+    private PerlToken nextToken(PerlMultiLexer lexer) throws TokenStreamException
+    {
+        try
+        {
+            return (PerlToken) lexer.nextToken();
+        }
+        catch (TokenStreamException e)
+        {
+            lexer.recover();
+            System.err.println(
+                "WARNING: PerlMultiLexer recovery performed at " +
+                e.getMessage()); // TODO log it when in development mode?
+            return (PerlToken) lexer.nextToken();
+        }
     }
     
     private TypedRegion token2Region(PerlToken t, int i)

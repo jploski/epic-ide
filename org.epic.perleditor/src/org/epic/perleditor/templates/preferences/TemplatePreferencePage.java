@@ -1,25 +1,8 @@
 package org.epic.perleditor.templates.preferences;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.*;
 import java.util.List;
-
-
-import org.epic.perleditor.templates.ContextType;
-import org.epic.perleditor.templates.ContextTypeRegistry;
-import org.epic.perleditor.templates.Template;
-import org.epic.perleditor.templates.TemplateContentProvider;
-import org.epic.perleditor.templates.TemplateLabelProvider;
-import org.epic.perleditor.templates.TemplateMessages;
-import org.epic.perleditor.templates.TemplateSet;
-import org.epic.perleditor.templates.Templates;
-import org.epic.perleditor.templates.ui.util.SWTUtil;
-//import net.sourceforge.phpdt.ui.text.JavaTextTools;
-import org.epic.perleditor.PerlEditorPlugin;
-//import net.sourceforge.phpeclipse.phpeditor.PHPEditorEnvironment;
-import org.epic.perleditor.editors.PerlPartitioner;
-import org.epic.perleditor.editors.PerlSourceViewerConfiguration;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.dialogs.ErrorDialog;
@@ -27,41 +10,23 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.jface.resource.JFaceResources;
-import org.eclipse.jface.text.Document;
-import org.eclipse.jface.text.IDocument;
-import org.eclipse.jface.text.IDocumentPartitioner;
+import org.eclipse.jface.text.*;
 import org.eclipse.jface.text.source.SourceViewer;
-import org.eclipse.jface.viewers.CheckStateChangedEvent;
-import org.eclipse.jface.viewers.CheckboxTableViewer;
-import org.eclipse.jface.viewers.DoubleClickEvent;
-import org.eclipse.jface.viewers.ICheckStateListener;
-import org.eclipse.jface.viewers.IDoubleClickListener;
-import org.eclipse.jface.viewers.ISelectionChangedListener;
-import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
-import org.eclipse.jface.viewers.StructuredSelection;
-import org.eclipse.jface.viewers.TableLayout;
-import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.jface.viewers.ViewerSorter;
+import org.eclipse.jface.viewers.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ControlAdapter;
 import org.eclipse.swt.events.ControlEvent;
-import org.eclipse.swt.graphics.Font;
-import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.FileDialog;
-import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Listener;
-import org.eclipse.swt.widgets.Table;
-import org.eclipse.swt.widgets.TableColumn;
+import org.eclipse.swt.widgets.*;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
+import org.epic.perleditor.PerlEditorPlugin;
+import org.epic.perleditor.editors.PerlPartitioner;
+import org.epic.perleditor.editors.PerlSourceViewerConfiguration;
+import org.epic.perleditor.templates.*;
+import org.epic.perleditor.templates.ui.util.SWTUtil;
 
 public class TemplatePreferencePage
   extends PreferencePage
@@ -360,7 +325,8 @@ public class TemplatePreferencePage
       new SourceViewer(parent, null, SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL);
     //JavaTextTools tools = PerlEditorPlugin.getDefault().getJavaTextTools();
     IDocument document = new Document();
-    IDocumentPartitioner partitioner = new PerlPartitioner();
+    IDocumentPartitioner partitioner = new PerlPartitioner(
+        PerlEditorPlugin.getDefault().getLog());
 
     document.setDocumentPartitioner(partitioner);
     partitioner.connect(document);

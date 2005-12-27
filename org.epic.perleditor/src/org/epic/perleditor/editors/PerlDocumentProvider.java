@@ -3,11 +3,11 @@ package org.epic.perleditor.editors;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IDocumentPartitioner;
-import org.eclipse.jface.text.rules.FastPartitioner;
 import org.eclipse.jface.text.source.IAnnotationModel;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.IStorageEditorInput;
 import org.eclipse.ui.editors.text.FileDocumentProvider;
+import org.epic.perleditor.PerlEditorPlugin;
 
 public class PerlDocumentProvider extends FileDocumentProvider
 {
@@ -40,7 +40,7 @@ public class PerlDocumentProvider extends FileDocumentProvider
         PerlPartitionScanner scanner = new PerlPartitionScanner();
         return new FastPartitioner(scanner, scanner.getContentTypes());
         */
-        return new PerlPartitioner();
+        return new PerlPartitioner(PerlEditorPlugin.getDefault().getLog());
     }
 
     protected IAnnotationModel createAnnotationModel(Object element)

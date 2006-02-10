@@ -261,7 +261,19 @@ public class PerlDocView extends ViewPart {
         PerlExecutor executor = new PerlExecutor();
         try
         {
-            return executor.execute(textEditor, null, perlCode).stdout;
+        	// If the PerlDoc search method is not called from an editor the textEditor object is null.
+        	// In this case the execute method is called with the current directory as argument.
+        	if(textEditor != null) {
+        		return executor.execute(textEditor, null, perlCode).stdout;
+        	}
+        	else {
+        		try {
+					return executor.execute(new File(new File(".").getCanonicalPath()), null, perlCode).stdout;
+				} catch (Exception e) {
+					e.printStackTrace();
+					return "";
+				}
+        	}
         }
         finally { executor.dispose(); }
 	}

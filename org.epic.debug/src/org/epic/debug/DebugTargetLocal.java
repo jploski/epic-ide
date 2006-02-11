@@ -49,9 +49,13 @@ public class DebugTargetLocal extends DebugTarget implements IDebugEventSetListe
 	public void start()
 	{
 		if (connectDebugger(true) != RemotePort.mWaitOK)
-					terminate();
-		getDebuger()
-		.generateDebugInitEvent();
+        {
+            terminate();
+        }
+        else
+        {
+            getDebugger().generateDebugInitEvent();
+        }
 	}
 	 
 	

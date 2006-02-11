@@ -79,7 +79,7 @@ public abstract class DebugTarget extends Target {
 		} else
 			mDebugPort.startReconnect();
 
-		startPerlProcess();
+		if (startPerlProcess() == null) mDebugPort.shutdown();
 
 		int res = mDebugPort.waitForConnect(fTimeout);
 
@@ -102,7 +102,7 @@ public abstract class DebugTarget extends Target {
 	 * @see org.eclipse.debug.core.model.IDebugTarget#getProcess()
 	 */
 
-	public PerlDB getDebuger() {
+	public PerlDB getDebugger() {
 		return mPerlDB;
 	}
 

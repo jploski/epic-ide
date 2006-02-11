@@ -11,8 +11,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.*;
 import org.eclipse.debug.core.DebugEvent;
 import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.DebugPlugin;
@@ -471,8 +470,8 @@ public class CGITarget extends DebugTarget implements IDebugEventSetListener
 					return;
 				}
 				mLaunch.addDebugTarget(mTarget);
-				((DebugTarget) mTarget).getDebuger().generateDebugInitEvent();
-				getDebuger().generateDebugInitEvent();
+				((DebugTarget) mTarget).getDebugger().generateDebugInitEvent();
+				getDebugger().generateDebugInitEvent();
 			}
 		};
 
@@ -512,25 +511,21 @@ public class CGITarget extends DebugTarget implements IDebugEventSetListener
 
 	void initPath()
 	{
-
 		mProjectDir = null;
-
-		try
-		{
-			mWorkingDir =
-				new Path(
-					mLaunch.getLaunchConfiguration().getAttribute(
-						PerlLaunchConfigurationConstants.ATTR_CGI_ROOT_DIR,
-						(String) null));
-		} catch (CoreException e)
-		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 		mStartupFile = null;
 		mStartupFileAbsolut = null;
-
 	}
+    
+    public IPath getLocalWorkingDir()
+        throws CoreException
+    {
+        String path = mLaunch.getLaunchConfiguration().getAttribute(
+            PerlLaunchConfigurationConstants.ATTR_CGI_ROOT_DIR,
+            (String) null);
+        
+        assert path != null;        
+        return new Path(path);
+    }
 
 	public void shutdown(boolean unregister)
 	{

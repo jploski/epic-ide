@@ -1,6 +1,7 @@
 Eclipse Perl Integration:
 
-		Debugger		
+		Debugger
+		* Implemented Feature Request: [ 1429720 ] Specify working directory for Perl run configurations
 		* Fixed Bug [1233924] Debugging disabled in eclipse 3.1
 		* Fixed Bug [1257160] Can't Debug ... "Error Parsing Debugger Variables"
 		* Debugger now works with Eclipse 3.1

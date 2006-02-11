@@ -1,23 +1,20 @@
 package org.epic.debug;
 
 import java.io.File;
-import java.io.IOException;
+import java.text.MessageFormat;
 import java.util.List;
 
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.runtime.IPath;
-import org.eclipse.debug.core.DebugEvent;
-import org.eclipse.debug.core.DebugException;
-import org.eclipse.debug.core.DebugPlugin;
-import org.eclipse.debug.core.ILaunch;
-import org.eclipse.debug.core.ILaunchManager;
-import org.eclipse.debug.core.model.DebugElement;
-import org.eclipse.debug.core.model.IDebugTarget;
-import org.eclipse.debug.core.model.IProcess;
+import org.eclipse.core.resources.*;
+import org.eclipse.core.runtime.*;
+import org.eclipse.core.variables.VariablesPlugin;
+import org.eclipse.debug.core.*;
+import org.eclipse.debug.core.model.*;
 import org.epic.core.PerlCore;
 import org.epic.core.util.PerlExecutableUtilities;
 import org.epic.debug.util.ExecutionArguments;
 import org.epic.perleditor.PerlEditorPlugin;
+
+import sun.awt.motif.MComponentPeer;
 
 /**
  * @author ruehl
@@ -34,7 +31,6 @@ public abstract class Target extends DebugElement implements IDebugTarget
 	protected IPath mProjectDir;
 	protected String mStartupFile;
 	protected String mStartupFileAbsolut;
-	protected IPath mWorkingDir;
 	ILaunch mLaunch;
 	IProcess mProcess;
 	Process mJavaProcess;
@@ -114,9 +110,6 @@ public abstract class Target extends DebugElement implements IDebugTarget
 	{
 		String startfile = null;
 		String prjName = null;
-		String progParams = null;
-
-		
 		try
 		{
 			startfile =
@@ -126,18 +119,17 @@ public abstract class Target extends DebugElement implements IDebugTarget
 			prjName =
 				mLaunch.getLaunchConfiguration().getAttribute(
 					PerlLaunchConfigurationConstants.ATTR_PROJECT_NAME,
-					EMPTY_STRING);
-
+					EMPTY_STRING);           
 		} catch (Exception ce)
 		{
 			PerlDebugPlugin.log(ce);
 		}
+        
 		IProject prj =
 			PerlDebugPlugin.getWorkspace().getRoot().getProject(prjName);
 		mProject = prj;
 		mProjectDir = prj.getLocation();
-		IPath path = mProjectDir.append(startfile);
-		mWorkingDir = path.removeLastSegments(1);
+		IPath path = mProjectDir.append(startfile);		
 		mStartupFile = path.lastSegment();
 		mStartupFileAbsolut = path.toString();
 	}
@@ -173,7 +165,19 @@ public abstract class Target extends DebugElement implements IDebugTarget
 		IProject prj =
 			PerlDebugPlugin.getWorkspace().getRoot().getProject(prjName);
 
-		IPath workingDir = getLocalWorkingDir();
+		IPath workingDir;
+        
+        try
+        {
+            workingDir = getLocalWorkingDir();
+        }
+        catch (CoreException e)        
+        {
+            PerlDebugPlugin.getDefault().logError(
+                "Could not start Perl interpreter: invalid working directory",
+                e);
+            return null;
+        }
 
 		List fCmdList = null;
 		try
@@ -184,7 +188,7 @@ public abstract class Target extends DebugElement implements IDebugTarget
 		} catch (Exception e)
 		{
 			PerlDebugPlugin.getDefault().logError(
-				"Could not start Debug Process (Erroror assambling command line !",
+				"Could not start Perl interpreter: error assambling command line",
 				e);
 		}
 		fCmdList.add("-I"+PerlDebugPlugin.getPlugInDir());
@@ -221,7 +225,7 @@ public abstract class Target extends DebugElement implements IDebugTarget
 				Runtime.getRuntime().exec(
 					cmdParams,
 					PerlDebugPlugin.getDebugEnv(this),
-					new File(workingDir.toString()));
+					workingDir.toFile());
 		}
         catch (Exception e1)
 		{
@@ -240,14 +244,16 @@ public abstract class Target extends DebugElement implements IDebugTarget
 
 	}
 
-	public IPath getLocalWorkingDir()
+	public IPath getLocalWorkingDir() throws CoreException
 	{
-		return mWorkingDir;
+        File workingDir = verifyWorkingDirectory(mLaunch.getLaunchConfiguration());
+        if (workingDir == null) workingDir = getDefaultWorkingDir();        
+		return Path.fromOSString(workingDir.getAbsolutePath());
 	}
 
 	public IPath getProjectDir()
 	{
-			return mProjectDir;
+		return mProjectDir;
 	}
 
 	public String getStartupFile()
@@ -331,6 +337,80 @@ public abstract class Target extends DebugElement implements IDebugTarget
 	public IProject getProject() {
 		return mProject;
 	}
+    
+    /**
+     * Returns the default working directory used when none is specified
+     * in the launch configuration - the parent directory of the script. 
+     */
+    private File getDefaultWorkingDir()
+    {
+        return Path.fromOSString(mStartupFileAbsolut).removeLastSegments(1).toFile();
+    }
 	
+    /**
+     * Returns the working directory path specified by the given launch
+     * configuration, or <code>null</code> if none.
+     * 
+     * @param configuration  launch configuration
+     * @return the working directory path specified by the given launch
+     *         configuration, or <code>null</code> if none
+     * @exception CoreException
+     *            if unable to retrieve the attribute
+     */
+    private IPath getWorkingDirectoryPath(ILaunchConfiguration configuration) throws CoreException
+    {
+        String path = configuration.getAttribute(
+            PerlLaunchConfigurationConstants.ATTR_WORKING_DIRECTORY,
+            (String) null);
 
+        if (path == null) return null;
+        else
+        {
+            path = VariablesPlugin.getDefault().getStringVariableManager().performStringSubstitution(path);
+            return new Path(path);
+        }
+    }
+    
+    /**
+     * Verifies the working directory specified by the given launch
+     * configuration exists, and returns the working directory, or
+     * <code>null</code> if none is specified.
+     * 
+     * @param configuration  launch configuration
+     * @return the working directory specified by the given launch
+     *         configuration, or <code>null</code> if none
+     * @exception CoreException if unable to retrieve the attribute
+     */
+    private File verifyWorkingDirectory(ILaunchConfiguration configuration)
+        throws CoreException
+    {
+        IPath path = getWorkingDirectoryPath(configuration);
+        if (path == null) return null;
+        
+        if (path.isAbsolute())
+        {
+            File dir = new File(path.toOSString());
+            if (dir.isDirectory()) return dir;
+        }
+        
+        // If we get here, we assume that the entered path is workspace-relative.
+        // This is true for paths that do not start with slash, but also for
+        // paths that start with slash to which some variables may evaluate.
+        // In any case, we try to locate the working directory in the workspace.
+
+        IResource res = ResourcesPlugin.getWorkspace().getRoot().findMember(path);
+        if (res instanceof IContainer && res.exists())
+            return res.getLocation().toFile();
+
+        throw new CoreException(
+            new Status(
+                Status.ERROR,
+                PerlDebugPlugin.getUniqueIdentifier(),
+                Status.OK,
+                MessageFormat.format(
+                    "Working directory does not exist: {0}",
+                    new String[] { path.toString() }),
+                null
+                ));
+    }
 }

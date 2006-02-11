@@ -92,7 +92,7 @@ public class LaunchConfigurationDelegate
 					{
 						mLaunch.addDebugTarget(mTarget);
 						PerlDB db = ((DebugTarget) mTarget)
-						.getDebuger();
+						.getDebugger();
 						if( db != null )					
 						 db.generateDebugInitEvent();
 					}
@@ -121,7 +121,7 @@ public class LaunchConfigurationDelegate
 					{
 						mLaunch.addDebugTarget(mTarget);
 						PerlDB db = ((DebugTarget) mTarget)
-						.getDebuger();
+						.getDebugger();
 						if( db != null )					
 						 db.generateDebugInitEvent();
 					}

@@ -128,25 +128,40 @@ public class PerlDebugPlugin extends AbstractUIPlugin {
 
 	private void log(int fSeverity, String fText, Exception fException) {
 
-		Status status, result;
+		IStatus status, result;
 		MultiStatus multiStatus;
 
 		if (fException != null) {
-
-			ByteArrayOutputStream out = new ByteArrayOutputStream();
-			PrintWriter swr = new PrintWriter(out);
-			fException.printStackTrace(swr);
-			String buf = (fException.getMessage() + "\n" + out.toString());
-			StringTokenizer tok = new StringTokenizer(buf, "\n");
-			multiStatus = new MultiStatus(getUniqueIdentifier(), fSeverity,
-					fText, fException);
-			while (tok.hasMoreElements()) {
-				status = new Status(fSeverity, getUniqueIdentifier(), 0, tok
-						.nextToken(), null);
-				multiStatus.add(status);
-			}
-
-			result = multiStatus;
+            
+            if (fException instanceof CoreException)
+            {
+                multiStatus = new MultiStatus(
+                    getUniqueIdentifier(),
+                    fSeverity,
+                    fText,
+                    null);
+                
+                multiStatus.add(((CoreException) fException).getStatus());
+                result = multiStatus;
+            }
+            else
+            {
+                // TODO I doubt the code below qualifies as correct use of MultiStatus...                
+    			ByteArrayOutputStream out = new ByteArrayOutputStream();
+    			PrintWriter swr = new PrintWriter(out);
+    			fException.printStackTrace(swr);
+    			String buf = (fException.getMessage() + "\n" + out.toString());
+    			StringTokenizer tok = new StringTokenizer(buf, "\n");
+    			multiStatus = new MultiStatus(
+                    getUniqueIdentifier(), fSeverity, fText, /*fException*/null);
+    			while (tok.hasMoreElements()) {
+    				status = new Status(
+                        fSeverity, getUniqueIdentifier(), 0, tok.nextToken(), null);
+    				multiStatus.add(status);
+    			}
+    
+    			result = multiStatus;
+            }
 		} else {
 			result = new Status(fSeverity, getUniqueIdentifier(), 0, fText,
 					fException);
@@ -240,7 +255,7 @@ public class PerlDebugPlugin extends AbstractUIPlugin {
 	}
 
 	static String getUniqueIdentifier() {
-		return ("org.epic.debug.perldebugger.perl");
+		return "org.epic.debug";
 	}
 
 	/**
@@ -322,7 +337,7 @@ public class PerlDebugPlugin extends AbstractUIPlugin {
 
 		public void run() {
 			if (mStatus == null)
-				MessageDialog.openError(mShell, "EPIG Error", mMessage);
+				MessageDialog.openError(mShell, "EPIC Error", mMessage);
 			else
 				ErrorDialog.openError(mShell, "Error", null, mStatus); //$NON-NLS-1$
 

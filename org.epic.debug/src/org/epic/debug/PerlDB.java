@@ -16,11 +16,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.StringTokenizer;
 
-import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Path;
-import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.*;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.debug.core.DebugEvent;
 import org.eclipse.debug.core.DebugException;
@@ -127,11 +123,12 @@ public class PerlDB implements IDebugElement, ITerminate
     private VarUpdateJob mVarUpdateJob;
     private StackFrame mStackFrameOrg;
 
-    public PerlDB(DebugTarget fTarget)
+    public PerlDB(DebugTarget fTarget) throws CoreException
     {
         mTarget = fTarget;
+        mWorkingDir = mTarget.getLocalWorkingDir();
         mCurrentCommand = mCommandNone;
-        mCurrentSubCommand = mCommandNone;
+        mCurrentSubCommand = mCommandNone;        
 
         mPendingBreakpoints = new BreakpointMap();
         mActiveBreakpoints = new BreakpointMap();
@@ -152,9 +149,7 @@ public class PerlDB implements IDebugElement, ITerminate
         mReExitFrame = newRE("^\\s*exited", false);
         mReStackTrace = newRE(
             "^(.)\\s+=\\s+(.*)called from .* \\`([^\\']+)\\'\\s*line (\\d+)\\s*$",
-            true);
-
-        mWorkingDir = mTarget.getLocalWorkingDir();
+            true);       
 
         mDebugIn = mTarget.getDebugWriteStream();
         mDebugOut = mTarget.getDebugReadSrream();

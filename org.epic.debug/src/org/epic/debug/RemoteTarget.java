@@ -312,7 +312,6 @@ public class RemoteTarget extends DebugTarget implements IDebugEventSetListener
 		mStartupFileRelPath = startfile;
 		mProjectDir = prj.getLocation();
 		path = mProjectDir.append(startfile);
-		mWorkingDir = path.removeLastSegments(1);
 		mStartupFile = path.lastSegment();
 		mStartupFileAbsolut = dest +"/"+startfile;
 		mRemoteDest = dest;

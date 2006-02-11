@@ -31,6 +31,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.ui.AbstractLaunchConfigurationTab;
+import org.eclipse.debug.ui.ILaunchConfigurationDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
@@ -67,6 +68,7 @@ public class LaunchConfigurationMainTab extends AbstractLaunchConfigurationTab
 	// Main class UI widgets
 	protected Label fMainLabel;
 	protected Combo fMainText;
+    protected WorkingDirectoryBlock fWorkingDirectoryBlock;
 	//	protected Button fSearchButton;
 	//  protected Button fSearchExternalJarsCheckButton;
 	//	protected Button fStopInMainCheckButton;
@@ -75,6 +77,11 @@ public class LaunchConfigurationMainTab extends AbstractLaunchConfigurationTab
 
 	private static final String PERL_NATURE_ID =
 		"org.epic.perleditor.perlnature";
+
+    public LaunchConfigurationMainTab()
+    {
+        fWorkingDirectoryBlock = new WorkingDirectoryBlock();
+    }
 
 	/**
 	 * @see org.eclipse.debug.ui.ILaunchConfigurationTab#createControl(Composite)
@@ -197,31 +204,8 @@ public class LaunchConfigurationMainTab extends AbstractLaunchConfigurationTab
 			}
 		});
 
-		/*	fSearchButton = createPushButton(mainComp,LauncherMessages.getString("JavaMainTab.Searc&h_5"), null); //$NON-NLS-1$
-			fSearchButton.addSelectionListener(new SelectionAdapter() {
-				public void widgetSelected(SelectionEvent evt) {
-					handleSearchButtonSelected();
-				}
-			});
-		
-			fSearchExternalJarsCheckButton = new Button(mainComp, SWT.CHECK);
-			fSearchExternalJarsCheckButton.setText(LauncherMessages.getString("JavaMainTab.E&xt._jars_6")); //$NON-NLS-1$
-			fSearchExternalJarsCheckButton.setFont(font);
-			fSearchExternalJarsCheckButton.addSelectionListener(new SelectionAdapter() {
-				public void widgetSelected(SelectionEvent evt) {
-					updateLaunchConfigurationDialog();
-				}
-			});
-		
-			fStopInMainCheckButton = new Button(comp, SWT.CHECK);
-			fStopInMainCheckButton.setText(LauncherMessages.getString("JavaMainTab.St&op_in_main_1")); //$NON-NLS-1$
-			fStopInMainCheckButton.setFont(font);
-			fStopInMainCheckButton.addSelectionListener(new SelectionAdapter() {
-				public void widgetSelected(SelectionEvent evt) {
-					updateLaunchConfigurationDialog();
-				}
-			});
-			*/
+        createVerticalSpacer(comp, 2);
+        fWorkingDirectoryBlock.createControl(comp); 
 	}
 
 	/**
@@ -235,6 +219,7 @@ public class LaunchConfigurationMainTab extends AbstractLaunchConfigurationTab
 	//	fMainText.setItems(getPerlFiles());
 		//fMainText.setText(file);
 		updateParamsFromConfig(config);
+        fWorkingDirectoryBlock.initializeFrom(config);
 	}
 
 	protected void updateProjectFromConfig(ILaunchConfiguration config)
@@ -299,7 +284,27 @@ public class LaunchConfigurationMainTab extends AbstractLaunchConfigurationTab
 		config.setAttribute(
 			PerlLaunchConfigurationConstants.ATTR_PROGRAM_PARAMETERS,
 			(String) fParamText.getText());
+        
+        fWorkingDirectoryBlock.performApply(config);
 	}
+    
+    public String getErrorMessage()
+    {
+        String m = super.getErrorMessage();
+        return m == null ? fWorkingDirectoryBlock.getErrorMessage() : m;
+    }
+    
+    public String getMessage()
+    {
+        String m = super.getMessage();
+        return m == null ? fWorkingDirectoryBlock.getMessage() : m;
+    }
+    
+    public void setLaunchConfigurationDialog(ILaunchConfigurationDialog dialog)
+    {
+        super.setLaunchConfigurationDialog(dialog);
+        fWorkingDirectoryBlock.setLaunchConfigurationDialog(dialog);
+    }
 
 	/**
 	 * @see org.eclipse.debug.ui.ILaunchConfigurationTab#dispose()
@@ -442,7 +447,7 @@ public class LaunchConfigurationMainTab extends AbstractLaunchConfigurationTab
 			return false;
 		}
 
-		return true;
+		return fWorkingDirectoryBlock.isValid(config);
 	}
 
 	/**
@@ -470,6 +475,7 @@ public class LaunchConfigurationMainTab extends AbstractLaunchConfigurationTab
 			PerlLaunchConfigurationConstants.ATTR_PROGRAM_PARAMETERS,
 			"");
 
+        fWorkingDirectoryBlock.setDefaults(config);
 	}
 
 	/**

@@ -210,7 +210,7 @@ public class RemotePort
 							+ port
 							+ "(Try "
 							+ x
-							+ " of 100)\n");
+							+ " of 1000)\n");
 							
 					Thread.sleep(100);
 					

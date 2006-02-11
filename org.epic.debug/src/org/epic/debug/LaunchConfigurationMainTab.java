@@ -153,7 +153,7 @@ public class LaunchConfigurationMainTab extends AbstractLaunchConfigurationTab
 		mainComp.setFont(font);
 
 		fMainLabel = new Label(mainComp, SWT.NONE);
-		fMainLabel.setText("File to execute"); //$NON-NLS-1$
+		fMainLabel.setText("File to execute:"); //$NON-NLS-1$
 		gd = new GridData();
 		gd.horizontalSpan = 2;
 		fMainLabel.setLayoutData(gd);
@@ -185,7 +185,7 @@ public class LaunchConfigurationMainTab extends AbstractLaunchConfigurationTab
 		paramComp.setFont(font);
 
 		fParamLabel = new Label(paramComp, SWT.NONE);
-		fParamLabel.setText("Commandline Parameters:"); //$NON-NLS-1$
+		fParamLabel.setText("Command-line parameters:"); //$NON-NLS-1$
 		gd = new GridData();
 		gd.horizontalSpan = 2;
 		fParamLabel.setLayoutData(gd);

@@ -31,6 +31,7 @@ Require-Bundle: org.eclipse.core.runtime.compatibility,
  org.eclipse.ui.ide,
  org.eclipse.help.base,
  org.epic.perleditor,
- org.epic.regexp
+ org.epic.regexp,
+ org.eclipse.core.variables
 Eclipse-AutoStart: true
 Plugin-Class: org.epic.debug.PerlDebugPlugin

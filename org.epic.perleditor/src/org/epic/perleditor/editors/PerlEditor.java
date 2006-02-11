@@ -465,6 +465,15 @@ public class PerlEditor extends TextEditor implements IPropertyChangeListener
         return sourceViewer;
     }
     
+    public void rulerContextMenuAboutToShow(IMenuManager menu) {
+		super.rulerContextMenuAboutToShow(menu);
+		ViewerActionBuilder builder = new ViewerActionBuilder();
+		builder.readViewerContributions("#PerlRulerContext",
+				getSelectionProvider(), this);
+		builder.contribute(menu, null, true);
+	}
+
+    
     /**
      * The PerlEditor implementation of this AbstractTextEditor method adds any
      * PerlEditor specific entries.

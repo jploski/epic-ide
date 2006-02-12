@@ -145,13 +145,13 @@ public class LaunchConfigurationDelegate
 				mTarget = new DebugTargetLocal(launch);
 				//target = new CGITarget(launch);
 				mTarget.start();
-				if (!mTarget.isTerminated())
-				{
-     				mLaunch.addDebugTarget(mTarget);
-//					((DebugTargetLocal) mTarget)
-//						.getDebuger()
-//						.generateDebugInitEvent();
-				}
+                mLaunch.addDebugTarget(mTarget);
+
+                // If the target is terminated after start, an error occurred.
+                // We need to also terminate the launch to make it possible to
+                // remove it from the list:
+                if (mTarget.isTerminated()) mLaunch.terminate();
+
 				// Switch to Debug Perspective
 				Perspective.switchPerspective(Constants.DEBUG_PERSPECTIVE_ID);
 			} else

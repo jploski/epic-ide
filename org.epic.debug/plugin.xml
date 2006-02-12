@@ -97,7 +97,7 @@
          point="org.eclipse.debug.ui.debugModelPresentations">
       <debugModelPresentation
             class="org.epic.debug.DebugModelPresentation"
-            id="org.epic.debug.perldebugger.perl">
+            id="org.epic.debug">
       </debugModelPresentation>
    </extension>
    <extension

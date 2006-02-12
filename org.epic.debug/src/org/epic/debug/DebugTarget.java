@@ -25,7 +25,7 @@ public abstract class DebugTarget extends Target {
 
 	private boolean mShutDownStarted;
 	
-	private final static IThread[] mNoThreads = new IThread[1];
+	private final static IThread[] mNoThreads = new IThread[0];
 	RemotePort mDebugPort;
 
 	protected PerlDB mPerlDB;
@@ -153,7 +153,7 @@ public abstract class DebugTarget extends Target {
 	 * @see org.eclipse.debug.core.model.ITerminate#canTerminate()
 	 */
 	public boolean canTerminate() {
-		return !isTerminated();
+		return true;
 	}
 
 	/**

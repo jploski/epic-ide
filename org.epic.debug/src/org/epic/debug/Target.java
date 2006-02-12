@@ -14,8 +14,6 @@ import org.epic.core.util.PerlExecutableUtilities;
 import org.epic.debug.util.ExecutionArguments;
 import org.epic.perleditor.PerlEditorPlugin;
 
-import sun.awt.motif.MComponentPeer;
-
 /**
  * @author ruehl
  *

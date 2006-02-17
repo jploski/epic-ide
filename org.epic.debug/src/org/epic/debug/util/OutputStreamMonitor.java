@@ -27,7 +27,6 @@ import org.eclipse.debug.core.IStreamListener;
 import org.eclipse.debug.core.model.IFlushableStreamMonitor;
 import org.eclipse.debug.core.model.IStreamMonitor;
 import org.eclipse.debug.internal.core.DebugCoreMessages;
-import org.eclipse.debug.internal.core.ListenerList;
 
 /**
  * Monitors the output stream of a system process and notifies listeners of

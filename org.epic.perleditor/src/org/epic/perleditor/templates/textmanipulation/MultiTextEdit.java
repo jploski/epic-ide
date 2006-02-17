@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.eclipse.core.internal.utils.Assert;
 import org.eclipse.core.runtime.CoreException;
 
 
@@ -40,7 +39,7 @@ public class MultiTextEdit {
 	 * @param edit the multi text edit to be added.
 	 */
 	public void add(MultiTextEdit edit) {
-		Assert.isNotNull(edit);
+		assert edit != null;
 		fChildren.add(edit);
 	}
 	
@@ -50,7 +49,7 @@ public class MultiTextEdit {
 	 * @param edit the text edit to be added
 	 */
 	public void add(TextEdit edit) {
-		Assert.isNotNull(edit);
+		assert edit != null;
 		fChildren.add(edit);
 	}
 	

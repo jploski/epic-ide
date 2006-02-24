@@ -168,6 +168,18 @@ public class PerlEditor extends TextEditor implements IPropertyChangeListener
         }
 
         super.doSetInput(input);
+        
+        if (getViewer() != null)
+        {
+            // The editor is being reused (e.g. when the user clicks on matches
+            // found through a search). Make sure we synchronize with the new content.
+            
+            source = new SourceFile(
+                PerlEditorPlugin.getDefault().getLog(),
+                getViewer().getDocument());
+            
+            reconcile();
+        }
     }
     
     /**

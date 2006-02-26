@@ -71,30 +71,28 @@ public abstract class DebugTarget extends Target {
 		return (RemotePort.mWaitOK);
 	}
 
-	int connectDebugPort(boolean fTimeout) {
+	protected int connectDebugPort(boolean fTimeout) {
 
 		if (mDebugPort == null) {
-			mDebugPort = new RemotePort();
+			mDebugPort = new RemotePort("DebugTarget.mDebugPort");
 			mDebugPort.startConnect();
 		} else
 			mDebugPort.startReconnect();
 
-		if (startPerlProcess() == null) mDebugPort.shutdown();
+		startPerlProcess();
 
 		int res = mDebugPort.waitForConnect(fTimeout);
 
-		if (res == RemotePort.mWaitError) {
-			PerlDebugPlugin.errorDialog("Could not connect to Debugg-Port !");
-		}
-
-		return res;
+		if (res == RemotePort.mWaitError)
+			PerlDebugPlugin.errorDialog("Could not connect to debug port!");
+        return res;
 	}
 
 	public PrintWriter getDebugWriteStream() {
 		return mDebugPort.getWriteStream();
 	}
 
-	public BufferedReader getDebugReadSrream() {
+	public BufferedReader getDebugReadStream() {
 		return mDebugPort.getReadStream();
 	}
 
@@ -305,4 +303,12 @@ public abstract class DebugTarget extends Target {
 
 	public void perlDBstarted(PerlDB fDB) {
 	}
+    
+    protected Process startPerlProcess()
+    {
+        // note: subclasses override this.. ugly as hell but works
+        Process p = super.startPerlProcess();
+        if (p == null) mDebugPort.shutdown();
+        return p;
+    }
 }

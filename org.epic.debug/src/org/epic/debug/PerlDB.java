@@ -152,7 +152,7 @@ public class PerlDB implements IDebugElement, ITerminate
             true);       
 
         mDebugIn = mTarget.getDebugWriteStream();
-        mDebugOut = mTarget.getDebugReadSrream();
+        mDebugOut = mTarget.getDebugReadStream();
 
         mPathMapper = mTarget.getPathMapper();
 
@@ -617,8 +617,7 @@ public class PerlDB implements IDebugElement, ITerminate
             if (count > 0) debugOutput.append(buf, 0, count);
             currentOutput = debugOutput.toString();
 
-            // System.out.println("\nCurrent DEBUGOUTPUT:\n" + currentOutput
-            // + "\n");
+            //System.out.println("\nCurrent DEBUGOUTPUT:\n" + currentOutput + "\n");
             if (count == -1 || hasSessionTerminated(currentOutput))
             {
                 finished = SESSION_TERMINATED;

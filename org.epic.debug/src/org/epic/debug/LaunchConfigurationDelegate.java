@@ -3,10 +3,7 @@ package org.epic.debug;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.debug.core.DebugPlugin;
-import org.eclipse.debug.core.ILaunch;
-import org.eclipse.debug.core.ILaunchConfiguration;
-import org.eclipse.debug.core.ILaunchManager;
+import org.eclipse.debug.core.*;
 import org.epic.core.Constants;
 import org.epic.core.Perspective;
 import org.epic.perleditor.PerlEditorPlugin;
@@ -22,18 +19,9 @@ import org.epic.perleditor.PerlEditorPlugin;
 public class LaunchConfigurationDelegate
 	extends org.eclipse.debug.core.model.LaunchConfigurationDelegate
 {
-
 	private ILaunchConfiguration mLaunchConfiguration;
-	Target mTarget;
-	ILaunch mLaunch;
-
-	/**
-	 * Constructor for LaunchConfigurationDelegate.
-	 */
-	public LaunchConfigurationDelegate()
-	{
-		super();
-	}
+	private Target mTarget;
+    private ILaunch mLaunch;
 
 	/**
 	 * Convenience method to get the launch manager.
@@ -45,29 +33,24 @@ public class LaunchConfigurationDelegate
 		return DebugPlugin.getDefault().getLaunchManager();
 	}
 
-	/*org.eclipse.debug.core.model.ILaunchConfigurationDelegate2#getLaunch(org.eclipse.debug.core.ILaunchConfiguration, java.lang.String)
-	 */
-	public ILaunch getLaunch(ILaunchConfiguration configuration, String mode) throws CoreException {
+	public ILaunch getLaunch(ILaunchConfiguration configuration, String mode)
+        throws CoreException
+    {
 		return null;
 	}
 
-	/**
-	 * @see org.eclipse.debug.core.model.ILaunchConfigurationDelegate#launch(ILaunchConfiguration, String, ILaunch, IProgressMonitor)
-	 */
-	
 	public void launch(
 		ILaunchConfiguration configuration,
 		String mode,
 		ILaunch launch,
-		IProgressMonitor monitor)
-	
-		throws CoreException
+		IProgressMonitor monitor) throws CoreException
 	{
-		//configuration.launch(mode,monitor);
 		mLaunchConfiguration = configuration;
 		mLaunch = launch;
 
 		System.out.println("Launch: " + mLaunchConfiguration.getLocation());
+        
+        launch.setSourceLocator(new SourceLocator());
 
 		String cgi =
 			launch.getLaunchConfiguration().getAttribute(
@@ -78,90 +61,15 @@ public class LaunchConfigurationDelegate
 			launch.getLaunchConfiguration().getAttribute(
 				PerlLaunchConfigurationConstants.ATTR_REMOTE,
 				((String) null));
-		launch.setSourceLocator(new SourceLocator());
-		if (remote != null)
-		{
-			mTarget = new RemoteTarget(launch);
-			//target = new CGITarget(launch);
-			Thread start = new Thread()
-			{
-				public void run()
-				{
-					mTarget.start();
-					if (!mTarget.isTerminated())
-					{
-						mLaunch.addDebugTarget(mTarget);
-						PerlDB db = ((DebugTarget) mTarget)
-						.getDebugger();
-						if( db != null )					
-						 db.generateDebugInitEvent();
-					}
-				};
-			};
 
-			start.start();
-			
-			// Switch to Debug Perspective
-			Perspective.switchPerspective(Constants.DEBUG_PERSPECTIVE_ID);
-
-			//			mTarget.start();
-			//			mLaunch.addDebugTarget(mTarget);
-			//((DebugTarget) mTarget).getDebuger().generateDebugInitEvent();
-		}else 
-		if (cgi != null)
-		{
-			mTarget = new CGITarget(launch);
-			//target = new CGITarget(launch);
-			Thread start = new Thread()
-			{
-				public void run()
-				{
-					mTarget.start();
-					if (!mTarget.isTerminated())
-					{
-						mLaunch.addDebugTarget(mTarget);
-						PerlDB db = ((DebugTarget) mTarget)
-						.getDebugger();
-						if( db != null )					
-						 db.generateDebugInitEvent();
-					}
-				};
-			};
-
-			start.start();
-			
-			// Switch to Debug Perspective
-			Perspective.switchPerspective(Constants.DEBUG_PERSPECTIVE_ID);
-
-			//			mTarget.start();
-			//			mLaunch.addDebugTarget(mTarget);
-			//((DebugTarget) mTarget).getDebuger().generateDebugInitEvent();
-		} else
-        {
-            if (!PerlEditorPlugin.getDefault().requirePerlInterpreter(true)) return;
-            
-			if (launch.getLaunchMode().equals(ILaunchManager.DEBUG_MODE))
-			{
-				mTarget = new DebugTargetLocal(launch);
-				//target = new CGITarget(launch);
-				mTarget.start();
-                mLaunch.addDebugTarget(mTarget);
-
-                // If the target is terminated after start, an error occurred.
-                // We need to also terminate the launch to make it possible to
-                // remove it from the list:
-                if (mTarget.isTerminated()) mLaunch.terminate();
-
-				// Switch to Debug Perspective
-				Perspective.switchPerspective(Constants.DEBUG_PERSPECTIVE_ID);
-			} else
-			{
-				mTarget = new RunTarget(launch);
-				mTarget.start();
-				mLaunch.addDebugTarget(mTarget);
-			}
-        }
-	}
+		if (remote != null) launchRemote();           
+        else if (cgi != null) launchCGI();
+        else launchLocal();
+        
+        // Switch to Debug Perspective
+        if (launch.getLaunchMode().equals(ILaunchManager.DEBUG_MODE))
+            Perspective.switchPerspective(Constants.DEBUG_PERSPECTIVE_ID);
+	}      
 
 	/**
 	 * Returns the set of projects to use when searching for errors or <code>null</code> 
@@ -170,30 +78,72 @@ public class LaunchConfigurationDelegate
 	 * @param projects the list of projects to sort into build order
 	 * @return a list of projects.
 	 */
-	protected IProject[] getProjectsForProblemSearch(ILaunchConfiguration configuration, String mode) throws CoreException {
-	String prjName=null;
-		try
+	protected IProject[] getProjectsForProblemSearch(
+        ILaunchConfiguration configuration,
+        String mode) throws CoreException
+    {
+        try
 		{
-			
-			prjName =
+			String prjName =
 				configuration.getAttribute(
 					PerlLaunchConfigurationConstants.ATTR_PROJECT_NAME,
 					(String)null);
-			
 
-		} catch (Exception ce)
+            IProject p[] = new IProject[1];
+            p[0] = PerlDebugPlugin.getWorkspace().getRoot().getProject(prjName);
+            return p;
+        }
+        catch (Exception ce)
 		{
 			PerlDebugPlugin.log(ce);
+            return null;
 		}
-		
-		if( prjName == null) return(null);
-		IProject p[]= new IProject[1];
-		p[0]=
-			PerlDebugPlugin.getWorkspace().getRoot().getProject(prjName);
-
-		
-		return p;
 	}
-	
-	
+
+    private void launchCGI()
+    {
+        mTarget = new CGITarget(mLaunch);
+        startTargetThread();
+    }
+    
+    private void launchLocal() throws DebugException
+    {
+        if (!PerlEditorPlugin.getDefault().requirePerlInterpreter(true)) return;
+            
+        if (mLaunch.getLaunchMode().equals(ILaunchManager.DEBUG_MODE))
+            mTarget = new DebugTargetLocal(mLaunch);
+        else
+            mTarget = new RunTarget(mLaunch);
+        
+        mTarget.start();
+        mLaunch.addDebugTarget(mTarget);
+        
+        // If the target is terminated after start, an error occurred.
+        // We need to also terminate the launch to make it possible to
+        // remove it from the list:
+        if (mTarget.isTerminated()) mLaunch.terminate();
+    }
+
+    private void launchRemote()
+    {        
+        mTarget = new RemoteTarget(mLaunch);
+        startTargetThread();
+    }
+    
+    private void startTargetThread()
+    {
+        new Thread("EPIC-Debugger:startTargetThread")
+        {
+            public void run()
+            {
+                mTarget.start();
+                if (!mTarget.isTerminated())
+                {
+                    mLaunch.addDebugTarget(mTarget);
+                    PerlDB db = ((DebugTarget) mTarget).getDebugger();
+                    if (db != null) db.generateDebugInitEvent();
+                }
+            };
+        }.start();
+    }
 }

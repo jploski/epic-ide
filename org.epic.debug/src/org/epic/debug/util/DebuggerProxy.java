@@ -68,7 +68,7 @@ public class DebuggerProxy extends PlatformObject
 
 		//port =
 		// Integer.parseInt(getAttribute(PerlLaunchConfigurationConstants.ATTR_DEBUG_IO_PORT));
-		mIOStream = new RemotePort();
+		mIOStream = new RemotePort("DebuggerProxy.mIOStream");
 		mIOStream.startConnect();
 		mDebugger.redirectIO(mIOStream.getServerPort());
 		if (mIOStream.waitForConnect(true) != RemotePort.mWaitOK)
@@ -77,7 +77,7 @@ public class DebuggerProxy extends PlatformObject
 
 		//port =
 		// Integer.parseInt(getAttribute(PerlLaunchConfigurationConstants.ATTR_DEBUG_ERROR_PORT));
-		mErrorStream = new RemotePort();
+		mErrorStream = new RemotePort("DebuggerProxy.mErrorStream");
 		mErrorStream.startConnect();
 		mDebugger.redirectError(mErrorStream.getServerPort());
 		if (mErrorStream.waitForConnect(true) != RemotePort.mWaitOK)

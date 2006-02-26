@@ -55,7 +55,8 @@ public class CGITarget extends DebugTarget implements IDebugEventSetListener
 	private CGITarget mTarget;
 	private IBrowser mBrowser;
 	private CGIProxy mCGIProxy;
-	private String mHtmlRootFileRel ;
+	private String mHtmlRootFileRel;
+
 	/**
 	 * Constructor for DebugTarget.
 	 */
@@ -82,33 +83,25 @@ public class CGITarget extends DebugTarget implements IDebugEventSetListener
 	{
 		mReConnect = true;
 
-		if (!startTarget())
-			terminate();
-
+		if (!startTarget()) terminate();
 		if (mDebug)
 		{
-
-			if (!startSession())
-				terminate();
+			if (!startSession()) terminate();
 		}
 	}
 
 	boolean startTarget()
 	{
-
 		String htmlRootDir = null;
 		String htmlRootFile = null;
 		String cgiRootDir = null;
 		String cgiFileExtension = null;
-		String projectName = null;
-		IProject project;
+		String projectName = null;		
 		
 		if (mDebug)
 		{
-			mDebugPort = new RemotePort();
+			mDebugPort = new RemotePort("CGITarget.mDebugPort");
 			mDebugPort.startConnect();
-			if (mDebugPort == null)
-				return false;
 		}
 		try
 		{
@@ -133,20 +126,21 @@ public class CGITarget extends DebugTarget implements IDebugEventSetListener
 					(List) null);
 					
 			cgiFileExtension =
-							mLaunch.getLaunchConfiguration().getAttribute(
-								PerlLaunchConfigurationConstants.ATTR_CGI_FILE_EXTENSION,
-								(String) null);					
+                mLaunch.getLaunchConfiguration().getAttribute(
+				    PerlLaunchConfigurationConstants.ATTR_CGI_FILE_EXTENSION,
+					(String) null);
+
 			projectName =
 				mLaunch.getLaunchConfiguration().getAttribute(
 					PerlLaunchConfigurationConstants.ATTR_PROJECT_NAME,
-					(String) null);		
-			
-		} catch (CoreException e2)
+					(String) null);
+		}
+        catch (CoreException e)
 		{
 			// TODO Auto-generated catch block
-			e2.printStackTrace();
+			e.printStackTrace();
 		}
-		project = PerlDebugPlugin.getWorkspace().getRoot().getProject(projectName);
+
 		Path htmlDirPath = new Path(htmlRootDir);
 		htmlRootDir = htmlDirPath.toString();
 
@@ -155,8 +149,8 @@ public class CGITarget extends DebugTarget implements IDebugEventSetListener
 
 		Path cgiDirPath = new Path(cgiRootDir);
 		cgiRootDir = cgiDirPath.toString();
-
-		 mHtmlRootFileRel =
+        
+        mHtmlRootFileRel =
 			htmlFilePath
 				.setDevice(null)
 				.removeFirstSegments(htmlDirPath.segments().length)
@@ -194,7 +188,9 @@ public class CGITarget extends DebugTarget implements IDebugEventSetListener
 				+ "cgi.suffix="+cgiFileExtension
 				+"\n"
 				+ "cgi.DebugInclude="+" -I"+PerlDebugPlugin.getPlugInDir());
-		
+
+        IProject project = PerlDebugPlugin.getWorkspace().getRoot().getProject(
+            projectName);
 		List list = PerlExecutableUtilities.getPerlIncArgs(PerlCore.create(project));
 		Iterator i = list.iterator();
 		int x= 0;
@@ -205,7 +201,6 @@ public class CGITarget extends DebugTarget implements IDebugEventSetListener
 		}	
 		if (mDebug)
 		{
-
 			brazilProps.append(
 				"\n" + "cgi.ENV_" + PerlDebugPlugin.getPerlDebugEnv(this));
 		}
@@ -306,17 +301,15 @@ public class CGITarget extends DebugTarget implements IDebugEventSetListener
 		
 		/* start console-proxy */
 		return true;
-
 	}
+
 	/**
 	 * Fire a debug event marking the creation of this element.
 	 */
 	private void fireCreationEvent(Object fSource)
 	{
 		fireEvent(new DebugEvent(fSource, DebugEvent.CREATE));
-	}
-
-	
+	}	
 
 	BrowserDescriptor[] browserDescr ;
 	void startBrowser(int fPort, String  htmlRootFileRel)
@@ -443,7 +436,7 @@ public class CGITarget extends DebugTarget implements IDebugEventSetListener
 		shutdown();
 	}
 
-	Process startPerlProcess()
+	protected Process startPerlProcess()
 	{
 		return null;
 	}
@@ -459,7 +452,7 @@ public class CGITarget extends DebugTarget implements IDebugEventSetListener
 
 		mTarget = this;
 
-		Thread term = new Thread()
+		Thread term = new Thread("EPIC-Debugger:waitForDebuggerReconnect")
 		{
 			public void run()
 			{

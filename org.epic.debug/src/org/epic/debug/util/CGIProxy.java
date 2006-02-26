@@ -49,13 +49,11 @@ public class CGIProxy extends PlatformObject implements IProcess, ITerminate
 		mIsTerminated = false;
 		mLabel = fLabel;
 
-		int port;
-
-		mInStream = new RemotePort();
+		mInStream = new RemotePort("CGIProxy.mInStream");
 		mInStream.startConnect();
-		mOutStream = new RemotePort();
+		mOutStream = new RemotePort("CGIProxy.mOutStream");
 		mOutStream.startConnect();
-		mErrorStream = new RemotePort();
+		mErrorStream = new RemotePort("CGIProxy.mErrorStream");
 		mErrorStream.startConnect();
 
 		fBrazilPref.append("\ncgi.InPort=" + mInStream.getServerPort());
@@ -63,7 +61,7 @@ public class CGIProxy extends PlatformObject implements IProcess, ITerminate
 		fBrazilPref.append(
 			"\ncgi.ErrorPort=" + mErrorStream.getServerPort());
 
-		mWaitThread = new Thread()
+		mWaitThread = new Thread("EPIC-Debugger:CGIProxy")
 		{
 
 			public void run()

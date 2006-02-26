@@ -211,7 +211,7 @@ public class RemoteTarget extends DebugTarget implements IDebugEventSetListener
 		shutdown();
 	}
 
-	Process startPerlProcess()
+	protected Process startPerlProcess()
 	{
 		return null;
 	}

@@ -132,7 +132,7 @@ public abstract class Target extends DebugElement implements IDebugTarget
 		mStartupFileAbsolut = path.toString();
 	}
 	
-	Process startPerlProcess()
+	protected Process startPerlProcess()
 	{
 		
 		initPath();

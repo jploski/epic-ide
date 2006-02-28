@@ -407,119 +407,86 @@
          
       </actionSet>
    </extension>
+   <extension point="org.eclipse.ui.contexts">
+      <context
+      		name="Editing Perl Source"
+      		description="Editing Perl Source Code Context"
+      		id="org.epic.perleditor.perlEditorScope"
+      		parentId="org.eclipse.ui.textEditorScope" />
+   </extension>
 <!-- Remember to update class PerlEditorCommandIds when adding new commands! -->
-   <extension
-         point="org.eclipse.ui.commands">
-<!-- Perl Editor Scope definition -->
-      <scope
-            name="In Perl Editor"
-            parent="org.eclipse.ui.textEditorScope"
-            description="Perl Editor Scope"
-            id="org.epic.perleditor.perlEditorScope">
-      </scope>
-
-<!-- Toggle Comment command -->
+   <extension point="org.eclipse.ui.commands">
+      <category
+      		name="Perl Source"
+      		description="Perl Source Actions"
+      		id="org.epic.perleditor.source" />
       <command
             name="Toggle Comment"
             description="Toggle Comment source"
-            id="org.epic.perleditor.togglecomment">
-      </command>
-      <keyBinding
-            string="Ctrl+/"
-            scope="org.epic.perleditor.perlEditorScope"
-            command="org.epic.perleditor.togglecomment"
-            configuration="org.eclipse.ui.defaultAcceleratorConfiguration">
-      </keyBinding>
-      <keyBinding
-            platform="carbon"
-            string="Command+/"
-            scope="org.epic.perleditor.perlEditorScope"
-            command="org.epic.eclipse.perleditor.togglecomment"
-            configuration="org.eclipse.ui.defaultAcceleratorConfiguration">
-      </keyBinding>
-<!--HTML export -->
+            id="org.epic.perleditor.togglecomment"
+            categoryId="org.epic.perleditor.source" />
       <command
             name="HTML Export"
             description="HTML Export"
-            id="org.epic.perleditor.htmlexport">
-      </command>
-<!--Validate Syntax -->
+            id="org.epic.perleditor.htmlexport"
+            categoryId="org.epic.perleditor.source" />
       <command
             name="Validate Syntax"
             description="Validate Syntax"
-            id="org.epic.perleditor.validatesyntax">
-      </command>
-      <keyBinding
-            string="Shift+F5"
-            scope="org.epic.perleditor.perlEditorScope"
-            command="org.epic.perleditor.validatesyntax"
-            configuration="org.eclipse.ui.defaultAcceleratorConfiguration">
-      </keyBinding>
-<!--Format source -->
+            id="org.epic.perleditor.validatesyntax"
+            categoryId="org.epic.perleditor.source" />
       <command
             name="Format Source"
             description="Format Source"
-            id="org.epic.perleditor.formatsource">
-      </command>
-      <keyBinding
-            string="Ctrl+Shift+F"
-            scope="org.epic.perleditor.perlEditorScope"
-            command="org.epic.perleditor.formatsource"
-            configuration="org.eclipse.ui.defaultAcceleratorConfiguration">
-      </keyBinding>
-      <keyBinding
-            platform="carbon"
-            string="Command+Shift+F"
-            scope="org.epic.perleditor.perlEditorScope"
-            command="org.epic.perleditor.formatsource"
-            configuration="org.eclipse.ui.defaultAcceleratorConfiguration">
-      </keyBinding>
+            id="org.epic.perleditor.formatsource"
+            categoryId="org.epic.perleditor.source" />
       <command
-            description="Opens the SUBs declaration"
             name="Open Declaration"
-            id="org.epic.perleditor.openDeclaration"/>
-      <keyBinding
-            string="F3"
-            commandId="org.epic.perleditor.openDeclaration"
-            scope="org.epic.perleditor.perlEditorScope"
-            command="org.epic.perleditor.openDeclaration"
-            configuration="org.eclipse.ui.defaultAcceleratorConfiguration"/>
-       <command
+            description="Opens the SUBs declaration"
+            id="org.epic.perleditor.openDeclaration"
+            categoryId="org.eclipse.ui.category.navigate" />
+      <command
+            name="Search Perldoc"
             description="Search Perldoc"
-            name="SearchPerldoc"
-            id="org.epic.perleditor.searchPerlDoc"/>
-      <keyBinding
-            string="Shift+Ctrl+H"
-            commandId="org.epic.perleditor.searchPerlDoc"
-            scope="org.epic.perleditor.perlEditorScope"
-            command="org.epic.perleditor.searchPerlDoc"
-            configuration="org.eclipse.ui.defaultAcceleratorConfiguration"/>
-      <keyBinding
-            platform="carbon"
-            string="Shift+Command+H"
-            commandId="org.epic.perleditor.searchPerlDoc"
-            scope="org.epic.perleditor.perlEditorScope"
-            command="org.epic.perleditor.searchPerlDoc"
-            configuration="org.eclipse.ui.defaultAcceleratorConfiguration">
-      </keyBinding>
+            id="org.epic.perleditor.searchPerlDoc"
+            categoryId="org.eclipse.ui.category.help" />
 	  <command
             description="Matching Bracket"
-            name="MatchingBracket"
-            id="org.epic.perleditor.jump2Bracket"/>
-      <keyBinding
-            string="Shift+Ctrl+P"
+            name="Matching Bracket"
+            id="org.epic.perleditor.jump2Bracket"
+            categoryId="org.eclipse.ui.category.navigate" />
+   </extension>
+   <extension point="org.eclipse.ui.bindings">
+      <key
+      		sequence="M1+/"
+      		schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+      		contextId="org.epic.perleditor.perlEditorScope"
+      		commandId="org.epic.perleditor.togglecomment" />
+      <key
+            sequence="M2+F5"
+      		schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            contextId="org.epic.perleditor.perlEditorScope"
+            commandId="org.epic.perleditor.validatesyntax" />
+      <key
+            sequence="M1+M2+F"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            contextId="org.epic.perleditor.perlEditorScope"
+            commandId="org.epic.perleditor.formatsource" />
+      <key
+            sequence="F3"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            commandId="org.epic.perleditor.openDeclaration"
+            contextId="org.epic.perleditor.perlEditorScope" />
+      <key
+            sequence="M1+M2+H"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            commandId="org.epic.perleditor.searchPerlDoc"
+            contextId="org.epic.perleditor.perlEditorScope" />
+      <key
+            sequence="M1+M2+P"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
             commandId="org.epic.perleditor.jump2Bracket"
-            scope="org.epic.perleditor.perlEditorScope"
-            command="org.epic.perleditor.jump2Bracket"
-            configuration="org.eclipse.ui.defaultAcceleratorConfiguration"/>
-      <keyBinding
-            platform="carbon"
-            string="Shift+Command+P"
-            commandId="org.epic.perleditor.jump2Bracket"
-            scope="org.epic.perleditor.perlEditorScope"
-            command="org.epic.perleditor.jump2Bracket"
-            configuration="org.eclipse.ui.defaultAcceleratorConfiguration">
-      </keyBinding>
+            contextId="org.epic.perleditor.perlEditorScope" />
    </extension>
 <!--             So to not have equal markers for the same thing we use BOTTOM_LEFT.            -->
 <!--             But on some occasions the Java Builder seems to check Perl projecs as well.    -->

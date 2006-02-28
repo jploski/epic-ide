@@ -28,7 +28,7 @@ public class ToggleCommentAction extends PerlEditorAction
         // See https://bugs.eclipse.org/bugs/show_bug.cgi?id=121320
         // for why it seems unpractical.
 
-        System.out.println("Range: x=" + selRange.x + "; y=" + selRange.y);
+        //System.out.println("Range: x=" + selRange.x + "; y=" + selRange.y);
         try
         {
             int line2 = 0;

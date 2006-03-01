@@ -160,8 +160,8 @@ public class ListEditor extends FieldEditor
 		InputDialog dialog =
 			new InputDialog(
 				getShell(),
-				"Edit Envirement Variable ",
-				"Envirement Variable",
+				"Edit Environment Variable",
+				"Environment Variable",
 				input,
 				null);
 		int returnCode = dialog.open();
@@ -459,8 +459,8 @@ public class ListEditor extends FieldEditor
 		InputDialog dialog =
 			new InputDialog(
 				getShell(),
-				"Add Envirement Variable ",
-				"Envirement Variable",
+				"Add Environment Variable",
+				"Environment Variable",
 				null,
 				null);
 		int returnCode = dialog.open();

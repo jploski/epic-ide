@@ -132,7 +132,7 @@ public class LaunchConfigurationCGIWebServerTab
 //		envComp.setLayoutData(gd);
 //		envComp.setFont(font);
 //
-//		fEnvVar = new ListEditor("Envirement Variables", envComp, this);
+//		fEnvVar = new ListEditor("Environment Variables", envComp, this);
 //		fEnvVar.fillIntoGrid(envComp, 3);
 //		fEnvVar.setPropertyChangeListener(this);
 //		createVerticalSpacer(comp, 1);

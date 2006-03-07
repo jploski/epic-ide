@@ -1168,7 +1168,7 @@ public class PerlDB implements IDebugElement, ITerminate
                 if (result.startsWith(mPadwalkerError))
                 {
                     PerlDebugPlugin
-                        .errorDialog("***Error displaying Local Variables****\nInstall Padawalker on your Perl system or disable displaying of local variables");
+                        .errorDialog("***Error displaying Local Variables****\nInstall PadWalker on your Perl system or disable displaying of local variables");
                     mLocalVarsAvailable = false;
                 }
                 else

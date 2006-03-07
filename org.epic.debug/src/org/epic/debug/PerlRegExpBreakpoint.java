@@ -19,6 +19,7 @@ import org.eclipse.debug.core.DebugException;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.swt.widgets.Shell;
+import org.epic.debug.ui.RegExpBPSettingsDialog;
 
 /**
  * @author ruehl
@@ -36,7 +37,7 @@ public class PerlRegExpBreakpoint extends PerlLineBreakpoint {
 	private static final String IGNORE_CASE = "EPIC_IGNORE_CASE";
 	private static final String MULTILINE = "EPIC_MULTILINE";
 	//private IResource mResource;
-	private RegExpBPSettingsDalog dialog;
+	private RegExpBPSettingsDialog dialog;
 
 	public PerlRegExpBreakpoint() {
 		super();
@@ -148,7 +149,7 @@ public class PerlRegExpBreakpoint extends PerlLineBreakpoint {
 				return;
 
 			Shell shell = PerlDebugPlugin.getActiveWorkbenchShell();
-			dialog = new RegExpBPSettingsDalog(shell, this,
+			dialog = new RegExpBPSettingsDialog(shell, this,
 					"Could not extract Regular Expression...");
 			if (shell != null) {
 				shell.getDisplay().syncExec(new Runnable() {

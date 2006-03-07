@@ -18,6 +18,8 @@ import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorRegistry;
 import org.eclipse.ui.PlatformUI;
 import org.epic.core.util.FileUtilities;
+import org.epic.debug.ui.PerlDebugImages;
+import org.epic.debug.ui.PerlImageDescriptor;
 import org.epic.debug.varparser.PerlDebugVar;
 /**
  * @author ruehl

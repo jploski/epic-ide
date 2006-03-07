@@ -25,6 +25,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.epic.core.util.PerlExecutor;
+import org.epic.debug.ui.PerlImageDescriptorRegistry;
 import org.epic.debug.util.LogWriter;
 
 /**

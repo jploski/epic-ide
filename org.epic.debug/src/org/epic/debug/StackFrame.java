@@ -14,6 +14,7 @@ import org.eclipse.debug.core.model.IRegisterGroup;
 import org.eclipse.debug.core.model.IStackFrame;
 import org.eclipse.debug.core.model.IThread;
 import org.eclipse.debug.core.model.IVariable;
+import org.epic.debug.ui.action.*;
 import org.epic.debug.varparser.PerlDebugVar;
 
 /**

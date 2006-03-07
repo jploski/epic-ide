@@ -29,6 +29,7 @@ import org.eclipse.debug.core.model.IThread;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
+import org.epic.debug.ui.action.ShowLocalVariableActionDelegate;
 import org.epic.debug.varparser.PerlDebugValue;
 import org.epic.debug.varparser.PerlDebugVar;
 import org.epic.debug.varparser.TokenVarParser;

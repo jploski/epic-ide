@@ -63,7 +63,8 @@ public class CGIConsoleColorProvider implements IConsoleColorProvider {
 	 * @see IConsoleColorProvider#isReadOnly()
 	 */
 	public boolean isReadOnly() {
-		return fProcess == null || fProcess.isTerminated();
+        return true;
+		//return fProcess == null || fProcess.isTerminated();
 	}
 
 	/**

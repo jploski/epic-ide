@@ -7,21 +7,15 @@
 
 package org.epic.debug.util;
 
+import java.io.IOException;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.PlatformObject;
-import org.eclipse.debug.core.DebugEvent;
-import org.eclipse.debug.core.DebugException;
-import org.eclipse.debug.core.DebugPlugin;
-import org.eclipse.debug.core.ILaunch;
-import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
-import org.eclipse.debug.core.model.IDebugTarget;
-import org.eclipse.debug.core.model.IProcess;
-import org.eclipse.debug.core.model.IStreamMonitor;
-import org.eclipse.debug.core.model.IStreamsProxy;
-import org.eclipse.debug.core.model.ITerminate;
+import org.eclipse.debug.core.*;
+import org.eclipse.debug.core.model.*;
 import org.epic.debug.PerlDebugPlugin;
 
-/**
+/** 
  * @author ST
  *
  * To change the template for this generated type comment go to
@@ -34,14 +28,15 @@ public class CGIProxy extends PlatformObject implements IProcess, ITerminate
 	private OutputStreamMonitor mMonitorError;
 	private OutputStreamMonitor mMonitorOut;
 	private OutputStreamMonitor mMonitorIn;
-	ILaunch mLaunch;
-	String mLabel;
-	RemotePort mInStream;
-	RemotePort mOutStream;
-	RemotePort mErrorStream;
-	boolean mIsTerminated;
+    private ILaunch mLaunch;
+    private String mLabel;
+	private RemotePort mInStream;
+    private RemotePort mOutStream;
+    private RemotePort mErrorStream;
+    private boolean mIsTerminated;
+    private IStreamsProxy mStreamsProxy;
 
-	public CGIProxy(ILaunch fLaunch, String fLabel, StringBuffer fBrazilPref)
+	public CGIProxy(ILaunch fLaunch, String fLabel)
 	{
 		mLaunch = fLaunch;
 		((IProcess) this).setAttribute(ATTR_PROCESS_TYPE, "EpicCGIProxy");
@@ -55,11 +50,6 @@ public class CGIProxy extends PlatformObject implements IProcess, ITerminate
 		mOutStream.startConnect();
 		mErrorStream = new RemotePort("CGIProxy.mErrorStream");
 		mErrorStream.startConnect();
-
-		fBrazilPref.append("\ncgi.InPort=" + mInStream.getServerPort());
-		fBrazilPref.append("\ncgi.OutPort=" + mOutStream.getServerPort());
-		fBrazilPref.append(
-			"\ncgi.ErrorPort=" + mErrorStream.getServerPort());
 
 		mWaitThread = new Thread("EPIC-Debugger:CGIProxy")
 		{
@@ -102,6 +92,24 @@ public class CGIProxy extends PlatformObject implements IProcess, ITerminate
 				mMonitorIn.startMonitoring();
 				mMonitorOut.startMonitoring();
 				mMonitorError.startMonitoring();
+                mStreamsProxy = new IStreamsProxy() {
+                    public IStreamMonitor getErrorStreamMonitor()
+                    {
+                        return mMonitorError;
+                    }
+
+                    public IStreamMonitor getOutputStreamMonitor()
+                    {
+                        return mMonitorOut;
+                    }
+
+                    public void write(String input)
+                        throws IOException
+                    {
+                        // we can't provide input to a CGI process
+                        // through console
+                    }
+                };
 				mIsConnected = true;
 				fireCreationEvent();
 			}
@@ -114,6 +122,22 @@ public class CGIProxy extends PlatformObject implements IProcess, ITerminate
 	{
 		return mIsConnected;
 	}
+
+    public int getErrorPort()
+    {
+        return mErrorStream.getServerPort();
+    }
+    
+    public int getInPort()
+    {
+        return mInStream.getServerPort();
+    }
+
+    public int getOutPort()
+    {
+        return mOutStream.getServerPort();
+    }
+    
 	/* (non-Javadoc)
 	 * @see org.eclipse.debug.core.model.IProcess#getLabel()
 	 */
@@ -135,7 +159,7 @@ public class CGIProxy extends PlatformObject implements IProcess, ITerminate
 	 */
 	public IStreamsProxy getStreamsProxy()
 	{
-		return null;
+		return mStreamsProxy;
 	}
 
 	/* (non-Javadoc)
@@ -230,7 +254,6 @@ public class CGIProxy extends PlatformObject implements IProcess, ITerminate
 	public void terminate() throws DebugException
 	{
 		shutdown();
-
 	}
 
 	/* (non-Javadoc)
@@ -303,13 +326,7 @@ public class CGIProxy extends PlatformObject implements IProcess, ITerminate
 
 	public void waitForConnect()
 	{
-		try
-		{
-			mWaitThread.join(30000);
-		} catch (InterruptedException e)
-		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		try { mWaitThread.join(30000); }
+        catch (InterruptedException e) { }
 	}
 }

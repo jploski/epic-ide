@@ -32,7 +32,7 @@
          point="org.eclipse.debug.ui.launchConfigurationTabGroups">
       <launchConfigurationTabGroup
             type="org.epic.debug.launchConfigurationPerl"
-            class="org.epic.debug.LaunchConfigurationDialog"
+            class="org.epic.debug.ui.LaunchConfigurationDialog"
             id="org.epic.debug.launchDialog">
       </launchConfigurationTabGroup>
    </extension>
@@ -49,7 +49,7 @@
          point="org.eclipse.debug.ui.launchConfigurationTabGroups">
       <launchConfigurationTabGroup
             type="org.epic.debug.launchConfigurationPerlCGI"
-            class="org.epic.debug.LaunchConfigurationDialogCGI"
+            class="org.epic.debug.ui.LaunchConfigurationDialogCGI"
             id="org.epic.debug.launchDialogCGI">
       </launchConfigurationTabGroup>
    </extension>
@@ -66,7 +66,7 @@
          point="org.eclipse.debug.ui.launchConfigurationTabGroups">
       <launchConfigurationTabGroup
             type="org.epic.debug.launchConfigurationPerlRemote"
-            class="org.epic.debug.LaunchConfigurationRemoteDialog"
+            class="org.epic.debug.ui.LaunchConfigurationRemoteDialog"
             id="org.epic.debug.launchDialogRemote">
       </launchConfigurationTabGroup>
    </extension>
@@ -107,7 +107,7 @@
             id="org.epic.debug.RulerPopupActions">
          <action
                label="Breakpoint Properties"
-               class="org.epic.debug.ManageRegExpBreakpointRulerPropertyActionDelegate"
+               class="org.epic.debug.ui.action.ManageRegExpBreakpointRulerPropertyActionDelegate"
                menubarPath="debug"
                id="org.epic.ManageRegExpBreakpointRulerPropertyActionDelegate">
          </action>
@@ -120,7 +120,7 @@
             id="org.epic.debug.RulerPopupActions">
          <action
                label="Add RegExp Breakpoint"
-               class="org.epic.debug.ManageRegExpBreakpointRulerActionDelegate"
+               class="org.epic.debug.ui.action.ManageRegExpBreakpointRulerActionDelegate"
                menubarPath="debug"
                id="org.epic.ManageRegExpBreakpointRulerActionDelegate">
          </action>
@@ -133,7 +133,7 @@
             id="org.epic.debug.RulerPopupActions">
          <action
                label="Add Remove Breakpoint"
-               class="org.epic.debug.ManageBreakpointRulerActionDelegate"
+               class="org.epic.debug.ui.action.ManageBreakpointRulerActionDelegate"
                menubarPath="debug"
                id="org.epic.ManageBreakpointRulerActionDelegate">
          </action>
@@ -188,7 +188,7 @@
             name="Perl Expression View"
             icon="icons/expression_view.gif"
             category="org.epic.views"
-            class="org.epic.debug.ExpressionView"
+            class="org.epic.debug.ui.ExpressionView"
             id="org.eclipse.debug.expressionview">
       </view>
    </extension>
@@ -203,7 +203,7 @@
                icon="icons/epic.gif"
                tooltip="Show Local Variable"
                state="true"
-               class="org.epic.debug.ShowLocalVariableActionDelegate"
+               class="org.epic.debug.ui.action.ShowLocalVariableActionDelegate"
                menubarPath="additions"
                id="org.epig.debug.showLocalVariablesAction">
          </action>
@@ -221,7 +221,7 @@
                icon="icons/epic.gif"
                tooltip="Show Global Variable"
                state="true"
-               class="org.epic.debug.ShowGlobalVariableActionDelegate"
+               class="org.epic.debug.ui.action.ShowGlobalVariableActionDelegate"
                menubarPath="additions"
                id="org.epig.debug.showLocalVariablesAction">
          </action>
@@ -239,14 +239,14 @@
                icon="icons/epic.gif"
                tooltip="Show Perl Internal Variables"
                state="false"
-               class="org.epic.debug.ShowPerlInternalVariableActionDelegate"
+               class="org.epic.debug.ui.action.ShowPerlInternalVariableActionDelegate"
                menubarPath="additions"
                id="org.epig.debug.showLocalVariablesAction">
          </action>
       </viewContribution>
    </extension>
    
-   
+
    
    
    <extension

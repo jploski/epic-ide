@@ -137,6 +137,12 @@ public class RemotePort
 	{
         //System.err.println("*************** " + this + " shutdown");
         reset();
+        
+        if (mServer != null)
+        {
+            try { mServer.close(); } catch (IOException e) { PerlDebugPlugin.log(e); }
+            mServer = null;
+        }
         mStop = true;
 	}
 
@@ -214,11 +220,6 @@ public class RemotePort
             try { mClient.close(); } catch (IOException e) { PerlDebugPlugin.log(e); }
             mClient = null;
         }
-        if (mServer != null)
-        {
-            try { mServer.close(); } catch (IOException e) { PerlDebugPlugin.log(e); }
-            mServer = null;
-        }
         
         mStop = false;
         mInStream = null;
@@ -233,7 +234,12 @@ public class RemotePort
         boolean found;
         
         if (fReconnect)
-        {
+        {            
+            reset();
+            assert mServer != null; // we're still listening
+            found = true;
+        }
+/*        {
             reset();
             found = false;
             int count = 0, port = lastUsedPort;
@@ -262,7 +268,7 @@ public class RemotePort
                 }
             }
             while (!found && count < 100);
-        }
+        }*/
         else
         {
             reset();
@@ -296,16 +302,16 @@ public class RemotePort
                 try
                 {
                     System.out.println(
-                        "Trying to Accept on Port" + mServer.getLocalPort());
+                        name + ": Trying to Accept on Port" + mServer.getLocalPort());
                     mClient = mServer.accept();
                     System.out.println(
-                        "Accept on Port "
+                        name + ": Accept on Port "
                             + mServer.getLocalPort()
                             + "!!!!!!!\n");
                 } catch (IOException e)
                 {
                     System.out.println(
-                        "Accept failed: " + port);
+                        name + ": Accept failed: " + port);
                 }
             }
         };

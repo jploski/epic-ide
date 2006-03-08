@@ -72,7 +72,6 @@ public class EpicCgiHandler implements Handler
     private static final String PREFIX = "prefix"; // all cgi scripts must start with this
     private static final String CUSTOM = "custom"; // add custom query variables
 
-    private static final String EXECUTABLE = "executable";
     private static final String ENV = "ENV";
 
     private static String software = "Mini Java CgiHandler 0.2";
@@ -87,6 +86,8 @@ public class EpicCgiHandler implements Handler
     private PrintWriter mDiag; // diagnostic info to CGI proxy
     private OutputStream mOut; // forwards CGI stdout to CGI proxy
     private OutputStream mError; // forwards CGI stderr to CGI proxy
+    private List defaultEnv;
+    private Exception defaultEnvError;
 
 	/**
 	 * construct table of CGI environment variables that need special handling
@@ -110,6 +111,10 @@ public class EpicCgiHandler implements Handler
 	public boolean init(Server server, String prefix)
     {
         config = new CGIConfig(server, prefix);
+
+        try { defaultEnv = getDefaultEnvironment(); }
+        catch (Exception e) { defaultEnvError = e; }
+
         return connectToCGIProxy();
 	}
 
@@ -194,6 +199,13 @@ public class EpicCgiHandler implements Handler
             mError = errorSocket.getOutputStream();
             mOut = outSocket.getOutputStream();
             mDiag = new PrintWriter(diagSocket.getOutputStream(), true);
+            
+            if (defaultEnvError != null)
+            {
+                mDiag.println("Failed to retrieve global environment variables:");
+                defaultEnvError.printStackTrace(mDiag);
+                mDiag.println("CGI scripts might not be executed properly.");
+            }
         }
         catch (UnknownHostException e)
         {
@@ -217,7 +229,7 @@ public class EpicCgiHandler implements Handler
     {
         //Get Perl executable and generate comand array
         ArrayList commandList = new ArrayList();
-        commandList.add(config.getRequestProperty(request, EXECUTABLE, "perl"));
+        commandList.add(config.getPerlExecutable());
         commandList.addAll(config.getRunInclude());
 
         if (config.getDebugMode())
@@ -256,7 +268,8 @@ public class EpicCgiHandler implements Handler
         String url,
         int pathInfoStartI)
     {
-        List env = new ArrayList();
+        List env = new ArrayList();        
+        env.addAll(defaultEnv);
 
         /*
          * Build the environment array. First, get all the http headers most
@@ -543,5 +556,57 @@ public class EpicCgiHandler implements Handler
             }
         }        
         return null;
+    }
+    
+    private List getDefaultEnvironment()
+        throws InterruptedException, IOException
+    {
+        // The environment passed to Runtime.exec for scripts overrides
+        // the global environment (at least in Windows XP). However,
+        // if the environment variable SystemRoot is not set in
+        // Windows XP, the system call getprotobyname (needed by
+        // the Perl debugger) will fail miserably. Therefore,
+        // we save all default environment variables here to pass
+        // them down to the Perl interpreter each time a script
+        // is executed.
+        
+        ProcessExecutor executor = new ProcessExecutor();
+        try
+        {
+            // Use a random marker (current time) to increase
+            // the likelihood of properly parsing environment
+            // variables with multi-line values
+
+            String marker = System.currentTimeMillis() + " ";
+            List varDefs = new ArrayList();
+            List lines = executor.execute(
+                new String[] { config.getPerlExecutable() },
+                "foreach $k(keys(%ENV)) { print \"" +
+                    marker + "$k=$ENV{$k}\n\"; }",
+                new File(".")
+                ).getStdoutLines();
+            
+            StringBuffer buf = new StringBuffer();
+            for (Iterator i = lines.iterator(); i.hasNext();)
+            {
+                String line = (String) i.next();
+                
+                if (!line.startsWith(marker)) // continuation
+                {
+                    buf.append(System.getProperty("line.separator"));
+                    buf.append(line);
+                }
+                else
+                {
+                    if (buf.length() > 0) varDefs.add(buf.toString());
+                    buf.setLength(0);
+                    buf.append(line.substring(marker.length()));
+                }
+            }
+            if (buf.length() > 0) varDefs.add(buf.toString());
+            
+            return varDefs;
+        }
+        finally { executor.dispose(); }
     }
 }

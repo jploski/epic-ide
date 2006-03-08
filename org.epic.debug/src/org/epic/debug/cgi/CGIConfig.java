@@ -23,6 +23,7 @@ public class CGIConfig
     private final int portOut;
     private final int portErr;
     private final String protocol;
+    private final String perlExecutable;
     private final int serverPort;
     
     /**
@@ -50,6 +51,8 @@ public class CGIConfig
         debugInc = getProperty("DebugInclude");
         
         runInc = getListProperty("RunInclude");
+        
+        perlExecutable = getProperty("executable");
     }
     
     /**
@@ -104,6 +107,15 @@ public class CGIConfig
     public int getOutPort()
     {
         return portOut;
+    }
+    
+    /**
+     * @return path to the Perl interpreter executable that should
+     *         be used for running CGI scripts
+     */
+    public String getPerlExecutable()
+    {
+        return perlExecutable;
     }
     
     /**

@@ -481,7 +481,9 @@ public class EpicCgiHandler implements Handler
         {
             if (cgi != null) cgi.destroy();
             
-            request.sendError(500, "CGI failure", e.getMessage());
+            StringWriter trace = new StringWriter();
+            e.printStackTrace(new PrintWriter(trace, true));
+            request.sendError(500, "CGI failure", trace.toString());
             try
             {
                 mError.write(

@@ -1,16 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<workbench version="2.0" progressCount="13">
+<workbench version="2.0">
 <workbenchAdvisor/>
-<window x="0" y="0" width="1208" height="1024">
+<window x="0" y="0" width="1094" height="862">
 <fastViewData fastViewLocation="1024"/>
 <perspectiveBar>
-<itemSize x="97"/>
+<itemSize x="160"/>
 </perspectiveBar>
 <coolbarLayout locked="0">
 <coolItem id="group.file" itemType="typeGroupMarker"/>
 <coolItem id="org.eclipse.ui.workbench.file" itemType="typeToolBarContribution" x="96" y="26"/>
 <coolItem id="additions" itemType="typeGroupMarker"/>
-<coolItem id="org.eclipse.debug.ui.launchActionSet" itemType="typeToolBarContribution" x="112" y="26"/>
+<coolItem id="com.jpl.callback.actionSet" itemType="typeToolBarContribution" x="36" y="26"/>
+<coolItem id="org.eclipse.debug.ui.launchActionSet" itemType="typeToolBarContribution" x="78" y="26"/>
 <coolItem id="org.eclipse.jdt.ui.JavaElementCreationActionSet" itemType="typeToolBarContribution" x="96" y="26"/>
 <coolItem id="org.eclipse.search.searchActionSet" itemType="typeToolBarContribution" x="36" y="26"/>
 <coolItem id="group.nav" itemType="typeGroupMarker"/>
@@ -31,15 +32,23 @@
 </editorArea>
 </editors>
 <views>
-<view id="org.eclipse.ui.views.TaskList" partName="Tasks"/>
-<view id="org.eclipse.ui.views.ContentOutline" partName="Outline"/>
-<view id="org.eclipse.pde.runtime.LogView" partName="Error Log">
-<viewState useLimit="true" limit="50" info="true" warning="true" error="true" allSessions="true" column2="793" column3="150" column4="540" activate="true" orderValue="-1" orderType="2"/>
+<view id="org.eclipse.ui.views.TaskList" partName="Tasks">
+<viewState columnWidth0="19" columnWidth1="19" columnWidth2="200" columnWidth3="75" columnWidth4="150" columnWidth5="407" verticalPosition="0" horizontalPosition="0">
+<selection/>
+</viewState>
 </view>
+<view id="org.eclipse.ui.views.ContentOutline" partName="Outline"/>
 <view id="org.eclipse.ui.views.ResourceNavigator" partName="Navigator">
 <viewState sorter="1" LINK_NAVIGATOR_TO_EDITOR="0">
 <filters>
-<filter element="*.class" isEnabled="false"/>
+<filter element="*.aux" isEnabled="true"/>
+<filter element="*.toc" isEnabled="true"/>
+<filter element="*.idx" isEnabled="true"/>
+<filter element="*.log" isEnabled="true"/>
+<filter element="*.out" isEnabled="true"/>
+<filter element="*.bbl" isEnabled="true"/>
+<filter element="*.blg" isEnabled="true"/>
+<filter element=".project" isEnabled="true"/>
 <filter element=".*" isEnabled="false"/>
 </filters>
 <expanded>
@@ -55,8 +64,6 @@
 <perspectives activePerspective="org.epic.core.Perspective" activePart="org.eclipse.ui.views.ResourceNavigator">
 <perspective version="0.016" editorAreaVisible="1" fixed="0">
 <descriptor id="org.epic.core.Perspective" label="Perl" class="org.epic.core.Perspective"/>
-<alwaysOnActionSet id="org.eclipse.ui.externaltools.ExternalToolsSet"/>
-<alwaysOnActionSet id="org.eclipse.search.searchActionSet"/>
 <alwaysOnActionSet id="org.eclipse.ui.edit.text.actionSet.openExternalFile"/>
 <alwaysOnActionSet id="org.eclipse.ui.edit.text.actionSet.navigation"/>
 <alwaysOnActionSet id="org.eclipse.ui.edit.text.actionSet.convertLineDelimitersTo"/>
@@ -64,6 +71,7 @@
 <alwaysOnActionSet id="org.eclipse.update.ui.softwareUpdates"/>
 <alwaysOnActionSet id="org.eclipse.ui.NavigateActionSet"/>
 <alwaysOnActionSet id="org.eclipse.debug.ui.launchActionSet"/>
+<alwaysOnActionSet id="ish.ecletex.actionSet"/>
 <show_view_action id="org.eclipse.ui.views.ResourceNavigator"/>
 <show_view_action id="org.eclipse.ui.views.BookmarkView"/>
 <show_view_action id="org.eclipse.ui.views.ContentOutline"/>
@@ -81,7 +89,6 @@
 <view id="org.eclipse.ui.views.ResourceNavigator"/>
 <view id="org.eclipse.ui.views.ContentOutline"/>
 <view id="org.eclipse.ui.views.TaskList"/>
-<view id="org.eclipse.pde.runtime.LogView"/>
 <layout>
 <mainWindow>
 <info part="topLeft" folder="true">
@@ -104,14 +111,13 @@
 </info>
 <info part="org.eclipse.ui.editorss" relative="topLeft" relationship="2" ratioLeft="313" ratioRight="891" ratio="0.2599668"/>
 <info part="org.eclipse.ui.internal.ViewStack@1fce2f2" relative="org.eclipse.ui.editorss" relationship="4" ratioLeft="595" ratioRight="307" ratio="0.65964526" folder="true">
-<folder activePageID="org.eclipse.pde.runtime.LogView" expanded="2" appearance="2">
+<folder activePageID="org.eclipse.ui.views.TaskList" expanded="2" appearance="2">
 <page label="Tasks" content="org.eclipse.ui.views.TaskList"/>
-<page label="Error Log" content="org.eclipse.pde.runtime.LogView"/>
+<page label="LabelNotFound" content="org.eclipse.pde.runtime.LogView"/>
 <page label="LabelNotFound" content="org.epic.perleditor.views.ExplainErrorsView"/>
 <page label="LabelNotFound" content="org.epic.perleditor.views.PerlDocView"/>
 <presentation id="org.eclipse.ui.presentations.WorkbenchPresentationFactory">
 <part id="0"/>
-<part id="1"/>
 </presentation>
 </folder>
 </info>
@@ -298,6 +304,9 @@
 <file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.epic.perleditor.editors.PerlEditor" name="Twig.pm" tooltip="EPICTest/Twig.pm">
 <persistable path="/EPICTest/Twig.pm"/>
 </file>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.epic.perleditor.editors.PerlEditor" name="test_Tasks.pl" tooltip="EPICTest/test_Tasks.pl">
+<persistable path="/EPICTest/test_Tasks.pl"/>
+</file>
 <file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.epic.perleditor.editors.PerlEditor" name="test_ExplainErrors.pl" tooltip="EPICTest/test_ExplainErrors.pl">
 <persistable path="/EPICTest/test_ExplainErrors.pl"/>
 </file>
@@ -333,9 +342,6 @@
 </file>
 <file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.epic.perleditor.editors.PerlEditor" name="Display.pm" tooltip="EPICTest/Display.pm">
 <persistable path="/EPICTest/Display.pm"/>
-</file>
-<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.epic.perleditor.editors.PerlEditor" name="Functions.pm" tooltip="EPICTest/Functions.pm">
-<persistable path="/EPICTest/Functions.pm"/>
 </file>
 </mruList>
 </workbench>

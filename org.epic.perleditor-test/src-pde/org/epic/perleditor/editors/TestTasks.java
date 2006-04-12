@@ -38,13 +38,15 @@ public class TestTasks extends BasePDETestCase
                 true,
                 IResource.DEPTH_ONE);
             
-            assertEquals(2, markers.length);            
-            assertEquals(
-                3,
-                ((Integer) markers[0].getAttribute(IMarker.LINE_NUMBER)).intValue());
-            assertEquals(
-                4,
-                ((Integer) markers[1].getAttribute(IMarker.LINE_NUMBER)).intValue());        
+            assertEquals(2, markers.length);
+
+            int line1 = ((Integer) markers[0].getAttribute(IMarker.LINE_NUMBER)).intValue();
+            int line2 = ((Integer) markers[1].getAttribute(IMarker.LINE_NUMBER)).intValue();
+
+            assertTrue(
+                line1 == 3 && line2 == 4 ||
+                line1 == 4 && line2 == 3
+                );        
         }
         finally
         {

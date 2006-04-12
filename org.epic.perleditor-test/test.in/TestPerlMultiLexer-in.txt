@@ -685,7 +685,6 @@
 /usr/share/perl/5.8.7/IO/Socket/UNIX.pm
 /usr/share/perl/5.8.7/IPC/Open2.pm
 /usr/share/perl/5.8.7/IPC/Open3.pm
-/usr/share/perl/5.8.7/List/Util.pm
 /usr/share/perl/5.8.7/Locale/Constants.pm
 /usr/share/perl/5.8.7/Locale/Country.pm
 /usr/share/perl/5.8.7/Locale/Currency.pm
@@ -762,7 +761,6 @@
 /usr/share/perl/5.8.7/Pod/Text/Overstrike.pm
 /usr/share/perl/5.8.7/Pod/Text/Termcap.pm
 /usr/share/perl/5.8.7/Pod/Usage.pm
-/usr/share/perl/5.8.7/Scalar/Util.pm
 /usr/share/perl/5.8.7/Search/Dict.pm
 /usr/share/perl/5.8.7/SelectSaver.pm
 /usr/share/perl/5.8.7/SelfLoader.pm

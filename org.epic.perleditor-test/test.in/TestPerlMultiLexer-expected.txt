@@ -15141,15 +15141,6 @@ SUB xfileno @77:5/77:1:114
 SUB _open3 @84:5/84:1:3988
 SUB open3 @224:5/224:1:142
 SUB spawn_with_handles @232:5/232:1:1266
-INPUT: /usr/share/perl/5.8.7/List/Util.pm
-SUB reduce @33:5/33:1:243
-SUB sum @51:5/51:1:37
-SUB min @53:5/53:1:47
-SUB max @55:5/55:1:47
-SUB minstr @57:5/57:1:51
-SUB maxstr @59:5/59:1:51
-SUB first @61:5/61:1:99
-SUB shuffle @71:5/71:1:129
 INPUT: /usr/share/perl/5.8.7/Locale/Constants.pm
 INPUT: /usr/share/perl/5.8.7/Locale/Country.pm
 USE Carp @12:5/12:1:8
@@ -17101,16 +17092,6 @@ SUB _handle_element_end @568:5/568:1:1158
 SUB start_document @602:5/602:1:209
 SUB begin_pod @610:5/610:1:231
 SUB preprocess_paragraph @618:5/618:1:642
-INPUT: /usr/share/perl/5.8.7/Scalar/Util.pm
-SUB export_fail @17:5/17:1:434
-SUB openhandle @34:5/34:1:335
-SUB UNIVERSAL::a_sub_not_likely_to_be_here @59:5/59:1:57
-SUB blessed @61:5/61:1:146
-SUB refaddr @68:5/68:1:144
-SUB reftype @76:5/76:1:691
-SUB tainted @105:5/105:1:124
-SUB readonly @112:5/112:1:168
-SUB looks_like_number @121:5/121:1:334
 INPUT: /usr/share/perl/5.8.7/Search/Dict.pm
 POD_START at 11
 POD_END at 48

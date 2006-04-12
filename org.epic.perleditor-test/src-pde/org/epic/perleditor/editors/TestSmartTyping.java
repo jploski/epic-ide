@@ -3,7 +3,6 @@ package org.epic.perleditor.editors;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.epic.perleditor.PerlEditorPlugin;
 import org.epic.perleditor.preferences.PreferenceConstants;
-import org.omg.CORBA.OMGVMCID;
 
 public class TestSmartTyping extends BasePDETestCase
 {

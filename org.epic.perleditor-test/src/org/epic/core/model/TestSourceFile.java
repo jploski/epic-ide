@@ -3,7 +3,6 @@ package org.epic.core.model;
 import java.io.IOException;
 import java.util.Iterator;
 
-import org.eclipse.core.runtime.ILog;
 import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.IDocument;
 import org.epic.perl.editor.test.BaseTestCase;

@@ -357,3 +357,23 @@
 1022:1:OPERATOR:{;}
 1023:1:__dftl_partition_content_type:{ }
 1024:76:COMMENT:{# % is the modulo operator, not part of the "% $y" variable, cf. "$ x" above}
+1100:1:__dftl_partition_content_type:{
+}
+1101:1:__dftl_partition_content_type:{
+}
+1102:86:COMMENT:{# A backslash followed by \n should not mess up line counting and syntax hl thereafter}
+1188:1:__dftl_partition_content_type:{
+}
+1189:5:KEYWORD2:{print}
+1194:1:__dftl_partition_content_type:{ }
+1195:1:LITERAL1:{"}
+1196:7:LITERAL1:{ test\
+}
+1203:1:LITERAL1:{"}
+1204:1:OPERATOR:{;}
+1205:1:__dftl_partition_content_type:{
+}
+1206:5:KEYWORD2:{print}
+1211:1:__dftl_partition_content_type:{ }
+1212:5:VARIABLE:{$blah}
+1217:1:OPERATOR:{;}

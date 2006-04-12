@@ -46,3 +46,8 @@ $ x = 10;    # TODO "$ x" should be a variable, same as "$x"; 'x' not an operato
 sub abc($$;@) { }  # $$;@ is prototype
 @$x = @$y;   # @$x, @$y are variables
 my $b = $y % $x; # % is the modulo operator, not part of the "% $y" variable, cf. "$ x" above
+
+# A backslash followed by \n should not mess up line counting and syntax hl thereafter
+print " test\
+";
+print $blah;

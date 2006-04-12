@@ -54,7 +54,7 @@ protected CLOSE_BRACE:   '>' { if (quoteEndChar == '>') pc--; };
 
 protected
 ESCAPE:
-	'\\' ('\uFFFF'!|.)
+	'\\' ('\uFFFF'!|~('\r' | '\n'))
 	;
 
 protected

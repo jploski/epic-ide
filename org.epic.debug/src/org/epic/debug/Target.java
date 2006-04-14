@@ -126,8 +126,8 @@ public abstract class Target extends DebugElement implements IDebugTarget
 		IProject prj =
 			PerlDebugPlugin.getWorkspace().getRoot().getProject(prjName);
 		mProject = prj;
-		mProjectDir = prj.getLocation();
-		IPath path = mProjectDir.append(startfile);		
+		mProjectDir = prj.getLocation();        
+        IPath path = prj.getFile(new Path(startfile)).getLocation();
 		mStartupFile = path.lastSegment();
 		mStartupFileAbsolut = path.toString();
 	}
@@ -136,16 +136,11 @@ public abstract class Target extends DebugElement implements IDebugTarget
 	{
 		
 		initPath();
-		String startfile = null;
 		String prjName = null;
 		String progParams = null;
 		mProcessName = "Perl-Interpreter";
 		try
 		{
-			startfile =
-				mLaunch.getLaunchConfiguration().getAttribute(
-					PerlLaunchConfigurationConstants.ATTR_STARTUP_FILE,
-					EMPTY_STRING);
 			prjName =
 				mLaunch.getLaunchConfiguration().getAttribute(
 					PerlLaunchConfigurationConstants.ATTR_PROJECT_NAME,

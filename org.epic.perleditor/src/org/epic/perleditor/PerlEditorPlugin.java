@@ -187,6 +187,7 @@ public class PerlEditorPlugin extends AbstractUIPlugin {
 		SourceFormatterPreferences.initializeDefaultValues(store);
 		CodeAssistPreferences.initializeDefaultValues(store);
 		TaskTagPreferences.initializeDefaults(store);
+		MarkOccurrencesPreferences.initializeDefaultValues(store);
 	}
 
 	public String getExecutablePreference() {

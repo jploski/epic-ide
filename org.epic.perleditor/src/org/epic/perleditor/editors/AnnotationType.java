@@ -21,6 +21,7 @@ public final class AnnotationType {
 		public static final AnnotationType ERROR= new AnnotationType();
 		public static final AnnotationType WARNING= new AnnotationType();
 		public static final AnnotationType SEARCH= new AnnotationType();
+		public static final AnnotationType OCCURRENCE= new AnnotationType();
 
 		private AnnotationType() {
 		}
@@ -46,6 +47,8 @@ public final class AnnotationType {
 
 				if (this == SEARCH)
 						return "AnnotationType.SEARCH"; //$NON-NLS-1$
+				if (this == OCCURRENCE)
+					return "AnnotationType.OCCURRENCE"; //$NON-NLS-1$
 
 				Assert.isLegal(false);
 				return ""; //$NON-NLS-1$

@@ -103,6 +103,8 @@ public class PerlMarkerAnnotation extends MarkerAnnotation {
 						fType= AnnotationType.TASK;
 					  else if (marker.isSubtypeOf(IMarker.BOOKMARK))
 						fType= AnnotationType.BOOKMARK;
+					  else if (marker.isSubtypeOf(IMarker.TEXT))
+						fType=AnnotationType.OCCURRENCE;
 
 				} catch(CoreException e) {
 					//PerlDebugPlugin.log(e);

@@ -87,6 +87,7 @@ public class PerlEditor extends TextEditor implements IPropertyChangeListener
         installSyntaxValidationThread();
         installFoldReconciler();
         installTasksReconciler();
+        installAnnotationListener();
         
         source = new SourceFile(
             PerlEditorPlugin.getDefault().getLog(),
@@ -570,6 +571,11 @@ public class PerlEditor extends TextEditor implements IPropertyChangeListener
     private void installCaretMoveListener()
     {
         new CaretMoveListener().install(getSelectionProvider());
+    }
+    
+    private void installAnnotationListener()
+    {
+    	new OccurrencesUpdater().install(getSelectionProvider());
     }
     
     private void installFoldReconciler()

@@ -61,6 +61,11 @@
             name="Task Tags"
             id="org.epic.perleditor.preferences.TaskTagsPreferencePage">      
       </page>
+      <page
+            category="org.epic.core.preferences.PerlMainPreferencePage"
+            class="org.epic.perleditor.preferences.MarkOccurrencesPreferencePage"
+            id="org.epic.perleditor.preferences.MarkOccurrencesPreferencePage"
+            name="Mark Occurrences"/>
    </extension>
    <extension
          point="org.eclipse.ui.perspectives">
@@ -569,4 +574,5 @@
 		</content-type> 
     </extension>
 
+	<extension   			point="org.eclipse.ui.editors.markerAnnotationSpecification">   		<specification           annotationType="org.epic.perleditor.occurrence"           colorPreferenceKey="highlight.color"           colorPreferenceValue="253,255,157"           highlightPreferenceKey="highlight.background"           highlightPreferenceValue="true"           includeOnPreferencePage="true"           label="Occurrences"           overviewRulerPreferenceKey="highlight.rulers.overview"           overviewRulerPreferenceValue="true"           presentationLayer="4"           textPreferenceKey="highlight.text"           textPreferenceValue="false"           textStylePreferenceKey="highlight.text.style"           textStylePreferenceValue="UNDERLINE"           verticalRulerPreferenceKey="highlight.rulers.vertical"           verticalRulerPreferenceValue="true">		</specification>	</extension>
 </plugin>

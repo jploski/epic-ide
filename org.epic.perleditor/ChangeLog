@@ -31,6 +31,7 @@ Eclipse Perl Integration:
 		* Fixed bug: [ 996351 ] NullPointer exception during Launch (problems if path to Perl executable has spaces)
 
 		Editor:
+		* Feature request #1476317 "Mark Occurrences editor feature" partly implemented
 		* Outline now supports multiple package declarations per file
 		* Outline selection now reflects caret position in the editor
 		* Replaced use of org.epic.ext.cbg.editor with a custom ANTLR-based lexer

@@ -251,6 +251,7 @@ public class PerlPartitioner implements
     public void stopRewriteSession(DocumentRewriteSession session)
     {
         activeRewriteSession = null;
+        initialize(); // reset state, e.g. after a series of find-replace operations
     }
     
     private void computeLastUnaffectedTokenI(DocumentEvent event)

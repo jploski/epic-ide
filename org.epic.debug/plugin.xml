@@ -257,5 +257,30 @@
             id="org.epic.debug.CGIConsoleColorProvider">
       </consoleColorProvider>
    </extension>
-
+   <extension
+         point="org.eclipse.debug.ui.launchShortcuts">
+      <shortcut
+            category="org.eclipse.jdt.ui.JavaPerspective"
+            class="org.epic.debug.LaunchShortcut"
+            icon="icons/epic.gif"
+            id="org.epic.debug.LaunchShortcut"
+            label="Perl Local"
+            modes="run, debug">
+          
+          <contextualLaunch>
+           <enablement>
+             <with variable="selection">
+               <count value="1"/>
+               <iterate>
+                 <or>
+                   <test property="org.eclipse.debug.ui.matchesPattern" value="*.pl"/>
+                   <test property="org.eclipse.debug.ui.matchesPattern" value="*.pm"/>
+                 </or>
+               </iterate>
+             </with>
+           </enablement>
+  		 </contextualLaunch>
+   
+	</shortcut>
+	</extension>
 </plugin>

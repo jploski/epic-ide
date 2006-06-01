@@ -29,17 +29,23 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.ui.AbstractLaunchConfigurationTab;
+import org.eclipse.jface.viewers.ILabelProvider;
+import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.dialogs.ElementListSelectionDialog;
+import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.epic.debug.*;
 
 public class CGILaunchConfigurationMainTab extends AbstractLaunchConfigurationTab
@@ -56,9 +62,13 @@ public class CGILaunchConfigurationMainTab extends AbstractLaunchConfigurationTa
 
 	// Project UI widgets
 	protected Label fProjLabel;
-	protected Combo fProjText;
+	protected Text fProjText;
 	protected Button fProjButton;
-
+	protected Button projectButton;
+	/**
+	 * listener for file- and projectButton
+	 */
+	private ButtonListener buttonListener = new ButtonListener();
 
 	// Main class UI widgets
 	
@@ -105,12 +115,11 @@ public class CGILaunchConfigurationMainTab extends AbstractLaunchConfigurationTa
 		fProjLabel.setFont(font);
 
 		//fParamText = new Text(projComp, SWT.SINGLE | SWT.BORDER);
-		fProjText =
-			new Combo(projComp, SWT.SINGLE | SWT.BORDER | SWT.READ_ONLY);
+		fProjText = new Text(projComp, SWT.SINGLE | SWT.BORDER);
 		gd = new GridData(GridData.FILL_HORIZONTAL);
 		fProjText.setLayoutData(gd);
 		fProjText.setFont(font);
-		fProjText.setItems(getPerlProjects());
+		//(fProjText.setItems(getPerlProjects());
 		fProjText.addModifyListener(new ModifyListener()
 		{
 			public void modifyText(ModifyEvent evt)
@@ -119,6 +128,9 @@ public class CGILaunchConfigurationMainTab extends AbstractLaunchConfigurationTa
 				
 			}
 		});
+//		 creates a browse button
+		projectButton = createPushButton(projComp, "Browse...", null);
+		projectButton.addSelectionListener(buttonListener);
 
 		
 
@@ -172,10 +184,10 @@ public class CGILaunchConfigurationMainTab extends AbstractLaunchConfigurationTa
 	/**
 	 * Show a dialog that lists all main types
 	 */
-	protected void handleSearchButtonSelected()
+/*	protected void handleSearchButtonSelected()
 	{
 
-		/*	IJavaProject javaProject = getJavaProject();
+			IJavaProject javaProject = getJavaProject();
 			IJavaSearchScope searchScope = null;
 			if ((javaProject == null) || !javaProject.exists()) {
 				searchScope = SearchEngine.createWorkspaceScope();
@@ -210,9 +222,9 @@ public class CGILaunchConfigurationMainTab extends AbstractLaunchConfigurationTa
 				fMainText.setText(type.getFullyQualifiedName());
 				javaProject = type.getJavaProject();
 				fProjText.setText(javaProject.getElementName());
-			}*/
+			}
 	}
-
+*/
 	/**
 	 * Show a dialog that lets the user select a project.  This in turn provides
 	 * context for the main type, allowing the user to key a main type name, or
@@ -229,45 +241,45 @@ public class CGILaunchConfigurationMainTab extends AbstractLaunchConfigurationTa
 			fProjText.setText(projectName);*/
 	}
 
-	/**
-	 * Realize a Java Project selection dialog and return the first selected project,
-	 * or null if there was none.
-	 */
-	protected IProject choosePerlProject()
-	{
-		IProject[] projects;
-		try
-		{
-			//	projects= JavaCore.create(getWorkspaceRoot()).getJavaProjects();
-		} catch (Exception e)
-		{
-			PerlDebugPlugin.log(e);
-			//	projects= new IJavaProject[0];
-		}
-		/*
-				ILabelProvider labelProvider= new JavaElementLabelProvider(JavaElementLabelProvider.SHOW_DEFAULT);
-				ElementListSelectionDialog dialog= new ElementListSelectionDialog(getShell(), labelProvider);
-				dialog.setTitle(LauncherMessages.getString("JavaMainTab.Project_Selection_13")); //$NON-NLS-1$
-				dialog.setMessage(LauncherMessages.getString("JavaMainTab.Choose_a_&project_to_constrain_the_search_for_main_types__14")); //$NON-NLS-1$
-				dialog.setElements(projects);
-		
-				IJavaProject javaProject = getJavaProject();
-				if (javaProject != null) {
-					dialog.setInitialSelections(new Object[] { javaProject });
-				}
-				if (dialog.open() == ElementListSelectionDialog.OK) {
-					return (IJavaProject) dialog.getFirstResult();
-				}*/
-		return null;
-	}
-
-	/**
-	 * Convenience method to get the workspace root.
-	 */
-	private IWorkspaceRoot getWorkspaceRoot()
-	{
-		return ResourcesPlugin.getWorkspace().getRoot();
-	}
+//	/**
+//	 * Realize a Java Project selection dialog and return the first selected project,
+//	 * or null if there was none.
+//	 */
+//	protected IProject choosePerlProject()
+//	{
+//		IProject[] projects;
+//		try
+//		{
+//			//	projects= JavaCore.create(getWorkspaceRoot()).getJavaProjects();
+//		} catch (Exception e)
+//		{
+//			PerlDebugPlugin.log(e);
+//			//	projects= new IJavaProject[0];
+//		}
+//		/*
+//				ILabelProvider labelProvider= new JavaElementLabelProvider(JavaElementLabelProvider.SHOW_DEFAULT);
+//				ElementListSelectionDialog dialog= new ElementListSelectionDialog(getShell(), labelProvider);
+//				dialog.setTitle(LauncherMessages.getString("JavaMainTab.Project_Selection_13")); //$NON-NLS-1$
+//				dialog.setMessage(LauncherMessages.getString("JavaMainTab.Choose_a_&project_to_constrain_the_search_for_main_types__14")); //$NON-NLS-1$
+//				dialog.setElements(projects);
+//		
+//				IJavaProject javaProject = getJavaProject();
+//				if (javaProject != null) {
+//					dialog.setInitialSelections(new Object[] { javaProject });
+//				}
+//				if (dialog.open() == ElementListSelectionDialog.OK) {
+//					return (IJavaProject) dialog.getFirstResult();
+//				}*/
+//		return null;
+//	}
+//
+//	/**
+//	 * Convenience method to get the workspace root.
+//	 */
+//	private IWorkspaceRoot getWorkspaceRoot()
+//	{
+//		return ResourcesPlugin.getWorkspace().getRoot();
+//	}
 
 	/**
 	 * @see org.eclipse.debug.ui.ILaunchConfigurationTab#isValid(ILaunchConfiguration)
@@ -365,6 +377,46 @@ public class CGILaunchConfigurationMainTab extends AbstractLaunchConfigurationTa
 		}
 
 		return (String[]) projectList.toArray(new String[projectList.size()]);
+	}
+	
+	/**
+	 * A listener to update for text changes and widget selection. Creates a
+	 * selection dialog for the buttons.
+	 */
+	private class ButtonListener extends SelectionAdapter {
+		public void widgetSelected(SelectionEvent e) {
+			Object source = e.getSource();
+			// dialog to browse a project
+			if (source == projectButton) {
+				String[] projects;
+				projects = getPerlProjects();
+				ILabelProvider labelProvider = new ProjectLabelProvider();
+				ElementListSelectionDialog dialog = new ElementListSelectionDialog(
+						getShell(), labelProvider);
+				dialog.setTitle("Project Selection");
+				dialog.setMessage("Choose a project");
+				dialog.setElements(projects);
+				if (dialog.open() == ElementListSelectionDialog.OK) {			
+						fProjText.setText((String) dialog.getFirstResult());
+					
+				}
+				// dialog to search a file
+			} 
+		}
+	}
+	/**
+	 * A label provider for projects.
+	 * @author Katrin
+	 * 
+	 */
+	private class ProjectLabelProvider extends LabelProvider {
+
+		public Image getImage(Object element) {
+			return AbstractUIPlugin.imageDescriptorFromPlugin(
+					PerlDebugPlugin.getDefault().toString(),
+					"icons/project_folder.gif").createImage();
+
+		}
 	}
 
 	

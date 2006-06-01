@@ -38,6 +38,7 @@ import org.eclipse.debug.ui.AbstractLaunchConfigurationTab;
 import org.eclipse.jface.preference.FileFieldEditor;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
+import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
@@ -53,6 +54,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IEditorDescriptor;
+import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.epic.debug.*;
 import org.epic.debug.util.RemotePort;
 
@@ -72,17 +74,17 @@ public class LaunchConfigurationRemoteMainTab
 	 */
 
 	// Project UI widgets
-	protected Label fProjLabel;
+	//protected Label fProjLabel;
 	protected Label fHostLabel;
 	protected Label fPortLabel;
-	protected Combo fProjText;
-	protected Button fProjButton;
+	//protected Text fProjText;
+	//protected Button fProjButton;
 	protected Text fHostText;
 	protected Text fPortText;
 
 	// Main class UI widgets
-	protected Label fMainLabel;
-	protected Combo fFileText;
+	//protected Label fMainLabel;
+	//protected Text fFileText;
 	//	protected Button fSearchButton;
 	//  protected Button fSearchExternalJarsCheckButton;
 	//	protected Button fStopInMainCheckButton;
@@ -98,7 +100,10 @@ public class LaunchConfigurationRemoteMainTab
 	private Label fCheckLabel;
 	private Button fCheckBox;
 	Composite mDebugPackageComp;
+	
+	private ProjectAndFileBlock fProjectAndFileBlock  = new ProjectAndFileBlock();;
 
+	
 	/**
 	 * @see org.eclipse.debug.ui.ILaunchConfigurationTab#createControl(Composite)
 	 */
@@ -107,78 +112,77 @@ public class LaunchConfigurationRemoteMainTab
 
 		Composite comp = new Composite(parent, SWT.NONE);
 		setControl(comp);
-
 		GridLayout topLayout = new GridLayout();
 		comp.setLayout(topLayout);
 		GridData gd;
+//
+//		createVerticalSpacer(comp, 1);
+//
+//		Composite projComp = new Composite(comp, SWT.NONE);
+//		GridLayout projLayout = new GridLayout();
+//		projLayout.numColumns = 3;
+//		projLayout.marginHeight = 0;
+//		projLayout.marginWidth = 0;
+//		projLayout.makeColumnsEqualWidth = true;
+//		projComp.setLayout(projLayout);
+//		gd = new GridData(GridData.FILL_HORIZONTAL);
+//		projComp.setLayoutData(gd);
+//		projComp.setFont(font);
+//
+//		fProjLabel = new Label(projComp, SWT.NONE);
+//		fProjLabel.setText("&Project:"); //$NON-NLS-1$
+//		gd = new GridData();
+//		gd.horizontalSpan = 1;
+//		fProjLabel.setLayoutData(gd);
+//		fProjLabel.setFont(font);
+//
+//		//fParamText = new Text(projComp, SWT.SINGLE | SWT.BORDER);
+//		fProjText = new Text(projComp, SWT.SINGLE | SWT.BORDER );
+//		gd = new GridData(GridData.FILL_HORIZONTAL);
+//		gd.horizontalSpan = 2;
+//		fProjText.setLayoutData(gd);
+//		fProjText.setFont(font);
+//		fProjText.addModifyListener(new ModifyListener() {
+//			public void modifyText(ModifyEvent evt) {
+//				updateLaunchConfigurationDialog();
+//			}
+//		});
+//
+//		createVerticalSpacer(comp, 1);
+//
+//		Composite mainComp = new Composite(comp, SWT.NONE);
+//		GridLayout mainLayout = new GridLayout();
+//		mainLayout.numColumns = 3;
+//		mainLayout.marginHeight = 0;
+//		mainLayout.marginWidth = 0;
+//		mainLayout.makeColumnsEqualWidth = true;
+//		mainComp.setLayout(mainLayout);
+//		gd = new GridData(GridData.FILL_HORIZONTAL);
+//		mainComp.setLayoutData(gd);
+//		mainComp.setFont(font);
+//
+//		fMainLabel = new Label(mainComp, SWT.NONE);
+//		fMainLabel.setText("File to execute:"); //$NON-NLS-1$
+//		gd = new GridData();
+//		gd.horizontalSpan = 1;
+//		fMainLabel.setLayoutData(gd);
+//		fMainLabel.setFont(font);
+//
+//		//fMainText = new Text(mainComp, SWT.SINGLE | SWT.BORDER);
+//		fFileText = new Text(mainComp, SWT.SINGLE | SWT.BORDER);
+//		gd = new GridData(GridData.FILL_HORIZONTAL);
+//		gd.horizontalSpan = 2;
+//		fFileText.setLayoutData(gd);
+//		fFileText.setFont(font);
+//		fFileText.addModifyListener(new ModifyListener() {
+//			public void modifyText(ModifyEvent evt) {
+//				updateLaunchConfigurationDialog();
+//			}
+//		});
 
-		createVerticalSpacer(comp, 1);
-
-		Composite projComp = new Composite(comp, SWT.NONE);
-		GridLayout projLayout = new GridLayout();
-		projLayout.numColumns = 3;
-		projLayout.marginHeight = 0;
-		projLayout.marginWidth = 0;
-		projLayout.makeColumnsEqualWidth = true;
-		projComp.setLayout(projLayout);
-		gd = new GridData(GridData.FILL_HORIZONTAL);
-		projComp.setLayoutData(gd);
-		projComp.setFont(font);
-
-		fProjLabel = new Label(projComp, SWT.NONE);
-		fProjLabel.setText("&Project:"); //$NON-NLS-1$
-		gd = new GridData();
-		gd.horizontalSpan = 1;
-		fProjLabel.setLayoutData(gd);
-		fProjLabel.setFont(font);
-
-		//fParamText = new Text(projComp, SWT.SINGLE | SWT.BORDER);
-		fProjText = new Combo(projComp, SWT.SINGLE | SWT.BORDER | SWT.READ_ONLY);
-		gd = new GridData(GridData.FILL_HORIZONTAL);
-		gd.horizontalSpan = 2;
-		fProjText.setLayoutData(gd);
-		fProjText.setFont(font);
-		fProjText.setItems(getPerlProjects());
-		fProjText.addModifyListener(new ModifyListener() {
-			public void modifyText(ModifyEvent evt) {
-				updateLaunchConfigurationDialog();
-				fFileText.setItems(getPerlFiles());
-			}
-		});
-
-		createVerticalSpacer(comp, 1);
-
-		Composite mainComp = new Composite(comp, SWT.NONE);
-		GridLayout mainLayout = new GridLayout();
-		mainLayout.numColumns = 3;
-		mainLayout.marginHeight = 0;
-		mainLayout.marginWidth = 0;
-		mainLayout.makeColumnsEqualWidth = true;
-		mainComp.setLayout(mainLayout);
-		gd = new GridData(GridData.FILL_HORIZONTAL);
-		mainComp.setLayoutData(gd);
-		mainComp.setFont(font);
-
-		fMainLabel = new Label(mainComp, SWT.NONE);
-		fMainLabel.setText("File to execute"); //$NON-NLS-1$
-		gd = new GridData();
-		gd.horizontalSpan = 1;
-		fMainLabel.setLayoutData(gd);
-		fMainLabel.setFont(font);
-
-		//fMainText = new Text(mainComp, SWT.SINGLE | SWT.BORDER);
-		fFileText = new Combo(mainComp, SWT.READ_ONLY | SWT.SINGLE | SWT.BORDER);
-		gd = new GridData(GridData.FILL_HORIZONTAL);
-		gd.horizontalSpan = 2;
-		fFileText.setLayoutData(gd);
-		fFileText.setFont(font);
-		fFileText.addModifyListener(new ModifyListener() {
-			public void modifyText(ModifyEvent evt) {
-				updateLaunchConfigurationDialog();
-			}
-		});
-
-		createVerticalSpacer(comp, 1);
+		fProjectAndFileBlock.createControl(comp);
+		
+		createVerticalSpacer(comp, 2);
 		Composite hostComp = new Composite(comp, SWT.NONE);
 		GridLayout hostLayout = new GridLayout();
 		hostLayout.numColumns = 3;
@@ -343,8 +347,8 @@ public class LaunchConfigurationRemoteMainTab
 	 * @see org.eclipse.debug.ui.ILaunchConfigurationTab#initializeFrom(ILaunchConfiguration)
 	 */
 	public void initializeFrom(ILaunchConfiguration config) {
-		updateProjectFromConfig(config);
-		updateFileFromConfig(config);
+		
+		fProjectAndFileBlock.initializeFrom(config);
 		updateParamsFromConfig(config);
 		updateDebugPackageFromConfig(config);
 
@@ -380,17 +384,17 @@ public class LaunchConfigurationRemoteMainTab
 		calculatePackageFilePathEnabled();
 	}
 
-	protected void updateProjectFromConfig(ILaunchConfiguration config) {
-		String projectName = ""; //$NON-NLS-1$
-		try {
-			projectName = config.getAttribute(
-					PerlLaunchConfigurationConstants.ATTR_PROJECT_NAME,
-					EMPTY_STRING);
-		} catch (CoreException ce) {
-			PerlDebugPlugin.log(ce);
-		}
-		fProjText.setText(projectName);
-	}
+//	protected void updateProjectFromConfig(ILaunchConfiguration config) {
+//		String projectName = ""; //$NON-NLS-1$
+//		try {
+//			projectName = config.getAttribute(
+//					PerlLaunchConfigurationConstants.ATTR_PROJECT_NAME,
+//					EMPTY_STRING);
+//		} catch (CoreException ce) {
+//			PerlDebugPlugin.log(ce);
+//		}
+//		fProjText.setText(projectName);
+//	}
 
 	protected void updateDebugPackageFromConfig(ILaunchConfiguration config) {
 		String path = ""; //$NON-NLS-1$
@@ -425,26 +429,23 @@ public class LaunchConfigurationRemoteMainTab
 		fHostText.setText(params);
 	}
 
-	protected void updateFileFromConfig(ILaunchConfiguration config) {
-		String fileName = ""; //$NON-NLS-1$
-		try {
-			fileName = config.getAttribute(
-					PerlLaunchConfigurationConstants.ATTR_STARTUP_FILE,
-					EMPTY_STRING);
-		} catch (CoreException ce) {
-			PerlDebugPlugin.log(ce);
-		}
-		fFileText.setText(fileName);
-	}
+//	protected void updateFileFromConfig(ILaunchConfiguration config) {
+//		String fileName = ""; //$NON-NLS-1$
+//		try {
+//			fileName = config.getAttribute(
+//					PerlLaunchConfigurationConstants.ATTR_STARTUP_FILE,
+//					EMPTY_STRING);
+//		} catch (CoreException ce) {
+//			PerlDebugPlugin.log(ce);
+//		}
+//		fFileText.setText(fileName);
+//	}
 
 	/**
 	 * @see org.eclipse.debug.ui.ILaunchConfigurationTab#performApply(ILaunchConfigurationWorkingCopy)
 	 */
 	public void performApply(ILaunchConfigurationWorkingCopy config) {
-		config.setAttribute(PerlLaunchConfigurationConstants.ATTR_PROJECT_NAME,
-				(String) fProjText.getText());
-		config.setAttribute(PerlLaunchConfigurationConstants.ATTR_STARTUP_FILE,
-				(String) fFileText.getText());
+		fProjectAndFileBlock.performApply(config);
 		config.setAttribute(PerlLaunchConfigurationConstants.ATTR_REMOTE_HOST,
 				(String) fHostText.getText());
 		config.setAttribute(PerlLaunchConfigurationConstants.ATTR_REMOTE_DEST,
@@ -482,25 +483,10 @@ public class LaunchConfigurationRemoteMainTab
 		setErrorMessage(null);
 		setMessage(null);
 
-		String name = fProjText.getText().trim();
-		if (name.length() > 0) {
-			if (!ResourcesPlugin.getWorkspace().getRoot().getProject(name)
-					.exists()) {
-				setErrorMessage("Project does not exist"); //$NON-NLS-1$
-				return false;
-			}
-		} else {
-			setErrorMessage("Specify Project"); //$NON-NLS-1$
+		if(!fProjectAndFileBlock.isValid(config)){
 			return false;
 		}
-
-		name = fFileText.getText().trim();
-		if (name.length() == 0) {
-			setErrorMessage("Startup File is not specified"); //$NON-NLS-1$
-			return false;
-		}
-
-		name = fPortText.getText().trim();
+		String name = fPortText.getText().trim();
 		int port = -1;
 
 		try {
@@ -555,13 +541,7 @@ public class LaunchConfigurationRemoteMainTab
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-		config.setAttribute(PerlLaunchConfigurationConstants.ATTR_PROJECT_NAME,
-				""); //$NON-NLS-1$
-		//	}
-		//	initializeMainTypeAndName(javaElement, config);
-
-		config.setAttribute(PerlLaunchConfigurationConstants.ATTR_STARTUP_FILE,
-				"");
+		fProjectAndFileBlock.setDefaults(config);
 		config.setAttribute(
 				PerlLaunchConfigurationConstants.ATTR_PROGRAM_PARAMETERS, "");
 		config.setAttribute(PerlLaunchConfigurationConstants.ATTR_REMOTE_HOST,
@@ -642,23 +622,23 @@ public class LaunchConfigurationRemoteMainTab
 		return (String[]) projectList.toArray(new String[projectList.size()]);
 	}
 
-	private String[] getPerlFiles() {
-		String projectName = fProjText.getText();
-
-		if (projectName == null || projectName.length() == 0) {
-			return (new String[]{});
-		}
-
-		IWorkspaceRoot workspaceRoot = PerlDebugPlugin.getWorkspace().getRoot();
-		IProject project = workspaceRoot.getProject(projectName);
-		IResourceVisitor visitor = new PerlProjectVisitor();
-		try {
-			project.accept(visitor);
-		} catch (CoreException e) {
-			e.printStackTrace();
-		}
-		return ((PerlProjectVisitor) visitor).getList();
-	}
+//	private String[] getPerlFiles() {
+//		String projectName = fProjText.getText();
+//
+//		if (projectName == null || projectName.length() == 0) {
+//			return (new String[]{});
+//		}
+//
+//		IWorkspaceRoot workspaceRoot = PerlDebugPlugin.getWorkspace().getRoot();
+//		IProject project = workspaceRoot.getProject(projectName);
+//		IResourceVisitor visitor = new PerlProjectVisitor();
+//		try {
+//			project.accept(visitor);
+//		} catch (CoreException e) {
+//			e.printStackTrace();
+//		}
+//		return ((PerlProjectVisitor) visitor).getList();
+//	}
 
 	/*
 	 * (non-Javadoc)

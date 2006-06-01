@@ -1,6 +1,7 @@
 Eclipse Perl Integration:
 
 		Debugger
+		* Implemented Feature Request: [ 1351860 ] Right-click on runnable script to launch
 		* Fixed Bug [1470346] Cannot execute scripts from linked folders
 		* Implemented Feature Request: [ 1429720 ] Specify working directory for Perl run configurations
 		* Fixed Bug [1233924] Debugging disabled in eclipse 3.1

@@ -9,7 +9,7 @@
  *     IBM Corporation - initial API and implementation
  *     adapted for EPIC by jploski
  *******************************************************************************/
-package org.epic.debug;
+package org.epic.debug.ui;
 
 import java.io.File;
 
@@ -28,8 +28,8 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.*;
 import org.eclipse.ui.dialogs.ContainerSelectionDialog;
-import org.epic.core.PerlCore;
-import org.epic.core.PerlProject;
+import org.epic.debug.PerlDebugPlugin;
+import org.epic.debug.PerlLaunchConfigurationConstants;
 
 /**
  * A control for setting the working directory associated with a launch
@@ -401,17 +401,4 @@ public class WorkingDirectoryBlock extends AbstractLaunchConfigurationTab
     {
         return fLaunchConfiguration;
     }
-    /*
-    private PerlProject getPerlProject(ILaunchConfiguration config)
-        throws CoreException
-    {
-        String projectName = config.getAttribute(
-            PerlLaunchConfigurationConstants.ATTR_PROJECT_NAME,
-            "");
-        
-        return PerlCore.create(
-            ResourcesPlugin.getWorkspace().getRoot().getProject(projectName)
-            );
-    }
-    */
 }

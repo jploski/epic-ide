@@ -3,11 +3,7 @@ package org.epic.debug;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.IResourceVisitor;
-import org.eclipse.core.resources.IWorkspaceRoot;
-import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.resources.*;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
@@ -15,18 +11,12 @@ import org.eclipse.debug.ui.AbstractLaunchConfigurationTab;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Text;
+import org.eclipse.swt.widgets.*;
 import org.eclipse.ui.IEditorDescriptor;
 import org.eclipse.ui.dialogs.ElementListSelectionDialog;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
@@ -38,32 +28,14 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
  * @author Katrin Dust
  * 
  */
-public class ProjectAndFileBlock extends AbstractLaunchConfigurationTab {
+public class ProjectAndFileBlock extends AbstractLaunchConfigurationTab
+{
+    private static final String PERL_NATURE_ID = "org.epic.perleditor.perlnature";
 
-	/**
-	 * the actual project
-	 */
-	protected Text fProjText;
-
-	/**
-	 * the actual file to execute
-	 */
-	protected Text fMainText;
-
-	/**
-	 * Button to search a file to execute
-	 */
-	protected Button fileButton;
-
-	/**
-	 * button to browse a project
-	 */
-	protected Button projectButton;
-
-	/**
-	 * perl nature id
-	 */
-	private static final String PERL_NATURE_ID = "org.epic.perleditor.perlnature";
+	private Text fProjText;
+    private Text fMainText;
+    private Button fileButton;
+    private Button projectButton;
 
 	/**
 	 * listener for file- and projectButton
@@ -73,7 +45,7 @@ public class ProjectAndFileBlock extends AbstractLaunchConfigurationTab {
 	/**
 	 * The last launch config this tab was initialized from
 	 */
-	protected ILaunchConfiguration fLaunchConfiguration;
+	private ILaunchConfiguration fLaunchConfiguration;
 
 	/**
 	 * This method creates the file and project part of the
@@ -85,69 +57,71 @@ public class ProjectAndFileBlock extends AbstractLaunchConfigurationTab {
 	 * @see org.eclipse.debug.ui.ILaunchConfigurationTab#createControl(org.eclipse.swt.widgets.Composite)
 	 */
 	public void createControl(Composite parent) {
-
-		// creates a project text field
-		Font font = parent.getFont();
-		Composite projComp = new Composite(parent, SWT.NONE);
-		GridLayout projLayout = new GridLayout();
-		projLayout.numColumns = 2;
-		projLayout.marginHeight = 0;
-		projLayout.marginWidth = 0;
-		projComp.setLayout(projLayout);
-		GridData gd = new GridData(GridData.FILL_HORIZONTAL);
-		projComp.setLayoutData(gd);
-		projComp.setFont(font);
-		Label fProjLabel = new Label(projComp, SWT.NONE);
-		fProjLabel.setText("&Project:"); //$NON-NLS-1$
-		gd = new GridData();
-		gd.horizontalSpan = 2;
-		fProjLabel.setLayoutData(gd);
-		fProjLabel.setFont(font);
-		fProjText = new Text(projComp, SWT.SINGLE | SWT.BORDER);
-		gd = new GridData(GridData.FILL_HORIZONTAL);
-		fProjText.setLayoutData(gd);
-		fProjText.setFont(font);
-		// update the configuartion by modification
-		fProjText.addModifyListener(new ModifyListener() {
-			public void modifyText(ModifyEvent evt) {
-				updateLaunchConfigurationDialog();
-			}
-		});
-		// creates a browse button
-		projectButton = createPushButton(projComp, "Browse...", null);
-		projectButton.addSelectionListener(buttonListener);
-
-		createVerticalSpacer(projComp, 1);
-
-		// creates a file text field
-		GridLayout mainLayout = new GridLayout();
-		mainLayout.numColumns = 2;
-		mainLayout.marginHeight = 0;
-		mainLayout.marginWidth = 0;
-		projComp.setLayout(mainLayout);
-		gd = new GridData(GridData.FILL_HORIZONTAL);
-		projComp.setLayoutData(gd);
-		projComp.setFont(font);
-		Label fMainLabel = new Label(projComp, SWT.NONE);
-		fMainLabel.setText("File to execute:");
-		gd = new GridData();
-		gd.horizontalSpan = 2;
-		fMainLabel.setLayoutData(gd);
-		fMainLabel.setFont(font);
-		fMainText = new Text(projComp, SWT.SINGLE | SWT.BORDER);
-		gd = new GridData(GridData.FILL_HORIZONTAL);
-		fMainText.setLayoutData(gd);
-		fMainText.setFont(font);
-		// update the configuartion by modification
-		fMainText.addModifyListener(new ModifyListener() {
-			public void modifyText(ModifyEvent evt) {
-				updateLaunchConfigurationDialog();
-			}
-		});
-		fileButton = createPushButton(projComp, "Search...", null);
-		fileButton.addSelectionListener(buttonListener);
-
+        Font font = parent.getFont();
+        
+        Composite comp = new Composite(parent, SWT.NONE);
+        setControl(comp);
+        GridLayout topLayout = new GridLayout();
+        topLayout.marginWidth = 0;
+        topLayout.verticalSpacing = 0;
+        comp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+        comp.setLayout(topLayout);
+        comp.setFont(font);
+        
+        createProjectEditor(comp);
+		createVerticalSpacer(comp, 1);
+        createScriptFileEditor(comp);
 	}
+    
+    private void createProjectEditor(Composite parent) {
+        Font font = parent.getFont();
+        Group group = new Group(parent, SWT.NONE);
+        group.setText("&Project:");
+        GridData gd = new GridData(GridData.FILL_HORIZONTAL);
+        group.setLayoutData(gd);
+        GridLayout layout = new GridLayout();
+        layout.numColumns = 2;
+        group.setLayout(layout);
+        group.setFont(font);
+
+        fProjText = new Text(group, SWT.SINGLE | SWT.BORDER);
+        gd = new GridData(GridData.FILL_HORIZONTAL);
+        fProjText.setLayoutData(gd);
+        fProjText.setFont(font);
+        fProjText.addModifyListener(new ModifyListener() {
+            public void modifyText(ModifyEvent evt) {
+                updateLaunchConfigurationDialog();
+            }
+        });
+
+        projectButton = createPushButton(group, "&Browse...", null);
+        projectButton.addSelectionListener(buttonListener);
+    }
+    
+    private void createScriptFileEditor(Composite parent) {
+        Font font = parent.getFont();
+        Group group = new Group(parent, SWT.NONE);
+        group.setText("File to e&xecute:");
+        GridData gd = new GridData(GridData.FILL_HORIZONTAL);
+        group.setLayoutData(gd);
+        GridLayout layout = new GridLayout();
+        layout.numColumns = 2;
+        group.setLayout(layout);
+        group.setFont(font);
+        
+        fMainText = new Text(group, SWT.SINGLE | SWT.BORDER);
+        gd = new GridData(GridData.FILL_HORIZONTAL);
+        fMainText.setLayoutData(gd);
+        fMainText.setFont(font);
+        fMainText.addModifyListener(new ModifyListener() {
+            public void modifyText(ModifyEvent evt) {
+                updateLaunchConfigurationDialog();
+            }
+        });
+
+        fileButton = createPushButton(group, "&Search...", null);
+        fileButton.addSelectionListener(buttonListener);
+    }
 
 	/**
 	 * Sets an empty string as the default values of project and file names.

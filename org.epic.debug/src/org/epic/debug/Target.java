@@ -137,6 +137,7 @@ public abstract class Target extends DebugElement implements IDebugTarget
 		
 		initPath();
 		String prjName = null;
+        String perlParams = null;
 		String progParams = null;
 		mProcessName = "Perl-Interpreter";
 		try
@@ -145,6 +146,10 @@ public abstract class Target extends DebugElement implements IDebugTarget
 				mLaunch.getLaunchConfiguration().getAttribute(
 					PerlLaunchConfigurationConstants.ATTR_PROJECT_NAME,
 					EMPTY_STRING);
+            perlParams =
+                mLaunch.getLaunchConfiguration().getAttribute(
+                    PerlLaunchConfigurationConstants.ATTR_PERL_PARAMETERS,
+                    EMPTY_STRING);
 			progParams =
 				mLaunch.getLaunchConfiguration().getAttribute(
 					PerlLaunchConfigurationConstants.ATTR_PROGRAM_PARAMETERS,
@@ -194,17 +199,19 @@ public abstract class Target extends DebugElement implements IDebugTarget
 		{
 			fCmdList.add("-w");
 		}
-
 		if (PerlEditorPlugin.getDefault().getTaintPreference())
 		{
 			fCmdList.add("-T");
-		}
+		}        
+        if (perlParams != null && perlParams.length() > 0)
+        {
+            ExecutionArguments exArgs = new ExecutionArguments(perlParams);
+            fCmdList.addAll(exArgs.getProgramArgumentsL());
+        }
 
-		
-		
-		//startfile = getProjectDir().toString()+"/"+startfile;
 		fCmdList.add(mStartupFileAbsolut);
-		if (progParams.length() > 0)
+        
+		if (progParams != null && progParams.length() > 0)
 		{
 			ExecutionArguments exArgs = new ExecutionArguments(progParams);
 			fCmdList.addAll(exArgs.getProgramArgumentsL());

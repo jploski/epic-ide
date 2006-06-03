@@ -26,11 +26,11 @@ public class LaunchConfigurationDialog
 	 * @see org.eclipse.debug.ui.ILaunchConfigurationTabGroup#createTabs(ILaunchConfigurationDialog, String)
 	 */
 	
-public void createTabs(ILaunchConfigurationDialog dialog, String mode) {
+    public void createTabs(ILaunchConfigurationDialog dialog, String mode) {
 		ILaunchConfigurationTab[] tabs = new ILaunchConfigurationTab[] {
-		
-			
-			 new LaunchConfigurationMainTab(),new org.eclipse.debug.ui.CommonTab()
+			 new LaunchConfigurationMainTab(),
+             new LaunchConfigurationArgumentsTab(),
+             new org.eclipse.debug.ui.CommonTab()
 		};
 		setTabs(tabs);
 	}

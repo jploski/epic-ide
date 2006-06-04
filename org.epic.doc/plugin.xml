@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin>
+
+   <extension point="org.eclipse.help.toc">
+      <toc file="html/guide/toc.xml" primary="true"/>
+      <toc file="html/perltidy/toc.xml" primary="true"/>
+   </extension>
+   
+   <extension point="org.eclipse.help.contexts">
+      <contexts file="HelpContexts.xml"/>
+   </extension>
+
+</plugin>

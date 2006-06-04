@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+This Ant script, used to build the User's Guide from its DocBook source,
+requires some properties specific to your local environment.
+See build.properties for more information.
+-->
+<project name="EPIC User's Guide" default="build-all" basedir=".">	
+	
+	<!--
+	NOTE:
+		In order for the xmlcatalog magic to work, you must add resolver.jar
+		from the xml-commons-resolver-1.1 distribution to your Ant classpath
+		("Window > Preferences > Ant > Runtime > Global Entries"). Do NOT add
+		resolver.jar to the 'endorsed' directory of your JRE/JDK or Ant will
+		complain that "catalogpath listing external catalogs will be ignored"
+		and misbehave!
+	-->
+    <xmlcatalog id="catalog">
+        <catalogpath>
+        	<pathelement path="${xmlcatalog.path}"/>
+        </catalogpath>
+    </xmlcatalog>
+
+	<target name="check-env">
+		<fail message="Property xmlcatalog.path must be defined. It may be empty or should contain one or more paths to XML catalog files.">
+			<condition>
+				<or>
+					<not><isset property="xmlcatalog.path"/></not>
+				</or>
+			</condition>
+		</fail>
+	</target>
+	
+	<target name="build-all"
+		    depends="build-html,build-pdf,build-help"
+		    description="All output formats"/>
+
+	<target name="build-pdf" depends="check-env" description="Single PDF file">
+		<fail message="Property fop.path must be defined and point to fop 0.20.5 installation directory.">
+			<condition>
+				<or>
+					<not><isset property="fop.path"/></not>
+				</or>
+			</condition>
+		</fail>
+		<!-- Don't forget to update your Ant classpath (see build.properties) -->
+		<taskdef name="fop" 
+		         classname="org.apache.fop.tools.anttasks.Fop">
+		         <classpath>
+		            <pathelement location="${fop.dir}/build/fop.jar"/>
+		            <pathelement location="${fop.dir}/lib/avalon-framework-cvs-20020806.jar"/>
+		            <pathelement location="${fop.dir}/lib/batik.jar"/>
+		         </classpath>
+		</taskdef>
+		<mkdir dir="temp"/>
+	    <xslt basedir="."
+		      destdir="temp"
+		      extension=".fo"
+		      style="fo-single.xsl"
+		      includes="guide.xml"
+			  force="true">
+	        <xmlcatalog refid="catalog"/>
+	    </xslt>
+	    <xslt basedir="temp"
+		      destdir="temp"
+		      extension=".xml"
+		      style="identity.xsl"
+		      includes="guide.fo"
+			  force="true">
+	        <xmlcatalog refid="catalog"/>
+	    </xslt>
+		<move file="temp/guide.xml" tofile="temp/guide.fo" overwrite="true"/>
+	    <xslt basedir="temp"
+		      destdir="temp"
+		      extension=".xml"
+		      style="fo-postprocess.xsl"
+		      includes="guide.fo"
+			  force="true">
+	        <xmlcatalog refid="catalog"/>
+	    </xslt>
+		<fop fofile="temp/guide.xml" outfile="../dist/EPIC_User's_Guide.pdf" messagelevel="error"/>
+		<delete dir="temp"/>
+	</target>
+	
+	<target name="build-html" depends="check-env" description="Single HTML file">
+		<delete dir="temp" failonerror="false"/>
+		<mkdir dir="temp"/>
+	    <xslt basedir="."
+		      destdir="temp"
+		      extension=".html"
+		      style="xhtml-single.xsl"
+		      includes="guide.xml"
+			  force="true">
+	        <xmlcatalog refid="catalog"/>
+	    </xslt>
+		<copy todir="temp">
+			<fileset dir="." includes="images/**"/>
+			<fileset dir="." includes="book.css"/>
+		</copy>
+		<zip file="../dist/EPIC_User's_Guide.zip" basedir="temp" includes="**"/>
+		<delete dir="temp"/>
+	</target>
+
+	<target name="build-latex" depends="check-env" description="Single LaTeX file (experimental)">
+		<mkdir dir="temp"/>
+	    <xslt basedir="."
+		      destdir="temp"
+		      extension=".tex"
+		      style="db2latex-xsl-0.8pre1/xsl/docbook.xsl"
+		      includes="guide.xml"
+			  force="true">
+	        <xmlcatalog refid="catalog"/>
+	    </xslt>
+	</target>
+
+	<target name="build-help" depends="check-env" description="Eclipse Help format">
+		<mkdir dir="temp"/>
+	    <xslt basedir="."
+		      destdir="."
+		      extension=".html"
+		      style="xhtml-multi.xsl"
+		      includes="guide.xml"
+			  force="true">
+	        <xmlcatalog refid="catalog"/>
+	    </xslt>
+	    <xslt basedir="."
+		      destdir="."
+		      extension=".html"
+		      style="toc.xsl"
+		      includes="guide.xml"
+			  force="true">
+	        <xmlcatalog refid="catalog"/>
+	    </xslt>
+		<delete file="guide.html"/>
+		<mkdir dir="../html/guide"/>
+		<copy todir="../html/guide">
+			<fileset dir="temp" includes="**"/>
+			<fileset dir="." includes="images/**"/>
+			<fileset dir="." includes="book.css"/>
+		</copy>
+		<delete dir="temp"/>
+	</target>
+</project>

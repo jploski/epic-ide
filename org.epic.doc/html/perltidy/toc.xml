@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<toc label="EPIC - External Tool Reference">
+  <anchor id="epicHelp"/>
+  <topic label="Perl Editor">
+    <topic label="Preferences">
+      <topic label="Source Formatter">
+         <topic label="PerlTidy options" href="html/perltidy/perltidy.html" />
+      </topic>
+    </topic>
+  </topic>
+</toc>

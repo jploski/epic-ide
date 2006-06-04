@@ -1,0 +1,2186 @@
+<HTML>
+<HEAD>
+<TITLE>perltidy - a perl script indenter and reformatter</TITLE>
+<LINK REV="made" HREF="mailto:perl@packages.debian.org">
+</HEAD>
+
+<BODY>
+
+<A NAME="__index__"></A>
+<!-- INDEX BEGIN -->
+
+<UL>
+
+	<LI><A HREF="#name">NAME</A></LI>
+	<LI><A HREF="#synopsis">SYNOPSIS</A></LI>
+	<LI><A HREF="#description">DESCRIPTION</A></LI>
+	<LI><A HREF="#examples">EXAMPLES</A></LI>
+	<LI><A HREF="#options  overview">OPTIONS - OVERVIEW</A></LI>
+	<UL>
+
+		<LI><A HREF="#i/o control">I/O control</A></LI>
+	</UL>
+
+	<LI><A HREF="#formatting options">FORMATTING OPTIONS</A></LI>
+	<UL>
+
+		<LI><A HREF="#basic options">Basic Options</A></LI>
+		<LI><A HREF="#code indentation control">Code Indentation Control</A></LI>
+		<LI><A HREF="#whitespace control">Whitespace Control</A></LI>
+		<LI><A HREF="#comment controls">Comment Controls</A></LI>
+		<LI><A HREF="#line break control">Line Break Control</A></LI>
+		<LI><A HREF="#controlling list formatting">Controlling List Formatting</A></LI>
+		<LI><A HREF="#retaining or ignoring existing line breaks">Retaining or Ignoring Existing Line Breaks</A></LI>
+		<LI><A HREF="#blank line control">Blank Line Control</A></LI>
+		<LI><A HREF="#styles">Styles</A></LI>
+		<LI><A HREF="#other controls">Other Controls</A></LI>
+	</UL>
+
+	<LI><A HREF="#html options">HTML OPTIONS</A></LI>
+	<LI><A HREF="#some common input conventions">SOME COMMON INPUT CONVENTIONS</A></LI>
+	<UL>
+
+		<LI><A HREF="#specifying block types">Specifying Block Types</A></LI>
+		<LI><A HREF="#specifying file extensions">Specifying File Extensions</A></LI>
+	</UL>
+
+	<LI><A HREF="#switches which may be negated">SWITCHES WHICH MAY BE NEGATED</A></LI>
+	<LI><A HREF="#limitations">LIMITATIONS</A></LI>
+	<LI><A HREF="#files">FILES</A></LI>
+	<LI><A HREF="#see also">SEE ALSO</A></LI>
+	<LI><A HREF="#version">VERSION</A></LI>
+	<LI><A HREF="#credits">CREDITS</A></LI>
+	<LI><A HREF="#author">AUTHOR</A></LI>
+	<LI><A HREF="#copyright">COPYRIGHT</A></LI>
+	<LI><A HREF="#license">LICENSE</A></LI>
+	<LI><A HREF="#disclaimer">DISCLAIMER</A></LI>
+</UL>
+<!-- INDEX END -->
+
+<HR>
+<P>
+<H1><A NAME="name">NAME</A></H1>
+<P>perltidy - a perl script indenter and reformatter</P>
+<P>
+<HR>
+<H1><A NAME="synopsis">SYNOPSIS</A></H1>
+<PRE>
+    perltidy [ options ] file1 file2 file3 ...
+            (output goes to file1.tdy, file2.tdy, file3.tdy, ...)
+    perltidy [ options ] file1 -o outfile
+    perltidy [ options ] file1 -st &gt;outfile
+    perltidy [ options ] &lt;infile &gt;outfile</PRE>
+<P>
+<HR>
+<H1><A NAME="description">DESCRIPTION</A></H1>
+<P>Perltidy reads a perl script and writes an indented, reformatted script.</P>
+<P>Many users will find enough information in <A HREF="#examples">EXAMPLES</A> to get 
+started.  New users may benefit from the short tutorial 
+which can be found at
+<A HREF="http://perltidy.sourceforge.net/tutorial.html">http://perltidy.sourceforge.net/tutorial.html</A></P>
+<P>A convenient aid to systematically defining a set of style parameters
+can be found at
+<A HREF="http://perltidy.sourceforge.net/stylekey.html">http://perltidy.sourceforge.net/stylekey.html</A></P>
+<P>Perltidy can produce output on either of two modes, depending on the
+existence of an <STRONG>-html</STRONG> flag.  Without this flag, the output is passed
+through a formatter.  The default formatting tries to follow the
+recommendations in perlstyle(1), but it can be controlled in detail with
+numerous input parameters, which are described in <A HREF="#formatting options">FORMATTING OPTIONS</A>.</P>
+<P>When the <STRONG>-html</STRONG> flag is given, the output is passed through an HTML
+formatter which is described in <A HREF="#html options">HTML OPTIONS</A>.</P>
+<P>
+<HR>
+<H1><A NAME="examples">EXAMPLES</A></H1>
+<PRE>
+  perltidy somefile.pl</PRE>
+<P>This will produce a file <EM>somefile.pl.tdy</EM> containing the script reformatted
+using the default options, which approximate the style suggested in 
+perlstyle(1).  Perltidy never changes the input file.</P>
+<PRE>
+  perltidy *.pl</PRE>
+<P>Execute perltidy on all <EM>.pl</EM> files in the current directory with the
+default options.  The output will be in files with an appended <EM>.tdy</EM>
+extension.  For any file with an error, there will be a file with extension
+<EM>.ERR</EM>.</P>
+<PRE>
+  perltidy -b file1.pl file2.pl</PRE>
+<P>Modify <EM>file1.pl</EM> and <EM>file1.pl</EM> in place, and backup the originals to
+<EM>file1.pl.bak</EM> and <EM>file2.pl.bak</EM>.  If <EM>file1.pl.bak</EM> and/or <EM>file2.pl.bak</EM>
+already exist, they will be overwritten.</P>
+<PRE>
+  perltidy -gnu somefile.pl</PRE>
+<P>Execute perltidy on file <EM>somefile.pl</EM> with a style which approximates the
+GNU Coding Standards for C programs.  The output will be <EM>somefile.pl.tdy</EM>.</P>
+<PRE>
+  perltidy -i=3 somefile.pl</PRE>
+<P>Execute perltidy on file <EM>somefile.pl</EM>, with 3 columns for each level of
+indentation (<STRONG>-i=3</STRONG>) instead of the default 4 columns.  There will not be any
+tabs in the reformatted script, except for any which already exist in comments,
+pod documents, quotes, and here documents.  Output will be <EM>somefile.pl.tdy</EM>.</P>
+<PRE>
+  perltidy -i=3 -et=8 somefile.pl</PRE>
+<P>Same as the previous example, except that leading whitespace will
+be entabbed with one tab character per 8 spaces.</P>
+<PRE>
+  perltidy -ce -l=72 somefile.pl</PRE>
+<P>Execute perltidy on file <EM>somefile.pl</EM> with all defaults except use ``cuddled
+elses'' (<STRONG>-ce</STRONG>) and a maximum line length of 72 columns (<STRONG>-l=72</STRONG>) instead of
+the default 80 columns.</P>
+<PRE>
+  perltidy -g somefile.pl</PRE>
+<P>Execute perltidy on file <EM>somefile.pl</EM> and save a log file <EM>somefile.pl.LOG</EM>
+which shows the nesting of braces, parentheses, and square brackets at
+the start of every line.</P>
+<PRE>
+  perltidy -html somefile.pl</PRE>
+<P>This will produce a file <EM>somefile.pl.html</EM> containing the script with
+html markup.  The output file will contain an embedded style sheet in
+the &lt;HEAD&gt; section which may be edited to change the appearance.</P>
+<PRE>
+  perltidy -html -css=mystyle.css somefile.pl</PRE>
+<P>This will produce a file <EM>somefile.pl.html</EM> containing the script with
+html markup.  This output file will contain a link to a separate style
+sheet file <EM>mystyle.css</EM>.  If the file <EM>mystyle.css</EM> does not exist,
+it will be created.  If it exists, it will not be overwritten.</P>
+<PRE>
+  perltidy -html -pre somefile.pl</PRE>
+<P>Write an html snippet with only the PRE section to <EM>somefile.pl.html</EM>.
+This is useful when code snippets are being formatted for inclusion in a
+larger web page.  No style sheet will be written in this case.</P>
+<PRE>
+  perltidy -html -ss &gt;mystyle.css</PRE>
+<P>Write a style sheet to <EM>mystyle.css</EM> and exit.</P>
+<PRE>
+  perltidy -html -frm mymodule.pm</PRE>
+<P>Write html with a frame holding a table of contents and the source code.  The
+output files will be <EM>mymodule.pm.html</EM> (the frame), <EM>mymodule.pm.toc.html</EM>
+(the table of contents), and <EM>mymodule.pm.src.html</EM> (the source code).</P>
+<P>
+<HR>
+<H1><A NAME="options  overview">OPTIONS - OVERVIEW</A></H1>
+<P>The entire command line is scanned for options, and they are processed
+before any files are processed.  As a result, it does not matter
+whether flags are before or after any filenames.  However, the relative
+order of parameters is important, with later parameters overriding the
+values of earlier parameters.</P>
+<P>For each parameter, there is a long name and a short name.  The short
+names are convenient for keyboard input, while the long names are
+self-documenting and therefore useful in scripts.  It is customary to
+use two leading dashes for long names, but one may be used.</P>
+<P>Most parameters which serve as on/off flags can be negated with a
+leading ``n'' (for the short name) or a leading ``no'' or ``no-'' (for the
+long name).  For example, the flag to outdent long quotes is is <STRONG>-olq</STRONG>
+or <STRONG>--outdent-long-quotes</STRONG>.  The flag to skip this is <STRONG>-nolq</STRONG>
+or <STRONG>--nooutdent-long-quotes</STRONG> or <STRONG>--no-outdent-long-quotes</STRONG>.</P>
+<P>Options may not be bundled together.  In other words, options <STRONG>-q</STRONG> and
+<STRONG>-g</STRONG> may NOT be entered as <STRONG>-qg</STRONG>.</P>
+<P>Option names may be terminated early as long as they are uniquely identified.
+For example, instead of <STRONG>-dump-token-types</STRONG>, it would be sufficient to enter
+<STRONG>-dump-tok</STRONG>, or even <STRONG>-dump-t</STRONG>, to uniquely identify this command.</P>
+<P>
+<H2><A NAME="i/o control">I/O control</A></H2>
+<P>The following parameters concern the files which are read and written.</P>
+<DL>
+<DT><STRONG><A NAME="item_%2Dh%2C_%2D%2Dhelp"><STRONG>-h</STRONG>,    <STRONG>--help</STRONG></A></STRONG><BR>
+<DD>
+Show summary of usage and exit.
+<P></P>
+<DT><STRONG><A NAME="item_%2Do%3Dfilename%2C_%2D%2Doutfile%3Dfilename"><STRONG>-o</STRONG>=filename,    <STRONG>--outfile</STRONG>=filename</A></STRONG><BR>
+<DD>
+Name of the output file (only if a single input file is being
+processed).  If no output file is specified, and output is not
+redirected to the standard output, the output will go to <EM>filename.tdy</EM>.
+<P></P>
+<DT><STRONG><A NAME="item_%2Dst%2C_%2D%2Dstandard%2Doutput"><STRONG>-st</STRONG>,    <STRONG>--standard-output</STRONG></A></STRONG><BR>
+<DD>
+Perltidy must be able to operate on an arbitrarily large number of files
+in a single run, with each output being directed to a different output
+file.  Obviously this would conflict with outputting to the single
+standard output device, so a special flag, <STRONG>-st</STRONG>, is required to
+request outputting to the standard output.  For example,
+<PRE>
+  perltidy somefile.pl -st &gt;somefile.new.pl</PRE>
+<P>This option may only be used if there is just a single input file.  
+The default is <STRONG>-nst</STRONG> or <STRONG>-nostandard-output</STRONG>.</P>
+<P></P>
+<DT><STRONG><A NAME="item_%2Dse%2C_%2D%2Dstandard%2Derror%2Doutput"><STRONG>-se</STRONG>,    <STRONG>--standard-error-output</STRONG></A></STRONG><BR>
+<DD>
+If perltidy detects an error when processing file <EM>somefile.pl</EM>, its
+default behavior is to write error messages to file <EM>somefile.pl.ERR</EM>.
+Use <STRONG>-se</STRONG> to cause all error messages to be sent to the standard error
+output stream instead.  This directive may be negated with <STRONG>-nse</STRONG>.
+Thus, you may place <STRONG>-se</STRONG> in a <EM>.perltidyrc</EM> and override it when
+desired with <STRONG>-nse</STRONG> on the command line.
+<P></P>
+<DT><STRONG><A NAME="item_%2Doext%3Dext%2C_%2D%2Doutput%2Dfile%2Dextension%3"><STRONG>-oext</STRONG>=ext,    <STRONG>--output-file-extension</STRONG>=ext</A></STRONG><BR>
+<DD>
+Change the extension of the output file to be <EM>ext</EM> instead of the
+default <EM>tdy</EM> (or <EM>html</EM> in case the -<STRONG>-html</STRONG> option is used).
+See <A HREF="#specifying file extensions">Specifying File Extensions</A>.
+<P></P>
+<DT><STRONG><A NAME="item_%2Dopath%3Dpath%2C_%2D%2Doutput%2Dpath%3Dpath"><STRONG>-opath</STRONG>=path,    <STRONG>--output-path</STRONG>=path</A></STRONG><BR>
+<DD>
+When perltidy creates a filename for an output file, by default it merely
+appends an extension to the path and basename of the input file.  This
+parameter causes the path to be changed to <EM>path</EM> instead.
+<P>The path should end in a valid path separator character, but perltidy will try
+to add one if it is missing.</P>
+<P>For example
+</P>
+<PRE>
+
+ perltidy somefile.pl -opath=/tmp/</PRE>
+<P>will produce <EM>/tmp/somefile.pl.tdy</EM>.  Otherwise, <EM>somefile.pl.tdy</EM> will
+appear in whatever directory contains <EM>somefile.pl</EM>.</P>
+<P>If the path contains spaces, it should be placed in quotes.</P>
+<P>This parameter will be ignored if output is being directed to standard output,
+or if it is being specified explicitly with the <STRONG>-o=s</STRONG> parameter.</P>
+<P></P>
+<DT><STRONG><A NAME="item_%2Db%2C_%2D%2Dbackup%2Dand%2Dmodify%2Din%2Dplace"><STRONG>-b</STRONG>,    <STRONG>--backup-and-modify-in-place</STRONG></A></STRONG><BR>
+<DD>
+Modify the input file or files in-place and save the original with the
+extension <EM>.bak</EM>.  Any existing <EM>.bak</EM> file will be deleted.  See next item
+for changing the default backup extension.
+<P>A <STRONG>-b</STRONG> flag will be ignored if input is from standard input, or
+if the <STRONG>-html</STRONG> flag is set.</P>
+<P></P>
+<DT><STRONG><A NAME="item_%2Dbext%3Dext%2C_%2D%2Dbackup%2Dfile%2Dextension%3"><STRONG>-bext</STRONG>=ext,    <STRONG>--backup-file-extension</STRONG>=ext</A></STRONG><BR>
+<DD>
+Change the extension of the backup file to be something other than the
+default <EM>.bak</EM>.  See <A HREF="#specifying file extensions">Specifying File Extensions</A>.
+<P></P>
+<DT><STRONG><A NAME="item_%2Dw%2C_%2D%2Dwarning%2Doutput"><STRONG>-w</STRONG>,    <STRONG>--warning-output</STRONG></A></STRONG><BR>
+<DD>
+Setting <STRONG>-w</STRONG> causes any non-critical warning
+messages to be reported as errors.  These include messages
+about possible pod problems, possibly bad starting indentation level,
+and cautions about indirect object usage.  The default, <STRONG>-nw</STRONG> or
+<STRONG>--nowarning-output</STRONG>, is not to include these warnings.
+<P></P>
+<DT><STRONG><A NAME="item_%2Dq%2C_%2D%2Dquiet"><STRONG>-q</STRONG>,    <STRONG>--quiet</STRONG></A></STRONG><BR>
+<DD>
+Deactivate error messages and syntax checking (for running under
+an editor).
+<P>For example, if you use a vi-style editor, such as vim, you may execute
+perltidy as a filter from within the editor using something like</P>
+<PRE>
+ :n1,n2!perltidy -q</PRE>
+<P>where <CODE>n1,n2</CODE> represents the selected text.  Without the <STRONG>-q</STRONG> flag,
+any error message may mess up your screen, so be prepared to use your
+``undo'' key.</P>
+<P></P>
+<DT><STRONG><A NAME="item_%2Dlog%2C_%2D%2Dlogfile"><STRONG>-log</STRONG>,    <STRONG>--logfile</STRONG></A></STRONG><BR>
+<DD>
+Save the <EM>.LOG</EM> file, which has many useful diagnostics.  Perltidy always
+creates a <EM>.LOG</EM> file, but by default it is deleted unless a program bug is
+suspected.  Setting the <STRONG>-log</STRONG> flag forces the log file to be saved.
+<P></P>
+<DT><STRONG><A NAME="item_%2Dg%3Dn%2C_%2D%2Dlogfile%2Dgap%3Dn"><STRONG>-g=n</STRONG>, <STRONG>--logfile-gap=n</STRONG></A></STRONG><BR>
+<DD>
+Set maximum interval between input code lines in the logfile.  This purpose of
+this flag is to assist in debugging nesting errors.  The value of <CODE>n</CODE> is
+optional.  If you set the flag <STRONG>-g</STRONG> without the value of <CODE>n</CODE>, it will be
+taken to be 1, meaning that every line will be written to the log file.  This
+can be helpful if you are looking for a brace, paren, or bracket nesting error.
+<P>Setting <STRONG>-g</STRONG> also causes the logfile to be saved, so it is not necessary to
+also include <STRONG>-log</STRONG>.</P>
+<P>If no <STRONG>-g</STRONG> flag is given, a value of 50 will be used, meaning that at least
+every 50th line will be recorded in the logfile.  This helps prevent
+excessively long log files.</P>
+<P>Setting a negative value of <CODE>n</CODE> is the same as not setting <STRONG>-g</STRONG> at all.</P>
+<P></P>
+<DT><STRONG><A NAME="item_%2Dnpro_%2D%2Dnoprofile"><STRONG>-npro</STRONG>  <STRONG>--noprofile</STRONG></A></STRONG><BR>
+<DD>
+Ignore any <EM>.perltidyrc</EM> command file.  Normally, perltidy looks first in
+your current directory for a <EM>.perltidyrc</EM> file of parameters.  (The format
+is described below).  If it finds one, it applies those options to the
+initial default values, and then it applies any that have been defined
+on the command line.  If no <EM>.perltidyrc</EM> file is found, it looks for one
+in your home directory.
+<P>If you set the <STRONG>-npro</STRONG> flag, perltidy will not look for this file.</P>
+<P></P>
+<DT><STRONG><A NAME="item_%2Dpro%3Dfilename_or_%2D%2Dprofile%3Dfilename"><STRONG>-pro=filename</STRONG> or  <STRONG>--profile=filename</STRONG></A></STRONG><BR>
+<DD>
+To simplify testing and switching .perltidyrc files, this command may be
+used to specify a configuration file which will override the default
+name of .perltidyrc.  There must not be a space on either side of the
+'=' sign.  For example, the line
+<PRE>
+   perltidy -pro=testcfg</PRE>
+<P>would cause file <EM>testcfg</EM> to be used instead of the 
+default <EM>.perltidyrc</EM>.</P>
+<P></P>
+<DT><STRONG><A NAME="item_%2Dopt%2C_%2D%2Dshow%2Doptions"><STRONG>-opt</STRONG>,   <STRONG>--show-options</STRONG></A></STRONG><BR>
+<DD>
+Write a list of all options used to the <EM>.LOG</EM> file.  
+Please see <STRONG>--dump-options</STRONG> for a simpler way to do this.
+<P></P>
+<DT><STRONG><A NAME="item_%2Df%2C_%2D%2Dforce%2Dread%2Dbinary"><STRONG>-f</STRONG>,   <STRONG>--force-read-binary</STRONG></A></STRONG><BR>
+<DD>
+Force perltidy to process binary files.  To avoid producing excessive
+error messages, perltidy skips files identified by the system as non-text.
+However, valid perl scripts containing binary data may sometimes be identified
+as non-text, and this flag forces perltidy to process them.
+<P></P></DL>
+<P>
+<HR>
+<H1><A NAME="formatting options">FORMATTING OPTIONS</A></H1>
+<P>
+<H2><A NAME="basic options">Basic Options</A></H2>
+<DL>
+<DT><STRONG><A NAME="item_%2Dl%3Dn%2C_%2D%2Dmaximum%2Dline%2Dlength%3Dn"><STRONG>-l=n</STRONG>, <STRONG>--maximum-line-length=n</STRONG></A></STRONG><BR>
+<DD>
+The default maximum line length is n=80 characters.  Perltidy will try
+to find line break points to keep lines below this length. However, long
+quotes and side comments may cause lines to exceed this length. 
+Setting <STRONG>-l=0</STRONG> is equivalent to setting <STRONG>-l=(a large number)</STRONG>.
+<P></P>
+<DT><STRONG><A NAME="item_%2Di%3Dn%2C_%2D%2Dindent%2Dcolumns%3Dn"><STRONG>-i=n</STRONG>,  <STRONG>--indent-columns=n</STRONG></A></STRONG><BR>
+<DD>
+Use n columns per indentation level (default n=4).
+<P></P>
+<DT><STRONG><A NAME="item_tabs">tabs</A></STRONG><BR>
+<DD>
+Using tab characters will almost certainly lead to future portability
+and maintenance problems, so the default and recommendation is not to
+use them.  For those who prefer tabs, however, there are two different
+options.
+<P>Except for possibly introducing tab indentation characters, as outlined
+below, perltidy does not introduce any tab characters into your file,
+and it removes any tabs from the code (unless requested not to do so
+with <STRONG>-fws</STRONG>).  If you have any tabs in your comments, quotes, or
+here-documents, they will remain.</P>
+<DL>
+<DT><STRONG><A NAME="item_%2Det%3Dn%2C_%2D%2Dentab%2Dleading%2Dwhitespace"><STRONG>-et=n</STRONG>,   <STRONG>--entab-leading-whitespace</STRONG></A></STRONG><BR>
+<DD>
+This flag causes each <STRONG>n</STRONG> initial space characters to be replaced by
+one tab character.  Note that the integer <STRONG>n</STRONG> is completely independent
+of the integer specified for indentation parameter, <STRONG>-i=n</STRONG>.
+<P></P>
+<DT><STRONG><A NAME="item_%2Dt%2C_%2D%2Dtabs"><STRONG>-t</STRONG>,   <STRONG>--tabs</STRONG></A></STRONG><BR>
+<DD>
+This flag causes one leading tab character to be inserted for each level
+of indentation.  Certain other features are incompatible with this
+option, and if these options are also given, then a warning message will
+be issued and this flag will be unset.  One example is the <STRONG>-lp</STRONG>
+option.
+<P></P></DL>
+<DT><STRONG><A NAME="item_%2Dsyn%2C_%2D%2Dcheck%2Dsyntax"><STRONG>-syn</STRONG>,   <STRONG>--check-syntax</STRONG></A></STRONG><BR>
+<DD>
+This flag causes perltidy to run <CODE>perl -c -T</CODE> to check syntax of input
+and output.  (To change the flags passed to perl, see the next
+item, <STRONG>-pscf</STRONG>).  The results are written to the <EM>.LOG</EM> file, which
+will be saved if an error is detected in the output script.  The output
+script is not checked if the input script has a syntax error.  Perltidy
+does its own checking, but this option employs perl to get a ``second
+opinion''.
+<P>If perl reports errors in the input file, they will not be reported in
+the error output unless the <STRONG>-warning-output</STRONG> flag is given.</P>
+<P>The default is <STRONG>not</STRONG> to do this type of syntax checking (although
+perltidy will still do as much self-checking as possible).  The reason
+is that it causes all code in BEGIN blocks to be executed, for all
+modules being used, and this opens the door to security issues and
+infinite loops when running perltidy.</P>
+<P></P>
+<DT><STRONG><A NAME="item_%2Dpscf%3Ds%2C_%2Dperl%2Dsyntax%2Dcheck%2Dflags%3D"><STRONG>-pscf=s</STRONG>, <STRONG>-perl-syntax-check-flags=s</STRONG></A></STRONG><BR>
+<DD>
+When perl is invoked to check syntax, the normal flags are <CODE>-c -T</CODE>.  In
+addition, if the <STRONG>-x</STRONG> flag is given to perltidy, then perl will also be
+passed a <STRONG>-x</STRONG> flag.  It should not normally be necessary to change
+these flags, but it can be done with the <STRONG>-pscf=s</STRONG> flag.  For example,
+if the taint flag, <CODE>-T</CODE>, is not wanted, the flag could be set to be just
+<STRONG>-pscf=-c</STRONG>.
+<P>Perltidy will pass your string to perl with the exception that it will
+add a <STRONG>-c</STRONG> and <STRONG>-x</STRONG> if appropriate.  The <EM>.LOG</EM> file will show
+exactly what flags were passed to perl.</P>
+<P></P>
+<DT><STRONG><A NAME="item_%2Dio%2C_%2D%2Dindent%2Donly"><STRONG>-io</STRONG>,   <STRONG>--indent-only</STRONG></A></STRONG><BR>
+<DD>
+This flag is used to deactivate all formatting and line break changes.
+When it is in effect, the only change to the script will be indentation.
+And any flags controlling whitespace and newlines will be ignored.  You
+might want to use this if you are perfectly happy with your whitespace
+and line breaks, and merely want perltidy to handle the indentation.
+(This also speeds up perltidy by well over a factor of two, so it might be
+useful when perltidy is merely being used to help find a brace error in
+a large script).
+<P>Setting this flag is equivalent to setting <STRONG>--freeze-newlines</STRONG> and
+<STRONG>--freeze-whitespace</STRONG>.</P>
+<P></P>
+<DT><STRONG><A NAME="item_%2Dole%3Ds%2C_%2D%2Doutput%2Dline%2Dending%3Ds"><STRONG>-ole=s</STRONG>,  <STRONG>--output-line-ending=s</STRONG></A></STRONG><BR>
+<DD>
+where s=<CODE>win</CODE>, <CODE>dos</CODE>, <CODE>unix</CODE>, or <CODE>mac</CODE>.  This flag tells perltidy
+to output line endings for a specific system.  Normally,
+perltidy writes files with the line separator character of the host
+system.  The <CODE>win</CODE> and <CODE>dos</CODE> flags have an identical result.
+<STRONG>NOTE</STRONG>: This only works under unix-like systems and is ignored under
+other systems.
+<P></P>
+<DT><STRONG><A NAME="item_%2Dple%2C_%2D%2Dpreserve%2Dline%2Dendings"><STRONG>-ple</STRONG>,  <STRONG>--preserve-line-endings</STRONG></A></STRONG><BR>
+<DD>
+This flag tells perltidy to write its output files with the same line
+endings as the input file, if possible.  It should work for
+<STRONG>dos</STRONG>, <STRONG>unix</STRONG>, and <STRONG>mac</STRONG> line endings.  It will only work if perltidy
+input comes from a filename (rather than stdin, for example).  If
+perltidy has trouble determining the input file line ending, it will
+revert to the default behavior of using the line ending of the host system.
+<STRONG>NOTE</STRONG>: This only works under unix-like systems and is ignored under
+other systems.
+<P></P></DL>
+<P>
+<H2><A NAME="code indentation control">Code Indentation Control</A></H2>
+<DL>
+<DT><STRONG><A NAME="item_%2Dci%3Dn%2C_%2D%2Dcontinuation%2Dindentation%3Dn"><STRONG>-ci=n</STRONG>, <STRONG>--continuation-indentation=n</STRONG></A></STRONG><BR>
+<DD>
+Continuation indentation is extra indentation spaces applied when
+a long line is broken.  The default is n=2, illustrated here:
+<PRE>
+ my $level =   # -ci=2      
+   ( $max_index_to_go &gt;= 0 ) ? $levels_to_go[0] : $last_output_level;</PRE>
+<P>The same example, with n=0, is a little harder to read:</P>
+<PRE>
+ my $level =   # -ci=0    
+ ( $max_index_to_go &gt;= 0 ) ? $levels_to_go[0] : $last_output_level;</PRE>
+<P>The value given to <STRONG>-ci</STRONG> is also used by some commands when a small
+space is required.  Examples are commands for outdenting labels,
+<STRONG>-ola</STRONG>, and control keywords, <STRONG>-okw</STRONG>.</P>
+<P>When default values are not used, it is suggested that the value <STRONG>n</STRONG>
+given with <STRONG>-ci=n</STRONG> be no more than about one-half of the number of
+spaces assigned to a full indentation level on the <STRONG>-i=n</STRONG> command.</P>
+<P></P>
+<DT><STRONG><A NAME="item_%2Dsil%3Dn_%2D%2Dstarting%2Dindentation%2Dlevel%3D"><STRONG>-sil=n</STRONG> <STRONG>--starting-indentation-level=n</STRONG></A></STRONG><BR>
+<DD>
+By default, perltidy examines the input file and tries to determine the
+starting indentation level.  While it is often zero, it may not be
+zero for a code snippet being sent from an editing session.  If the
+default method does not work correctly, or you want to change the
+starting level, use <STRONG>-sil=n</STRONG>, to force the starting level to be n.
+<P></P>
+<DT><STRONG><A NAME="item_List_indentation_using_%2Dlp%2C_%2D%2Dline%2Dup%2D">List indentation using <STRONG>-lp</STRONG>, <STRONG>--line-up-parentheses</STRONG></A></STRONG><BR>
+<DD>
+By default, perltidy indents lists with 4 spaces, or whatever value
+is specified with <STRONG>-i=n</STRONG>.  Here is a small list formatted in this way:
+<PRE>
+    # perltidy (default)
+    @month_of_year = (
+        'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+        'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+    );</PRE>
+<P>Use the <STRONG>-lp</STRONG> flag to add extra indentation to cause the data to begin
+past the opening parentheses of a sub call or list, or opening square
+bracket of an anonymous array, or opening curly brace of an anonymous
+hash.  With this option, the above list would become:</P>
+<PRE>
+    # perltidy -lp
+    @month_of_year = (
+                       'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+                       'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+    );</PRE>
+<P>If the available line length (see <STRONG>-l=n</STRONG> ) does not permit this much 
+space, perltidy will use less.   For alternate placement of the
+closing paren, see the next section.</P>
+<P>This option has no effect on code BLOCKS, such as if/then/else blocks,
+which always use whatever is specified with <STRONG>-i=n</STRONG>.  Also, the
+existence of line breaks and/or block comments between the opening and
+closing parens may cause perltidy to temporarily revert to its default
+method.</P>
+<P>Note: The <STRONG>-lp</STRONG> option may not be used together with the <STRONG>-t</STRONG> tabs option.
+It may, however, be used with the <STRONG>-et=n</STRONG> tab method.</P>
+<P>In addition, any parameter which significantly restricts the ability of
+perltidy to choose newlines will conflict with <STRONG>-lp</STRONG> and will cause
+<STRONG>-lp</STRONG> to be deactivated.  These include <STRONG>-io</STRONG>, <STRONG>-fnl</STRONG>, <STRONG>-nanl</STRONG>, and
+<STRONG>-ndnl</STRONG>.  The reason is that the <STRONG>-lp</STRONG> indentation style can require
+the careful coordination of an arbitrary number of break points in
+hierarchical lists, and these flags may prevent that.</P>
+<P></P>
+<DT><STRONG><A NAME="item_%2Dcti%3Dn%2C_%2D%2Dclosing%2Dtoken%2Dindentation"><STRONG>-cti=n</STRONG>, <STRONG>--closing-token-indentation</STRONG></A></STRONG><BR>
+<DD>
+The <STRONG>-cti=n</STRONG> flag controls the indentation of a line beginning with 
+a <CODE>)</CODE>, <CODE>]</CODE>, or a non-block <CODE>}</CODE>.  Such a line receives:
+<PRE>
+ -cti = 0 no extra indentation (default)
+ -cti = 1 extra indentation such that the closing token
+        aligns with its opening token.
+ -cti = 2 one extra indentation level if the line looks like:
+        );  or  ];  or  };</PRE>
+<P>The flags <STRONG>-cti=1</STRONG> and <STRONG>-cti=2</STRONG> work well with the <STRONG>-lp</STRONG> flag (previous
+section).
+</P>
+<PRE>
+
+    # perltidy -lp -cti=1
+    @month_of_year = (
+                       'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+                       'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+                     );</PRE>
+<PRE>
+    # perltidy -lp -cti=2
+    @month_of_year = (
+                       'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+                       'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+                       );</PRE>
+<P>These flags are merely hints to the formatter and they may not always be
+followed.  In particular, if -lp is not being used, the indentation for
+<STRONG>cti=1</STRONG> is constrained to be no more than one indentation level.</P>
+<P>If desired, this control can be applied independently to each of the
+closing container token types.  In fact, <STRONG>-cti=n</STRONG> is merely an
+abbreviation for <STRONG>-cpi=n -csbi=n -cbi=n</STRONG>, where:  
+<STRONG>-cpi</STRONG> or <STRONG>-closing-paren-indentation</STRONG> controls <STRONG>)</STRONG>'s,
+<STRONG>-csbi</STRONG> or <STRONG>-closing-square-bracket-indentation</STRONG> controls <STRONG>]</STRONG>'s, 
+<STRONG>-cbi</STRONG> or <STRONG>-closing-brace-indentation</STRONG> controls non-block <STRONG>}</STRONG>'s.</P>
+<P></P>
+<DT><STRONG><A NAME="item_%2Dicp%2C_%2D%2Dindent%2Dclosing%2Dparen"><STRONG>-icp</STRONG>, <STRONG>--indent-closing-paren</STRONG></A></STRONG><BR>
+<DD>
+The <STRONG>-icp</STRONG> flag is equivalent to
+<STRONG>-cti=2</STRONG>, described in the previous section.  The <STRONG>-nicp</STRONG> flag is
+equivalent <STRONG>-cti=0</STRONG>.  They are included for backwards compatability.
+<P></P>
+<DT><STRONG><A NAME="item_%2Dicb%2C_%2D%2Dindent%2Dclosing%2Dbrace"><STRONG>-icb</STRONG>, <STRONG>--indent-closing-brace</STRONG></A></STRONG><BR>
+<DD>
+The <STRONG>-icb</STRONG> option leaves a brace which terminates a code block 
+indented with the same indentation as the previous line.  For example,
+<PRE>
+        if ($task) {
+            yyy();
+            }    # -icb
+        else {
+            zzz();
+            }</PRE>
+<P>The default is not to do this, indicated by <STRONG>-nicb</STRONG>.</P>
+<P></P>
+<DT><STRONG><A NAME="item_%2Dolq%2C_%2D%2Doutdent%2Dlong%2Dquotes"><STRONG>-olq</STRONG>, <STRONG>--outdent-long-quotes</STRONG></A></STRONG><BR>
+<DD>
+When <STRONG>-olq</STRONG> is set, lines which is a quoted string longer than the
+value <STRONG>maximum-line-length</STRONG> will have their indentation removed to make
+them more readable.  This is the default.  To prevent such out-denting,
+use <STRONG>-nolq</STRONG> or <STRONG>--nooutdent-long-lines</STRONG>.
+<P></P>
+<DT><STRONG><A NAME="item_%2Doll%2C_%2D%2Doutdent%2Dlong%2Dlines"><STRONG>-oll</STRONG>, <STRONG>--outdent-long-lines</STRONG></A></STRONG><BR>
+<DD>
+This command is equivalent to <STRONG>--outdent-long-quotes</STRONG> and
+<STRONG>--outdent-long-comments</STRONG>, and it is included for compatibility with previous
+versions of perltidy.  The negation of this also works, <STRONG>-noll</STRONG> or
+<STRONG>--nooutdent-long-lines</STRONG>, and is equivalent to setting <STRONG>-nolq</STRONG> and <STRONG>-nolc</STRONG>.
+<P></P>
+<DT><STRONG><A NAME="item_Outdenting_Labels%3A_%2Dola%2C_%2D%2Doutdent%2Dlab">Outdenting Labels: <STRONG>-ola</STRONG>,  <STRONG>--outdent-labels</STRONG></A></STRONG><BR>
+<DD>
+This command will cause labels to be outdented by 2 spaces (or whatever <STRONG>-ci</STRONG>
+has been set to), if possible.  This is the default.  For example:
+<PRE>
+        my $i;
+      LOOP: while ( $i = &lt;FOTOS&gt; ) {
+            chomp($i);
+            next unless $i;
+            fixit($i);
+        }</PRE>
+<P>Use <STRONG>-nola</STRONG> to not outdent labels.</P>
+<P></P>
+<DT><STRONG><A NAME="item_Outdenting_Keywords">Outdenting Keywords</A></STRONG><BR>
+<DD>
+<DL>
+<DT><STRONG><A NAME="item_%2Dokw%2C_%2D%2Doutdent%2Dkeywords"><STRONG>-okw</STRONG>,  <STRONG>--outdent-keywords</STRONG></A></STRONG><BR>
+<DD>
+The command <STRONG>-okw</STRONG> will will cause certain leading control keywords to
+be outdented by 2 spaces (or whatever <STRONG>-ci</STRONG> has been set to), if
+possible.  By default, these keywords are <CODE>redo</CODE>, <CODE>next</CODE>, <CODE>last</CODE>,
+<CODE>goto</CODE>, and <CODE>return</CODE>.  The intention is to make these control keywords
+easier to see.  To change this list of keywords being outdented, see
+the next section.
+<P>For example, using <CODE>perltidy -okw</CODE> on the previous example gives:</P>
+<PRE>
+        my $i;
+      LOOP: while ( $i = &lt;FOTOS&gt; ) {
+            chomp($i);
+          next unless $i;
+            fixit($i);
+        }</PRE>
+<P>The default is not to do this.</P>
+<P></P>
+<DT><STRONG><A NAME="item_Specifying_Outdented_Keywords%3A_%2Dokwl%3Dstring%">Specifying Outdented Keywords: <STRONG>-okwl=string</STRONG>,  <STRONG>--outdent-keyword-list=string</STRONG></A></STRONG><BR>
+<DD>
+This command can be used to change the keywords which are outdented with
+the <STRONG>-okw</STRONG> command.  The parameter <STRONG>string</STRONG> is a required list of perl
+keywords, which should be placed in quotes if there are more than one.
+By itself, it does not cause any outdenting to occur, so the <STRONG>-okw</STRONG>
+command is still required.
+<P>For example, the commands <CODE>-okwl=&quot;next last redo goto&quot; -okw</CODE> will cause
+those four keywords to be outdented.  It is probably simplest to place
+any <STRONG>-okwl</STRONG> command in a <EM>.perltidyrc</EM> file.</P>
+<P></P></DL>
+</DL>
+<P>
+<H2><A NAME="whitespace control">Whitespace Control</A></H2>
+<P>Whitespace refers to the blank space between variables, operators,
+and other code tokens.</P>
+<DL>
+<DT><STRONG><A NAME="item_%2Dfws%2C_%2D%2Dfreeze%2Dwhitespace"><STRONG>-fws</STRONG>,  <STRONG>--freeze-whitespace</STRONG></A></STRONG><BR>
+<DD>
+This flag causes your original whitespace to remain unchanged, and
+causes the rest of the whitespace commands in this section, the
+Code Indentation section, and
+the Comment Control section to be ignored.
+<P></P>
+<DT><STRONG><A NAME="item_Tightness_of_curly_braces%2C_parentheses%2C_and_sq">Tightness of curly braces, parentheses, and square brackets.</A></STRONG><BR>
+<DD>
+Here the term ``tightness'' will mean the closeness with which
+pairs of enclosing tokens, such as parentheses, contain the quantities
+within.  A numerical value of 0, 1, or 2 defines the tightness, with
+0 being least tight and 2 being most tight.  Spaces within containers
+are always symmetric, so if there is a space after a <CODE>(</CODE> then there
+will be a space before the corresponding <CODE>)</CODE>.
+<P>The <STRONG>-pt=n</STRONG> or <STRONG>--paren-tightness=n</STRONG> parameter controls the space within
+parens.  The example below shows the effect of the three possible
+values, 0, 1, and 2:</P>
+<PRE>
+ if ( ( my $len_tab = length( $tabstr ) ) &gt; 0 ) {  # -pt=0
+ if ( ( my $len_tab = length($tabstr) ) &gt; 0 ) {    # -pt=1 (default)
+ if ((my $len_tab = length($tabstr)) &gt; 0) {        # -pt=2</PRE>
+<P>When n is 0, there is always a space to the right of a '(' and to the left
+of a ')'.  For n=2 there is never a space.  For n=1, the default, there
+is a space unless the quantity within the parens is a single token, such
+as an identifier or quoted string.</P>
+<P>Likewise, the parameter <STRONG>-sbt=n</STRONG> or <STRONG>--square-bracket-tightness=n</STRONG>
+controls the space within square brackets, as illustrated below.</P>
+<PRE>
+ $width = $col[ $j + $k ] - $col[ $j ];  # -sbt=0
+ $width = $col[ $j + $k ] - $col[$j];    # -sbt=1 (default)
+ $width = $col[$j + $k] - $col[$j];      # -sbt=2</PRE>
+<P>Curly braces which do not contain code blocks are controlled by
+the parameter <STRONG>-bt=n</STRONG> or <STRONG>--brace-tightness=n</STRONG>.</P>
+<PRE>
+ $obj-&gt;{ $parsed_sql-&gt;{ 'table' }[0] };    # -bt=0
+ $obj-&gt;{ $parsed_sql-&gt;{'table'}[0] };      # -bt=1 (default)
+ $obj-&gt;{$parsed_sql-&gt;{'table'}[0]};        # -bt=2</PRE>
+<P>And finally, curly braces which contain blocks of code are controlled by the
+parameter <STRONG>-bbt=n</STRONG> or <STRONG>--block-brace-tightness=n</STRONG> as illustrated in the
+example below.</P>
+<PRE>
+ %bf = map { $_ =&gt; -M $_ } grep { /\.deb$/ } dirents '.'; # -bbt=0 (default)
+ %bf = map { $_ =&gt; -M $_ } grep {/\.deb$/} dirents '.';   # -bbt=1
+ %bf = map {$_ =&gt; -M $_} grep {/\.deb$/} dirents '.';     # -bbt=2</PRE>
+<P></P>
+<DT><STRONG><A NAME="item_%2Dsts%2C_%2D%2Dspace%2Dterminal%2Dsemicolon"><STRONG>-sts</STRONG>,   <STRONG>--space-terminal-semicolon</STRONG></A></STRONG><BR>
+<DD>
+Some programmers prefer a space before all terminal semicolons.  The
+default is for no such space, and is indicated with <STRONG>-nsts</STRONG> or
+<STRONG>--nospace-terminal-semicolon</STRONG>.
+<PRE>
+        $i = 1 ;     #  -sts
+        $i = 1;      #  -nsts   (default)</PRE>
+<P></P>
+<DT><STRONG><A NAME="item_%2Dsfs%2C_%2D%2Dspace%2Dfor%2Dsemicolon"><STRONG>-sfs</STRONG>,   <STRONG>--space-for-semicolon</STRONG></A></STRONG><BR>
+<DD>
+Semicolons within <STRONG>for</STRONG> loops may sometimes be hard to see,
+particularly when commas are also present.  This option places spaces on
+both sides of these special semicolons, and is the default.  Use
+<STRONG>-nsfs</STRONG> or <STRONG>--nospace-for-semicolon</STRONG> to deactivate it.
+<PRE>
+ for ( @a = @$ap, $u = shift @a ; @a ; $u = $v ) {  # -sfs (default)
+ for ( @a = @$ap, $u = shift @a; @a; $u = $v ) {    # -nsfs</PRE>
+<P></P>
+<DT><STRONG><A NAME="item_%2Dasc%2C_%2D%2Dadd%2Dsemicolons"><STRONG>-asc</STRONG>,  <STRONG>--add-semicolons</STRONG></A></STRONG><BR>
+<DD>
+Setting <STRONG>-asc</STRONG> allows perltidy to add any missing optional semicolon at the end 
+of a line which is followed by a closing curly brace on the next line.  This
+is the default, and may be deactivated with <STRONG>-nasc</STRONG> or <STRONG>--noadd-semicolons</STRONG>.
+<P></P>
+<DT><STRONG><A NAME="item_%2Ddsm%2C_%2D%2Ddelete%2Dsemicolons"><STRONG>-dsm</STRONG>,  <STRONG>--delete-semicolons</STRONG></A></STRONG><BR>
+<DD>
+Setting <STRONG>-dsm</STRONG> allows perltidy to delete extra semicolons which are
+simply empty statements.  This is the default, and may be deactivated
+with <STRONG>-ndsm</STRONG> or <STRONG>--nodelete-semicolons</STRONG>.  (Such semicolons are not
+deleted, however, if they would promote a side comment to a block
+comment).
+<P></P>
+<DT><STRONG><A NAME="item_%2Daws%2C_%2D%2Dadd%2Dwhitespace"><STRONG>-aws</STRONG>,  <STRONG>--add-whitespace</STRONG></A></STRONG><BR>
+<DD>
+Setting this option allows perltidy to add certain whitespace improve
+code readability.  This is the default. If you do not want any
+whitespace added, but are willing to have some whitespace deleted, use
+<STRONG>-naws</STRONG>.  (Use <STRONG>-fws</STRONG> to leave whitespace completely unchanged).
+<P></P>
+<DT><STRONG><A NAME="item_%2Ddws%2C_%2D%2Ddelete%2Dold%2Dwhitespace"><STRONG>-dws</STRONG>,  <STRONG>--delete-old-whitespace</STRONG></A></STRONG><BR>
+<DD>
+Setting this option allows perltidy to remove some old whitespace
+between characters, if necessary.  This is the default.  If you
+do not want any old whitespace removed, use <STRONG>-ndws</STRONG> or
+<STRONG>--nodelete-old-whitespace</STRONG>.
+<P></P>
+<DT><STRONG><A NAME="item_Detailed_whitespace_controls_around_tokens">Detailed whitespace controls around tokens</A></STRONG><BR>
+<DD>
+For those who want more detailed control over the whitespace around
+tokens, there are four parameters which can directly modify the default
+whitespace rules built into perltidy for any token.  They are:
+<P><STRONG>-wls=s</STRONG> or <STRONG>--want-left-space=s</STRONG>,</P>
+<P><STRONG>-nwls=s</STRONG> or <STRONG>--nowant-left-space=s</STRONG>,</P>
+<P><STRONG>-wrs=s</STRONG> or <STRONG>--want-right-space=s</STRONG>,</P>
+<P><STRONG>-nwrs=s</STRONG> or <STRONG>--nowant-right-space=s</STRONG>.</P>
+<P>These parameters are each followed by a quoted string, <STRONG>s</STRONG>, containing a
+list of token types.  No more than one of each of these parameters
+should be specified, because repeating a command-line parameter
+always overwrites the previous one before perltidy ever sees it.</P>
+<P>To illustrate how these are used, suppose it is desired that there be no
+space on either side of the token types <STRONG>= + - / *</STRONG>.  The following two
+parameters would specify this desire:</P>
+<PRE>
+  -nwls=&quot;= + - / *&quot;    -nwrs=&quot;= + - / *&quot;</PRE>
+<P>(Note that the token types are in quotes, and that they are separated by
+spaces).  With these modified whitespace rules, the following line of math:</P>
+<PRE>
+  $root = -$b + sqrt( $b * $b - 4. * $a * $c ) / ( 2. * $a );</PRE>
+<P>becomes this:</P>
+<PRE>
+  $root=-$b+sqrt( $b*$b-4.*$a*$c )/( 2.*$a );</PRE>
+<P>These parameters should be considered to be hints to perltidy rather
+than fixed rules, because perltidy must try to resolve conflicts that
+arise between them and all of the other rules that it uses.  One
+conflict that can arise is if, between two tokens, the left token wants
+a space and the right one doesn't.  In this case, the token not wanting
+a space takes priority.</P>
+<P>It is necessary to have a list of all token types in order to create
+this type of input.  Such a list can be obtained by the command
+<STRONG>-dump-token-types</STRONG>.</P>
+<P></P>
+<DT><STRONG><A NAME="item_Space_between_keyword_and_opening_paren">Space between keyword and opening paren</A></STRONG><BR>
+<DD>
+When an opening paren follows a keyword, no space is introduced after the
+keyword, unless it is (by default) one of these:
+<PRE>
+   my local our and or eq ne if else elsif until unless 
+   while for foreach return switch case given when</PRE>
+<P>These defaults can be modified with two commands:</P>
+<P><STRONG>-sak=s</STRONG>  or <STRONG>--space-after-keyword=s</STRONG>  adds keywords.</P>
+<P><STRONG>-nsak=s</STRONG>  or <STRONG>--nospace-after-keyword=s</STRONG>  removes keywords.</P>
+<P>where <STRONG>s</STRONG> is a list of keywords (in quotes if necessary).  For example,</P>
+<PRE>
+  my ( $a, $b, $c ) = @_;    # default
+  my( $a, $b, $c ) = @_;     # -nsak=&quot;my local our&quot;</PRE>
+<P></P>
+<DT><STRONG><A NAME="item_Trimming_whitespace_around_qw_quotes">Trimming whitespace around <CODE>qw</CODE> quotes</A></STRONG><BR>
+<DD>
+<STRONG>-tqw</STRONG> or <STRONG>--trim-qw</STRONG> provide the default behavior of trimming
+spaces around multi-line <CODE>qw</CODE> quotes and indenting them appropriately.
+<P><STRONG>-ntqw</STRONG> or <STRONG>--notrim-qw</STRONG> cause leading and trailing whitespace around
+multi-line <CODE>qw</CODE> quotes to be left unchanged.  This option will not
+normally be necessary, but was added for testing purposes, because in
+some versions of perl, trimming <CODE>qw</CODE> quotes changes the syntax tree.</P>
+<P></P></DL>
+<P>
+<H2><A NAME="comment controls">Comment Controls</A></H2>
+<P>Perltidy has a number of ways to control the appearance of both block comments
+and side comments.  The term <STRONG>block comment</STRONG> here refers to a full-line
+comment, whereas <STRONG>side comment</STRONG> will refer to a comment which appears on a
+line to the right of some code.</P>
+<DL>
+<DT><STRONG><A NAME="item_%2Dibc%2C_%2D%2Dindent%2Dblock%2Dcomments"><STRONG>-ibc</STRONG>,  <STRONG>--indent-block-comments</STRONG></A></STRONG><BR>
+<DD>
+Block comments normally look best when they are indented to the same
+level as the code which follows them.  This is the default behavior, but
+you may use <STRONG>-nibc</STRONG> to keep block comments left-justified.  Here is an
+example:
+<PRE>
+             # this comment is indented      (-ibc, default)
+             if ($task) { yyy(); }</PRE>
+<P>The alternative is <STRONG>-nibc</STRONG>:</P>
+<PRE>
+ # this comment is not indented              (-nibc)
+             if ($task) { yyy(); }</PRE>
+<P>See also the next item, <STRONG>-isbc</STRONG>, as well as <STRONG>-sbc</STRONG>, for other ways to
+have some indented and some outdented block comments.</P>
+<P></P>
+<DT><STRONG><A NAME="item_%2Disbc%2C_%2D%2Dindent%2Dspaced%2Dblock%2Dcomment"><STRONG>-isbc</STRONG>,  <STRONG>--indent-spaced-block-comments</STRONG></A></STRONG><BR>
+<DD>
+If there is no leading space on the line, then the comment will not be
+indented, and otherwise it may be.
+<P>If both <STRONG>-ibc</STRONG> and <STRONG>-isbc</STRONG> are set, then <STRONG>-isbc</STRONG> takes priority.</P>
+<P></P>
+<DT><STRONG><A NAME="item_%2Dolc%2C_%2D%2Doutdent%2Dlong%2Dcomments"><STRONG>-olc</STRONG>, <STRONG>--outdent-long-comments</STRONG></A></STRONG><BR>
+<DD>
+When <STRONG>-olc</STRONG> is set, lines which are full-line (block) comments longer
+than the value <STRONG>maximum-line-length</STRONG> will have their indentation
+removed.  The default is not to do this.
+<P></P>
+<DT><STRONG><A NAME="item_%2Dmsc%3Dn%2C_%2D%2Dminimum%2Dspace%2Dto%2Dcomment"><STRONG>-msc=n</STRONG>,  <STRONG>--minimum-space-to-comment=n</STRONG></A></STRONG><BR>
+<DD>
+Side comments look best when lined up several spaces to the right of
+code.  Perltidy will try to keep comments at least n spaces to the
+right.  The default is n=4 spaces.
+<P></P>
+<DT><STRONG><A NAME="item_%2Dhsc%2C_%2D%2Dhanging%2Dside%2Dcomments"><STRONG>-hsc</STRONG>, <STRONG>--hanging-side-comments</STRONG></A></STRONG><BR>
+<DD>
+By default, perltidy tries to identify and align ``hanging side
+comments'', which are something like this:
+<PRE>
+        my $IGNORE = 0;    # This is a side comment
+                           # This is a hanging side comment
+                           # And so is this</PRE>
+<P>A comment is considered to be a hanging side comment if (1) it immediately
+follows a line with a side comment, or another hanging side comment, and
+(2) there is some leading whitespace on the line.
+To deactivate this feature, use <STRONG>-nhsc</STRONG> or <STRONG>--nohanging-side-comments</STRONG>.  
+If block comments are preceded by a blank line, or have no leading
+whitespace, they will not be mistaken as hanging side comments.</P>
+<P></P>
+<DT><STRONG><A NAME="item_Closing_Side_Comments">Closing Side Comments</A></STRONG><BR>
+<DD>
+A closing side comment is a special comment which perltidy can
+automatically create and place after the closing brace of a code block.
+They can be useful for code maintenance and debugging.  The command
+<STRONG>-csc</STRONG> (or <STRONG>-closing-side-comments</STRONG>) adds or updates closing side
+comments.  For example, here is a small code snippet
+<PRE>
+        sub message {
+            if ( !defined( $_[0] ) ) {
+                print(&quot;Hello, World\n&quot;);
+            }
+            else {
+                print( $_[0], &quot;\n&quot; );
+            }
+        }</PRE>
+<P>And here is the result of processing with <CODE>perltidy -csc</CODE>:</P>
+<PRE>
+        sub message {
+            if ( !defined( $_[0] ) ) {
+                print(&quot;Hello, World\n&quot;);
+            }
+            else {
+                print( $_[0], &quot;\n&quot; );
+            }
+        } ## end sub message</PRE>
+<P>A closing side comment was added for <CODE>sub message</CODE> in this case, but not
+for the <CODE>if</CODE> and <CODE>else</CODE> blocks, because they were below the 6 line
+cutoff limit for adding closing side comments.  This limit may be
+changed with the <STRONG>-csci</STRONG> command, described below.</P>
+<P>The command <STRONG>-dcsc</STRONG> (or <STRONG>--delete-closing-side-comments</STRONG>) reverses this 
+process and removes these comments.</P>
+<P>Several commands are available to modify the behavior of these two basic
+commands, <STRONG>-csc</STRONG> and <STRONG>-dcsc</STRONG>:</P>
+<DL>
+<DT><STRONG><A NAME="item_%2Dcsci%3Dn%2C_or_%2Dclosing%2Dside%2Dcomment%2Din"><STRONG>-csci=n</STRONG>, or <STRONG>-closing-side-comment-interval=n</STRONG></A></STRONG><BR>
+<DD>
+where <CODE>n</CODE> is the minimum number of lines that a block must have in
+order for a closing side comment to be added.  The default value is
+<CODE>n=6</CODE>.  To illustrate:
+<PRE>
+        # perltidy -csci=2 -csc
+        sub message {
+            if ( !defined( $_[0] ) ) {
+                print(&quot;Hello, World\n&quot;);
+            } ## end if ( !defined( $_[0] ))
+            else {
+                print( $_[0], &quot;\n&quot; );
+            } ## end else [ if ( !defined( $_[0] ))
+        } ## end sub message</PRE>
+<P>Now the <CODE>if</CODE> and <CODE>else</CODE> blocks are commented.  However, now this has
+become very cluttered.</P>
+<P></P>
+<DT><STRONG><A NAME="item_%2Dcscp%3Dstring%2C_or_%2Dclosing%2Dside%2Dcomment"><STRONG>-cscp=string</STRONG>, or <STRONG>-closing-side-comment-prefix=string</STRONG></A></STRONG><BR>
+<DD>
+where string is the prefix used before the name of the block type.  The
+default prefix, shown above, is <CODE>## end</CODE>.  This string will be added to
+closing side comments, and it will also be used to recognize them in
+order to update, delete, and format them.  Any comment identified as a
+closing side comment will be placed just a single space to the right of
+its closing brace.
+<P></P>
+<DT><STRONG><A NAME="item_%2Dcscl%3Dstring%2C_or_%2Dclosing%2Dside%2Dcomment"><STRONG>-cscl=string</STRONG>, or <STRONG>-closing-side-comment-list-string</STRONG></A></STRONG><BR>
+<DD>
+where <CODE>string</CODE> is a list of block types to be tagged with closing side
+comments.  By default, all code block types preceded by a keyword or
+label (such as <CODE>if</CODE>, <CODE>sub</CODE>, and so on) will be tagged.  The <STRONG>-cscl</STRONG>
+command changes the default list to be any selected block types; see
+<A HREF="#specifying block types">Specifying Block Types</A>.
+For example, the following command
+requests that only <CODE>sub</CODE>'s, labels, <CODE>BEGIN</CODE>, and <CODE>END</CODE> blocks be
+affected by any <STRONG>-csc</STRONG> or <STRONG>-dcsc</STRONG> operation:
+<PRE>
+   -cscl=&quot;sub : BEGIN END&quot;</PRE>
+<P></P>
+<DT><STRONG><A NAME="item_%2Dcsct%3Dn%2C_or_%2Dclosing%2Dside%2Dcomment%2Dma"><STRONG>-csct=n</STRONG>, or <STRONG>-closing-side-comment-maximum-text=n</STRONG></A></STRONG><BR>
+<DD>
+The text appended to certain block types, such as an <CODE>if</CODE> block, is
+whatever lies between the keyword introducing the block, such as <CODE>if</CODE>,
+and the opening brace.  Since this might be too much text for a side
+comment, there needs to be a limit, and that is the purpose of this
+parameter.  The default value is <CODE>n=20</CODE>, meaning that no additional
+tokens will be appended to this text after its length reaches 20
+characters.  Omitted text is indicated with <CODE>...</CODE>.  (Tokens, including
+sub names, are never truncated, however, so actual lengths may exceed
+this).  To illustrate, in the above example, the appended text of the
+first block is <CODE> ( !defined( $_[0] )...</CODE>.  The existing limit of
+<CODE>n=20</CODE> caused this text to be truncated, as indicated by the <CODE>...</CODE>.
+<P></P>
+<DT><STRONG><A NAME="item_%2Dcsce%3Dn%2C_or_%2Dclosing%2Dside%2Dcomment%2Del"><STRONG>-csce=n</STRONG>, or <STRONG>-closing-side-comment-else-flag=n</STRONG></A></STRONG><BR>
+<DD>
+The default, <STRONG>n=0</STRONG>, places the text of the opening <CODE>if</CODE> statement after any
+terminal <CODE>else</CODE>.
+<P>If <STRONG>n=2</STRONG> is used, then each <CODE>elsif</CODE> is also given the text of the opening
+<CODE>if</CODE> statement.  Also, an <CODE>else</CODE> will include the text of a preceding
+<CODE>elsif</CODE> statement.  Note that this may result some long closing
+side comments.</P>
+<P>If <STRONG>n=1</STRONG> is used, the results will be the same as <STRONG>n=2</STRONG> whenever the
+resulting line length is less than the maximum allowed.</P>
+<P></P>
+<DT><STRONG><A NAME="item_%2Dcscw%2C_or_%2Dclosing%2Dside%2Dcomment%2Dwarnin"><STRONG>-cscw</STRONG>, or <STRONG>-closing-side-comment-warnings</STRONG></A></STRONG><BR>
+<DD>
+This parameter is intended to help make the initial transition to the use of
+closing side comments.  
+It causes two
+things to happen if a closing side comment replaces an existing, different
+closing side comment:  first, an error message will be issued, and second, the
+original side comment will be placed alone on a new specially marked comment
+line for later attention.
+<P>The intent is to avoid clobbering existing hand-written side comments
+which happen to match the pattern of closing side comments. This flag
+should only be needed on the first run with <STRONG>-csc</STRONG>.</P>
+<P></P></DL>
+<P><STRONG>Important Notes on Closing Side Comments:</STRONG></P>
+<UL>
+<LI>
+Closing side comments are only placed on lines terminated with a closing
+brace.  Certain closing styles, such as the use of cuddled elses
+(<STRONG>-ce</STRONG>), preclude the generation of some closing side comments.
+<P></P>
+<LI>
+Please note that adding or deleting of closing side comments takes
+place only through the commands <STRONG>-csc</STRONG> or <STRONG>-dcsc</STRONG>.  The other commands,
+if used, merely modify the behavior of these two commands.
+<P></P>
+<LI>
+It is recommended that the <STRONG>-cscw</STRONG> flag be used along with <STRONG>-csc</STRONG> on
+the first use of perltidy on a given file.  This will prevent loss of
+any existing side comment data which happens to have the csc prefix.
+<P></P>
+<LI>
+Once you use <STRONG>-csc</STRONG>, you should continue to use it so that any
+closing side comments remain correct as code changes.  Otherwise, these
+comments will become incorrect as the code is updated.
+<P></P>
+<LI>
+If you edit the closing side comments generated by perltidy, you must also
+change the prefix to be different from the closing side comment prefix.
+Otherwise, your edits will be lost when you rerun perltidy with <STRONG>-csc</STRONG>.   For
+example, you could simply change <CODE>## end</CODE> to be <CODE>## End</CODE>, since the test is
+case sensitive.  You may also want to use the <STRONG>-ssc</STRONG> flag to keep these
+modified closing side comments spaced the same as actual closing side comments.
+<P></P>
+<LI>
+Temporarily generating closing side comments is a useful technique for
+exploring and/or debugging a perl script, especially one written by someone
+else.  You can always remove them with <STRONG>-dcsc</STRONG>.
+<P></P></UL>
+<DT><STRONG><A NAME="item_Static_Block_Comments">Static Block Comments</A></STRONG><BR>
+<DD>
+Static block comments are block comments with a special leading pattern,
+<CODE>##</CODE> by default, which will be treated slightly differently from other
+block comments.  They effectively behave as if they had glue along their
+left and top edges, because they stick to the left edge and previous line
+when there is no blank spaces in those places.  This option is
+particularly useful for controlling how commented code is displayed.
+<DL>
+<DT><STRONG><A NAME="item_%2Dsbc%2C_%2D%2Dstatic%2Dblock%2Dcomments"><STRONG>-sbc</STRONG>, <STRONG>--static-block-comments</STRONG></A></STRONG><BR>
+<DD>
+When <STRONG>-sbc</STRONG> is used, a block comment with a special leading pattern, <CODE>##</CODE> by
+default, will be treated specially.
+<P>Comments so identified  are treated as follows:</P>
+<UL>
+<LI>
+If there is no leading space on the line, then the comment will not
+be indented, and otherwise it may be,
+<P></P>
+<LI>
+no new blank line will be
+inserted before such a comment, and
+<P></P>
+<LI>
+such a comment will never become
+a hanging side comment.
+<P></P></UL>
+<P>For example, assuming <CODE>@month_of_year</CODE> is
+left-adjusted:</P>
+<PRE>
+    @month_of_year = (    # -sbc (default)
+        'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct',
+    ##  'Dec', 'Nov'
+        'Nov', 'Dec');</PRE>
+<P>Without this convention, the above code would become</P>
+<PRE>
+    @month_of_year = (   # -nsbc
+        'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct',
+</PRE>
+<PRE>
+
+        ##  'Dec', 'Nov'
+        'Nov', 'Dec'
+    );</PRE>
+<P>which is not as clear.
+The default is to use <STRONG>-sbc</STRONG>.  This may be deactivated with <STRONG>-nsbc</STRONG>.</P>
+<DT><STRONG><A NAME="item_%2Dsbcp%3Dstring%2C_%2D%2Dstatic%2Dblock%2Dcomment"><STRONG>-sbcp=string</STRONG>, <STRONG>--static-block-comment-prefix=string</STRONG></A></STRONG><BR>
+<DD>
+This parameter defines the prefix used to identify static block comments
+when the <STRONG>-sbc</STRONG> parameter is set.  The default prefix is <CODE>##</CODE>,
+corresponding to <CODE>-sbcp=##</CODE>.  The first character must be a <CODE>#</CODE>
+symbol, since this must only match comments.  As a simple example, to
+identify all comments as static block comments, one would use <CODE>-sbcp=#</CODE>.
+<P>Please note that <STRONG>-sbcp</STRONG> merely defines the pattern used to identify static
+block comments; it will not be used unless the switch <STRONG>-sbc</STRONG> is set.  Also,
+please be aware that this string is used in a perl regular expression which
+identifies these comments, so it must enable a valid regular expression to be
+formed.</P>
+<P></P>
+<DT><STRONG><A NAME="item_%2Dosbc%2C_%2D%2Doutdent%2Dstatic%2Dblock%2Dcommen"><STRONG>-osbc</STRONG>, <STRONG>--outdent-static-block-comments</STRONG></A></STRONG><BR>
+<DD>
+The command <STRONG>-osbc</STRONG> will will cause static block comments to be outdented by 2
+spaces (or whatever <STRONG>-ci=n</STRONG> has been set to), if possible.
+<P></P></DL>
+<DT><STRONG><A NAME="item_Static_Side_Comments">Static Side Comments</A></STRONG><BR>
+<DD>
+Static side comments are side comments with a special leading pattern.
+This option can be useful for controlling how commented code is displayed
+when it is a side comment.
+<DL>
+<DT><STRONG><A NAME="item_%2Dssc%2C_%2D%2Dstatic%2Dside%2Dcomments"><STRONG>-ssc</STRONG>, <STRONG>--static-side-comments</STRONG></A></STRONG><BR>
+<DD>
+When <STRONG>-ssc</STRONG> is used, a side comment with a static leading pattern, which is
+<CODE>##</CODE> by default, will be be spaced only a single space from previous
+character, and it will not be vertically aligned with other side comments.
+<P>The default is <STRONG>-nssc</STRONG>.</P>
+<P></P>
+<DT><STRONG><A NAME="item_%2Dsscp%3Dstring%2C_%2D%2Dstatic%2Dside%2Dcomment%"><STRONG>-sscp=string</STRONG>, <STRONG>--static-side-comment-prefix=string</STRONG></A></STRONG><BR>
+<DD>
+This parameter defines the prefix used to identify static side comments
+when the <STRONG>-ssc</STRONG> parameter is set.  The default prefix is <CODE>##</CODE>,
+corresponding to <CODE>-sscp=##</CODE>.
+<P>Please note that <STRONG>-sscp</STRONG> merely defines the pattern used to identify
+static side comments; it will not be used unless the switch <STRONG>-ssc</STRONG> is
+set.  Also, note that this string is used in a perl regular expression
+which identifies these comments, so it must enable a valid regular
+expression to be formed.</P>
+<P></P></DL>
+</DL>
+<P>
+<H2><A NAME="line break control">Line Break Control</A></H2>
+<DL>
+<DT><STRONG><A NAME="item_%2Dfnl%2C_%2D%2Dfreeze%2Dnewlines"><STRONG>-fnl</STRONG>,  <STRONG>--freeze-newlines</STRONG></A></STRONG><BR>
+<DD>
+If you do not want any changes to the line breaks in your script, set
+<STRONG>-fnl</STRONG>, and they will remain fixed, and the rest of the commands in
+this section and sections 
+<A HREF="#controlling list formatting">Controlling List Formatting</A>,
+<A HREF="#retaining or ignoring existing line breaks">Retaining or Ignoring Existing Line Breaks</A>, and
+<A HREF="#blank line control">Blank Line Control</A> will be ignored.  You may want to use <STRONG>-noll</STRONG>
+with this.
+<P></P>
+<DT><STRONG><A NAME="item_%2Dce%2C_%2D%2Dcuddled%2Delse"><STRONG>-ce</STRONG>,   <STRONG>--cuddled-else</STRONG></A></STRONG><BR>
+<DD>
+Enable the ``cuddled else'' style, in which <CODE>else</CODE> and <CODE>elsif</CODE> are
+follow immediately after the curly brace closing the previous block.
+The default is not to use cuddled elses, and is indicated with the flag
+<STRONG>-nce</STRONG> or <STRONG>--nocuddled-else</STRONG>.  Here is a comparison of the
+alternatives:
+<PRE>
+  if ($task) {
+      yyy();
+  } else {    # -ce
+      zzz();
+  }</PRE>
+<PRE>
+  if ($task) {
+        yyy();
+  }
+  else {    # -nce  (default)
+        zzz();
+  }</PRE>
+<P></P>
+<DT><STRONG><A NAME="item_%2Dbl%2C_%2D%2Dopening%2Dbrace%2Don%2Dnew%2Dline"><STRONG>-bl</STRONG>,    <STRONG>--opening-brace-on-new-line</STRONG></A></STRONG><BR>
+<DD>
+Use the flag <STRONG>-bl</STRONG> to place the opening brace on a new line:
+<PRE>
+  if ( $input_file eq '-' )    # -bl 
+  {                          
+      important_function();
+  }</PRE>
+<P>This flag applies to all structural blocks, including sub's (unless
+the <STRONG>-sbl</STRONG> flag is set -- see next item).</P>
+<P>The default style, <STRONG>-nbl</STRONG>, places an opening brace on the same line as
+the keyword introducing it.  For example,</P>
+<PRE>
+  if ( $input_file eq '-' ) {   # -nbl (default)</PRE>
+<P></P>
+<DT><STRONG><A NAME="item_%2Dsbl%2C_%2D%2Dopening%2Dsub%2Dbrace%2Don%2Dnew%2"><STRONG>-sbl</STRONG>,    <STRONG>--opening-sub-brace-on-new-line</STRONG></A></STRONG><BR>
+<DD>
+The flag <STRONG>-sbl</STRONG> can be used to override the value of <STRONG>-bl</STRONG> for
+opening sub braces.  For example,
+<PRE>
+ perltidy -sbl</PRE>
+<P>produces this result:</P>
+<PRE>
+ sub message
+ {
+    if (!defined($_[0])) {
+        print(&quot;Hello, World\n&quot;);
+    }
+    else {
+        print($_[0], &quot;\n&quot;);
+    }
+ }</PRE>
+<P>This flag is negated with <STRONG>-nsbl</STRONG>.  If <STRONG>-sbl</STRONG> is not specified,
+the value of <STRONG>-bl</STRONG> is used.</P>
+<P></P>
+<DT><STRONG><A NAME="item_%2Dbli%2C_%2D%2Dbrace%2Dleft%2Dand%2Dindent"><STRONG>-bli</STRONG>,    <STRONG>--brace-left-and-indent</STRONG></A></STRONG><BR>
+<DD>
+The flag <STRONG>-bli</STRONG> is the same as <STRONG>-bl</STRONG> but in addition it causes one 
+unit of continuation indentation ( see <STRONG>-ci</STRONG> ) to be placed before 
+an opening and closing block braces.
+<P>For example,</P>
+<PRE>
+        if ( $input_file eq '-' )    # -bli
+          {
+            important_function();
+          }</PRE>
+<P>By default, this extra indentation occurs for blocks of type:
+<STRONG>if</STRONG>, <STRONG>elsif</STRONG>, <STRONG>else</STRONG>, <STRONG>unless</STRONG>, <STRONG>for</STRONG>, <STRONG>foreach</STRONG>, <STRONG>sub</STRONG>, 
+<STRONG>while</STRONG>, <STRONG>until</STRONG>, and also with a preceding label.  The next item
+shows how to change this.</P>
+<P></P>
+<DT><STRONG><A NAME="item_%2Dblil%3Ds%2C_%2D%2Dbrace%2Dleft%2Dand%2Dindent%2"><STRONG>-blil=s</STRONG>,    <STRONG>--brace-left-and-indent-list=s</STRONG></A></STRONG><BR>
+<DD>
+Use this parameter to change the types of block braces for which the
+<STRONG>-bli</STRONG> flag applies; see <A HREF="#specifying block types">Specifying Block Types</A>.  For example,
+<STRONG>-blil='if elsif else'</STRONG> would apply it to only <CODE>if/elsif/else</CODE> blocks.
+<P></P>
+<DT><STRONG><A NAME="item_%2Dbar%2C_%2D%2Dopening%2Dbrace%2Dalways%2Don%2Dri"><STRONG>-bar</STRONG>,    <STRONG>--opening-brace-always-on-right</STRONG></A></STRONG><BR>
+<DD>
+The default style, <STRONG>-nbl</STRONG> places the opening brace on a new
+line if it does not fit on the same line as the opening keyword, like
+this:
+<PRE>
+        if ( $bigwasteofspace1 &amp;&amp; $bigwasteofspace2
+          || $bigwasteofspace3 &amp;&amp; $bigwasteofspace4 )
+        {
+            big_waste_of_time();
+        }</PRE>
+<P>To force the opening brace to always be on the right, use the <STRONG>-bar</STRONG>
+flag.  In this case, the above example becomes</P>
+<PRE>
+        if ( $bigwasteofspace1 &amp;&amp; $bigwasteofspace2
+          || $bigwasteofspace3 &amp;&amp; $bigwasteofspace4 ) {
+            big_waste_of_time();
+        }</PRE>
+<P>A conflict occurs if both <STRONG>-bl</STRONG> and <STRONG>-bar</STRONG> are specified.</P>
+<P></P>
+<DT><STRONG><A NAME="item_Vertical_tightness_of_non%2Dblock_curly_braces%2C_">Vertical tightness of non-block curly braces, parentheses, and square brackets.</A></STRONG><BR>
+<DD>
+These parameters control what shall be called vertical tightness.  Here are the
+main points:
+<UL>
+<LI>
+Opening tokens (except for block braces) are controlled by <STRONG>-vt=n</STRONG>, or
+<STRONG>--vertical-tightness=n</STRONG>, where
+<PRE>
+ -vt=0 always break a line after opening token (default). 
+ -vt=1 do not break unless this would produce more than one 
+         step in indentation in a line.
+ -vt=2 never break a line after opening token</PRE>
+<P></P>
+<LI>
+You must also use the <STRONG>-lp</STRONG> flag when you use the <STRONG>-vt</STRONG> flag; the
+reason is explained below.
+<P></P>
+<LI>
+Closing tokens (except for block braces) are controlled by <STRONG>-vtc=n</STRONG>, or
+<STRONG>--vertical-tightness-closing=n</STRONG>, where
+<PRE>
+ -vtc=0 always break a line before a closing token (default), 
+ -vtc=1 do not break before a closing token which is followed 
+        by a semicolon or another closing token, and is not in 
+        a list environment.
+ -vtc=2 never break before a closing token.</PRE>
+<P>The rules for <STRONG>-vtc=1</STRONG> are designed to maintain a reasonable balance
+between tightness and readability in complex lists.</P>
+<P></P>
+<LI>
+Different controls may be applied to to different token types,
+and it is also possible to control block braces; see below.
+<P></P>
+<LI>
+Finally, please note that these vertical tightness flags are merely
+hints to the formatter, and it cannot always follow them.  Things which
+make it difficult or impossible include comments, blank lines, blocks of
+code within a list, and possibly the lack of the <STRONG>-lp</STRONG> parameter.
+Also, these flags may be ignored for very small lists (2 or 3 lines in
+length).
+<P></P></UL>
+<P>Here are some examples:</P>
+<PRE>
+    # perltidy -lp -vt=0 -vtc=0
+    %romanNumerals = (
+                       one   =&gt; 'I',
+                       two   =&gt; 'II',
+                       three =&gt; 'III',
+                       four  =&gt; 'IV',
+    );</PRE>
+<PRE>
+    # perltidy -lp -vt=1 -vtc=0
+    %romanNumerals = ( one   =&gt; 'I',
+                       two   =&gt; 'II',
+                       three =&gt; 'III',
+                       four  =&gt; 'IV',
+    );</PRE>
+<PRE>
+    # perltidy -lp -vt=1 -vtc=1
+    %romanNumerals = ( one   =&gt; 'I',
+                       two   =&gt; 'II',
+                       three =&gt; 'III',
+                       four  =&gt; 'IV', );</PRE>
+<P>The difference between <STRONG>-vt=1</STRONG> and <STRONG>-vt=2</STRONG> is shown here:</P>
+<PRE>
+    # perltidy -lp -vt=1 
+    $init-&gt;add(
+                mysprintf( &quot;(void)find_threadsv(%s);&quot;,
+                           cstring( $threadsv_names[ $op-&gt;targ ] )
+                )
+    );</PRE>
+<PRE>
+    # perltidy -lp -vt=2 
+    $init-&gt;add( mysprintf( &quot;(void)find_threadsv(%s);&quot;,
+                           cstring( $threadsv_names[ $op-&gt;targ ] )
+                )
+    );</PRE>
+<P>With <STRONG>-vt=1</STRONG>, the line ending in <CODE>add(</CODE> does not combine with the next
+line because the next line is not balanced.  This can help with
+readability, but <STRONG>-vt=2</STRONG> can be used to ignore this rule.</P>
+<P>The tightest, and least readable, code is produced with both <CODE>-vt=2</CODE> and
+<CODE>-vtc=2</CODE>:</P>
+<PRE>
+    # perltidy -lp -vt=2 -vtc=2
+    $init-&gt;add( mysprintf( &quot;(void)find_threadsv(%s);&quot;,
+                           cstring( $threadsv_names[ $op-&gt;targ ] ) ) );</PRE>
+<P>Notice how the code in all of these examples collapses vertically as
+<STRONG>-vt</STRONG> increases, but the indentation remains unchanged.  This is
+because perltidy implements the <STRONG>-vt</STRONG> parameter by first formatting as
+if <STRONG>-vt=0</STRONG>, and then simply overwriting one output line on top of the
+next, if possible, to achieve the desired vertical tightness.  The
+<STRONG>-lp</STRONG> indentation style has been designed to allow this vertical
+collapse to occur, which is why it is required for the <STRONG>-vt</STRONG> parameter.</P>
+<P>The <STRONG>-vt=n</STRONG> and <STRONG>-vtc=n</STRONG> parameters apply to each type of container
+token.  If desired, vertical tightness controls can be applied
+independently to each of the closing container token types.</P>
+<P>The parameters for controlling parentheses are <STRONG>-pvt=n</STRONG> or
+<STRONG>--paren-vertical-tightness=n</STRONG>, and <STRONG>-pcvt=n</STRONG> or
+<STRONG>--paren-vertical-tightness-closing=n</STRONG>.</P>
+<P>Likewise, the parameters for square brackets are <STRONG>-sbvt=n</STRONG> or
+<STRONG>--square-bracket-vertical-tightness=n</STRONG>, and <STRONG>-sbcvt=n</STRONG> or
+<STRONG>--square-bracket-vertical-tightness-closing=n</STRONG>.</P>
+<P>Finally, the parameters for controlling non-code block braces are
+<STRONG>-bvt=n</STRONG> or <STRONG>--brace-vertical-tightness=n</STRONG>, and <STRONG>-bcvt=n</STRONG> or
+<STRONG>--brace-vertical-tightness-closing=n</STRONG>.</P>
+<P>In fact, the parameter <STRONG>-vt=n</STRONG> is actually just an abbreviation for
+<STRONG>-pvt=n -bvt=n sbvt=n</STRONG>, and likewise <STRONG>-vtc=n</STRONG> is an abbreviation
+for <STRONG>-pvtc=n -bvtc=n sbvtc=n</STRONG>.</P>
+<DT><STRONG><A NAME="item_%2Dbbvt%3Dn_or_%2D%2Dblock%2Dbrace%2Dvertical%2Dti"><STRONG>-bbvt=n</STRONG> or <STRONG>--block-brace-vertical-tightness=n</STRONG></A></STRONG><BR>
+<DD>
+The <STRONG>-bbvt=n</STRONG> flag is just like the <STRONG>-vt=n</STRONG> flag but applies
+to opening code block braces.
+<PRE>
+ -bbvt=0 break after opening block brace (default). 
+ -bbvt=1 do not break unless this would produce more than one 
+         step in indentation in a line.
+ -bbvt=2 do not break after opening block brace.</PRE>
+<P>It is necessary to also use either <STRONG>-bl</STRONG> or <STRONG>-bli</STRONG> for this to work,
+because, as with other vertical tightness controls, it is implemented by
+simply overwriting a line ending with an opening block brace with the
+subsequent line.  For example:</P>
+<PRE>
+    # perltidy -bli -bbvt=0
+    if ( open( FILE, &quot;&lt; $File&quot; ) )
+      {
+        while ( $File = &lt;FILE&gt; )
+          {
+            $In .= $File;
+            $count++;
+          }
+        close(FILE);
+      }</PRE>
+<PRE>
+    # perltidy -bli -bbvt=1
+    if ( open( FILE, &quot;&lt; $File&quot; ) )
+      { while ( $File = &lt;FILE&gt; )
+          { $In .= $File;
+            $count++;
+          }
+        close(FILE);
+      }</PRE>
+<P>By default this applies to blocks associated with keywords <STRONG>if</STRONG>,
+<STRONG>elsif</STRONG>, <STRONG>else</STRONG>, <STRONG>unless</STRONG>, <STRONG>for</STRONG>, <STRONG>foreach</STRONG>, <STRONG>sub</STRONG>, <STRONG>while</STRONG>,
+<STRONG>until</STRONG>, and also with a preceding label.  This can be changed with
+the parameter <STRONG>-bbvtl=string</STRONG>, or
+<STRONG>--block-brace-vertical-tightness-list=string</STRONG>, where <STRONG>string</STRONG> is a
+space-separated list of block types.  For more information on the
+possible values of this string, see <A HREF="#specifying block types">Specifying Block Types</A></P>
+<P>For example, if we want to just apply this style to <CODE>if</CODE>,
+<CODE>elsif</CODE>, and <CODE>else</CODE> blocks, we could use 
+<CODE>perltidy -bli -bbvt -bbvtl='if elsif else'</CODE>.</P>
+<P>There is no vertical tightness control for closing block braces; with
+the exception of one-line blocks, they will normally remain on a 
+separate line.</P>
+<P></P>
+<DT><STRONG><A NAME="item_%2Ddnl%2C_%2D%2Ddelete%2Dold%2Dnewlines"><STRONG>-dnl</STRONG>,  <STRONG>--delete-old-newlines</STRONG></A></STRONG><BR>
+<DD>
+By default, perltidy first deletes all old line break locations, and then it
+looks for good break points to match the desired line length.  Use <STRONG>-ndnl</STRONG>
+or  <STRONG>--nodelete-old-newlines</STRONG> to force perltidy to retain all old line break
+points.
+<P></P>
+<DT><STRONG><A NAME="item_%2Danl%2C_%2D%2Dadd%2Dnewlines"><STRONG>-anl</STRONG>,  <STRONG>--add-newlines</STRONG></A></STRONG><BR>
+<DD>
+By default, perltidy will add line breaks when necessary to create
+continuations of long lines and to improve the script appearance.  Use
+<STRONG>-nanl</STRONG> or <STRONG>-noadd-newlines</STRONG> to prevent any new line breaks.
+<P>This flag does not prevent perltidy from eliminating existing line
+breaks; see <STRONG>-freeze-newlines</STRONG> to completely prevent changes to line
+break points.</P>
+<P></P>
+<DT><STRONG><A NAME="item_Controlling_whether_perltidy_breaks_before_or_afte">Controlling whether perltidy breaks before or after operators</A></STRONG><BR>
+<DD>
+Two command line parameters provide some control over whether
+a line break should be before or after specific token types.
+<P><STRONG>-wba=s</STRONG> or <STRONG>--want-break-after=s</STRONG>, and</P>
+<P><STRONG>-wbb=s</STRONG> or <STRONG>--want-break-before=s</STRONG>.</P>
+<P>These parameters are each followed by a quoted string, <STRONG>s</STRONG>, containing
+a list of token types (separated only by spaces).  No more than one of each
+of these parameters should be specified, because repeating a
+command-line parameter always overwrites the previous one before
+perltidy ever sees it.</P>
+<P>By default, perltidy breaks <STRONG>after</STRONG> these token types:
+  % + - * / x != == &gt;= &lt;= =~ !~ &lt; &gt;  | &amp; &gt;= &lt;
+  = **= += *= &amp;= &lt;&lt;= &amp;&amp;= -= /= |= &gt;&gt;= ||= .= %= ^= x=</P>
+<P>And perltidy breaks <STRONG>before</STRONG> these token types by default:
+  . &lt;&lt; &gt;&gt; -&gt; &amp;&amp; ||</P>
+<P>To illustrate, to cause a break after a concatenation operator, <CODE>'.'</CODE>,
+rather than before it, the command line would be</P>
+<PRE>
+  -wba=&quot;.&quot;</PRE>
+<P>As another example, the following command would cause a break before 
+math operators <CODE>'+'</CODE>, <CODE>'-'</CODE>, <CODE>'/'</CODE>, and <CODE>'*'</CODE>:</P>
+<PRE>
+  -wbb=&quot;+ - / *&quot;</PRE>
+<P>These commands should work well for most of the token types that
+perltidy uses (use <STRONG>--dump-token-types</STRONG> for a list).  However, for a
+few token types there may be conflicts with hardwired logic which cause
+unexpected results.  One example is curly braces, which should be
+controlled with the parameter <STRONG>bl</STRONG> provided for that purpose.</P>
+<P></P></DL>
+<P>
+<H2><A NAME="controlling list formatting">Controlling List Formatting</A></H2>
+<P>Perltidy attempts to place comma-separated arrays of values in tables
+which look good.  Its default algorithms usually work well, and they
+have been improving with each release, but several parameters are
+available to control list formatting.</P>
+<DL>
+<DT><STRONG><A NAME="item_%2Dboc%2C_%2D%2Dbreak%2Dat%2Dold%2Dcomma%2Dbreakpo"><STRONG>-boc</STRONG>,  <STRONG>--break-at-old-comma-breakpoints</STRONG></A></STRONG><BR>
+<DD>
+This flag tells perltidy to try to break at all old commas.  This is not
+the default.  Normally, perltidy makes a best guess at list formatting,
+and seldom uses old comma breakpoints.  Usually this works well,
+but consider:
+<PRE>
+    my @list = (1,
+                1, 1,
+                1, 2, 1,
+                1, 3, 3, 1,
+                1, 4, 6, 4, 1,);</PRE>
+<P>The default formatting will flatten this down to one line:</P>
+<PRE>
+    # perltidy (default)
+    my @list = ( 1, 1, 1, 1, 2, 1, 1, 3, 3, 1, 1, 4, 6, 4, 1, );</PRE>
+<P>which hides the structure. Using <STRONG>-boc</STRONG>, plus additional flags
+to retain the original style, yields</P>
+<PRE>
+    # perltidy -boc -lp -pt=2 -vt=1 -vtc=1
+    my @list = (1,
+                1, 1,
+                1, 2, 1,
+                1, 3, 3, 1,
+                1, 4, 6, 4, 1,);</PRE>
+<P>A disadvantage of this flag is that all tables in the file
+must already be nicely formatted.</P>
+<P></P>
+<DT><STRONG><A NAME="item_%2Dmft%3Dn%2C_%2D%2Dmaximum%2Dfields%2Dper%2Dtable"><STRONG>-mft=n</STRONG>,  <STRONG>--maximum-fields-per-table=n</STRONG></A></STRONG><BR>
+<DD>
+If the computed number of fields for any table exceeds <STRONG>n</STRONG>, then it
+will be reduced to <STRONG>n</STRONG>.  The default value for <STRONG>n</STRONG> is a large number,
+40.  While this value should probably be left unchanged as a general
+rule, it might be used on a small section of code to force a list to
+have a particular number of fields per line, and then either the <STRONG>-boc</STRONG>
+flag could be used to retain this formatting, or a single comment could
+be introduced somewhere to freeze the formatting in future applications
+of perltidy.
+<PRE>
+    # perltidy -mft=2
+    @month_of_year = (    
+        'Jan', 'Feb',
+        'Mar', 'Apr',
+        'May', 'Jun',
+        'Jul', 'Aug',
+        'Sep', 'Oct',
+        'Nov', 'Dec'
+    );</PRE>
+<P></P>
+<DT><STRONG><A NAME="item_%2Dcab%3Dn%2C_%2D%2Dcomma%2Darrow%2Dbreakpoints%3D"><STRONG>-cab=n</STRONG>,  <STRONG>--comma-arrow-breakpoints=n</STRONG></A></STRONG><BR>
+<DD>
+A comma which follows a comma arrow, '=&gt;', requires special
+consideration.  In a long list, it is common to break at all such
+commas.  This parameter can be used to control how perltidy breaks at
+these commas.  (However, it will have no effect if old comma breaks are
+being forced because <STRONG>-boc</STRONG> is used).  The possible values of <STRONG>n</STRONG> are:
+<PRE>
+ n=0 break at all commas after =&gt;  
+ n=1 stable: break at all commas after =&gt; unless this would break
+     an existing one-line container (default)
+ n=2 break at all commas after =&gt;, but try to form the maximum
+     maximum one-line container lengths
+ n=3 do not treat commas after =&gt; specially at all</PRE>
+<P>For example, given the following single line, perltidy by default will
+not add any line breaks because it would break the existing one-line
+container:</P>
+<PRE>
+    bless { B =&gt; $B, Root =&gt; $Root } =&gt; $package;</PRE>
+<P>Using <STRONG>-cab=0</STRONG> will force a break after each comma-arrow item:</P>
+<PRE>
+    # perltidy -cab=0:
+    bless {
+        B    =&gt; $B,
+        Root =&gt; $Root
+    } =&gt; $package;</PRE>
+<P>If perltidy is subsequently run with this container broken, then by
+default it will break after each '=&gt;' because the container is now
+broken.  To reform a one-line container, the parameter <STRONG>-cab=2</STRONG> would
+be needed.</P>
+<P>The flag <STRONG>-cab=3</STRONG> can be used to prevent these commas from being
+treated specially.  In this case, an item such as ``01'' =&gt; 31 is
+treated as a single item in a table.  The number of fields in this table
+will be determined by the same rules that are used for any other table.
+Here is an example.
+</P>
+<PRE>
+
+    # perltidy -cab=3
+    my %last_day = (
+        &quot;01&quot; =&gt; 31, &quot;02&quot; =&gt; 29, &quot;03&quot; =&gt; 31, &quot;04&quot; =&gt; 30,
+        &quot;05&quot; =&gt; 31, &quot;06&quot; =&gt; 30, &quot;07&quot; =&gt; 31, &quot;08&quot; =&gt; 31,
+        &quot;09&quot; =&gt; 30, &quot;10&quot; =&gt; 31, &quot;11&quot; =&gt; 30, &quot;12&quot; =&gt; 31
+    );</PRE>
+<P></P></DL>
+<P>
+<H2><A NAME="retaining or ignoring existing line breaks">Retaining or Ignoring Existing Line Breaks</A></H2>
+<P>Several additional parameters are available for controlling the extent
+to which line breaks in the input script influence the output script.
+In most cases, the default parameter values are set so that, if a choice
+is possible, the output style follows the input style.  For example, if
+a short logical container is broken in the input script, then the
+default behavior is for it to remain broken in the output script.</P>
+<P>Most of the parameters in this section would only be required for a
+one-time conversion of a script from short container lengths to longer
+container lengths.  The opposite effect, of converting long container
+lengths to shorter lengths, can be obtained by temporarily using a short
+maximum line length.</P>
+<DL>
+<DT><STRONG><A NAME="item_%2Dbol%2C_%2D%2Dbreak%2Dat%2Dold%2Dlogical%2Dbreak"><STRONG>-bol</STRONG>,  <STRONG>--break-at-old-logical-breakpoints</STRONG></A></STRONG><BR>
+<DD>
+By default, if a logical expression is broken at a <CODE>&amp;&amp;</CODE>, <CODE>||</CODE>, <CODE>and</CODE>,
+or <CODE>or</CODE>, then the container will remain broken.  Also, breaks
+at internal keywords <CODE>if</CODE> and <CODE>unless</CODE> will normally be retained.
+To prevent this, and thus form longer lines, use <STRONG>-nbol</STRONG>.
+<P></P>
+<DT><STRONG><A NAME="item_%2Dbok%2C_%2D%2Dbreak%2Dat%2Dold%2Dkeyword%2Dbreak"><STRONG>-bok</STRONG>,  <STRONG>--break-at-old-keyword-breakpoints</STRONG></A></STRONG><BR>
+<DD>
+By default, perltidy will retain a breakpoint before keywords which may
+return lists, such as <CODE>sort</CODE> and &lt;map&gt;.  This allows chains of these
+operators to be displayed one per line.  Use <STRONG>-nbok</STRONG> to prevent
+retaining these breakpoints.
+<P></P>
+<DT><STRONG><A NAME="item_%2Dbot%2C_%2D%2Dbreak%2Dat%2Dold%2Dtrinary%2Dbreak"><STRONG>-bot</STRONG>,  <STRONG>--break-at-old-trinary-breakpoints</STRONG></A></STRONG><BR>
+<DD>
+By default, if a conditional (trinary) operator is broken at a <CODE>:</CODE>,
+then it will remain broken.  To prevent this, and thereby
+form longer lines, use <STRONG>-nbot</STRONG>.
+<P></P>
+<DT><STRONG><A NAME="item_%2Diob%2C_%2D%2Dignore%2Dold%2Dbreakpoints"><STRONG>-iob</STRONG>,  <STRONG>--ignore-old-breakpoints</STRONG></A></STRONG><BR>
+<DD>
+Use this flag to tell perltidy to ignore existing line breaks to the
+maximum extent possible.  This will tend to produce the longest possible
+containers, regardless of type, which do not exceed the line length
+limit.
+<P></P></DL>
+<P>
+<H2><A NAME="blank line control">Blank Line Control</A></H2>
+<P>Blank lines can improve the readability of a script if they are carefully
+placed.  Perltidy has several commands for controlling the insertion,
+retention, and removal of blank lines.</P>
+<DL>
+<DT><STRONG><A NAME="item_%2Dbbc%2C_%2D%2Dblanks%2Dbefore%2Dcomments"><STRONG>-bbc</STRONG>,  <STRONG>--blanks-before-comments</STRONG></A></STRONG><BR>
+<DD>
+A blank line will be introduced before a full-line comment.  This is the
+default.  Use <STRONG>-nbbc</STRONG> or  <STRONG>--noblanks-before-comments</STRONG> to prevent
+such blank lines from being introduced.
+<P></P>
+<DT><STRONG><A NAME="item_%2Dbbs%2C_%2D%2Dblanks%2Dbefore%2Dsubs"><STRONG>-bbs</STRONG>,  <STRONG>--blanks-before-subs</STRONG></A></STRONG><BR>
+<DD>
+A blank line will be introduced before a <STRONG>sub</STRONG> definition, unless it is a
+one-liner or preceded by a comment.  A blank line will also be introduced
+before a <STRONG>package</STRONG> statement and a <STRONG>BEGIN</STRONG> and <STRONG>END</STRONG> block.  This is the
+default.  The intention is to help display the structure of a program by
+setting off certain key sections of code.  This is negated with <STRONG>-nbbs</STRONG> or
+<STRONG>--noblanks-before-subs</STRONG>.
+<P></P>
+<DT><STRONG><A NAME="item_%2Dbbb%2C_%2D%2Dblanks%2Dbefore%2Dblocks"><STRONG>-bbb</STRONG>,  <STRONG>--blanks-before-blocks</STRONG></A></STRONG><BR>
+<DD>
+A blank line will be introduced before blocks of coding delimited by
+<STRONG>for</STRONG>, <STRONG>foreach</STRONG>, <STRONG>while</STRONG>, <STRONG>until</STRONG>, and <STRONG>if</STRONG>, <STRONG>unless</STRONG>, in the following
+circumstances:
+<UL>
+<LI>
+The block is not preceded by a comment.
+<P></P>
+<LI>
+The block is not a one-line block.
+<P></P>
+<LI>
+The number of consecutive non-blank lines at the current indentation depth is at least <STRONG>-lbl</STRONG>
+(see next section).
+<P></P></UL>
+<P>This is the default.  The intention of this option is to introduce
+some space within dense coding.
+This is negated with <STRONG>-nbbb</STRONG> or  <STRONG>--noblanks-before-blocks</STRONG>.</P>
+<DT><STRONG><A NAME="item_%2Dlbl%3Dn_%2D%2Dlong%2Dblock%2Dline%2Dcount%3Dn"><STRONG>-lbl=n</STRONG> <STRONG>--long-block-line-count=n</STRONG></A></STRONG><BR>
+<DD>
+This controls how often perltidy is allowed to add blank lines before 
+certain block types (see previous section).  The default is 8.  Entering
+a value of <STRONG>0</STRONG> is equivalent to entering a very large number.
+<P></P>
+<DT><STRONG><A NAME="item_%2Dmbl%3Dn_%2D%2Dmaximum%2Dconsecutive%2Dblank%2Dl"><STRONG>-mbl=n</STRONG> <STRONG>--maximum-consecutive-blank-lines=n</STRONG></A></STRONG><BR>
+<DD>
+This parameter specifies the maximum number of consecutive blank lines
+in the output script.  The default is n=1.  If the input file has more
+than n consecutive blank lines, the number will be reduced to n.
+(This obviously does not apply to pod sections, here-documents, and quotes).
+<P></P>
+<DT><STRONG><A NAME="item_%2Dsob%2C_%2D%2Dswallow%2Doptional%2Dblank%2Dlines"><STRONG>-sob</STRONG>,  <STRONG>--swallow-optional-blank-lines</STRONG></A></STRONG><BR>
+<DD>
+All blank lines not required by the above flags, <STRONG>-bbb</STRONG>, <STRONG>-bbs</STRONG>, and <STRONG>-bbc</STRONG>,
+will be deleted.  (But essential blank lines above pod documents will be
+retained).  This is NOT the default.
+<P></P>
+<DT><STRONG><A NAME="item_%2Dnsob%2C_%2D%2Dnoswallow%2Doptional%2Dblank%2Dli"><STRONG>-nsob</STRONG>,  <STRONG>--noswallow-optional-blank-lines</STRONG></A></STRONG><BR>
+<DD>
+Retain blank lines, including those which do not corresponding to flags
+<STRONG>-bbb</STRONG>, <STRONG>-bbs</STRONG>, and <STRONG>-bbc</STRONG>.  This is the default.  The number of
+blanks retained is subject to the limit imposed by
+<STRONG>--maximum-consecutive-blank-lines</STRONG>, however.
+<P></P></DL>
+<P>
+<H2><A NAME="styles">Styles</A></H2>
+<P>A style refers to a convenient collection of existing parameters.</P>
+<DL>
+<DT><STRONG><A NAME="item_%2Dgnu%2C_%2D%2Dgnu%2Dstyle"><STRONG>-gnu</STRONG>, <STRONG>--gnu-style</STRONG></A></STRONG><BR>
+<DD>
+<STRONG>-gnu</STRONG> gives an approximation to the GNU Coding Standards (which do
+not apply to perl) as they are sometimes implemented.  At present, this
+style overrides the default style with the following parameters:
+<PRE>
+    -lp -bl -noll -pt=2 -bt=2 -sbt=2 -icp</PRE>
+<P></P></DL>
+<P>
+<H2><A NAME="other controls">Other Controls</A></H2>
+<DL>
+<DT><STRONG><A NAME="item_Deleting_selected_text">Deleting selected text</A></STRONG><BR>
+<DD>
+Perltidy can selectively delete comments and/or pod documentation.  The
+command <STRONG>-dac</STRONG> or  <STRONG>--delete-all-comments</STRONG> will delete all comments
+<STRONG>and</STRONG> all pod documentation, leaving just code and any leading system
+control lines.
+<P>The command <STRONG>-dp</STRONG> or <STRONG>--delete-pod</STRONG> will remove all pod documentation
+(but not comments).</P>
+<P>Two commands which remove comments (but not pod) are: <STRONG>-dbc</STRONG> or
+<STRONG>--delete-block-comments</STRONG> and <STRONG>-dsc</STRONG> or  <STRONG>--delete-side-comments</STRONG>.
+(Hanging side comments will be deleted with block comments here.)</P>
+<P>The negatives of these commands also work, and are the defaults.  When
+block comments are deleted, any leading 'hash-bang' will be retained.
+Also, if the <STRONG>-x</STRONG> flag is used, any system commands before a leading
+hash-bang will be retained (even if they are in the form of comments).</P>
+<P></P>
+<DT><STRONG><A NAME="item_Writing_selected_text_to_a_file">Writing selected text to a file</A></STRONG><BR>
+<DD>
+When perltidy writes a formatted text file, it has the ability to also
+send selected text to a file with a <EM>.TEE</EM> extension.  This text can
+include comments and pod documentation.
+<P>The command <STRONG>-tac</STRONG> or  <STRONG>--tee-all-comments</STRONG> will write all comments
+<STRONG>and</STRONG> all pod documentation.</P>
+<P>The command <STRONG>-tp</STRONG> or <STRONG>--tee-pod</STRONG> will write all pod documentation (but
+not comments).</P>
+<P>The commands which write comments (but not pod) are: <STRONG>-tbc</STRONG> or
+<STRONG>--tee-block-comments</STRONG> and <STRONG>-tsc</STRONG> or  <STRONG>--tee-side-comments</STRONG>.
+(Hanging side comments will be written with block comments here.)</P>
+<P>The negatives of these commands also work, and are the defaults.</P>
+<P></P>
+<DT><STRONG><A NAME="item_Using_a_%2Eperltidyrc_command_file">Using a <EM>.perltidyrc</EM> command file</A></STRONG><BR>
+<DD>
+If you use perltidy frequently, you probably won't be happy until you
+create a <EM>.perltidyrc</EM> file to avoid typing commonly-used parameters.
+Perltidy will first look in your current directory for a command file
+named <EM>.perltidyrc</EM>.  If it does not find one, it will continue looking
+for one in other standard locations.
+<P>These other locations are system-dependent, and may be displayed with
+the command <CODE>perltidy -dpro</CODE>.  Under Unix systems, it will look for a
+<EM>.perltidyrc</EM> file in the home directory, and then for a system-wide
+file <EM>/usr/local/etc/perltidyrc</EM>, and then it will look for
+<EM>/etc/perltidyrc</EM>.  Note that these last two system-wide files do not
+have a leading dot.  Further system-dependent information will be found
+in the INSTALL file distributed with perltidy.</P>
+<P>This file is free format, and simply a list of parameters, just as they
+would be entered on a command line.  Any number of lines may be used,
+with any number of parameters per line, although it may be easiest to
+read with one parameter per line.  Blank lines are ignored, and text
+after a '#' is ignored to the end of a line.</P>
+<P>Here is an example of a <EM>.perltidyrc</EM> file:</P>
+<PRE>
+  # This is a simple of a .perltidyrc configuration file
+  # This implements a highly spaced style
+  -se    # errors to standard error output
+  -w     # show all warnings
+  -bl    # braces on new lines
+  -pt=0  # parens not tight at all
+  -bt=0  # braces not tight
+  -sbt=0 # square brackets not tight</PRE>
+<P>The parameters in the <EM>.perltidyrc</EM> file are installed first, so any
+parameters given on the command line will have priority over them.</P>
+<P>To avoid confusion, perltidy ignores any command in the .perltidyrc
+file which would cause some kind of dump and an exit.  These are:</P>
+<PRE>
+ -h -v -ddf -dln -dop -dsn -dtt -dwls -dwrs -ss</PRE>
+<P>There are several options may be helpful in debugging a <EM>.perltidyrc</EM>
+file:</P>
+<UL>
+<LI>
+A very helpful command is <STRONG>--dump-profile</STRONG> or <STRONG>-dpro</STRONG>.  It writes a
+list of all configuration filenames tested to standard output, and 
+if a file is found, it dumps the content to standard output before
+exiting.  So, to find out where perltidy looks for its configuration
+files, and which one if any it selects, just enter
+<PRE>
+  perltidy -dpro</PRE>
+<P></P>
+<LI>
+It may be simplest to develop and test configuration files with
+alternative names, and invoke them with <STRONG>-pro=filename</STRONG> on the command
+line.  Then rename the desired file to <EM>.perltidyrc</EM> when finished.
+<P></P>
+<LI>
+The parameters in the <EM>.perltidyrc</EM> file can be switched off with 
+the <STRONG>-npro</STRONG> option.
+<P></P>
+<LI>
+The commands <STRONG>-dump-options</STRONG>, <STRONG>-dump-defaults</STRONG>, <STRONG>-dump-long-names</STRONG>,
+and <STRONG>-dump-short-names</STRONG>, all described below, may all be helpful.
+<P></P></UL>
+<DT><STRONG><A NAME="item_Creating_a_new_abbreviation">Creating a new abbreviation</A></STRONG><BR>
+<DD>
+A special notation is available for use in a <EM>.perltidyrc</EM> file
+for creating an abbreviation for a group
+of options.  This can be used to create a
+shorthand for one or more styles which are frequently, but not always,
+used.  The notation is to group the options within curly braces which
+are preceded by the name of the alias (without leading dashes), like this:
+<PRE>
+        newword {
+        -opt1
+        -opt2
+        }</PRE>
+<P>where <STRONG>newword</STRONG> is the abbreviation, and <STRONG>opt1</STRONG>, etc, are existing parameters
+<EM>or other abbreviations</EM>.  The main syntax requirement is that
+the new abbreviation must begin on a new line.
+Space before and after the curly braces is optional.
+For a
+specific example, the following line</P>
+<PRE>
+        airy {-bl -pt=0 -bt=0 -sbt=0}</PRE>
+<P>could be placed in a <EM>.perltidyrc</EM> file, and then invoked at will with</P>
+<PRE>
+        perltidy -airy somefile.pl</PRE>
+<P>(Either <CODE>-airy</CODE> or <CODE>--airy</CODE> may be used).</P>
+<P></P>
+<DT><STRONG><A NAME="item_Skipping_leading_non%2Dperl_commands_with_%2Dx_or_">Skipping leading non-perl commands with <STRONG>-x</STRONG> or <STRONG>--look-for-hash-bang</STRONG></A></STRONG><BR>
+<DD>
+If your script has leading lines of system commands or other text which
+are not valid perl code, and which are separated from the start of the
+perl code by a ``hash-bang'' line, ( a line of the form <CODE>#!...perl</CODE> ),
+you must use the <STRONG>-x</STRONG> flag to tell perltidy not to parse and format any
+lines before the ``hash-bang'' line.  This option also invokes perl with a
+-x flag when checking the syntax.  This option was originally added to
+allow perltidy to parse interactive VMS scripts, but it should be used
+for any script which is normally invoked with <CODE>perl -x</CODE>.
+<P></P>
+<DT><STRONG><A NAME="item_Making_a_file_unreadable">Making a file unreadable</A></STRONG><BR>
+<DD>
+The goal of perltidy is to improve the readability of files, but there
+are two commands which have the opposite effect, <STRONG>--mangle</STRONG> and
+<STRONG>--extrude</STRONG>.  They are actually
+merely aliases for combinations of other parameters.  Both of these
+strip all possible whitespace, but leave comments and pod documents,
+so that they are essentially reversible.  The
+difference between these is that <STRONG>--mangle</STRONG> puts the fewest possible
+line breaks in a script while <STRONG>--extrude</STRONG> puts the maximum possible.
+Note that these options do not provided any meaningful obfuscation, because
+perltidy can be used to reformat the files.  They were originally
+developed to help test the tokenization logic of perltidy, but they
+have other uses.
+One use for <STRONG>--mangle</STRONG> is the following:
+<PRE>
+  perltidy --mangle myfile.pl -st | perltidy -o myfile.pl.new</PRE>
+<P>This will form the maximum possible number of one-line blocks (see next
+section), and can sometimes help clean up a badly formatted script.</P>
+<P>A similar technique can be used with <STRONG>--extrude</STRONG> instead of <STRONG>--mangle</STRONG>
+to make the minimum number of one-line blocks.</P>
+<P>Another use for <STRONG>--mangle</STRONG> is to combine it with <STRONG>-dac</STRONG> to reduce
+the file size of a perl script.</P>
+<P></P>
+<DT><STRONG><A NAME="item_One%2Dline_blocks">One-line blocks</A></STRONG><BR>
+<DD>
+There are a few points to note regarding one-line blocks.  A one-line
+block is something like this,
+<PRE>
+        if ($x &gt; 0) { $y = 1 / $x }</PRE>
+<P>where the contents within the curly braces is short enough to fit
+on a single line.</P>
+<P>With few exceptions, perltidy retains existing one-line blocks, if it
+is possible within the line-length constraint, but it does not attempt
+to form new ones.  In other words, perltidy will try to follow the
+one-line block style of the input file.</P>
+<P>If an existing one-line block is longer than the maximum line length,
+however, it will be broken into multiple lines.  When this happens, perltidy
+checks for and adds any optional terminating semicolon (unless the <STRONG>-nasc</STRONG>
+option is used) if the block is a code block.</P>
+<P>The main exception is that perltidy will attempt to form new one-line
+blocks following the keywords <CODE>map</CODE>, <CODE>eval</CODE>, and <CODE>sort</CODE>, because
+these code blocks are often small and most clearly displayed in a single
+line.</P>
+<P>One-line block rules can conflict with the cuddled-else option.  When
+the cuddled-else option is used, perltidy retains existing one-line
+blocks, even if they do not obey cuddled-else formatting.</P>
+<P>Occasionally, when one-line blocks get broken because they exceed the
+available line length, the formatting will violate the requested brace style.
+If this happens, reformatting the script a second time should correct
+the problem.</P>
+<P></P>
+<DT><STRONG><A NAME="item_Debugging">Debugging</A></STRONG><BR>
+<DD>
+The following flags are available for debugging:
+<P><STRONG>--dump-defaults</STRONG> or <STRONG>-ddf</STRONG> will write the default option set to standard output and quit</P>
+<P><STRONG>--dump-profile</STRONG> or <STRONG>-dpro</STRONG>  will write the name of the current 
+configuration file and its contents to standard output and quit.</P>
+<P><STRONG>--dump-options</STRONG> or <STRONG>-dop</STRONG>  will write current option set to standard
+output and quit.</P>
+<P><STRONG>--dump-long-names</STRONG> or <STRONG>-dln</STRONG>  will write all command line long names (passed 
+to Get_options) to standard output and quit.</P>
+<P><STRONG>--dump-short-names</STRONG>  or <STRONG>-dsn</STRONG> will write all command line short names 
+to standard output and quit.</P>
+<P><STRONG>--dump-token-types</STRONG> or <STRONG>-dtt</STRONG>  will write a list of all token types 
+to standard output and quit.</P>
+<P><STRONG>--dump-want-left-space</STRONG> or <STRONG>-dwls</STRONG>  will write the hash %want_left_space
+to standard output and quit.  See the section on controlling whitespace
+around tokens.</P>
+<P><STRONG>--dump-want-right-space</STRONG> or <STRONG>-dwrs</STRONG>  will write the hash %want_right_space
+to standard output and quit.  See the section on controlling whitespace
+around tokens.</P>
+<P><STRONG>-DEBUG</STRONG>  will write a file with extension <EM>.DEBUG</EM> for each input file 
+showing the tokenization of all lines of code.</P>
+<P></P>
+<DT><STRONG><A NAME="item_Working_with_MakeMaker%2C_AutoLoader_and_SelfLoade">Working with MakeMaker, AutoLoader and SelfLoader</A></STRONG><BR>
+<DD>
+The first $VERSION line of a file which might be eval'd by MakeMaker
+is passed through unchanged except for indentation.  
+Use <STRONG>--nopass-version-line</STRONG>, or <STRONG>-npvl</STRONG>, to deactivate this feature.
+<P>If the AutoLoader module is used, perltidy will continue formatting
+code after seeing an __END__ line.
+Use <STRONG>--nolook-for-autoloader</STRONG>, or <STRONG>-nlal</STRONG>, to deactivate this feature.</P>
+<P>Likewise, if the SelfLoader module is used, perltidy will continue formatting
+code after seeing a __DATA__ line.
+Use <STRONG>--nolook-for-selfloader</STRONG>, or <STRONG>-nlsl</STRONG>, to deactivate this feature.</P>
+<P></P>
+<DT><STRONG><A NAME="item_Working_around_problems_with_older_version_of_Perl">Working around problems with older version of Perl</A></STRONG><BR>
+<DD>
+Perltidy contains a number of rules which help avoid known subtleties
+and problems with older versions of perl, and these rules always
+take priority over whatever formatting flags have been set.  For example,
+perltidy will usually avoid starting a new line with a bareword, because
+this might cause problems if <CODE>use strict</CODE> is active.
+<P>There is no way to override these rules.</P>
+<P></P></DL>
+<P>
+<HR>
+<H1><A NAME="html options">HTML OPTIONS</A></H1>
+<DL>
+<DT><STRONG><A NAME="item_The_%2Dhtml_master_switch">The <STRONG>-html</STRONG> master switch</A></STRONG><BR>
+<DD>
+The flag <STRONG>-html</STRONG> causes perltidy to write an html file with extension
+<EM>.html</EM>.  So, for example, the following command
+<PRE>
+        perltidy -html somefile.pl</PRE>
+<P>will produce a syntax-colored html file named <EM>somefile.pl.html</EM>
+which may be viewed with a browser.</P>
+<P><STRONG>Please Note</STRONG>: In this case, perltidy does not do any formatting to the
+input file, and it does not write a formatted file with extension
+<EM>.tdy</EM>.  This means that two perltidy runs are required to create a
+fully reformatted, html copy of a script.</P>
+<P></P>
+<DT><STRONG><A NAME="item_The_%2Dpre_flag_for_code_snippets">The <STRONG>-pre</STRONG> flag for code snippets</A></STRONG><BR>
+<DD>
+When the <STRONG>-pre</STRONG> flag is given, only the pre-formatted section, within
+the &lt;PRE&gt; and &lt;/PRE&gt; tags, will be output.  This simplifies inclusion
+of the output in other files.  The default is to output a complete
+web page.
+<P></P>
+<DT><STRONG><A NAME="item_The_%2Dnnn_flag_for_line_numbering">The <STRONG>-nnn</STRONG> flag for line numbering</A></STRONG><BR>
+<DD>
+When the <STRONG>-nnn</STRONG> flag is given, the output lines will be numbered.
+<P></P>
+<DT><STRONG><A NAME="item_The_%2Dtoc%2C_or_%2D%2Dhtml%2Dtable%2Dof%2Dcontent">The <STRONG>-toc</STRONG>, or <STRONG>--html-table-of-contents</STRONG> flag</A></STRONG><BR>
+<DD>
+By default, a table of contents to packages and subroutines will be
+written at the start of html output.  Use <STRONG>-ntoc</STRONG> to prevent this.
+This might be useful, for example, for a pod document which contains a
+number of unrelated code snippets.  This flag only influences the code
+table of contents; it has no effect on any table of contents produced by
+pod2html (see next item).
+<P></P>
+<DT><STRONG><A NAME="item_The_%2Dpod%2C_or_%2D%2Dpod2html_flag">The <STRONG>-pod</STRONG>, or <STRONG>--pod2html</STRONG> flag</A></STRONG><BR>
+<DD>
+There are two options for formatting pod documentation.  The default is
+to pass the pod through the Pod::Html module (which forms the basis of
+the pod2html utility).  Any code sections are formatted by perltidy, and
+the results then merged.  Note: perltidy creates a temporary file when
+Pod::Html is used; see <A HREF="#files">FILES</A>.  Also, Pod::Html creates temporary
+files for its cache.
+<P>NOTE: Perltidy counts the number of <CODE>=cut</CODE> lines, and either moves the
+pod text to the top of the html file if there is one <CODE>=cut</CODE>, or leaves
+the pod text in its original order (interleaved with code) otherwise.</P>
+<P>Most of the flags accepted by pod2html may be included in the perltidy
+command line, and they will be passed to pod2html.  In some cases,
+the flags have a prefix <CODE>pod</CODE> to emphasize that they are for the
+pod2html, and this prefix will be removed before they are passed to
+pod2html.  The flags which have the additional <CODE>pod</CODE> prefix are:</P>
+<PRE>
+   --[no]podheader --[no]podindex --[no]podrecurse --[no]podquiet 
+   --[no]podverbose --podflush</PRE>
+<P>The flags which are unchanged from their use in pod2html are:</P>
+<PRE>
+   --backlink=s --cachedir=s --htmlroot=s --libpods=s --title=s
+   --podpath=s --podroot=s</PRE>
+<P>where 's' is an appropriate character string.  Not all of these flags are
+available in older versions of Pod::Html.  See your Pod::Html documentation for
+more information.</P>
+<P>The alternative, indicated with <STRONG>-npod</STRONG>, is not to use Pod::Html, but
+rather to format pod text in italics (or whatever the stylesheet
+indicates), without special html markup.  This is useful, for example,
+if pod is being used as an alternative way to write comments.</P>
+<P></P>
+<DT><STRONG><A NAME="item_The_%2Dfrm%2C_or_%2D%2Dframes_flag">The <STRONG>-frm</STRONG>, or <STRONG>--frames</STRONG> flag</A></STRONG><BR>
+<DD>
+By default, a single html output file is produced.  This can be changed
+with the <STRONG>-frm</STRONG> option, which creates a frame holding a table of
+contents in the left panel and the source code in the right side. This
+simplifies code browsing.  Assume, for example, that the input file is
+<EM>MyModule.pm</EM>.  Then, for default file extension choices, these three
+files will be created:
+<PRE>
+ MyModule.pm.html      - the frame
+ MyModule.pm.toc.html  - the table of contents
+ MyModule.pm.src.html  - the formatted source code</PRE>
+<P>Obviously this file naming scheme requires that output be directed to a real
+file (as opposed to, say, standard output).  If this is not the
+case, or if the file extension is unknown, the <STRONG>-frm</STRONG> option will be
+ignored.</P>
+<P></P>
+<DT><STRONG><A NAME="item_The_%2Dtext%3Ds%2C_or_%2D%2Dhtml%2Dtoc%2Dextension">The <STRONG>-text=s</STRONG>, or <STRONG>--html-toc-extension</STRONG> flag</A></STRONG><BR>
+<DD>
+Use this flag to specify the extra file extension of the table of contents file
+when html frames are used.  The default is ``toc''.
+See <A HREF="#specifying file extensions">Specifying File Extensions</A>.
+<P></P>
+<DT><STRONG><A NAME="item_The_%2Dsext%3Ds%2C_or_%2D%2Dhtml%2Dsrc%2Dextension">The <STRONG>-sext=s</STRONG>, or <STRONG>--html-src-extension</STRONG> flag</A></STRONG><BR>
+<DD>
+Use this flag to specify the extra file extension of the content file when html
+frames are used.  The default is ``src''.
+See <A HREF="#specifying file extensions">Specifying File Extensions</A>.
+<P></P>
+<DT><STRONG><A NAME="item_The_%2Dhent%2C_or_%2D%2Dhtml%2Dentities_flag">The <STRONG>-hent</STRONG>, or <STRONG>--html-entities</STRONG> flag</A></STRONG><BR>
+<DD>
+This flag controls the use of Html::Entities for html formatting.  By
+default, the module Html::Entities is used to encode special symbols.
+This may not be the right thing for some browser/language
+combinations.  Use --nohtml-entities or -nhent to prevent this.
+<P></P>
+<DT><STRONG><A NAME="item_Style_Sheets">Style Sheets</A></STRONG><BR>
+<DD>
+Style sheets make it very convenient to control and adjust the
+appearance of html pages.  The default behavior is to write a page of
+html with an embedded style sheet.
+<P>An alternative to an embedded style sheet is to create a page with a
+link to an external style sheet.  This is indicated with the
+<STRONG>-css=filename</STRONG>,  where the external style sheet is <EM>filename</EM>.  The
+external style sheet <EM>filename</EM> will be created if and only if it does
+not exist.  This option is useful for controlling multiple pages from a
+single style sheet.</P>
+<P>To cause perltidy to write a style sheet to standard output and exit,
+use the <STRONG>-ss</STRONG>, or <STRONG>--stylesheet</STRONG>, flag.  This is useful if the style
+sheet could not be written for some reason, such as if the <STRONG>-pre</STRONG> flag
+was used.  Thus, for example,
+</P>
+<PRE>
+
+  perltidy -html -ss &gt;mystyle.css</PRE>
+<P>will write a style sheet with the default properties to file
+<EM>mystyle.css</EM>.</P>
+<P>The use of style sheets is encouraged, but a web page without a style
+sheets can be created with the flag <STRONG>-nss</STRONG>.  Use this option if you
+must to be sure that older browsers (roughly speaking, versions prior to
+4.0 of Netscape Navigator and Internet Explorer) can display the
+syntax-coloring of the html files.</P>
+<P></P>
+<DT><STRONG><A NAME="item_Controlling_HTML_properties">Controlling HTML properties</A></STRONG><BR>
+<DD>
+Note: It is usually more convenient to accept the default properties
+and then edit the stylesheet which is produced.  However, this section
+shows how to control the properties with flags to perltidy.
+<P>Syntax colors may be changed from their default values by flags of the either
+the long form, <STRONG>-html-color-xxxxxx=n</STRONG>, or more conveniently the short form,
+<STRONG>-hcx=n</STRONG>, where <STRONG>xxxxxx</STRONG> is one of the following words, and <STRONG>x</STRONG> is the
+corresponding abbreviation:</P>
+<PRE>
+      Token Type             xxxxxx           x 
+      ----------             --------         --
+      comment                comment          c
+      number                 numeric          n
+      identifier             identifier       i
+      bareword, function     bareword         w
+      keyword                keyword          k
+      quite, pattern         quote            q
+      here doc text          here-doc-text    h
+      here doc target        here-doc-target  hh
+      punctuation            punctuation      pu
+      parentheses            paren            p
+      structural braces      structure        s
+      semicolon              semicolon        sc
+      colon                  colon            co
+      comma                  comma            cm
+      label                  label            j
+      sub definition name    subroutine       m
+      pod text               pod-text         pd</PRE>
+<P>A default set of colors has been defined, but they may be changed by providing
+values to any of the following parameters, where <STRONG>n</STRONG> is either a 6 digit 
+hex RGB color value or an ascii name for a color, such as 'red'.</P>
+<P>To illustrate, the following command will produce an html 
+file <EM>somefile.pl.html</EM> with ``aqua'' keywords:</P>
+<PRE>
+        perltidy -html -hck=00ffff somefile.pl</PRE>
+<P>and this should be equivalent for most browsers:</P>
+<PRE>
+        perltidy -html -hck=aqua somefile.pl</PRE>
+<P>Perltidy merely writes any non-hex names that it sees in the html file.
+The following 16 color names are defined in the HTML 3.2 standard:</P>
+<PRE>
+        black   =&gt; 000000,
+        silver  =&gt; c0c0c0,
+        gray    =&gt; 808080,
+        white   =&gt; ffffff,
+        maroon  =&gt; 800000,
+        red     =&gt; ff0000,
+        purple  =&gt; 800080,
+        fuchsia =&gt; ff00ff,
+        green   =&gt; 008000,
+        lime    =&gt; 00ff00,
+        olive   =&gt; 808000,
+        yellow  =&gt; ffff00
+        navy    =&gt; 000080,
+        blue    =&gt; 0000ff,
+        teal    =&gt; 008080,
+        aqua    =&gt; 00ffff,</PRE>
+<P>Many more names are supported in specific browsers, but it is safest
+to use the hex codes for other colors.  Helpful color tables can be
+located with an internet search for ``HTML color tables''.</P>
+<P>Besides color, two other character attributes may be set: bold, and italics.
+To set a token type to use bold, use the flag
+<STRONG>-html-bold-xxxxxx</STRONG> or <STRONG>-hbx</STRONG>, where <STRONG>xxxxxx</STRONG> or <STRONG>x</STRONG> are the long
+or short names from the above table.  Conversely, to set a token type to 
+NOT use bold, use <STRONG>-nohtml-bold-xxxxxx</STRONG> or <STRONG>-nhbx</STRONG>.</P>
+<P>Likewise, to set a token type to use an italic font, use the flag
+<STRONG>-html-italic-xxxxxx</STRONG> or <STRONG>-hix</STRONG>, where again <STRONG>xxxxxx</STRONG> or <STRONG>x</STRONG> are the
+long or short names from the above table.  And to set a token type to
+NOT use italics, use <STRONG>-nohtml-italic-xxxxxx</STRONG> or <STRONG>-nhix</STRONG>.</P>
+<P>For example, to use bold braces and lime color, non-bold, italics keywords the
+following command would be used:</P>
+<PRE>
+        perltidy -html -hbs -hck=00FF00 -nhbk -hik somefile.pl</PRE>
+<P>The background color can be specified with <STRONG>-html-color-background=n</STRONG>,
+or <STRONG>-hcbg=n</STRONG> for short, where n is a 6 character hex RGB value.  The
+default color of text is the value given to <STRONG>punctuation</STRONG>, which is
+black as a default.</P>
+<P>Here are some notes and hints:</P>
+<P>1. If you find a preferred set of these parameters, you may want
+to create a <EM>.perltidyrc</EM> file containing them.  See the perltidy man
+page for an explanation.</P>
+<P>2. Rather than specifying values for these parameters, it is probably
+easier to accept the defaults and then edit a style sheet.  The style
+sheet contains comments which should make this easy.</P>
+<P>3. The syntax-colored html files can be very large, so it may be best to
+split large files into smaller pieces to improve download times.</P>
+<P></P></DL>
+<P>
+<HR>
+<H1><A NAME="some common input conventions">SOME COMMON INPUT CONVENTIONS</A></H1>
+<P>
+<H2><A NAME="specifying block types">Specifying Block Types</A></H2>
+<P>Several parameters which refer to code block types may be customized by also
+specifying an associated list of block types.  The type of a block is the name
+of the keyword which introduces that block, such as <STRONG>if</STRONG>, <STRONG>else</STRONG>, or <STRONG>sub</STRONG>.
+An exception is a labeled block, which has no keyword, and should be specified
+with just a colon.</P>
+<P>For example, the following parameter specifies <CODE>sub</CODE>, labels, <CODE>BEGIN</CODE>, and
+<CODE>END</CODE> blocks:</P>
+<PRE>
+   -cscl=&quot;sub : BEGIN END&quot;</PRE>
+<P>(the meaning of the -cscl parameter is described above.)  Note that
+quotes are required around the list of block types because of the
+spaces.</P>
+<P>
+<H2><A NAME="specifying file extensions">Specifying File Extensions</A></H2>
+<P>Several parameters allow default file extensions to be overridden.  For
+example, a backup file extension may be specified with <STRONG>-bext=ext</STRONG>,
+where <STRONG>ext</STRONG> is some new extension.  In order to provides the user some
+flexibility, the following convention is used in all cases to decide if
+a leading '.' should be used.  If the extension <CODE>ext</CODE> begins with
+<CODE>A-Z</CODE>, <CODE>a-z</CODE>, or <CODE>0-9</CODE>, then it will be appended to the filename with
+an intermediate '.' (or perhaps an '_' on VMS systems).  Otherwise, it
+will be appended directly.</P>
+<P>For example, suppose the file is <EM>somefile.pl</EM>.  For <CODE>-bext=old</CODE>, a '.' is
+added to give <EM>somefile.pl.old</EM>.  For <CODE>-bext=.old</CODE>, no additional '.' is
+added, so again the backup file is <EM>somefile.pl.old</EM>.  For <CODE>-bext=~</CODE>, then no
+dot is added, and the backup file will be <EM>somefile.pl~</EM>  .</P>
+<P>
+<HR>
+<H1><A NAME="switches which may be negated">SWITCHES WHICH MAY BE NEGATED</A></H1>
+<P>The following list shows all short parameter names which allow a prefix
+'n' to produce the negated form:</P>
+<PRE>
+    D anl asc aws b bbb bbc bbs bli boc bok bol bot syn ce csc 
+    dac dbc dcsc dnl dws dp dpro dsm dsc ddf dln dop dsn dtt dwls dwrs 
+    f fll frm hsc html ibc icb icp iob isbc lp log lal x lsl ple pod bl 
+    sbl okw ola oll ple pvl q opt sbc sfs ssc sts se st sob 
+    t tac tbc toc tp tsc tqw w</PRE>
+<P>Equivalently, the prefix 'no' or 'no-' on the corresponding long names may be
+used.</P>
+<P>
+<HR>
+<H1><A NAME="limitations">LIMITATIONS</A></H1>
+<DL>
+<DT><STRONG><A NAME="item_Parsing_Limitations">Parsing Limitations</A></STRONG><BR>
+<DD>
+Perltidy should work properly on most perl scripts.  It does a lot of
+self-checking, but still, it is possible that an error could be
+introduced and go undetected.  Therefore, it is essential to make
+careful backups and to test reformatted scripts.
+<P>The main current limitation is that perltidy does not scan modules
+included with 'use' statements.  This makes it necessary to guess the
+context of any bare words introduced by such modules.  Perltidy has good
+guessing algorithms, but they are not infallible.  When it must guess,
+it leaves a message in the log file.</P>
+<P>If you encounter a bug, please report it.</P>
+<P></P>
+<DT><STRONG><A NAME="item_What_perltidy_does_not_parse_and_format">What perltidy does not parse and format</A></STRONG><BR>
+<DD>
+Perltidy indents but does not reformat comments and <CODE>qw</CODE> quotes. 
+Perltidy does not in any way modify the contents of here documents or
+quoted text, even if they contain source code.  (You could, however,
+reformat them separately).  Perltidy does not format 'format' sections
+in any way.  And, of course, it does not modify pod documents.
+<P></P></DL>
+<P>
+<HR>
+<H1><A NAME="files">FILES</A></H1>
+<DL>
+<DT><STRONG><A NAME="item_Temporary_files">Temporary files</A></STRONG><BR>
+<DD>
+Under the -html option with the default --pod2html flag, a temporary file is
+required to pass text to Pod::Html.  Unix systems will try to use the POSIX
+<CODE>tmpnam()</CODE> function.  Otherwise the file <EM>perltidy.TMP</EM> will be temporarily
+created in the current working directory.
+<P></P>
+<DT><STRONG><A NAME="item_Special_files_when_standard_input_is_used">Special files when standard input is used</A></STRONG><BR>
+<DD>
+When standard input is used, the log file, if saved, is <EM>perltidy.LOG</EM>,
+and any errors are written to <EM>perltidy.ERR</EM> unless the <STRONG>-se</STRONG> flag is
+set.  These are saved in the current working directory.
+<P></P>
+<DT><STRONG><A NAME="item_Files_overwritten">Files overwritten</A></STRONG><BR>
+<DD>
+The following file extensions are used by perltidy, and files with these
+extensions may be overwritten or deleted: <EM>.ERR</EM>, <EM>.LOG</EM>, <EM>.TEE</EM>,
+and/or <EM>.tdy</EM>, <EM>.html</EM>, and <EM>.bak</EM>, depending on the run type and
+settings.
+<P></P>
+<DT><STRONG><A NAME="item_Files_extensions_limitations">Files extensions limitations</A></STRONG><BR>
+<DD>
+Perltidy does not operate on files for which the run could produce a file with
+a duplicated file extension.  These extensions include <EM>.LOG</EM>, <EM>.ERR</EM>,
+<EM>.TEE</EM>, and perhaps <EM>.tdy</EM> and <EM>.bak</EM>, depending on the run type.  The
+purpose of this rule is to prevent generating confusing filenames such as
+<EM>somefile.tdy.tdy.tdy</EM>.
+<P></P></DL>
+<P>
+<HR>
+<H1><A NAME="see also">SEE ALSO</A></H1>
+<P>perlstyle(1), Perl::Tidy(3)</P>
+<P>
+<HR>
+<H1><A NAME="version">VERSION</A></H1>
+<P>This man page documents perltidy version 20031021.</P>
+<P>
+<HR>
+<H1><A NAME="credits">CREDITS</A></H1>
+<P>Michael Cartmell supplied code for adaptation to VMS and helped with
+v-strings.</P>
+<P>Yves Orton supplied code for adaptation to the various versions
+of Windows.</P>
+<P>Axel Rose supplied a patch for MacPerl.</P>
+<P>Hugh S. Myers designed and implemented the initial Perl::Tidy module interface.</P>
+<P>Many others have supplied key ideas, suggestions, and bug reports;
+see the CHANGES file.</P>
+<P>
+<HR>
+<H1><A NAME="author">AUTHOR</A></H1>
+<PRE>
+  Steve Hancock
+  email: perltidy at users.sourceforge.net
+  <A HREF="http://perltidy.sourceforge.net">http://perltidy.sourceforge.net</A></PRE>
+<P>
+<HR>
+<H1><A NAME="copyright">COPYRIGHT</A></H1>
+<P>Copyright (c) 2000-2003 by Steve Hancock</P>
+<P>
+<HR>
+<H1><A NAME="license">LICENSE</A></H1>
+<P>This package is free software; you can redistribute it and/or modify it
+under the terms of the ``GNU General Public License''.</P>
+<P>Please refer to the file ``COPYING'' for details.</P>
+<P>
+<HR>
+<H1><A NAME="disclaimer">DISCLAIMER</A></H1>
+<P>This package is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.</P>
+<P>See the ``GNU General Public License'' for more details.</P>
+
+</BODY>
+
+</HTML>

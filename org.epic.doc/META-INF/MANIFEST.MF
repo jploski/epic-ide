@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Epic Documentation Plug-in
+Bundle-SymbolicName: org.epic.doc; singleton:=true
+Bundle-Version: 0.2.4
+Bundle-Localization: plugin
+Eclipse-AutoStart: true
+Bundle-Vendor: Epic Project
+Require-Bundle: org.eclipse.help

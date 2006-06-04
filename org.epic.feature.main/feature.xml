@@ -235,6 +235,13 @@ litigation.
          version="0.2.4"/>
 
    <plugin
+         id="org.epic.doc"
+         download-size="0"
+         install-size="0"
+         version="0.2.4"
+         unpack="true"/>
+
+   <plugin
          id="org.epic.debug"
          download-size="0"
          install-size="0"

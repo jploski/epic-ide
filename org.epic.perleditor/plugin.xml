@@ -515,24 +515,6 @@
    </extension>
 <!-- Decorator extension END -->
    <extension
-         point="org.eclipse.help.toc">
-      <toc
-            file="HelpToc.xml"
-            primary="true">
-      </toc>
-      <toc
-            file="html/epicUsersGuide/toc.xml"
-            primary="true">
-      </toc>
-   </extension>
-   <extension
-         point="org.eclipse.help.contexts">
-      <contexts
-            file="HelpContexts.xml">
-      </contexts>
-   </extension>
-  
-   <extension
          point="org.eclipse.ui.views">
       <category
             name="EPIC"

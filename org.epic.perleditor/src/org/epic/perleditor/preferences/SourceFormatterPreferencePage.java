@@ -52,7 +52,7 @@ public class SourceFormatterPreferencePage
 	}
 	
 	protected String getPreferenceHelpContextID() {
-		return "org.epic.perleditor.preferencesSourceFormatter_context";
+		return "org.epic.doc.preferencesSourceFormatter_context";
 	}
 
 

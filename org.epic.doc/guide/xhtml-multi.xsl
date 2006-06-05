@@ -16,6 +16,7 @@
 <xsl:param name="suppress.navigation">1</xsl:param>
 <xsl:param name="chunk.first.sections" select="1"/>
 <xsl:param name="chunk.quietly" select="1"/>
+<xsl:param name="chapter.autolabel" select="0"/>
 <xsl:param name="base.dir">temp/</xsl:param>
 
 </xsl:stylesheet>

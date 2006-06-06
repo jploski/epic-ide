@@ -154,9 +154,9 @@ OPEN_QMARK
 	};
 
 SUBST_OR_MATCH_OR_WORD // this disambiguation rule disfavours EXPRs too much :-(
-	: (("tr" | 's' | 'y') ~('a'..'z' | '0'..'9' | '_' | '}' | '\r' | '\n'))
+	: { !afterArrow }? (("tr" | 's' | 'y') ~('a'..'z' | '0'..'9' | '_' | '}' | '\r' | '\n'))
 	=> SUBST_EXPR { $setType(PerlTokenTypes.SUBST_EXPR); }
-	| (("qq" | "qx" | "qw" | "qr" | 'm' | 'q') ~('a'..'z' | '0'..'9' | '_' | '}' | '\r' | '\n' | ' '))
+	| { !afterArrow }? (("qq" | "qx" | "qw" | "qr" | 'm' | 'q') ~('a'..'z' | '0'..'9' | '_' | '}' | '\r' | '\n' | ' '))
 	=> MATCH_EXPR { $setType(PerlTokenTypes.MATCH_EXPR); }
 	| (NUMBER)
 	=> n:NUMBER { $setToken(n); }
@@ -416,7 +416,7 @@ protected WORD
     			glob = str.equals("unlink");
     			$setType(PerlTokenTypes.KEYWORD2);
     		}
-    		else if (OPERATORS.contains(str))
+    		else if (OPERATORS.contains(str) && !afterArrow)
     		{
     			glob = false;
     			$setToken(createOperatorToken(PerlTokenTypes.OPER_OTHER, str));

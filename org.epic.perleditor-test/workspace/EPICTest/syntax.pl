@@ -51,3 +51,5 @@ my $b = $y % $x; # % is the modulo operator, not part of the "% $y" variable, cf
 print " test\
 ";
 print $blah;
+
+my ($x, $y) = ($Ev->x, $Ev->y); # x and y after -> are normal words, not operators

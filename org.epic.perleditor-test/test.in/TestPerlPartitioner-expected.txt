@@ -377,3 +377,30 @@
 1211:1:__dftl_partition_content_type:{ }
 1212:5:VARIABLE:{$blah}
 1217:1:OPERATOR:{;}
+1218:2:__dftl_partition_content_type:{
+
+}
+1220:2:KEYWORD1:{my}
+1222:1:__dftl_partition_content_type:{ }
+1223:1:OPERATOR:{(}
+1224:2:VARIABLE:{$x}
+1226:1:OPERATOR:{,}
+1227:1:__dftl_partition_content_type:{ }
+1228:2:VARIABLE:{$y}
+1230:1:OPERATOR:{)}
+1231:1:__dftl_partition_content_type:{ }
+1232:1:OPERATOR:{=}
+1233:1:__dftl_partition_content_type:{ }
+1234:1:OPERATOR:{(}
+1235:3:VARIABLE:{$Ev}
+1238:2:OPERATOR:{->}
+1240:1:__dftl_partition_content_type:{x}
+1241:1:OPERATOR:{,}
+1242:1:__dftl_partition_content_type:{ }
+1243:3:VARIABLE:{$Ev}
+1246:2:OPERATOR:{->}
+1248:1:__dftl_partition_content_type:{y}
+1249:1:OPERATOR:{)}
+1250:1:OPERATOR:{;}
+1251:1:__dftl_partition_content_type:{ }
+1252:50:COMMENT:{# x and y after -> are normal words, not operators}

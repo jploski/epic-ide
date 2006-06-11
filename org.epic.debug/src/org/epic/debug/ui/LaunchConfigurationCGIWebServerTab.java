@@ -14,18 +14,12 @@
  * To change the template for this generated type comment go to
  * Window>Preferences>Java>Code Generation>Code and Comments
  */
-/*STR*/
+
 package org.epic.debug.ui;
-
-//import java.lang.reflect.InvocationTargetException;
-
-import gnu.regexp.RE;
-import gnu.regexp.REException;
 
 import java.io.File;
 import java.util.Map;
 
-import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunchConfiguration;
@@ -42,221 +36,51 @@ import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Combo;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Text;
+import org.eclipse.swt.widgets.*;
 import org.epic.debug.PerlDebugPlugin;
 import org.epic.debug.PerlLaunchConfigurationConstants;
-//import org.epic.debug.util.ListEditor;
-/*STR*/
+
 public class LaunchConfigurationCGIWebServerTab
 	extends AbstractLaunchConfigurationTab
 	implements IPropertyChangeListener
 {
-
-	/**
-	 * A launch configuration tab that displays and edits project and
-	 * main type name launch configuration attributes.
-	 * <p>
-	 * This class may be instantiated. This class is not intended to be subclassed.
-	 * </p>
-	 * @since 2.0
-	 */
-
-	private Text mCGIsuffixText;
-	private Label mCGIsuffixLabel;
-	//private ListEditor fEnvVar;
-	//	private IntegerFieldEditor fWebserverPort;
+	private Text fCGISuffix;
 	private DirectoryFieldEditor fCGIRootDir;
 	private DirectoryFieldEditor fHTMLRootDir;
 	private FileFieldEditor fHTMLRootFile;
-	// Project UI widgets
-	//	protected Label fProjLabel;
-	//protected Label fParamLabel;
-	//	protected Combo fProjText;
-	//	protected Button fProjButton;
-	//	protected Text fParamText;
 
-	// Main class UI widgets
-	protected Label fMainLabel;
-	protected Combo fMainText;
-	//	protected Button fSearchButton;
-	//  protected Button fSearchExternalJarsCheckButton;
-	//	protected Button fStopInMainCheckButton;
-
-	private RE mTestEnvVar;
-
-	protected static final String EMPTY_STRING = ""; //$NON-NLS-1$
-
-	private static final String PERL_NATURE_ID =
-		"org.epic.perleditor.perlnature";
-
-	public LaunchConfigurationCGIWebServerTab()
-	{
-		super();
-		try
-		{
-			mTestEnvVar = new RE("^\\s*[^\\s]+\\s*=.*");
-		} catch (REException e)
-		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-	}
-	/**
-	 * @see org.eclipse.debug.ui.ILaunchConfigurationTab#createControl(Composite)
-	 */
 	public void createControl(Composite parent)
 	{
-		Font font = parent.getFont();
-		GridLayout layout;
-		Composite comp = new Composite(parent, SWT.NONE);
-		setControl(comp);
+        Font font = parent.getFont();
 
-		GridLayout topLayout = new GridLayout();
-		topLayout.marginHeight = 0;
-		topLayout.marginWidth = 0;
-		comp.setLayout(topLayout);
-		GridData gd;
+        Composite comp = new Composite(parent, SWT.NONE);
+        setControl(comp);
 
-		createVerticalSpacer(comp, 2);
-
-		layout = new GridLayout();
-		layout.numColumns = 1;
-		layout.marginHeight = 0;
-		layout.marginWidth = 0;
-		gd = new GridData(GridData.FILL_HORIZONTAL);
-
-//		Composite envComp = new Composite(comp, SWT.NONE);
-//		envComp.setLayout(layout);
-//		envComp.setLayoutData(gd);
-//		envComp.setFont(font);
-//
-//		fEnvVar = new ListEditor("Environment Variables", envComp, this);
-//		fEnvVar.fillIntoGrid(envComp, 3);
-//		fEnvVar.setPropertyChangeListener(this);
-//		createVerticalSpacer(comp, 1);
-//		layout = new GridLayout();
-//		layout.numColumns = 1;
-//		layout.marginHeight = 0;
-//		layout.marginWidth = 0;
-//		gd = new GridData(GridData.FILL_HORIZONTAL);
-
-		Composite htmlRootDirComp = new Composite(comp, SWT.NONE);
-		htmlRootDirComp.setLayout(layout);
-		htmlRootDirComp.setLayoutData(gd);
-		htmlRootDirComp.setFont(font);
-
-		fHTMLRootDir =
-			new DirectoryFieldEditor(
-				"Test",
-				"HTML Root Directory",
-				htmlRootDirComp);
-		fHTMLRootDir.fillIntoGrid(htmlRootDirComp, 3);
-		fHTMLRootDir.setPropertyChangeListener(this);
-
-		createVerticalSpacer(comp, 1);
-
-		layout = new GridLayout();
-		layout.numColumns = 1;
-		layout.marginHeight = 0;
-		layout.marginWidth = 0;
-		gd = new GridData(GridData.FILL_HORIZONTAL);
-
-		Composite htmlRootFileComp = new Composite(comp, SWT.NONE);
-		htmlRootFileComp.setLayout(layout);
-		htmlRootFileComp.setLayoutData(gd);
-		htmlRootFileComp.setFont(font);
-
-		fHTMLRootFile =
-			new FileFieldEditor(
-				"Test",
-				"HTML Startup File",
-				true,
-				htmlRootFileComp);
-		fHTMLRootFile.fillIntoGrid(htmlRootFileComp, 3);
-		fHTMLRootFile.setPropertyChangeListener(this);
-
-		createVerticalSpacer(comp, 1);
-		layout = new GridLayout();
-		layout.numColumns = 1;
-		layout.marginHeight = 0;
-		layout.marginWidth = 0;
-		gd = new GridData(GridData.FILL_HORIZONTAL);
-
-		Composite cgiRootDirComp = new Composite(comp, SWT.NONE);
-		cgiRootDirComp.setLayout(layout);
-		cgiRootDirComp.setLayoutData(gd);
-		cgiRootDirComp.setFont(font);
-
-		fCGIRootDir =
-			new DirectoryFieldEditor(
-				"Test",
-				"CGI Root Directory",
-				cgiRootDirComp);
-		fCGIRootDir.fillIntoGrid(cgiRootDirComp, 3);
-
-		fCGIRootDir.setPropertyChangeListener(this);
-
-		createVerticalSpacer(comp, 2);
-				Composite paramComp = new Composite(comp, SWT.NONE);
-				GridLayout paramLayout = new GridLayout();
-				paramLayout.numColumns = 2;
-				paramLayout.marginHeight = 0;
-				paramLayout.marginWidth = 0;
-				paramComp.setLayout(paramLayout);
-				gd = new GridData(GridData.FILL_HORIZONTAL);
-				paramComp.setLayoutData(gd);
-				paramComp.setFont(font);
-
-				mCGIsuffixLabel = new Label(paramComp, SWT.NONE);
-				mCGIsuffixLabel.setText("File Extension for CGI Files:  (comma separated list e.g. .cgi,.pl)"); //$NON-NLS-1$
-				gd = new GridData();
-				gd.horizontalSpan = 2;
-				mCGIsuffixLabel.setLayoutData(gd);
-				mCGIsuffixLabel.setFont(font);
-
-				mCGIsuffixText = new Text(paramComp, SWT.SINGLE | SWT.BORDER);
-
-				gd = new GridData(GridData.FILL_HORIZONTAL);
-				mCGIsuffixText.setLayoutData(gd);
-				mCGIsuffixText.setFont(font);
-				mCGIsuffixText.addModifyListener(new ModifyListener()
-				{
-					public void modifyText(ModifyEvent evt)
-					{
-						updateLaunchConfigurationDialog();
-					}
-				});
-
-		//createVerticalSpacer(comp, 1);
-
-		//				Composite webserverPortComp = new Composite(comp, SWT.NONE);
-		//		webserverPortComp.setLayout(layout);
-		//		webserverPortComp.setLayoutData(gd);
-		//		webserverPortComp.setFont(font);
-
-		//		fWebserverPort =
-		//			new IntegerFieldEditor("Test", "Debugger Port", webserverPortComp);
-		//		fWebserverPort.fillIntoGrid(webserverPortComp, 2);
-		//		fWebserverPort.setValidRange(1,Integer.MAX_VALUE);
-		//
-		//		fWebserverPort.setValidateStrategy(IntegerFieldEditor.VALIDATE_ON_KEY_STROKE);
-		//		fWebserverPort.setPropertyChangeListener(this);
+        GridLayout topLayout = new GridLayout();
+        topLayout.numColumns = 1;
+        comp.setLayout(topLayout);
+        comp.setFont(font);
+        
+        Composite fields = new Composite(comp, SWT.NONE);
+        GridLayout fieldsLayout = new GridLayout();
+        fieldsLayout.numColumns = 3;
+        fields.setFont(font);
+        fields.setLayout(fieldsLayout);
+        fields.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+        
+        createHTMLRootDirectoryGroup(fields);
+        createStartupFileGroup(fields);
+        createCGIRootDirectoryGroup(fields);
+        createVerticalSpacer(comp, 1);
+        createCGISuffixGroup(comp);
 	}
 
-	/**
-	 * @see org.eclipse.debug.ui.ILaunchConfigurationTab#initializeFrom(ILaunchConfiguration)
-	 */
 	public void initializeFrom(ILaunchConfiguration config)
 	{
 		updateParamsFromConfig(config);
-
 	}
 
-	protected void updateParamsFromConfig(ILaunchConfiguration config)
+	private void updateParamsFromConfig(ILaunchConfiguration config)
 	{
 		try
 		{
@@ -264,7 +88,6 @@ public class LaunchConfigurationCGIWebServerTab
 				config.getAttribute(
 					PerlLaunchConfigurationConstants.ATTR_HTML_ROOT_DIR,
 					(String) null));
-
 			fHTMLRootFile.setStringValue(
 				config.getAttribute(
 					PerlLaunchConfigurationConstants.ATTR_HTML_ROOT_FILE,
@@ -273,27 +96,17 @@ public class LaunchConfigurationCGIWebServerTab
 				config.getAttribute(
 					PerlLaunchConfigurationConstants.ATTR_CGI_ROOT_DIR,
 					(String) null));
-			
-			mCGIsuffixText.setText(	config.getAttribute(
-								PerlLaunchConfigurationConstants.ATTR_CGI_FILE_EXTENSION,
-								".cgi,.pl"));
-					
-			//			fWebserverPort.setStringValue(
-			//					config.getAttribute(
-			//						PerlLaunchConfigurationConstants.ATTR_DEBUG_PORT,
-			//						(String)null));
-		//	fEnvVar.initilizeFrom(config);
-
-		} catch (CoreException e)
+			fCGISuffix.setText(
+                config.getAttribute(
+				    PerlLaunchConfigurationConstants.ATTR_CGI_FILE_EXTENSION,
+					".cgi,.pl"));
+		}
+        catch (CoreException e)
 		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+            PerlDebugPlugin.log(e);
 		}
 	}
 
-	//	/**
-	//	 * @see org.eclipse.debug.ui.ILaunchConfigurationTab#performApply(ILaunchConfigurationWorkingCopy)
-	//	 */
 	public void performApply(ILaunchConfigurationWorkingCopy config)
 	{
 		config.setAttribute(
@@ -306,37 +119,19 @@ public class LaunchConfigurationCGIWebServerTab
 			PerlLaunchConfigurationConstants.ATTR_CGI_ROOT_DIR,
 			this.fCGIRootDir.getStringValue());
 		config.setAttribute(
-								PerlLaunchConfigurationConstants.ATTR_CGI_FILE_EXTENSION,
-								this.mCGIsuffixText.getText());
+            PerlLaunchConfigurationConstants.ATTR_CGI_FILE_EXTENSION,
+			this.fCGISuffix.getText());
 		config.setAttribute(
 			PerlLaunchConfigurationConstants.ATTR_DEBUG_CGI,
 			"OK");
-
-	//	fEnvVar.doApply(config);
-
 	}
 
-	/**
-	 * @see org.eclipse.debug.ui.ILaunchConfigurationTab#dispose()
-	 */
 	public void dispose()
 	{
 	}
 
-	/**
-	 * Convenience method to get the workspace root.
-	 */
-	private IWorkspaceRoot getWorkspaceRoot()
-	{
-		return ResourcesPlugin.getWorkspace().getRoot();
-	}
-
-	/**
-	 * @see org.eclipse.debug.ui.ILaunchConfigurationTab#isValid(ILaunchConfiguration)
-	 */
 	public boolean isValid(ILaunchConfiguration config)
 	{
-
 		setErrorMessage(null);
 		setMessage(null);
 
@@ -344,14 +139,14 @@ public class LaunchConfigurationCGIWebServerTab
 
 		if (value == null)
 		{
-			setErrorMessage("HTML Root Directory is missing"); //$NON-NLS-1$
+			setErrorMessage("HTML Root Directory is missing");
 			return false;
 		}
 
 		File file = new File(value);
 		if (!file.exists() || !file.isDirectory())
 		{
-			setErrorMessage("HTML Root Directory is invalid"); //$NON-NLS-1$
+			setErrorMessage("HTML Root Directory is invalid");
 			return false;
 		}
 
@@ -359,60 +154,53 @@ public class LaunchConfigurationCGIWebServerTab
 
 		if (value == null)
 		{
-			setErrorMessage("HTML Startup File is missing"); //$NON-NLS-1$
+			setErrorMessage("HTML Startup File is missing");
 			return false;
 		}
 
 		file = new File(value);
 		if (!file.exists() || !file.isFile())
 		{
-			setErrorMessage("HTML Startup File is invalid"); //$NON-NLS-1$
+			setErrorMessage("HTML Startup File is invalid");
 			return false;
 		}
 
 		if (value.indexOf(fHTMLRootDir.getStringValue()) != 0)
 		{
-			setErrorMessage("HTML Startup File must be located within HTML Root Directory (or one of its subfolders)"); //$NON-NLS-1$
+			setErrorMessage("HTML Startup File must be located within HTML Root Directory (or one of its subfolders)");
 			return false;
 		}
 
 		value = fCGIRootDir.getStringValue();
 		if (value == null)
 		{
-			setErrorMessage("CGI Root Directory is missing"); //$NON-NLS-1$
+			setErrorMessage("CGI Root Directory is missing");
 			return false;
 		}
 
 		file = new File(value);
 		if (!file.exists() || !file.isDirectory())
 		{
-			setErrorMessage("CGI Root Directory is invalid"); //$NON-NLS-1$
+			setErrorMessage("CGI Root Directory is invalid");
 			return false;
 		}
-		
-		
-//		String[] items = this.fEnvVar.getItems();
-//		for (int i = 0; i < items.length; i++)
-//		{
-//			if( !mTestEnvVar.isMatch(items[i]))
-//			{
-//				setErrorMessage("Invalid Environment Variable Entry at Line "+(i+1) );
-//				return false;
-//			}
-//		}
 		return true;
 	}
 
-	/**
-	 * @see org.eclipse.debug.ui.ILaunchConfigurationTab#setDefaults(ILaunchConfigurationWorkingCopy)
-	 */
 	public void setDefaults(ILaunchConfigurationWorkingCopy config)
 	{
 		String root =
 			ResourcesPlugin.getWorkspace().getRoot().getLocation().toOSString();
-		config.setAttribute(PerlLaunchConfigurationConstants.ATTR_CGI_ROOT_DIR, root); //$NON-NLS-1$
-		config.setAttribute(PerlLaunchConfigurationConstants.ATTR_HTML_ROOT_DIR, root); //$NON-NLS-1$
-		config.setAttribute(PerlLaunchConfigurationConstants.ATTR_HTML_ROOT_FILE, root); //$NON-NLS-1$
+
+		config.setAttribute(
+            PerlLaunchConfigurationConstants.ATTR_HTML_ROOT_DIR,
+            root);
+		config.setAttribute(
+            PerlLaunchConfigurationConstants.ATTR_HTML_ROOT_FILE,
+            root);
+        config.setAttribute(
+            PerlLaunchConfigurationConstants.ATTR_CGI_ROOT_DIR,
+            root);
 		config.setAttribute(
 			PerlLaunchConfigurationConstants.ATTR_DEBUG_PORT,
 			PerlDebugPlugin.getDefaultDebugPort());
@@ -423,60 +211,15 @@ public class LaunchConfigurationCGIWebServerTab
 			PerlLaunchConfigurationConstants.ATTR_CGI_ENV,
 			(Map) null);
 		config.setAttribute(
-					PerlLaunchConfigurationConstants.ATTR_CGI_FILE_EXTENSION,
-					".CGI,.PL");
-
+            PerlLaunchConfigurationConstants.ATTR_CGI_FILE_EXTENSION,
+			".cgi,.pl");
 	}
 
-	/**
-	 * Set the main type & name attributes on the working copy based on the IJavaElement
-	 */
-	/*	protected void initializeMainTypeAndName(IJavaElement javaElement, ILaunchConfigurationWorkingCopy config) {
-			String name= null;
-			if (javaElement instanceof IMember) {
-				IMember member = (IMember)javaElement;
-				if (member.isBinary()) {
-					javaElement = member.getClassFile();
-				} else {
-					javaElement = member.getCompilationUnit();
-				}
-			}
-			if (javaElement instanceof ICompilationUnit || javaElement instanceof IClassFile) {
-				try {
-					IType[] types = MainMethodFinder.findTargets(new BusyIndicatorRunnableContext(), new Object[] {javaElement});
-					if (types != null && (types.length > 0)) {
-						// Simply grab the first main type found in the searched element
-						name = types[0].getFullyQualifiedName();
-					}
-				} catch (InterruptedException ie) {
-				} catch (InvocationTargetException ite) {
-				}
-			}
-			if (name == null) {
-				name= ""; //$NON-NLS-1$
-			}
-			config.setAttribute(PerlLaunchConfigurationConstants.ATTR_STARTUP_FILE, name);
-			if (name.length() > 0) {
-				int index = name.lastIndexOf('.');
-				if (index > 0) {
-					name = name.substring(index + 1);
-				}
-				name = getLaunchConfigurationDialog().generateName(name);
-				config.rename(name);
-			}
-		}
-	*/
-	/**
-	 * @see org.eclipse.debug.ui.ILaunchConfigurationTab#getName()
-	 */
 	public String getName()
 	{
-		return "Webserver"; //$NON-NLS-1$
+		return "Web Server";
 	}
 
-	/**
-	 * @see org.eclipse.debug.ui.ILaunchConfigurationTab#getImage()
-	 */
 	public Image getImage()
 	{
 		return (
@@ -484,13 +227,10 @@ public class LaunchConfigurationCGIWebServerTab
 				PerlDebugImages.DESC_OBJS_LaunchTabCGI));
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.jface.util.IPropertyChangeListener#propertyChange(org.eclipse.jface.util.PropertyChangeEvent)
-	 */
 	public void propertyChange(PropertyChangeEvent event)
 	{
 		if (event.getSource() == fHTMLRootDir)
-		{
+		{            
 			if (fHTMLRootFile
 				.getStringValue()
 				.indexOf(fHTMLRootDir.getStringValue())
@@ -499,12 +239,72 @@ public class LaunchConfigurationCGIWebServerTab
 		}
 
 		updateLaunchConfigurationDialog();
-
 	}
 
 	public void update()
 	{
 		updateLaunchConfigurationDialog();
 	}
+    
+    private void createCGIRootDirectoryGroup(Composite parent)
+    {       
+        fCGIRootDir = new DirectoryFieldEditor(
+                "",
+                "CGI &Root Directory:",
+                parent);
+        fCGIRootDir.fillIntoGrid(parent, 3);
+        fCGIRootDir.setPropertyChangeListener(this);
+    }
+    
+    private void createCGISuffixGroup(Composite parent)
+    {
+        Composite comp = new Composite(parent, SWT.NONE);
+        GridLayout layout = new GridLayout();
+        layout.numColumns = 1;
+        layout.marginHeight = 0;
+        layout.marginWidth = 0;
+        comp.setLayout(layout);
+        GridData gd = new GridData(GridData.FILL_HORIZONTAL);
+        comp.setLayoutData(gd);
+        comp.setFont(parent.getFont());
 
+        Label label = new Label(comp, SWT.NONE);
+        label.setText("File Extension for CGI Files (comma-separated list, e.g. \".cgi,.pl\"):");
+        label.setFont(parent.getFont());
+        gd = new GridData(GridData.FILL_HORIZONTAL);
+        label.setLayoutData(gd);
+
+        fCGISuffix = new Text(comp, SWT.SINGLE | SWT.BORDER);
+
+        gd = new GridData(GridData.FILL_HORIZONTAL);
+        fCGISuffix.setLayoutData(gd);
+        fCGISuffix.setFont(parent.getFont());
+        fCGISuffix.addModifyListener(new ModifyListener()
+        {
+            public void modifyText(ModifyEvent evt)
+            {
+                updateLaunchConfigurationDialog();
+            }
+        });
+    }
+
+    private void createHTMLRootDirectoryGroup(Composite parent)
+    {       
+        fHTMLRootDir = new DirectoryFieldEditor(
+                "",
+                "&HTML Root Directory:",
+                parent);
+        fHTMLRootDir.fillIntoGrid(parent, 3);
+        fHTMLRootDir.setPropertyChangeListener(this);
+    }
+    
+    private void createStartupFileGroup(Composite parent)
+    {
+        fHTMLRootFile = new FileFieldEditor(
+                "",
+                "HTML &Startup File:",
+                parent);
+        fHTMLRootFile.fillIntoGrid(parent, 3);
+        fHTMLRootFile.setPropertyChangeListener(this);
+    }
 }

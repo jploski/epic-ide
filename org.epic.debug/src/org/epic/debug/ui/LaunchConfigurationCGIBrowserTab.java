@@ -17,97 +17,51 @@
 
 package org.epic.debug.ui;
 
-//import java.lang.reflect.InvocationTargetException;
-
-import org.eclipse.core.resources.IWorkspaceRoot;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Preferences;
-import org.eclipse.debug.core.ILaunchConfiguration;
-import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
+import org.eclipse.debug.core.*;
 import org.eclipse.debug.ui.AbstractLaunchConfigurationTab;
 import org.eclipse.help.internal.HelpPlugin;
 import org.eclipse.help.internal.browser.BrowserDescriptor;
 import org.eclipse.help.internal.browser.BrowserManager;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.FileDialog;
-import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Table;
-import org.eclipse.swt.widgets.TableItem;
-import org.eclipse.swt.widgets.Text;
+import org.eclipse.swt.widgets.*;
 import org.epic.core.views.browser.BrowserView;
-import org.epic.debug.*;
+import org.epic.debug.PerlDebugPlugin;
+import org.epic.debug.PerlLaunchConfigurationConstants;
 import org.epic.debug.cgi.CustomBrowser;
 
 
 public class LaunchConfigurationCGIBrowserTab
 	extends AbstractLaunchConfigurationTab
 {
-
-	/**
-	 * A launch configuration tab that displays and edits project and
-	 * main type name launch configuration attributes.
-	 * <p>
-	 * This class may be instantiated. This class is not intended to be subclassed.
-	 * </p>
-	 * @since 2.0
-	 */
-
 	private Table browsersTable;
 	private Label customBrowserPathLabel;
 	private Text customBrowserPath;
 	private Button customBrowserBrowse;
 
-	protected static final String EMPTY_STRING = ""; //$NON-NLS-1$
-
-	private static final String PERL_NATURE_ID =
-		"org.epic.perleditor.perlnature";
-
-	/**
-	 * @see org.eclipse.debug.ui.ILaunchConfigurationTab#createControl(Composite)
-	 */
 	public void createControl(Composite parent)
 	{
-		Font font = parent.getFont();
+        Font font = parent.getFont();
 
-		//noDefaultAndApplyButton();
-		Composite mainComposite = new Composite(parent, SWT.NULL);
-		setControl(mainComposite);
-		GridData data = new GridData();
-		data.verticalAlignment = GridData.FILL;
-		data.horizontalAlignment = GridData.FILL;
-		//data.grabExcessHorizontalSpace = true;
-		mainComposite.setLayoutData(data);
-		mainComposite.setFont(font);
+        Composite comp = new Composite(parent, SWT.NONE);
+        setControl(comp);
 
-		GridLayout layout = new GridLayout();
-		layout.marginHeight = 0;
-		layout.marginWidth = 0;
-		mainComposite.setLayout(layout);
+        GridLayout topLayout = new GridLayout();
+        comp.setLayout(topLayout);
+        comp.setFont(font);
 
-		Label description = new Label(mainComposite, SWT.NULL);
+		Label description = new Label(comp, SWT.NULL);
 		description.setFont(font);
-		description.setText("select browser to use for showing HTML pages during CGI debugging");
-		createSpacer(mainComposite);
+		description.setText("Browser used for showing HTML pages during CGI debugging:");
 
-		Label tableDescription = new Label(mainComposite, SWT.NULL);
-		tableDescription.setFont(font);
-		tableDescription.setText("Current selection:");
-		//data = new GridData(GridData.VERTICAL_ALIGN_BEGINNING);
-		//description.setLayoutData(data);
-		browsersTable = new Table(mainComposite, SWT.CHECK | SWT.BORDER);
+		browsersTable = new Table(comp, SWT.CHECK | SWT.BORDER);
 		GridData gd = new GridData(GridData.FILL_BOTH);
-		//.heightHint = convertHeightInCharsToPixels(6);
 		browsersTable.setLayoutData(gd);
 		browsersTable.setFont(font);
 		browsersTable.addSelectionListener(new SelectionListener()
@@ -149,30 +103,15 @@ public class LaunchConfigurationCGIBrowserTab
 		{
 			TableItem item = new TableItem(browsersTable, SWT.NONE);
 			item.setText(aDescs[i].getLabel());
-//			if (BrowserManager
-//				.getInstance()
-//				.getDefaultBrowserID()
-//				.equals(aDescs[i].getID()))
-//				item.setChecked(true);
-//			else
-//				item.setChecked(false);
 			item.setGrayed(aDescs.length == 1);
 		}
 		TableItem item = new TableItem(browsersTable, SWT.NONE);
-		item.setText("Built in Browser");
+		item.setText("Built-in Browser");
 		item.setGrayed(aDescs.length == 1);
 		
-		createCustomBrowserPathPart(mainComposite);
-		
-		
-		 
-		
-
+		createCustomBrowserPathPart(comp);
 	}
 
-	/**
-	 * @see org.eclipse.debug.ui.ILaunchConfigurationTab#initializeFrom(ILaunchConfiguration)
-	 */
 	public void initializeFrom(ILaunchConfiguration config)
 	{
 		String attrBrowserID = null;
@@ -189,8 +128,7 @@ public class LaunchConfigurationCGIBrowserTab
 					(String) null);
 		} catch (CoreException e)
 		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+            DebugPlugin.log(e);
 		}
 
 		TableItem[] items = browsersTable.getItems();
@@ -206,10 +144,8 @@ public class LaunchConfigurationCGIBrowserTab
 				items[i].setChecked(true);
 		}
 		
-		
 		customBrowserPath.setText(attrBrowserPath);
 		setEnabledCustomBrowserPath();
-
 	}
 
 	protected void updateParamsFromConfig(ILaunchConfiguration config)
@@ -217,12 +153,8 @@ public class LaunchConfigurationCGIBrowserTab
 		initializeFrom(config);
 	}
 
-	/**
-	 * @see org.eclipse.debug.ui.ILaunchConfigurationTab#performApply(ILaunchConfigurationWorkingCopy)
-	 */
 	public void performApply(ILaunchConfigurationWorkingCopy config)
 	{
-
 		TableItem[] items = browsersTable.getItems();
 		
 		for (int i = 0; i < items.length; i++)
@@ -248,57 +180,36 @@ public class LaunchConfigurationCGIBrowserTab
 		config.setAttribute(
 			PerlLaunchConfigurationConstants.ATTR_CUSTOM_BROWSER_PATH,
 			customBrowserPath.getText());
-		
-		
 	}
 
 	public String getBrowserID()
 	{
-
 		TableItem[] items = browsersTable.getItems();
 		
-		if( items[items.length-1].getChecked() )
-			return(BrowserView.ID_BROWSER);
+		if (items[items.length-1].getChecked()) return BrowserView.ID_BROWSER;
+
 		for (int i = 0; i < items.length; i++)
 		{
 			if (items[i].getChecked())
 			{
-				
 				String browserID =
 					BrowserManager
 						.getInstance()
 						.getBrowserDescriptors()[i]
 						.getID();
 
-				return (browserID);
+				return browserID;
 			}
 		}
-		return (null);
+		return null;
 	}
 
-	
-
-	/**
-	 * @see org.eclipse.debug.ui.ILaunchConfigurationTab#dispose()
-	 */
 	public void dispose()
 	{
 	}
 
-	/**
-	 * Convenience method to get the workspace root.
-	 */
-	private IWorkspaceRoot getWorkspaceRoot()
-	{
-		return ResourcesPlugin.getWorkspace().getRoot();
-	}
-
-	/**
-	 * @see org.eclipse.debug.ui.ILaunchConfigurationTab#isValid(ILaunchConfiguration)
-	 */
 	public boolean isValid(ILaunchConfiguration config)
 	{
-
 		setErrorMessage(null);
 		setMessage(null);
 
@@ -313,12 +224,8 @@ public class LaunchConfigurationCGIBrowserTab
 		return true;
 	}
 
-	/**
-	 * @see org.eclipse.debug.ui.ILaunchConfigurationTab#setDefaults(ILaunchConfigurationWorkingCopy)
-	 */
 	public void setDefaults(ILaunchConfigurationWorkingCopy config)
 	{
-
 		Preferences pref = HelpPlugin.getDefault().getPluginPreferences();
 		String browserPath =
 			pref.getString(org.eclipse.help.internal.browser.CustomBrowser.CUSTOM_BROWSER_PATH_KEY);
@@ -327,37 +234,21 @@ public class LaunchConfigurationCGIBrowserTab
 		config.setAttribute(
 			PerlLaunchConfigurationConstants.ATTR_CUSTOM_BROWSER_PATH,
 			browserPath);
-	
-
-	}
-	/**
-	 * @see org.eclipse.debug.ui.ILaunchConfigurationTab#getName()
-	 */
+    }
+    
 	public String getName()
 	{
-		return "Browser"; //$NON-NLS-1$
+		return "Browser";
 	}
 
-	/**
-	 * @see org.eclipse.debug.ui.ILaunchConfigurationTab#getImage()
-	 */
 	public Image getImage()
 	{
-		return (
+		return
 			PerlDebugPlugin.getDefaultDesciptorImageRegistry().get(
-				PerlDebugImages.DESC_OBJS_LaunchTabCGI));
+				PerlDebugImages.DESC_OBJS_LaunchTabCGI);
 	}
 
 	//**********************************************************
-	private void createSpacer(Composite parent)
-	{
-		Label spacer = new Label(parent, SWT.NONE);
-		GridData data = new GridData();
-		data.horizontalAlignment = GridData.FILL;
-		data.verticalAlignment = GridData.BEGINNING;
-		spacer.setLayoutData(data);
-	}
-
 	private void setEnabledCustomBrowserPath()
 	{
 		TableItem[] items = browsersTable.getItems();

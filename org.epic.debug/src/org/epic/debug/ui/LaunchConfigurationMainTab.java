@@ -28,18 +28,17 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.epic.debug.PerlDebugPlugin;
-import org.epic.debug.ProjectAndFileBlock;
 
 public class LaunchConfigurationMainTab
     extends AbstractLaunchConfigurationTab
 {
-    protected static final String EMPTY_STRING = ""; //$NON-NLS-1$
+    private ProjectBlock projectBlock;
 
-    protected ProjectAndFileBlock fFileToExecuteBlock;
-
-    public LaunchConfigurationMainTab()
+    public LaunchConfigurationMainTab(boolean includeFileBlock)
     {
-        fFileToExecuteBlock   = new ProjectAndFileBlock();
+        projectBlock = includeFileBlock
+            ? new ProjectAndFileBlock()
+            : new ProjectBlock();
     }
 
 	public void createControl(Composite parent)
@@ -54,35 +53,35 @@ public class LaunchConfigurationMainTab
 		comp.setLayout(topLayout);
         comp.setFont(font);
         
-		fFileToExecuteBlock.createControl(comp);
+		projectBlock.createControl(comp);
 	}
 
 	public void initializeFrom(ILaunchConfiguration config)
 	{
-		fFileToExecuteBlock.initializeFrom(config);
+		projectBlock.initializeFrom(config);
 	}
 
 	public void performApply(ILaunchConfigurationWorkingCopy config)
 	{
-		fFileToExecuteBlock.performApply(config);
+		projectBlock.performApply(config);
 	}
     
     public String getErrorMessage()
     {
         String m = super.getErrorMessage();
-        return m == null ? fFileToExecuteBlock.getErrorMessage() : m;
+        return m == null ? projectBlock.getErrorMessage() : m;
     }
     
     public String getMessage()
     {
         String m = super.getMessage();
-        return m == null ? fFileToExecuteBlock.getMessage() : m;
+        return m == null ? projectBlock.getMessage() : m;
     }
     
     public void setLaunchConfigurationDialog(ILaunchConfigurationDialog dialog)
     {
         super.setLaunchConfigurationDialog(dialog);
-        fFileToExecuteBlock.setLaunchConfigurationDialog(dialog);
+        projectBlock.setLaunchConfigurationDialog(dialog);
     }
 
 	public void dispose()
@@ -94,12 +93,12 @@ public class LaunchConfigurationMainTab
 		setErrorMessage(null);
 		setMessage(null);
 
-		return fFileToExecuteBlock.isValid(config);
+		return projectBlock.isValid(config);
 	}
 
 	public void setDefaults(ILaunchConfigurationWorkingCopy config)
 	{
-		fFileToExecuteBlock.setDefaults(config);
+		projectBlock.setDefaults(config);
 	}
 
 	public String getName()

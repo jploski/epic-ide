@@ -92,24 +92,20 @@ public class WorkingDirectoryBlock extends AbstractLaunchConfigurationTab
     {
         Font font = parent.getFont();
 
-        Composite group = new Composite(parent, SWT.NONE);
-        //Group group = new Group(parent, SWT.NONE);
-        //PlatformUI.getWorkbench().getHelpSystem().setHelp(group,
-        //    IJavaDebugHelpContextIds.WORKING_DIRECTORY_BLOCK);
+        //Composite group = new Composite(parent, SWT.NONE);
+        Group group = new Group(parent, SWT.NONE);
+        
         GridLayout workingDirLayout = new GridLayout();
         workingDirLayout.numColumns = 2;
         workingDirLayout.makeColumnsEqualWidth = false;
-        workingDirLayout.marginHeight = 0;
-        workingDirLayout.marginWidth = 0;
+        //workingDirLayout.marginHeight = 0;
+        //workingDirLayout.marginWidth = 0;
         group.setLayout(workingDirLayout);
         GridData gd = new GridData(GridData.FILL_HORIZONTAL);
         group.setLayoutData(gd);
         group.setFont(font);
+        group.setText("Working directory:");
         setControl(group);
-
-        Label label = new Label(group, SWT.NONE);
-        label.setText("Working directory:"); //$NON-NLS-1$
-        //group.setText("Working directory"); //$NON-NLS-1$
 
         fWorkingDirText = new Text(group, SWT.SINGLE | SWT.BORDER);
         gd = new GridData(GridData.FILL_HORIZONTAL);

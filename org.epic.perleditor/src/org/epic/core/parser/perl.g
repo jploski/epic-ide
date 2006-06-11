@@ -206,7 +206,7 @@ OPER_NOTEQ
 
 OPER_EQMATCH
 	: "=~"
-	{ $setToken(createOperatorToken(PerlTokenTypes.OPER_EQMATCH, "=~")); };
+	{ afterArrow = false; $setToken(createOperatorToken(PerlTokenTypes.OPER_EQMATCH, "=~")); };
 
 OPER_EQNOTMATCH
 	: "!~"

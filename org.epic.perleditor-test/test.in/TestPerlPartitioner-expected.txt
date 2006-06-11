@@ -404,3 +404,23 @@
 1250:1:OPERATOR:{;}
 1251:1:__dftl_partition_content_type:{ }
 1252:50:COMMENT:{# x and y after -> are normal words, not operators}
+1302:1:__dftl_partition_content_type:{
+}
+1303:1:__dftl_partition_content_type:{
+}
+1304:2:VARIABLE:{$p}
+1306:2:OPERATOR:{->}
+1308:1:OPERATOR:{{}
+1309:1:LITERAL1:{'}
+1310:4:LITERAL1:{mode}
+1314:1:LITERAL1:{'}
+1315:1:OPERATOR:{}}
+1316:1:__dftl_partition_content_type:{ }
+1317:2:OPERATOR:{=~}
+1319:1:__dftl_partition_content_type:{ }
+1320:1:LITERAL2:{m}
+1321:1:LITERAL2:{/}
+1322:1:LITERAL2:{/}
+1323:1:OPERATOR:{;}
+1324:1:__dftl_partition_content_type:{ }
+1325:54:COMMENT:{# m after =~ is an operator, even if it comes after ->}

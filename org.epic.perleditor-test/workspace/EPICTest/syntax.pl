@@ -53,3 +53,5 @@ print " test\
 print $blah;
 
 my ($x, $y) = ($Ev->x, $Ev->y); # x and y after -> are normal words, not operators
+
+$p->{'mode'} =~ m//; # m after =~ is an operator, even if it comes after ->

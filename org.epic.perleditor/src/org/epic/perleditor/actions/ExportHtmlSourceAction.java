@@ -18,10 +18,6 @@ public class ExportHtmlSourceAction extends PerlEditorAction
 {
     private static String lastSelectedDir;
 
-    public ExportHtmlSourceAction()
-    {
-    }
-    
     public ExportHtmlSourceAction(PerlEditor editor)
     {
         super(editor);

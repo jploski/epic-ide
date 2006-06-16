@@ -8,10 +8,6 @@ import org.epic.perleditor.editors.*;
 
 public class ToggleCommentAction extends PerlEditorAction
 {
-    public ToggleCommentAction()
-    {
-    }
-    
     public ToggleCommentAction(PerlEditor editor)
     {
         super(editor);

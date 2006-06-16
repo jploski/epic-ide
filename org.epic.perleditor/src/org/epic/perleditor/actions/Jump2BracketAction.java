@@ -4,11 +4,7 @@ import org.epic.perleditor.editors.PerlEditor;
 import org.epic.perleditor.editors.PerlEditorActionIds;
 
 public class Jump2BracketAction extends PerlEditorAction
-{    
-    public Jump2BracketAction()
-    {
-    }
-    
+{
     public Jump2BracketAction(PerlEditor editor)
     {
         super(editor);

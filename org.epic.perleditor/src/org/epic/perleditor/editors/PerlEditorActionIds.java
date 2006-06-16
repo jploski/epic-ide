@@ -17,6 +17,23 @@ public class PerlEditorActionIds
     public static final String OPEN_SUB = "org.epic.perleditor.popupmenus.OpenSubAction";
     public static final String PERL_DOC = "org.epic.perleditor.popupmenus.PerlDocAction";
     public static final String MATCHING_BRACKET = "org.epic.perleditor.Jump2Bracket";
+    public static final String TOGGLE_MARK_OCCURRENCES = "org.epic.perleditor.editors.ToggleMarkOccurrencesAction";
     
     private PerlEditorActionIds() { }
+    
+    /**
+     * @return IDs of all {@link org.epic.perleditor.actions.PerlEditorAction}s
+     */
+    public static final String[] get()
+    {
+        return new String[] {
+            HTML_EXPORT,
+            VALIDATE_SYNTAX,
+            FORMAT_SOURCE,
+            TOGGLE_COMMENT,
+            OPEN_SUB,
+            PERL_DOC,
+            MATCHING_BRACKET
+            };
+    }
 }

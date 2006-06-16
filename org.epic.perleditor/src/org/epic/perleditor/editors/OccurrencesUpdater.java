@@ -3,6 +3,8 @@ package org.epic.perleditor.editors;
 import java.util.*;
 import java.util.regex.Pattern;
 
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.text.*;
 import org.eclipse.jface.text.source.*;
 import org.eclipse.jface.viewers.*;
@@ -16,282 +18,348 @@ import org.epic.perleditor.preferences.MarkOccurrencesPreferences;
  * 
  * @author Katrin Dust
  */
-public class OccurrencesUpdater implements ISelectionChangedListener {
+public class OccurrencesUpdater implements ISelectionChangedListener
+{
+    // ~ Static fields/initializers
 
-	/*
-	 * Pattern used to match a char (a-z or A-Z) or a digit
-	 */
-	private static final Pattern LETTER_PATTERN = Pattern
-			.compile("[a-zA-Z]||\\d");
+    /** Pattern used to match a char (a-z or A-Z) or a digit */
+    private static final Pattern LETTER_PATTERN = Pattern.compile("[a-zA-Z]||\\d");
 
-	/*
-	 * Annotation type used in extension point
-	 */
-	private static final String ANNOTATION_TYPE = "org.epic.perleditor.occurrence";
+    /** Annotation type used in extension point */
+    private static final String ANNOTATION_TYPE = "org.epic.perleditor.occurrence";
 
-	/*
-	 * List of current annotations (used for removing)
-	 */
-	private final LinkedList annotations = new LinkedList();
+    // ~ Instance fields
+    
+    /** The currently monitored ISourceViewer */
+    private ISourceViewer sourceViewer;
 
-	/*
-	 * stores the last marked test
-	 */
-	private String lastMarkedText = "";
+    /** List of current annotations (used for removing) */
+    private final LinkedList annotations = new LinkedList();
 
-	/**
-	 * Constructor
-	 */
-	public OccurrencesUpdater() {
+    /** Stores the last marked text */
+    private String lastMarkedText = "";
+
+    // ~ Methods
+
+    /**
+     * Starts listening to selection events (caret movements) in
+     * the given ISourceViewer. Also adds occurrence annotations
+     * according to the current caret location.
+     * <p>
+     * This method must not be called after the OccurrencesUpdater
+     * has been already installed. 
+     */
+    public void install(ISourceViewer sourceViewer)
+    {
+        assert this.sourceViewer == null : "already installed";
+        this.sourceViewer = sourceViewer;
+        
+        ISelectionProvider selectionProvider = sourceViewer.getSelectionProvider();
+        
+        // If the selection provider is a post selection provider, post
+        // selection changed events are the preferred choice, otherwise normal
+        // selection changed events are requested.
+
+        if (selectionProvider instanceof IPostSelectionProvider)
+        {
+            IPostSelectionProvider provider = (IPostSelectionProvider) selectionProvider;
+            provider.addPostSelectionChangedListener(this);
+        }
+        else
+        {
+            selectionProvider.addSelectionChangedListener(this);
+        }
+
+        assert annotations.isEmpty();
+        updateAnnotations((ITextSelection) selectionProvider.getSelection());
+    }
+
+    /**
+     * Reacts to an updated caret location or new selection by highlighting
+     * occurrences. 
+     * <p>
+     * The newly selected text and its further occurrences will be marked
+     * provided that the type of the text is selected in the preference page
+     * "Mark Occurrences". Old markers are removed. If there is no selection,
+     * the typedRegion of the document partitioner in which the caret is
+     * located determines the marked text. Further occurrences of the text
+     * will be marked if they have the same contentType. Variables are also
+     * marked in strings.
+     */
+    public void selectionChanged(SelectionChangedEvent event)
+    {
+        ITextSelection textSelection = (ITextSelection) event.getSelection();        
+        updateAnnotations(textSelection);    
 	}
+	
+    /**
+     * Stops listening to selection events (caret movements) in
+     * the current ISourceViewer. Also removes any occurrence annotations
+     * that may already be present.
+     */
+    public void uninstall()
+    {
+        assert sourceViewer != null;
+        
+        ISelectionProvider selectionProvider = sourceViewer.getSelectionProvider();
 
-	/**
-	 * The new selected text and further occurrences will be marked, if the type
-	 * of the text is selected in the preference page "Mark Occurrences". Old
-	 * markers are removed. If the selected text contains no characters, the
-	 * typedRegion of the document partitioner determines the marked text.
-	 * Further occurrences of the text will be marked, if they've got the same
-	 * contentType. Variables are also marked in strings.
-	 * 
-	 * @param event
-	 *            selection changed event
-	 * 
-	 * @see org.eclipse.jface.viewers.ISelectionChangedListener#selectionChanged(org.eclipse.jface.viewers.SelectionChangedEvent)
-	 */
-	public void selectionChanged(SelectionChangedEvent event) {
-		// get model for highlighting
-		ISourceViewer viewer = (ISourceViewer) event.getSource();
-		IAnnotationModel _model = viewer.getAnnotationModel();        
-        if (!(_model instanceof IAnnotationModelExtension)) return;        
+        if (selectionProvider instanceof IPostSelectionProvider)
+        {
+            ((IPostSelectionProvider) selectionProvider)
+                .removePostSelectionChangedListener(this);
+        }
+        else
+        {
+            selectionProvider.removeSelectionChangedListener(this);
+        }
+
+        removeAnnotations();
+        lastMarkedText = "";
+        sourceViewer = null;
+    }
+
+    /**
+     * Adds a new Annotation to the model. The offset and the length
+     * determine the position of the annotation. The annotation is not
+     * persistent.
+     * 
+     * @param text
+     *            the associated text of the annotation
+     * @param newAnnotations
+     *            the model to which the annotation will be added
+     * @param offset
+     *            the offset of the annotation position
+     * @param length
+     *            the length of the annotation position
+     */
+    private void addAnnotation(
+        String text, Map newAnnotations, int offset, int length)
+    {
+        Annotation annotation = new Annotation(ANNOTATION_TYPE, false, text);
+        Position position = new Position(offset, length);
+        annotations.add(annotation);
+        newAnnotations.put(annotation, position);
+    }
+
+    /**
+     * Returns the text considered as the "occurrence" to be marked for
+     * a given textSelection and document. If there is no selection,
+     * the text of the typedRegion with the caret, as determined by
+     * the document partitioner, is returned; otherwise the selected text.
+     * 
+     * @param doc
+     *            doc of the textselection
+     * @param textSelection
+     *            textselection within the document
+     * @return the occurrence's text
+     *
+     * @throws BadLocationException
+     *             thrown if the textSelection is not within the document
+     */
+    private String getMarkedText(IDocument doc, ITextSelection textSelection)
+        throws BadLocationException
+    {
+        String text;
+        if (textSelection.getLength() < 1)
+        {
+            ITypedRegion typedRegion = doc.getDocumentPartitioner()
+                .getPartition(textSelection.getOffset());
+            text = doc.get(typedRegion.getOffset(), typedRegion.getLength());
+        }
+        else
+        {
+            text = textSelection.getText();
+        }
+        return text != null ? text : "";
+    }
+
+    /**
+     * Marks occurrences of the text in the document by adding annotations
+     * to the given model. Further occurrences of the text and the
+     * text itself will be marked, if they have the same contentType.
+     * Variables are also marked in strings.
+     * 
+     * @param doc
+     *            the document, used to get a FindReplaceDocumentAdapter
+     *            and the contentTypes
+     * @param type
+     *            the contentType of the associated text
+     * @param text
+     *            the text, further occurrences will be marked
+     * @param model
+     *            the model, the annotation were added
+     */
+    private void markText(
+        IDocument doc, String type, String text, IAnnotationModelExtension model)
+        throws BadLocationException
+    {
+        int offset = 0;
+        String docText = doc.get();
+        int index = docText.indexOf(text, offset);
+
+        Map newAnnotations = new HashMap();
+        while (index != -1)
+        {
+            offset = index + text.length();
+            String contentType = doc.getContentType(index);
+            if (contentType.equals(type)
+                || (contentType.equals(PartitionTypes.LITERAL1) && type
+                	.equals(PartitionTypes.VARIABLE))
+                || (contentType.equals(PartitionTypes.VARIABLE) && type
+                    .equals(PartitionTypes.LITERAL1)))
+            {
+                String behind = "" + doc.getChar(offset);
+
+                if (!(LETTER_PATTERN.matcher(behind)).matches())
+                {
+                    addAnnotation(text, newAnnotations, index, text.length());
+                }
+            }
+            index = docText.indexOf(text, offset);
+        }
+        model.replaceAnnotations(new Annotation[] {}, newAnnotations);
+    }
+    
+    /**
+     * Removes all occurrence annotations.
+     */
+    private void removeAnnotations()
+    {
+        IAnnotationModel _model = this.sourceViewer.getAnnotationModel();
         IAnnotationModelExtension model = (IAnnotationModelExtension) _model;
         
-		if (!PerlEditorPlugin.getDefault().getPreferenceStore().getBoolean(
-				MarkOccurrencesPreferences.MARK_OCCURRENCES)) {
-			this.lastMarkedText = "";
-			// remove old ones
-			removeAnnotations(model);
-			return;
-		}
-		// get document
-		IDocument doc = viewer.getDocument();
-		if (doc == null) {
-			return;
-		}
-		try {
-			ITextSelection textSelection = (ITextSelection) event
-					.getSelection();
-			String contentType = doc.getDocumentPartitioner().getPartition(
-					textSelection.getOffset()).getType();
-			if (!validSelection(contentType)) {
-				if (!PerlEditorPlugin.getDefault().getPreferenceStore()
-						.getBoolean(MarkOccurrencesPreferences.KEEP_MARKS)) {
-					this.lastMarkedText = "";
-					removeAnnotations(model);
-				}
-				return;
-			}
-			String text = defineText(doc, textSelection);
-			// same text?
-			if (text.equals(this.lastMarkedText)) {
-				return;
-			} else {
-				this.lastMarkedText = text;
-			}
-			// remove old ones
-			removeAnnotations(model);
-			String type = doc.getContentType(textSelection.getOffset());
-			markText(doc, type, text, model);
-		} catch (BadLocationException e) {
-			e.printStackTrace();
-		}
-	}
+        Annotation[] array = (Annotation[]) annotations
+            .toArray(new Annotation[annotations.size()]);
 
-	/**
-	 * The method checks, if the contentType is selected in the preference page
-	 * to mark occurrences of this type. It returns true, if the type of the
-	 * textselection is a valid type and selected.
-	 * 
-	 * @param contentType
-	 *            contentType
-	 * @return true, if the contentType is valid and selected
-	 */
-	private boolean validSelection(String contentType) {
-		if (contentType.equals(PartitionTypes.DEFAULT)) {
-			return false;
-		} else if (contentType.equals(PartitionTypes.VARIABLE)) {
-			if (!PerlEditorPlugin.getDefault().getPreferenceStore().getBoolean(
-					MarkOccurrencesPreferences.VARIABLE)) {
-				return false;
-			}
-		} else if (contentType.equals(PartitionTypes.COMMENT)) {
-			if (!PerlEditorPlugin.getDefault().getPreferenceStore().getBoolean(
-					MarkOccurrencesPreferences.COMMENT)) {
-				return false;
-			}
-		} else if (contentType.equals(PartitionTypes.KEYWORD1)
-				|| contentType.equals(PartitionTypes.KEYWORD2)) {
-			if (!PerlEditorPlugin.getDefault().getPreferenceStore().getBoolean(
-					MarkOccurrencesPreferences.KEYWORD)) {
-				return false;
-			}
-		} else if (contentType.equals(PartitionTypes.LITERAL1)
-				|| contentType.equals(PartitionTypes.LITERAL2)) {
-			if (!PerlEditorPlugin.getDefault().getPreferenceStore().getBoolean(
-					MarkOccurrencesPreferences.LITERAL)) {
-				return false;
-			}
-		} else if (contentType.equals(PartitionTypes.NUMBER)) {
-			if (!PerlEditorPlugin.getDefault().getPreferenceStore().getBoolean(
-					MarkOccurrencesPreferences.NUMBER)) {
-				return false;
-			}
-		} else if (contentType.equals(PartitionTypes.OPERATOR)) {
-			if (!PerlEditorPlugin.getDefault().getPreferenceStore().getBoolean(
-					MarkOccurrencesPreferences.OPERATOR)) {
-				return false;
-			}
-		}
-		if (contentType.equals(PartitionTypes.POD)) {
-			if (!PerlEditorPlugin.getDefault().getPreferenceStore().getBoolean(
-					MarkOccurrencesPreferences.POD)) {
-				return false;
-			}
-		}
-		return true;
-	}
+        if (model != null) // the viewer's AnnotationModel may have been already disposed
+            model.replaceAnnotations(array, Collections.EMPTY_MAP);
 
-	/**
-	 * The method defines a text for a given textSelection and a document. If no
-	 * character is selected the text of the typedRegion, determined by the
-	 * document partitioner, is returned; otherwise the selected text.
-	 * 
-	 * @param doc
-	 *            doc of the textselection
-	 * @param textSelection
-	 *            textselection within the document
-	 * @return the text
-	 * @throws BadLocationException,
-	 *             thrown if the textSelection is not within the document
-	 */
-	private String defineText(IDocument doc, ITextSelection textSelection)
-			throws BadLocationException {
-		String text;
-		if (textSelection.getLength() < 1) {
-			ITypedRegion typedRegion = doc.getDocumentPartitioner()
-					.getPartition(textSelection.getOffset());
-			text = doc.get(typedRegion.getOffset(), typedRegion.getLength());
-		} else {
-			text = textSelection.getText();
-		}
-		return text;
-	}
-
-	/**
-	 * The method removes all annotation from the given model, which are in the
-	 * current annotation list
-	 * 
-	 * @param model
-	 */
-	private void removeAnnotations(IAnnotationModelExtension model) {        
-        Annotation[] array = (Annotation[])
-            annotations.toArray(new Annotation[annotations.size()]);
-
-        model.replaceAnnotations(array, Collections.EMPTY_MAP);
         annotations.clear();
-	}
+    }
+    
+    /**
+     * @return true if the given contentType should be marked
+     *         according to the Mark Occurrences preference page;
+     *         false otherwise
+     */
+    private boolean shouldMark(String contentType)
+    {
+        if (contentType == null || contentType.equals(PartitionTypes.DEFAULT))
+        {
+            return false;
+        }
+        else if (contentType.equals(PartitionTypes.VARIABLE))
+        {
+            if (!PerlEditorPlugin.getDefault().getPreferenceStore().getBoolean(
+                MarkOccurrencesPreferences.VARIABLE))
+            {
+                return false;
+            }
+        }
+        else if (contentType.equals(PartitionTypes.COMMENT))
+        {
+            if (!PerlEditorPlugin.getDefault().getPreferenceStore().getBoolean(
+                MarkOccurrencesPreferences.COMMENT))
+            {
+                return false;
+            }
+        }
+        else if (contentType.equals(PartitionTypes.KEYWORD1)
+            || contentType.equals(PartitionTypes.KEYWORD2))
+        {
+            if (!PerlEditorPlugin.getDefault().getPreferenceStore().getBoolean(
+                MarkOccurrencesPreferences.KEYWORD))
+            {
+                return false;
+            }
+        }
+        else if (contentType.equals(PartitionTypes.LITERAL1)
+            || contentType.equals(PartitionTypes.LITERAL2))
+        {
+            if (!PerlEditorPlugin.getDefault().getPreferenceStore().getBoolean(
+                MarkOccurrencesPreferences.LITERAL))
+            {
+                return false;
+            }
+        }
+        else if (contentType.equals(PartitionTypes.NUMBER))
+        {
+            if (!PerlEditorPlugin.getDefault().getPreferenceStore().getBoolean(
+                MarkOccurrencesPreferences.NUMBER))
+            {
+                return false;
+            }
+        }
+        else if (contentType.equals(PartitionTypes.OPERATOR))
+        {
+            if (!PerlEditorPlugin.getDefault().getPreferenceStore().getBoolean(
+                MarkOccurrencesPreferences.OPERATOR))
+            {
+                return false;
+            }
+        }
+        if (contentType.equals(PartitionTypes.POD))
+        {
+            if (!PerlEditorPlugin.getDefault().getPreferenceStore().getBoolean(
+                MarkOccurrencesPreferences.POD))
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+    
+    /**
+     * Updates the current set of occurrence annotations.
+     */
+    private void updateAnnotations(ITextSelection textSelection)
+    {
+        IAnnotationModel _model = sourceViewer.getAnnotationModel();
+        IAnnotationModelExtension model = (IAnnotationModelExtension) _model;
 
-	/**
-	 * The method marks occurrences of the text in the document by adding
-	 * annotations to the given model. Further occurrences of the text and the
-	 * text itself will be marked, if they've got the same contentType.
-	 * Variables are also marked in strings.
-	 * 
-	 * @param doc
-	 *            the document, used to get a FindReplaceDocumentAdapter and the
-	 *            contentTypes
-	 * @param type
-	 *            the contentType of the associated text
-	 * @param text
-	 *            the text, further occurrences will be marked
-	 * @param model
-	 *            the model, the annotation were added
-	 * 
-	 */
-	private void markText(IDocument doc, String type, String text,
-			IAnnotationModelExtension model) {
-		if (text == null || (type == null)) {
-			return;
-		}
-		int offset = 0;
-		String docText = doc.get();
-		int index = docText.indexOf(text, offset);
-		try {
-            Map newAnnotations = new HashMap();
-			while (index != -1) {
-				offset = index + text.length();
-				String contentType = doc.getContentType(index);
-				if (contentType.equals(type)
-						|| contentType.equals(PartitionTypes.LITERAL1)
-						&& type.equals(PartitionTypes.VARIABLE)
-						|| (contentType.equals(PartitionTypes.VARIABLE) && type
-								.equals(PartitionTypes.LITERAL1))) {
-                    
-                    if (offset + 1 < text.length())
-                    {
-					   String behind = String.valueOf(doc.getChar(offset + 1));
-					   if (!(LETTER_PATTERN.matcher(behind)).matches()) {
-    						addAnnotation(text, newAnnotations, index, text.length());
-					   }
-                    }
-				}
-				index = docText.indexOf(text, offset);
-			}
-            model.replaceAnnotations(new Annotation[] {}, newAnnotations);
-		} catch (BadLocationException e) {
-			e.printStackTrace();
-		}
+        IDocument doc = sourceViewer.getDocument();
+        String contentType = doc.getDocumentPartitioner().getPartition(
+            textSelection.getOffset()).getType();
 
-	}
+        if (!shouldMark(contentType))
+        {
+            if (!PerlEditorPlugin.getDefault().getPreferenceStore()
+                .getBoolean(MarkOccurrencesPreferences.KEEP_MARKS))
+            {
+                lastMarkedText = "";
+                removeAnnotations();
+            }
+            return;
+        }
 
-	/**
-	 * The method adds a new Annotation to the model. The offset and the length
-	 * determine the position of the annotation. The annotation is not
-	 * persistent.
-	 * 
-	 * @param text
-	 *            the associated text of the annotation
-	 * @param model
-	 *            the model, the annotation will be added to
-	 * @param offset
-	 *            the offset of the annotation position
-	 * @param length
-	 *            the length of the annotation position
-	 */
-	private void addAnnotation(String text, Map newAnnotations, int offset,
-			int length) {
-		Annotation annotation = new Annotation(ANNOTATION_TYPE, false, text);
-		Position position = new Position(offset, length);
-		annotations.add(annotation);       
-        newAnnotations.put(annotation, position);
-	}
+        try
+        {
+            String text = getMarkedText(doc, textSelection);
 
-	/**
-	 * Installs this selection changed listener with the given selection
-	 * provider. If the selection provider is a post selection provider, post
-	 * selection changed events are the preferred choice, otherwise normal
-	 * selection changed events are requested.
-	 * 
-	 * @param selectionProvider
-	 */
-	public void install(ISelectionProvider selectionProvider) {
-		if (selectionProvider == null) {
-			return;
-		}
-		if (selectionProvider instanceof IPostSelectionProvider) {
-			IPostSelectionProvider provider = (IPostSelectionProvider) selectionProvider;
-			provider.addPostSelectionChangedListener(this);
-		} else {
-			selectionProvider.addSelectionChangedListener(this);
-		}
-	}
+            // Same text as before? avoid constantly removing/adding
+            // occurrences while the caret is being moved within a marked
+            // occurrence or jumping from one occurrrence to another
+            if (text.equals(this.lastMarkedText)) return;
+        
+            this.lastMarkedText = text;            
+            removeAnnotations();
+
+            String type = doc.getContentType(textSelection.getOffset());
+            markText(doc, type, text, model);
+        }
+        catch (BadLocationException e)
+        {
+            PerlEditorPlugin.getDefault().getLog().log(
+                new Status(
+                    IStatus.ERROR,
+                    PerlEditorPlugin.getPluginId(),
+                    IStatus.OK,
+                    "An unexpected exception occurred in OccurrencesUpdater",
+                    e));
+            
+            // emergency clean-up
+            lastMarkedText = "";
+            removeAnnotations();
+        }
+    }
 }

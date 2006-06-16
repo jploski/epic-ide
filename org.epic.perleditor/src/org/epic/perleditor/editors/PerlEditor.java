@@ -2,8 +2,7 @@ package org.epic.perleditor.editors;
 
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.*;
-import org.eclipse.jface.action.Action;
-import org.eclipse.jface.action.IMenuManager;
+import org.eclipse.jface.action.*;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.*;
 import org.eclipse.jface.text.source.*;
@@ -27,6 +26,7 @@ import org.epic.perleditor.PerlEditorPlugin;
 import org.epic.perleditor.actions.*;
 import org.epic.perleditor.popupmenus.OpenDeclaration;
 import org.epic.perleditor.popupmenus.PerlDocAction;
+import org.epic.perleditor.preferences.MarkOccurrencesPreferences;
 import org.epic.perleditor.preferences.PreferenceConstants;
 import org.epic.perleditor.templates.perl.ModuleCompletionHelper;
 import org.epic.perleditor.views.PerlOutlinePage;
@@ -41,21 +41,23 @@ public class PerlEditor extends TextEditor implements IPropertyChangeListener
      */
     public static final String PERL_EDITOR_ID =
         "org.epic.perleditor.editors.PerlEditor";
-    
+
     private PerlPairMatcher bracketMatcher;
-    private PerlBracketInserter bracketInserter;    
+    private PerlBracketInserter bracketInserter;
     private FoldReconciler foldReconciler;
-    private TasksReconciler tasksReconciler;    
+    private TasksReconciler tasksReconciler;
     private PerlOutlinePage outlinePage;
     private PerlSyntaxValidationThread validationThread;
     private ISourceViewer sourceViewer;
     private IdleTimer idleTimer;
     private ProjectionSupport projectionSupport;
     private SourceFile source;
-    
+
+    private OccurrencesUpdater occurrencesUpdater;
+
     /**
      * Flag used to avoid relocating caret in response to an outline selection
-     * change triggered by a previous caret move. 
+     * change triggered by a previous caret move.
      */
     private boolean syncToOutline;
 
@@ -67,7 +69,7 @@ public class PerlEditor extends TextEditor implements IPropertyChangeListener
 
     public PerlEditor()
     {
-        setDocumentProvider(PerlEditorPlugin.getDefault().getDocumentProvider());        
+        setDocumentProvider(PerlEditorPlugin.getDefault().getDocumentProvider());
         PerlEditorPlugin.getDefault().getPreferenceStore().addPropertyChangeListener(this);
         setKeyBindingScopes(new String[] { "org.epic.perleditor.perlEditorScope" });
     }
@@ -78,7 +80,7 @@ public class PerlEditor extends TextEditor implements IPropertyChangeListener
         if (Workbench.getInstance().isClosing()) return;
 
         super.createPartControl(parent);
-        
+
         installProjectionSupport();
         installBracketInserter();
         installCaretMoveListener();
@@ -88,11 +90,11 @@ public class PerlEditor extends TextEditor implements IPropertyChangeListener
         installFoldReconciler();
         installTasksReconciler();
         installAnnotationListener();
-        
+
         source = new SourceFile(
             PerlEditorPlugin.getDefault().getLog(),
             getViewer().getDocument());
-        
+
         reconcile();
     }
 
@@ -102,8 +104,10 @@ public class PerlEditor extends TextEditor implements IPropertyChangeListener
      */
     public void dispose()
     {
+        uninstallAnnotationListener();
+
         try
-        {   
+        {
             if (sourceViewer instanceof ITextViewerExtension &&
                 bracketInserter != null)
             {
@@ -112,6 +116,14 @@ public class PerlEditor extends TextEditor implements IPropertyChangeListener
             }
             if (validationThread != null) validationThread.dispose();
             if (idleTimer != null) idleTimer.dispose();
+            
+            String[] actionIds = PerlEditorActionIds.get();
+            for (int i = 0; i < actionIds.length; i++)
+            {
+                IAction action = (PerlEditorAction) getAction(actionIds[i]);
+                if (action instanceof PerlEditorAction)
+                    ((PerlEditorAction) action).dispose();
+            }
 
             super.dispose();
         }
@@ -169,25 +181,25 @@ public class PerlEditor extends TextEditor implements IPropertyChangeListener
         }
 
         super.doSetInput(input);
-        
+
         if (getViewer() != null)
         {
             // The editor is being reused (e.g. when the user clicks on matches
             // found through a search). Make sure we synchronize with the new content.
-            
+
             source = new SourceFile(
                 PerlEditorPlugin.getDefault().getLog(),
                 getViewer().getDocument());
-            
+
             reconcile();
         }
     }
-    
+
     /**
      * Provided that the given document contains a bracket-like
      * character at the given offset, returns the offset of
      * the matching (pair) character (if found). Otherwise, returns -1.
-     * 
+     *
      * @param exact
      *        if false, search for the match within currently displayed text only;
      *        if true, search in the entire document
@@ -201,15 +213,15 @@ public class PerlEditor extends TextEditor implements IPropertyChangeListener
         try
         {
             final int[] ret = new int[1];
- 
+
             IRegion matchRegion = bracketMatcher.match(document, offset);
-            
+
             if (matchRegion == null) ret[0] = -1;
             else ret[0] =
                 matchRegion.getOffset() == offset - 1
                 ? matchRegion.getOffset() + matchRegion.getLength() - 1
                 : matchRegion.getOffset();
-    
+
             return ret[0];
         }
         finally
@@ -254,14 +266,14 @@ public class PerlEditor extends TextEditor implements IPropertyChangeListener
 
     /**
      * Returns the Idle Timer associated with the editor
-     * 
+     *
      * @return Idle Timer
      */
     public IdleTimer getIdleTimer()
     {
         return idleTimer;
     }
-    
+
     /**
      * @return the SourceFile edited in this editor
      */
@@ -269,7 +281,7 @@ public class PerlEditor extends TextEditor implements IPropertyChangeListener
     {
         return source;
     }
-    
+
     /**
      * @return test interface to this editor's internals;
      *         do not use outside of white-box test cases!
@@ -278,15 +290,15 @@ public class PerlEditor extends TextEditor implements IPropertyChangeListener
     {
         return new TestInterface();
     }
-    
+
     /**
      * @return the source viewer used by this editor
      */
     public ISourceViewer getViewer()
     {
-        return super.getSourceViewer();   
+        return super.getSourceViewer();
     }
-    
+
     /**
      * Provided that the caret's current position is after a bracket-like
      * character, jumps to its matching character (if found). Otherwise,
@@ -299,13 +311,13 @@ public class PerlEditor extends TextEditor implements IPropertyChangeListener
         int caretOffset = sourceViewer.getSelectedRange().x;
         int matchOffset =
             findMatchingBracket(sourceViewer.getDocument(), caretOffset, true);
-        
+
         if (matchOffset == -1) return;
-        
+
         sourceViewer.revealRange(matchOffset + 1, 1);
         sourceViewer.setSelectedRange(matchOffset + 1, 0);
     }
-    
+
     public void propertyChange(PropertyChangeEvent event)
     {
         if (event.getProperty().equals("PERL_EXECUTABLE"))
@@ -333,7 +345,7 @@ public class PerlEditor extends TextEditor implements IPropertyChangeListener
             }
         }
     }
-    
+
     /**
      * Updates the editor's dependent views and state after a document change.
      * This method is only intended for use by {@link PerlReconcilingStrategy}.
@@ -351,7 +363,7 @@ public class PerlEditor extends TextEditor implements IPropertyChangeListener
         if (display == null) return;
         final IDocument doc = sourceViewer.getDocument();
         if (doc == null) return;
-        
+
         // We reconcile on the main (Display) thread in order to avoid
         // race conditions due to user's modifications; this also means
         // that the reconciling has to be FAST in order to keep the GUI
@@ -371,12 +383,12 @@ public class PerlEditor extends TextEditor implements IPropertyChangeListener
                 if (tasksReconciler != null) tasksReconciler.reconcile();
             } });
     }
-    
+
     public void refreshTaskView()
     {
         tasksReconciler.reconcile();
     }
-    
+
     public void registerIdleListener(IdleTimerListener obj)
     {
         idleTimer.addListener(obj);
@@ -398,7 +410,7 @@ public class PerlEditor extends TextEditor implements IPropertyChangeListener
         // called too often on preference changes
         return true;
     }
-    
+
     protected void configureSourceViewerDecorationSupport(SourceViewerDecorationSupport support)
     {
         support.setCharacterPairMatcher(bracketMatcher);
@@ -408,7 +420,7 @@ public class PerlEditor extends TextEditor implements IPropertyChangeListener
 
         super.configureSourceViewerDecorationSupport(support);
     }
-    
+
     /**
      * The PerlEditor implementation of this AbstractTextEditor method extend
      * the actions to add those specific to the receiver
@@ -425,36 +437,36 @@ public class PerlEditor extends TextEditor implements IPropertyChangeListener
             this);
         action.setActionDefinitionId(PerlEditorCommandIds.CONTENT_ASSIST);
         setAction(PerlEditorActionIds.CONTENT_ASSIST, action);
-        
+
         action = new Jump2BracketAction(this);
         action.setActionDefinitionId(PerlEditorCommandIds.MATCHING_BRACKET);
         setAction(action.getId(), action);
-        
+
         action = new FormatSourceAction(this);
         action.setActionDefinitionId(PerlEditorCommandIds.FORMAT_SOURCE);
         setAction(action.getId(), action);
-        
+
         action = new ExportHtmlSourceAction(this);
         action.setActionDefinitionId(PerlEditorCommandIds.HTML_EXPORT);
         setAction(action.getId(), action);
-        
+
         action = new ValidateSourceAction(this);
         action.setActionDefinitionId(PerlEditorCommandIds.VALIDATE_SYNTAX);
         setAction(action.getId(), action);
-        
+
         action = new OpenDeclaration(this);
         action.setActionDefinitionId(PerlEditorCommandIds.OPEN_SUB);
         setAction(action.getId(), action);
-        
+
         action = new ToggleCommentAction(this);
         action.setActionDefinitionId(PerlEditorCommandIds.TOGGLE_COMMENT);
         setAction(action.getId(), action);
-        
+
         action = new PerlDocAction(this);
         action.setActionDefinitionId(PerlEditorCommandIds.PERL_DOC);
         setAction(action.getId(), action);
     }
-    
+
     /* Create SourceViewer so we can use the PerlSourceViewer class */
     protected final ISourceViewer createSourceViewer(
         Composite parent,
@@ -469,15 +481,15 @@ public class PerlEditor extends TextEditor implements IPropertyChangeListener
             fOverviewRuler,
             isOverviewRulerVisible(),
             styles);
-        
+
         // ensure source viewer decoration support has been created and
         // configured
         installBracketMatcher();
         getSourceViewerDecorationSupport(sourceViewer);
-        
+
         return sourceViewer;
     }
-    
+
     public void rulerContextMenuAboutToShow(IMenuManager menu) {
 		super.rulerContextMenuAboutToShow(menu);
 		ViewerActionBuilder builder = new ViewerActionBuilder();
@@ -486,7 +498,7 @@ public class PerlEditor extends TextEditor implements IPropertyChangeListener
 		builder.contribute(menu, null, true);
 	}
 
-    
+
     /**
      * The PerlEditor implementation of this AbstractTextEditor method adds any
      * PerlEditor specific entries.
@@ -499,21 +511,46 @@ public class PerlEditor extends TextEditor implements IPropertyChangeListener
             getSelectionProvider(), this);
         builder.contribute(menu, null, true);
     }
-    
+
     protected void handlePreferenceStoreChanged(PropertyChangeEvent event)
-    {        
+    {
         if (sourceViewer == null || sourceViewer.getTextWidget() == null) return;
 
-        reconfigureBracketInserter();
-        super.handlePreferenceStoreChanged(event);
+        try
+        {
+            if (event.getProperty().equals(MarkOccurrencesPreferences.MARK_OCCURRENCES))
+            {
+                boolean oldValue = event.getOldValue() != null
+                    ? Boolean.valueOf(event.getOldValue().toString()).booleanValue()
+                    : false;
+
+                boolean newValue = event.getOldValue() != null
+                    ? Boolean.valueOf(event.getNewValue().toString()).booleanValue()
+                    : false;
+
+                if (newValue != oldValue)
+                {
+                    if (newValue) installAnnotationListener();
+                    else uninstallAnnotationListener();
+                }
+            }
+            else
+            {
+                reconfigureBracketInserter();
+            }
+        }
+        finally
+        {
+           super.handlePreferenceStoreChanged(event);
+        }
     }
 
     protected void initializeEditor()
     {
         super.initializeEditor();
-        
+
         // Make general workbench editor preferences (such as QuickDiff)
-        // available through our preference store 
+        // available through our preference store
         setPreferenceStore(new ChainedPreferenceStore(new IPreferenceStore[] {
             PerlEditorPlugin.getDefault().getPreferenceStore(),
             this.getPreferenceStore() }));
@@ -521,21 +558,21 @@ public class PerlEditor extends TextEditor implements IPropertyChangeListener
         setSourceViewerConfiguration(new PerlSourceViewerConfiguration(
             PerlEditorPlugin.getDefault().getPreferenceStore(), this));
     }
-    
+
     private void caretMoved()
     {
         if (!getPreferenceStore().getBoolean(
-            PreferenceConstants.EDITOR_SYNC_OUTLINE_ON_CURSOR_MOVE)) return;        
+            PreferenceConstants.EDITOR_SYNC_OUTLINE_ON_CURSOR_MOVE)) return;
         if (syncFromOutline) { syncFromOutline = false; return; }
         if (outlinePage == null || source == null || source.getDocument() == null) return;
-        
+
         try
         {
             syncToOutline = true;
-            
+
             int caretOffset = sourceViewer.getTextWidget().getCaretOffset();
             int caretLine = source.getDocument().getLineOfOffset(caretOffset);
-            
+
             outlinePage.updateSelection(caretLine);
         }
         catch (BadLocationException e)
@@ -545,62 +582,74 @@ public class PerlEditor extends TextEditor implements IPropertyChangeListener
         finally
         {
             syncToOutline = false;
-        }  
+        }
     }
-    
+
     private void installBracketInserter()
     {
         bracketInserter =
             new PerlBracketInserter(PerlEditorPlugin.getDefault().getLog());
-        
+
         reconfigureBracketInserter();
-        
+
         if (sourceViewer instanceof ITextViewerExtension)
             ((ITextViewerExtension) sourceViewer).prependVerifyKeyListener(
-                bracketInserter);                
-        
+                bracketInserter);
+
         bracketInserter.setViewer(sourceViewer);
     }
-    
+
     private void installBracketMatcher()
     {
-        bracketMatcher = new PerlPairMatcher(PerlEditorPlugin.getDefault().getLog()); 
+        bracketMatcher = new PerlPairMatcher(PerlEditorPlugin.getDefault().getLog());
         bracketMatcher.setViewer(sourceViewer);
     }
-    
+
     private void installCaretMoveListener()
     {
         new CaretMoveListener().install(getSelectionProvider());
     }
-    
+
     private void installAnnotationListener()
     {
-    	new OccurrencesUpdater().install(getSelectionProvider());
+        if (occurrencesUpdater == null)
+        {
+            occurrencesUpdater = new OccurrencesUpdater();
+        }
+
+        occurrencesUpdater.install(getSourceViewer());
     }
-    
+
+    private void uninstallAnnotationListener()
+    {
+        if (occurrencesUpdater == null) return;
+
+        occurrencesUpdater.uninstall();
+    }
+
     private void installFoldReconciler()
     {
         foldReconciler = new FoldReconciler(this);
     }
-    
+
     private void installIdleTimer()
     {
         idleTimer = new IdleTimer(sourceViewer, Display.getCurrent());
         idleTimer.start();
     }
-    
+
     private void installModuleCompletionHelper()
     {
-        ModuleCompletionHelper completionHelper = 
+        ModuleCompletionHelper completionHelper =
             ModuleCompletionHelper.getInstance();
-  
+
         try { completionHelper.scanForModules(this); }
         catch (CoreException e)
         {
             PerlEditorPlugin.getDefault().getLog().log(e.getStatus());
         }
     }
-    
+
     private void installProjectionSupport()
     {
         ProjectionViewer viewer = (ProjectionViewer) sourceViewer;
@@ -613,17 +662,17 @@ public class PerlEditor extends TextEditor implements IPropertyChangeListener
 
         viewer.doOperation(ProjectionViewer.TOGGLE);
     }
-    
+
     private void installSyntaxValidationThread()
     {
         // Always check syntax when editor is opened
         validationThread = new PerlSyntaxValidationThread();
         validationThread.setPriority(Thread.MIN_PRIORITY);
-        validationThread.start();        
+        validationThread.start();
         validationThread.setDocument(
             (IResource) ((IAdaptable) getEditorInput()).getAdapter(IResource.class),
             sourceViewer.getDocument());
-        
+
         // Register the validation thread if automatic checking is enabled
         if (PerlEditorPlugin.getDefault().getSyntaxValidationPreference() &&
             idleTimer != null)
@@ -631,12 +680,12 @@ public class PerlEditor extends TextEditor implements IPropertyChangeListener
             registerIdleListener(validationThread);
         }
     }
-    
+
     private void installTasksReconciler()
     {
         tasksReconciler = new TasksReconciler(this);
     }
-    
+
     private void reconfigureBracketInserter()
     {
         IPreferenceStore preferenceStore = getPreferenceStore();
@@ -654,7 +703,7 @@ public class PerlEditor extends TextEditor implements IPropertyChangeListener
         bracketInserter.setCloseSingleQuotesEnabled(
             preferenceStore.getBoolean(PreferenceConstants.AUTO_COMPLETION_QUOTE2));
     }
-    
+
     /**
      * Contains methods that provide access to internal workings of PerlEditor
      * intended to be available only to white-box test cases. Other clients
@@ -666,45 +715,45 @@ public class PerlEditor extends TextEditor implements IPropertyChangeListener
         {
             sourceViewer.getTextWidget().setText("");
         }
-        
+
         public int getHighlightedBracketOffset()
         {
             int offset = sourceViewer.getTextWidget().getCaretOffset();
 
             PerlPairMatcher matcher =
                 new PerlPairMatcher(PerlEditorPlugin.getDefault().getLog());
-            
+
             matcher.setViewer(null);
             matcher.match(sourceViewer.getDocument(), offset);
-            
+
             return
                 offset - 1 == matcher.getStartPos()
                 ? matcher.getEndPos()
                 : matcher.getStartPos();
         }
-        
+
         public String getText()
         {
             return sourceViewer.getTextWidget().getText();
         }
-        
+
         public IVerticalRuler getVerticalRuler()
         {
             return ((PerlSourceViewer) sourceViewer)._getVerticalRuler();
         }
-        
+
         public void setCaretOffset(final int offset)
         {
             Display display = sourceViewer.getTextWidget().getDisplay();
             sourceViewer.setSelectedRange(offset, 0);
             while (display.readAndDispatch());
         }
-        
+
         public void setExactBracketMatching()
         {
             bracketMatcher.setViewer(null);
         }
-        
+
         public void setTopIndex(int topIndex)
         {
             sourceViewer.setTopIndex(topIndex);
@@ -717,7 +766,7 @@ public class PerlEditor extends TextEditor implements IPropertyChangeListener
                 getSelectionProvider().setSelection(TextSelection.emptySelection());
             }
             else
-            {        
+            {
                 int i = sourceViewer.getDocument().get().indexOf(text);
                 if (i == -1) throw new RuntimeException(
                     "text \"" + text + "\" not found in editor");
@@ -725,7 +774,7 @@ public class PerlEditor extends TextEditor implements IPropertyChangeListener
             }
         }
     }
-    
+
     /**
      * Tracks caret movements in order to update selection in the outline page.
      * Implementation borrowed from org.eclipse.jdt.internal.ui.javaeditor.JavaEditor.
@@ -751,7 +800,7 @@ public class PerlEditor extends TextEditor implements IPropertyChangeListener
                 selectionProvider.addSelectionChangedListener(this);
             }
         }
-        
+
         public void selectionChanged(SelectionChangedEvent event) {
             PerlEditor.this.caretMoved();
         }
@@ -773,7 +822,7 @@ public class PerlEditor extends TextEditor implements IPropertyChangeListener
             }
         }
     }
-    
+
     /**
      * Tracks selection in the outline page in order to highlight subroutine
      * declarations in source code.
@@ -782,16 +831,16 @@ public class PerlEditor extends TextEditor implements IPropertyChangeListener
     {
         public void selectionChanged(SelectionChangedEvent event)
         {
-            if (syncToOutline) return;            
+            if (syncToOutline) return;
             if (event == null) return;
             if (!(event.getSelection() instanceof IStructuredSelection)) return;
-            
+
             IStructuredSelection sel = (IStructuredSelection) event.getSelection();
             if (!(sel.getFirstElement() instanceof ISourceElement)) return;
-            
+
             ISourceElement elem = (ISourceElement) sel.getFirstElement();
             syncFromOutline = true;
             selectAndReveal(elem.getOffset(), elem.getName().length());
         }
-    }   
+    }
 }

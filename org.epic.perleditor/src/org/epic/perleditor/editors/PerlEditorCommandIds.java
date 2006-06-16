@@ -25,6 +25,7 @@ public class PerlEditorCommandIds
     public static final String OPEN_SUB = "org.epic.perleditor.openDeclaration";
     public static final String PERL_DOC = "org.epic.perleditor.searchPerlDoc";
     public static final String MATCHING_BRACKET = "org.epic.perleditor.jump2Bracket";
+    public static final String TOGGLE_MARK_OCCURRENCES = "org.epic.perleditor.toggleMarkOccurrences";
     
     private PerlEditorCommandIds() { }
 }

@@ -59,7 +59,7 @@
             class="org.epic.perleditor.preferences.TaskTagsPreferencePage"
             category="org.epic.core.preferences.PerlMainPreferencePage"
             name="Task Tags"
-            id="org.epic.perleditor.preferences.TaskTagsPreferencePage">      
+            id="org.epic.perleditor.preferences.TaskTagsPreferencePage">
       </page>
       <page
             category="org.epic.core.preferences.PerlMainPreferencePage"
@@ -94,7 +94,7 @@
          </description>
       </wizard>
    </extension>
-   
+
    <extension
          point="org.eclipse.ui.newWizards">
       <wizard
@@ -113,7 +113,7 @@
          </selection>
       </wizard>
    </extension>
-   
+
    <extension
          id="perlnature"
          name="Perl Nature"
@@ -190,7 +190,7 @@
   	 		icon="icons/epic_project.gif"
   	 		class="org.epic.core.popupmenus.TogglePerlNatureActionDelegate"
   	 		menubarPath="epicNAvPopup"
-  	 		id="org.epic.core.togglePerlNature.action" /> 
+  	 		id="org.epic.core.togglePerlNature.action" />
   	  </objectContribution>
 	   <!-- Explain Errors/Warnings popup menu entry -->
   	   <viewerContribution
@@ -207,11 +207,11 @@
          </action>
       </viewerContribution>
 	<!-- Popup Menu menu -->
-	
+
       <viewerContribution
             targetID="#PerlEditorContext"
             id="org.epic.perleditor.PerlEditorPopup">
-          
+
             <!-- SUBMENU: Refactor Menu -->
          <menu
                label="Re&amp;factor"
@@ -228,7 +228,7 @@
                menubarPath="PerlRefactorPopupMenu/PerlRefactorGroup"
                id="org.epic.perleditor.refactor.ExtractSubroutine">
         </action>
-               
+
          <!-- SUBMENU: Source Menu -->
          <menu
                label="&amp;Source"
@@ -245,7 +245,7 @@
                class="org.epic.perleditor.actions.ValidateSourceAction"
                menubarPath="PerlSourcePopupMenu/PerlSourceGroup"
                id="org.epic.perleditor.ValidateSyntax">
-         </action>         
+         </action>
  		<!-- Format source action -->
          <action
                definitionId="org.epic.perleditor.formatsource"
@@ -262,14 +262,14 @@
                menubarPath="PerlSourcePopupMenu/PerlSourceGroup"
                id="org.epic.perleditor.ToggleComment">
          </action>
-         
-         
+
+
          <!-- Open Declaration -->
          <menu
                label="&amp;OpenDeclaration"
                path="additions"
                id="DeclarationPopUp">
-            <separator 
+            <separator
                name="PerlOpenDecGroup">
             </separator>
          </menu>
@@ -281,7 +281,7 @@
                tooltip="Open Declaration for SUBs only, defined locally, in files or in packages!"
                menubarPath="DeclarationPopUp"
                id="org.epic.perleditor.popupmenus.OpenSubAction"/>
-               
+
 		<!-- Perldoc -->
          <menu
                label="&amp;Perldoc"
@@ -311,6 +311,10 @@
          <part
                id="org.epic.perleditor.editors.PerlEditor">
          </part>
+      </actionSetPartAssociation>
+      <actionSetPartAssociation
+      		targetID="org.epic.perleditor.toolbar.actionSet.presentation">
+      	 <part id="org.epic.perleditor.editors.PerlEditor" />
       </actionSetPartAssociation>
    </extension>
    <extension
@@ -390,7 +394,7 @@
                menubarPath="navigate/additions"
                id="org.epic.perleditor.popupmenus.OpenSubAction">
          </action>
-         
+
 <!-- Perldoc -->
          <action
                label="Perldoc"
@@ -400,7 +404,7 @@
                menubarPath="help/additions"
                id="org.epic.perleditor.popupmenus.PerlDocAction">
          </action>
-         
+
 <!-- Matching Bracket -->
          <action
                label="Matching &amp;Bracket"
@@ -409,9 +413,29 @@
                menubarPath="navigate/goto/additions"
                id="org.epic.perleditor.Jump2Bracket">
          </action>
-         
+
       </actionSet>
+
+   	<actionSet
+          id="org.epic.perleditor.toolbar.actionSet.presentation"
+          label="Perl Editor Presentation"
+          visible="false">
+    		<action
+            allowLabelUpdate="true"
+            definitionId="org.epic.perleditor.toggleMarkOccurrences"
+            disabledIcon="icons/mark_occurrences_disabled.gif"
+            icon="icons/mark_occurrences.gif"
+            id="org.epic.perleditor.editors.ToggleMarkOccurrencesAction"
+            label="Toggle Mark Occurrences"
+            retarget="true"
+            style="toggle"
+            toolbarPath="epicToolbarGroup/Presentation"
+            tooltip="Toggle Mark Occurrences">
+    		</action>
+  		</actionSet>
+
    </extension>
+
    <extension point="org.eclipse.ui.contexts">
       <context
       		name="Editing Perl Source"
@@ -460,6 +484,11 @@
             name="Matching Bracket"
             id="org.epic.perleditor.jump2Bracket"
             categoryId="org.eclipse.ui.category.navigate" />
+	  <command
+            description="Toggle Mark Occurrences"
+            name="Toggle Mark Occurrences"
+            id="org.epic.perleditor.toggleMarkOccurrences"
+            categoryId="org.epic.perleditor.source" />
    </extension>
    <extension point="org.eclipse.ui.bindings">
       <key
@@ -492,6 +521,11 @@
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
             commandId="org.epic.perleditor.jump2Bracket"
             contextId="org.epic.perleditor.perlEditorScope" />
+      <key
+            sequence="M2+M3+O"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            commandId="org.epic.perleditor.toggleMarkOccurrences"
+            contextId="org.epic.perleditor.perlEditorScope" />
    </extension>
 <!--             So to not have equal markers for the same thing we use BOTTOM_LEFT.            -->
 <!--             But on some occasions the Java Builder seems to check Perl projecs as well.    -->
@@ -521,7 +555,7 @@
             id="org.epic.views">
       </category>
    </extension>
-   
+
     <extension
          point="org.eclipse.ui.views">
       <view
@@ -553,8 +587,8 @@
 			name="Perl Source File"
 			file-extensions="pl,pm">
 			<describer class="org.epic.core.content.PerlContentDescriber"/>
-		</content-type> 
+		</content-type>
     </extension>
 
-	<extension   			point="org.eclipse.ui.editors.markerAnnotationSpecification">   		<specification           annotationType="org.epic.perleditor.occurrence"           colorPreferenceKey="highlight.color"           colorPreferenceValue="253,255,157"           highlightPreferenceKey="highlight.background"           highlightPreferenceValue="true"           includeOnPreferencePage="true"           label="Occurrences"           overviewRulerPreferenceKey="highlight.rulers.overview"           overviewRulerPreferenceValue="true"           presentationLayer="4"           textPreferenceKey="highlight.text"           textPreferenceValue="false"           textStylePreferenceKey="highlight.text.style"           textStylePreferenceValue="UNDERLINE"           verticalRulerPreferenceKey="highlight.rulers.vertical"           verticalRulerPreferenceValue="true">		</specification>	</extension>
+	<extension   			point="org.eclipse.ui.editors.markerAnnotationSpecification">   		<specification           annotationType="org.epic.perleditor.occurrence"           colorPreferenceKey="highlight.color"           colorPreferenceValue="253,255,157"           highlightPreferenceKey="highlight.background"           highlightPreferenceValue="true"           includeOnPreferencePage="true"           label="Occurrences"           overviewRulerPreferenceKey="highlight.rulers.overview"           overviewRulerPreferenceValue="true"           presentationLayer="4"           textPreferenceKey="highlight.text"           textPreferenceValue="false"           textStylePreferenceKey="highlight.text.style"           textStylePreferenceValue="UNDERLINE"           verticalRulerPreferenceKey="highlight.rulers.vertical"           verticalRulerPreferenceValue="true">		</specification>	</extension>
 </plugin>

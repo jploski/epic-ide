@@ -3,13 +3,13 @@ package org.epic.perleditor.editors;
 import org.eclipse.jface.text.*;
 import org.eclipse.jface.text.hyperlink.IHyperlink;
 import org.eclipse.jface.text.hyperlink.IHyperlinkDetector;
-import org.epic.perleditor.popupmenus.OpenDeclaration;
+import org.epic.perleditor.actions.OpenDeclarationAction;
 
 /**
  * Installed in the PerlEditor to detect subroutine names whose declarations
  * can be navigated to by clicking them.
  * 
- * @see org.epic.perleditor.popupmenus.OpenDeclaration
+ * @see org.epic.perleditor.actions.OpenDeclarationAction
  * @author jploski
  */
 public class PerlSubHyperlinkDetector implements IHyperlinkDetector
@@ -96,8 +96,8 @@ public class PerlSubHyperlinkDetector implements IHyperlinkDetector
 
         public void open()
         {
-            OpenDeclaration action =
-                (OpenDeclaration) editor.getAction(PerlEditorActionIds.OPEN_SUB);
+            OpenDeclarationAction action =
+                (OpenDeclarationAction) editor.getAction(PerlEditorActionIds.OPEN_SUB);
             
             if (action != null) action.run(
                 new TextSelection(subNameRegion.getOffset(), subNameRegion.getLength()));

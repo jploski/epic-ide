@@ -1,4 +1,4 @@
-package org.epic.perleditor.popupmenus;
+package org.epic.perleditor.actions;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.dialogs.InputDialog;
@@ -9,9 +9,9 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.epic.perleditor.PerlEditorPlugin;
-import org.epic.perleditor.actions.PerlEditorAction;
 import org.epic.perleditor.editors.PerlEditor;
 import org.epic.perleditor.editors.PerlEditorActionIds;
+import org.epic.perleditor.popupmenus.PopupMessages;
 import org.epic.perleditor.views.PerlDocView;
 
 public class PerlDocAction extends PerlEditorAction
@@ -19,10 +19,6 @@ public class PerlDocAction extends PerlEditorAction
 	private String selection;
 	private Shell shell;
 
-    public PerlDocAction()
-    {
-    }
-    
 	public PerlDocAction(PerlEditor editor)
     {
         super(editor);

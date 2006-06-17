@@ -24,8 +24,6 @@ import org.epic.core.model.*;
 import org.epic.core.util.FileUtilities;
 import org.epic.perleditor.PerlEditorPlugin;
 import org.epic.perleditor.actions.*;
-import org.epic.perleditor.popupmenus.OpenDeclaration;
-import org.epic.perleditor.popupmenus.PerlDocAction;
 import org.epic.perleditor.preferences.MarkOccurrencesPreferences;
 import org.epic.perleditor.preferences.PreferenceConstants;
 import org.epic.perleditor.templates.perl.ModuleCompletionHelper;
@@ -454,7 +452,7 @@ public class PerlEditor extends TextEditor implements IPropertyChangeListener
         action.setActionDefinitionId(PerlEditorCommandIds.VALIDATE_SYNTAX);
         setAction(action.getId(), action);
 
-        action = new OpenDeclaration(this);
+        action = new OpenDeclarationAction(this);
         action.setActionDefinitionId(PerlEditorCommandIds.OPEN_SUB);
         setAction(action.getId(), action);
 

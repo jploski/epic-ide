@@ -1,4 +1,4 @@
-package org.epic.perleditor.popupmenus;
+package org.epic.perleditor.actions;
 
 import java.io.*;
 import java.util.*;
@@ -16,7 +16,6 @@ import org.epic.core.PerlProject;
 import org.epic.core.model.*;
 import org.epic.core.model.Package;
 import org.epic.perleditor.PerlEditorPlugin;
-import org.epic.perleditor.actions.PerlEditorAction;
 import org.epic.perleditor.editors.*;
 
 /**
@@ -48,13 +47,9 @@ import org.epic.perleditor.editors.*;
  * @author LeO (original implementation)
  * @author jploski (complete rewrite)
  */
-public class OpenDeclaration extends PerlEditorAction
+public class OpenDeclarationAction extends PerlEditorAction
 {
-    public OpenDeclaration()
-    {
-    }
-    
-    public OpenDeclaration(PerlEditor editor)
+    public OpenDeclarationAction(PerlEditor editor)
     {
         super(editor);
     }

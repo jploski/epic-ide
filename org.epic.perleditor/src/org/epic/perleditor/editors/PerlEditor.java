@@ -10,7 +10,10 @@ import org.eclipse.jface.text.source.projection.*;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.jface.viewers.*;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.ST;
 import org.eclipse.swt.custom.StyledText;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.*;
@@ -464,6 +467,42 @@ public class PerlEditor extends TextEditor implements IPropertyChangeListener
         action.setActionDefinitionId(PerlEditorCommandIds.PERL_DOC);
         setAction(action.getId(), action);
     }
+    
+    protected void createNavigationActions()
+    {
+        super.createNavigationActions();
+        
+        IAction action;
+        StyledText textWidget = getSourceViewer().getTextWidget();
+        
+        action = new SmartLineStartAction(textWidget, false);
+        action.setActionDefinitionId(ITextEditorActionDefinitionIds.LINE_START);
+        setAction(ITextEditorActionDefinitionIds.LINE_START, action);
+
+        action = new SmartLineStartAction(textWidget, true);
+        action.setActionDefinitionId(ITextEditorActionDefinitionIds.SELECT_LINE_START);
+        setAction(ITextEditorActionDefinitionIds.SELECT_LINE_START, action);
+
+        action = new NextWordAction(ST.WORD_NEXT, false);
+        action.setActionDefinitionId(ITextEditorActionDefinitionIds.WORD_NEXT);
+        setAction(ITextEditorActionDefinitionIds.WORD_NEXT, action);
+        textWidget.setKeyBinding(SWT.CTRL | SWT.ARROW_RIGHT, SWT.NULL);
+
+        action = new NextWordAction(ST.SELECT_WORD_NEXT, true);
+        action.setActionDefinitionId(ITextEditorActionDefinitionIds.SELECT_WORD_NEXT);
+        setAction(ITextEditorActionDefinitionIds.SELECT_WORD_NEXT, action);
+        textWidget.setKeyBinding(SWT.CTRL | SWT.SHIFT | SWT.ARROW_RIGHT, SWT.NULL);
+        
+        action = new PreviousWordAction(ST.WORD_PREVIOUS, false);
+        action.setActionDefinitionId(ITextEditorActionDefinitionIds.WORD_PREVIOUS);
+        setAction(ITextEditorActionDefinitionIds.WORD_PREVIOUS, action);
+        textWidget.setKeyBinding(SWT.CTRL | SWT.ARROW_LEFT, SWT.NULL);
+        
+        action = new PreviousWordAction(ST.SELECT_WORD_PREVIOUS, true);
+        action.setActionDefinitionId(ITextEditorActionDefinitionIds.SELECT_WORD_PREVIOUS);
+        setAction(ITextEditorActionDefinitionIds.SELECT_WORD_PREVIOUS, action);
+        textWidget.setKeyBinding(SWT.CTRL | SWT.SHIFT | SWT.ARROW_LEFT, SWT.NULL);
+    }
 
     /* Create SourceViewer so we can use the PerlSourceViewer class */
     protected final ISourceViewer createSourceViewer(
@@ -839,6 +878,276 @@ public class PerlEditor extends TextEditor implements IPropertyChangeListener
             ISourceElement elem = (ISourceElement) sel.getFirstElement();
             syncFromOutline = true;
             selectAndReveal(elem.getOffset(), elem.getName().length());
+        }
+    }
+    
+    /**
+     * This action implements smart home.
+     *
+     * Instead of going to the start of a line it does the following:
+     *
+     * - if smart home/end is enabled and the caret is after the line's first
+     *   non-whitespace then the caret is moved directly before it; beginning of
+     *   a comment ('#') counts as whitespace
+     * - if the caret is before the line's first non-whitespace, the caret is
+     *   moved to the beginning of the line
+     * - if the caret is at the beginning of the line, see first case.
+     */
+    private class SmartLineStartAction extends LineStartAction
+    {
+        /**
+         * @param textWidget the editor's styled text widget
+         * @param doSelect a boolean flag which tells if the text up to the beginning
+         *                 of the line should be selected
+         */
+        public SmartLineStartAction(StyledText textWidget, boolean doSelect)
+        {
+            super(textWidget, doSelect);
+        }
+
+        protected int getLineStartPosition(
+            final IDocument document,
+            final String line,
+            final int length,
+            final int offset)
+        {
+            int index = super.getLineStartPosition(document, line, length, offset);
+            
+            if (index < length - 1 && line.charAt(index) == '#')
+            {
+                index++;
+                while (index < length && Character.isWhitespace(line.charAt(index)))
+                    index++;
+            }
+            return index;
+        }    
+    }
+    
+    /**
+     * Base class for actions that navigate to or select text up to the next
+     * word boundary.
+     */
+    protected abstract class WordNavigationAction extends TextNavigationAction
+    {
+        private boolean select;
+        
+        protected WordNavigationAction(int code, boolean select)
+        {
+            super(getSourceViewer().getTextWidget(), code);
+            this.select = select;
+        }
+        
+        public final void run()
+        {
+            final IPreferenceStore store = getPreferenceStore();
+            if (!store.getBoolean(PreferenceConstants.EDITOR_SUB_WORD_NAVIGATION))
+            {
+                super.run();
+                return;
+            }
+
+            ISourceViewer viewer = getSourceViewer();
+            IDocument document = viewer.getDocument();
+            int position = widgetOffset2ModelOffset(
+                viewer, viewer.getTextWidget().getCaretOffset());
+
+            if (position == -1) return;
+            
+            PerlPartitioner partitioner =
+                (PerlPartitioner) document.getDocumentPartitioner();
+            int docLength = document.getLength();
+            
+            run(viewer, document, position, partitioner, docLength);
+        }
+        
+        protected abstract void run(
+            ISourceViewer viewer,
+            IDocument document,
+            int position,
+            PerlPartitioner partitioner,
+            int docLength);
+        
+        protected final void setCaretPosition(final int position)
+        {
+            if (select)
+            {
+                final ISourceViewer viewer = getSourceViewer();
+                final StyledText text = viewer.getTextWidget();
+    
+                if (text != null && !text.isDisposed())
+                {
+                    final Point selection = text.getSelection();
+                    final int caret = text.getCaretOffset();
+                    final int offset = modelOffset2WidgetOffset(viewer, position);
+    
+                    if (caret == selection.x)
+                        text.setSelectionRange(selection.y, offset - selection.y);
+                    else
+                        text.setSelectionRange(selection.x, offset - selection.x);
+                }
+            }
+            else
+            {
+                getSourceViewer().getTextWidget().setCaretOffset(
+                    modelOffset2WidgetOffset(getSourceViewer(), position));
+            }
+        }
+    }
+    
+    /**
+     * Navigates or selects text up to the next word boundary.
+     */
+    private final class NextWordAction extends WordNavigationAction
+    {
+        /**
+         * @param code
+         *        Action code for the default operation.
+         *        Must be an action code from {@link org.eclipse.swt.custom.ST}.
+         */
+        protected NextWordAction(int code, boolean select)
+        {
+            super(code, select);
+        }
+
+        protected void run(
+            ISourceViewer viewer,
+            IDocument document,
+            int position,
+            PerlPartitioner partitioner,
+            int length)
+        {            
+            try
+            {
+                int line = document.getLineOfOffset(position);
+                if (position < length &&
+                    (document.getChar(position) == '\n' ||
+                     document.getChar(position) == '\r'))
+                {
+                    // Make "next word" action at the end of a line go to the begining of
+                    // the next line
+                    if (line < document.getNumberOfLines())
+                        position = document.getLineOffset(line+1);
+                    else return;
+                }
+                else
+                {
+                    ITypedRegion partition = 
+                        partitioner.getPartition(position, true);
+                    
+                    int partitionEnd = partition.getOffset() + partition.getLength();
+                    
+                    if (position == partitionEnd && position < length)
+                    {
+                        partition = partitioner.getPartition(position+1, true);
+                        partitionEnd = partition.getOffset() + partition.getLength();
+                    }
+                    
+                    while (position < partitionEnd &&
+                           !Character.isWhitespace(document.getChar(position))) position++;
+        
+                    while (position < length &&
+                           Character.isWhitespace(document.getChar(position)) &&
+                           document.getChar(position) != '\n' &&
+                           document.getChar(position) != '\r') position++;
+                }
+                
+                setCaretPosition(position);
+                getTextWidget().showSelection();
+                fireSelectionChanged();
+            }
+            catch (BadLocationException e) // should never occur
+            {
+                PerlEditorPlugin.getDefault().getLog().log(
+                    new Status(
+                        IStatus.ERROR,
+                        PerlEditorPlugin.getPluginId(),
+                        IStatus.OK,
+                        "An unexpected exception occurred in NextWordAction",
+                        e));
+                
+                super.run(); // fall back on default behavior
+            }
+        }
+    }
+    
+    /**
+     * Navigates or selects text up to the previous word boundary.
+     */
+    private final class PreviousWordAction extends WordNavigationAction
+    {
+        /**
+         * @param code
+         *        Action code for the default operation.
+         *        Must be an action code from {@link org.eclipse.swt.custom.ST}.
+         */
+        protected PreviousWordAction(int code, boolean select)
+        {
+            super(code, select);
+        }
+        
+        protected void run(
+            ISourceViewer viewer,
+            IDocument document,
+            int position,
+            PerlPartitioner partitioner,
+            int length)
+        {            
+            try
+            {               
+                int line = document.getLineOfOffset(position);
+                if (document.getLineOffset(line) == position)
+                {
+                    // Make "previous word" action at the beginning of a line go to the end of
+                    // the previous line
+                    if (line > 0)
+                    {
+                        int prevLineOffset = document.getLineOffset(line-1);
+                        position = prevLineOffset + document.getLineLength(line-1);
+                        while (
+                            position > prevLineOffset &&
+                            (document.getChar(position-1) == '\n' ||
+                            document.getChar(position-1) == '\r')) position--;
+                    }
+                    else return;
+                }
+                else
+                {                
+                    ITypedRegion partition = 
+                        partitioner.getPartition(position, false);                
+    
+                    int partitionStart = partition.getOffset();
+                    
+                    if (position == partitionStart && position > 0)
+                    {
+                        partition = partitioner.getPartition(position-1, false);
+                        partitionStart = partition.getOffset();
+                    }
+
+                    while (position > partitionStart &&
+                        Character.isWhitespace(document.getChar(position-1)) &&
+                        document.getChar(position-1) != '\n' &&
+                        document.getChar(position-1) != '\r') position--;
+                    
+                    while (position > partitionStart &&
+                           !Character.isWhitespace(document.getChar(position-1))) position--;
+                }
+
+                setCaretPosition(position);
+                getTextWidget().showSelection();
+                fireSelectionChanged();
+            }
+            catch (BadLocationException e) // should never occur
+            {
+                PerlEditorPlugin.getDefault().getLog().log(
+                    new Status(
+                        IStatus.ERROR,
+                        PerlEditorPlugin.getPluginId(),
+                        IStatus.OK,
+                        "An unexpected exception occurred in PreviousWordAction",
+                        e));
+                
+                super.run(); // fall back on default behavior
+            }
         }
     }
 }

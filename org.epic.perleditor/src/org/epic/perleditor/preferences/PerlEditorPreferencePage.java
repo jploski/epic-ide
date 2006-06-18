@@ -72,6 +72,8 @@ public class PerlEditorPreferencePage extends PreferencePage implements IWorkben
 		new OverlayPreferenceStore.OverlayKey(OverlayPreferenceStore.BOOLEAN, PreferenceConstants.AUTO_COMPLETION_BRACKET2),
 		new OverlayPreferenceStore.OverlayKey(OverlayPreferenceStore.BOOLEAN, PreferenceConstants.AUTO_COMPLETION_BRACKET3),
 		new OverlayPreferenceStore.OverlayKey(OverlayPreferenceStore.BOOLEAN, PreferenceConstants.AUTO_COMPLETION_BRACKET4),
+        new OverlayPreferenceStore.OverlayKey(OverlayPreferenceStore.BOOLEAN, PreferenceConstants.EDITOR_SMART_HOME_END),
+        new OverlayPreferenceStore.OverlayKey(OverlayPreferenceStore.BOOLEAN, PreferenceConstants.EDITOR_SUB_WORD_NAVIGATION),
 		//-------------------------------------
 		
         //-------------------------------------
@@ -743,6 +745,14 @@ public class PerlEditorPreferencePage extends PreferencePage implements IWorkben
 
 		label= PreferencesMessages.getString("PerlEditorPreferencePage.typing.autoCompletionBracket4"); //$NON-NLS-1$
 		addCheckBox(typingComposite, label, PreferenceConstants.AUTO_COMPLETION_BRACKET4, 0);
+        
+        addFiller(typingComposite);
+        
+        label= PreferencesMessages.getString("PerlEditorPreferencePage.typing.smartHomeEnd"); //$NON-NLS-1$ 
+        addCheckBox(typingComposite, label, PreferenceConstants.EDITOR_SMART_HOME_END, 0);
+
+        label= PreferencesMessages.getString("PerlEditorPreferencePage.typing.subWordNavigation"); //$NON-NLS-1$ 
+        addCheckBox(typingComposite, label, PreferenceConstants.EDITOR_SUB_WORD_NAVIGATION, 0);
 
 		return typingComposite;
 	}

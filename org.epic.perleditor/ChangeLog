@@ -32,6 +32,7 @@ Eclipse Perl Integration:
 		* Fixed bug: [ 996351 ] NullPointer exception during Launch (problems if path to Perl executable has spaces)
 
 		Editor:
+		* Feature request #1504523 "Improved caret movement to/over word boundaries" implemented
 		* Feature request #1476317 "Mark Occurrences editor feature" partly implemented
 		* Outline now supports multiple package declarations per file
 		* Outline selection now reflects caret position in the editor

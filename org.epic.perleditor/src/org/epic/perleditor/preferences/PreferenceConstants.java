@@ -71,6 +71,24 @@ public class PreferenceConstants {
      */
     public final static String EDITOR_SYNC_OUTLINE_ON_CURSOR_MOVE= "syncOutlineOnCursorMove"; //$NON-NLS-1$
     
+    /**
+     * A named preference that controls whether the 'smart home-end' feature is
+     * enabled.
+     * <p>
+     * Value is of type <code>Boolean</code>.
+     * </p>
+     */
+    public final static String EDITOR_SMART_HOME_END= AbstractTextEditor.PREFERENCE_NAVIGATION_SMART_HOME_END;
+
+    /**
+     * A named preference that controls whether the 'sub-word navigation' feature is
+     * enabled.
+     * <p>
+     * Value is of type <code>Boolean</code>.
+     * </p>
+     */
+    public final static String EDITOR_SUB_WORD_NAVIGATION= "subWordNavigation"; //$NON-NLS-1$
+
 	/**
 	 * A named preference that controls whether source folding is turned on or off.
 	 * <p>
@@ -530,7 +548,10 @@ public class PreferenceConstants {
 			store.setDefault(PreferenceConstants.EDITOR_BACKGROUND_DEFAULT_COLOR, true);
 
 			store.setDefault(PreferenceConstants.EDITOR_TAB_WIDTH, 4);
-			
+            
+            store.setDefault(PreferenceConstants.EDITOR_SMART_HOME_END, true);
+            store.setDefault(PreferenceConstants.EDITOR_SUB_WORD_NAVIGATION, true);
+
 			store.setDefault(PreferenceConstants.INSERT_TABS_ON_INDENT, 1);
 			
 			store.setDefault(PreferenceConstants.SPACES_INSTEAD_OF_TABS, false);

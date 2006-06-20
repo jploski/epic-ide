@@ -49,6 +49,10 @@ import org.epic.perleditor.editors.*;
  */
 public class OpenDeclarationAction extends PerlEditorAction
 {
+    public OpenDeclarationAction()
+    {
+    }
+    
     public OpenDeclarationAction(PerlEditor editor)
     {
         super(editor);

@@ -14,10 +14,10 @@ public class PerlEditorActionIds
     public static final String VALIDATE_SYNTAX = "org.epic.perleditor.ValidateSyntax";
     public static final String FORMAT_SOURCE = "org.epic.perleditor.FormatSource";
     public static final String TOGGLE_COMMENT = "org.epic.perleditor.ToggleComment";
-    public static final String OPEN_SUB = "org.epic.perleditor.popupmenus.OpenSubAction";
-    public static final String PERL_DOC = "org.epic.perleditor.popupmenus.PerlDocAction";
+    public static final String OPEN_SUB = "org.epic.perleditor.OpenSubAction";
+    public static final String PERL_DOC = "org.epic.perleditor.PerlDocAction";
     public static final String MATCHING_BRACKET = "org.epic.perleditor.Jump2Bracket";
-    public static final String TOGGLE_MARK_OCCURRENCES = "org.epic.perleditor.editors.ToggleMarkOccurrencesAction";
+    public static final String TOGGLE_MARK_OCCURRENCES = "org.epic.perleditor.ToggleMarkOccurrencesAction";
     
     private PerlEditorActionIds() { }
     

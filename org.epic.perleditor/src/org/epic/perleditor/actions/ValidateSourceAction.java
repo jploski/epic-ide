@@ -5,6 +5,10 @@ import org.epic.perleditor.editors.PerlEditorActionIds;
 
 public class ValidateSourceAction extends PerlEditorAction
 {
+    public ValidateSourceAction()
+    {
+    }
+    
 	public ValidateSourceAction(PerlEditor editor)
     {
         super(editor);

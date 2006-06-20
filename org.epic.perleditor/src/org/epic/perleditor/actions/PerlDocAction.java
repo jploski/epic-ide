@@ -18,6 +18,12 @@ public class PerlDocAction extends PerlEditorAction
 {
 	private String selection;
 	private Shell shell;
+    
+    public PerlDocAction()
+    {
+        super(null);
+        setId(getPerlActionId());
+    }
 
 	public PerlDocAction(PerlEditor editor)
     {

@@ -277,10 +277,10 @@
          	   definitionId="org.epic.perleditor.openDeclaration"
                label="Open SUB Declaration"
                icon="icons/open-source.gif"
-               class="org.epic.perleditor.popupmenus.OpenDeclaration"
+               class="org.epic.perleditor.actions.OpenDeclaration"
                tooltip="Open Declaration for SUBs only, defined locally, in files or in packages!"
                menubarPath="DeclarationPopUp"
-               id="org.epic.perleditor.popupmenus.OpenSubAction"/>
+               id="org.epic.perleditor.OpenSubAction"/>
 
 		<!-- Perldoc -->
          <menu
@@ -295,10 +295,10 @@
          definitionId="org.epic.perleditor.searchPerlDoc"
                label="Perldoc"
                icon="icons/book.gif"
-               class="org.epic.perleditor.popupmenus.PerlDocAction"
+               class="org.epic.perleditor.actions.PerlDocAction"
                tooltip="Search Perldoc"
                menubarPath="PerlDocPopupMenu"
-               id="org.epic.perleditor.popupmenus.PerlDocAction">
+               id="org.epic.perleditor.PerlDocAction">
          </action>
 
       </viewerContribution>

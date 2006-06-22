@@ -15,15 +15,21 @@ public class TestPerlMultiLexer extends BaseTestCase
     private Map tokenNames;
     private List tokenCounts = new ArrayList();
     
+    public void testGlob() throws Exception
+    {
+        _testFile(
+            "workspace/EPICTest/test_Glob.pl",
+            new PrintWriter(new OutputStreamWriter(System.out), true));   
+    }
+
     /*
     public void testSelectedCase() throws Exception
     {
         _testFile(
             "workspace/EPICTest/x.pl",
             new PrintWriter(new OutputStreamWriter(System.out), true));   
-    }
-    */
-
+    }*/
+    
     public void testAll() throws Exception
     {   
         if (!"true".equals(getProperty("TestPerlMultiLexer.enabled"))) return;
@@ -79,7 +85,7 @@ public class TestPerlMultiLexer extends BaseTestCase
         Token t;
         while ((t = nextToken(selector, path)).getType() != Token.EOF_TYPE)
         {
-//            System.err.println(path + ": " + i + ":" + token2String(t) + " " + t.getClass());
+            //System.err.println(path + ": " + i + ":" + token2String(t) + " " + t.getClass());
             i++;
         }
         tokenCounts.add(new Integer(i));

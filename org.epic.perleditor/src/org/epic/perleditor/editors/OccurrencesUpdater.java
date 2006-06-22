@@ -15,7 +15,7 @@ import org.epic.perleditor.preferences.MarkOccurrencesPreferences;
  * This class marks occurrences of a selection in the current document. The
  * class uses the document partitioner to mark the surrounding text. Which types
  * are provided, can be determined by the preference page "Mark Occurences".
- * 
+ *
  * @author Katrin Dust
  */
 public class OccurrencesUpdater implements ISelectionChangedListener
@@ -29,7 +29,7 @@ public class OccurrencesUpdater implements ISelectionChangedListener
     private static final String ANNOTATION_TYPE = "org.epic.perleditor.occurrence";
 
     // ~ Instance fields
-    
+
     /** The currently monitored ISourceViewer */
     private ISourceViewer sourceViewer;
 
@@ -47,15 +47,15 @@ public class OccurrencesUpdater implements ISelectionChangedListener
      * according to the current caret location.
      * <p>
      * This method must not be called after the OccurrencesUpdater
-     * has been already installed. 
+     * has been already installed.
      */
     public void install(ISourceViewer sourceViewer)
     {
         assert this.sourceViewer == null : "already installed";
         this.sourceViewer = sourceViewer;
-        
+
         ISelectionProvider selectionProvider = sourceViewer.getSelectionProvider();
-        
+
         // If the selection provider is a post selection provider, post
         // selection changed events are the preferred choice, otherwise normal
         // selection changed events are requested.
@@ -76,7 +76,7 @@ public class OccurrencesUpdater implements ISelectionChangedListener
 
     /**
      * Reacts to an updated caret location or new selection by highlighting
-     * occurrences. 
+     * occurrences.
      * <p>
      * The newly selected text and its further occurrences will be marked
      * provided that the type of the text is selected in the preference page
@@ -88,10 +88,10 @@ public class OccurrencesUpdater implements ISelectionChangedListener
      */
     public void selectionChanged(SelectionChangedEvent event)
     {
-        ITextSelection textSelection = (ITextSelection) event.getSelection();        
-        updateAnnotations(textSelection);    
+        ITextSelection textSelection = (ITextSelection) event.getSelection();
+        updateAnnotations(textSelection);
 	}
-	
+
     /**
      * Stops listening to selection events (caret movements) in
      * the current ISourceViewer. Also removes any occurrence annotations
@@ -100,7 +100,7 @@ public class OccurrencesUpdater implements ISelectionChangedListener
     public void uninstall()
     {
         assert sourceViewer != null;
-        
+
         ISelectionProvider selectionProvider = sourceViewer.getSelectionProvider();
 
         if (selectionProvider instanceof IPostSelectionProvider)
@@ -122,7 +122,7 @@ public class OccurrencesUpdater implements ISelectionChangedListener
      * Adds a new Annotation to the model. The offset and the length
      * determine the position of the annotation. The annotation is not
      * persistent.
-     * 
+     *
      * @param text
      *            the associated text of the annotation
      * @param newAnnotations
@@ -146,7 +146,7 @@ public class OccurrencesUpdater implements ISelectionChangedListener
      * a given textSelection and document. If there is no selection,
      * the text of the typedRegion with the caret, as determined by
      * the document partitioner, is returned; otherwise the selected text.
-     * 
+     *
      * @param doc
      *            doc of the textselection
      * @param textSelection
@@ -178,7 +178,7 @@ public class OccurrencesUpdater implements ISelectionChangedListener
      * to the given model. Further occurrences of the text and the
      * text itself will be marked, if they have the same contentType.
      * Variables are also marked in strings.
-     * 
+     *
      * @param doc
      *            the document, used to get a FindReplaceDocumentAdapter
      *            and the contentTypes
@@ -219,7 +219,7 @@ public class OccurrencesUpdater implements ISelectionChangedListener
         }
         model.replaceAnnotations(new Annotation[] {}, newAnnotations);
     }
-    
+
     /**
      * Removes all occurrence annotations.
      */
@@ -227,7 +227,7 @@ public class OccurrencesUpdater implements ISelectionChangedListener
     {
         IAnnotationModel _model = this.sourceViewer.getAnnotationModel();
         IAnnotationModelExtension model = (IAnnotationModelExtension) _model;
-        
+
         Annotation[] array = (Annotation[]) annotations
             .toArray(new Annotation[annotations.size()]);
 
@@ -236,7 +236,7 @@ public class OccurrencesUpdater implements ISelectionChangedListener
 
         annotations.clear();
     }
-    
+
     /**
      * @return true if the given contentType should be marked
      *         according to the Mark Occurrences preference page;
@@ -250,16 +250,14 @@ public class OccurrencesUpdater implements ISelectionChangedListener
         }
         else if (contentType.equals(PartitionTypes.VARIABLE))
         {
-            if (!PerlEditorPlugin.getDefault().getPreferenceStore().getBoolean(
-                MarkOccurrencesPreferences.VARIABLE))
+            if (!getBoolPref(MarkOccurrencesPreferences.VARIABLE))
             {
                 return false;
             }
         }
         else if (contentType.equals(PartitionTypes.COMMENT))
         {
-            if (!PerlEditorPlugin.getDefault().getPreferenceStore().getBoolean(
-                MarkOccurrencesPreferences.COMMENT))
+            if (!getBoolPref(MarkOccurrencesPreferences.COMMENT))
             {
                 return false;
             }
@@ -267,8 +265,7 @@ public class OccurrencesUpdater implements ISelectionChangedListener
         else if (contentType.equals(PartitionTypes.KEYWORD1)
             || contentType.equals(PartitionTypes.KEYWORD2))
         {
-            if (!PerlEditorPlugin.getDefault().getPreferenceStore().getBoolean(
-                MarkOccurrencesPreferences.KEYWORD))
+            if (!getBoolPref(MarkOccurrencesPreferences.KEYWORD))
             {
                 return false;
             }
@@ -276,39 +273,43 @@ public class OccurrencesUpdater implements ISelectionChangedListener
         else if (contentType.equals(PartitionTypes.LITERAL1)
             || contentType.equals(PartitionTypes.LITERAL2))
         {
-            if (!PerlEditorPlugin.getDefault().getPreferenceStore().getBoolean(
-                MarkOccurrencesPreferences.LITERAL))
+            if (!getBoolPref(MarkOccurrencesPreferences.LITERAL))
             {
                 return false;
             }
         }
         else if (contentType.equals(PartitionTypes.NUMBER))
         {
-            if (!PerlEditorPlugin.getDefault().getPreferenceStore().getBoolean(
-                MarkOccurrencesPreferences.NUMBER))
+            if (!getBoolPref(MarkOccurrencesPreferences.NUMBER))
             {
                 return false;
             }
         }
         else if (contentType.equals(PartitionTypes.OPERATOR))
         {
-            if (!PerlEditorPlugin.getDefault().getPreferenceStore().getBoolean(
-                MarkOccurrencesPreferences.OPERATOR))
+            if (!getBoolPref(MarkOccurrencesPreferences.OPERATOR))
             {
                 return false;
             }
         }
         if (contentType.equals(PartitionTypes.POD))
         {
-            if (!PerlEditorPlugin.getDefault().getPreferenceStore().getBoolean(
-                MarkOccurrencesPreferences.POD))
+            if (!getBoolPref(MarkOccurrencesPreferences.POD))
             {
                 return false;
             }
         }
         return true;
     }
-    
+
+    /**
+     * @return returns the boolean value for the given preference name
+     */
+    private boolean getBoolPref(String name)
+    {
+        return PerlEditorPlugin.getDefault().getPreferenceStore().getBoolean(name);
+    }
+
     /**
      * Updates the current set of occurrence annotations.
      */
@@ -321,10 +322,9 @@ public class OccurrencesUpdater implements ISelectionChangedListener
         String contentType = doc.getDocumentPartitioner().getPartition(
             textSelection.getOffset()).getType();
 
-        if (!shouldMark(contentType))
+        if (! getBoolPref(MarkOccurrencesPreferences.MARK_OCCURRENCES) || ! shouldMark(contentType))
         {
-            if (!PerlEditorPlugin.getDefault().getPreferenceStore()
-                .getBoolean(MarkOccurrencesPreferences.KEEP_MARKS))
+            if (!getBoolPref(MarkOccurrencesPreferences.KEEP_MARKS))
             {
                 lastMarkedText = "";
                 removeAnnotations();
@@ -340,8 +340,8 @@ public class OccurrencesUpdater implements ISelectionChangedListener
             // occurrences while the caret is being moved within a marked
             // occurrence or jumping from one occurrrence to another
             if (text.equals(this.lastMarkedText)) return;
-        
-            this.lastMarkedText = text;            
+
+            this.lastMarkedText = text;
             removeAnnotations();
 
             String type = doc.getContentType(textSelection.getOffset());
@@ -356,7 +356,7 @@ public class OccurrencesUpdater implements ISelectionChangedListener
                     IStatus.OK,
                     "An unexpected exception occurred in OccurrencesUpdater",
                     e));
-            
+
             // emergency clean-up
             lastMarkedText = "";
             removeAnnotations();

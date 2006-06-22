@@ -352,7 +352,7 @@ protected OPEN_HEREDOC
 
 GLOB
 	: { glob }?
-	'<' (~('<' | '>' | '\n' | '\r'))* '>'
+	'<' (~('<' | '>' | '\n' | '\r' | '\uFFFF'))* ('>' | '\uFFFF'!)
 	;
 
 OPER_RSHIFT

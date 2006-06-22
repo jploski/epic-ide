@@ -425,7 +425,7 @@
             definitionId="org.epic.perleditor.toggleMarkOccurrences"
             disabledIcon="icons/mark_occurrences_disabled.gif"
             icon="icons/mark_occurrences.gif"
-            id="org.epic.perleditor.editors.ToggleMarkOccurrencesAction"
+            id="org.epic.perleditor.ToggleMarkOccurrencesAction"
             label="Toggle Mark Occurrences"
             retarget="true"
             style="toggle"

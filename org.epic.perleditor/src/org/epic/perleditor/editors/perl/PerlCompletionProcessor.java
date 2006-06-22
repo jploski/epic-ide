@@ -176,27 +176,30 @@ public class PerlCompletionProcessor implements IContentAssistProcessor
                 documentOffset,
                 variableChars + filehandleChars);
 
-			String key = viewer.getDocument().get(documentOffset, 1);
-			if (variableChars.indexOf(key) != -1)
+            if (documentOffset < viewer.getDocument().getLength())
             {
-				variablesModel =
-					SourceParser.getElements(
-						viewer.getDocument(),
-                        "([$@%][a-z0-9A-Z_]+)\\s*[=;]",
-						"",
-						"",
-						true);
-			}
-            else if (filehandleChars.indexOf(key) != -1)
-            {
-				variablesModel =
-					SourceParser.getElements(
-						viewer.getDocument(),
-                        "open[a-z]*\\s*?\\s*?[(]\\s*?([A-Z_0-9]+)\\s*?[,]",
-						"<",
-						">",
-						true);
-			}
+    			String key = viewer.getDocument().get(documentOffset, 1);
+    			if (variableChars.indexOf(key) != -1)
+                {
+    				variablesModel =
+    					SourceParser.getElements(
+    						viewer.getDocument(),
+                            "([$@%][a-z0-9A-Z_]+)\\s*[=;]",
+    						"",
+    						"",
+    						true);
+    			}
+                else if (filehandleChars.indexOf(key) != -1)
+                {
+    				variablesModel =
+    					SourceParser.getElements(
+    						viewer.getDocument(),
+                            "open[a-z]*\\s*?\\s*?[(]\\s*?([A-Z_0-9]+)\\s*?[,]",
+    						"<",
+    						">",
+    						true);
+    			}
+            }
 
 			for (Iterator i = variablesModel.iterator(); i.hasNext();)
             {

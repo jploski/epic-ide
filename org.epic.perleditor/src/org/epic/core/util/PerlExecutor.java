@@ -104,7 +104,7 @@ public class PerlExecutor
     
     /**
      * Executes a Perl script contained in the given resource.
-     * This resource is asusmed to be contained in a Perl project.
+     * This resource is assumed to be contained in a Perl project.
      * Project settings control the execution.
      * 
      * @param resource    script resource

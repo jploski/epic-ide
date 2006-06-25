@@ -49,14 +49,14 @@ import org.epic.perleditor.editors.*;
  */
 public class OpenDeclarationAction extends PerlEditorAction
 {
-    public OpenDeclarationAction()
-    {
-    }
-    
+    //~ Constructors
+
     public OpenDeclarationAction(PerlEditor editor)
     {
         super(editor);
     }
+    
+    //~ Methods
 
     /**
      * Runs the action using the given selection within the editor.
@@ -69,7 +69,7 @@ public class OpenDeclarationAction extends PerlEditorAction
     /**
      * Runs the action based on the current selection in the editor.
      */
-    public void run()
+    protected void doRun()
     {
         runWithFullSubName(getSelectedSubName(
             (ITextSelection) getEditor().getSelectionProvider().getSelection()));

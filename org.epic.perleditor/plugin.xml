@@ -2,102 +2,95 @@
 <?eclipse version="3.0"?>
 <plugin>
 
-     <extension
-         point="org.eclipse.ui.editors">
-      <editor
+    <extension point="org.eclipse.ui.editors">
+        <editor
             name="Epic Perl Editor"
             icon="icons/epic.gif"
             extensions="pl, ipl, pm, cgi, epl"
             contributorClass="org.epic.perleditor.editors.PerlActionContributor"
             class="org.epic.perleditor.editors.PerlEditor"
             id="org.epic.perleditor.editors.PerlEditor">
-            <contentTypeBinding contentTypeId="org.epic.perleditor.perl"/>
-      </editor>
-   </extension>
-<!--
-   <extension
-         point="org.eclipse.ui.documentProviders">
-      <provider
-            extensions="pl, ipl, pm, cgi"
-            class="org.epic.perleditor.editors.PerlDocumentProvider"
-            id="org.epic.perleditor.editors.PerlDocumentProvider">
-      </provider>
-   </extension>
--->
-   <extension
-         point="org.eclipse.ui.preferencePages">
-      <page
+            <contentTypeBinding contentTypeId="org.epic.perleditor.perl" />
+        </editor>
+    </extension>
+    <!--
+        <extension
+        point="org.eclipse.ui.documentProviders">
+        <provider
+        extensions="pl, ipl, pm, cgi"
+        class="org.epic.perleditor.editors.PerlDocumentProvider"
+        id="org.epic.perleditor.editors.PerlDocumentProvider">
+        </provider>
+        </extension>
+    -->
+    <extension point="org.eclipse.ui.preferencePages">
+        <page
             name="Perl EPIC"
             class="org.epic.core.preferences.PerlMainPreferencePage"
             id="org.epic.core.preferences.PerlMainPreferencePage">
-      </page>
-      <page
+        </page>
+        <page
             name="Editor"
             category="org.epic.core.preferences.PerlMainPreferencePage"
             class="org.epic.perleditor.preferences.PerlEditorPreferencePage"
             id="org.epic.perleditor.preferences.EpicPerlEditorPreferencePage">
-      </page>
-      <page
+        </page>
+        <page
             name="Templates"
             category="org.epic.core.preferences.PerlMainPreferencePage"
             class="org.epic.perleditor.templates.preferences.TemplatePreferencePage"
             id="org.epic.perleditor.preferences.EpicPerlTemplatesPreferencePage">
-      </page>
-      <page
+        </page>
+        <page
             name="Source Formatter"
             category="org.epic.core.preferences.PerlMainPreferencePage"
             class="org.epic.perleditor.preferences.SourceFormatterPreferencePage"
             id="org.epic.perleditor.preferences.SourceFormatterPreferencePage">
-      </page>
-      <page
+        </page>
+        <page
             name="Code Assist"
             category="org.epic.core.preferences.PerlMainPreferencePage"
             class="org.epic.perleditor.preferences.CodeAssistPreferencePage"
             id="org.epic.perleditor.preferences.CodeAssistPreferencePage">
-      </page>
-      <page
+        </page>
+        <page
             class="org.epic.perleditor.preferences.TaskTagsPreferencePage"
             category="org.epic.core.preferences.PerlMainPreferencePage"
             name="Task Tags"
             id="org.epic.perleditor.preferences.TaskTagsPreferencePage">
-      </page>
-      <page
+        </page>
+        <page
             category="org.epic.core.preferences.PerlMainPreferencePage"
             class="org.epic.perleditor.preferences.MarkOccurrencesPreferencePage"
             id="org.epic.perleditor.preferences.MarkOccurrencesPreferencePage"
-            name="Mark Occurrences"/>
-   </extension>
-   <extension
-         point="org.eclipse.ui.perspectives">
-      <perspective
+            name="Mark Occurrences" />
+    </extension>
+    <extension point="org.eclipse.ui.perspectives">
+        <perspective
             name="Perl"
             icon="icons/epic.gif"
             class="org.epic.core.Perspective"
             id="org.epic.core.Perspective">
-      </perspective>
-   </extension>
-   <extension
-         point="org.eclipse.ui.newWizards">
-      <category
+        </perspective>
+    </extension>
+    <extension point="org.eclipse.ui.newWizards">
+        <category
             name="Perl"
             id="org.epic.newproject">
-      </category>
-      <wizard
+        </category>
+        <wizard
             name="Perl Project"
             icon="icons/epic_project.gif"
             category="org.epic.newproject"
             class="org.epic.core.PerlProjectResourceWizard"
             project="true"
             id="org.epic.newproject.wizard">
-         <description>
-            Create new Perl Project
-         </description>
-      </wizard>
-   </extension>
+            <description>Create new Perl Project</description>
+        </wizard>
+    </extension>
 
-   <extension
-         point="org.eclipse.ui.newWizards">
-      <wizard
+    <extension point="org.eclipse.ui.newWizards">
+        <wizard
             name="Perl File"
             icon="icons/epic_file.gif"
             category="org.epic.newproject"
@@ -105,435 +98,406 @@
             project="false"
             finalPerspective="org.epic.core.Perspective"
             id="org.epic.newfile.wizard">
-         <description>
-            Perl File
-         </description>
-         <selection
-               class="org.eclipse.core.resources.IResource">
-         </selection>
-      </wizard>
-   </extension>
+            <description>Perl File</description>
+            <selection class="org.eclipse.core.resources.IResource"></selection>
+        </wizard>
+    </extension>
 
-   <extension
-         id="perlnature"
-         name="Perl Nature"
-         point="org.eclipse.core.resources.natures">
-      <runtime>
-         <run
-               class="org.epic.core.PerlProjectNature">
-         </run>
-      </runtime>
-<!-- Builder test START -->
-      <builder
-            id="org.epic.perleditor.perlbuilder">
-      </builder>
-   </extension>
-   <extension
-         id="perlinkexternalfilesnature"
-         name="Link External Files Nature"
-         point="org.eclipse.core.resources.natures">
-      <runtime>
-         <run
-               class="org.epic.core.PerlLinkExternalFilesNature">
-         </run>
-      </runtime>
-   </extension>
-   <extension
-         point="org.eclipse.ui.ide.projectNatureImages">
-      <image
+    <extension
+        id="perlnature"
+        name="Perl Nature"
+        point="org.eclipse.core.resources.natures">
+        <runtime>
+            <run class="org.epic.core.PerlProjectNature"></run>
+        </runtime>
+        <!-- Builder test START -->
+        <builder id="org.epic.perleditor.perlbuilder"></builder>
+    </extension>
+    <extension
+        id="perlinkexternalfilesnature"
+        name="Link External Files Nature"
+        point="org.eclipse.core.resources.natures">
+        <runtime>
+            <run class="org.epic.core.PerlLinkExternalFilesNature"></run>
+        </runtime>
+    </extension>
+    <extension point="org.eclipse.ui.ide.projectNatureImages">
+        <image
             icon="icons/project_link_folder.gif"
             natureId="org.epic.perleditor.perlinkexternalfilesnature"
             id="org.epic.core.perlinkexternalfilesnature.image">
-      </image>
-   </extension>
-<!-- Builder START -->
-   <extension
-         id="perlbuilder"
-         name="Perl Auto Builder"
-         point="org.eclipse.core.resources.builders">
-      <builder
-            hasNature="true">
-         <run
-               class="org.epic.core.builders.PerlBuilder">
-         </run>
-      </builder>
-   </extension>
-<!-- Builder END -->
-   <extension
-         point="org.eclipse.ui.ide.projectNatureImages">
-      <image
+        </image>
+    </extension>
+    <!-- Builder START -->
+    <extension
+        id="perlbuilder"
+        name="Perl Auto Builder"
+        point="org.eclipse.core.resources.builders">
+        <builder hasNature="true">
+            <run class="org.epic.core.builders.PerlBuilder"></run>
+        </builder>
+    </extension>
+    <!-- Builder END -->
+    <extension point="org.eclipse.ui.ide.projectNatureImages">
+        <image
             icon="icons/project_folder.gif"
             natureId="org.epic.perleditor.perlnature"
             id="org.epic.core.perlProjectNatureImage">
-      </image>
-   </extension>
-   <extension
-         point="org.eclipse.ui.propertyPages">
-      <page
+        </image>
+    </extension>
+    <extension point="org.eclipse.ui.propertyPages">
+        <page
             objectClass="org.eclipse.core.resources.IProject"
             name="Perl Include Path"
             class="org.epic.core.properties.IncludePathPropertyPage"
             id="org.epic.core.properties.IncludePathPropertyPage">
-         <filter
-               name="nature"
-               value="org.epic.perleditor.perlnature">
-         </filter>
-      </page>
-   </extension>
-<!-- Perldoc Perl Editor popup menu definition -->
-   <extension
-         point="org.eclipse.ui.popupMenus">
-	<!-- Toggle perl nature menu entry -->
-	  <objectContribution objectClass="org.eclipse.core.resources.IProject"
-	    id="org.epic.core.tooglePerlNature">
-  	 	<action label="Toggle Perl Nature"
-  	 		icon="icons/epic_project.gif"
-  	 		class="org.epic.core.popupmenus.TogglePerlNatureActionDelegate"
-  	 		menubarPath="epicNAvPopup"
-  	 		id="org.epic.core.togglePerlNature.action" />
-  	  </objectContribution>
-	   <!-- Explain Errors/Warnings popup menu entry -->
-  	   <viewerContribution
-            targetID="#TextRulerContext"
-            id="org.epic.perleditor.ExplainRulerPopupActions">
-         <!-- Note: the real label of ExplainErrorsRulerActionDelegate
-              is set by ExplainErrorsRulerAction from a ResourceBundle -->
-         <action
-               label="%ExplainErrorsRulerAction.label"
-               icon="icons/light_bulb.gif"
-               class="org.epic.perleditor.popupmenus.ExplainErrorsRulerActionDelegate"
-               menubarPath="explain"
-               id="org.epic.perleditor.popupmenus.ExplainErrorsRulerActionDelegate">
-         </action>
-      </viewerContribution>
-	<!-- Popup Menu menu -->
+            <filter
+                name="nature"
+                value="org.epic.perleditor.perlnature">
+            </filter>
+        </page>
+    </extension>
 
-      <viewerContribution
-            targetID="#PerlEditorContext"
-            id="org.epic.perleditor.PerlEditorPopup">
-
-            <!-- SUBMENU: Refactor Menu -->
-         <menu
-               label="Re&amp;factor"
-               path="additions"
-               id="PerlRefactorPopupMenu">
-            <separator
-                  name="PerlRefactorGroup">
-            </separator>
-         </menu>
-         <!-- Extract Subroutine -->
-         <action
-               label="&amp;Extract Subroutine"
-               class="org.epic.perleditor.popupmenus.refactor.ExtractSubroutineAction"
-               menubarPath="PerlRefactorPopupMenu/PerlRefactorGroup"
-               id="org.epic.perleditor.refactor.ExtractSubroutine">
-        </action>
-
-         <!-- SUBMENU: Source Menu -->
-         <menu
-               label="&amp;Source"
-               path="additions"
-               id="PerlSourcePopupMenu">
-            <separator
-                  name="PerlSourceGroup">
-            </separator>
-         </menu>
-         <!-- Validate syntax -->
-         <action
-               definitionId="org.epic.perleditor.validatesyntax"
-               label="&amp;Validate Syntax"
-               class="org.epic.perleditor.actions.ValidateSourceAction"
-               menubarPath="PerlSourcePopupMenu/PerlSourceGroup"
-               id="org.epic.perleditor.ValidateSyntax">
-         </action>
- 		<!-- Format source action -->
-         <action
-               definitionId="org.epic.perleditor.formatsource"
-               label="F&amp;ormat"
-               class="org.epic.perleditor.actions.FormatSourceAction"
-               menubarPath="PerlSourcePopupMenu/PerlSourceGroup"
-               id="org.epic.perleditor.FormatSource">
-         </action>
-         <!-- Toggle Comment action -->
-         <action
-               definitionId="org.epic.perleditor.togglecomment"
-               label="Togg&amp;le Comment"
-               class="org.epic.perleditor.actions.ToggleCommentAction"
-               menubarPath="PerlSourcePopupMenu/PerlSourceGroup"
-               id="org.epic.perleditor.ToggleComment">
-         </action>
-
-
-         <!-- Open Declaration -->
-         <menu
-               label="&amp;OpenDeclaration"
-               path="additions"
-               id="DeclarationPopUp">
-            <separator
-               name="PerlOpenDecGroup">
-            </separator>
-         </menu>
-         <action
-         	   definitionId="org.epic.perleditor.openDeclaration"
-               label="Open SUB Declaration"
-               icon="icons/open-source.gif"
-               class="org.epic.perleditor.actions.OpenDeclaration"
-               tooltip="Open Declaration for SUBs only, defined locally, in files or in packages!"
-               menubarPath="DeclarationPopUp"
-               id="org.epic.perleditor.OpenSubAction"/>
-
-		<!-- Perldoc -->
-         <menu
-               label="&amp;Perldoc"
-               path="additions"
-               id="PerlDocPopupMenu">
-            <separator
-                  name="PerlDocGroup">
-            </separator>
-         </menu>
-         <action
-         definitionId="org.epic.perleditor.searchPerlDoc"
-               label="Perldoc"
-               icon="icons/book.gif"
-               class="org.epic.perleditor.actions.PerlDocAction"
-               tooltip="Search Perldoc"
-               menubarPath="PerlDocPopupMenu"
-               id="org.epic.perleditor.PerlDocAction">
-         </action>
-
-      </viewerContribution>
-   </extension>
-<!-- Associate menus with PerlEditor -->
-   <extension
-         point="org.eclipse.ui.actionSetPartAssociations">
-      <actionSetPartAssociation
-            targetID="org.epic.perleditor.sourcemenu">
-         <part
-               id="org.epic.perleditor.editors.PerlEditor">
-         </part>
-      </actionSetPartAssociation>
-      <actionSetPartAssociation
-      		targetID="org.epic.perleditor.toolbar.actionSet.presentation">
-      	 <part id="org.epic.perleditor.editors.PerlEditor" />
-      </actionSetPartAssociation>
-   </extension>
-   <extension
-         point="org.eclipse.ui.actionSets">
-<!-- Remember to update class PerlEditorActionIds when adding new actions! -->
-      <actionSet
-            label="Source Menu"
-            id="org.epic.perleditor.sourcemenu">
-<!-- Content assist -->
-         <action
-               definitionId="org.eclipse.ui.edit.text.contentAssist.proposals"
-               label="Co&amp;ntent Assist"
-               retarget="true"
-               menubarPath="edit/additions"
-               id="org.epic.perleditor.ContentAssist">
-         </action>
-<!-- Source menu -->
-         <menu
-               label="&amp;Source"
-               path="edit"
-               id="org.epic.perleditor.source.menu">
-            <separator
-                  name="editGroup">
-            </separator>
-            <separator
-                  name="exportGroup">
-            </separator>
-         </menu>
-<!-- Export menu -->
-         <menu
-               label="&amp;Export"
-               path="org.epic.perleditor.source.menu/exportGroup"
-               id="export">
-            <separator
-                  name="group1">
-            </separator>
-         </menu>
-<!-- HTML export -->
-         <action
-               definitionId="org.epic.perleditor.htmlexport"
-               label="&amp;HTML"
-               retarget="true"
-               menubarPath="org.epic.perleditor.source.menu/export/group1"
-               id="org.epic.perleditor.HtmlExport">
-         </action>
-<!-- Validate syntax -->
-         <action
-               definitionId="org.epic.perleditor.validatesyntax"
-               label="&amp;Validate Syntax"
-               retarget="true"
-               menubarPath="org.epic.perleditor.source.menu/editGroup"
-               id="org.epic.perleditor.ValidateSyntax">
-         </action>
-<!-- Format source action -->
-         <action
-               definitionId="org.epic.perleditor.formatsource"
-               label="F&amp;ormat"
-               retarget="true"
-               menubarPath="org.epic.perleditor.source.menu/editGroup"
-               id="org.epic.perleditor.FormatSource">
-         </action>
-<!-- Toggle Comment action -->
-         <action
-               definitionId="org.epic.perleditor.togglecomment"
-               label="Toggl&amp;e Comment"
-               retarget="true"
-               menubarPath="org.epic.perleditor.source.menu/editGroup"
-               id="org.epic.perleditor.ToggleComment">
-         </action>
-
-<!-- Open declaration -->
-         <action
-               label="Open &amp;Declaration"
-               retarget="true"
-               icon="icons/open-source.gif"
-               definitionId="org.epic.perleditor.openDeclaration"
-               menubarPath="navigate/additions"
-               id="org.epic.perleditor.popupmenus.OpenSubAction">
-         </action>
-
-<!-- Perldoc -->
-         <action
-               label="Perldoc"
-               retarget="true"
-               icon="icons/book.gif"
-               definitionId="org.epic.perleditor.searchPerlDoc"
-               menubarPath="help/additions"
-               id="org.epic.perleditor.popupmenus.PerlDocAction">
-         </action>
-
-<!-- Matching Bracket -->
-         <action
-               label="Matching &amp;Bracket"
-               retarget="true"
-               definitionId="org.epic.perleditor.jump2Bracket"
-               menubarPath="navigate/goto/additions"
-               id="org.epic.perleditor.Jump2Bracket">
-         </action>
-
-      </actionSet>
-
-   	<actionSet
-          id="org.epic.perleditor.toolbar.actionSet.presentation"
-          label="Perl Editor Presentation"
-          visible="false">
-    		<action
-            allowLabelUpdate="true"
-            definitionId="org.epic.perleditor.toggleMarkOccurrences"
-            disabledIcon="icons/mark_occurrences_disabled.gif"
-            icon="icons/mark_occurrences.gif"
-            id="org.epic.perleditor.ToggleMarkOccurrencesAction"
-            label="Toggle Mark Occurrences"
-            retarget="true"
-            style="toggle"
-            toolbarPath="epicToolbarGroup/Presentation"
-            tooltip="Toggle Mark Occurrences">
-    		</action>
-  		</actionSet>
-
-   </extension>
-
-   <extension point="org.eclipse.ui.contexts">
-      <context
-      		name="Editing Perl Source"
-      		description="Editing Perl Source Code Context"
-      		id="org.epic.perleditor.perlEditorScope"
-      		parentId="org.eclipse.ui.textEditorScope" />
-   </extension>
-<!-- Remember to update class PerlEditorCommandIds when adding new commands! -->
-   <extension point="org.eclipse.ui.commands">
-      <category
-      		name="Perl Source"
-      		description="Perl Source Actions"
-      		id="org.epic.perleditor.source" />
-      <command
-            name="Toggle Comment"
-            description="Toggle Comment source"
-            id="org.epic.perleditor.togglecomment"
-            categoryId="org.epic.perleditor.source" />
-      <command
-            name="HTML Export"
-            description="HTML Export"
-            id="org.epic.perleditor.htmlexport"
-            categoryId="org.epic.perleditor.source" />
-      <command
-            name="Validate Syntax"
-            description="Validate Syntax"
-            id="org.epic.perleditor.validatesyntax"
-            categoryId="org.epic.perleditor.source" />
-      <command
+    <!-- Remember to update class PerlEditorCommandIds when adding new commands! -->
+    <extension point="org.eclipse.ui.commands">
+        <category
+            name="Perl Source"
+            description="Perl Source Actions"
+            id="org.epic.perleditor.commands.source" />
+        <command
+            name="Critique Source"
+            description="Critique Source"
+            id="org.epic.perleditor.commands.critiqueSource"
+            categoryId="org.epic.perleditor.commands.source" />
+        <command
             name="Format Source"
             description="Format Source"
-            id="org.epic.perleditor.formatsource"
-            categoryId="org.epic.perleditor.source" />
-      <command
+            id="org.epic.perleditor.commands.formatSource"
+            categoryId="org.epic.perleditor.commands.source" />
+        <command
+            name="Toggle Comment"
+            description="Toggle Source Comment"
+            id="org.epic.perleditor.commands.toggleComment"
+            categoryId="org.epic.perleditor.commands.source" />
+        <command
+            name="HTML Export"
+            description="HTML Export"
+            id="org.epic.perleditor.commands.htmlExport"
+            categoryId="org.epic.perleditor.commands.source" />
+        <command
+            name="Validate Syntax"
+            description="Validate Syntax"
+            id="org.epic.perleditor.commands.validateSyntax"
+            categoryId="org.epic.perleditor.commands.source" />
+        <command
             name="Open Declaration"
             description="Opens the SUBs declaration"
-            id="org.epic.perleditor.openDeclaration"
+            id="org.epic.perleditor.commands.openDeclaration"
             categoryId="org.eclipse.ui.category.navigate" />
-      <command
+        <command
             name="Search Perldoc"
             description="Search Perldoc"
-            id="org.epic.perleditor.searchPerlDoc"
+            id="org.epic.perleditor.commands.searchPerlDoc"
             categoryId="org.eclipse.ui.category.help" />
-	  <command
+        <command
             description="Matching Bracket"
             name="Matching Bracket"
-            id="org.epic.perleditor.jump2Bracket"
+            id="org.epic.perleditor.commands.jump2Bracket"
             categoryId="org.eclipse.ui.category.navigate" />
-	  <command
+        <command
             description="Toggle Mark Occurrences"
             name="Toggle Mark Occurrences"
-            id="org.epic.perleditor.toggleMarkOccurrences"
-            categoryId="org.epic.perleditor.source" />
-   </extension>
-   <extension point="org.eclipse.ui.bindings">
-      <key
-      		sequence="M1+/"
-      		schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
-      		contextId="org.epic.perleditor.perlEditorScope"
-      		commandId="org.epic.perleditor.togglecomment" />
-      <key
-            sequence="M2+F5"
-      		schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
-            contextId="org.epic.perleditor.perlEditorScope"
-            commandId="org.epic.perleditor.validatesyntax" />
-      <key
+            id="org.epic.perleditor.commands.toggleMarkOccurrences"
+            categoryId="org.epic.perleditor.commands.source" />
+        <command
+        	description="Extract Subroutine"
+        	name="Extract Subroutine"
+        	id="org.epic.perleditor.commands.extractSubroutine"
+        	categoryId="org.epic.perleditor.commands.source" />
+    </extension>
+
+    <extension point="org.eclipse.ui.bindings">
+        <key
             sequence="M1+M2+F"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
             contextId="org.epic.perleditor.perlEditorScope"
-            commandId="org.epic.perleditor.formatsource" />
-      <key
+            commandId="org.epic.perleditor.commands.formatSource" />
+        <key
+            sequence="M1+M2+C"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            contextId="org.epic.perleditor.perlEditorScope"
+            commandId="org.epic.perleditor.commands.critiqueSource" />
+        <key
+            sequence="M1+/"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            contextId="org.epic.perleditor.perlEditorScope"
+            commandId="org.epic.perleditor.commands.toggleComment" />
+        <key
+            sequence="M2+F5"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            contextId="org.epic.perleditor.perlEditorScope"
+            commandId="org.epic.perleditor.commands.validateSyntax" />
+        <key
             sequence="F3"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
-            commandId="org.epic.perleditor.openDeclaration"
+            commandId="org.epic.perleditor.commands.openDeclaration"
             contextId="org.epic.perleditor.perlEditorScope" />
-      <key
+        <key
             sequence="M1+M2+H"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
-            commandId="org.epic.perleditor.searchPerlDoc"
+            commandId="org.epic.perleditor.commands.searchPerlDoc"
             contextId="org.epic.perleditor.perlEditorScope" />
-      <key
+        <key
             sequence="M1+M2+P"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
-            commandId="org.epic.perleditor.jump2Bracket"
+            commandId="org.epic.perleditor.commands.jump2Bracket"
             contextId="org.epic.perleditor.perlEditorScope" />
-      <key
+        <key
             sequence="M2+M3+O"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
-            commandId="org.epic.perleditor.toggleMarkOccurrences"
+            commandId="org.epic.perleditor.commands.toggleMarkOccurrences"
             contextId="org.epic.perleditor.perlEditorScope" />
-   </extension>
-<!--             So to not have equal markers for the same thing we use BOTTOM_LEFT.            -->
-<!--             But on some occasions the Java Builder seems to check Perl projecs as well.    -->
-<!-- NOTE: According to the docs BOTTOM_LEFT should not be used, because JDT uses it. -->
-<!-- Decorator extension START -->
-   <extension
-         point="org.eclipse.ui.decorators">
-      <decorator
+    </extension>
+
+    <extension point="org.eclipse.ui.popupMenus">
+        <objectContribution
+            objectClass="org.eclipse.core.resources.IProject"
+            id="org.epic.core.tooglePerlNature">
+            <action
+                label="Toggle Perl Nature"
+                icon="icons/epic_project.gif"
+                class="org.epic.core.popupmenus.TogglePerlNatureActionDelegate"
+                menubarPath="epicNAvPopup"
+                id="org.epic.core.togglePerlNature.action" />
+        </objectContribution>
+
+        <viewerContribution
+            targetID="#TextRulerContext"
+            id="org.epic.perleditor.ExplainRulerPopupActions">
+            <action
+                label="%ExplainErrorsRulerAction.label"
+                icon="icons/light_bulb.gif"
+                class="org.epic.perleditor.popupmenus.ExplainErrorsRulerActionDelegate"
+                menubarPath="explain"
+                id="org.epic.perleditor.popupmenus.ExplainErrorsRulerActionDelegate">
+            </action>
+        </viewerContribution>
+
+        <viewerContribution
+            targetID="#PerlEditorContext"
+            id="org.epic.perleditor.PerlEditorPopup">
+
+            <menu
+                label="OpenDeclaration"
+                path="additions"
+                id="org.epic.perleditor.contextMenu.nav">
+            </menu>
+
+            <action
+                definitionId="org.epic.perleditor.commands.openDeclaration"
+                label="Open SUB Declaration"
+                icon="icons/open-source.gif"
+                class="org.epic.perleditor.actions.DefaultRetargetEditorDelegate"
+                menubarPath="org.epic.perleditor.contextMenu.nav"
+                id="org.epic.perleditor.actions.OpenDeclarationAction" />
+
+            <menu
+                label="Perldoc"
+                path="additions"
+                id="org.epic.perleditor.contextMenu.docs">
+            </menu>
+            <action
+                definitionId="org.epic.perleditor.commands.searchPerlDoc"
+                label="Perldoc"
+                icon="icons/book.gif"
+                class="org.epic.perleditor.actions.DefaultRetargetEditorDelegate"
+                menubarPath="org.epic.perleditor.contextMenu.docs"
+                id="org.epic.perleditor.actions.PerlDocAction">
+            </action>
+
+            <menu
+                id="org.epic.perleditor.contextMenu.refactor"
+                label="Refactor"
+                path="additions">
+                <separator name="refactorGroup" />
+            </menu>
+            <action
+                label="Extract Subroutine"
+                class="org.epic.perleditor.actions.DefaultRetargetEditorDelegate"
+                menubarPath="org.epic.perleditor.contextMenu.refactor/refactorGroup"
+                id="org.epic.perleditor.actions.ExtractSubroutineAction">
+            </action>
+
+            <menu
+                id="org.epic.perleditor.contextMenu.source"
+                label="Source"
+                path="additions">
+                <separator name="editGroup" />
+            </menu>
+            <action
+                definitionId="org.epic.perleditor.commands.validateSyntax"
+                label="Validate Syntax"
+                class="org.epic.perleditor.actions.DefaultRetargetEditorDelegate"
+                menubarPath="org.epic.perleditor.contextMenu.source/editGroup"
+                id="org.epic.perleditor.actions.ValidateSyntaxAction" />
+<!--
+            <action
+                definitionId="org.epic.perleditor.commands.critiqueSource"
+                label="Critique"
+                class="org.epic.perleditor.actions.DefaultRetargetEditorDelegate"
+                menubarPath="org.epic.perleditor.contextMenu.source/editGroup"
+                id="org.epic.perleditor.actions.CritiqueSourceAction" />
+-->
+            <action
+                definitionId="org.epic.perleditor.commands.formatSource"
+                label="Format"
+                menubarPath="org.epic.perleditor.contextMenu.source/editGroup"
+                class="org.epic.perleditor.actions.DefaultRetargetEditorDelegate"
+                id="org.epic.perleditor.actions.FormatSourceAction" />
+            <action
+                definitionId="org.epic.perleditor.commands.toggleComment"
+                label="Toggle Comment"
+                class="org.epic.perleditor.actions.DefaultRetargetEditorDelegate"
+                menubarPath="org.epic.perleditor.contextMenu.source/editGroup"
+                id="org.epic.perleditor.actions.ToggleCommentAction">
+            </action>
+
+        </viewerContribution>
+    </extension>
+
+    <extension point="org.eclipse.ui.actionSets">
+
+        <actionSet
+            label="Perl Coding"
+            description="Perl Coding"
+            id="org.epic.perleditor.actionSet.coding"
+            visible="false">
+
+            <action
+                definitionId="org.epic.perleditor.commands.openDeclaration"
+                label="Open SUB Declaration"
+                icon="icons/open-source.gif"
+                retarget="true"
+                menubarPath="navigate/additions"
+                id="org.epic.perleditor.actions.OpenDeclarationAction" />
+
+            <action
+                definitionId="org.epic.perleditor.commands.searchPerlDoc"
+                label="Perldoc"
+                icon="icons/book.gif"
+                retarget="true"
+                menubarPath="help/additions"
+                id="org.epic.perleditor.actions.PerlDocAction">
+            </action>
+
+            <menu
+                id="org.epic.perleditor.topLevelMenu.refactor"
+                label="Refactor"
+                path="edit">
+                <separator name="refactorGroup" />
+            </menu>
+
+            <action
+            	definitionId="org.epic.perleditor.commands.extractSubroutine"
+                label="Extract Subroutine"
+                retarget="true"
+                menubarPath="org.epic.perleditor.topLevelMenu.refactor/refactorGroup"
+                id="org.epic.perleditor.actions.ExtractSubroutineAction">
+            </action>
+
+            <menu
+                id="org.epic.perleditor.topLevelMenu.source"
+                label="Source"
+                path="edit">
+                <separator name="editGroup" />
+                <separator name="exportGroup" />
+            </menu>
+            <menu
+                id="export"
+                label="Export"
+                path="org.epic.perleditor.topLevelMenu.source/exportGroup">
+                <separator name="export"></separator>
+            </menu>
+
+            <action
+                definitionId="org.epic.perleditor.commands.htmlExport"
+                label="HTML"
+                retarget="true"
+                menubarPath="org.epic.perleditor.topLevelMenu.source/export/export"
+                id="org.epic.perleditor.actions.HtmlExportAction" />
+
+            <action
+                definitionId="org.epic.perleditor.commands.validateSyntax"
+                label="Validate Syntax"
+                retarget="true"
+                menubarPath="org.epic.perleditor.topLevelMenu.source/editGroup"
+                id="org.epic.perleditor.actions.ValidateSyntaxAction" />
+<!--
+            <action
+                definitionId="org.epic.perleditor.commands.critiqueSource"
+                label="Critique"
+				retarget="true"
+                menubarPath="org.epic.perleditor.topLevelMenu.source/editGroup"
+                id="org.epic.perleditor.actions.CritiqueSourceAction" />
+-->
+            <action
+                definitionId="org.epic.perleditor.commands.formatSource"
+                label="Format"
+				retarget="true"
+                menubarPath="org.epic.perleditor.topLevelMenu.source/editGroup"
+                id="org.epic.perleditor.actions.FormatSourceAction" />
+            <action
+                definitionId="org.epic.perleditor.commands.toggleComment"
+                label="Toggle Comment"
+                retarget="true"
+                menubarPath="org.epic.perleditor.topLevelMenu.source/editGroup"
+                id="org.epic.perleditor.actions.ToggleCommentAction">
+            </action>
+
+		</actionSet>
+
+        <actionSet
+            id="org.epic.perleditor.toolbar.actionSet.presentation"
+            label="Perl Editor Presentation"
+            visible="false">
+            <action
+                allowLabelUpdate="true"
+                definitionId="org.epic.perleditor.commands.toggleMarkOccurrences"
+                disabledIcon="icons/mark_occurrences_disabled.gif"
+                icon="icons/mark_occurrences.gif"
+                id="org.epic.perleditor.actions.ToggleMarkOccurrencesAction"
+                label="Toggle Mark Occurrences"
+                retarget="true"
+                style="toggle"
+                toolbarPath="epicToolbarGroup/Presentation"
+                tooltip="Toggle Mark Occurrences">
+            </action>
+        </actionSet>
+    </extension>
+
+    <extension point="org.eclipse.ui.actionSetPartAssociations">
+        <actionSetPartAssociation targetID="org.epic.perleditor.actionSet.coding">
+            <part id="org.epic.perleditor.editors.PerlEditor" />
+        </actionSetPartAssociation>
+        <actionSetPartAssociation targetID="org.epic.perleditor.toolbar.actionSet.presentation">
+            <part id="org.epic.perleditor.editors.PerlEditor" />
+        </actionSetPartAssociation>
+    </extension>
+
+    <extension point="org.eclipse.ui.contexts">
+        <context
+            name="Editing Perl Source"
+            description="Editing Perl Source Code Context"
+            id="org.epic.perleditor.perlEditorScope"
+            parentId="org.eclipse.ui.textEditorScope" />
+    </extension>
+
+    <!--             So to not have equal markers for the same thing we use BOTTOM_LEFT.            -->
+    <!--             But on some occasions the Java Builder seems to check Perl projecs as well.    -->
+    <!-- NOTE: According to the docs BOTTOM_LEFT should not be used, because JDT uses it. -->
+    <!-- Decorator extension START -->
+    <extension point="org.eclipse.ui.decorators">
+        <decorator
             lightweight="true"
             objectClass="org.eclipse.core.resources.IResource"
             location="BOTTOM_LEFT"
@@ -542,53 +506,70 @@
             state="true"
             class="org.epic.core.decorators.PerlDecorator"
             id="org.epic.core.decorators.PerlDecorator">
-         <description>
-            Perl Decorator
-         </description>
-      </decorator>
-   </extension>
-<!-- Decorator extension END -->
-   <extension
-         point="org.eclipse.ui.views">
-      <category
+            <description>Perl Decorator</description>
+        </decorator>
+    </extension>
+    <!-- Decorator extension END -->
+
+    <extension point="org.eclipse.ui.views">
+        <category
             name="EPIC"
             id="org.epic.views">
-      </category>
-   </extension>
-
-    <extension
-         point="org.eclipse.ui.views">
-      <view
+        </category>
+        <view
             name="Explain Errors/Warnings"
             icon="icons/light_bulb.gif"
             category="org.epic.views"
             class="org.epic.perleditor.views.ExplainErrorsView"
             id="org.epic.perleditor.views.ExplainErrorsView">
-      </view>
-      <view
+        </view>
+        <view
             name="PerlDoc"
             icon="icons/book.gif"
             category="org.epic.views"
             class="org.epic.perleditor.views.PerlDocView"
             id="org.epic.perleditor.views.PerlDocView">
-      </view>
-      <view
+        </view>
+        <view
             name="EPIC Web Browser"
             icon="icons/epic_cgi.gif"
             category="org.epic.views"
             class="org.epic.core.views.browser.BrowserView"
             id="org.epic.core.views.browser.BrowserView">
-      </view>
-   </extension>
+        </view>
+    </extension>
     <extension point="org.eclipse.core.runtime.contentTypes">
-		<content-type
-			id="perl"
-			base-type="org.eclipse.core.runtime.text"
-			name="Perl Source File"
-			file-extensions="pl,pm">
-			<describer class="org.epic.core.content.PerlContentDescriber"/>
-		</content-type>
+        <content-type
+            id="perl"
+            base-type="org.eclipse.core.runtime.text"
+            name="Perl Source File"
+            file-extensions="pl,pm">
+            <describer class="org.epic.core.content.PerlContentDescriber" />
+        </content-type>
     </extension>
 
-	<extension   			point="org.eclipse.ui.editors.markerAnnotationSpecification">   		<specification           annotationType="org.epic.perleditor.occurrence"           colorPreferenceKey="highlight.color"           colorPreferenceValue="253,255,157"           highlightPreferenceKey="highlight.background"           highlightPreferenceValue="true"           includeOnPreferencePage="true"           label="Occurrences"           overviewRulerPreferenceKey="highlight.rulers.overview"           overviewRulerPreferenceValue="true"           presentationLayer="4"           textPreferenceKey="highlight.text"           textPreferenceValue="false"           textStylePreferenceKey="highlight.text.style"           textStylePreferenceValue="UNDERLINE"           verticalRulerPreferenceKey="highlight.rulers.vertical"           verticalRulerPreferenceValue="true">		</specification>	</extension>
+    <extension point="org.eclipse.ui.editors.markerAnnotationSpecification">
+        <specification
+            annotationType="org.epic.perleditor.occurrence"
+            label="Occurrences"
+            icon="icons/searchm_obj.gif"
+            textPreferenceKey="occurrenceIndication"
+            textPreferenceValue="false"
+            highlightPreferenceKey="occurrenceHighlighting"
+            highlightPreferenceValue="true"
+            contributesToHeader="false"
+            overviewRulerPreferenceKey="occurrenceIndicationInOverviewRuler"
+            overviewRulerPreferenceValue="true"
+            verticalRulerPreferenceKey="occurrenceIndicationInVerticalRuler"
+            verticalRulerPreferenceValue="false"
+            colorPreferenceKey="occurrenceIndicationColor"
+            colorPreferenceValue="255,248,147"
+            presentationLayer="4"
+            showInNextPrevDropdownToolbarActionKey="showOccurrenceInNextPrevDropdownToolbarAction"
+            showInNextPrevDropdownToolbarAction="true"
+            isGoToNextNavigationTargetKey="isOccurrenceGoToNextNavigationTarget"
+	        isGoToNextNavigationTarget="false"
+            isGoToPreviousNavigationTargetKey="isOccurrenceGoToPreviousNavigationTarget"
+	        isGoToPreviousNavigationTarget="false">
+        </specification>    </extension>
 </plugin>

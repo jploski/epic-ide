@@ -6,29 +6,30 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.ui.texteditor.TextOperationAction;
 import org.epic.perleditor.editors.*;
 
+
 public class ToggleCommentAction extends PerlEditorAction
 {
-    public ToggleCommentAction()
-    {
-    }
-    
+    //~ Constructors
+
     public ToggleCommentAction(PerlEditor editor)
     {
         super(editor);
     }
 
-    public void run()
+    //~ Methods
+
+    protected void doRun()
     {
         PerlEditor editor = getEditor();
         Point selRange = editor.getViewer().getSelectedRange();
         IDocument myDoc = editor.getViewer().getDocument();
-        
+
         // It would be nice to toggle comment in a rewrite session
         // to avoid wasteful and slow reparsing in PerlPartitioner
         // See https://bugs.eclipse.org/bugs/show_bug.cgi?id=121320
         // for why it seems unpractical.
 
-        //System.out.println("Range: x=" + selRange.x + "; y=" + selRange.y);
+        // System.out.println("Range: x=" + selRange.x + "; y=" + selRange.y);
         try
         {
             int line2 = 0;
@@ -40,6 +41,7 @@ public class ToggleCommentAction extends PerlEditorAction
             {
                 line2 = myDoc.getLineOfOffset(selRange.x + selRange.y);
             }
+
             boolean noCommentFound = true;
 
             for (int i = myDoc.getLineOfOffset(selRange.x);
@@ -74,6 +76,7 @@ public class ToggleCommentAction extends PerlEditorAction
                     editor,
                     ITextOperationTarget.PREFIX);
             }
+
             action.run();
         }
         catch (BadLocationException e)

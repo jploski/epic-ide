@@ -1,15 +1,16 @@
 package org.epic.perleditor.editors;
 
+import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.editors.text.TextEditorActionContributor;
-import org.eclipse.ui.texteditor.ITextEditor;
+
 import org.epic.perleditor.actions.ToggleMarkOccurrencesAction;
 
 
 /**
- * Associates global action handlers contributed via actionSets
- * in the plug-in's manifest with their PerlEditorAction counterparts
- * in the currently active PerlEditor. 
+ * Associates global action handlers contributed via actionSets in the plug-in's manifest with their
+ * PerlEditorAction counterparts in the currently active PerlEditor.
  */
 public class PerlActionContributor extends TextEditorActionContributor
 {
@@ -25,7 +26,7 @@ public class PerlActionContributor extends TextEditorActionContributor
     }
 
     //~ Methods
-    
+
     public void dispose()
     {
         super.dispose();
@@ -35,34 +36,27 @@ public class PerlActionContributor extends TextEditorActionContributor
     public void setActiveEditor(IEditorPart part)
     {
         super.setActiveEditor(part);
-        if (!(part instanceof PerlEditor)) return;
-        
-        // Bind actions owned by the active editor
+        if (! (part instanceof PerlEditor)) { return; }
 
-        PerlEditor editor = (PerlEditor) part;        
+        PerlEditor editor = (PerlEditor) part;
 
-        bindEditorAction(editor, PerlEditorActionIds.CONTENT_ASSIST);
-        bindEditorAction(editor, PerlEditorActionIds.HTML_EXPORT);
-        bindEditorAction(editor, PerlEditorActionIds.VALIDATE_SYNTAX);
-        bindEditorAction(editor, PerlEditorActionIds.FORMAT_SOURCE);
-        bindEditorAction(editor, PerlEditorActionIds.TOGGLE_COMMENT);
-        bindEditorAction(editor, PerlEditorActionIds.OPEN_SUB);
-        bindEditorAction(editor, PerlEditorActionIds.PERL_DOC);
-        bindEditorAction(editor, PerlEditorActionIds.MATCHING_BRACKET);
-        bindEditorAction(editor, PerlEditorActionIds.TOGGLE_MARK_OCCURRENCES);
-        
-        // Bind actions owned by the PerlActionContributor
+        // Bind actions contributed by the active editor
+        String[] perlEditorActionIds = PerlEditorActionIds.getEditorActions();
+        for (int i = 0; i < perlEditorActionIds.length; i++)
+        {
+            getActionBars().setGlobalActionHandler(perlEditorActionIds[i],
+                getAction(editor, perlEditorActionIds[i]));
+        }
 
-        getActionBars().setGlobalActionHandler(
-            PerlEditorActionIds.TOGGLE_MARK_OCCURRENCES,
-            toggleMarkOccurrencesAction);
-        
         getActionBars().updateActionBars();
     }
 
-    private void bindEditorAction(ITextEditor perlEditor, String perlActionID)
+    public void init(IActionBars bars, IWorkbenchPage page)
     {
-        getActionBars().setGlobalActionHandler(
-        	perlActionID, getAction(perlEditor, perlActionID));
+        super.init(bars, page);
+
+        // bind global actions that effect all open editor instances
+        bars.setGlobalActionHandler(PerlEditorActionIds.TOGGLE_MARK_OCCURRENCES,
+                toggleMarkOccurrencesAction);
     }
 }

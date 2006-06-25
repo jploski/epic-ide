@@ -117,11 +117,11 @@ public class PerlEditor extends TextEditor implements IPropertyChangeListener
             }
             if (validationThread != null) validationThread.dispose();
             if (idleTimer != null) idleTimer.dispose();
-            
-            String[] actionIds = PerlEditorActionIds.get();
+
+            String[] actionIds = PerlEditorActionIds.getEditorActions();
             for (int i = 0; i < actionIds.length; i++)
             {
-                IAction action = (PerlEditorAction) getAction(actionIds[i]);
+                IAction action = getAction(actionIds[i]);
                 if (action instanceof PerlEditorAction)
                     ((PerlEditorAction) action).dispose();
             }
@@ -430,51 +430,41 @@ public class PerlEditor extends TextEditor implements IPropertyChangeListener
     {
         super.createActions();
 
-        Action action;
+        wireAction(
+            new ContentAssistAction(
+                PerlEditorMessages.getResourceBundle(),
+                "ContentAssistProposal.",
+                this),
+            PerlEditorCommandIds.CONTENT_ASSIST,
+            PerlEditorActionIds.CONTENT_ASSIST);
 
-        action = new ContentAssistAction(
-            PerlEditorMessages.getResourceBundle(),
-            "ContentAssistProposal.",
-            this);
-        action.setActionDefinitionId(PerlEditorCommandIds.CONTENT_ASSIST);
-        setAction(PerlEditorActionIds.CONTENT_ASSIST, action);
-
-        action = new Jump2BracketAction(this);
-        action.setActionDefinitionId(PerlEditorCommandIds.MATCHING_BRACKET);
-        setAction(action.getId(), action);
-
-        action = new FormatSourceAction(this);
-        action.setActionDefinitionId(PerlEditorCommandIds.FORMAT_SOURCE);
-        setAction(action.getId(), action);
-
-        action = new ExportHtmlSourceAction(this);
-        action.setActionDefinitionId(PerlEditorCommandIds.HTML_EXPORT);
-        setAction(action.getId(), action);
-
-        action = new ValidateSourceAction(this);
-        action.setActionDefinitionId(PerlEditorCommandIds.VALIDATE_SYNTAX);
-        setAction(action.getId(), action);
-
-        action = new OpenDeclarationAction(this);
-        action.setActionDefinitionId(PerlEditorCommandIds.OPEN_SUB);
-        setAction(action.getId(), action);
-
-        action = new ToggleCommentAction(this);
-        action.setActionDefinitionId(PerlEditorCommandIds.TOGGLE_COMMENT);
-        setAction(action.getId(), action);
-
-        action = new PerlDocAction(this);
-        action.setActionDefinitionId(PerlEditorCommandIds.PERL_DOC);
-        setAction(action.getId(), action);
+        wireAction(new ToggleCommentAction(this), PerlEditorCommandIds.TOGGLE_COMMENT,
+            PerlEditorActionIds.TOGGLE_COMMENT);
+        wireAction(new CritiqueSourceAction(this), PerlEditorCommandIds.CRITIQUE_SOURCE,
+            PerlEditorActionIds.CRITIQUE_SOURCE);
+        wireAction(new FormatSourceAction(this), PerlEditorCommandIds.FORMAT_SOURCE,
+            PerlEditorActionIds.FORMAT_SOURCE);
+        wireAction(new Jump2BracketAction(this), PerlEditorCommandIds.MATCHING_BRACKET,
+            PerlEditorActionIds.MATCHING_BRACKET);
+        wireAction(new ExportHtmlSourceAction(this), PerlEditorCommandIds.HTML_EXPORT,
+            PerlEditorActionIds.HTML_EXPORT);
+        wireAction(new ValidateSourceAction(this), PerlEditorCommandIds.VALIDATE_SYNTAX,
+            PerlEditorActionIds.VALIDATE_SYNTAX);
+        wireAction(new OpenDeclarationAction(this), PerlEditorCommandIds.OPEN_SUB,
+            PerlEditorActionIds.OPEN_SUB);
+        wireAction(new PerlDocAction(this), PerlEditorCommandIds.PERL_DOC,
+            PerlEditorActionIds.PERL_DOC);
+        wireAction(new ExtractSubroutineAction(this), PerlEditorCommandIds.EXTRACT_SUBROUTINE,
+            PerlEditorActionIds.EXTRACT_SUBROUTINE);
     }
-    
+
     protected void createNavigationActions()
     {
         super.createNavigationActions();
-        
+
         IAction action;
         StyledText textWidget = getSourceViewer().getTextWidget();
-        
+
         action = new SmartLineStartAction(textWidget, false);
         action.setActionDefinitionId(ITextEditorActionDefinitionIds.LINE_START);
         setAction(ITextEditorActionDefinitionIds.LINE_START, action);
@@ -492,12 +482,12 @@ public class PerlEditor extends TextEditor implements IPropertyChangeListener
         action.setActionDefinitionId(ITextEditorActionDefinitionIds.SELECT_WORD_NEXT);
         setAction(ITextEditorActionDefinitionIds.SELECT_WORD_NEXT, action);
         textWidget.setKeyBinding(SWT.CTRL | SWT.SHIFT | SWT.ARROW_RIGHT, SWT.NULL);
-        
+
         action = new PreviousWordAction(ST.WORD_PREVIOUS, false);
         action.setActionDefinitionId(ITextEditorActionDefinitionIds.WORD_PREVIOUS);
         setAction(ITextEditorActionDefinitionIds.WORD_PREVIOUS, action);
         textWidget.setKeyBinding(SWT.CTRL | SWT.ARROW_LEFT, SWT.NULL);
-        
+
         action = new PreviousWordAction(ST.SELECT_WORD_PREVIOUS, true);
         action.setActionDefinitionId(ITextEditorActionDefinitionIds.SELECT_WORD_PREVIOUS);
         setAction(ITextEditorActionDefinitionIds.SELECT_WORD_PREVIOUS, action);
@@ -741,6 +731,12 @@ public class PerlEditor extends TextEditor implements IPropertyChangeListener
             preferenceStore.getBoolean(PreferenceConstants.AUTO_COMPLETION_QUOTE2));
     }
 
+    private void wireAction(IAction action, String commandId, String perlActionId)
+    {
+        action.setActionDefinitionId(commandId);
+        setAction(perlActionId, action);
+    }
+
     /**
      * Contains methods that provide access to internal workings of PerlEditor
      * intended to be available only to white-box test cases. Other clients
@@ -880,7 +876,7 @@ public class PerlEditor extends TextEditor implements IPropertyChangeListener
             selectAndReveal(elem.getOffset(), elem.getName().length());
         }
     }
-    
+
     /**
      * This action implements smart home.
      *
@@ -912,7 +908,7 @@ public class PerlEditor extends TextEditor implements IPropertyChangeListener
             final int offset)
         {
             int index = super.getLineStartPosition(document, line, length, offset);
-            
+
             if (index < length - 1 && line.charAt(index) == '#')
             {
                 index++;
@@ -920,9 +916,9 @@ public class PerlEditor extends TextEditor implements IPropertyChangeListener
                     index++;
             }
             return index;
-        }    
+        }
     }
-    
+
     /**
      * Base class for actions that navigate to or select text up to the next
      * word boundary.
@@ -930,13 +926,13 @@ public class PerlEditor extends TextEditor implements IPropertyChangeListener
     protected abstract class WordNavigationAction extends TextNavigationAction
     {
         private boolean select;
-        
+
         protected WordNavigationAction(int code, boolean select)
         {
             super(getSourceViewer().getTextWidget(), code);
             this.select = select;
         }
-        
+
         public final void run()
         {
             final IPreferenceStore store = getPreferenceStore();
@@ -952,34 +948,34 @@ public class PerlEditor extends TextEditor implements IPropertyChangeListener
                 viewer, viewer.getTextWidget().getCaretOffset());
 
             if (position == -1) return;
-            
+
             PerlPartitioner partitioner =
                 (PerlPartitioner) document.getDocumentPartitioner();
             int docLength = document.getLength();
-            
+
             run(viewer, document, position, partitioner, docLength);
         }
-        
+
         protected abstract void run(
             ISourceViewer viewer,
             IDocument document,
             int position,
             PerlPartitioner partitioner,
             int docLength);
-        
+
         protected final void setCaretPosition(final int position)
         {
             if (select)
             {
                 final ISourceViewer viewer = getSourceViewer();
                 final StyledText text = viewer.getTextWidget();
-    
+
                 if (text != null && !text.isDisposed())
                 {
                     final Point selection = text.getSelection();
                     final int caret = text.getCaretOffset();
                     final int offset = modelOffset2WidgetOffset(viewer, position);
-    
+
                     if (caret == selection.x)
                         text.setSelectionRange(selection.y, offset - selection.y);
                     else
@@ -993,7 +989,7 @@ public class PerlEditor extends TextEditor implements IPropertyChangeListener
             }
         }
     }
-    
+
     /**
      * Navigates or selects text up to the next word boundary.
      */
@@ -1015,7 +1011,7 @@ public class PerlEditor extends TextEditor implements IPropertyChangeListener
             int position,
             PerlPartitioner partitioner,
             int length)
-        {            
+        {
             try
             {
                 int line = document.getLineOfOffset(position);
@@ -1031,26 +1027,26 @@ public class PerlEditor extends TextEditor implements IPropertyChangeListener
                 }
                 else
                 {
-                    ITypedRegion partition = 
+                    ITypedRegion partition =
                         partitioner.getPartition(position, true);
-                    
+
                     int partitionEnd = partition.getOffset() + partition.getLength();
-                    
+
                     if (position == partitionEnd && position < length)
                     {
                         partition = partitioner.getPartition(position+1, true);
                         partitionEnd = partition.getOffset() + partition.getLength();
                     }
-                    
+
                     while (position < partitionEnd &&
                            !Character.isWhitespace(document.getChar(position))) position++;
-        
+
                     while (position < length &&
                            Character.isWhitespace(document.getChar(position)) &&
                            document.getChar(position) != '\n' &&
                            document.getChar(position) != '\r') position++;
                 }
-                
+
                 setCaretPosition(position);
                 getTextWidget().showSelection();
                 fireSelectionChanged();
@@ -1064,12 +1060,12 @@ public class PerlEditor extends TextEditor implements IPropertyChangeListener
                         IStatus.OK,
                         "An unexpected exception occurred in NextWordAction",
                         e));
-                
+
                 super.run(); // fall back on default behavior
             }
         }
     }
-    
+
     /**
      * Navigates or selects text up to the previous word boundary.
      */
@@ -1084,16 +1080,16 @@ public class PerlEditor extends TextEditor implements IPropertyChangeListener
         {
             super(code, select);
         }
-        
+
         protected void run(
             ISourceViewer viewer,
             IDocument document,
             int position,
             PerlPartitioner partitioner,
             int length)
-        {            
+        {
             try
-            {               
+            {
                 int line = document.getLineOfOffset(position);
                 if (document.getLineOffset(line) == position)
                 {
@@ -1111,12 +1107,12 @@ public class PerlEditor extends TextEditor implements IPropertyChangeListener
                     else return;
                 }
                 else
-                {                
-                    ITypedRegion partition = 
-                        partitioner.getPartition(position, false);                
-    
+                {
+                    ITypedRegion partition =
+                        partitioner.getPartition(position, false);
+
                     int partitionStart = partition.getOffset();
-                    
+
                     if (position == partitionStart && position > 0)
                     {
                         partition = partitioner.getPartition(position-1, false);
@@ -1127,7 +1123,7 @@ public class PerlEditor extends TextEditor implements IPropertyChangeListener
                         Character.isWhitespace(document.getChar(position-1)) &&
                         document.getChar(position-1) != '\n' &&
                         document.getChar(position-1) != '\r') position--;
-                    
+
                     while (position > partitionStart &&
                            !Character.isWhitespace(document.getChar(position-1))) position--;
                 }
@@ -1145,7 +1141,7 @@ public class PerlEditor extends TextEditor implements IPropertyChangeListener
                         IStatus.OK,
                         "An unexpected exception occurred in PreviousWordAction",
                         e));
-                
+
                 super.run(); // fall back on default behavior
             }
         }

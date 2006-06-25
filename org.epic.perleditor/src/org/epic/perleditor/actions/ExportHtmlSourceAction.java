@@ -1,8 +1,9 @@
 package org.epic.perleditor.actions;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.StringTokenizer;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.DirectoryDialog;
@@ -14,30 +15,32 @@ import org.epic.perleditor.editors.PerlEditorActionIds;
 import org.epic.perleditor.editors.util.SourceFormatter;
 import org.epic.perleditor.preferences.SourceFormatterPreferences;
 
+
 public class ExportHtmlSourceAction extends PerlEditorAction
 {
+    //~ Static fields/initializers
+
     private static String lastSelectedDir;
-    
-    public ExportHtmlSourceAction()
-    {
-    }
+
+    //~ Constructors
 
     public ExportHtmlSourceAction(PerlEditor editor)
     {
         super(editor);
     }
 
-    public void run()
+    //~ Methods
+
+    protected void doRun()
     {
         PerlEditor editor = getEditor();
         IFileEditorInput editorInput = (IFileEditorInput) editor.getEditorInput();
-        String filePath =
-            editorInput.getFile().getLocation().makeAbsolute().toString();
+        String filePath = editorInput.getFile().getLocation().makeAbsolute().toString();
 
         // Display directory dialog
-        DirectoryDialog directoryDialog = new DirectoryDialog(
-            PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
-            SWT.SAVE);
+        DirectoryDialog directoryDialog =
+            new DirectoryDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
+                SWT.SAVE);
         directoryDialog.setText("Select Output Directory");
         directoryDialog.setMessage("HTML Export...");
 
@@ -57,10 +60,10 @@ public class ExportHtmlSourceAction extends PerlEditorAction
             cmdList.add(outputDir);
 
             // Add additional options
-            IPreferenceStore store =
-                PerlEditorPlugin.getDefault().getPreferenceStore();
-            StringTokenizer st = new StringTokenizer(
-                store.getString(SourceFormatterPreferences.HTML_EXPORT_OPTIONS));
+            IPreferenceStore store = PerlEditorPlugin.getDefault().getPreferenceStore();
+            StringTokenizer st =
+                new StringTokenizer(store.getString(
+                        SourceFormatterPreferences.HTML_EXPORT_OPTIONS));
             while (st.hasMoreTokens())
             {
                 cmdList.add(st.nextToken());
@@ -69,16 +72,7 @@ public class ExportHtmlSourceAction extends PerlEditorAction
             // last thing has to be the input file name
             cmdList.add(filePath);
 
-            try
-            {
-                new SourceFormatter().doConversion(
-                    editor.getViewer().getDocument().get(),
-                    cmdList);
-            }
-            catch (CoreException e)
-            {
-                PerlEditorPlugin.getDefault().getLog().log(e.getStatus());
-            }
+            SourceFormatter.format(editor.getViewer().getDocument().get(), cmdList, getLog());
         }
     }
 

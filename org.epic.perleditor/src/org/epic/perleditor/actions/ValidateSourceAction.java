@@ -3,20 +3,22 @@ package org.epic.perleditor.actions;
 import org.epic.perleditor.editors.PerlEditor;
 import org.epic.perleditor.editors.PerlEditorActionIds;
 
+
 public class ValidateSourceAction extends PerlEditorAction
 {
-    public ValidateSourceAction()
-    {
-    }
-    
-	public ValidateSourceAction(PerlEditor editor)
+    //~ Constructors
+
+    public ValidateSourceAction(PerlEditor editor)
     {
         super(editor);
-	}
 
-	public void run()
+    }
+
+    //~ Methods
+
+    protected void doRun()
     {
-		getEditor().revalidateSyntax();
+        getEditor().revalidateSyntax();
     }
 
     protected String getPerlActionId()

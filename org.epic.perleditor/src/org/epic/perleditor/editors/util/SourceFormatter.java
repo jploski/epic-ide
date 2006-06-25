@@ -1,53 +1,83 @@
 package org.epic.perleditor.editors.util;
 
-import java.io.*;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.*;
-
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.ILog;
+
 import org.eclipse.jface.preference.IPreferenceStore;
-import org.epic.core.util.PerlExecutor;
+
+import org.epic.core.util.ScriptExecutor;
+
 import org.epic.perleditor.PerlEditorPlugin;
 import org.epic.perleditor.preferences.PreferenceConstants;
 import org.epic.perleditor.preferences.SourceFormatterPreferences;
 
-public class SourceFormatter
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.StringTokenizer;
+
+
+/**
+ * Formats perl source code using PerlTidy
+ *
+ * @see http://perltidy.sourceforge.net
+ */
+public class SourceFormatter extends ScriptExecutor
 {
-    public String doConversion(String text) throws CoreException
+    //~ Constructors
+
+    protected SourceFormatter(ILog log)
     {
-        return doConversion(text, null);
+        super(log);
     }
 
-    public String doConversion(String text, List additionalOptions) throws CoreException
+    //~ Methods
+
+    /**
+     * format perl source code
+     *
+     * @param toFormat source to format
+     * @param log log instance
+     *
+     * @return newly formatted source code, or the original source code if the source could not be
+     *         formatted
+     */
+    public static String format(String toFormat, ILog log)
     {
-        if (text == null) return "";
-        
-        File workingDir = null;
-        
-        try { workingDir = getWorkingDir(); }
-        catch (IOException e)
-        {            
-            e.printStackTrace(); // TODO log it
-            return text;
-        }
-        
-        PerlExecutor executor = new PerlExecutor();
+        return format(toFormat, Collections.EMPTY_LIST, log);
+    }
+
+    /**
+     * format perl source code
+     *
+     * @param toFormat source to format
+     * @param additionalArgs additional arguments that may be passed to the command line
+     * @param log log instance
+     *
+     * @return newly formatted source code, or the original source code if the source could not be
+     *         formatted
+     */
+    public static String format(String toFormat, List additionalArgs, ILog log)
+    {
         try
         {
-            return executor.execute(
-                workingDir,
-                getCommandLineArgs(additionalOptions),
-                text).stdout;
+            return new SourceFormatter(log).run(toFormat, additionalArgs).stdout;
         }
-        finally { executor.dispose(); }
+        catch (CoreException e)
+        {
+            log.log(e.getStatus());
+
+            // return the original text being formatted
+            return toFormat;
+        }
     }
-    
-    private List getCommandLineArgs(List additionalOptions)
+
+    /*
+     * @see org.epic.core.util.ScriptExecutor#getCommandLineOpts(java.util.List)
+     */
+    protected List getCommandLineOpts(List additionalOptions)
     {
-        IPreferenceStore store =
-            PerlEditorPlugin.getDefault().getPreferenceStore();
+        IPreferenceStore store = PerlEditorPlugin.getDefault().getPreferenceStore();
 
         int numSpaces = store.getInt(PreferenceConstants.INSERT_TABS_ON_INDENT);
         boolean useTabs = store.getBoolean(PreferenceConstants.SPACES_INSTEAD_OF_TABS);
@@ -56,8 +86,10 @@ public class SourceFormatter
 
         boolean cuddleElse = store.getBoolean(SourceFormatterPreferences.CUDDLED_ELSE);
         boolean bracesLeft = store.getBoolean(SourceFormatterPreferences.BRACES_LEFT);
-        boolean lineUpParentheses = store.getBoolean(SourceFormatterPreferences.LINE_UP_WITH_PARENTHESES);
-        boolean swallowOptionalBlankLines = store.getBoolean(SourceFormatterPreferences.SWALLOW_OPTIONAL_BLANK_LINES);
+        boolean lineUpParentheses =
+            store.getBoolean(SourceFormatterPreferences.LINE_UP_WITH_PARENTHESES);
+        boolean swallowOptionalBlankLines =
+            store.getBoolean(SourceFormatterPreferences.SWALLOW_OPTIONAL_BLANK_LINES);
 
         // int containerTightnessBraces =
         // store.getInt(SourceFormatterPreferences.CONTAINER_TIGHTNESS_BRACES);
@@ -68,45 +100,69 @@ public class SourceFormatter
 
         List args = new ArrayList();
 
-        args.add("perltidy");
+        // args.add("perltidy");
         args.add("--indent-columns=" + tabWidth);
         args.add("--maximum-line-length=" + pageSize);
         // cmdList.add("--brace-tightness=" + containerTightnessBraces);
-        // cmdList.add("--paren-tightness=" +
-        // containerTightnessParentheses);
-        // cmdList.add("--square-bracket-tightness=" +
-        // containerTightnessSquareBrackets);
+        // cmdList.add("--paren-tightness=" + containerTightnessParentheses);
+        // cmdList.add("--square-bracket-tightness=" + containerTightnessSquareBrackets);
 
-        if (useTabs) args.add("--entab-leading-whitespace=" + tabWidth);
-        if (cuddleElse) args.add("--cuddled-else");
-        if (bracesLeft) args.add("--opening-brace-on-new-line");
-        if (lineUpParentheses) args.add("--line-up-parentheses");
-        if (swallowOptionalBlankLines) args.add("--swallow-optional-blank-lines");
+        if (useTabs)
+        {
+            args.add("--entab-leading-whitespace=" + tabWidth);
+        }
+
+        if (cuddleElse)
+        {
+            args.add("--cuddled-else");
+        }
+
+        if (bracesLeft)
+        {
+            args.add("--opening-brace-on-new-line");
+        }
+
+        if (lineUpParentheses)
+        {
+            args.add("--line-up-parentheses");
+        }
+
+        if (swallowOptionalBlankLines)
+        {
+            args.add("--swallow-optional-blank-lines");
+        }
 
         // Read additional options
-        StringTokenizer st = new StringTokenizer(
-            store.getString(SourceFormatterPreferences.PERLTIDY_OPTIONS));
-        while (st.hasMoreTokens()) args.add(st.nextToken());
+        StringTokenizer st =
+            new StringTokenizer(store.getString(SourceFormatterPreferences.PERLTIDY_OPTIONS));
+        while (st.hasMoreTokens())
+        {
+            args.add(st.nextToken());
+        }
 
         // Add additionally passed options
-        if (additionalOptions != null) args.addAll(additionalOptions);
+        if (additionalOptions != null)
+        {
+            args.addAll(additionalOptions);
+        }
 
         return args;
     }
-    
-    private File getWorkingDir() throws IOException
+
+    /*
+     * @see org.epic.core.util.ScriptExecutor#getExecutable()
+     */
+    protected String getExecutable()
     {
-        try
-        {
-            URL installURL = PerlEditorPlugin.getDefault().getBundle().getEntry("/");
-            URL perlTidyURL = Platform.resolve(new URL(installURL, "perlutils/perltidy"));
-            return new File(perlTidyURL.getPath());
-        }
-        catch (MalformedURLException e)
-        {
-            // TODO log it, should never happen
-            e.printStackTrace();
-            return null;
-        }
+        return "perltidy";
     }
+
+    /*
+     * @see org.epic.core.util.ScriptExecutor#getScriptDir()
+     */
+    protected String getScriptDir()
+    {
+        return "perlutils/perltidy";
+    }
+
 }

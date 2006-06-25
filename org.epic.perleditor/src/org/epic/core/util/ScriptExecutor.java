@@ -69,7 +69,7 @@ public abstract class ScriptExecutor
     {
         File workingDir = getWorkingDir();
 
-        PerlExecutor executor = new PerlExecutor();
+        PerlExecutor executor = new PerlExecutor(ignoresBrokenPipe());
         try
         {
             List cmdArgs = new ArrayList(1);
@@ -124,6 +124,16 @@ public abstract class ScriptExecutor
     protected List getCommandLineOpts(List additionalOptions)
     {
         return (additionalOptions != null) ? additionalOptions : Collections.EMPTY_LIST;
+    }
+    
+    /**
+     * @return true if broken pipe exceptions from the executed script should be ignored,
+     *         false otherwise (default)
+     * @see org.epic.core.util.ProcessExecutor#ignoreBrokenPipe
+     */
+    protected boolean ignoresBrokenPipe()
+    {
+        return false;
     }
 
     private File getWorkingDir()

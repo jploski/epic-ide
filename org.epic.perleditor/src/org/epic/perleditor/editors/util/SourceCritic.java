@@ -29,5 +29,9 @@ public class SourceCritic extends ScriptExecutor
     {
         return "";
     }
-
+    
+    protected boolean ignoresBrokenPipe()
+    {
+        return true;
+    }
 }

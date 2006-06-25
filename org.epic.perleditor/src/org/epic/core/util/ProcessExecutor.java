@@ -157,7 +157,6 @@ public class ProcessExecutor
                 try 
                 {
                     inputWriter.write(input.substring(1));
-                    inputWriter.write(0x1a); //this should avoid problem with Win98
                     inputWriter.flush();
                 }
                 catch (IOException e)

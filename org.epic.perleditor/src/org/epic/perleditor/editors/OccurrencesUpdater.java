@@ -208,11 +208,14 @@ public class OccurrencesUpdater implements ISelectionChangedListener
                 || (contentType.equals(PartitionTypes.VARIABLE) && type
                     .equals(PartitionTypes.LITERAL1)))
             {
-                String behind = "" + doc.getChar(offset);
-
-                if (!(LETTER_PATTERN.matcher(behind)).matches())
+                if (offset < doc.getLength())
                 {
-                    addAnnotation(text, newAnnotations, index, text.length());
+                    String behind = "" + doc.getChar(offset);
+    
+                    if (!(LETTER_PATTERN.matcher(behind)).matches())
+                    {
+                        addAnnotation(text, newAnnotations, index, text.length());
+                    }
                 }
             }
             index = docText.indexOf(text, offset);

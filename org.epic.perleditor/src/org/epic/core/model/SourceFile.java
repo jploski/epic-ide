@@ -76,6 +76,15 @@ public class SourceFile
         return new SubIterator();
     }
     
+    /**
+     * @return an iterator over {@link ModuleUse} instances representing
+     *         'use module' statements found in the source, in their original order  
+     */
+    public Iterator getUses()
+    {
+        return new ModuleUseIterator();
+    }
+    
     public synchronized void parse()
     {
         this.pods = new ArrayList();
@@ -328,6 +337,41 @@ public class SourceFile
         public Object next()
         {
             return subIterator.next();
+        }
+    }
+    
+    private class ModuleUseIterator implements Iterator
+    {
+        private Iterator pkgIterator;
+        private Iterator useIterator;
+        
+        public ModuleUseIterator()
+        {
+            pkgIterator = packages.iterator();
+        }
+        
+        public void remove()
+        {
+            throw new UnsupportedOperationException();
+        }
+
+        public boolean hasNext()
+        {
+            while (useIterator == null || !useIterator.hasNext())
+            {
+                if (pkgIterator.hasNext())
+                {
+                    Package pkg = (Package) pkgIterator.next();
+                    useIterator = pkg.getUses().iterator();
+                }
+                else return false;
+            }
+            return true;
+        }
+
+        public Object next()
+        {
+            return useIterator.next();
         }
     }
 }

@@ -3,11 +3,10 @@ package org.epic.perleditor.editors;
 import java.util.*;
 import java.util.regex.Pattern;
 
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.text.*;
 import org.eclipse.jface.text.source.*;
 import org.eclipse.jface.viewers.*;
+import org.epic.core.util.StatusFactory;
 import org.epic.perleditor.PerlEditorPlugin;
 import org.epic.perleditor.preferences.MarkOccurrencesPreferences;
 
@@ -27,6 +26,9 @@ public class OccurrencesUpdater implements ISelectionChangedListener
 
     /** Annotation type used in extension point */
     private static final String ANNOTATION_TYPE = "org.epic.perleditor.occurrence";
+    
+    /** Pattern used to match an attribute or subroutine name */
+    private static final Pattern NAME_PATTERN = Pattern.compile("[a-zA-Z_&][a-zA-Z0-9_]*");
 
     // ~ Instance fields
 
@@ -239,13 +241,47 @@ public class OccurrencesUpdater implements ISelectionChangedListener
 
         annotations.clear();
     }
+    
+    /**
+     * @return true if the given text selection should be marked as an occurrence;
+     *         false otherwise
+     */
+    private boolean shouldMark(IDocument doc, ITextSelection selection)
+    {
+        IDocumentPartitioner partitioner = doc.getDocumentPartitioner();
+        ITypedRegion partition = partitioner.getPartition(selection.getOffset()); 
+        String contentType = partition.getType();
+        
+        // First, check to see if it among one of the configured content types
+        if (shouldMarkContentType(contentType)) return true;               
+        
+        // Second, check if it could be a subroutine or attribute name.
+        // These cannot be currently distinguished by content type alone,
+        // so we do regexp-based name matching.
+        if (!getBoolPref(MarkOccurrencesPreferences.NAME)) return false;
+        if (!contentType.equals(PartitionTypes.DEFAULT)) return false;
+        
+        // Avoid matching very short names (for performance)
+        if (partition.getLength() < 3) return false;
+        
+        try
+        {
+            String text = doc.get(partition.getOffset(), partition.getLength());
+            return NAME_PATTERN.matcher(text).matches();
+        }
+        catch (BadLocationException e) // should never occur
+        {
+            logUnexpected(e);            
+            return false;
+        }
+    }
 
     /**
      * @return true if the given contentType should be marked
      *         according to the Mark Occurrences preference page;
      *         false otherwise
      */
-    private boolean shouldMark(String contentType)
+    private boolean shouldMarkContentType(String contentType)
     {
         if (contentType == null || contentType.equals(PartitionTypes.DEFAULT))
         {
@@ -322,10 +358,9 @@ public class OccurrencesUpdater implements ISelectionChangedListener
         IAnnotationModelExtension model = (IAnnotationModelExtension) _model;
 
         IDocument doc = sourceViewer.getDocument();
-        String contentType = doc.getDocumentPartitioner().getPartition(
-            textSelection.getOffset()).getType();
 
-        if (! getBoolPref(MarkOccurrencesPreferences.MARK_OCCURRENCES) || ! shouldMark(contentType))
+        if (!getBoolPref(MarkOccurrencesPreferences.MARK_OCCURRENCES) ||
+            !shouldMark(doc, textSelection))
         {
             if (!getBoolPref(MarkOccurrencesPreferences.KEEP_MARKS))
             {
@@ -352,17 +387,20 @@ public class OccurrencesUpdater implements ISelectionChangedListener
         }
         catch (BadLocationException e)
         {
-            PerlEditorPlugin.getDefault().getLog().log(
-                new Status(
-                    IStatus.ERROR,
-                    PerlEditorPlugin.getPluginId(),
-                    IStatus.OK,
-                    "An unexpected exception occurred in OccurrencesUpdater",
-                    e));
+            logUnexpected(e);
 
             // emergency clean-up
             lastMarkedText = "";
             removeAnnotations();
         }
+    }
+    
+    private void logUnexpected(Throwable t)
+    {
+        PerlEditorPlugin.getDefault().getLog().log(
+            StatusFactory.createError(
+                PerlEditorPlugin.getPluginId(),
+                "An unexpected exception occurred in OccurrencesUpdater",
+                t));
     }
 }

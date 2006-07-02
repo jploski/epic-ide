@@ -20,47 +20,52 @@ public class MarkOccurrencesPreferencePage extends FieldEditorPreferencePage
 		implements IWorkbenchPreferencePage {
 
 	/*
-	 * boolean field to determine, if occurrences should be highlighted
+	 * Boolean field to determine if occurrences should be highlighted
 	 */
 	private BooleanFieldEditor markOcc;
 
 	/*
-	 * boolean field to determine, if occurrences in variables will be marked
+	 * Boolean field to determine if occurrences of variables will be marked
 	 */
 	private BooleanFieldEditor variable;
 
 	/*
-	 * boolean field to determine, if occurrences in comments will be marked
+	 * Boolean field to determine if occurrences of comments will be marked
 	 */
 	private BooleanFieldEditor comment;
 
 	/*
-	 * boolean field to determine, if occurrences in numbers will be marked
+	 * Boolean field to determine if occurrences of numbers will be marked
 	 */
 	private BooleanFieldEditor number;
 
 	/*
-	 * boolean field to determine, if occurrences in literals will be marked
+	 * Boolean field to determine if occurrences of literals will be marked
 	 */
 	private BooleanFieldEditor literal;
 
+    /*
+     * Boolean field to determine if occurrences of subroutine/attribute names will be marked
+     */
+    private BooleanFieldEditor name;
+    
 	/*
-	 * boolean field to determine, if occurrences in operators will be marked
+	 * Boolean field to determine if occurrences of operators will be marked
 	 */
 	private BooleanFieldEditor operator;
 
 	/*
-	 * boolean field to determine, if occurrences in keywords will be marked
+	 * Boolean field to determine if occurrences of keywords will be marked
 	 */
 	private BooleanFieldEditor keyword;
 
 	/*
-	 * boolean field to determine, if occurrences in pods will be marked
+	 * Boolean field to determine if occurrences of pods will be marked
 	 */
 	private BooleanFieldEditor pod;
 
 	/*
-	 * boolean field to determine, if occurrences should be kept when selection
+	 * Boolean field to determine if occurrences should be kept when selection
 	 * changed
 	 */
 	private BooleanFieldEditor keepMarks;
@@ -94,6 +99,9 @@ public class MarkOccurrencesPreferencePage extends FieldEditorPreferencePage
 		this.literal = new BooleanFieldEditor(
 				MarkOccurrencesPreferences.LITERAL, "Literal",
 				getFieldEditorParent());
+        this.name = new BooleanFieldEditor(
+            MarkOccurrencesPreferences.NAME, "Name (subroutines/attributes)",
+            getFieldEditorParent());
 		this.operator = new BooleanFieldEditor(
 				MarkOccurrencesPreferences.OPERATOR, "Operator",
 				getFieldEditorParent());
@@ -110,6 +118,7 @@ public class MarkOccurrencesPreferencePage extends FieldEditorPreferencePage
 		addField(variable);
 		addField(comment);
 		addField(literal);
+        addField(name);
 		addField(number);
 		addField(operator);
 		addField(keyword);
@@ -165,6 +174,7 @@ public class MarkOccurrencesPreferencePage extends FieldEditorPreferencePage
 		comment.setEnabled(enabled, getFieldEditorParent());
 		number.setEnabled(enabled, getFieldEditorParent());
 		literal.setEnabled(enabled, getFieldEditorParent());
+        name.setEnabled(enabled, getFieldEditorParent());
 		operator.setEnabled(enabled, getFieldEditorParent());
 		keyword.setEnabled(enabled, getFieldEditorParent());
 		pod.setEnabled(enabled, getFieldEditorParent());

@@ -12,51 +12,24 @@ import org.eclipse.jface.preference.IPreferenceStore;
 public class MarkOccurrencesPreferences {
 
 	/**
-	 * used for Button, to determine, if occurrences should be highlighted
+	 * Used to determine if occurrences should be highlighted at all.
 	 */
 	public static final String MARK_OCCURRENCES = "Occurrences.markOccurrences";
 
 	/**
-	 * used for Button, to determine, if occurrences should be kept when
-	 * selection changed
+	 * Used to determine if occurrences should be kept when the selection changes.
 	 */
 	public static final String KEEP_MARKS = "Occurrences.keepMarks";
 
-	/**
-	 * used for Button, to determine, if occurrences in comments will be marked
-	 */
 	public final static String COMMENT = "Occurrences.COMMENT";
-
-	/**
-	 * used for Button, to determine, if occurrences in pod will be marked
-	 */
 	public final static String POD = "Occurrences.POD";
-
-	/**
-	 * used for Button, to determine, if occurrences in keywords will be marked
-	 */
 	public final static String KEYWORD = "Occurrences.KEYWORD";
-
-	/**
-	 * used for Button, to determine, if occurrences in variables will be marked
-	 */
 	public final static String VARIABLE = "Occurrences.VARIABLE";
-
-	/**
-	 * used for Button, to determine, if occurrences in literals will be marked
-	 */
 	public final static String LITERAL = "Occurrences.LITERAL";
-
-	/**
-	 * used for Button, to determine, if occurrences in number will be marked
-	 */
 	public final static String NUMBER = "Occurrences.NUMBER";
-
-	/**
-	 * used for Button, to determine, if occurrences in operators will be marked
-	 */
 	public final static String OPERATOR = "Occurrences.OPERATOR";
-
+    public final static String NAME = "Occurrences.NAME";
+    
 	/**
 	 * Used to set the default values in the given preference store.
 	 * @param store
@@ -66,6 +39,7 @@ public class MarkOccurrencesPreferences {
 		store.setDefault(COMMENT, true);
 		store.setDefault(VARIABLE, true);
 		store.setDefault(LITERAL, true);
+        store.setDefault(NAME, true);
 		store.setDefault(NUMBER, false);
 		store.setDefault(OPERATOR, false);
 		store.setDefault(POD, false);

@@ -22,6 +22,7 @@ public class PerlMainPreferencePage
 	private Text browserLabelText;
 	private Button warningsCheckBox;
 	private Button taintCheckBox;
+    private Button debugConsoleCheckBox;
 
 	private Button validateCheckBox;
 	private Scale syntaxCheckInterval;
@@ -125,6 +126,15 @@ public class PerlMainPreferencePage
 			PerlEditorPlugin.getDefault().getTaintPreference());
 		taintCheckBox.setLayoutData(data);
 
+        // Debugger console (experimental)
+        data = new GridData(GridData.FILL_HORIZONTAL);
+        data.grabExcessHorizontalSpace = true;
+        debugConsoleCheckBox = new Button(top, SWT.CHECK);
+        debugConsoleCheckBox.setText("Enable debugger console (experimental)");
+        debugConsoleCheckBox.setSelection(
+            PerlEditorPlugin.getDefault().getDebugConsolePreference());
+        debugConsoleCheckBox.setLayoutData(data);        
+        
 		//WebBrowser preferences
 		Composite browserComposite = new Composite(top, SWT.NULL);
 		GridLayout browserLayout = new GridLayout();
@@ -230,10 +240,11 @@ public class PerlMainPreferencePage
 		PerlEditorPlugin.getDefault().setWarningsPreference(
 			warningsCheckBox.getSelection());
 		PerlEditorPlugin.getDefault().setTaintPreference(
-					taintCheckBox.getSelection());
-
-		PerlEditorPlugin.getDefault().setSyntaxValidationPreference(
-				validateCheckBox.getSelection());
+			taintCheckBox.getSelection());
+        PerlEditorPlugin.getDefault().setDebugConsolePreference(
+            debugConsoleCheckBox.getSelection());
+		PerlEditorPlugin.getDefault().setSyntaxValidationPreference(
+            validateCheckBox.getSelection());
 		PerlEditorPlugin.getDefault().getPreferenceStore().setValue(PerlEditorPlugin.INTERPRETER_TYPE_PREFERENCE, interpreterTypeCombo.getText());
 		PerlEditorPlugin.getDefault().getPreferenceStore().setValue(PerlEditorPlugin.SYNTAX_VALIDATION_INTERVAL_PREFERENCE, syntaxCheckInterval.getSelection());
 		PerlEditorPlugin.getDefault().setWebBrowserPreference(

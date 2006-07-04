@@ -47,6 +47,8 @@ public class PerlEditorPlugin extends AbstractUIPlugin {
 	public static final String WARNINGS_PREFERENCE = "SHOW_WARNINGS";
 
 	public static final String TAINT_MODE_PREFERENCE = "USE_TAINT_MODE";
+    
+    public static final String DEBUG_CONSOLE_PREFERENCE = "ENABLE_DEBUG_CONSOLE";
 
 	private static final boolean WARNINGS_DEFAULT = true;
 
@@ -237,14 +239,25 @@ public class PerlEditorPlugin extends AbstractUIPlugin {
 	public void setTaintPreference(boolean value) {
 		getPreferenceStore().setValue(TAINT_MODE_PREFERENCE,
 				value == true ? "1" : "0");
-	}
+	}    
 
 	public boolean getTaintPreference() {
 		String value = getPreferenceStore().getString(TAINT_MODE_PREFERENCE);
 
 		return value.equals("1") ? true : false;
 	}
+    
+    public boolean getDebugConsolePreference() {
+        String value = getPreferenceStore().getString(DEBUG_CONSOLE_PREFERENCE);
 
+        return value.equals("1") ? true : false;
+    }
+
+    public void setDebugConsolePreference(boolean value) {
+        getPreferenceStore().setValue(DEBUG_CONSOLE_PREFERENCE,
+                value == true ? "1" : "0");
+    }
+    
 	public boolean getDefaultTaintPreference() {
 		return TAINT_MODE_DEFAULT;
 	}

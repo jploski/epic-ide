@@ -221,10 +221,38 @@ public abstract class Target extends DebugElement implements IDebugTarget
 
 		try
 		{
+            String[] env = PerlDebugPlugin.getDebugEnv(this);
+            
+            if (PerlEditorPlugin.getDefault().getDebugConsolePreference())
+            {
+                StringBuffer buf = new StringBuffer("Starting Perl debugger:\n");
+                buf.append("Command line:\n");
+                for (int i = 0; i < cmdParams.length; i++)
+                {
+                    buf.append(cmdParams[i]);
+                    buf.append('\n');
+                }
+                buf.append("Working directory: ");
+                buf.append(workingDir.toFile().getAbsolutePath());
+                buf.append("\nEnvironment:\n");
+                for (int i = 0; i < env.length; i++)
+                {
+                    buf.append(env[i]);
+                    buf.append('\n');
+                }
+                ILog log = PerlDebugPlugin.getDefault().getLog();
+                log.log(new Status(
+                    IStatus.INFO,
+                    PerlDebugPlugin.getUniqueIdentifier(),
+                    IStatus.OK,
+                    buf.toString(),
+                    null));
+            }
+            
 			mJavaProcess =
 				Runtime.getRuntime().exec(
 					cmdParams,
-					PerlDebugPlugin.getDebugEnv(this),
+					env,
 					workingDir.toFile());
 		}
         catch (Exception e1)

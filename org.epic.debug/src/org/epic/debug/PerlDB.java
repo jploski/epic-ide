@@ -18,6 +18,7 @@ import java.util.StringTokenizer;
 
 import org.eclipse.core.runtime.*;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.ui.progress.UIJob;
 import org.eclipse.debug.core.DebugEvent;
 import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.DebugPlugin;
@@ -30,9 +31,12 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 import org.epic.debug.ui.action.ShowLocalVariableActionDelegate;
+import org.epic.debug.util.DebuggerProxy;
+import org.epic.debug.util.DebuggerProxy2;
 import org.epic.debug.varparser.PerlDebugValue;
 import org.epic.debug.varparser.PerlDebugVar;
 import org.epic.debug.varparser.TokenVarParser;
+import org.epic.perleditor.PerlEditorPlugin;
 import org.epic.regexp.views.RegExpView;
 
 /**
@@ -92,8 +96,8 @@ public class PerlDB implements IDebugElement, ITerminate
     private final RE mReExitFrame;
 
     // Input/output streams and working directory of the "perl -d" process
-    private final PrintWriter mDebugIn;
-    private final BufferedReader mDebugOut;
+    private /*final*/ PrintWriter mDebugIn;
+    private /*final*/ BufferedReader mDebugOut;
     private final IPath mWorkingDir;
 
     private final TokenVarParser mVarParser = new TokenVarParser(this);
@@ -181,6 +185,15 @@ public class PerlDB implements IDebugElement, ITerminate
             // DebuggerProxy p = new DebuggerProxy(this, "Proxy");
             // getLaunch().addProcess(p);
             // mTarget.setProcess(p);
+            
+            if (PerlEditorPlugin.getDefault().getDebugConsolePreference())
+            {
+                DebuggerProxy2 p = new DebuggerProxy2(mDebugIn, mDebugOut, getLaunch());
+                getLaunch().addProcess(p);
+                mDebugIn = p.getDebugIn();
+                mDebugOut = p.getDebugOut();
+            }
+
             /** ******************************** */
             PerlDebugPlugin.getPerlBreakPointmanager().addDebugger(this);
             mTarget.perlDBstarted(this);
@@ -1519,7 +1532,7 @@ public class PerlDB implements IDebugElement, ITerminate
         }
     }
 
-    public class VarUpdateJob extends Job
+    public class VarUpdateJob extends UIJob
     {
         private String mString;
 
@@ -1529,7 +1542,8 @@ public class PerlDB implements IDebugElement, ITerminate
             mString = fString;
         }
 
-        public IStatus run(IProgressMonitor fMon)
+        //public IStatus run(IProgressMonitor fMon)
+        public IStatus runInUIThread(IProgressMonitor fMon)
         {
 
             // long start = System.currentTimeMillis();

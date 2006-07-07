@@ -7,7 +7,7 @@ import org.epic.core.parser.PerlToken;
  * 
  * @author jploski
  */
-public class ModuleUse implements ISourceElement
+public class ModuleUse implements IPackageElement
 {
     private final Package parent;
     private final int index;

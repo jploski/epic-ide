@@ -8,7 +8,7 @@ import org.epic.core.parser.PerlToken;
  * 
  * @author jploski
  */
-public class Subroutine implements IMultilineElement
+public class Subroutine implements IMultilineElement, IPackageElement
 {
     private final Package parent;
     private final int index;

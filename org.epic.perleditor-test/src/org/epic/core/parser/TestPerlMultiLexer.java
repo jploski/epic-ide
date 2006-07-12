@@ -22,6 +22,13 @@ public class TestPerlMultiLexer extends BaseTestCase
             new PrintWriter(new OutputStreamWriter(System.out), true));   
     }
 
+    public void testHeredoc() throws Exception
+    {
+        _testFile(
+            "workspace/EPICTest/test_Heredoc.pl",
+            new PrintWriter(new OutputStreamWriter(System.out), true));   
+    }
+    
     /*
     public void testSelectedCase() throws Exception
     {

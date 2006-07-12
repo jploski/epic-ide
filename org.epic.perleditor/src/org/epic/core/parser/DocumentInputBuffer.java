@@ -67,10 +67,14 @@ class DocumentInputBuffer extends antlr.InputBuffer
     {
         try
         {
-            return
+            char c =
                 markerOffset + i < len
                 ? doc.getChar(markerOffset + i)
                 : CharScanner.EOF_CHAR;
+            
+            if (c == 65533) throw new CharStreamException(
+                "unrecognized character at document offset " + (markerOffset + i));
+            else return c;
         }
         catch (BadLocationException e)
         {

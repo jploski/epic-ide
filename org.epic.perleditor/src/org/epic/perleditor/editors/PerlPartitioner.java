@@ -393,15 +393,29 @@ public class PerlPartitioner implements
         }
         catch (TokenStreamException e)
         {
-            log.log(new Status(
-                IStatus.ERROR,
-                PerlEditorPlugin.getPluginId(),
-                IStatus.OK,
-                "Could not parse source file. Report this exception as " +
-                "a bug, including the text fragment which triggers it, " +
-                "if possible.",
-                e
-                ));
+            if (e.getMessage().indexOf("unrecognized character at document offset") != -1)
+            {
+                log.log(new Status(
+                    IStatus.ERROR,
+                    PerlEditorPlugin.getPluginId(),
+                    IStatus.OK,
+                    "Could not parse source file due to an unrecognized character. " +
+                    "Check if the text file encoding is set correctly in Preferences/Editors.",
+                    e
+                    ));
+            }
+            else
+            {
+                log.log(new Status(
+                    IStatus.ERROR,
+                    PerlEditorPlugin.getPluginId(),
+                    IStatus.OK,
+                    "Could not parse source file. Report this exception as " +
+                    "a bug, including the text fragment which triggers it, " +
+                    "if possible.",
+                    e
+                    ));
+            }
         }
         
         initialized = true;

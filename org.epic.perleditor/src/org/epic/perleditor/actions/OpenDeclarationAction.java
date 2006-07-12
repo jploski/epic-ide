@@ -112,7 +112,9 @@ public class OpenDeclarationAction extends PerlEditorAction
             }
             else messageBox(
                 "Module file not found",
-                "Could not locate module file for prefix " + modulePrefix);
+                "Could not locate module file for prefix " + modulePrefix + "\n" +
+                "Check Perl Include Path in Project Properties."
+                );
         }
         else
         {
@@ -141,7 +143,8 @@ public class OpenDeclarationAction extends PerlEditorAction
         
         messageBox(
             "Declaration not found",
-            "Could not locate declaration for \"" + subName + "\"");
+            "Could not locate declaration for \"" + subName + "\".\n" +
+            "Check Perl Include Path in Project Properties.");
     }
 
     private void messageBox(String title, String message)
@@ -166,7 +169,9 @@ public class OpenDeclarationAction extends PerlEditorAction
         
         for (Iterator i = dirs.iterator(); i.hasNext();)
         {
-            File f = new File((File) i.next(), modulePath);
+            File dir = (File) i.next();
+            if (".".equals(dir.getName())) dir = getCurrentDir();
+            File f = new File(dir, modulePath);
             if (f.exists() && f.isFile()) return f;
         }
         return null;
@@ -202,6 +207,27 @@ public class OpenDeclarationAction extends PerlEditorAction
                 names.add(((ISourceElement) i.next()).getName());
         }
         return (String[]) names.toArray(new String[names.size()]);
+    }
+    
+    /**
+     * @return the script's parent directory, if the action is executing
+     *         on a .pl script (to simulate the @INC entry used when actually
+     *         executing or compiling the script); '.' otherwise
+     */
+    private File getCurrentDir()
+    {
+        IEditorInput input = getEditor().getEditorInput();        
+        if (!(input instanceof IFileEditorInput)) return new File(".");
+        
+        IPath scriptFilePath = ((IFileEditorInput) input).getFile().getLocation();        
+        if (scriptFilePath == null) return new File(".");
+        
+        String ext = scriptFilePath.getFileExtension();        
+        if (ext == null || !ext.toLowerCase().equals("pm")) // not a module = script
+        {
+            return scriptFilePath.toFile().getParentFile();
+        }
+        else return new File(".");
     }
     
     /**

@@ -356,6 +356,13 @@ public class OccurrencesUpdater implements ISelectionChangedListener
     {
         IAnnotationModel _model = sourceViewer.getAnnotationModel();
         IAnnotationModelExtension model = (IAnnotationModelExtension) _model;
+        
+        if (model == null)
+        {
+            // This is apparently the case when opening older revisions
+            // using Subclipse
+            return;
+        }
 
         IDocument doc = sourceViewer.getDocument();
 

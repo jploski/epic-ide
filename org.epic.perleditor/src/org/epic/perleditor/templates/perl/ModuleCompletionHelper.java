@@ -2,8 +2,6 @@ package org.epic.perleditor.templates.perl;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.text.BadLocationException;
@@ -29,6 +27,8 @@ public class ModuleCompletionHelper  {
 	private final String perlCode;
 	
 	private String[] moduleNames;
+	
+	private boolean initialized = false;
 	
 	public synchronized static ModuleCompletionHelper getInstance() {
 		if (gInstance == null) {
@@ -70,12 +70,16 @@ public class ModuleCompletionHelper  {
         if (!PerlEditorPlugin.getDefault().requirePerlInterpreter(false)) return;
         
 		PerlExecutor executor = new PerlExecutor();
+		// TODO do we need this synchronization anymore?
+		// accessing the boolean flag "initialized" should be thread-safe, and moduleNames
+		// is accessed only either during initialization or afterwards because of the flag...
 		synchronized (ModuleCompletionHelper.class) { 
             try
             {
                 List names =
                     executor.execute(textEditor, null, perlCode).getStdoutLines();
                 moduleNames = (String[]) names.toArray(new String[names.size()]);
+                initialized = true;
             }
             finally { executor.dispose(); }
 		}
@@ -85,7 +89,7 @@ public class ModuleCompletionHelper  {
 			String moduleNameFragment, int documentOffset,
 			ITextViewer viewer
 	) {
-        if (moduleNames == null) return new ICompletionProposal[0];
+        if (!initialized) return new ICompletionProposal[0];
 		synchronized (ModuleCompletionHelper.class) {
 			ArrayList al = new ArrayList();
 			
@@ -140,13 +144,10 @@ public class ModuleCompletionHelper  {
 		}
 		
 		public Point getSelection(IDocument document) {
-			// TODO Auto-generated method stub
 			return null;
 		}
 		
 		public String getAdditionalProposalInfo() {		
-			
-			// TODO Auto-generated method stub
 			return null;
 		}
 		
@@ -155,29 +156,17 @@ public class ModuleCompletionHelper  {
 		}
 		
 		public Image getImage() {
-			// TODO Auto-generated method stub
 			return null;
 		}
 		
 		public IContextInformation getContextInformation() {
-			// TODO Auto-generated method stub
 			return null;
 		}
 		
 		public String getModuleName() {
 			return moduleName;
 		}
+	
+	}
 		
-	}
-	
-	public static void main (String[] args) {
-		String text = "\nuse X";
-		Pattern pattern = Pattern.compile(".*use\\s*(.*)$", Pattern.MULTILINE | Pattern.DOTALL);
-		Matcher matcher = pattern.matcher(text);
-		if (matcher.matches()) {
-			System.out.println("matches");
-			System.out.println(matcher.group(1));
-		}
-	}
-	
 }

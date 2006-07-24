@@ -85,7 +85,7 @@ public class PerlEditor extends TextEditor implements IPropertyChangeListener
         installProjectionSupport();
         installBracketInserter();
         installCaretMoveListener();
-        //installModuleCompletionHelper(); // TODO extremely slow!
+        installModuleCompletionHelper();
         installIdleTimer();
         installSyntaxValidationThread();
         installFoldReconciler();
@@ -667,14 +667,22 @@ public class PerlEditor extends TextEditor implements IPropertyChangeListener
 
     private void installModuleCompletionHelper()
     {
-        ModuleCompletionHelper completionHelper =
-            ModuleCompletionHelper.getInstance();
-
-        try { completionHelper.scanForModules(this); }
-        catch (CoreException e)
-        {
-            PerlEditorPlugin.getDefault().getLog().log(e.getStatus());
-        }
+        // load the module completion list in a low-priority background thread
+    	Thread backgroundLoader = new Thread(new Runnable() {
+			public void run() {
+				try {
+			        ModuleCompletionHelper completionHelper =
+			            ModuleCompletionHelper.getInstance();						
+					completionHelper.scanForModules(PerlEditor.this);
+				}
+				catch (CoreException e)
+				{
+					PerlEditorPlugin.getDefault().getLog().log(e.getStatus());
+				}
+			}
+		});
+    	backgroundLoader.setPriority(Thread.MIN_PRIORITY);
+    	backgroundLoader.start();
     }
 
     private void installProjectionSupport()

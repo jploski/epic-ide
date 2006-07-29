@@ -177,8 +177,15 @@ public class PerlEditor extends TextEditor implements IPropertyChangeListener
         {
             ILocationProvider l = (ILocationProvider)
                 input.getAdapter(ILocationProvider.class);
-            if (l != null) input =
-                FileUtilities.getFileEditorInput(l.getPath(l).makeAbsolute());
+
+            input = FileUtilities.getFileEditorInput(l.getPath(l).makeAbsolute());            
+            if (input == null) throw new CoreException(new Status(
+                IStatus.ERROR,
+                PerlEditorPlugin.getPluginId(),
+                IStatus.OK,
+                "Could not open requested file " + l.getPath(l).makeAbsolute() +
+                ". Inspect the Error Log for additional information.",
+                null));
         }
 
         super.doSetInput(input);

@@ -424,3 +424,12 @@
 1323:1:OPERATOR:{;}
 1324:1:__dftl_partition_content_type:{ }
 1325:54:COMMENT:{# m after =~ is an operator, even if it comes after ->}
+1379:1:__dftl_partition_content_type:{
+}
+1380:1:__dftl_partition_content_type:{
+}
+1381:6:__dftl_partition_content_type:{format}
+1387:1:__dftl_partition_content_type:{=}
+1388:14:POD:{
+hello world
+.}

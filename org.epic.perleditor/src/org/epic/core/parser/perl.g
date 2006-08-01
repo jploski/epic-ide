@@ -305,10 +305,11 @@ CLOSE_BRACKET
 		glob = qmarkRegexp = slashRegexp = false;
 	};
 
-// see Pod/Functions.pm:148
 FORMAT_STMT
-	: { format }? "=" ~('>') (~(';'))* SEMI
-	;
+	: { format }? "="
+	{
+		getParent().expectFormatEnd();
+	};
 
 protected VAR_WITH_CURLY
 	: (VAR (WS)? '{')

@@ -29,12 +29,12 @@ public class TestPerlMultiLexer extends BaseTestCase
             new PrintWriter(new OutputStreamWriter(System.out), true));   
     }
     
-    public void testSelectedCase() throws Exception
+    /*public void testSelectedCase() throws Exception
     {
         _testFile(
             "workspace/EPICTest/format2.pl",
             new PrintWriter(new OutputStreamWriter(System.out), true));   
-    }
+    }*/
     
     public void testAll() throws Exception
     {   

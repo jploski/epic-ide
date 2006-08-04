@@ -2,6 +2,7 @@ package org.epic.core.util;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.ILog;
+import org.eclipse.core.runtime.Platform;
 
 import org.epic.perleditor.PerlEditorPlugin;
 
@@ -141,7 +142,8 @@ public abstract class ScriptExecutor
         try
         {
             URL url = new URL(PerlEditorPlugin.getBundleRoot(), getScriptDir());
-            return new File(url.getPath());
+            URL workingURL = Platform.resolve(url);
+            return new File(workingURL.getPath());
         }
         catch (IOException e)
         {

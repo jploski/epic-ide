@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<contexts> 
-  <context id="preferences_context">
-    <description>Help for Spell Checker Perl Preferences</description>
-    <topic href="html/PerlPreferences.html"
-           label="Spell Checker Perl Preferences"/> 
-  </context> 
-</contexts>

@@ -2,12 +2,12 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Perl Editor Plug-in
 Bundle-SymbolicName: org.epic.perleditor; singleton:=true
-Bundle-Version: 0.2.4
+Bundle-Version: 0.5.0
 Bundle-ClassPath: perleditor.jar,
  jdom.jar,
  antlr-2.7.5.jar
 Bundle-Activator: org.epic.perleditor.PerlEditorPlugin
-Bundle-Vendor: Epic Project
+Bundle-Vendor: EPIC Project
 Bundle-Localization: plugin
 Export-Package: .,
  antlr,

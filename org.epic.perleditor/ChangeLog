@@ -1,5 +1,6 @@
 Eclipse Perl Integration:
 
+Version 0.4.0 - 08-August-2006
 		Debugger
 		* Implemented Feature Request: [ 1351860 ] Right-click on runnable script to launch
 		* Fixed Bug [1470346] Cannot execute scripts from linked folders

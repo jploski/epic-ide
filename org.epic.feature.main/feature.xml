@@ -2,13 +2,14 @@
 <feature
       id="org.epic.feature.main"
       label="EPIC"
-      version="0.3.12"
+      version="0.5.0"
       provider-name="Epic Project"
       plugin="org.epic.perleditor"
       image="icons/epic_install.jpg">
 
    <description>
-      This feature inludes the basic EPIC (Eclipse Perl Integration) components.
+      This feature includes the basic EPIC (Eclipse Perl Integration)
+components.
    </description>
 
    <copyright>
@@ -226,25 +227,24 @@ litigation.
          id="org.epic.regexp"
          download-size="0"
          install-size="0"
-         version="0.1.3"/>
+         version="0.5.0"/>
 
    <plugin
          id="org.epic.perleditor"
          download-size="0"
          install-size="0"
-         version="0.2.4"/>
+         version="0.5.0"/>
 
    <plugin
          id="org.epic.doc"
          download-size="0"
          install-size="0"
-         version="0.2.4"
-         unpack="true"/>
+         version="0.5.0"/>
 
    <plugin
          id="org.epic.debug"
          download-size="0"
          install-size="0"
-         version="0.3.2"/>
+         version="0.5.0"/>
 
 </feature>

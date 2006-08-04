@@ -101,6 +101,7 @@ public class SourceFormatter extends ScriptExecutor
         List args = new ArrayList();
 
         // args.add("perltidy");
+        args.add("-q");
         args.add("--indent-columns=" + tabWidth);
         args.add("--maximum-line-length=" + pageSize);
         // cmdList.add("--brace-tightness=" + containerTightnessBraces);

@@ -6,7 +6,7 @@
         <editor
             name="Epic Perl Editor"
             icon="icons/epic.gif"
-            extensions="pl, ipl, pm, cgi, epl"
+            extensions="pl, ipl, pm, cgi, epl, t"
             contributorClass="org.epic.perleditor.editors.PerlActionContributor"
             class="org.epic.perleditor.editors.PerlEditor"
             id="org.epic.perleditor.editors.PerlEditor">
@@ -543,7 +543,7 @@
             id="perl"
             base-type="org.eclipse.core.runtime.text"
             name="Perl Source File"
-            file-extensions="pl,pm">
+            file-extensions="pl,pm,t">
             <describer class="org.epic.core.content.PerlContentDescriber" />
         </content-type>
     </extension>

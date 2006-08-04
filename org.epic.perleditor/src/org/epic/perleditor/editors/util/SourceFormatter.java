@@ -80,8 +80,8 @@ public class SourceFormatter extends ScriptExecutor
         IPreferenceStore store = PerlEditorPlugin.getDefault().getPreferenceStore();
 
         int numSpaces = store.getInt(PreferenceConstants.INSERT_TABS_ON_INDENT);
-        boolean useTabs = store.getBoolean(PreferenceConstants.SPACES_INSTEAD_OF_TABS);
-        int tabWidth = useTabs ? store.getInt(PreferenceConstants.EDITOR_TAB_WIDTH) : numSpaces;
+        boolean useSpaces = store.getBoolean(PreferenceConstants.SPACES_INSTEAD_OF_TABS);
+        int tabWidth = useSpaces ? numSpaces : store.getInt(PreferenceConstants.EDITOR_TAB_WIDTH);
         int pageSize = store.getInt(PreferenceConstants.EDITOR_PRINT_MARGIN_COLUMN);
 
         boolean cuddleElse = store.getBoolean(SourceFormatterPreferences.CUDDLED_ELSE);
@@ -107,7 +107,7 @@ public class SourceFormatter extends ScriptExecutor
         // cmdList.add("--paren-tightness=" + containerTightnessParentheses);
         // cmdList.add("--square-bracket-tightness=" + containerTightnessSquareBrackets);
 
-        if (useTabs)
+        if (!useSpaces)
         {
             args.add("--entab-leading-whitespace=" + tabWidth);
         }

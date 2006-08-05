@@ -139,7 +139,7 @@
             <action
                 label="Enable/Disable Breakpoint"
                 helpContextId="enable_disable_breakpoint_action_context"
-                class="org.eclipse.debug.ui.actions.RulerEnableDisableBreakpointActionDelegate"
+                class="org.epic.debug.ui.action.RulerEnableDisableBreakpointActionDelegate"
                 menubarPath="debug"
                 id="org.epic.debug.ui.action.EnableDisableBreakpointRulerActionDelegate">
             </action>

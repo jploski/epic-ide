@@ -151,8 +151,10 @@ public class PerlLineBreakpointPage extends PropertyPage
         try
         {
             createEnabledButton(composite);
-            createHitCount(composite);
-            createConditionEditor(composite);
+
+            // TODO: re-enable when implemented
+            // createHitCount(composite);
+            // createConditionEditor(composite);
         }
         catch (CoreException e)
         {

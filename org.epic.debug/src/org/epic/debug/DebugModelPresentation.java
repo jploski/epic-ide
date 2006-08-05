@@ -166,7 +166,15 @@ public class DebugModelPresentation implements IDebugModelPresentation
 			if (bp.getResourcePath() == null)
 				return ("[]");
 			erg.append(bp.getResourcePath().lastSegment());
-			erg.append(" [line: " + Integer.toString(bp.getLineNumber()) + "]");
+			try
+            {
+                erg.append(" [line: " + Integer.toString(bp.getLineNumber()) + "]");
+            }
+            catch (CoreException e)
+            {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
 			if (bp.isNoValidBreakpointPosition())
 				erg.append(" - <invalid position>");
 			return (erg.toString());

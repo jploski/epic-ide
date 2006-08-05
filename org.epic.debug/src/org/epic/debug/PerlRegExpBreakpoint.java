@@ -22,12 +22,9 @@ import org.eclipse.swt.widgets.Shell;
 import org.epic.debug.ui.RegExpBPSettingsDialog;
 
 /**
- * @author ruehl
- * 
- * To change the template for this generated type comment go to
- * Window>Preferences>Java>Code Generation>Code and Comments
+ * @deprecated this class is no longer used - it is currently being kept around so parts of it's
+ * implementation can be refactored out later
  */
-
 public class PerlRegExpBreakpoint extends PerlLineBreakpoint {
 
 	private static final String Perl_REGEXP_BREAKPOINT = "org.epic.debug.perlRegExpBreakpointMarker"; //$NON-NLS-1$
@@ -54,7 +51,7 @@ public class PerlRegExpBreakpoint extends PerlLineBreakpoint {
 	public PerlRegExpBreakpoint(IResource resource, int lineNumber,
 			int charStart, int charEnd, boolean add, Map attributes)
 			throws DebugException, CoreException {
-		super(resource, lineNumber, charStart, charEnd, add, attributes);
+		//super(resource, lineNumber, charStart, charEnd, add, attributes);
 		//	mResource = resource;
 		calculateRegExp();
 	}
@@ -219,7 +216,7 @@ public class PerlRegExpBreakpoint extends PerlLineBreakpoint {
 
 		IDocument doc = getDocument();
 
-	
+
 
 		String line = null;
 
@@ -232,6 +229,10 @@ public class PerlRegExpBreakpoint extends PerlLineBreakpoint {
 			e1.printStackTrace();
 			return null;
 		}
+        catch (CoreException e)
+        {
+        }
+
 
 		return line.trim();
 	}

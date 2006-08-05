@@ -18,72 +18,81 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.debug.core.model.Breakpoint;
 
 public class BreakpointMap {
-	
+
 	private Map mBPs;
-	
+
 	public  BreakpointMap()
 	{
 		mBPs = new HashMap();
 	}
-	
-	
-	
-	
+
+
+
+
 	public void add(PerlBreakpoint fBp)
 	{
 		IPath path =fBp.getResourcePath();
 		Set set;
-		
-		set = (Set) mBPs.get(path);	
+
+		set = (Set) mBPs.get(path);
 		if( set == null)
 		{
 			set = new HashSet();
 			mBPs.put(path,set);
 		}
-		
+
 		set.add(fBp);
 	}
-	
-	
+
+
 	public boolean contains(PerlBreakpoint fBp)
 	{
 		IPath path =fBp.getResourcePath();
 		Set set;
-	
-		set = (Set) mBPs.get(path);	
+
+		set = (Set) mBPs.get(path);
 		if( set == null)
 			return(false);
-	
+
 		return(set.contains(fBp));
 	}
-	
-	
-	
+
+
+
 	public Set getBreakpointsForFile(IPath fPath)
 	{
-		return((Set) mBPs.get(fPath));	
+		return((Set) mBPs.get(fPath));
 	}
-	
+
 	public PerlBreakpoint getBreakpointForLocation(IPath fPath, int fLine)
 	{
 		Set breakpoints = getBreakpointsForFile(fPath);
 		Breakpoint bp;
 		if( breakpoints == null)
 		 return null;
-		
+
 		for( Iterator i = breakpoints.iterator(); i.hasNext();)
 		{
 			bp = (Breakpoint) i.next();
 			if( bp instanceof PerlLineBreakpoint)
 			{
-				if( ((PerlLineBreakpoint)bp).getResourcePath().equals(fPath) &&
-					( fLine ==  ((PerlLineBreakpoint)bp).getLineNumber() )
-				  )
-				  return ((PerlLineBreakpoint)bp);
+				try
+                {
+                    if( ((PerlLineBreakpoint)bp).getResourcePath().equals(fPath) &&
+                    	( fLine ==  ((PerlLineBreakpoint)bp).getLineNumber() )
+                      )
+                      return ((PerlLineBreakpoint)bp);
+                }
+                catch (CoreException e)
+                {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
 			}
 		}
 		return null;
@@ -93,13 +102,13 @@ public class BreakpointMap {
 	{
 		IPath path =fBP.getResourcePath();
 		Set set;
-		
+
 		set = (Set) mBPs.get(path);
-		
+
 		if( set == null)
 			return(false);
-			
+
 		return(set.remove(fBP));
-	}		
-		
+	}
+
 }

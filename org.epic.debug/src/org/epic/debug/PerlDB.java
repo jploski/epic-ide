@@ -41,7 +41,7 @@ import org.epic.regexp.views.RegExpView;
 
 /**
  * @author ruehl
- * 
+ *
  * To change the template for this generated type comment go to
  * Window>Preferences>Java>Code Generation>Code and Comments
  */
@@ -78,11 +78,11 @@ public class PerlDB implements IDebugElement, ITerminate
     // Result codes after executing a command
     private static final int COMMAND_FINISHED = 1;
     private static final int SESSION_TERMINATED = 2;
-    
+
     private static boolean mLocalVarsAvailable = true;
 
     private final PerlDebugThread[] mThreads;
-    
+
     // Regular expressions used for parsing "perl -d" output
     private final RE mReCommandFinished1;
     private final RE mReCommandFinished2;
@@ -104,14 +104,14 @@ public class PerlDB implements IDebugElement, ITerminate
 
     private final BreakpointMap mPendingBreakpoints;
     private final BreakpointMap mActiveBreakpoints;
-    
+
     private final org.epic.debug.util.PathMapper mPathMapper;
-    
+
     private final String mPerlVersion;
-    
+
     private String mDebugOutput;
     private String mDebugSubCommandOutput;
-    private IPPosition mStartIP;    
+    private IPPosition mStartIP;
     private boolean mIsCommandFinished;
     private boolean mIsCommandRunning;
     private boolean mIsSessionTerminated;
@@ -133,7 +133,7 @@ public class PerlDB implements IDebugElement, ITerminate
         mTarget = fTarget;
         mWorkingDir = mTarget.getLocalWorkingDir();
         mCurrentCommand = mCommandNone;
-        mCurrentSubCommand = mCommandNone;        
+        mCurrentSubCommand = mCommandNone;
 
         mPendingBreakpoints = new BreakpointMap();
         mActiveBreakpoints = new BreakpointMap();
@@ -147,14 +147,14 @@ public class PerlDB implements IDebugElement, ITerminate
         mReSessionFinished1 = newRE("Use `q' to quit or `R' to restart", false);
         mReSessionFinished2 = newRE("Debugged program terminated.", false);
         mRe_IP_Pos = newRE("^[^\\(]*\\((.*):(\\d+)\\):[\\n\\t]", false);
-        mRe_IP_Pos_Eval = newRE("^[^\\(]*\\(eval\\s+\\d+\\)\\[(.*):(\\d+)\\]$", false);        
+        mRe_IP_Pos_Eval = newRE("^[^\\(]*\\(eval\\s+\\d+\\)\\[(.*):(\\d+)\\]$", false);
         mReSwitchFileFail = newRE("^No file", false);
         mReSetLineBreakpoint = newRE("^\\s+DB<\\d+>", false);
         mReEnterFrame = newRE("^\\s*entering", false);
         mReExitFrame = newRE("^\\s*exited", false);
         mReStackTrace = newRE(
             "^(.)\\s+=\\s+(.*)called from .* \\`([^\\']+)\\'\\s*line (\\d+)\\s*$",
-            true);       
+            true);
 
         mDebugIn = mTarget.getDebugWriteStream();
         mDebugOut = mTarget.getDebugReadStream();
@@ -185,7 +185,7 @@ public class PerlDB implements IDebugElement, ITerminate
             // DebuggerProxy p = new DebuggerProxy(this, "Proxy");
             // getLaunch().addProcess(p);
             // mTarget.setProcess(p);
-            
+
             if (PerlEditorPlugin.getDefault().getDebugConsolePreference())
             {
                 DebuggerProxy2 p = new DebuggerProxy2(mDebugIn, mDebugOut, getLaunch());
@@ -219,7 +219,7 @@ public class PerlDB implements IDebugElement, ITerminate
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.eclipse.debug.core.model.IDebugElement#getModelIdentifier()
      */
     public String getModelIdentifier()
@@ -229,7 +229,7 @@ public class PerlDB implements IDebugElement, ITerminate
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.eclipse.debug.core.model.IDebugElement#getDebugTarget()
      */
     public IDebugTarget getDebugTarget()
@@ -239,7 +239,7 @@ public class PerlDB implements IDebugElement, ITerminate
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.eclipse.debug.core.model.IDebugElement#getLaunch()
      */
     public ILaunch getLaunch()
@@ -334,7 +334,7 @@ public class PerlDB implements IDebugElement, ITerminate
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
      */
     public Object getAdapter(Class adapter)
@@ -403,7 +403,7 @@ public class PerlDB implements IDebugElement, ITerminate
         Object fThread)
     {
         if (mIsCommandRunning) return false;
-        
+
         mCurrentCommandDest = fThread;
         mDebugOutput = null;
         mDebugSubCommandOutput = null;
@@ -866,54 +866,53 @@ public class PerlDB implements IDebugElement, ITerminate
     {
         IPPosition pos = getCurrent_IP_Position();
 
-        PerlBreakpoint bp = mActiveBreakpoints.getBreakpointForLocation(pos
+        // XXX: this breaks if new breakpoint types are installed!
+        PerlLineBreakpoint bp = (PerlLineBreakpoint) mActiveBreakpoints.getBreakpointForLocation(pos
             .getPath(), pos.getLine());
 
-        if (bp != null)
-        {
-            if (bp instanceof PerlRegExpBreakpoint)
-            {
-                ((PerlRegExpBreakpoint) (bp)).calculateRegExp();
-                final String mRegExp = ((PerlRegExpBreakpoint) (bp)).getRegExp();
-                final String mText = ((PerlRegExpBreakpoint) (bp)).getMatchText();
-                final boolean mMultiLine = ((PerlRegExpBreakpoint) (bp)).getMultiLine();
-                final boolean mIgnoreCase = ((PerlRegExpBreakpoint) (bp)).getIgnoreCase();
+        if (bp == null) { return false; }
 
-                // show view
-                Shell shell = PerlDebugPlugin.getActiveWorkbenchShell();
-                if (shell != null)
-                {
-                    shell.getDisplay().syncExec(new Runnable()
-                    {
-                        public void run()
-                        {
-                            RegExpView view = null;
-                            IWorkbenchPage activePage = PerlDebugPlugin
-                                .getWorkbenchWindow().getActivePage();
-                            try
-                            {
-                                view = (RegExpView) activePage
-                                    .showView("org.epic.regexp.views.RegExpView");
-                            }
-                            catch (PartInitException e)
-                            {
-                                // TODO Auto-generated catch block
-                                e.printStackTrace();
-                            }
-                            view.setRegExpText(mRegExp);
-                            view.setMatchText(mText);
-                            view.setMultilineCheckbox(mMultiLine);
-                            view.setIgnoreCaseCheckbox(mIgnoreCase);
+        return true;
 
-                        }
+        // TODO: reimplement debugging reg-exps here (see ToggleBreakpointAdapter)
 
-                    });
+//        if (! (bp instanceof PerlRegExpBreakpoint)) { return true; }
+//
+//        ((PerlRegExpBreakpoint) (bp)).calculateRegExp();
+//        final String mRegExp = ((PerlRegExpBreakpoint) (bp)).getRegExp();
+//        final String mText = ((PerlRegExpBreakpoint) (bp)).getMatchText();
+//        final boolean mMultiLine = ((PerlRegExpBreakpoint) (bp)).getMultiLine();
+//        final boolean mIgnoreCase = ((PerlRegExpBreakpoint) (bp)).getIgnoreCase();
+//
+//        // show view
+//        Shell shell = PerlDebugPlugin.getActiveWorkbenchShell();
+//        if (shell != null)
+//        {
+//            shell.getDisplay().syncExec(new Runnable()
+//            {
+//                public void run()
+//                {
+//                    RegExpView view = null;
+//                    IWorkbenchPage activePage = PerlDebugPlugin.getWorkbenchWindow().getActivePage();
+//                    try
+//                    {
+//                        view = (RegExpView) activePage.showView("org.epic.regexp.views.RegExpView");
+//                    }
+//                    catch (PartInitException e)
+//                    {
+//                        // TODO Auto-generated catch block
+//                        e.printStackTrace();
+//                    }
+//                    view.setRegExpText(mRegExp);
+//                    view.setMatchText(mText);
+//                    view.setMultilineCheckbox(mMultiLine);
+//                    view.setIgnoreCaseCheckbox(mIgnoreCase);
+//
+//                }
+//            });
+//
+//        }
 
-                }
-            }
-            return true;
-        }
-        return false;
     }
 
     public IThread[] getThreads()
@@ -1331,12 +1330,20 @@ public class PerlDB implements IDebugElement, ITerminate
     {
         String line, command;
 
-        line = Integer.toString(fBp.getLineNumber());
-        command = "b " + line;
+        try
+        {
+            line = Integer.toString(fBp.getLineNumber());
+            command = "b " + line;
+            startSubCommand(mCommandExecuteCode, command, false);
+            if (mReSetLineBreakpoint.getAllMatches(mDebugSubCommandOutput).length > 0) return true;
+        }
+        catch (CoreException e)
+        {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
 
-        startSubCommand(mCommandExecuteCode, command, false);
-        if (mReSetLineBreakpoint.getAllMatches(mDebugSubCommandOutput).length > 0) return true;
-        else return false;
+        return false;
     }
 
     private boolean setBreakpoint(PerlBreakpoint fBp, boolean fIsPending)
@@ -1377,12 +1384,21 @@ public class PerlDB implements IDebugElement, ITerminate
 
         switchToFile(fBp);
 
-        line = Integer.toString(((PerlLineBreakpoint) fBp).getLineNumber());
-        if (this.mPerlVersion.startsWith("5.6")) command = "d ";
-        else command = "B ";
+        try
+        {
+            line = Integer.toString(((PerlLineBreakpoint) fBp).getLineNumber());
+            if (this.mPerlVersion.startsWith("5.6")) command = "d ";
+            else command = "B ";
 
-        command = command + line;
-        startSubCommand(mCommandExecuteCode, command, false);
+            command = command + line;
+            startSubCommand(mCommandExecuteCode, command, false);
+        }
+        catch (CoreException e)
+        {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
     }
 
     private boolean insertPendingBreakpoints()
@@ -1628,7 +1644,7 @@ public class PerlDB implements IDebugElement, ITerminate
         }
 
     }
-    
+
     private RE newRE(String re, boolean multiline)
     {
         try
@@ -1657,7 +1673,7 @@ public class PerlDB implements IDebugElement, ITerminate
             waitForCommandToFinish();
         }
     }
-    
+
     /**
      * Stores position of the instruction pointer.
      */
@@ -1668,7 +1684,7 @@ public class PerlDB implements IDebugElement, ITerminate
 
         public boolean equals(IPPosition fPos)
         {
-            return 
+            return
                 path.equals(fPos.getPath()) &&
                 line == fPos.getLine();
         }
@@ -1682,7 +1698,7 @@ public class PerlDB implements IDebugElement, ITerminate
         {
             return path;
         }
-        
+
         public int hashCode()
         {
             return path.hashCode() * 37 + line;

@@ -27,6 +27,7 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.epic.core.util.PerlExecutor;
 import org.epic.debug.ui.PerlImageDescriptorRegistry;
 import org.epic.debug.util.LogWriter;
+import org.epic.perleditor.PerlEditorPlugin;
 
 /**
  * The main plugin class to be used in the desktop.
@@ -133,7 +134,7 @@ public class PerlDebugPlugin extends AbstractUIPlugin {
 		MultiStatus multiStatus;
 
 		if (fException != null) {
-            
+
             if (fException instanceof CoreException)
             {
                 multiStatus = new MultiStatus(
@@ -141,13 +142,13 @@ public class PerlDebugPlugin extends AbstractUIPlugin {
                     fSeverity,
                     fText,
                     null);
-                
+
                 multiStatus.add(((CoreException) fException).getStatus());
                 result = multiStatus;
             }
             else
             {
-                // TODO I doubt the code below qualifies as correct use of MultiStatus...                
+                // TODO I doubt the code below qualifies as correct use of MultiStatus...
     			ByteArrayOutputStream out = new ByteArrayOutputStream();
     			PrintWriter swr = new PrintWriter(out);
     			fException.printStackTrace(swr);
@@ -160,7 +161,7 @@ public class PerlDebugPlugin extends AbstractUIPlugin {
                         fSeverity, getUniqueIdentifier(), 0, tok.nextToken(), null);
     				multiStatus.add(status);
     			}
-    
+
     			result = multiStatus;
             }
 		} else {
@@ -170,14 +171,14 @@ public class PerlDebugPlugin extends AbstractUIPlugin {
 		log(new Status(fSeverity, getUniqueIdentifier(), 0, fText, fException));
 		errorDialog(fText, result);
 	}
-    
+
     private static List runHelperScript(String scriptName) throws CoreException
     {
         PerlExecutor executor = new PerlExecutor();
         try
         {
             List args = new ArrayList(1);
-            args.add(PerlDebugPlugin.getPlugInDir() + scriptName);            
+            args.add(PerlDebugPlugin.getPlugInDir() + scriptName);
             return executor.execute(
                 new File(PerlDebugPlugin.getPlugInDir()),
                 args,
@@ -191,13 +192,13 @@ public class PerlDebugPlugin extends AbstractUIPlugin {
         List outputLines = runHelperScript("get_env.pl");
 
         mSystemEnv = (String[]) outputLines.toArray(new String[outputLines.size()]);
-        
+
         if (fTarget instanceof DebugTarget)
             outputLines.add(getPerlDebugEnv((DebugTarget) fTarget));
 
         return (String[]) outputLines.toArray(new String[outputLines.size()]);
 	}
-	
+
 	public static void createDefaultIncPath(List fInc) throws CoreException {
         fInc.addAll(runHelperScript("get_inc.pl"));
 	}
@@ -214,7 +215,7 @@ public class PerlDebugPlugin extends AbstractUIPlugin {
 		;
 
 		port = fTarget.getDebugPort();
-		
+
 		/* avoids problems with local software firewall*/
 		if(fTarget.isLocal()) host ="127.0.0.1";
 		return (mDebugOptionsEnvPrefix + host + ":" + port + " " + mDebugOptionsValue);
@@ -255,13 +256,15 @@ public class PerlDebugPlugin extends AbstractUIPlugin {
 		return resourceBundle;
 	}
 
-	static String getUniqueIdentifier() {
-		return "org.epic.debug";
+	public static String getUniqueIdentifier()
+    {
+	    PerlDebugPlugin plugin = getDefault();
+	    return plugin != null ? plugin.getBundle().getSymbolicName() : "org.epic.debug";
 	}
 
 	/**
 	 * Logs the specified status with this plug-in's log.
-	 * 
+	 *
 	 * @param status
 	 *            status to log
 	 */
@@ -274,7 +277,7 @@ public class PerlDebugPlugin extends AbstractUIPlugin {
 
 	/**
 	 * Returns the active workbench window
-	 * 
+	 *
 	 * @return the active workbench window
 	 */
 	public static IWorkbenchWindow getActiveWorkbenchWindow() {
@@ -291,7 +294,7 @@ public class PerlDebugPlugin extends AbstractUIPlugin {
 
 	/**
 	 * Returns the active workbench shell or <code>null</code> if none
-	 * 
+	 *
 	 * @return the active workbench shell or <code>null</code> if none
 	 */
 	public static Shell getActiveWorkbenchShell() {
@@ -396,7 +399,7 @@ public class PerlDebugPlugin extends AbstractUIPlugin {
 	{
 		URL installURL =
 			getDefault().getDescriptor().getInstallURL();
-			
+
 		try
 		{
 			installURL = Platform.resolve(installURL);

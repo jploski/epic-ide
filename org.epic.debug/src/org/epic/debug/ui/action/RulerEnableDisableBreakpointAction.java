@@ -4,7 +4,6 @@ import org.eclipse.core.runtime.CoreException;
 
 import org.eclipse.debug.core.model.IBreakpoint;
 import org.eclipse.debug.internal.ui.DebugUIPlugin;
-import org.eclipse.debug.internal.ui.actions.ActionMessages;
 import org.eclipse.debug.ui.actions.RulerBreakpointAction;
 
 import org.eclipse.jface.text.source.IVerticalRulerInfo;
@@ -47,8 +46,8 @@ public class RulerEnableDisableBreakpointAction extends RulerBreakpointAction im
             catch (CoreException e)
             {
                 DebugUIPlugin.errorDialog(getEditor().getSite().getShell(),
-                    ActionMessages.RulerEnableDisableBreakpointAction_0,
-                    ActionMessages.RulerEnableDisableBreakpointAction_1, e.getStatus());
+                    "error enabling/disabling breakpoint",
+                    "error enabling/disabling breakpoint", e.getStatus());
             }
         }
     }
@@ -66,11 +65,11 @@ public class RulerEnableDisableBreakpointAction extends RulerBreakpointAction im
             {
                 if (fBreakpoint.isEnabled())
                 {
-                    setText(ActionMessages.RulerEnableDisableBreakpointAction_2);
+                    setText("Disable Breakpoint");
                 }
                 else
                 {
-                    setText(ActionMessages.RulerEnableDisableBreakpointAction_3);
+                    setText("Enable Breakpoint");
                 }
             }
             catch (CoreException e)
@@ -79,7 +78,7 @@ public class RulerEnableDisableBreakpointAction extends RulerBreakpointAction im
         }
         else
         {
-            setText(ActionMessages.RulerEnableDisableBreakpointAction_2);
+            setText("Disable Breakpoint");
         }
     }
 

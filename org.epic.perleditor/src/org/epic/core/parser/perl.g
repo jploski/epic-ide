@@ -8,7 +8,7 @@ class PerlLexer extends Lexer("org.epic.core.parser.PerlLexerBase");
 options
 {
 	k = 4;
-	charVocabulary = '\0'..'\377' | '\u0080'..'\u00FF' | '\u0100'..'\u017F' | '\u0180'..'\u024F';
+	charVocabulary = '\0'..'\377' | '\u0080'..'\u00FF' | '\u0100'..'\u017F' | '\u0180'..'\u024F' | '\u20AC';
 	importVocab = shared;
 	exportVocab = Perl;
 }

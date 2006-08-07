@@ -686,8 +686,8 @@ public class PerlEditor extends TextEditor implements IPropertyChangeListener
 				{
 					PerlEditorPlugin.getDefault().getLog().log(e.getStatus());
 				}
-			}
-		});
+			} },
+            "EPIC:ModuleCompletionHelper");
     	backgroundLoader.setPriority(Thread.MIN_PRIORITY);
     	backgroundLoader.start();
     }

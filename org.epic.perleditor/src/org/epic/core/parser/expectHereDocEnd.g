@@ -8,7 +8,7 @@ class LexExpectHereDocEnd extends Lexer("org.epic.core.parser.LexExpectHereDocEn
 options
 {
 	k = 2;
-	charVocabulary = '\0'..'\377' | '\u0080'..'\u00FF' | '\u0100'..'\u017F' | '\u0180'..'\u024F';
+	charVocabulary = '\0'..'\377' | '\u0080'..'\u00FF' | '\u0100'..'\u017F' | '\u0180'..'\u024F' | '\u20AC';
 }
 {
 	private boolean endOfHeredoc;

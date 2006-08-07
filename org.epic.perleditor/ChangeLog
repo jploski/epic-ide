@@ -1,5 +1,11 @@
 Eclipse Perl Integration:
 
+CVS
+		Debugger:
+
+		Editor:
+		* Fixed Bug [ 1536109 ] java.lang.OutOfMemoryError: Java heap space
+
 Version 0.4.0 - 08-August-2006
 		Debugger
 		* Implemented Feature Request: [ 1351860 ] Right-click on runnable script to launch

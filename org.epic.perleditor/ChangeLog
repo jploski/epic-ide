@@ -5,6 +5,7 @@ CVS
 
 		Editor:
 		* Fixed Bug [ 1536109 ] java.lang.OutOfMemoryError: Java heap space
+		* Fixed Bug[ 1536386 ] EPIC_0.4.0 OutOfMemory ERROR
 
 Version 0.4.0 - 08-August-2006
 		Debugger

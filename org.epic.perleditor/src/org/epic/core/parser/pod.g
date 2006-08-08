@@ -8,7 +8,7 @@ class PODLexer extends Lexer("org.epic.core.parser.LexerBase");
 options
 {
 	k = 5;
-	charVocabulary = '\0'..'\377' | '\u0080'..'\u00FF' | '\u0100'..'\u017F' | '\u0180'..'\u024F' | '\u20AC';
+	charVocabulary = '\0'..'\uFFFF';
 	importVocab = shared;
 }
 

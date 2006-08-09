@@ -5,7 +5,9 @@ CVS
 
 		Editor:
 		* Fixed Bug [ 1536109 ] java.lang.OutOfMemoryError: Java heap space
-		* Fixed Bug[ 1536386 ] EPIC_0.4.0 OutOfMemory ERROR
+		* Fixed Bug [ 1536386 ] EPIC_0.4.0 OutOfMemory ERROR
+		* Fixed Bug [ 968984 ] Parentheses after 'my' break autocompletion
+		* Fixed Bug [ 1537652 ] Elements of @INC path dropped unexpectedly
 
 Version 0.4.0 - 08-August-2006
 		Debugger

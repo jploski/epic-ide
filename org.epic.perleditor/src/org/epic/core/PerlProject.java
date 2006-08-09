@@ -37,8 +37,7 @@ public class PerlProject extends PlatformObject
      * @return a list of File objects representing directories in
      *         the project's effective include path. These are the entries
      *         seen by the Perl interpreter when executing scripts from
-     *         this project, a superset of those returned by {@link #getIncPath};
-     *         (however, only existing directories are returned)
+     *         this project, a superset of those returned by {@link #getIncPath}
      */
     public List getEffectiveIncPath() throws CoreException
     {
@@ -64,8 +63,7 @@ public class PerlProject extends PlatformObject
     /**
      * @return an unmodifiable list of File objects representing directories
      *         in the project's include path. These are the entries explicitly
-     *         configured in the project's properties (however, only existing
-     *         directories are returned).
+     *         configured in the project's properties.
      * @see {@link #getEffectiveIncPath}
      */
     public List getIncPath()
@@ -101,7 +99,7 @@ public class PerlProject extends PlatformObject
         {
             File f = new File(relIncPath[i]);
             if (!f.isAbsolute()) f = new File(projectDir, relIncPath[i]);
-            if (f.exists() && f.isDirectory()) dirs.add(f); 
+            dirs.add(f); 
         }        
         return Collections.unmodifiableList(dirs);
     }

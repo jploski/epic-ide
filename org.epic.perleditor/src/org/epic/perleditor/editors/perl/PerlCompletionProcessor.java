@@ -184,7 +184,7 @@ public class PerlCompletionProcessor implements IContentAssistProcessor
     				variablesModel =
     					SourceParser.getElements(
     						viewer.getDocument(),
-                            "([$@%][a-z0-9A-Z_]+)\\s*[=;]",
+                            "([$@%][a-z0-9A-Z_]+)\\s*[,)=;]",
     						"",
     						"",
     						true);

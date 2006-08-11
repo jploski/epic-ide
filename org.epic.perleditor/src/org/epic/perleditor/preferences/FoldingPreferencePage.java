@@ -44,14 +44,14 @@ public class FoldingPreferencePage extends FieldEditorPreferencePage
         addField(new BooleanFieldEditor(PreferenceConstants.SOURCE_FOLDING,
                 PreferencesMessages.sourceFolding, getFieldEditorParent()));
 
-        addField(new SpacerFieldEditor(getFieldEditorParent()));
-
-        addField(new LabelFieldEditor(PreferencesMessages.initiallyFold, getFieldEditorParent()));
-
-        addField(new BooleanFieldEditor(PreferenceConstants.PERLDOC_FOLDING,
-                PreferencesMessages.perldocFolding, getFieldEditorParent()));
-
-        addField(new BooleanFieldEditor(PreferenceConstants.SUBROUTINE_FOLDING,
-                PreferencesMessages.subroutineFolding, getFieldEditorParent()));
+//        addField(new SpacerFieldEditor(getFieldEditorParent()));
+//
+//        addField(new LabelFieldEditor(PreferencesMessages.initiallyFold, getFieldEditorParent()));
+//
+//        addField(new BooleanFieldEditor(PreferenceConstants.PERLDOC_FOLDING,
+//                PreferencesMessages.perldocFolding, getFieldEditorParent()));
+//
+//        addField(new BooleanFieldEditor(PreferenceConstants.SUBROUTINE_FOLDING,
+//                PreferencesMessages.subroutineFolding, getFieldEditorParent()));
     }
 }

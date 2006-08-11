@@ -65,8 +65,8 @@ public class FoldReconciler
             removeFolds(pod);
             removeFolds(source);
 
-            addFolds(pod, getPref(PreferenceConstants.PERLDOC_FOLDING));
-            addFolds(source, getPref(PreferenceConstants.SUBROUTINE_FOLDING));
+            addFolds(pod, false);
+            addFolds(source, false);
         }
         catch (BadLocationException e)
         {

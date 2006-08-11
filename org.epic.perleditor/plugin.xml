@@ -36,22 +36,10 @@
             id="org.epic.perleditor.preferences.EpicPerlEditorPreferencePage">
         </page>
         <page
-            name="Templates"
-            category="org.epic.core.preferences.PerlMainPreferencePage"
-            class="org.epic.perleditor.templates.preferences.TemplatePreferencePage"
-            id="org.epic.perleditor.preferences.EpicPerlTemplatesPreferencePage">
-        </page>
-        <page
             name="Source Formatter"
             category="org.epic.core.preferences.PerlMainPreferencePage"
             class="org.epic.perleditor.preferences.SourceFormatterPreferencePage"
             id="org.epic.perleditor.preferences.SourceFormatterPreferencePage">
-        </page>
-        <page
-            name="Code Assist"
-            category="org.epic.core.preferences.PerlMainPreferencePage"
-            class="org.epic.perleditor.preferences.CodeAssistPreferencePage"
-            id="org.epic.perleditor.preferences.CodeAssistPreferencePage">
         </page>
         <page
             class="org.epic.perleditor.preferences.TaskTagsPreferencePage"
@@ -59,11 +47,30 @@
             name="Task Tags"
             id="org.epic.perleditor.preferences.TaskTagsPreferencePage">
         </page>
+
+		<!-- editor sub items -->
         <page
-            category="org.epic.core.preferences.PerlMainPreferencePage"
+            name="Content Assist"
+            category="org.epic.perleditor.preferences.EpicPerlEditorPreferencePage"
+            class="org.epic.perleditor.preferences.CodeAssistPreferencePage"
+            id="org.epic.perleditor.preferences.CodeAssistPreferencePage">
+        </page>
+        <page
+        	name="Folding"
+        	category="org.epic.perleditor.preferences.EpicPerlEditorPreferencePage"
+        	class="org.epic.perleditor.preferences.FoldingPreferencePage"
+        	id="org.epic.perleditor.preferences.FoldingPreferencePage" />
+        <page
+            category="org.epic.perleditor.preferences.EpicPerlEditorPreferencePage"
             class="org.epic.perleditor.preferences.MarkOccurrencesPreferencePage"
             id="org.epic.perleditor.preferences.MarkOccurrencesPreferencePage"
             name="Mark Occurrences" />
+        <page
+            name="Templates"
+            category="org.epic.perleditor.preferences.EpicPerlEditorPreferencePage"
+            class="org.epic.perleditor.templates.preferences.TemplatePreferencePage"
+            id="org.epic.perleditor.preferences.EpicPerlTemplatesPreferencePage">
+        </page>
     </extension>
     <extension point="org.eclipse.ui.perspectives">
         <perspective
@@ -571,5 +578,6 @@
 	        isGoToNextNavigationTarget="false"
             isGoToPreviousNavigationTargetKey="isOccurrenceGoToPreviousNavigationTarget"
 	        isGoToPreviousNavigationTarget="false">
-        </specification>    </extension>
+        </specification>
+    </extension>
 </plugin>

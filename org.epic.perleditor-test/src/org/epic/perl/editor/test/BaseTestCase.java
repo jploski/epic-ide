@@ -3,14 +3,18 @@ package org.epic.perl.editor.test;
 import java.io.*;
 import java.util.*;
 
+import org.eclipse.core.runtime.ILog;
+
 import junit.framework.TestCase;
 
 public class BaseTestCase extends TestCase
 {
     private static final String PROPERTY_PREFIX = "org.epic.perleditor-test.";
-    
+
+    private ILog log = new Log();
+
     public void testDummy() { }
-    
+
     /**
      * @param name a short name of the property
      * @return value of the given property from test.properties
@@ -19,7 +23,7 @@ public class BaseTestCase extends TestCase
     {
         return System.getProperty(PROPERTY_PREFIX + name);
     }
-    
+
     /**
      * @param path relative to directory containing test.properties
      * @return corresponding File
@@ -30,21 +34,26 @@ public class BaseTestCase extends TestCase
             new File(getPropertiesPath()).getParentFile(),
             path);
     }
-    
+
+    protected ILog getLoggerForTests()
+    {
+        return this.log;
+    }
+
     /**
      * @param path relative to directory containing test.properties
      * @return contents of the specified file as string
      */
     protected String readFile(String path) throws IOException
     {
-        StringWriter sw = new StringWriter();        
+        StringWriter sw = new StringWriter();
         BufferedReader r = null;
-        
+
         try
         {
             r = new BufferedReader(new InputStreamReader(
                 new FileInputStream(getFile(path)), "ISO-8859-1"));
-            
+
             char[] buf = new char[4096];
             int bread;
             while ((bread = r.read(buf)) > 0) sw.write(buf, 0, bread);
@@ -55,7 +64,7 @@ public class BaseTestCase extends TestCase
             if (r != null) try { r.close(); } catch (IOException e) { }
         }
     }
-    
+
     /**
      * @param path relative to directory containing test.properties
      * @return a list of strings represented lines from the specified file
@@ -63,11 +72,11 @@ public class BaseTestCase extends TestCase
     protected List readLines(String path) throws IOException
     {
         BufferedReader r = null;
-        
+
         try
         {
             r = new BufferedReader(new FileReader(getFile(path)));
-            
+
             List lines = new ArrayList();
             String l;
             while ((l = r.readLine()) != null) lines.add(l);
@@ -78,29 +87,29 @@ public class BaseTestCase extends TestCase
             if (r != null) try { r.close(); } catch (IOException e) { }
         }
     }
-    
+
     protected void setUp() throws Exception
     {
         super.setUp();
         setUpTestProperties();
     }
-    
+
     private String getPropertiesPath()
     {
         String propertiesPath = getProperty("properties");
         return propertiesPath != null ? propertiesPath : "test.properties";
     }
-    
+
     private void setUpTestProperties() throws IOException
     {
         BufferedInputStream in = null;
-        
+
         try
         {
             in = new BufferedInputStream(new FileInputStream(getPropertiesPath()));
             Properties testProperties = new Properties();
             testProperties.load(in);
-            
+
             for (Enumeration e = testProperties.keys(); e.hasMoreElements();)
             {
                 String key = e.nextElement().toString();

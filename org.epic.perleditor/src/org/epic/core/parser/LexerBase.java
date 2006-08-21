@@ -45,6 +45,18 @@ public abstract class LexerBase extends CharScanner
         endLine = 0;
     }
     
+    public void setTokenObjectClass(String className)
+    {
+        try
+        {
+            tokenObjectClass = Class.forName(className);
+        }
+        catch (ClassNotFoundException e)
+        {
+            throw new RuntimeException(e); // can't do anything
+        }
+    }
+    
     /**
      * Associates this lexer with its parent PerlMultiLexer.
      * This method is intended to be used in PerlMultiLexer's initialisation only.

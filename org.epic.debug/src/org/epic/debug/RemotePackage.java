@@ -6,10 +6,7 @@
  */
 package org.epic.debug;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -82,9 +79,9 @@ public class RemotePackage {
 			e.printStackTrace();
 		}
 		try {
-			FileInputStream in = new FileInputStream(PerlDebugPlugin
-					.getPlugInDir()
-					+ "/" + "dumpvar_epic.pm");
+			InputStream in =
+                PerlDebugPlugin.getDefault().getBundle().getEntry(
+                    "dumpvar_epic.pm").openStream();
 
 			// Add ZIP entry to output stream.
 			mOut.putNextEntry(new ZipEntry(fTarget.getStartUpFileDirPath()

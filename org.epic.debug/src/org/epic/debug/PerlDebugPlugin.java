@@ -1,9 +1,6 @@
 package org.epic.debug;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.*;
 import java.net.InetAddress;
 import java.net.URL;
 import java.net.UnknownHostException;
@@ -24,6 +21,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
+import org.epic.core.util.PerlExecutableUtilities;
 import org.epic.core.util.PerlExecutor;
 import org.epic.debug.ui.PerlImageDescriptorRegistry;
 import org.epic.debug.util.LogWriter;
@@ -177,12 +175,23 @@ public class PerlDebugPlugin extends AbstractUIPlugin {
         PerlExecutor executor = new PerlExecutor();
         try
         {
+            File scriptFile = PerlDebugPlugin.getDefault().extractTempFile(
+                scriptName, null);
             List args = new ArrayList(1);
-            args.add(PerlDebugPlugin.getPlugInDir() + scriptName);
+            args.add(scriptFile.getAbsolutePath());
             return executor.execute(
-                new File(PerlDebugPlugin.getPlugInDir()),
+                scriptFile.getParentFile(),
                 args,
                 "").getStdoutLines();
+        }
+        catch (IOException e)
+        {
+            throw new CoreException(new Status(
+                IStatus.ERROR,
+                PerlDebugPlugin.getUniqueIdentifier(),
+                IStatus.OK,
+                "extractTempFile failed on " + scriptName,
+                e));
         }
         finally { executor.dispose(); }
     }
@@ -395,24 +404,69 @@ public class PerlDebugPlugin extends AbstractUIPlugin {
 		return mDefaultDebugPort;
 	}
 
-	static public String getPlugInDir()
-	{
-		URL installURL =
-			getDefault().getDescriptor().getInstallURL();
+    /**
+     * Extracts a file from the plug-in archive (or installation
+     * location) to a temporary location.
+     * 
+     * @param src   file name within the archive
+     * @param dest  file name in the temporary location or null
+     *              if the file should retain its original name
+     * @return path to the extracted file
+     */
+    public File extractTempFile(String src, String dest)
+        throws IOException
+    {
+        File destFile = new File(
+            getStateLocation().toString(),
+            dest != null ? dest : src);
+        
+        InputStream in = null;
+        OutputStream out = null;
 
-		try
-		{
-			installURL = Platform.resolve(installURL);
-		} catch (IOException e)
-		{
-			getDefault().logError(
-				"Error retrieving Plugin dir",
-				e);
-		}
-		String path =installURL.getPath();
-		if( path.charAt(0) == '/' && path.charAt(2)==':' && path.charAt(3) == '/')
-			path = path.substring(1);
-		return (path);
-	}
-
+        try
+        {
+            in = getBundle().getEntry(src).openStream();
+            out = new FileOutputStream(destFile);
+            
+            // Transfer bytes from in to out
+            byte[] buf = new byte[1024];
+            int len;
+            while ((len = in.read(buf)) > 0) out.write(buf, 0, len);
+            
+            return destFile;
+        }
+        finally
+        {
+            if (in != null) try { in.close(); } catch (Exception e) { }
+            if (out != null) try { out.close(); } catch (Exception e) { }
+        }        
+    }
+    
+    /**
+     * @return path to a directory containing internal EPIC modules
+     *         that need to be accessible through an executed script's
+     *         include path while in debug mode; the returned path is
+     *         ready to be passed as a value of "-I" to the interpreter
+     */
+    public String getInternalDebugInc() throws CoreException
+    {
+        File dumpvarFile;
+        try
+        {
+            dumpvarFile = PerlDebugPlugin.getDefault().extractTempFile(
+                "dumpvar_epic.pm", null);
+            
+            return PerlExecutableUtilities.resolveIncPath(
+                dumpvarFile.getParentFile().getAbsolutePath());
+        }
+        catch (IOException e)
+        {
+            throw new CoreException(new Status(
+                IStatus.ERROR,
+                PerlDebugPlugin.getUniqueIdentifier(),
+                IStatus.OK,
+                "extractTempFile failed on dumpvar_epic.pm",
+                e));
+        }
+    }
 }

@@ -1,19 +1,11 @@
 package org.epic.core.util;
 
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.ILog;
-import org.eclipse.core.runtime.Platform;
-
-import org.epic.perleditor.PerlEditorPlugin;
-
-import java.io.File;
-import java.io.IOException;
-
+import java.io.*;
 import java.net.URL;
+import java.util.*;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import org.eclipse.core.runtime.*;
+import org.epic.perleditor.PerlEditorPlugin;
 
 
 /**
@@ -76,7 +68,6 @@ public abstract class ScriptExecutor
             List cmdArgs = new ArrayList(1);
             cmdArgs.add(getExecutable());
             cmdArgs.addAll(getCommandLineOpts(additionalArgs));
-
             ProcessOutput output = executor.execute(workingDir, cmdArgs, text);
 
             /*
@@ -137,18 +128,38 @@ public abstract class ScriptExecutor
         return false;
     }
 
-    private File getWorkingDir()
+    private File getWorkingDir() throws CoreException
     {
         try
         {
-            URL url = new URL(PerlEditorPlugin.getBundleRoot(), getScriptDir());
-            URL workingURL = Platform.resolve(url);
-            return new File(workingURL.getPath());
+            File scriptsLocation = extractScripts();
+            
+            if (scriptsLocation == null)
+            {
+                URL url = new URL(
+                    PerlEditorPlugin.getDefault().getBundle().getEntry("/"),
+                    getScriptDir());
+                URL workingURL = Platform.resolve(url);
+                return new File(workingURL.getPath());
+            }
+            else
+            {
+                return new File(
+                    scriptsLocation.getParentFile(),
+                    getScriptDir());
+            }
         }
         catch (IOException e)
         {
             log.log(StatusFactory.createError(PerlEditorPlugin.getPluginId(), e.getMessage(), e));
             return null;
         }
+    }
+    
+    private File extractScripts() throws CoreException
+    {
+        return ResourceUtilities.extractResources(
+            PerlEditorPlugin.getDefault(),
+            "perlutils/");
     }
 }

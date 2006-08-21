@@ -41,13 +41,13 @@ import org.epic.regexp.views.RegExpView;
 
 /**
  * @author ruehl
- * 
+ *
  * To change the template for this generated type comment go to
  * Window>Preferences>Java>Code Generation>Code and Comments
  */
 public class PerlDB implements IDebugElement, ITerminate
 {
-    private static final String mDBinitFlush = "{$| = 1; my $old = select STDERR; $|=1;select $old;}\n";
+    private static final String mDBinitFlush = ";{$| = 1; my $old = select STDERR; $|=1;select $old;}\n";
     private static final String mDBinitPerl_5_8 = "o frame=2";
     private static final String mDBinitPerl_5_6 = "O frame=2";
     private static final String mPadwalkerError = "PadWalker module not found - please install";
@@ -78,11 +78,11 @@ public class PerlDB implements IDebugElement, ITerminate
     // Result codes after executing a command
     private static final int COMMAND_FINISHED = 1;
     private static final int SESSION_TERMINATED = 2;
-    
+
     private static boolean mLocalVarsAvailable = true;
 
     private final PerlDebugThread[] mThreads;
-    
+
     // Regular expressions used for parsing "perl -d" output
     private final RE mReCommandFinished1;
     private final RE mReCommandFinished2;
@@ -104,14 +104,14 @@ public class PerlDB implements IDebugElement, ITerminate
 
     private final BreakpointMap mPendingBreakpoints;
     private final BreakpointMap mActiveBreakpoints;
-    
+
     private final org.epic.debug.util.PathMapper mPathMapper;
-    
+
     private final String mPerlVersion;
-    
+
     private String mDebugOutput;
     private String mDebugSubCommandOutput;
-    private IPPosition mStartIP;    
+    private IPPosition mStartIP;
     private boolean mIsCommandFinished;
     private boolean mIsCommandRunning;
     private boolean mIsSessionTerminated;
@@ -133,7 +133,7 @@ public class PerlDB implements IDebugElement, ITerminate
         mTarget = fTarget;
         mWorkingDir = mTarget.getLocalWorkingDir();
         mCurrentCommand = mCommandNone;
-        mCurrentSubCommand = mCommandNone;        
+        mCurrentSubCommand = mCommandNone;
 
         mPendingBreakpoints = new BreakpointMap();
         mActiveBreakpoints = new BreakpointMap();
@@ -147,17 +147,25 @@ public class PerlDB implements IDebugElement, ITerminate
         mReSessionFinished1 = newRE("Use `q' to quit or `R' to restart", false);
         mReSessionFinished2 = newRE("Debugged program terminated.", false);
         mRe_IP_Pos = newRE("^[^\\(]*\\((.*):(\\d+)\\):[\\n\\t]", false);
-        mRe_IP_Pos_Eval = newRE("^[^\\(]*\\(eval\\s+\\d+\\)\\[(.*):(\\d+)\\]$", false);        
+        mRe_IP_Pos_Eval = newRE("^[^\\(]*\\(eval\\s+\\d+\\)\\[(.*):(\\d+)\\]$", false);
         mReSwitchFileFail = newRE("^No file", false);
         mReSetLineBreakpoint = newRE("^\\s+DB<\\d+>", false);
         mReEnterFrame = newRE("^\\s*entering", false);
         mReExitFrame = newRE("^\\s*exited", false);
         mReStackTrace = newRE(
             "^(.)\\s+=\\s+(.*)called from .* \\`([^\\']+)\\'\\s*line (\\d+)\\s*$",
-            true);       
+            true);
 
         mDebugIn = mTarget.getDebugWriteStream();
         mDebugOut = mTarget.getDebugReadStream();
+
+        if (PerlEditorPlugin.getDefault().getDebugConsolePreference())
+        {
+            DebuggerProxy2 p = new DebuggerProxy2(mDebugIn, mDebugOut, getLaunch());
+            getLaunch().addProcess(p);
+            mDebugIn = p.getDebugIn();
+            mDebugOut = p.getDebugOut();
+        }
 
         mPathMapper = mTarget.getPathMapper();
 
@@ -185,14 +193,6 @@ public class PerlDB implements IDebugElement, ITerminate
             // DebuggerProxy p = new DebuggerProxy(this, "Proxy");
             // getLaunch().addProcess(p);
             // mTarget.setProcess(p);
-            
-            if (PerlEditorPlugin.getDefault().getDebugConsolePreference())
-            {
-                DebuggerProxy2 p = new DebuggerProxy2(mDebugIn, mDebugOut, getLaunch());
-                getLaunch().addProcess(p);
-                mDebugIn = p.getDebugIn();
-                mDebugOut = p.getDebugOut();
-            }
 
             /** ******************************** */
             PerlDebugPlugin.getPerlBreakPointmanager().addDebugger(this);
@@ -219,7 +219,7 @@ public class PerlDB implements IDebugElement, ITerminate
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.eclipse.debug.core.model.IDebugElement#getModelIdentifier()
      */
     public String getModelIdentifier()
@@ -229,7 +229,7 @@ public class PerlDB implements IDebugElement, ITerminate
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.eclipse.debug.core.model.IDebugElement#getDebugTarget()
      */
     public IDebugTarget getDebugTarget()
@@ -239,7 +239,7 @@ public class PerlDB implements IDebugElement, ITerminate
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.eclipse.debug.core.model.IDebugElement#getLaunch()
      */
     public ILaunch getLaunch()
@@ -334,7 +334,7 @@ public class PerlDB implements IDebugElement, ITerminate
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
      */
     public Object getAdapter(Class adapter)
@@ -403,7 +403,7 @@ public class PerlDB implements IDebugElement, ITerminate
         Object fThread)
     {
         if (mIsCommandRunning) return false;
-        
+
         mCurrentCommandDest = fThread;
         mDebugOutput = null;
         mDebugSubCommandOutput = null;
@@ -1628,7 +1628,7 @@ public class PerlDB implements IDebugElement, ITerminate
         }
 
     }
-    
+
     private RE newRE(String re, boolean multiline)
     {
         try
@@ -1657,7 +1657,7 @@ public class PerlDB implements IDebugElement, ITerminate
             waitForCommandToFinish();
         }
     }
-    
+
     /**
      * Stores position of the instruction pointer.
      */
@@ -1668,7 +1668,7 @@ public class PerlDB implements IDebugElement, ITerminate
 
         public boolean equals(IPPosition fPos)
         {
-            return 
+            return
                 path.equals(fPos.getPath()) &&
                 line == fPos.getLine();
         }
@@ -1682,7 +1682,7 @@ public class PerlDB implements IDebugElement, ITerminate
         {
             return path;
         }
-        
+
         public int hashCode()
         {
             return path.hashCode() * 37 + line;

@@ -1,0 +1,7 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: EPIC Source Plug-in
+Bundle-SymbolicName: org.epic.source; singleton:=true
+Bundle-Version: 0.5.0
+Bundle-Vendor: EPIC Project
+Bundle-Localization: plugin

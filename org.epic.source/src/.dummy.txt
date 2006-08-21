@@ -1,0 +1,1 @@
+This file is only here to keep the otherwise empty folder 'src' in CVS.

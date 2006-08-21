@@ -47,7 +47,7 @@ import org.epic.regexp.views.RegExpView;
  */
 public class PerlDB implements IDebugElement, ITerminate
 {
-    private static final String mDBinitFlush = "{$| = 1; my $old = select STDERR; $|=1;select $old;}\n";
+    private static final String mDBinitFlush = ";{$| = 1; my $old = select STDERR; $|=1;select $old;}\n";
     private static final String mDBinitPerl_5_8 = "o frame=2";
     private static final String mDBinitPerl_5_6 = "O frame=2";
     private static final String mPadwalkerError = "PadWalker module not found - please install";
@@ -159,6 +159,14 @@ public class PerlDB implements IDebugElement, ITerminate
         mDebugIn = mTarget.getDebugWriteStream();
         mDebugOut = mTarget.getDebugReadStream();
 
+        if (PerlEditorPlugin.getDefault().getDebugConsolePreference())
+        {
+            DebuggerProxy2 p = new DebuggerProxy2(mDebugIn, mDebugOut, getLaunch());
+            getLaunch().addProcess(p);
+            mDebugIn = p.getDebugIn();
+            mDebugOut = p.getDebugOut();
+        }
+
         mPathMapper = mTarget.getPathMapper();
 
         startCommand(mCommandClearOutput, null, false, this);
@@ -185,14 +193,6 @@ public class PerlDB implements IDebugElement, ITerminate
             // DebuggerProxy p = new DebuggerProxy(this, "Proxy");
             // getLaunch().addProcess(p);
             // mTarget.setProcess(p);
-
-            if (PerlEditorPlugin.getDefault().getDebugConsolePreference())
-            {
-                DebuggerProxy2 p = new DebuggerProxy2(mDebugIn, mDebugOut, getLaunch());
-                getLaunch().addProcess(p);
-                mDebugIn = p.getDebugIn();
-                mDebugOut = p.getDebugOut();
-            }
 
             /** ******************************** */
             PerlDebugPlugin.getPerlBreakPointmanager().addDebugger(this);

@@ -7,6 +7,10 @@
 	</target>
 
 	<target name="all.plugins" depends="init">
+		<ant antfile="build.xml" dir="../org.epic.source" target="${target}">
+		</ant>
+		<ant antfile="build.xml" dir="../org.epic.lib" target="${target}">
+		</ant>
 		<ant antfile="build.xml" dir="../org.epic.doc" target="${target}">
 		</ant>
 		<ant antfile="build.xml" dir="../org.epic.regexp" target="${target}">
@@ -73,7 +77,7 @@
 		<copy todir="${feature.base}/features/org.epic.feature.main_0.5.0" failonerror="true" overwrite="false">
 			<fileset dir="${basedir}" includes="feature.xml,icons/,license.html"			/>
 		</copy>
-		<eclipse.idReplacer featureFilePath="${feature.base}/features/org.epic.feature.main_0.5.0/feature.xml"  selfVersion="0.5.0" featureIds="" pluginIds="org.epic.regexp,0.5.0,org.epic.perleditor,0.5.0,org.epic.doc,0.5.0,org.epic.debug,0.5.0,"/>
+		<eclipse.idReplacer featureFilePath="${feature.base}/features/org.epic.feature.main_0.5.0/feature.xml"  selfVersion="0.5.0" featureIds="" pluginIds="org.epic.regexp,0.5.1,org.epic.perleditor,0.5.1,org.epic.doc,0.5.1,org.epic.debug,0.5.1,org.epic.lib,0.5.1,org.epic.source,0.5.1,"/>
 		<antcall target="rootFiles${os}_${ws}_${arch}"/>
 	</target>
 	<target name="rootFiles*_*_*">
@@ -130,7 +134,7 @@
 	</target>
 
 	<target name="refresh" depends="init" if="eclipse.running" description="Refresh this folder.">
-		<eclipse.convertPath fileSystemPath="/home/jploski/workspace-3.0/org.epic.feature.main/" property="resourcePath"/>
+		<eclipse.convertPath fileSystemPath="/home/jploski/workspace-epic-testing/org.epic.feature.main/" property="resourcePath"/>
 		<eclipse.refreshLocal resource="${resourcePath}" depth="infinite"/>
 		<antcall target="all.children">
 			<param name="target" value="refresh"/>

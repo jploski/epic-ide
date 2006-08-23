@@ -2,12 +2,15 @@ Eclipse Perl Integration:
 
 CVS
 		Debugger:
+		* Implemented Feature Request: [ 1293324 ] Add breakpoints by double-clicking
 
 		Editor:
 		* Fixed Bug [ 1536109 ] java.lang.OutOfMemoryError: Java heap space
 		* Fixed Bug [ 1536386 ] EPIC_0.4.0 OutOfMemory ERROR
 		* Fixed Bug [ 968984 ] Parentheses after 'my' break autocompletion
 		* Fixed Bug [ 1537652 ] Elements of @INC path dropped unexpectedly
+		* Fixed Bug [ 1543885 ] Error Parsing Vars: Unmatched right curly bracket
+		* Support for automatically folding elements on editor open
 
 Version 0.4.0 - 08-August-2006
 		Debugger

@@ -50,6 +50,19 @@
         </listitem>
 
         <listitem>
+          <para>Set the default compiler compliance level to 1.4, both for the
+          source code and for class files (<menuchoice>
+              <guimenu>Window</guimenu>
+
+              <guimenuitem>Preferences...</guimenuitem>
+            </menuchoice>, then <menuchoice>
+              <guimenu>Java</guimenu>
+
+              <guimenuitem>Compiler</guimenuitem>
+            </menuchoice>).</para>
+        </listitem>
+
+        <listitem>
           <para>Choose <menuchoice>
               <guimenu>File</guimenu>
 

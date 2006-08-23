@@ -2,7 +2,6 @@ package org.epic.debug;
 
 import java.io.*;
 import java.net.InetAddress;
-import java.net.URL;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -25,7 +24,6 @@ import org.epic.core.util.PerlExecutableUtilities;
 import org.epic.core.util.PerlExecutor;
 import org.epic.debug.ui.PerlImageDescriptorRegistry;
 import org.epic.debug.util.LogWriter;
-import org.epic.perleditor.PerlEditorPlugin;
 
 /**
  * The main plugin class to be used in the desktop.
@@ -61,8 +59,8 @@ public class PerlDebugPlugin extends AbstractUIPlugin {
 	/**
 	 * The constructor.
 	 */
-	public PerlDebugPlugin(IPluginDescriptor descriptor) {
-		super(descriptor);
+	public PerlDebugPlugin() {
+
 		plugin = this;
 		try {
 			resourceBundle = ResourceBundle

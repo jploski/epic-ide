@@ -2,6 +2,11 @@ Eclipse Perl Integration:
 
 CVS
 		Debugger:
+
+		Editor:
+
+Version 0.5.1 - 24-August-2006
+		Debugger:
 		* Implemented Feature Request: [ 1293324 ] Add breakpoints by double-clicking
 
 		Editor:

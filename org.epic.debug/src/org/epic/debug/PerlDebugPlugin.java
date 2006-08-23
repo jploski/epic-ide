@@ -24,6 +24,7 @@ import org.epic.core.util.PerlExecutableUtilities;
 import org.epic.core.util.PerlExecutor;
 import org.epic.debug.ui.PerlImageDescriptorRegistry;
 import org.epic.debug.util.LogWriter;
+import org.osgi.framework.BundleContext;
 
 /**
  * The main plugin class to be used in the desktop.
@@ -68,28 +69,6 @@ public class PerlDebugPlugin extends AbstractUIPlugin {
 		} catch (MissingResourceException x) {
 			resourceBundle = null;
 		}
-
-		mBreakPointmanager = new PerlBreakpointManager(DebugPlugin.getDefault());
-		mDebugger = new ArrayList();
-
-		getLog().addLogListener(
-				new LogWriter(new File(getStateLocation() + File.separator
-						+ ".log"), mLogLevel));
-		getLog().addLogListener(new LogWriter(System.err, mScreenLogLevel));
-		//		log(
-		//			new Status(
-		//				IStatus.INFO,
-		//				getUniqueIdentifier(),
-		//				150,
-		//				"Plugin Started",
-		//				null));
-		//		log(
-		//			new Status(
-		//				IStatus.WARNING,
-		//				getUniqueIdentifier(),
-		//				150,
-		//				"Plugin Started",
-		//				null));
 	}
 
 	public void logOK(String fText, Exception fException) {
@@ -466,5 +445,18 @@ public class PerlDebugPlugin extends AbstractUIPlugin {
                 "extractTempFile failed on dumpvar_epic.pm",
                 e));
         }
+    }
+    
+    public void start(BundleContext context) throws Exception
+    {
+        super.start(context);
+        
+        mBreakPointmanager = new PerlBreakpointManager(DebugPlugin.getDefault());
+        mDebugger = new ArrayList();
+
+        getLog().addLogListener(
+                new LogWriter(new File(getStateLocation() + File.separator
+                        + ".log"), mLogLevel));
+        getLog().addLogListener(new LogWriter(System.err, mScreenLogLevel));
     }
 }

@@ -1713,5 +1713,10 @@ public class PerlDB implements IDebugElement, ITerminate
         {
             this.path = path;
         }
+        
+        public String toString()
+        {
+            return path + ":" + line;
+        }
     }
 }

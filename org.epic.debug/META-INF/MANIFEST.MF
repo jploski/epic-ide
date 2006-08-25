@@ -6,7 +6,6 @@ Bundle-Version: 0.4.1
 Bundle-ClassPath: debug.jar,
  gnu-regexp-1.1.4.jar,
  antlr.jar,
- perlvarparser.jar,
  brazil_mini.jar
 Bundle-Activator: org.eclipse.core.internal.compatibility.PluginActivator
 Bundle-Vendor: EPIC Project

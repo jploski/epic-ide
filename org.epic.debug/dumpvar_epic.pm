@@ -231,7 +231,7 @@ sub unwrap {
 	my @sortKeys = sort keys(%$v) ;
 	$tHashDepth = $#sortKeys ;
 	$tHashDepth = $#sortKeys < $hashDepth-1 ? $#sortKeys : $hashDepth-1
-	  unless $hashDepth eq '' ;
+	  unless !defined($hashDepth) || $hashDepth eq '' ;
 
 	if( @sortKeys ){ print buildString("...").$TOKEN_IN} 
 	for $key (@sortKeys) {

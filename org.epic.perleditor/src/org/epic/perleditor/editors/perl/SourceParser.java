@@ -11,7 +11,7 @@ import org.epic.core.model.ISourceElement;
 /**
  * Used to match interesting patterns in source code.
  */
-class SourceParser
+public class SourceParser
 {
     /**
      * Pattern used to match line comments.

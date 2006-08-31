@@ -9,7 +9,13 @@ public class TestOpenSubDefinition extends BasePDETestCase
 {
     public void testAll() throws Exception
     {
-        PerlEditor editor = openEditor("EPICTest/test_OpenSub.pl");
+        testOpenSub("EPICTest/test_OpenSub.pl");
+        testOpenSub("EPICTest/test_OpenSub2.pl");
+    }
+    
+    private void testOpenSub(String startFile) throws Exception
+    {
+        PerlEditor editor = openEditor(startFile);
         PerlEditor.TestInterface testIface = editor.getTestInterface();
         PerlEditor moduleEditor = null;
         

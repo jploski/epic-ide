@@ -2,6 +2,8 @@ package org.epic.perleditor.actions;
 
 import java.io.*;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
@@ -17,6 +19,7 @@ import org.epic.core.model.*;
 import org.epic.core.model.Package;
 import org.epic.perleditor.PerlEditorPlugin;
 import org.epic.perleditor.editors.*;
+import org.epic.perleditor.editors.perl.SourceParser;
 
 /**
  * Attempts to find and open declaration of a selected subroutine or,
@@ -33,6 +36,9 @@ import org.epic.perleditor.editors.*;
  * </li>
  * <li>Otherwise, search the active editor's source text.</li>
  * <li>Then search in modules referenced by 'use'.</li>
+ * <li>Finally, search recursively in files and/or modules
+ *     included by 'require' (only 'require's followed by
+ *     barewords or quoted strings are considered).</li>
  * </ol>
  * 
  * The search heuristics used here will, of course, fail in many circumstances,
@@ -49,6 +55,8 @@ import org.epic.perleditor.editors.*;
  */
 public class OpenDeclarationAction extends PerlEditorAction
 {
+    private static final String REQUIRE_REG_EXPR = "^[\\s]*require\\s+(\\S+)";
+
     //~ Constructors
 
     public OpenDeclarationAction(PerlEditor editor)
@@ -137,7 +145,12 @@ public class OpenDeclarationAction extends PerlEditorAction
                         if (searchModuleFile(moduleFile, subName)) return;
                     }
                 }
-                // TODO add require traversal?
+
+                if (searchInRequires(
+                    subName,
+                    getCurrentDir(),
+                    getEditor().getSourceFile().getDocument(),
+                    new HashSet())) return;                
             }
         }
         
@@ -191,6 +204,53 @@ public class OpenDeclarationAction extends PerlEditorAction
                 return new Region(sub.getOffset(), sub.getLength());
         }
         return null;
+    }
+    
+    /**
+     * @param fromDir directory for resolving relative paths in 'require's
+     * @param source source document for fromFile
+     * @return an array with files 'required' by the given source text;
+     *         due to the regexp-based nature of the search only those
+     *         'require's which use string literals or barewords are considered
+     * @throws CoreException 
+     */
+    private File[] findRequiredFiles(File fromDir, IDocument source) throws CoreException
+    {        
+        String text = source.get();
+        List elems =
+            SourceParser.getElements(text, REQUIRE_REG_EXPR, "", "", true);
+        List requiredFiles = new ArrayList();
+        
+        for (Iterator i = elems.iterator(); i.hasNext();)
+        {
+            ISourceElement elem = (ISourceElement) i.next();
+            String elemText = elem.getName();
+            
+            if (elemText.indexOf("\"") != -1 ||
+                elemText.indexOf("'") != -1)
+            {
+                // require 'some/literal/path.pm';
+
+                Matcher m = Pattern.compile("['\"]([^'\"]*?)['\"]").matcher(elemText);
+                if (m.find())
+                {
+                    File requiredFile = new File(fromDir, m.group(1));
+                    if (requiredFile.isFile()) requiredFiles.add(requiredFile);
+                }
+            }
+            else
+            {
+                // require Some::Module;
+
+                Matcher m = Pattern.compile("([A-Za-z0-9:]+)").matcher(elemText);
+                if (m.find())
+                {
+                    File moduleFile = findModuleFile(m.group(1));
+                    if (moduleFile != null) requiredFiles.add(moduleFile);
+                }
+            }                
+        }
+        return (File[]) requiredFiles.toArray(new File[requiredFiles.size()]);
     }
     
     /**
@@ -373,6 +433,57 @@ public class OpenDeclarationAction extends PerlEditorAction
                 e));
             return false;
         }
+    }
+    
+    /**
+     * @param fromDir directory for resolving relative paths in 'require's
+     * @param source document in which to look for 'require' statements;
+     *               the search continues recursively in these required files
+     * @param visitedFiles
+     *        a set of already visited files (used to prevent endless loops)
+     * @return true if the sub declaration was found in some file,
+     *         false otherwise
+     * @throws IOException 
+     * @throws CoreException 
+     */
+    private boolean searchInRequires(        
+        String subName,
+        File fromDir,
+        IDocument source,
+        Set visitedFiles) throws CoreException
+    {
+        File[] requiredFiles = findRequiredFiles(fromDir, source);
+
+        for (int i = 0; i < requiredFiles.length; i++)
+        {
+            if (!visitedFiles.contains(requiredFiles[i]))
+            {
+                visitedFiles.add(requiredFiles[i]);
+                if (searchModuleFile(requiredFiles[i], subName)) return true;
+                else
+                {
+                    try
+                    {                    
+                        if (searchInRequires(
+                            subName,
+                            requiredFiles[i].getParentFile(),
+                            getSourceDocument(requiredFiles[i]),
+                            visitedFiles)) return true;
+                    }
+                    catch (IOException e)
+                    {
+                        getLog().log(new Status(
+                            IStatus.ERROR,
+                            PerlEditorPlugin.getPluginId(),
+                            IStatus.OK,
+                            "Could not read module file " + requiredFiles[i].getAbsolutePath(),
+                            e));
+                        return false;
+                    }
+                }
+            }
+        }
+        return false;
     }
     
     /**

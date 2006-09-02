@@ -1,8 +1,9 @@
 package org.epic.debug;
 
 import java.io.*;
-import java.util.Iterator;
-import java.util.List;
+import java.net.URI;
+import java.net.URL;
+import java.util.*;
 
 import org.eclipse.core.runtime.*;
 import org.eclipse.debug.core.*;
@@ -12,6 +13,7 @@ import org.epic.core.PerlProject;
 import org.epic.core.util.PerlExecutableUtilities;
 import org.epic.debug.util.CGIProxy;
 import org.epic.debug.util.RemotePort;
+import org.osgi.framework.Bundle;
 
 /**
  * @author ruehl
@@ -192,7 +194,7 @@ public class CGITarget extends DebugTarget implements IDebugEventSetListener
         props.add("cgi.root", cgiRootDir);
         props.add("cgi.executable", perlPath);
         props.add("cgi.suffix", cgiFileExtension);
-        props.add("cgi.DebugInclude", " -I" + PerlDebugPlugin.getPlugInDir());
+        props.add("cgi.DebugInclude", " -I" + PerlDebugPlugin.getDefault().getInternalDebugInc());
         props.add("cgi.RunInclude", PerlExecutableUtilities.getPerlIncArgs(project));
 
         if (mDebug) props.add("cgi.ENV_" + PerlDebugPlugin.getPerlDebugEnv(this));
@@ -211,6 +213,75 @@ public class CGITarget extends DebugTarget implements IDebugEventSetListener
     private void fireCreationEvent(Object fSource)
     {
         fireEvent(new DebugEvent(fSource, DebugEvent.CREATE));
+    }
+    
+    /**
+     * @return a List of Files representing entries of the classpath
+     *         passed to the Brazil (web server) JVM
+     */
+    private List getBrazilJVMClasspath() throws CoreException
+    {
+        try
+        {
+            List cp = new ArrayList();
+            
+            URL brazilUrl = Platform.resolve(Platform.getBundle("org.epic.lib")
+                .getEntry("/lib/brazil_mini.jar"));
+            
+            assert "file".equalsIgnoreCase(brazilUrl.getProtocol()) :
+                "brazil_mini.jar must reside in the file system";
+            cp.add(new File(new URI(brazilUrl.toExternalForm())));
+            
+            Bundle bundle = PerlDebugPlugin.getDefault().getBundle();
+            URL binUrl = bundle.getEntry("/bin");
+            
+            if (binUrl != null)
+            {
+                binUrl = Platform.resolve(binUrl);
+                assert binUrl.getProtocol().equalsIgnoreCase("file");
+    
+                // 'bin' folder exists = we're running inside of
+                // a hosted workbench 
+    
+                cp.add(new File(new URI(binUrl.toExternalForm())));
+            }
+            else
+            {
+                URL dirUrl = Platform.resolve(bundle.getEntry("/"));
+                
+                if (dirUrl.getProtocol().equalsIgnoreCase("jar"))
+                {
+                    // org.epic.debug was deployed as a jar; add this jar
+                    // to the classpath
+                    
+                    String path = dirUrl.getPath();
+                    assert path.startsWith("file:");
+                    assert path.endsWith(".jar!/");
+                    
+                    cp.add(new File(new URI(
+                        path.substring(0, path.length()-2))));                
+                }
+                else
+                {   
+                    assert dirUrl.getProtocol().equalsIgnoreCase("file");
+                    
+                    // org.epic.debug was deployed as a directory:
+                    // add this directory to the classpath
+                    
+                    cp.add(new File(new URI(dirUrl.toExternalForm())));
+                }
+            }
+            return cp;
+        }
+        catch (Exception e)
+        {
+            throw new CoreException(new Status(
+                IStatus.ERROR,
+                PerlDebugPlugin.getUniqueIdentifier(),
+                IStatus.OK,
+                "getBrazilJVMClasspath failed",
+                e));
+        }
     }
     
     private String getLaunchAttribute(String attrName, boolean isPath)
@@ -238,7 +309,24 @@ public class CGITarget extends DebugTarget implements IDebugEventSetListener
                 .toString();
     }
     
-    private void startBrazil() throws IOException
+    /**
+     * @param path a list of File objects representing paths
+     * @return a string with absolute paths separated by
+     *         the platform-specific path separator
+     */
+    private static String makePathString(List path)
+    {
+        StringBuffer buf = new StringBuffer();
+        for (Iterator i = path.iterator(); i.hasNext();)
+        {
+            File entry = (File) i.next();
+            if (buf.length() > 0) buf.append(File.pathSeparator);
+            buf.append(entry.getAbsolutePath());
+        }
+        return buf.toString();
+    }
+    
+    private void startBrazil() throws CoreException
     {
         String javaExec =
             getJavaHome() + File.separator + "bin" + File.separator + "java";
@@ -248,20 +336,25 @@ public class CGITarget extends DebugTarget implements IDebugEventSetListener
         String[] cmdParams = {
             javaExec,
             "-classpath",
-            PerlDebugPlugin.getPlugInDir()
-                + "brazil_mini.jar"
-                + File.pathSeparator
-                + PerlDebugPlugin.getPlugInDir()
-                + "debug.jar"
-                + File.pathSeparator
-                + PerlDebugPlugin.getPlugInDir()
-                + "bin",
+            makePathString(getBrazilJVMClasspath()),
             "sunlabs.brazil.server.Main",
             "-c",
             "brazil.cfg" };
         
-        mBrazilProcess =
-            Runtime.getRuntime().exec(cmdParams, null, workingDir);
+        try
+        {
+        	mBrazilProcess =
+            	Runtime.getRuntime().exec(cmdParams, null, workingDir);
+    	}
+        catch (IOException e)
+        {
+            throw new CoreException(new Status(
+                IStatus.ERROR,
+                PerlDebugPlugin.getUniqueIdentifier(),
+                IStatus.OK,
+                "Could not start embedded web server: Runtime.exec failed",
+                e));
+        }
     }
 
     private boolean startSession()
@@ -299,7 +392,7 @@ public class CGITarget extends DebugTarget implements IDebugEventSetListener
         }
         
         try { startBrazil(); }
-        catch (IOException e)
+        catch (CoreException e)
         {
             PerlDebugPlugin.getDefault().logError(
                 "Could not start web server",
@@ -377,31 +470,22 @@ public class CGITarget extends DebugTarget implements IDebugEventSetListener
         
         public void save() throws IOException
         {
-            File templ = new File(
-                PerlDebugPlugin.getPlugInDir(),
-                "brazil_cgi_templ.cfg");
-            File dest = new File(
-                PerlDebugPlugin.getDefault().getStateLocation().toString(),
+            File propsFile = PerlDebugPlugin.getDefault().extractTempFile(
+                "brazil_cgi_templ.cfg",
                 "brazil.cfg");
             
-            InputStream in = null;
+            // Append custom properties:
+
             OutputStream out = null;
 
             try
             {
-                in = new FileInputStream(templ);
-                out = new FileOutputStream(dest);
-                
-                // Transfer bytes from in to out
-                byte[] buf = new byte[1024];
-                int len;
-                while ((len = in.read(buf)) > 0) out.write(buf, 0, len);
+                out = new FileOutputStream(propsFile, true);                
                 byte[] propsBytes = props.toString().getBytes();
                 out.write(propsBytes, 0, propsBytes.length);
             }
             finally
             {
-                if (in != null) try { in.close(); } catch (Exception e) { }
                 if (out != null) try { out.close(); } catch (Exception e) { }
             }
         }

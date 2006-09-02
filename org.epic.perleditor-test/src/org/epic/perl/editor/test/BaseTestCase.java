@@ -3,12 +3,16 @@ package org.epic.perl.editor.test;
 import java.io.*;
 import java.util.*;
 
+import org.eclipse.core.runtime.ILog;
+
 import junit.framework.TestCase;
 
 public class BaseTestCase extends TestCase
 {
     private static final String PROPERTY_PREFIX = "org.epic.perleditor-test.";
     
+    private ILog log = new Log();
+
     public void testDummy() { }
     
     /**
@@ -31,6 +35,11 @@ public class BaseTestCase extends TestCase
             path);
     }
     
+    protected ILog getLoggerForTests()
+    {
+        return this.log;
+    }
+
     /**
      * @param path relative to directory containing test.properties
      * @return contents of the specified file as string

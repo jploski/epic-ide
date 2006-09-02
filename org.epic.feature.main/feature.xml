@@ -227,24 +227,41 @@ litigation.
          id="org.epic.regexp"
          download-size="0"
          install-size="0"
-         version="0.4.0"/>
+         version="0.4.0"
+         unpack="false"/>
 
    <plugin
          id="org.epic.perleditor"
          download-size="0"
          install-size="0"
-         version="0.4.3"/>
+         version="0.4.3"
+         unpack="false"/>
 
    <plugin
          id="org.epic.doc"
          download-size="0"
          install-size="0"
-         version="0.4.0"/>
+         version="0.4.0"
+         unpack="true"/>
 
    <plugin
          id="org.epic.debug"
          download-size="0"
          install-size="0"
-         version="0.4.1"/>
+         version="0.4.1"
+         unpack="false"/>
 
+   <plugin
+         id="org.epic.lib"
+         download-size="0"
+         install-size="0"
+         version="0.4.0"
+         unpack="true"/>
+
+   <plugin
+         id="org.epic.source"
+         download-size="0"
+         install-size="0"
+         version="0.4.4"
+         unpack="true"/>
 </feature>

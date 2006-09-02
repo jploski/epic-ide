@@ -4,14 +4,15 @@ Bundle-Name: org.epic.perleditor unit tests
 Bundle-SymbolicName: org.epic.perleditor_test; singleton:=true
 Bundle-Version: 1.0.0
 Bundle-Localization: plugin
-Require-Bundle: org.epic.perleditor,
- org.junit,
+Require-Bundle: org.junit,
  org.eclipse.core.resources,
  org.eclipse.core.runtime,
  org.eclipse.ui,
  org.eclipse.ui.editors,
  org.eclipse.ui.ide,
  org.eclipse.ui.workbench.texteditor,
- org.eclipse.jface.text
+ org.eclipse.jface.text,
+ org.epic.perleditor,
+ org.epic.lib
 Bundle-ClassPath: cglib-full-2.0.2.jar,
  easymock.jar

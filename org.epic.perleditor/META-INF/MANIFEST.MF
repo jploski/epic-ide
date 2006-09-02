@@ -3,14 +3,10 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Perl Editor Plug-in
 Bundle-SymbolicName: org.epic.perleditor; singleton:=true
 Bundle-Version: 0.4.3
-Bundle-ClassPath: perleditor.jar,
- jdom.jar,
- antlr-2.7.5.jar
 Bundle-Activator: org.epic.perleditor.PerlEditorPlugin
 Bundle-Vendor: EPIC Project
 Bundle-Localization: plugin
 Export-Package: .,
- antlr,
  org.epic.core,
  org.epic.core.builders,
  org.epic.core.content,
@@ -37,12 +33,7 @@ Export-Package: .,
  org.epic.perleditor.templates.ui.dialog,
  org.epic.perleditor.templates.ui.util,
  org.epic.perleditor.templates.util,
- org.epic.perleditor.views,
- org.jdom,
- org.jdom.adapters,
- org.jdom.input,
- org.jdom.output,
- org.jdom.transform
+ org.epic.perleditor.views
 Require-Bundle: org.eclipse.jface.text,
  org.eclipse.ui,
  org.eclipse.core.resources,
@@ -54,5 +45,6 @@ Require-Bundle: org.eclipse.jface.text,
  org.eclipse.ui.ide,
  org.eclipse.ui.views,
  org.eclipse.team.core,
- org.eclipse.core.variables
+ org.eclipse.core.variables,
+ org.epic.lib
 Eclipse-AutoStart: true; exceptions="org.epic.core.content"

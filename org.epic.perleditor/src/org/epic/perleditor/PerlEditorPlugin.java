@@ -1,6 +1,8 @@
 package org.epic.perleditor;
 
 import java.io.File;
+import java.io.IOException;
+import java.net.URI;
 import java.net.URL;
 import java.util.*;
 
@@ -133,11 +135,6 @@ public class PerlEditorPlugin extends AbstractUIPlugin {
 	public static PerlEditorPlugin getDefault() {
 		return plugin;
 	}
-
-    public static URL getBundleRoot()
-    {
-        return getDefault().getBundle().getEntry("/");
-    }
 
 	/**
 	 * Returns the workspace instance.

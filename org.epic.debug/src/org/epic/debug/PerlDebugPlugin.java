@@ -1,11 +1,7 @@
 package org.epic.debug;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.*;
 import java.net.InetAddress;
-import java.net.URL;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -24,9 +20,11 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
+import org.epic.core.util.PerlExecutableUtilities;
 import org.epic.core.util.PerlExecutor;
 import org.epic.debug.ui.PerlImageDescriptorRegistry;
 import org.epic.debug.util.LogWriter;
+import org.osgi.framework.BundleContext;
 
 /**
  * The main plugin class to be used in the desktop.
@@ -62,8 +60,8 @@ public class PerlDebugPlugin extends AbstractUIPlugin {
 	/**
 	 * The constructor.
 	 */
-	public PerlDebugPlugin(IPluginDescriptor descriptor) {
-		super(descriptor);
+	public PerlDebugPlugin() {
+
 		plugin = this;
 		try {
 			resourceBundle = ResourceBundle
@@ -71,28 +69,6 @@ public class PerlDebugPlugin extends AbstractUIPlugin {
 		} catch (MissingResourceException x) {
 			resourceBundle = null;
 		}
-
-		mBreakPointmanager = new PerlBreakpointManager(DebugPlugin.getDefault());
-		mDebugger = new ArrayList();
-
-		getLog().addLogListener(
-				new LogWriter(new File(getStateLocation() + File.separator
-						+ ".log"), mLogLevel));
-		getLog().addLogListener(new LogWriter(System.err, mScreenLogLevel));
-		//		log(
-		//			new Status(
-		//				IStatus.INFO,
-		//				getUniqueIdentifier(),
-		//				150,
-		//				"Plugin Started",
-		//				null));
-		//		log(
-		//			new Status(
-		//				IStatus.WARNING,
-		//				getUniqueIdentifier(),
-		//				150,
-		//				"Plugin Started",
-		//				null));
 	}
 
 	public void logOK(String fText, Exception fException) {
@@ -176,12 +152,23 @@ public class PerlDebugPlugin extends AbstractUIPlugin {
         PerlExecutor executor = new PerlExecutor();
         try
         {
+            File scriptFile = PerlDebugPlugin.getDefault().extractTempFile(
+                scriptName, null);
             List args = new ArrayList(1);
-            args.add(PerlDebugPlugin.getPlugInDir() + scriptName);            
+            args.add(scriptFile.getAbsolutePath());
             return executor.execute(
-                new File(PerlDebugPlugin.getPlugInDir()),
+                scriptFile.getParentFile(),
                 args,
                 "").getStdoutLines();
+        }
+        catch (IOException e)
+        {
+            throw new CoreException(new Status(
+                IStatus.ERROR,
+                PerlDebugPlugin.getUniqueIdentifier(),
+                IStatus.OK,
+                "extractTempFile failed on " + scriptName,
+                e));
         }
         finally { executor.dispose(); }
     }
@@ -255,8 +242,10 @@ public class PerlDebugPlugin extends AbstractUIPlugin {
 		return resourceBundle;
 	}
 
-	static String getUniqueIdentifier() {
-		return "org.epic.debug";
+	public static String getUniqueIdentifier()
+    {
+	    PerlDebugPlugin plugin = getDefault();
+	    return plugin != null ? plugin.getBundle().getSymbolicName() : "org.epic.debug";
 	}
 
 	/**
@@ -392,24 +381,82 @@ public class PerlDebugPlugin extends AbstractUIPlugin {
 		return mDefaultDebugPort;
 	}
 
-	static public String getPlugInDir()
+    /**
+     * Extracts a file from the plug-in archive (or installation
+     * location) to a temporary location.
+     * 
+     * @param src   file name within the archive
+     * @param dest  file name in the temporary location or null
+     *              if the file should retain its original name
+     * @return path to the extracted file
+     */
+    public File extractTempFile(String src, String dest)
+        throws IOException
 	{
-		URL installURL =
-			getDefault().getDescriptor().getInstallURL();
+        File destFile = new File(
+            getStateLocation().toString(),
+            dest != null ? dest : src);
 			
+        InputStream in = null;
+        OutputStream out = null;
+
 		try
 		{
-			installURL = Platform.resolve(installURL);
-		} catch (IOException e)
+            in = getBundle().getEntry(src).openStream();
+            out = new FileOutputStream(destFile);
+            
+            // Transfer bytes from in to out
+            byte[] buf = new byte[1024];
+            int len;
+            while ((len = in.read(buf)) > 0) out.write(buf, 0, len);
+            
+            return destFile;
+        }
+        finally
 		{
-			getDefault().logError(
-				"Error retrieving Plugin dir",
-				e);
+            if (in != null) try { in.close(); } catch (Exception e) { }
+            if (out != null) try { out.close(); } catch (Exception e) { }
 		}
-		String path =installURL.getPath();
-		if( path.charAt(0) == '/' && path.charAt(2)==':' && path.charAt(3) == '/')
-			path = path.substring(1);
-		return (path);
 	}
 
+    /**
+     * @return path to a directory containing internal EPIC modules
+     *         that need to be accessible through an executed script's
+     *         include path while in debug mode; the returned path is
+     *         ready to be passed as a value of "-I" to the interpreter
+     */
+    public String getInternalDebugInc() throws CoreException
+    {
+        File dumpvarFile;
+        try
+        {
+            dumpvarFile = PerlDebugPlugin.getDefault().extractTempFile(
+                "dumpvar_epic.pm", null);
+            
+            return PerlExecutableUtilities.resolveIncPath(
+                dumpvarFile.getParentFile().getAbsolutePath());
+        }
+        catch (IOException e)
+        {
+            throw new CoreException(new Status(
+                IStatus.ERROR,
+                PerlDebugPlugin.getUniqueIdentifier(),
+                IStatus.OK,
+                "extractTempFile failed on dumpvar_epic.pm",
+                e));
+        }
+    }
+    
+    public void start(BundleContext context) throws Exception
+    {
+        super.start(context);
+        
+        mBreakPointmanager = new PerlBreakpointManager(DebugPlugin.getDefault());
+        mDebugger = new ArrayList();
+
+        getLog().addLogListener(
+                new LogWriter(new File(getStateLocation() + File.separator
+                        + ".log"), mLogLevel));
+        getLog().addLogListener(new LogWriter(System.err, mScreenLogLevel));
+    }
 }

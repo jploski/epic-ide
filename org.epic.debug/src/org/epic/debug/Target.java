@@ -189,9 +189,19 @@ public abstract class Target extends DebugElement implements IDebugTarget
 				"Could not start Perl interpreter: error assambling command line",
 				e);
 		}
-		fCmdList.add("-I"+PerlDebugPlugin.getPlugInDir());
 		if (mLaunch.getLaunchMode().equals(ILaunchManager.DEBUG_MODE))
 		{
+            try
+            {
+                fCmdList.add("-I" + PerlDebugPlugin.getDefault().getInternalDebugInc());
+            }
+            catch (CoreException e)        
+            {
+                PerlDebugPlugin.getDefault().logError(
+                    "Could not start Perl interpreter: getInternalDebugInc failed",
+                    e);
+                return null;
+            }            
 			fCmdList.add("-d");
 			mProcessName = "Perl-Debugger";
 		}

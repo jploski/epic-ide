@@ -109,6 +109,19 @@ public class PerlExecutableUtilities
         return type.equals(PerlEditorPlugin.INTERPRETER_TYPE_CYGWIN);
     }
     
+    /**
+     * @param absolute path to some directory,
+     *        as returned by File.getAbsolutePath 
+     * @return the same path normalized to / as separators and
+     *         translated for Cygwin, if necessary
+     */
+    public static String resolveIncPath(String path)
+    {
+        path = path.replace('\\', '/');
+        if (isCygwinInterpreter()) path = translatePathForCygwin(path);
+        return path;
+    }
+    
     // package-scope visibility to enable testing
     static String translatePathForCygwin(String path)
     {

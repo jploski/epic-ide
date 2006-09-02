@@ -2,7 +2,7 @@
 <feature
       id="org.epic.feature.main"
       label="EPIC"
-      version="0.4.4"
+      version="0.4.5"
       provider-name="Epic Project"
       plugin="org.epic.perleditor"
       image="icons/epic_install.jpg">
@@ -227,14 +227,14 @@ litigation.
          id="org.epic.regexp"
          download-size="0"
          install-size="0"
-         version="0.4.0"
+         version="0.4.1"
          unpack="false"/>
 
    <plugin
          id="org.epic.perleditor"
          download-size="0"
          install-size="0"
-         version="0.4.3"
+         version="0.4.4"
          unpack="false"/>
 
    <plugin
@@ -248,20 +248,20 @@ litigation.
          id="org.epic.debug"
          download-size="0"
          install-size="0"
-         version="0.4.1"
+         version="0.4.2"
          unpack="false"/>
 
    <plugin
          id="org.epic.lib"
          download-size="0"
          install-size="0"
-         version="0.4.0"
+         version="0.4.1"
          unpack="true"/>
 
    <plugin
          id="org.epic.source"
          download-size="0"
          install-size="0"
-         version="0.4.4"
+         version="0.4.5"
          unpack="true"/>
 </feature>

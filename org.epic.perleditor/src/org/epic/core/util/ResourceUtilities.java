@@ -1,7 +1,6 @@
 package org.epic.core.util;
 
 import java.io.*;
-import java.net.URI;
 import java.net.URL;
 import java.util.Enumeration;
 import java.util.zip.ZipEntry;

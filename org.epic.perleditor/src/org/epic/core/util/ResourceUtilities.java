@@ -121,7 +121,7 @@ public class ResourceUtilities
                 String path = url.getPath();
                 assert path.startsWith("file:");
                 assert path.endsWith(".jar!/");
-                return new File(new URI(path.substring(0, path.length()-2)));
+                return new File(new URI(path.substring(0, path.length()-2).replace('\\', '/')));
             }
             else return null;
         }

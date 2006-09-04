@@ -6,8 +6,12 @@ CVS
 		Editor:
 
 Version 0.5.4 - 4-September-2006
+		Debugger:
+		* Fixed Bug [ 1546580 ] jar declared in classpath is missing
+		* Fixed Bug [ 1546237 ] Error parsing debugger variables
+
 		Editor:
-		* Fixed Bug [ e-p-i-c-Bugs-1551442 ] Source | Format does not seem to work
+		* Fixed Bug [ 1551442 ] Source | Format does not seem to work	
 
 Version 0.5.2 - 31-August-2006
 		Editor:

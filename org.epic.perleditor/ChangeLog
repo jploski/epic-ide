@@ -5,6 +5,10 @@ CVS
 
 		Editor:
 
+Version 0.5.3 - 4-September-2006
+		Editor:
+		* Fixed Bug [ e-p-i-c-Bugs-1551442 ] Source | Format does not seem to work
+
 Version 0.5.2 - 31-August-2006
 		Editor:
 		* Fixed Bug [ 1549861 ] Open SUB ignores 'require'

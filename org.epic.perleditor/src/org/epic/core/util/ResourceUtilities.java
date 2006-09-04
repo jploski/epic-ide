@@ -122,11 +122,8 @@ public class ResourceUtilities
                 assert path.startsWith("file:");
                 assert path.endsWith(".jar!/");
                 
-                path = path.substring(5, path.length()-2).replace('\\', '/');
-                if (!path.startsWith("//")) path = "file://" + path;
-                else path = "file:" + path;
-
-                return new File(new URI(path));
+                path = path.substring(5, path.length()-2);
+                return new File(path);
             }
             else return null;
         }

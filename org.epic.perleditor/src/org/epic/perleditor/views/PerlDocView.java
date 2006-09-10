@@ -4,16 +4,20 @@ import java.io.*;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.FindReplaceDocumentAdapter;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.source.SourceViewer;
+import org.eclipse.jface.util.IPropertyChangeListener;
+import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyleRange;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -59,10 +63,23 @@ public class PerlDocView extends ViewPart {
 	private SourceViewer[] sourceViewers = {null, null, null, null};
 	private TabItem[] tabItems = {null, null, null, null};
 	//private IDocumentPartitioner partitioner;
-	
+
+    private final IPropertyChangeListener fontPropertyChangeListener =
+        new IPropertyChangeListener() {
+        public void propertyChange(PropertyChangeEvent event)
+        {
+            if (event.getProperty().equals(getFontPropertyPreferenceKey()))
+            {                
+                Font textFont = JFaceResources.getFontRegistry().get(
+                    getFontPropertyPreferenceKey());
+
+                for (int i = 0; i < sourceViewers.length; i++)
+                    sourceViewers[i].getTextWidget().setFont(textFont);
+            }
+        } };
 
 	public PerlDocView() {
-	
+        JFaceResources.getFontRegistry().addListener(fontPropertyChangeListener);
 	}
 	/*
 	 * (non-Javadoc)
@@ -106,14 +123,17 @@ public class PerlDocView extends ViewPart {
 		highlightButton = new Button(parent, SWT.PUSH | SWT.FLAT);
 		highlightButton.setImage(PerlImages.ICON_MARK_OCCURRENCES.createImage());
 		highlightButton.setToolTipText("Highlight Text");
-		
-		 tabFolder = new TabFolder( parent, SWT.BORDER);
-		 // Inititalize SourceViewers
-		 for(int i = 0; i < sourceViewers.length; i++) {
-		 	sourceViewers[i] = new SourceViewer(tabFolder, null, SWT.MULTI | SWT.V_SCROLL | SWT.H_SCROLL);
-		 	sourceViewers[i].setEditable(false);
-		 }
-		
+
+        Font textFont = JFaceResources.getFontRegistry().get(
+            getFontPropertyPreferenceKey());
+        
+        tabFolder = new TabFolder(parent, SWT.BORDER);
+        // Inititalize SourceViewers
+        for(int i = 0; i < sourceViewers.length; i++) {
+            sourceViewers[i] = new SourceViewer(tabFolder, null, SWT.MULTI | SWT.V_SCROLL | SWT.H_SCROLL);
+            sourceViewers[i].setEditable(false);
+            sourceViewers[i].getTextWidget().setFont(textFont);
+        }
 		
 		gridData = new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.VERTICAL_ALIGN_FILL);
 		gridData.horizontalAlignment = GridData.FILL;
@@ -161,6 +181,13 @@ public class PerlDocView extends ViewPart {
 	      highlightButton.addListener(SWT.Selection, listener);
 	      highlightText.addKeyListener(keyListener);
 	}
+    
+    public void dispose()
+    {
+        PerlEditorPlugin.getDefault().getPreferenceStore()
+            .removePropertyChangeListener(fontPropertyChangeListener);
+        super.dispose();
+    }
     
     /**
      * For test purposes only.
@@ -251,7 +278,7 @@ public class PerlDocView extends ViewPart {
 
 		String perlCode =
 			"use Env qw(@PERL5LIB);\n\n"
-				+ "push(@PERL5LIB, @INC);\n"
+		        + "splice(@PERL5LIB, 0, 0, @INC);\n"
 				+ "exec('perldoc "
 				+ option
 				+ " \""
@@ -331,5 +358,9 @@ public class PerlDocView extends ViewPart {
 	public void setFocus() {
 		// TODO Auto-generated method stub
 	}
-
+    
+    private String getFontPropertyPreferenceKey()
+    {
+        return JFaceResources.TEXT_FONT;   
+    }
 }

@@ -448,7 +448,7 @@
     </section>
 
     <section>
-      <title>Perl Include Path</title>
+      <title id="include-path">Perl Include Path</title>
 
       <para>To add entries to a project's Perl Include Path (@INC), right
       click on the project icon and select
@@ -1101,8 +1101,10 @@
         </mediaobject>
       </screenshot>
 
-      <para>If Perldoc entries are found, they are displayed inside the
-      <guilabel>Perldoc</guilabel> view.</para>
+      <para>The search is performed among built-in Perl functions, FAQs from
+      the Perl documentation, and modules on the include path (see <xref
+      linkend="include-path" />). If Perldoc entries are found, they are
+      displayed inside the <guilabel>Perldoc</guilabel> view.</para>
 
       <screenshot>
         <mediaobject>
@@ -2297,8 +2299,7 @@ $smtp-&gt;[content assist]</programlisting>
         </screenshot>
 
         <para>The <guilabel>Breakpoints</guilabel> view shows all breakpoints
-        (see <xref linkend="breakpoints" />), their state and location.
-        </para>
+        (see <xref linkend="breakpoints" />), their state and location.</para>
 
         <para>By selecting one or more breakpoints and invoking the context
         menu, you can enable, disable or remove these breakpoints.</para>

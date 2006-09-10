@@ -5,6 +5,15 @@ CVS
 
 		Editor:
 
+Version 0.5.6 - 10-September-2006
+		Debugger:
+		* Fixed Bug [ 1555721 ] "Launch as Perl Local" doesn't work for *.t
+		* Fixed Bug [ 1555727 ] "Run As" launch shortcut missing in Perl perspective
+
+		Editor:
+		* Fixed Bug [ 1555697 ] Wrong @INC path used by perldoc
+		* Implemented Feature Request [ 1555703 ] Use a monospace font in PerlDoc view
+
 Version 0.5.5 - 4-September-2006
 		Debugger:
 		* Fixed Bug [ 1546237 ] Error parsing debugger variables

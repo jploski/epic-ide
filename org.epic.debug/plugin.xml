@@ -276,12 +276,31 @@
                                 <test
                                     property="org.eclipse.debug.ui.matchesPattern"
                                     value="*.pm" />
+                                <test
+                                    property="org.eclipse.debug.ui.matchesPattern"
+                                    value="*.t" />
                             </or>
                         </iterate>
                     </with>
                 </enablement>
             </contextualLaunch>
-
+         <perspective
+               id="org.epic.core.Perspective">
+         </perspective>
+         <perspective
+               id="org.eclipse.debug.ui.DebugPerspective">
+         </perspective>
+         <perspective
+               id="org.eclipse.jdt.ui.JavaPerspective">
+         </perspective>
         </shortcut>
+    </extension>
+	<!-- Adapters for contextual launch -->
+	<extension point="org.eclipse.core.runtime.adapters">
+         <factory 
+            class="" 
+            adaptableType="org.eclipse.core.resources.IResource">
+            <adapter type="org.eclipse.debug.ui.actions.ILaunchable"/>
+         </factory>
     </extension>
 </plugin>

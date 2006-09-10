@@ -83,7 +83,7 @@ public class PerlDocView extends ViewPart {
 		
 		new Label(parent, SWT.NULL).setText("Search:");
 		
-		searchPerldocText = new Text(parent, SWT.BORDER);
+		searchPerldocText = new Text(parent, SWT.BORDER);        
 		gridData = new GridData();
 		gridData.widthHint = 100;		
 		searchPerldocText.setLayoutData(gridData);
@@ -106,14 +106,13 @@ public class PerlDocView extends ViewPart {
 		highlightButton = new Button(parent, SWT.PUSH | SWT.FLAT);
 		highlightButton.setImage(PerlImages.ICON_MARK_OCCURRENCES.createImage());
 		highlightButton.setToolTipText("Highlight Text");
-		
-		 tabFolder = new TabFolder( parent, SWT.BORDER);
-		 // Inititalize SourceViewers
-		 for(int i = 0; i < sourceViewers.length; i++) {
-		 	sourceViewers[i] = new SourceViewer(tabFolder, null, SWT.MULTI | SWT.V_SCROLL | SWT.H_SCROLL);
-		 	sourceViewers[i].setEditable(false);
-		 }
-		
+        
+        tabFolder = new TabFolder(parent, SWT.BORDER);
+        // Inititalize SourceViewers
+        for(int i = 0; i < sourceViewers.length; i++) {
+            sourceViewers[i] = new SourceViewer(tabFolder, null, SWT.MULTI | SWT.V_SCROLL | SWT.H_SCROLL);
+            sourceViewers[i].setEditable(false);
+        }
 		
 		gridData = new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.VERTICAL_ALIGN_FILL);
 		gridData.horizontalAlignment = GridData.FILL;
@@ -251,7 +250,7 @@ public class PerlDocView extends ViewPart {
 
 		String perlCode =
 			"use Env qw(@PERL5LIB);\n\n"
-				+ "push(@PERL5LIB, @INC);\n"
+				+ "splice(@PERL5LIB, 0, 0, @INC);\n"
 				+ "exec('perldoc "
 				+ option
 				+ " \""

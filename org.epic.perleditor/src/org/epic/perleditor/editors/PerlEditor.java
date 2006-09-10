@@ -105,6 +105,8 @@ public class PerlEditor extends TextEditor implements IPropertyChangeListener
      */
     public void dispose()
     {
+        PerlEditorPlugin.getDefault().getPreferenceStore().removePropertyChangeListener(this);
+        
         uninstallAnnotationListener();
 
         try

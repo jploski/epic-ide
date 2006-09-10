@@ -7,7 +7,7 @@
         process for each target you are running.</p><p>If the thread is suspended, its stack frames are shown as child
         elements. Clicking on a stack frame takes you to the corresponding
         line in the Perl editor. If necessary, a new editor is opened
-        automatically.</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a id="N108BF" />Variables View</h3></div></div></div><div class="screenshot"><div class="mediaobject" align="center"><img src="images/variables_view.gif" align="middle" alt="Variables View" /></div></div><p>When a stack frame is selected, you can see the visible
+        automatically.</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a id="N108C3" />Variables View</h3></div></div></div><div class="screenshot"><div class="mediaobject" align="center"><img src="images/variables_view.gif" align="middle" alt="Variables View" /></div></div><p>When a stack frame is selected, you can see the visible
         variables in that stack frame in the <span class="guilabel">Variables</span>
         view. The view shows the value of primitive types. Complex variables
         can be examined by expanding them to show their members.</p><p>Global variables (including Perl internal variables) are marked
@@ -16,12 +16,12 @@
         step, it is displayed in red. If changes in inner levels of complex
         variables have occurred, the path to the changed variables is
         indicated via delta symbols:</p><div class="screenshot"><div class="mediaobject" align="center"><img src="images/var_delta_complex.gif" align="middle" alt="Change Indicators in Variables View" /></div></div><p>This makes it possible to see these kinds of changes even if
-        variables are collapsed.</p><div class="section" lang="en"><div class="titlepage"><div><div><h4 class="title"><a id="N108EE" />Customizing the Variables View</h4></div></div></div><p>You can customize the presentation with the configuration
-          menu:</p><h5><a id="N108F3" />Show Details Pane</h5><p>To show the detail pane select <span class="guilabel">Vertical View
+        variables are collapsed.</p><div class="section" lang="en"><div class="titlepage"><div><div><h4 class="title"><a id="N108F2" />Customizing the Variables View</h4></div></div></div><p>You can customize the presentation with the configuration
+          menu:</p><h5><a id="N108F7" />Show Details Pane</h5><p>To show the detail pane select <span class="guilabel">Vertical View
           Orientation</span> or <span class="guilabel">Horizontal View
           Orientation</span>. Select <span class="guilabel">Variables View
           Only</span> to disable it. The details pane shows the value of
-          primitive variables (especially useful for string variables).</p><h5><a id="N10903" />Select Variables to Display</h5><p>The variables view allows to select the following types of
+          primitive variables (especially useful for string variables).</p><h5><a id="N10907" />Select Variables to Display</h5><p>The variables view allows to select the following types of
           variables for displaying by checking the corresponding menu
           entry:</p><div class="itemizedlist"><ul type="disc"><li><p>Perl Internal Variables: these are variables provided by
               the Perl interpreter like <code class="varname">$_</code>,
@@ -31,8 +31,7 @@
               in Perl. To show lexical variables, you need to <a href="ch02s09.html" title="Setting Up the Debugger">install the Perl PadWalker
               module</a>. The PadWalker module has some <a href="ch08.html" title="Known Bugs &amp; Problems">problems</a> which influence viewing
               of local variables.</p></li></ul></div></div></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a id="breakpoints-view" />Breakpoints View</h3></div></div></div><div class="screenshot"><div class="mediaobject" align="center"><img src="images/breakpoint_view.gif" align="middle" alt="Breakpoints View" /></div></div><p>The <span class="guilabel">Breakpoints</span> view shows all breakpoints
-        (see <a href="ch06s03.html" title="Breakpoints">the section called “Breakpoints”</a>), their state and location.
-        </p><p>By selecting one or more breakpoints and invoking the context
-        menu, you can enable, disable or remove these breakpoints.</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a id="N1093C" />Perl Expression View</h3></div></div></div><div class="screenshot"><div class="mediaobject" align="center"><img src="images/perl_expr_view.gif" align="middle" alt="Perl Expression View" /></div></div><p>The <span class="guilabel">Perl Expression View</span> allows you to
+        (see <a href="ch06s03.html" title="Breakpoints">the section called “Breakpoints”</a>), their state and location.</p><p>By selecting one or more breakpoints and invoking the context
+        menu, you can enable, disable or remove these breakpoints.</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a id="N10940" />Perl Expression View</h3></div></div></div><div class="screenshot"><div class="mediaobject" align="center"><img src="images/perl_expr_view.gif" align="middle" alt="Perl Expression View" /></div></div><p>The <span class="guilabel">Perl Expression View</span> allows you to
         execute any valid Perl code within the current context of the program
         executed in debug mode.</p><div class="orderedlist"><ol type="1"><li><p>Open the view (<span class="guimenu">Window</span>-&gt;<span class="guisubmenu">Open View</span>-&gt;<span class="guimenuitem">Other</span>, then <span class="guimenu">EPIC</span>-&gt;<span class="guimenuitem">Perl Expression View</span>).</p></li><li><p>Enter the code to execute.</p></li><li><p>Press the <span class="inlinemediaobject"><img src="images/perl_expr_run.gif" /></span> symbol.</p></li></ol></div></div></div></body></html>

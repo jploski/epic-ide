@@ -8,6 +8,7 @@ CVS
 Version 0.5.7 - 16-September-2006
 		Debugger:
 		* Fixed Bug [ 1559162 ] Debugger does not stop on breakpoint
+		* Fixed Bug [ 1557028 ] debugger doesn't support attributes?!
 
 Version 0.5.6 - 10-September-2006
 		Debugger:

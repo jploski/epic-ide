@@ -5,6 +5,10 @@ CVS
 
 		Editor:
 
+Version 0.5.7 - 16-September-2006
+		Debugger:
+		* Fixed Bug [ 1559162 ] Debugger does not stop on breakpoint
+
 Version 0.5.6 - 10-September-2006
 		Debugger:
 		* Fixed Bug [ 1555721 ] "Launch as Perl Local" doesn't work for *.t

@@ -18,6 +18,9 @@ import java.util.StringTokenizer;
 
 import org.eclipse.core.runtime.*;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.progress.UIJob;
 import org.eclipse.debug.core.DebugEvent;
 import org.eclipse.debug.core.DebugException;
@@ -27,11 +30,7 @@ import org.eclipse.debug.core.model.IDebugElement;
 import org.eclipse.debug.core.model.IDebugTarget;
 import org.eclipse.debug.core.model.ITerminate;
 import org.eclipse.debug.core.model.IThread;
-import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.IWorkbenchPage;
-import org.eclipse.ui.PartInitException;
 import org.epic.debug.ui.action.ShowLocalVariableActionDelegate;
-import org.epic.debug.util.DebuggerProxy;
 import org.epic.debug.util.DebuggerProxy2;
 import org.epic.debug.varparser.PerlDebugValue;
 import org.epic.debug.varparser.PerlDebugVar;
@@ -89,6 +88,7 @@ public class PerlDB implements IDebugElement, ITerminate
     private final RE mReSessionFinished1, mReSessionFinished2;
     private final RE mRe_IP_Pos;
     private final RE mRe_IP_Pos_Eval;
+    private final RE mRe_IP_Pos_CODE;
     private final RE mReSwitchFileFail;
     private final RE mReSetLineBreakpoint;
     private final RE mReStackTrace;
@@ -148,6 +148,7 @@ public class PerlDB implements IDebugElement, ITerminate
         mReSessionFinished2 = newRE("Debugged program terminated.", false);
         mRe_IP_Pos = newRE("^[^\\(]*\\((.*):(\\d+)\\):[\\n\\t]", false);
         mRe_IP_Pos_Eval = newRE("^[^\\(]*\\(eval\\s+\\d+\\)\\[(.*):(\\d+)\\]$", false);
+        mRe_IP_Pos_CODE = newRE("^.*CODE\\(0x[0-9a-fA-F]+\\)\\(([^:]*):(\\d+)\\):[\\n\\t]", false);
         mReSwitchFileFail = newRE("^No file", false);
         mReSetLineBreakpoint = newRE("^\\s+DB<\\d+>", false);
         mReEnterFrame = newRE("^\\s*entering", false);
@@ -1121,10 +1122,22 @@ public class PerlDB implements IDebugElement, ITerminate
         startSubCommand(mCommandExecuteCode, ".", false);
         REMatch temp;
 
-        REMatch result = mRe_IP_Pos.getMatch(mDebugSubCommandOutput);
-        file_name = result.toString(1);
-        temp = mRe_IP_Pos_Eval.getMatch(file_name);
-        if (temp != null) result = temp;
+        // mRe_IP_Pos_CODE handles locations like
+        //     main::CODE(0x814f960)(/some/path/trycatch.pl:7):
+        // mRe_IP_Pos handles locations like
+        //     main::(/some/path/foobar.pl:7):
+        // mRe_IP_Pos_Eval handles locations like
+        //
+        System.err.println("commandoutput={"+mDebugSubCommandOutput+"}");
+        
+        REMatch result = mRe_IP_Pos_CODE.getMatch(mDebugSubCommandOutput);
+        if (result == null)
+        {
+            result = mRe_IP_Pos.getMatch(mDebugSubCommandOutput);
+            file_name = result.toString(1);
+            temp = mRe_IP_Pos_Eval.getMatch(file_name);
+            if (temp != null) result = temp;
+        }
         line = Integer.parseInt(result.toString(2));
         file = getPathFor(result.toString(1));
 

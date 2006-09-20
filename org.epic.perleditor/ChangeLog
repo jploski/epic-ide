@@ -5,6 +5,10 @@ CVS
 
 		Editor:
 
+Version 0.5.8 - 20-September-2006
+		Debugger:
+		* Fixed Bug [ 1557015 ] Debugger could not start web server
+
 Version 0.5.7 - 16-September-2006
 		Debugger:
 		* Fixed Bug [ 1559162 ] Debugger does not stop on breakpoint

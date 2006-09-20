@@ -230,7 +230,8 @@ public class CGITarget extends DebugTarget implements IDebugEventSetListener
             
             assert "file".equalsIgnoreCase(brazilUrl.getProtocol()) :
                 "brazil_mini.jar must reside in the file system";
-            cp.add(new File(new URI(brazilUrl.toExternalForm())));
+            
+            cp.add(urlToFile(brazilUrl));
             
             Bundle bundle = PerlDebugPlugin.getDefault().getBundle();
             URL binUrl = bundle.getEntry("/bin");
@@ -243,7 +244,7 @@ public class CGITarget extends DebugTarget implements IDebugEventSetListener
                 // 'bin' folder exists = we're running inside of
                 // a hosted workbench 
     
-                cp.add(new File(new URI(binUrl.toExternalForm())));
+                cp.add(urlToFile(binUrl));
             }
             else
             {
@@ -258,8 +259,8 @@ public class CGITarget extends DebugTarget implements IDebugEventSetListener
                     assert path.startsWith("file:");
                     assert path.endsWith(".jar!/");
                     
-                    cp.add(new File(new URI(
-                        path.substring(0, path.length()-2))));                
+                    URL jarUrl = new URL(path.substring(0, path.length()-2));
+                    cp.add(urlToFile(jarUrl));                
                 }
                 else
                 {   
@@ -268,7 +269,7 @@ public class CGITarget extends DebugTarget implements IDebugEventSetListener
                     // org.epic.debug was deployed as a directory:
                     // add this directory to the classpath
                     
-                    cp.add(new File(new URI(dirUrl.toExternalForm())));
+                    cp.add(urlToFile(dirUrl));
                 }
             }
             return cp;
@@ -426,6 +427,23 @@ public class CGITarget extends DebugTarget implements IDebugEventSetListener
             return false;
         }
         return true;
+    }
+    
+    private File urlToFile(URL url)
+    {
+        String urlString = url.toExternalForm();
+        
+        if (urlString.matches("^file:/[A-Za-z]:/.*$"))
+        {
+            // Windows URL with volume letter: file:/C:/foo/bar/blah.txt
+            return new File(urlString.substring(6));
+        }
+        else
+        {
+            // Unix URLs look like this: file:/foo/bar/blah.txt
+            assert urlString.matches("^file:/[^/].*$");
+            return new File(urlString.substring(5));
+        }
     }
     
     private static class BrazilProps

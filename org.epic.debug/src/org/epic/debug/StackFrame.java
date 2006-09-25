@@ -1,9 +1,6 @@
 package org.epic.debug;
 
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.ResourceBundle;
+import java.util.*;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.debug.core.DebugException;
@@ -34,7 +31,7 @@ public class StackFrame extends DebugElement implements IStackFrame {
 	private PerlDebugThread mThread;
 	private int mIP_Line;
 	private IPath mIP_Path;
-	private ArrayList mVarsOrg;
+	private List mVarsOrg;
 	static HashMap mPerlInternalVars;
 
 static{
@@ -75,7 +72,7 @@ static{
 	}
 
 	public void updateVars() {
-		ArrayList vars= (ArrayList) mVarsOrg.clone();
+		List vars= new ArrayList(mVarsOrg);
 		
 		String lVarname = null;
 		PerlDebugVar var = null;
@@ -130,7 +127,7 @@ static{
 		mVars = fVars;
 	}
 	
-	public void setVariables(ArrayList fVars) throws DebugException {
+	public void setVariables(List fVars) throws DebugException {
 		mVarsOrg = fVars;
 		updateVars();
 	}

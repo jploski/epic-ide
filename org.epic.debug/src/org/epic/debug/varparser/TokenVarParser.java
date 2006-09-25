@@ -1,8 +1,8 @@
 package org.epic.debug.varparser;
 
 
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.*;
+
 import org.eclipse.debug.core.DebugException;
 import org.epic.debug.PerlDB;
 import org.epic.debug.PerlDebugPlugin;
@@ -25,7 +25,7 @@ public class TokenVarParser {
 	private int mScope;
 
 	java.util.Stack mVarStack = new java.util.Stack();
-	java.util.ArrayList mVarList = null; //new java.util.ArrayList();
+	List mVarList = null; //new java.util.ArrayList();
 	HashMap mVarMap = new HashMap();
 	int mPos;
 	String indent;
@@ -36,19 +36,22 @@ public class TokenVarParser {
 		mDebugger = fDebugger;
 	}
 
-	public java.util.ArrayList parseVars(String fText, int fScope) {
+	public List parseVars(String fText, int fScope) {
 		return (parseVars(fText, fScope, new java.util.ArrayList()));
 	}
 
-	public ArrayList parseVars(String fText, int fScope,
-			ArrayList fVarList) {
+	public List parseVars(String fText, int fScope,
+			List fVarList) {
 		
 		mHasErrors = false;
 		
 		mVarMap.clear();
 		mVarStack.clear();
 		
-		
+		if (fText==null)
+        {
+            System.err.println("ftext==null");
+        }
 		mChars = fText.toCharArray();
 
 		mScope = fScope;
@@ -153,7 +156,7 @@ public class TokenVarParser {
 
 	////**************************
 
-	public void setVarList(java.util.ArrayList fVarList) {
+	public void setVarList(List fVarList) {
 		mVarList = fVarList;
 	}
 
@@ -162,7 +165,7 @@ public class TokenVarParser {
 				.size()]));
 	}
 
-	public java.util.ArrayList getVars() {
+	public List getVars() {
 		return (mVarList);
 	}
 

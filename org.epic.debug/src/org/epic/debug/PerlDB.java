@@ -10,19 +10,12 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-import java.util.StringTokenizer;
+import java.util.*;
 
 import org.eclipse.core.runtime.*;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.ui.progress.UIJob;
-import org.eclipse.debug.core.DebugEvent;
-import org.eclipse.debug.core.DebugException;
-import org.eclipse.debug.core.DebugPlugin;
-import org.eclipse.debug.core.ILaunch;
+import org.eclipse.debug.core.*;
 import org.eclipse.debug.core.model.IDebugElement;
 import org.eclipse.debug.core.model.IDebugTarget;
 import org.eclipse.debug.core.model.ITerminate;
@@ -123,9 +116,14 @@ public class PerlDB implements IDebugElement, ITerminate
     private String mVarGlobalString;
     private VarUpdateJob mVarUpdateJob;
     private StackFrame mStackFrameOrg;
+    
+    private final IDebugEventSetListener mAutoResume = new AutoResumeOnStart();
 
     public PerlDB(DebugTarget fTarget) throws CoreException
     {
+        if (!PerlEditorPlugin.getDefault().getSuspendAtFirstPreference())
+            PerlDebugPlugin.getDefault().registerDebugEventListener(mAutoResume);
+        
         mTarget = fTarget;
         mWorkingDir = mTarget.getLocalWorkingDir();
         mCurrentCommand = mCommandNone;
@@ -182,7 +180,7 @@ public class PerlDB implements IDebugElement, ITerminate
                 command = mDBinitPerl_5_8;
             }
             startCommand(mCommandExecuteCode, command, false, this);
-            startCommand(mCommandExecuteCode, mDBinitFlush, false, this);
+            startCommand(mCommandExecuteCode, mDBinitFlush, false, this);            
 
             // /****************test only*****/
             // getLaunch().setAttribute(PerlLaunchConfigurationConstants.ATTR_DEBUG_IO_PORT,"4041");
@@ -198,12 +196,11 @@ public class PerlDB implements IDebugElement, ITerminate
             generateDebugInitEvent();
             if (isBreakPointReached())
             {
-
                 DebugEvent event = new DebugEvent(mThreads[0],
                     DebugEvent.BREAKPOINT, DebugEvent.BREAKPOINT);
                 DebugEvent debugEvents[] = new DebugEvent[1];
                 debugEvents[0] = event;
-                DebugPlugin.getDefault().fireDebugEventSet(debugEvents);
+                DebugPlugin.getDefault().fireDebugEventSet(debugEvents);                
             }
         }
         else
@@ -212,6 +209,8 @@ public class PerlDB implements IDebugElement, ITerminate
             // if (mTarget == null || ! (mTarget instanceof CGITarget))
             generateDebugTermEvent();
         }
+        
+//        startCommand(mCommandResume, mThreads[0]);
     }
 
     /*
@@ -1104,8 +1103,6 @@ public class PerlDB implements IDebugElement, ITerminate
         mVarUpdateJob = new VarUpdateJob("Retrieving Variables", fOutputString);
         mVarUpdateJob.setPriority(Job.SHORT);
         mVarUpdateJob.schedule();
-        ;
-
     }
 
     private IPPosition getCurrent_IP_Position()
@@ -1220,7 +1217,7 @@ public class PerlDB implements IDebugElement, ITerminate
 
     private void setVarList(StackFrame fFrame)
     {
-        ArrayList lVarList = null;
+        List lVarList = null;
 
         if (fFrame == null) return;
         if (mStopVarUpdate == true) return;
@@ -1238,8 +1235,11 @@ public class PerlDB implements IDebugElement, ITerminate
 
         if (lVarList != null) mVarParser.parseVars(mVarGlobalString,
             PerlDebugVar.IS_GLOBAL_SCOPE, lVarList);
-        else lVarList = mVarParser.parseVars(mVarGlobalString,
-            PerlDebugVar.IS_GLOBAL_SCOPE);
+        else if (mVarGlobalString != null)
+            lVarList = mVarParser.parseVars(
+                mVarGlobalString,
+                PerlDebugVar.IS_GLOBAL_SCOPE);
+        else lVarList = Collections.EMPTY_LIST;
 
         if (mStopVarUpdate == true) if (mStopVarUpdate == true)
         {
@@ -1625,7 +1625,11 @@ public class PerlDB implements IDebugElement, ITerminate
                     + mIsCommandFinished);
                 return (Status.OK_STATUS );
             }
-            setVarList(frame);
+try {            setVarList(frame);}
+catch (Throwable t)
+{
+    t.printStackTrace();
+}
             // System.err.println("Time needed for parsing vars:
             // "+(start-System.currentTimeMillis())+"\n");
             // start = System.currentTimeMillis();
@@ -1726,6 +1730,44 @@ public class PerlDB implements IDebugElement, ITerminate
         public String toString()
         {
             return path + ":" + line;
+        }
+    }
+    
+    /**
+     * Responsible for resuming the execution immediately after
+     * the initial suspend state is reached (if a user-defined
+     * preference says so).
+     */
+    private class AutoResumeOnStart implements IDebugEventSetListener
+    {
+        public void handleDebugEvents(DebugEvent[] events)
+        {
+            boolean unregister = false;
+            for (int i = 0; i < events.length; i++)
+            {
+                if (events[i].getKind() == DebugEvent.SUSPEND &&
+                    !isBreakPointReached())
+                {
+                    UIJob job = new UIJob("PerlDB.AutoResumeOnStart") {
+                        public IStatus runInUIThread(IProgressMonitor monitor)
+                        {
+                            startCommand(mCommandResume, mThreads[0]);
+                            return Status.OK_STATUS;
+                        }
+                    };
+                    job.setPriority(Job.SHORT);
+                    job.schedule();
+                    unregister = true;
+                    break;
+                }
+                else if (events[i].getKind() == DebugEvent.TERMINATE)
+                {
+                    unregister = true;
+                    break;
+                }
+            }
+            if (unregister)
+                PerlDebugPlugin.getDefault().unregisterDebugEventListener(this);
         }
     }
 }

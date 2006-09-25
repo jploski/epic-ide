@@ -5,6 +5,10 @@ CVS
 
 		Editor:
 
+Version 0.5.10 - 25-September-2006
+		Editor:
+		* Fixed Bug [ 1562878 ] Here Docs produce errors
+
 Version 0.5.9 - 25-September-2006
 		Debugger:
 		* Implemented Feature Request: [ 1564860 ] Keep debugger from suspending at first statement

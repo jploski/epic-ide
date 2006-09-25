@@ -441,7 +441,7 @@
 /usr/lib/perl5/Term/Slang/Scroll.pm
 /usr/lib/perl5/Term/Slang/Window.pm
 /usr/lib/perl5/Text/CharWidth.pm
-/usr/lib/perl5/Text/EntityMap.pm
+/usr/share/perl5/Text/EntityMap.pm
 /usr/lib/perl5/Text/Iconv.pm
 /usr/lib/perl5/Tie/Watch.pm
 /usr/lib/perl5/Tk.pm
@@ -467,8 +467,6 @@
 /usr/lib/perl5/Tk/Dirlist.pm
 /usr/lib/perl5/Tk/DragDrop.pm
 /usr/lib/perl5/Tk/DragDrop/Common.pm
-/usr/lib/perl5/Tk/DragDrop/KDEDrop.pm
-/usr/lib/perl5/Tk/DragDrop/KDESite.pm
 /usr/lib/perl5/Tk/DragDrop/LocalDrop.pm
 /usr/lib/perl5/Tk/DragDrop/Rect.pm
 /usr/lib/perl5/Tk/DragDrop/SunConst.pm
@@ -607,12 +605,12 @@
 /usr/share/perl/5.8.8/Digest/file.pm
 /usr/share/perl/5.8.8/DirHandle.pm
 /usr/share/perl/5.8.8/Dumpvalue.pm
-/usr/share/perl/5.8.8/Encode/CN/HZ.pm
-/usr/share/perl/5.8.8/Encode/JP/H2Z.pm
-/usr/share/perl/5.8.8/Encode/JP/JIS7.pm
-/usr/share/perl/5.8.8/Encode/KR/2022_KR.pm
-/usr/share/perl/5.8.8/Encode/MIME/Header.pm
-/usr/share/perl/5.8.8/Encode/Unicode/UTF7.pm
+/usr/lib/perl/5.8.8/Encode/CN/HZ.pm
+/usr/lib/perl/5.8.8/Encode/JP/H2Z.pm
+/usr/lib/perl/5.8.8/Encode/JP/JIS7.pm
+/usr/lib/perl/5.8.8/Encode/KR/2022_KR.pm
+/usr/lib/perl/5.8.8/Encode/MIME/Header.pm
+/usr/lib/perl/5.8.8/Encode/Unicode/UTF7.pm
 /usr/share/perl/5.8.8/English.pm
 /usr/share/perl/5.8.8/Env.pm
 /usr/share/perl/5.8.8/Exporter.pm
@@ -681,8 +679,8 @@
 /usr/share/perl/5.8.8/I18N/LangTags.pm
 /usr/share/perl/5.8.8/I18N/LangTags/Detect.pm
 /usr/share/perl/5.8.8/I18N/LangTags/List.pm
-/usr/share/perl/5.8.8/IO/Socket/INET.pm
-/usr/share/perl/5.8.8/IO/Socket/UNIX.pm
+/usr/lib/perl/5.8.8/IO/Socket/INET.pm
+/usr/lib/perl/5.8.8/IO/Socket/UNIX.pm
 /usr/share/perl/5.8.8/IPC/Open2.pm
 /usr/share/perl/5.8.8/IPC/Open3.pm
 /usr/share/perl/5.8.8/Locale/Constants.pm

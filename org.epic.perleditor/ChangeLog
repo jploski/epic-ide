@@ -5,6 +5,10 @@ CVS
 
 		Editor:
 
+Version 0.5.9 - 25-September-2006
+		Debugger:
+		* Implemented Feature Request: [ 1564860 ] Keep debugger from suspending at first statement
+
 Version 0.5.8 - 20-September-2006
 		Debugger:
 		* Fixed Bug [ 1557015 ] Debugger could not start web server

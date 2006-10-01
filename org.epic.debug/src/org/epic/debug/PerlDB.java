@@ -46,7 +46,6 @@ import org.epic.regexp.views.RegExpView;
  */
 public class PerlDB implements IDebugElement, ITerminate
 {
-    private static final String mDBinitFlush = ";{$| = 1; my $old = select STDERR; $|=1;select $old;}\n";
     private static final String mDBinitPerl_5_8 = "o frame=2";
     private static final String mDBinitPerl_5_6 = "O frame=2";
     private static final String mPadwalkerError = "PadWalker module not found - please install";
@@ -186,7 +185,6 @@ public class PerlDB implements IDebugElement, ITerminate
                 command = mDBinitPerl_5_8;
             }
             startCommand(mCommandExecuteCode, command, false, this);
-            startCommand(mCommandExecuteCode, mDBinitFlush, false, this);
 
             // /****************test only*****/
             // getLaunch().setAttribute(PerlLaunchConfigurationConstants.ATTR_DEBUG_IO_PORT,"4041");
@@ -627,12 +625,21 @@ public class PerlDB implements IDebugElement, ITerminate
             {
                 abortSession();
                 return (false);
-            }
+            }            
 
             if (count > 0) debugOutput.append(buf, 0, count);
-            currentOutput = debugOutput.toString();
+            
+            try { if (mDebugOut.ready()) continue; } catch (IOException e) { }
+            
+            // Note that we apply the regular expressions used to find out
+            // whether the command/session has terminated only to the last few
+            // characters of the output; applying them to the whole output
+            // (which can become *very* long) causes major performance problems
+            int inspectLen = Math.min(debugOutput.length(), 350);
+            currentOutput = debugOutput.substring(
+                debugOutput.length() - inspectLen,
+                debugOutput.length());
 
-            //System.out.println("\nCurrent DEBUGOUTPUT:\n" + currentOutput + "\n");
             if (count == -1 || hasSessionTerminated(currentOutput))
             {
                 finished = SESSION_TERMINATED;
@@ -648,8 +655,8 @@ public class PerlDB implements IDebugElement, ITerminate
                 finished = SESSION_TERMINATED;
                 break;
             }
-
         }
+        currentOutput = debugOutput.toString();
 
         // System.out.println(currentOutput);
         // System.out.println("\nCurrent DEBUGOUTPUT:\n" + currentOutput
@@ -1637,9 +1644,7 @@ public class PerlDB implements IDebugElement, ITerminate
             generateDebugEvalEvent();
             fMon.done();
             return (Status.OK_STATUS );
-
         }
-
     }
 
     private RE newRE(String re, boolean multiline)

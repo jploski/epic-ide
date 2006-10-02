@@ -5,6 +5,10 @@ CVS
 
 		Editor:
 
+Version 0.5.12 - 2-October-2006
+		Editor:
+		* Implemented Feature Request: [ 1569585 ] Make "Open Declaration" work for package names
+
 Version 0.5.11 - 1-October-2006
 		Debugger:
 		* Fixed Bug [ 1534713 ] Debugger slowdowns with large string variables

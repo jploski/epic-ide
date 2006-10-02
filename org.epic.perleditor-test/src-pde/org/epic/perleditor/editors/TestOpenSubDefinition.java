@@ -23,7 +23,7 @@ public class TestOpenSubDefinition extends BasePDETestCase
         {
             testIface.selectText("some_sub()");
             
-            IAction openSubAction = editor.getAction(PerlEditorActionIds.OPEN_SUB);
+            IAction openSubAction = editor.getAction(PerlEditorActionIds.OPEN_DECLARATION);
             openSubAction.run();
             
             // Check that the module editor opened with the right selection

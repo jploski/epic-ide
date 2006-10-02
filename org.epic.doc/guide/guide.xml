@@ -1028,47 +1028,48 @@
     </section>
 
     <section>
-      <title>Open SUB Declaration</title>
+      <title>Open Declaration</title>
 
-      <para>Open SUB Declaration allows the user to search for the declaration
-      of a specific SUBroutine.</para>
+      <para>Open Declaration allows the user to search for the declaration of
+      a specific subroutine or package.</para>
 
       <screenshot>
         <mediaobject>
           <imageobject>
             <imagedata align="center"
-                       fileref="images/OpenDeclaration_Menu.gif" format="GIF" />
+                       fileref="images/OpenDeclaration_Menu.png" format="GIF" />
           </imageobject>
 
           <textobject>
-            <phrase>Open SUB Declaration context menu</phrase>
+            <phrase>Open Declaration context menu</phrase>
           </textobject>
         </mediaobject>
       </screenshot>
 
       <para>The search first determines what is selected. If no text is
-      selected, it attempts to find a subroutine name at the current cursor
-      position. The search will fail if no subroutine name is selected.</para>
+      selected, it attempts to find a subroutine or package name at the
+      current cursor position. The search will fail if neither is
+      selected.</para>
 
       <para>Due to the dynamic nature of Perl programs, the search is not
-      entirely reliable. For subroutine names qualified by a package prefix,
-      an attempt will be made to locate the appropriately named module file
-      using the @INC path. For unqualified subroutine names, the search will
-      first occur in the current editor and then extend to modules referenced
-      by 'use' statements.</para>
+      entirely reliable. For package names and subroutine names qualified by a
+      package prefix, an attempt will be made to locate the appropriately
+      named module file using the @INC path. For unqualified subroutine names,
+      the search will first occur in the current editor and then extend to
+      modules referenced by 'use' and (literal) 'require' statements.</para>
 
-      <para>If the subroutine declaration is found in a file inside workspace,
-      it will be highlighted in an existing or new editor.</para>
+      <para>If the declaration is found, it will be highlighted in an existing
+      or new editor.</para>
 
       <screenshot>
         <mediaobject>
           <imageobject>
             <imagedata align="center"
-                       fileref="images/OpenDeclaration_Found.gif" format="GIF" />
+                       fileref="images/OpenDeclaration_Found.png" format="GIF" />
           </imageobject>
 
           <textobject>
-            <phrase>Open SUB Declaration result</phrase>
+            <phrase>Open Declaration result</phrase>
           </textobject>
         </mediaobject>
       </screenshot>

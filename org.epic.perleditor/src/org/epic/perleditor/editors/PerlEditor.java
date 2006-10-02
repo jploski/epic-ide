@@ -459,8 +459,8 @@ public class PerlEditor extends TextEditor implements IPropertyChangeListener
             PerlEditorActionIds.HTML_EXPORT);
         wireAction(new ValidateSourceAction(this), PerlEditorCommandIds.VALIDATE_SYNTAX,
             PerlEditorActionIds.VALIDATE_SYNTAX);
-        wireAction(new OpenDeclarationAction(this), PerlEditorCommandIds.OPEN_SUB,
-            PerlEditorActionIds.OPEN_SUB);
+        wireAction(new OpenDeclarationAction(this), PerlEditorCommandIds.OPEN_DECLARATION,
+            PerlEditorActionIds.OPEN_DECLARATION);
         wireAction(new PerlDocAction(this), PerlEditorCommandIds.PERL_DOC,
             PerlEditorActionIds.PERL_DOC);
         wireAction(new ExtractSubroutineAction(this), PerlEditorCommandIds.EXTRACT_SUBROUTINE,

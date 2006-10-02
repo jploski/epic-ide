@@ -198,7 +198,7 @@
             categoryId="org.epic.perleditor.commands.source" />
         <command
             name="Open Declaration"
-            description="Opens the SUBs declaration"
+            description="Opens subroutine/package declaration"
             id="org.epic.perleditor.commands.openDeclaration"
             categoryId="org.eclipse.ui.category.navigate" />
         <command
@@ -302,7 +302,7 @@
 
             <action
                 definitionId="org.epic.perleditor.commands.openDeclaration"
-                label="Open SUB Declaration"
+                label="Open Declaration"
                 icon="icons/open-source.gif"
                 class="org.epic.perleditor.actions.DefaultRetargetEditorDelegate"
                 menubarPath="org.epic.perleditor.contextMenu.nav"
@@ -382,7 +382,7 @@
 
             <action
                 definitionId="org.epic.perleditor.commands.openDeclaration"
-                label="Open SUB Declaration"
+                label="Open Declaration"
                 icon="icons/open-source.gif"
                 retarget="true"
                 menubarPath="navigate/additions"

@@ -41,7 +41,7 @@ public class PerlEditorCommandIds
     public static final String TOGGLE_COMMENT = "org.epic.perleditor.commands.toggleComment";
 
     /** org.epic.perleditor.commands.openDeclaration */
-    public static final String OPEN_SUB = "org.epic.perleditor.commands.openDeclaration";
+    public static final String OPEN_DECLARATION = "org.epic.perleditor.commands.openDeclaration";
 
     /** org.epic.perleditor.commands.searchPerlDoc */
     public static final String PERL_DOC = "org.epic.perleditor.commands.searchPerlDoc";

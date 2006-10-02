@@ -29,7 +29,7 @@ public class PerlEditorActionIds
     public static final String TOGGLE_COMMENT = "org.epic.perleditor.actions.ToggleCommentAction";
 
     /** org.epic.perleditor.actions.OpenDeclarationAction */
-    public static final String OPEN_SUB = "org.epic.perleditor.actions.OpenDeclarationAction";
+    public static final String OPEN_DECLARATION = "org.epic.perleditor.actions.OpenDeclarationAction";
 
     /** org.epic.perleditor.actions.PerlDocAction */
     public static final String PERL_DOC = "org.epic.perleditor.actions.PerlDocAction";
@@ -78,7 +78,7 @@ public class PerlEditorActionIds
                 FORMAT_SOURCE,
                 HTML_EXPORT,
                 MATCHING_BRACKET,
-                OPEN_SUB,
+                OPEN_DECLARATION,
                 PERL_DOC,
                 TOGGLE_COMMENT,
                 VALIDATE_SYNTAX

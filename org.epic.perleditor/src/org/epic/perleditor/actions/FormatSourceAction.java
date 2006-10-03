@@ -111,7 +111,7 @@ public class FormatSourceAction extends PerlEditorAction
             }
         }
 
-        document.set(newText + "");
+        document.set(newText.toString());
 
         // set the new Cursor pos at the beginning of the Line
 

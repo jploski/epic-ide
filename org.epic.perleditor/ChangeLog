@@ -4,6 +4,7 @@ CVS
 		Debugger:
 
 		Editor:
+		* Fixed Bug [ 1570201 ] The outline view is not updated when the source is formatted
 
 Version 0.5.12 - 2-October-2006
 		Editor:

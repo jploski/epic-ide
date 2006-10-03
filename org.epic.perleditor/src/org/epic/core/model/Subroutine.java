@@ -112,4 +112,9 @@ public class Subroutine implements IMultilineElement, IPackageElement
         
         closeCurly = curly;
     }
+    
+    public String toString()
+    {
+        return "sub #" + index + " " + getName() + " @" + getOffset(); 
+    }
 }

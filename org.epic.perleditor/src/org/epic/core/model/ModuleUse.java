@@ -56,4 +56,9 @@ public class ModuleUse implements IPackageElement
     {
         return useKeyword;
     }
+    
+    public String toString()
+    {
+        return "use #" + index + " " + getName() + " @" + getOffset(); 
+    }
 }

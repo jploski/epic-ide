@@ -7,13 +7,19 @@ See build.properties for more information.
 <project name="EPIC User's Guide" default="build-all" basedir=".">	
 	
 	<!--
-	NOTE:
+	NOTE 1:
 		In order for the xmlcatalog magic to work, you must add resolver.jar
 		from the xml-commons-resolver-1.1 distribution to your Ant classpath
 		("Window > Preferences > Ant > Runtime > Global Entries"). Do NOT add
 		resolver.jar to the 'endorsed' directory of your JRE/JDK or Ant will
 		complain that "catalogpath listing external catalogs will be ignored"
 		and misbehave!
+	
+	NOTE 2:
+lrwxrwxrwx 1 root root 31 May 25 19:58 serializer.jar -> /usr/local/xalan/serializer.jar
+lrwxrwxrwx 1 root root 26 May 25 19:40 xalan.jar -> /usr/local/xalan/xalan.jar
+lrwxrwxrwx 1 root root 31 May 25 19:40 xercesImpl.jar -> /usr/local/xalan/xercesImpl.jar
+lrwxrwxrwx 1 root root 29 May 25 19:40 xml-apis.jar -> /usr/local/xalan/xml-apis
 	-->
     <xmlcatalog id="catalog">
         <catalogpath>
@@ -36,10 +42,10 @@ See build.properties for more information.
 		    description="All output formats"/>
 
 	<target name="build-pdf" depends="check-env" description="Single PDF file">
-		<fail message="Property fop.path must be defined and point to fop 0.20.5 installation directory.">
+		<fail message="Property fop.dir must be defined and point to fop 0.20.5 installation directory.">
 			<condition>
 				<or>
-					<not><isset property="fop.path"/></not>
+					<not><isset property="fop.dir"/></not>
 				</or>
 			</condition>
 		</fail>

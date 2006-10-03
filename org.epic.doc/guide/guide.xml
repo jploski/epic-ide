@@ -262,7 +262,7 @@
       </screenshot>
 
       <para>In this section, you can specify a list of keywords that act as
-      markers for tasks inside comments in your perl code, i.e. tags that mark
+      markers for tasks inside comments in your Perl code, i.e. tags that mark
       the beginning of a task entry.</para>
 
       <para>By default, the words <literal>TODO</literal> and
@@ -284,7 +284,7 @@
     <section>
       <title>Templates</title>
 
-      <para>Templates are a powerful tool to insert pre defined code snippets
+      <para>Templates are a powerful tool to insert pre-defined code snippets
       while working with the Perl Editor.</para>
 
       <screenshot>
@@ -1037,7 +1037,7 @@
         <mediaobject>
           <imageobject>
             <imagedata align="center"
-                       fileref="images/OpenDeclaration_Menu.png" format="GIF" />
+                       fileref="images/OpenDeclaration_Menu.gif" format="GIF" />
           </imageobject>
 
           <textobject>
@@ -1065,7 +1065,7 @@
         <mediaobject>
           <imageobject>
             <imagedata align="center"
-                       fileref="images/OpenDeclaration_Found.png" format="GIF" />
+                       fileref="images/OpenDeclaration_Found.gif" format="GIF" />
           </imageobject>
 
           <textobject>

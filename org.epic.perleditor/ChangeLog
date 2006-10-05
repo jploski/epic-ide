@@ -5,6 +5,7 @@ CVS
 
 		Editor:
 		* Fixed Bug [ 1570201 ] The outline view is not updated when the source is formatted
+		* Fixed Bug [ 1571643 ] Can't open editor: Reason for the failure: / by zero
 
 Version 0.5.12 - 2-October-2006
 		Editor:

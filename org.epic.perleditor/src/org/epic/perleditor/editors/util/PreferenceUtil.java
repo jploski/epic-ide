@@ -20,14 +20,16 @@ public class PreferenceUtil {
 			int numSpaces =
 			PerlEditorPlugin.getDefault().getPreferenceStore().getInt(
 				PreferenceConstants.INSERT_TABS_ON_INDENT);
-			char[] indentChars = new char[numSpaces - (column % numSpaces)];
-			
-			
-			for (int i = 0; i < indentChars.length; i++) {
-				indentChars[i] = ' ';
-			}
-
-			tabString = String.valueOf(indentChars);
+            
+            if (numSpaces > 0)
+            {
+    			char[] indentChars = new char[numSpaces - (column % numSpaces)];
+    			for (int i = 0; i < indentChars.length; i++) {
+    				indentChars[i] = ' ';
+    			}
+                tabString = String.valueOf(indentChars);
+            }
+            else tabString = "";
 		} else {
 			tabString = "\t";
 		}

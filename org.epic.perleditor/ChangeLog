@@ -4,6 +4,12 @@ CVS
 		Debugger:
 
 		Editor:
+
+Version 0.5.13 - 7-October-2006
+		Debugger:
+		* Implemented Feature Request [ 1572783 ] Environment tab for launch configurations	
+
+		Editor:
 		* Fixed Bug [ 1570201 ] The outline view is not updated when the source is formatted
 		* Fixed Bug [ 1571643 ] Can't open editor: Reason for the failure: / by zero
 

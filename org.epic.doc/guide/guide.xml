@@ -1568,7 +1568,7 @@ $smtp-&gt;[content assist]</programlisting>
         </listitem>
 
         <listitem>
-          <para>environment variables (for CGI environment)</para>
+          <para>environment variables</para>
         </listitem>
 
         <listitem>
@@ -1735,12 +1735,12 @@ $smtp-&gt;[content assist]</programlisting>
           </listitem>
 
           <listitem>
-            <para>In the <guilabel>Configuration</guilabel> tab</para>
+            <para>In the <guilabel>Main</guilabel> tab</para>
 
             <itemizedlist>
               <listitem>
                 <para><guilabel>Project</guilabel> field: select the project
-                to debug</para>
+                which contains the script to execute</para>
 
                 <note>
                   <para>Only Perl projects (projects associated with a Perl
@@ -1752,7 +1752,7 @@ $smtp-&gt;[content assist]</programlisting>
 
               <listitem>
                 <para><guilabel>File to execute</guilabel> field: select the
-                Perl file to execute</para>
+                script to execute</para>
 
                 <note>
                   <para>Only files associated with the Perl editor will be
@@ -1760,13 +1760,23 @@ $smtp-&gt;[content assist]</programlisting>
                   details.</para>
                 </note>
               </listitem>
-
-              <listitem>
-                <para><guilabel>Commadline Parameters</guilabel> field: enter
-                command line parameters to pass to the selected Perl
-                script</para>
-              </listitem>
             </itemizedlist>
+          </listitem>
+
+          <listitem>
+            <para>If you wish to pass command-line parameters to the script or
+            to the Perl interpreter, enter them in the
+            <guilabel>Arguments</guilabel> tab.</para>
+          </listitem>
+
+          <listitem>
+            <para>If you wish to modify environment variables for the script,
+            enter them in the <guilabel>Environment</guilabel> tab.<note>
+                <para>Be careful when removing or overriding the standard
+                environment variables. For example, the environment variable
+                %SYSTEMROOT% is essential for Perl socket IO to work under
+                Windows.</para>
+              </note></para>
           </listitem>
 
           <listitem>
@@ -1831,20 +1841,6 @@ $smtp-&gt;[content assist]</programlisting>
           </listitem>
 
           <listitem>
-            <para>In the <guilabel>CGI Environment</guilabel> tab</para>
-
-            <itemizedlist>
-              <listitem>
-                <para><guilabel>CGI-Script Environment Variables</guilabel>
-                field: sorted list of environemt variables to be set for CGI
-                scripts to be executed. Use the following syntax to specify
-                environment variables:
-                <userinput>name=value</userinput>.</para>
-              </listitem>
-            </itemizedlist>
-          </listitem>
-
-          <listitem>
             <para>In the <guilabel>Browser</guilabel> tab, there are two
             possible settings:</para>
 
@@ -1865,6 +1861,11 @@ $smtp-&gt;[content assist]</programlisting>
           </listitem>
 
           <listitem>
+            <para>If you wish to modify environment variables for the script,
+            enter them in the <guilabel>Environment</guilabel> tab.</para>
+          </listitem>
+
+          <listitem>
             <para>Press the <guibutton>Apply</guibutton> button.</para>
           </listitem>
         </orderedlist>
@@ -1873,7 +1874,10 @@ $smtp-&gt;[content assist]</programlisting>
       <section>
         <title>Perl Remote: Debug a Perl Script on a Remote Machine</title>
 
-        <para>Some points to consider:</para>
+        <para><note>
+            <para>This feature is not tested very well and should be
+            considered experimental.</para>
+          </note>Some points to consider:</para>
 
         <itemizedlist>
           <listitem>

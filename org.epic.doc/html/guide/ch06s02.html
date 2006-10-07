@@ -1,15 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"><head><title>Creating Launch Configurations</title><link href="book.css" rel="stylesheet" type="text/css" /><meta content="DocBook XSL Stylesheets V1.70.1" name="generator" /><link rel="start" href="index.html" title="EPIC - User's Guide" /><link rel="up" href="ch06.html" title="Using the Perl Debugger" /><link rel="prev" href="ch06s01.html" title="Launching Perl Programs" /><link rel="next" href="ch06s03.html" title="Breakpoints" /></head><body><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="launch-configurations" />Creating Launch Configurations</h2></div></div></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a id="N106C9" />Perl Local: Running a Perl Script on the Local Machine</h3></div></div></div><div class="screenshot"><div class="mediaobject" align="center"><img src="images/Debug_Local.gif" align="middle" alt="Perl Local Dialog" /></div></div><div class="orderedlist"><ol type="1"><li><p>Enter the name for the launch configuration in the
-            <span class="guilabel">Name</span> field.</p></li><li><p>In the <span class="guilabel">Configuration</span> tab</p><div class="itemizedlist"><ul type="disc"><li><p><span class="guilabel">Project</span> field: select the project
-                to debug</p><div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>Only Perl projects (projects associated with a Perl
+            <span class="guilabel">Name</span> field.</p></li><li><p>In the <span class="guilabel">Main</span> tab</p><div class="itemizedlist"><ul type="disc"><li><p><span class="guilabel">Project</span> field: select the project
+                which contains the script to execute</p><div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>Only Perl projects (projects associated with a Perl
                   nature) will be shown. If the project you require is not
                   shown, see <a href="ch03s03.html" title="Converting an Existing Project">the section called “Converting an Existing Project”</a> for adding
                   a Perl nature to your project.</p></div></li><li><p><span class="guilabel">File to execute</span> field: select the
-                Perl file to execute</p><div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>Only files associated with the Perl editor will be
+                script to execute</p><div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>Only files associated with the Perl editor will be
                   shown. See <a href="ch02s07.html" title="Associating Files with the Perl Editor">the section called “Associating Files with the Perl Editor”</a> for
-                  details.</p></div></li><li><p><span class="guilabel">Commadline Parameters</span> field: enter
-                command line parameters to pass to the selected Perl
-                script</p></li></ul></div></li><li><p>Press the <span class="guibutton">Apply</span> button</p></li></ol></div></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a id="N1070D" />Perl CGI: Run Perl Programs in a CGI Environment</h3></div></div></div><div class="screenshot"><div class="mediaobject" align="center"><img src="images/debug_cgi.gif" align="middle" alt="Perl CGI Dialog" /></div></div><div class="orderedlist"><ol type="1"><li><p>Enter the name for the launch configuration in the
+                  details.</p></div></li></ul></div></li><li><p>If you wish to pass command-line parameters to the script or
+            to the Perl interpreter, enter them in the
+            <span class="guilabel">Arguments</span> tab.</p></li><li><p>If you wish to modify environment variables for the script,
+            enter them in the <span class="guilabel">Environment</span> tab.<div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>Be careful when removing or overriding the standard
+                environment variables. For example, the environment variable
+                %SYSTEMROOT% is essential for Perl socket IO to work under
+                Windows.</p></div></p></li><li><p>Press the <span class="guibutton">Apply</span> button</p></li></ol></div></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a id="N10718" />Perl CGI: Run Perl Programs in a CGI Environment</h3></div></div></div><div class="screenshot"><div class="mediaobject" align="center"><img src="images/debug_cgi.gif" align="middle" alt="Perl CGI Dialog" /></div></div><div class="orderedlist"><ol type="1"><li><p>Enter the name for the launch configuration in the
             <span class="guilabel">Name</span> field.</p></li><li><p>In the <span class="guilabel">Web Server</span> tab</p><div class="itemizedlist"><ul type="disc"><li><p><span class="guilabel">HTML Root Directory</span> field: enter
                 the base directory that contains all HTML files or use the
                 <span class="guibutton">Browse</span> button to select the appropriate
@@ -21,17 +25,15 @@
                 <span class="guibutton">Browse</span> button to select the appropriate
                 directory.</p></li><li><p><span class="guilabel">Extension for CGI files</span> field: this
                 is a comma separated list of file extensions (each starting
-                with a "." ) used for CGI files in the project.</p></li></ul></div></li><li><p>In the <span class="guilabel">CGI Environment</span> tab</p><div class="itemizedlist"><ul type="disc"><li><p><span class="guilabel">CGI-Script Environment Variables</span>
-                field: sorted list of environemt variables to be set for CGI
-                scripts to be executed. Use the following syntax to specify
-                environment variables:
-                <strong class="userinput"><code>name=value</code></strong>.</p></li></ul></div></li><li><p>In the <span class="guilabel">Browser</span> tab, there are two
+                with a "." ) used for CGI files in the project.</p></li></ul></div></li><li><p>In the <span class="guilabel">Browser</span> tab, there are two
             possible settings:</p><div class="itemizedlist"><ul type="disc"><li><p>Select <span class="guilabel">Custom Browser</span>: specify the
                 path to the browser executable and add the required command
                 line parameters. Use <code class="literal">%1</code> as a place holder
                 for the HTML file to be opened.</p></li><li><p>Select <span class="guilabel">Default System Browser</span> to
                 use the browser defined as default browser by your OS
-                preferences.</p></li></ul></div></li><li><p>Press the <span class="guibutton">Apply</span> button.</p></li></ol></div></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a id="N10783" />Perl Remote: Debug a Perl Script on a Remote Machine</h3></div></div></div><p>Some points to consider:</p><div class="itemizedlist"><ul type="disc"><li><p>You need a Perl interpreter installed on your target
+                preferences.</p></li></ul></div></li><li><p>If you wish to modify environment variables for the script,
+            enter them in the <span class="guilabel">Environment</span> tab.</p></li><li><p>Press the <span class="guibutton">Apply</span> button.</p></li></ol></div></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a id="N10783" />Perl Remote: Debug a Perl Script on a Remote Machine</h3></div></div></div><p><div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>This feature is not tested very well and should be
+            considered experimental.</p></div>Some points to consider:</p><div class="itemizedlist"><ul type="disc"><li><p>You need a Perl interpreter installed on your target
             machine.</p></li><li><p>The EPIC debugger opens a network connection between local
             and remote host (port number can be specified in the corresponding
             launch configuration). So have a look at your firewall

@@ -787,6 +787,7 @@ public class PerlDB implements IDebugElement, ITerminate
     private boolean isBreakPointReached()
     {
         IPPosition pos = getCurrent_IP_Position();
+        if (pos == null) return false;
 
         // XXX: this breaks if new breakpoint types are installed!
         PerlLineBreakpoint bp = (PerlLineBreakpoint) mActiveBreakpoints.getBreakpointForLocation(pos

@@ -3,18 +3,12 @@ package org.epic.debug;
 import java.io.*;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.MissingResourceException;
-import java.util.ResourceBundle;
-import java.util.StringTokenizer;
+import java.util.*;
 
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.*;
-import org.eclipse.debug.core.DebugPlugin;
-import org.eclipse.debug.core.IDebugEventSetListener;
+import org.eclipse.debug.core.*;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Shell;
@@ -147,7 +141,14 @@ public class PerlDebugPlugin extends AbstractUIPlugin {
 		errorDialog(fText, result);
 	}
 
-    private static List runHelperScript(String scriptName) throws CoreException
+    private static List runHelperScript(String scriptName)
+        throws CoreException
+    {
+        return runHelperScript(scriptName, Collections.EMPTY_LIST);
+    }
+    
+    private static List runHelperScript(String scriptName, List scriptArgs)
+        throws CoreException
     {
         PerlExecutor executor = new PerlExecutor();
         try
@@ -156,6 +157,7 @@ public class PerlDebugPlugin extends AbstractUIPlugin {
                 scriptName, null);
             List args = new ArrayList(1);
             args.add(scriptFile.getAbsolutePath());
+            args.addAll(scriptArgs);
             return executor.execute(
                 scriptFile.getParentFile(),
                 args,
@@ -173,23 +175,11 @@ public class PerlDebugPlugin extends AbstractUIPlugin {
         finally { executor.dispose(); }
     }
 
-	static String[] createEnvArrays(Target fTarget) throws CoreException
-    {
-        List outputLines = runHelperScript("get_env.pl");
-
-        mSystemEnv = (String[]) outputLines.toArray(new String[outputLines.size()]);
-
-        if (fTarget instanceof DebugTarget)
-            outputLines.add(getPerlDebugEnv((DebugTarget) fTarget));
-
-        return (String[]) outputLines.toArray(new String[outputLines.size()]);
-	}
-
 	public static void createDefaultIncPath(List fInc) throws CoreException {
         fInc.addAll(runHelperScript("get_inc.pl"));
 	}
 
-	public static String getPerlDebugEnv(DebugTarget fTarget) {
+	private static String getPerlDebugEnv(DebugTarget fTarget) {
 		String port = null;
 		String host = null;
 		try {
@@ -254,7 +244,7 @@ public class PerlDebugPlugin extends AbstractUIPlugin {
 	 * @param status
 	 *            status to log
 	 */
-	private static void log(IStatus status) {
+	public static void log(IStatus status) {
 		getDefault().getLog().log(status);
 		Throwable e = status.getException();
 		if (e != null)
@@ -344,7 +334,20 @@ public class PerlDebugPlugin extends AbstractUIPlugin {
 	}
 
 	public static String[] getDebugEnv(Target fTarget) throws CoreException {
-		return (createEnvArrays(fTarget));
+        String[] env = DebugPlugin.getDefault().getLaunchManager().getEnvironment(
+            fTarget.getLaunch().getLaunchConfiguration());
+
+        if (env == null) // nothing set up in CGI env tab => use standard env
+        {
+            env = readNativeEnv();
+        }
+        if (fTarget.getLaunch().getLaunchMode().equals(ILaunchManager.DEBUG_MODE))
+        {
+            List envList = new ArrayList(Arrays.asList(env));
+            envList.add(getPerlDebugEnv((DebugTarget) fTarget));
+            env = (String[]) envList.toArray(new String[envList.size()]);
+        }        
+        return env;
 	}
 
 	public static PerlBreakpointManager getPerlBreakPointmanager() {
@@ -458,5 +461,37 @@ public class PerlDebugPlugin extends AbstractUIPlugin {
                 new LogWriter(new File(getStateLocation() + File.separator
                         + ".log"), mLogLevel));
         getLog().addLogListener(new LogWriter(System.err, mScreenLogLevel));
+    }
+    
+    private static String[] readNativeEnv() throws CoreException
+    {
+        // Use a random marker (current time) to increase
+        // the likelihood of properly parsing environment
+        // variables with multi-line values
+
+        String marker = System.currentTimeMillis() + " ";            
+        List lines = runHelperScript(
+            "get_env.pl", Arrays.asList(new String[] { marker }));
+        List envList = new ArrayList();
+        
+        StringBuffer buf = new StringBuffer();
+        for (Iterator i = lines.iterator(); i.hasNext();)
+        {
+            String line = (String) i.next();
+            
+            if (!line.startsWith(marker)) // continuation
+            {
+                buf.append(System.getProperty("line.separator"));
+                buf.append(line);
+            }
+            else
+            {
+                if (buf.length() > 0) envList.add(buf.toString());
+                buf.setLength(0);
+                buf.append(line.substring(marker.length()));
+            }
+        }
+        if (buf.length() > 0) envList.add(buf.toString());
+        return (String[]) envList.toArray(new String[envList.size()]);
     }
 }

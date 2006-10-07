@@ -1,7 +1,6 @@
 package org.epic.debug;
 
 import java.io.*;
-import java.net.URI;
 import java.net.URL;
 import java.util.*;
 
@@ -166,10 +165,6 @@ public class CGITarget extends DebugTarget implements IDebugEventSetListener
 
         String cgiRootDir = getLaunchAttribute(
             PerlLaunchConfigurationConstants.ATTR_CGI_ROOT_DIR, true);
-
-        List cgiEnv = (List) mLaunch.getLaunchConfiguration().getAttribute(
-            PerlLaunchConfigurationConstants.ATTR_CGI_ENV,
-            (List) null);
                     
         String cgiFileExtension = getLaunchAttribute(
             PerlLaunchConfigurationConstants.ATTR_CGI_FILE_EXTENSION, false);
@@ -197,13 +192,10 @@ public class CGITarget extends DebugTarget implements IDebugEventSetListener
         props.add("cgi.DebugInclude", " -I" + PerlDebugPlugin.getDefault().getInternalDebugInc());
         props.add("cgi.RunInclude", PerlExecutableUtilities.getPerlIncArgs(project));
 
-        if (mDebug) props.add("cgi.ENV_" + PerlDebugPlugin.getPerlDebugEnv(this));
+        String[] env = PerlDebugPlugin.getDebugEnv(this);
+        for (int i = 0; i < env.length; i++)
+            props.add("cgi.ENV_" + env[i]);
         
-        if (cgiEnv != null)
-        {
-            for (Iterator i = cgiEnv.iterator(); i.hasNext();)
-                props.add("cgi.ENV_" + (String) i.next());
-        }
         return props;    
     }
     

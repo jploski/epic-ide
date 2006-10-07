@@ -86,7 +86,6 @@ public class EpicCgiHandler implements Handler
     private PrintWriter mDiag; // diagnostic info to CGI proxy
     private OutputStream mOut; // forwards CGI stdout to CGI proxy
     private OutputStream mError; // forwards CGI stderr to CGI proxy
-    private List defaultEnv;
     private Exception defaultEnvError;
 
 	/**
@@ -111,9 +110,6 @@ public class EpicCgiHandler implements Handler
 	public boolean init(Server server, String prefix)
     {
         config = new CGIConfig(server, prefix);
-
-        try { defaultEnv = getDefaultEnvironment(); }
-        catch (Exception e) { defaultEnvError = e; }
 
         return connectToCGIProxy();
 	}
@@ -268,8 +264,7 @@ public class EpicCgiHandler implements Handler
         String url,
         int pathInfoStartI)
     {
-        List env = new ArrayList();        
-        env.addAll(defaultEnv);
+        List env = new ArrayList();
 
         /*
          * Build the environment array. First, get all the http headers most
@@ -332,7 +327,9 @@ public class EpicCgiHandler implements Handler
             env.add("CONFIG_PREFIX=" + config.getPropsPrefix());
         }
 
-        // Append EPIC's user-defined environment variables
+        // Append environment variables provided by EPIC
+        // (configurable with the CGI Environment tab; if nothing
+        // is configured, the environment of the workbench is used)
         
         Map userEnv = config.getProperties(ENV + "_");
         for (Iterator i = userEnv.keySet().iterator(); i.hasNext();)
@@ -342,12 +339,7 @@ public class EpicCgiHandler implements Handler
         }
 
         String[] environ = (String[]) env.toArray(new String[env.size()]);
-        /*
-        for (int i = 0; i < environ.length; i++)
-            request.log(
-                Server.LOG_DIAGNOSTIC,
-                "environ[" + i + "]= " + environ[i]);
-        */
+
         return environ;
     }
     
@@ -558,57 +550,5 @@ public class EpicCgiHandler implements Handler
             }
         }        
         return null;
-    }
-    
-    private List getDefaultEnvironment()
-        throws InterruptedException, IOException
-    {
-        // The environment passed to Runtime.exec for scripts overrides
-        // the global environment (at least in Windows XP). However,
-        // if the environment variable SystemRoot is not set in
-        // Windows XP, the system call getprotobyname (needed by
-        // the Perl debugger) will fail miserably. Therefore,
-        // we save all default environment variables here to pass
-        // them down to the Perl interpreter each time a script
-        // is executed.
-        
-        ProcessExecutor executor = new ProcessExecutor();
-        try
-        {
-            // Use a random marker (current time) to increase
-            // the likelihood of properly parsing environment
-            // variables with multi-line values
-
-            String marker = System.currentTimeMillis() + " ";
-            List varDefs = new ArrayList();
-            List lines = executor.execute(
-                new String[] { config.getPerlExecutable() },
-                "foreach $k(keys(%ENV)) { print \"" +
-                    marker + "$k=$ENV{$k}\n\"; }",
-                new File(".")
-                ).getStdoutLines();
-            
-            StringBuffer buf = new StringBuffer();
-            for (Iterator i = lines.iterator(); i.hasNext();)
-            {
-                String line = (String) i.next();
-                
-                if (!line.startsWith(marker)) // continuation
-                {
-                    buf.append(System.getProperty("line.separator"));
-                    buf.append(line);
-                }
-                else
-                {
-                    if (buf.length() > 0) varDefs.add(buf.toString());
-                    buf.setLength(0);
-                    buf.append(line.substring(marker.length()));
-                }
-            }
-            if (buf.length() > 0) varDefs.add(buf.toString());
-            
-            return varDefs;
-        }
-        finally { executor.dispose(); }
     }
 }

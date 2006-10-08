@@ -15,6 +15,7 @@ public class LaunchConfigurationDialogCGI extends
             new LaunchConfigurationMainTab(false),
             new LaunchConfigurationCGIWebServerTab(),            
             new LaunchConfigurationCGIBrowserTab(),
+            new LaunchConfigurationArgumentsTab(true),
             new EnvironmentTab(),
             new org.eclipse.debug.ui.CommonTab()
         };

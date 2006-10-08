@@ -172,6 +172,11 @@ public class CGITarget extends DebugTarget implements IDebugEventSetListener
         String projectName = getLaunchAttribute(
             PerlLaunchConfigurationConstants.ATTR_PROJECT_NAME, false);
         
+        String perlParams = getLaunchAttribute(
+            PerlLaunchConfigurationConstants.ATTR_PERL_PARAMETERS, false);
+        if (perlParams == null) perlParams = "";
+        perlParams = perlParams.replaceAll("[\\n\\r]", " ");
+        
         PerlProject project = PerlCore.create(
             PerlDebugPlugin.getWorkspace().getRoot().getProject(projectName));
 
@@ -189,8 +194,9 @@ public class CGITarget extends DebugTarget implements IDebugEventSetListener
         props.add("cgi.root", cgiRootDir);
         props.add("cgi.executable", perlPath);
         props.add("cgi.suffix", cgiFileExtension);
+        props.add("cgi.PerlParams", perlParams);
         props.add("cgi.DebugInclude", " -I" + PerlDebugPlugin.getDefault().getInternalDebugInc());
-        props.add("cgi.RunInclude", PerlExecutableUtilities.getPerlIncArgs(project));
+        props.add("cgi.RunInclude", PerlExecutableUtilities.getPerlIncArgs(project));        
 
         String[] env = PerlDebugPlugin.getDebugEnv(this);
         for (int i = 0; i < env.length; i++)

@@ -24,6 +24,7 @@ public class CGIConfig
     private final int portErr;
     private final String protocol;
     private final String perlExecutable;
+    private final String perlParams;
     private final int serverPort;
     
     /**
@@ -51,6 +52,7 @@ public class CGIConfig
         debugInc = getProperty("DebugInclude");
         
         runInc = getListProperty("RunInclude");
+        perlParams = getProperty("PerlParams");
         
         perlExecutable = getProperty("executable");
     }
@@ -116,6 +118,15 @@ public class CGIConfig
     public String getPerlExecutable()
     {
         return perlExecutable;
+    }
+    
+    /**
+     * @return command-line parameters that should be passed to
+     *         the Perl interpreter when running CGI scripts
+     */
+    public String getPerlParams()
+    {
+        return perlParams;
     }
     
     /**

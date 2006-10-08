@@ -32,6 +32,8 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.*;
 
+import org.epic.debug.util.ExecutionArguments;
+
 import sunlabs.brazil.server.*;
 
 /**
@@ -232,6 +234,13 @@ public class EpicCgiHandler implements Handler
         {
             commandList.add(config.getDebugInclude());
             commandList.add("-d"); // Add debug switch
+        }
+        
+        String perlParams = config.getPerlParams(); 
+        if (perlParams != null && perlParams.length() > 0)
+        {
+            ExecutionArguments exArgs = new ExecutionArguments(perlParams);
+            commandList.addAll(exArgs.getProgramArgumentsL());
         }
 
         commandList.add(cgiFile.getAbsolutePath());

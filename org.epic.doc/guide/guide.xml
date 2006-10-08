@@ -1866,6 +1866,12 @@ $smtp-&gt;[content assist]</programlisting>
           </listitem>
 
           <listitem>
+            <para>If you wish to pass command-line parameters to the Perl
+            interpreter, enter them in the <guilabel>Arguments</guilabel>
+            tab.</para>
+          </listitem>
+
+          <listitem>
             <para>Press the <guibutton>Apply</guibutton> button.</para>
           </listitem>
         </orderedlist>

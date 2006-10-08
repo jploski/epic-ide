@@ -5,6 +5,10 @@ CVS
 
 		Editor:
 
+Version 0.5.14 - 8-October-2006
+		Debugger:
+		* Implemented Feature Request [ 1573088 ] Pass arguments to Perl in CGI mode
+
 Version 0.5.13 - 7-October-2006
 		Debugger:
 		* Implemented Feature Request [ 1572783 ] Environment tab for launch configurations	

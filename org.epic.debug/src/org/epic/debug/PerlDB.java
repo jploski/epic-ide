@@ -1049,6 +1049,7 @@ public class PerlDB implements IDebugElement, ITerminate
         if (result == null)
         {
             result = mRe_IP_Pos.getMatch(mDebugSubCommandOutput);
+            if (result == null) return null;
             file_name = result.toString(1);
             temp = mRe_IP_Pos_Eval.getMatch(file_name);
             if (temp != null) result = temp;

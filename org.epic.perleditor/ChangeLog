@@ -4,6 +4,7 @@ CVS
 		Debugger:
 
 		Editor:
+		* Fixed Bug [ 1574984 ] Task tags are not regex escaped
 
 Version 0.5.14 - 8-October-2006
 		Debugger:

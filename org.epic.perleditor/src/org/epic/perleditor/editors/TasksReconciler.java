@@ -102,7 +102,9 @@ public class TasksReconciler
             StringBuffer buffy = new StringBuffer();
             buffy.append("#");
             if (allowWhiteSpace) buffy.append("\\s*");
+            buffy.append("\\Q");
             buffy.append(TODO_STRINGS[i]);
+            buffy.append("\\E");
             TODO_PATTERNS[i] = Pattern.compile(buffy.toString(), flags);
         }   
     }

@@ -430,6 +430,25 @@
 }
 1381:6:__dftl_partition_content_type:{format}
 1387:1:__dftl_partition_content_type:{=}
-1388:14:POD:{
+1388:15:POD:{
 hello world
-.}
+.
+}
+1403:1:__dftl_partition_content_type:{
+}
+1404:3:KEYWORD1:{sub}
+1407:1:__dftl_partition_content_type:{ }
+1408:6:__dftl_partition_content_type:{format}
+1414:1:__dftl_partition_content_type:{ }
+1415:1:OPERATOR:{{}
+1416:1:__dftl_partition_content_type:{ }
+1417:2:VARIABLE:{$x}
+1419:1:__dftl_partition_content_type:{ }
+1420:1:OPERATOR:{=}
+1421:1:__dftl_partition_content_type:{ }
+1422:1:LITERAL1:{'}
+1423:4:LITERAL1:{baba}
+1427:1:LITERAL1:{'}
+1428:1:OPERATOR:{;}
+1429:1:__dftl_partition_content_type:{ }
+1430:1:OPERATOR:{}}

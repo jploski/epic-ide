@@ -59,3 +59,5 @@ $p->{'mode'} =~ m//; # m after =~ is an operator, even if it comes after ->
 format=
 hello world
 .
+
+sub format { $x = 'baba'; }

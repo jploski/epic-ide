@@ -1,14 +1,12 @@
 package org.epic.perleditor.views;
 
 import java.io.*;
+import java.util.ResourceBundle;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.JFaceResources;
-import org.eclipse.jface.text.Document;
-import org.eclipse.jface.text.FindReplaceDocumentAdapter;
-import org.eclipse.jface.text.IDocument;
-import org.eclipse.jface.text.IRegion;
+import org.eclipse.jface.text.*;
 import org.eclipse.jface.text.source.SourceViewer;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
@@ -16,8 +14,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyleRange;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
-import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -30,7 +27,11 @@ import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Widget;
+import org.eclipse.ui.IActionBars;
+import org.eclipse.ui.IViewSite;
+import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.part.ViewPart;
+import org.eclipse.ui.texteditor.FindReplaceAction;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.epic.core.util.PerlExecutor;
 import org.epic.perleditor.PerlEditorPlugin;
@@ -46,14 +47,11 @@ import org.epic.perleditor.editors.PerlImages;
 public class PerlDocView extends ViewPart {
 	
 	
-	private Button highlightButton;
 	private Button searchPerldocButton;
-	private Text highlightText;
 	private Text searchPerldocText;
 	private Display display;
-	private Color highlightColor;
-	private Color highlightBackgroundColor;
 	private TabFolder tabFolder;
+    private FindReplaceAction findReplaceAction;
 	
 	
 	private static int ITEM_COUNT = 4;
@@ -62,7 +60,7 @@ public class PerlDocView extends ViewPart {
 	private boolean[] foundItems = {false, false, false, false};
 	private SourceViewer[] sourceViewers = {null, null, null, null};
 	private TabItem[] tabItems = {null, null, null, null};
-	//private IDocumentPartitioner partitioner;
+	private final FindReplaceTarget findReplaceTarget = new FindReplaceTarget();
 
     private final IPropertyChangeListener fontPropertyChangeListener =
         new IPropertyChangeListener() {
@@ -87,11 +85,8 @@ public class PerlDocView extends ViewPart {
 	 * @see org.eclipse.ui.part.WorkbenchPart#createPartControl(org.eclipse.swt.widgets.Composite)
 	 */
 	public void createPartControl(Composite parent) {
-		 display = parent.getDisplay();
-		 highlightColor = new Color(display, 255, 127, 0);
-		 highlightBackgroundColor = new Color(display, 255, 255, 255);
-		 
-		
+	    display = parent.getDisplay();
+
 		GridLayout gridLayout = new GridLayout(); 
 		gridLayout.numColumns = 6;
 		parent.setLayout(gridLayout);
@@ -111,18 +106,6 @@ public class PerlDocView extends ViewPart {
 		
 		gridData = new GridData();
 		gridData.horizontalIndent = 20;
-		Label highlightLabel = new Label(parent, SWT.NULL);
-		highlightLabel.setText("Highlight:");
-		highlightLabel.setLayoutData(gridData);
-		
-		highlightText = new Text(parent, SWT.BORDER);
-		gridData = new GridData();
-		gridData.widthHint = 100;		
-		highlightText.setLayoutData(gridData);
-		
-		highlightButton = new Button(parent, SWT.PUSH | SWT.FLAT);
-		highlightButton.setImage(PerlImages.ICON_MARK_OCCURRENCES.createImage());
-		highlightButton.setToolTipText("Highlight Text");
 
         Font textFont = JFaceResources.getFontRegistry().get(
             getFontPropertyPreferenceKey());
@@ -148,38 +131,30 @@ public class PerlDocView extends ViewPart {
 		Listener listener = new Listener() {
 	        public void handleEvent(Event event) {
 	          Widget item = event.widget;
-	          if (item == highlightButton) {
-	            highlightText();
-	          }
-	          else if(item == searchPerldocButton) {
+	          if(item == searchPerldocButton) {
 	          	search();
 	          }
 	          
 	        }
 	      };
 	      
-	      KeyAdapter keyListener = new KeyAdapter() {
-	      	  public void keyPressed(KeyEvent event) {
-	      	  	Widget item = event.widget;
-	      	  	
-	      	  	switch(event.keyCode) {
-	      	  		case 13:
-	      	  				if(item == searchPerldocText) {
-	      	  					search();
-	      	  				}
-	      	  				else if(item == highlightText) {
-	      	  			    highlightText();
-	      	  				}
-	      	  				break;
-	      	  	}
-	      	  }
-	      	
-	      };
-	      
-	      searchPerldocButton.addListener(SWT.Selection, listener);
-	      searchPerldocText.addKeyListener(keyListener);
-	      highlightButton.addListener(SWT.Selection, listener);
-	      highlightText.addKeyListener(keyListener);
+        KeyAdapter keyListener = new KeyAdapter() {
+      	    public void keyPressed(KeyEvent event) {
+                Widget item = event.widget;
+      	  	
+                switch(event.keyCode) {
+                case 13:
+      	  		    if(item == searchPerldocText) {
+                        search();
+      	  		    }
+      	  		    break;
+                }
+      	    } };
+
+        searchPerldocButton.addListener(SWT.Selection, listener);
+        searchPerldocText.addKeyListener(keyListener);
+      
+        createActions();
 	}
     
     public void dispose()
@@ -187,6 +162,15 @@ public class PerlDocView extends ViewPart {
         PerlEditorPlugin.getDefault().getPreferenceStore()
             .removePropertyChangeListener(fontPropertyChangeListener);
         super.dispose();
+    }
+    
+    public Object getAdapter(Class required)
+    {
+        if (IFindReplaceTarget.class.equals(required))
+        {
+            return findReplaceTarget;
+        }
+        return null;
     }
     
     /**
@@ -217,12 +201,6 @@ public class PerlDocView extends ViewPart {
 		
 		if(!searchPerldocText.getText().equals(searchText)) {
 			searchPerldocText.setText(searchText);
-		}
-		
-		// Set search string as highlight string if highlight input
-		// field is empty
-		if(highlightText.getText().length() == 0) {
-			highlightText.setText(searchText);
 		}
 		
 		// Search PerlDoc
@@ -262,9 +240,6 @@ public class PerlDocView extends ViewPart {
 			}
 		}
 		
-		// Highlight text
-		highlightText();
-		
 		// If nothing has been found, display info dialog
 		if(itemsFound == 0) {
 			MessageDialog.openInformation(
@@ -272,6 +247,8 @@ public class PerlDocView extends ViewPart {
 					PopupMessages.getString("NoDocumentation.title"),
 					PopupMessages.getString("NoDocumentation.message"));
 		}
+        
+        findReplaceAction.update();
 	}
 	
 	private String getPerlDoc(String option, String searchText, ITextEditor textEditor) throws CoreException {
@@ -303,64 +280,76 @@ public class PerlDocView extends ViewPart {
         	}
         }
         finally { executor.dispose(); }
-	}
-	
-	/**
-	 * Highlights text in all SourceViewers
-	 */
-	private void highlightText() {
-		for(int i = 0; i < ITEM_COUNT; i++) {
-			if(foundItems[i]) {
-				highlightText(sourceViewers[i]);
-			}
-		}
-	}
-	
-	private void highlightText(SourceViewer sourceViewer) {
-		StyleRange styleRange;
-		
-		IDocument document = sourceViewer.getDocument();
-		
-		// Reset style
-		styleRange = new StyleRange(0, document.getLength(), null, null, SWT.NORMAL);            
-		sourceViewer.getTextWidget().setStyleRange(styleRange);
-		
-		String searchText = highlightText.getText();
-		if(searchText.trim().length() > 0) {
-			FindReplaceDocumentAdapter findAdapter = new FindReplaceDocumentAdapter(document);
-			try {
-				IRegion findResult;
-				int offset = 0;
-				
-				while ((findResult = findAdapter.find(offset, searchText, true, false, false, false))!= null) {
-					int startPos = findResult.getOffset();
-					int endPos = startPos + findResult.getLength();
-					
-					styleRange = new StyleRange();
-			        styleRange.start = startPos;
-			        styleRange.length = findResult.getLength();
-			        styleRange.foreground = highlightBackgroundColor;
-			        //styleRange.fontStyle = SWT.BOLD;
-			        styleRange.background = highlightColor;
-			        sourceViewer.getTextWidget().setStyleRange(styleRange);
+	}		
 
-			        offset = endPos + 1;
-					
-				}
-			} catch (Exception e) {
-				//e.printStackTrace();
-			}
-		}
+	public void setFocus()
+    {
 	}
-	/* (non-Javadoc)
-	 * @see org.eclipse.ui.part.WorkbenchPart#setFocus()
-	 */
-	public void setFocus() {
-		// TODO Auto-generated method stub
-	}
+    
+    private void createActions()
+    {
+        IActionBars actionBars = ((IViewSite) getSite()).getActionBars();
+        ResourceBundle bundle = PerlDocViewMessages.getBundle();
+
+        findReplaceAction =
+            new FindReplaceAction(bundle, "find_replace_action_", this);
+        actionBars.setGlobalActionHandler(
+            ActionFactory.FIND.getId(),
+            findReplaceAction);
+
+        actionBars.updateActionBars();
+    }
     
     private String getFontPropertyPreferenceKey()
     {
         return JFaceResources.TEXT_FONT;   
+    }
+    
+    private class FindReplaceTarget implements IFindReplaceTarget
+    {
+        private IFindReplaceTarget getActiveTarget()
+        {
+            int selectedTab = tabFolder.getSelectionIndex();
+            if (selectedTab < 0) return null;
+            
+            TabItem[] selection = tabFolder.getSelection();
+            for (int i = 0; i < sourceViewers.length; i++)
+            {
+                if (selection[0].getControl() == sourceViewers[i].getControl())
+                    return sourceViewers[i].getFindReplaceTarget();
+            }
+            return null;
+        }
+
+        public boolean canPerformFind()
+        {
+            if (getActiveTarget() == null) return false;
+            return getActiveTarget().canPerformFind();
+        }
+
+        public int findAndSelect(int widgetOffset, String findString, boolean searchForward, boolean caseSensitive, boolean wholeWord)
+        {
+            return getActiveTarget().findAndSelect(widgetOffset, findString, searchForward, caseSensitive, wholeWord);
+        }
+
+        public Point getSelection()
+        {
+            return getActiveTarget().getSelection();
+        }
+
+        public String getSelectionText()
+        {
+            return getActiveTarget().getSelectionText();
+        }
+
+        public boolean isEditable()
+        {
+            return false;
+        }
+
+        public void replaceSelection(String text)
+        {
+            getActiveTarget().replaceSelection(text);
+        }
     }
 }

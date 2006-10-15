@@ -4,7 +4,12 @@ CVS
 		Debugger:
 
 		Editor:
+
+Version 0.5.15 - 15-October-2006
+		Editor:
 		* Fixed Bug [ 1574984 ] Task tags are not regex escaped
+		* Fixed Bug [ 1574555 ] sub format { ... } breaks syntax highlighting
+		* Implemented Feature Request [ 1576324 ] Searching in PerlDoc view
 
 Version 0.5.14 - 8-October-2006
 		Debugger:

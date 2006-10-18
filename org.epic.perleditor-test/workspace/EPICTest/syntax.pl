@@ -61,3 +61,5 @@ hello world
 .
 
 sub format { $x = 'baba'; }
+
+$result .= qq?<a href="#" onclick="parent.ausgabeVererben()">? . $cat->{'x'} . qq?</a>.<br />?;

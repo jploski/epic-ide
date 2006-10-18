@@ -452,3 +452,33 @@ hello world
 1428:1:OPERATOR:{;}
 1429:1:__dftl_partition_content_type:{ }
 1430:1:OPERATOR:{}}
+1431:2:__dftl_partition_content_type:{
+
+}
+1433:7:VARIABLE:{$result}
+1440:1:__dftl_partition_content_type:{ }
+1441:1:OPERATOR:{.}
+1442:1:OPERATOR:{=}
+1443:1:__dftl_partition_content_type:{ }
+1444:2:LITERAL2:{qq}
+1446:1:LITERAL2:{?}
+1447:47:LITERAL2:{<a href="#" onclick="parent.ausgabeVererben()">}
+1494:1:LITERAL2:{?}
+1495:1:__dftl_partition_content_type:{ }
+1496:1:OPERATOR:{.}
+1497:1:__dftl_partition_content_type:{ }
+1498:4:VARIABLE:{$cat}
+1502:2:OPERATOR:{->}
+1504:1:OPERATOR:{{}
+1505:1:LITERAL1:{'}
+1506:1:LITERAL1:{x}
+1507:1:LITERAL1:{'}
+1508:1:OPERATOR:{}}
+1509:1:__dftl_partition_content_type:{ }
+1510:1:OPERATOR:{.}
+1511:1:__dftl_partition_content_type:{ }
+1512:2:LITERAL2:{qq}
+1514:1:LITERAL2:{?}
+1515:11:LITERAL2:{</a>.<br />}
+1526:1:LITERAL2:{?}
+1527:1:OPERATOR:{;}

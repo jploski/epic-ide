@@ -269,7 +269,7 @@ OPER_DOTDOT
 
 OPER_DOT
 	: '.'
-	{ $setToken(createOperatorToken(PerlTokenTypes.OPER_DOT, ".")); };
+	{ afterArrow = false; $setToken(createOperatorToken(PerlTokenTypes.OPER_DOT, ".")); };
 
 OPER_BSLASH
 	: '\\'

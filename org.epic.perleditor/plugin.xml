@@ -274,7 +274,6 @@
                 label="Toggle Perl Nature"
                 icon="icons/epic_project.gif"
                 class="org.epic.core.popupmenus.TogglePerlNatureActionDelegate"
-                menubarPath="epicNAvPopup"
                 id="org.epic.core.togglePerlNature.action" />
         </objectContribution>
 

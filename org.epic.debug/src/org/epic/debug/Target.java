@@ -150,15 +150,18 @@ public abstract class Target extends DebugElement implements IDebugTarget
                 mLaunch.getLaunchConfiguration().getAttribute(
                     PerlLaunchConfigurationConstants.ATTR_PERL_PARAMETERS,
                     EMPTY_STRING);
+            perlParams = VariablesPlugin.getDefault().getStringVariableManager()
+                .performStringSubstitution(perlParams);
 			progParams =
 				mLaunch.getLaunchConfiguration().getAttribute(
 					PerlLaunchConfigurationConstants.ATTR_PROGRAM_PARAMETERS,
 					EMPTY_STRING);
-
+            progParams = VariablesPlugin.getDefault().getStringVariableManager()
+                .performStringSubstitution(progParams);
 		} catch (Exception ce)
 		{
 			PerlDebugPlugin.log(ce);
-		}
+		}       
 
 		IProject prj =
 			PerlDebugPlugin.getWorkspace().getRoot().getProject(prjName);

@@ -5,6 +5,14 @@ CVS
 
 		Editor:
 
+Version 0.5.16 - 18-October-2006
+		Debugger:
+		* Fixed Bug [ 1570715 ] Perl Runner does not expand variables
+
+		Editor:
+		* Fixed Bug [ 1570548 ] "Properties" context menu should always be the last item
+		* Fixed Bug [ 1577964 ] problem in source code syntax analysis
+
 Version 0.5.15 - 15-October-2006
 		Editor:
 		* Fixed Bug [ 1574984 ] Task tags are not regex escaped

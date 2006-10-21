@@ -23,6 +23,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IDecoratorManager;
 import org.eclipse.ui.IEditorDescriptor;
 import org.epic.perleditor.PerlEditorPlugin;
+import org.epic.perleditor.editors.util.PerlValidator;
 
 /**
  * @author luelljoc
@@ -124,7 +125,7 @@ public class PerlDecorator extends LabelProvider
 			}
 		} else if (isPerlFile) {
 			try {
-				if (resource.findMarkers(IMarker.PROBLEM, true, 1).length > 0) {
+				if (resource.findMarkers(PerlValidator.PROBLEM_MARKER, true, 1).length > 0) {
 					int state = PerlDecorator.getDecoratorMarker(resource);
 
 					if (state == IMarker.SEVERITY_ERROR) {
@@ -185,7 +186,7 @@ public class PerlDecorator extends LabelProvider
 	public static int getDecoratorMarker(IResource resource) {
 		int state = NO_ERROR;
 		try {
-			IMarker[] markers = resource.findMarkers(IMarker.PROBLEM, true, 1);
+			IMarker[] markers = resource.findMarkers(PerlValidator.PROBLEM_MARKER, true, 1);
 			for (int i = 0; i < markers.length; i++) {
 				int severity = ((Integer) markers[i]
 						.getAttribute(IMarker.SEVERITY)).intValue();

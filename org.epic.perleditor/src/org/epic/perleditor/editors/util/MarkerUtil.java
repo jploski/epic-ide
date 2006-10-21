@@ -96,6 +96,33 @@ public class MarkerUtil {
 	public void removeUnusedMarkers(String markerType) {
 		removeUnusedMarkers(markerType, null);
 	}
+
+    public void removeObsoleteProblemMarkers()
+    {
+        // Note: on 2006-10-21 bug #1563114 was fixed: EPIC now uses its own
+        // marker type in order not to interfere with other plug-ins.
+        // The code below is here only to remove the problem markers persisted
+        // by EPIC *before* this fix. It should be removed some day in the
+        // future, as it also (incorrectly) removes old problem markers set
+        // by other plug-ins.
+        
+        try
+        {
+            IMarker[] markers = fResource.findMarkers(
+                IMarker.PROBLEM, true, IResource.DEPTH_ONE);
+            
+            for(int i = 0; i < markers.length; i++)
+            {
+                if (markers[i].getCreationTime() < 1161441375673L)
+                    markers[i].delete();
+            }
+        }
+        catch (CoreException e)
+        {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
 	
 	/**
 	 * Deletes all unused markers of given type

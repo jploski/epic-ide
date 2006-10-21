@@ -17,6 +17,7 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.texteditor.*;
 import org.epic.perleditor.PerlEditorPlugin;
+import org.epic.perleditor.editors.util.PerlValidator;
 import org.epic.perleditor.views.ExplainErrorsView;
 
 /**
@@ -83,7 +84,7 @@ public class ExplainErrorsRulerAction extends ResourceAction implements IUpdate 
 					try {
 						IMarker marker = a.getMarker();
 						int markerLineNumber = ((Integer) marker.getAttribute(IMarker.LINE_NUMBER)).intValue();
-						if (marker.getType().equals(IMarker.PROBLEM) && markerLineNumber == aLine) {
+						if (marker.getType().equals(PerlValidator.PROBLEM_MARKER) && markerLineNumber == aLine) {
 							markers.add(marker);
 							//System.out.println("Marker: " + marker.getAttribute(IMarker.MESSAGE));
 						}

@@ -26,6 +26,7 @@ import org.eclipse.ui.texteditor.MarkerUtilities;
 
 import org.eclipse.debug.ui.DebugUITools;
 import org.eclipse.debug.ui.IDebugModelPresentation;
+import org.epic.core.Constants;
 
 
 
@@ -89,7 +90,7 @@ public class PerlMarkerAnnotation extends MarkerAnnotation {
 			if (marker.exists()) {
 				try {
 
-					if (marker.isSubtypeOf(IMarker.PROBLEM)) {
+					if (marker.isSubtypeOf(Constants.PROBLEM_MARKER)) {
 						int severity= marker.getAttribute(IMarker.SEVERITY, -1);
 						switch (severity) {
 							case IMarker.SEVERITY_ERROR:

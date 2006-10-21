@@ -306,6 +306,12 @@ public class PerlEditorPlugin extends AbstractUIPlugin {
 		return fDocumentProvider;
 	}
 
+    public static String getUniqueIdentifier()
+    {
+        PerlEditorPlugin plugin = getDefault();
+        return plugin != null ? plugin.getBundle().getSymbolicName() : "org.epic.perleditor";
+    }
+
     /**
      * @return false if no valid Perl interpreter has been available in
      *         Preferences since the plug-in's activation;

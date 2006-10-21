@@ -482,3 +482,41 @@ hello world
 1515:11:LITERAL2:{</a>.<br />}
 1526:1:LITERAL2:{?}
 1527:1:OPERATOR:{;}
+1528:2:__dftl_partition_content_type:{
+
+}
+1530:3:__dftl_partition_content_type:{foo}
+1533:1:OPERATOR:{(}
+1534:1:__dftl_partition_content_type:{x}
+1535:1:__dftl_partition_content_type:{ }
+1536:2:OPERATOR:{=>}
+1538:1:__dftl_partition_content_type:{ }
+1539:1:NUMBER:{5}
+1540:1:OPERATOR:{,}
+1541:1:__dftl_partition_content_type:{ }
+1542:1:__dftl_partition_content_type:{y}
+1543:1:__dftl_partition_content_type:{ }
+1544:2:OPERATOR:{=>}
+1546:1:__dftl_partition_content_type:{ }
+1547:1:LITERAL1:{'}
+1548:1:LITERAL1:{b}
+1549:1:LITERAL1:{'}
+1550:1:OPERATOR:{,}
+1551:1:__dftl_partition_content_type:{ }
+1552:1:LITERAL2:{y}
+1553:1:LITERAL2:{/}
+1554:1:LITERAL2:{a}
+1555:1:LITERAL2:{/}
+1556:1:LITERAL2:{b}
+1557:1:LITERAL2:{/}
+1558:1:OPERATOR:{,}
+1559:1:__dftl_partition_content_type:{ }
+1560:1:LITERAL1:{'}
+1561:1:LITERAL1:{x}
+1562:1:LITERAL1:{'}
+1563:1:__dftl_partition_content_type:{ }
+1564:1:OPERATOR:{x}
+1565:1:__dftl_partition_content_type:{ }
+1566:1:NUMBER:{5}
+1567:1:OPERATOR:{)}
+1568:1:OPERATOR:{;}

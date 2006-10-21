@@ -1,6 +1,8 @@
 require 5.002;			# For (defined ref)
 package dumpvar_epic;
 
+binmode($DB::OUT, ":utf8");
+
 # Needed for PrettyPrinter only:
 
 # require 5.001;  # Well, it coredumps anyway undef DB in 5.000 (not now)
@@ -18,7 +20,7 @@ $winsize = 80 unless defined $winsize;
 # Defaults
 
 # $globPrint = 1;
-$MaxUnwrapCount = 20;
+$MaxUnwrapCount = 80;
 $UnwrapCount = 0;
 $printUndef = 1 unless defined $printUndef;
 $tick = "auto" unless defined $tick;

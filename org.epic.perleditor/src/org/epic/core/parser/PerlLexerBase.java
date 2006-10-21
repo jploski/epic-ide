@@ -21,8 +21,9 @@ public abstract class PerlLexerBase extends LexerBase
     protected boolean slashRegexp;
     protected boolean glob;
     protected boolean afterColon;
-    protected boolean afterArrow;
+    protected boolean afterArrow;    
     protected boolean afterSub;
+    protected boolean notOper;
     protected boolean format;
     protected boolean proto;
     

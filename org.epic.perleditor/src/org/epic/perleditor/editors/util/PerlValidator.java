@@ -26,9 +26,6 @@ import org.epic.perleditor.PerlEditorPlugin;
  */
 public class PerlValidator extends PerlValidatorBase
 {
-    public static final String PROBLEM_MARKER =
-        PerlEditorPlugin.getUniqueIdentifier() + ".perlProblemMarker"; //$NON-NLS-1$
-    
     private static PerlValidator instance;    
     
     private PerlValidator()
@@ -84,12 +81,12 @@ public class PerlValidator extends PerlValidatorBase
 
     protected void addMarker(IResource resource, Map attributes)
     {
-        new MarkerUtil(resource).addMarker(attributes, PROBLEM_MARKER);
+        new MarkerUtil(resource).addMarker(attributes, Constants.PROBLEM_MARKER);
     }
     
     protected void clearAllUsedMarkers(IResource resource)
     {
-        new MarkerUtil(resource).clearAllUsedFlags(PROBLEM_MARKER);
+        new MarkerUtil(resource).clearAllUsedFlags(Constants.PROBLEM_MARKER);
     }
     
     protected IResource getErrorResource(ParsedErrorLine line, IResource resource)
@@ -133,14 +130,14 @@ public class PerlValidator extends PerlValidatorBase
         ParsedErrorLine line, IResource resource)
     {
         return new MarkerUtil(resource).isMarkerPresent(
-            PROBLEM_MARKER, line.getLineNumber(), line.getMessage(), true);
+            Constants.PROBLEM_MARKER, line.getLineNumber(), line.getMessage(), true);
     }
     
     protected void removeUnusedMarkers(IResource resource)
     {
         MarkerUtil util = new MarkerUtil(resource);
         util.removeObsoleteProblemMarkers(); // TODO: remove when no longer needed
-        util.removeUnusedMarkers(PROBLEM_MARKER);
+        util.removeUnusedMarkers(Constants.PROBLEM_MARKER);
     }
     
     /**

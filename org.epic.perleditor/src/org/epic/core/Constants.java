@@ -6,6 +6,8 @@
  */
 package org.epic.core;
 
+import org.epic.perleditor.PerlEditorPlugin;
+
 /**
  * @author ST
  *
@@ -25,4 +27,7 @@ public class Constants
 	
 	public static final String DEBUG_PERSPECTIVE_ID =
 		"org.eclipse.debug.ui.DebugPerspective";
+    
+    public static final String PROBLEM_MARKER =
+        PerlEditorPlugin.getUniqueIdentifier() + ".perlProblemMarker"; //$NON-NLS-1$
 }

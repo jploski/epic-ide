@@ -1,11 +1,6 @@
 package org.epic.debug.util;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.PrintWriter;
+import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 
@@ -107,9 +102,7 @@ public class RemotePort
     {
         assert isConnected();
 
-        if (mReader == null)
-            mReader = new BufferedReader(new InputStreamReader(getInStream()));
-
+        if (mReader == null) createReader();
         return mReader;
     }
     
@@ -186,9 +179,7 @@ public class RemotePort
 			}
 
 			mWriter = new PrintWriter(mClient.getOutputStream(), true);
-			mReader = new BufferedReader(
-                new InputStreamReader(mClient.getInputStream()));
-
+			mReader = createReader();
 		}
         catch (IOException e)
 		{
@@ -202,6 +193,20 @@ public class RemotePort
 		}
 		return mWaitOK;
 	}
+    
+    private BufferedReader createReader()
+    {
+        try
+        {
+            return new BufferedReader(
+                new InputStreamReader(getInStream(), "UTF8"));
+        }
+        catch (UnsupportedEncodingException e)
+        {
+            PerlDebugPlugin.log(e); // impossible
+            return new BufferedReader(new InputStreamReader(getInStream()));
+        }
+    }
 
     private void reset()
     {

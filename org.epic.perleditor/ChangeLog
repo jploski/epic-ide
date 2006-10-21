@@ -5,6 +5,14 @@ CVS
 
 		Editor:
 
+Version 0.5.17 - 21-October-2006
+		Debugger:
+		* Fixed Bug [ 1564111 ] "Error Parsing Debugger Variables" When env LANG=zh_CN.GBK
+
+		Editor:
+		* Fixed Bug [ 1581076 ] y=> in argument list breaks syntax highlighting
+		* Fixed Bug [ 1563114 ] EPIC removes all problem markers for Perl files
+
 Version 0.5.16 - 18-October-2006
 		Debugger:
 		* Fixed Bug [ 1570715 ] Perl Runner does not expand variables

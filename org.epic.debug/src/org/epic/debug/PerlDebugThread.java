@@ -56,7 +56,7 @@ public class PerlDebugThread extends DebugElement implements IThread {
 	 * @see org.eclipse.debug.core.model.IThread#hasStackFrames()
 	 */
 	public boolean hasStackFrames() throws DebugException {
-		return ( (mFrames[0] != null) && isSuspended());
+		return mFrames != null ? (mFrames[0] != null) && isSuspended() : false;
 	}
 
 	/**

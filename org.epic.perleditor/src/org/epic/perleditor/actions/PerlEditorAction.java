@@ -1,5 +1,7 @@
 package org.epic.perleditor.actions;
 
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.action.Action;
@@ -70,5 +72,19 @@ public abstract class PerlEditorAction extends Action
     protected ILog getLog()
     {
         return PerlEditorPlugin.getDefault().getLog();
+    }
+
+    protected String getPluginId()
+    {
+        return PerlEditorPlugin.getPluginId();
+    }
+
+    /**
+     * @return returns the resource on which to create the marker, or <code>null</code> if there is
+     *         no applicable resource.
+     */
+    protected IResource getResource()
+    {
+        return (IResource) ((IAdaptable) editor.getEditorInput()).getAdapter(IResource.class);
     }
 }

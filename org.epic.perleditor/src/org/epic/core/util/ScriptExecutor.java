@@ -117,7 +117,7 @@ public abstract class ScriptExecutor
     {
         return (additionalOptions != null) ? additionalOptions : Collections.EMPTY_LIST;
     }
-    
+
     /**
      * @return true if broken pipe exceptions from the executed script should be ignored,
      *         false otherwise (default)
@@ -128,12 +128,22 @@ public abstract class ScriptExecutor
         return false;
     }
 
+    protected String getPluginId()
+    {
+        return PerlEditorPlugin.getPluginId();
+    }
+
+    protected void log(IStatus status)
+    {
+        log.log(status);
+    }
+
     private File getWorkingDir() throws CoreException
     {
         try
         {
             File scriptsLocation = extractScripts();
-            
+
             if (scriptsLocation == null)
             {
                 URL url = new URL(
@@ -142,12 +152,9 @@ public abstract class ScriptExecutor
                 URL workingURL = Platform.resolve(url);
                 return new File(workingURL.getPath());
             }
-            else
-            {
-                return new File(
-                    scriptsLocation.getParentFile(),
-                    getScriptDir());
-            }
+
+            return new File(scriptsLocation.getParentFile(), getScriptDir());
+
         }
         catch (IOException e)
         {
@@ -155,7 +162,7 @@ public abstract class ScriptExecutor
             return null;
         }
     }
-    
+
     private File extractScripts() throws CoreException
     {
         return ResourceUtilities.extractResources(

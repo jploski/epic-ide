@@ -490,6 +490,12 @@ public class PreferenceConstants {
      */
     public final static String EDITOR_MATCHING_BRACKETS_COLOR=  "matchingBracketsColor"; //$NON-NLS-1$
 
+    public static final String SOURCE_CRITIC_ENABLED = "sourceCriticEnabled";
+
+    public static final String SOURCE_CRITIC_DEFAULT_LOCATION = "sourceCriticDefaultLocation";
+
+    public static final String SOURCE_CRITIC_LOCATION = "sourceCriticLocation";
+
 
 	/**
 		 * Initializes the given preference store with the default values.
@@ -564,6 +570,10 @@ public class PreferenceConstants {
 			store.setDefault(PreferenceConstants.SOURCE_FOLDING, true);
             store.setDefault(PreferenceConstants.PERLDOC_FOLDING, false);
             store.setDefault(PreferenceConstants.SUBROUTINE_FOLDING, false);
+
+            store.setDefault(PreferenceConstants.SOURCE_CRITIC_ENABLED, false);
+            store.setDefault(PreferenceConstants.SOURCE_CRITIC_DEFAULT_LOCATION, true);
+            store.setDefault(PreferenceConstants.SOURCE_CRITIC_LOCATION, "");
 
 			store.setDefault(PreferenceConstants.AUTO_COMPLETION_QUOTE1, true);
 			store.setDefault(PreferenceConstants.AUTO_COMPLETION_QUOTE2, true);

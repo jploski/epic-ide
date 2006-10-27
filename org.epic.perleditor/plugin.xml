@@ -41,6 +41,11 @@
             class="org.epic.perleditor.preferences.SourceFormatterPreferencePage"
             id="org.epic.perleditor.preferences.SourceFormatterPreferencePage">
         </page>
+	    <page
+	     	name="Source Critic"
+	     	category="org.epic.core.preferences.PerlMainPreferencePage"
+            class="org.epic.perleditor.preferences.SourceCriticPreferencePage"
+            id="org.epic.perleditor.preferences.SourceCriticPreferencePage" />
         <page
             class="org.epic.perleditor.preferences.TaskTagsPreferencePage"
             category="org.epic.core.preferences.PerlMainPreferencePage"
@@ -301,7 +306,7 @@
 
             <action
                 definitionId="org.epic.perleditor.commands.openDeclaration"
-                label="Open Declaration"
+                label="Open SUB Declaration"
                 icon="icons/open-source.gif"
                 class="org.epic.perleditor.actions.DefaultRetargetEditorDelegate"
                 menubarPath="org.epic.perleditor.contextMenu.nav"
@@ -339,6 +344,7 @@
                 label="Source"
                 path="additions">
                 <separator name="editGroup" />
+                <separator name="extraGroup" />
             </menu>
             <action
                 definitionId="org.epic.perleditor.commands.validateSyntax"
@@ -346,14 +352,6 @@
                 class="org.epic.perleditor.actions.DefaultRetargetEditorDelegate"
                 menubarPath="org.epic.perleditor.contextMenu.source/editGroup"
                 id="org.epic.perleditor.actions.ValidateSyntaxAction" />
-<!--
-            <action
-                definitionId="org.epic.perleditor.commands.critiqueSource"
-                label="Critique"
-                class="org.epic.perleditor.actions.DefaultRetargetEditorDelegate"
-                menubarPath="org.epic.perleditor.contextMenu.source/editGroup"
-                id="org.epic.perleditor.actions.CritiqueSourceAction" />
--->
             <action
                 definitionId="org.epic.perleditor.commands.formatSource"
                 label="Format"
@@ -368,6 +366,24 @@
                 id="org.epic.perleditor.actions.ToggleCommentAction">
             </action>
 
+            <action
+                definitionId="org.epic.perleditor.commands.critiqueSource"
+                label="Critique"
+                class="org.epic.perleditor.actions.DefaultRetargetEditorDelegate"
+                menubarPath="org.epic.perleditor.contextMenu.source/extraGroup"
+                id="org.epic.perleditor.actions.CritiqueSourceAction">
+              <enablement>
+                 <systemProperty name="sourceCriticEnabled" value="true"/>
+              </enablement>
+            </action>
+            <!--
+            <action
+                definitionId="org.epic.perleditor.commands.podChecker"
+                label="PodChecker"
+                class="org.epic.perleditor.actions.DefaultRetargetEditorDelegate"
+                menubarPath="org.epic.perleditor.contextMenu.source/extraGroup"
+                id="org.epic.perleditor.actions.PodCheckerAction" />
+            -->
         </viewerContribution>
     </extension>
 
@@ -438,14 +454,12 @@
                 retarget="true"
                 menubarPath="org.epic.perleditor.topLevelMenu.source/editGroup"
                 id="org.epic.perleditor.actions.ValidateSyntaxAction" />
-<!--
             <action
                 definitionId="org.epic.perleditor.commands.critiqueSource"
                 label="Critique"
 				retarget="true"
                 menubarPath="org.epic.perleditor.topLevelMenu.source/editGroup"
                 id="org.epic.perleditor.actions.CritiqueSourceAction" />
--->
             <action
                 definitionId="org.epic.perleditor.commands.formatSource"
                 label="Format"
@@ -579,7 +593,7 @@
 	        isGoToPreviousNavigationTarget="false">
         </specification>
     </extension>
-    
+
     <extension
     	id="perlProblemMarker"
     	point="org.eclipse.core.resources.markers"
@@ -588,4 +602,39 @@
 		<super type="org.eclipse.core.resources.problemmarker"/>
 		<persistent value="true"/>
     </extension>
+
+     <!--
+      marker names are defined relative to the plugin id
+
+      ie: org.epic.perleditor.markers.metrics.critic
+    -->
+	<extension point="org.eclipse.core.resources.markers"
+		id="markers.critic"
+		name="Perl Critic">
+		<super type="org.eclipse.core.resources.problemmarker"/>
+		<super type="org.eclipse.core.resources.textmarker"/>
+	</extension>
+
+   <extension
+         point="org.eclipse.ui.editors.annotationTypes">
+      <type
+      		name="org.epic.perleditor.metrics.critic.error"
+            markerType="org.epic.perleditor.markers.critic"
+            super="org.eclipse.ui.workbench.texteditor.error"
+            markerSeverity="2">
+      </type>
+      <type
+      		name="org.epic.perleditor.metrics.critic.warning"
+            markerType="org.epic.perleditor.markers.critic"
+            super="org.eclipse.ui.workbench.texteditor.warning"
+            markerSeverity="1">
+      </type>
+      <type
+      		name="org.epic.perleditor.metrics.critic.info"
+            markerType="org.epic.perleditor.markers.critic"
+            super="org.eclipse.ui.workbench.texteditor.info"
+            markerSeverity="0">
+      </type>
+   </extension>
+
 </plugin>

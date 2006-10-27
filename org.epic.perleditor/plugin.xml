@@ -365,8 +365,17 @@
                 menubarPath="org.epic.perleditor.contextMenu.source/editGroup"
                 id="org.epic.perleditor.actions.ToggleCommentAction">
             </action>
-
             <action
+            	definitionId="org.epic.perleditor.actions.CritiqueSourceAction.owner"
+  				label="Clear Critic Markers"
+                class="org.epic.perleditor.actions.ClearMarkerAction"
+                menubarPath="org.epic.perleditor.contextMenu.source/extraGroup"
+                id="org.epic.perleditor.actions.ClearCriticMarkers">
+              <enablement>
+                 <systemProperty name="sourceCriticEnabled" value="true"/>
+              </enablement>
+		   </action>
+           <action
                 definitionId="org.epic.perleditor.commands.critiqueSource"
                 label="Critique"
                 class="org.epic.perleditor.actions.DefaultRetargetEditorDelegate"

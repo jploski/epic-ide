@@ -41,7 +41,7 @@
             class="org.epic.perleditor.preferences.SourceFormatterPreferencePage"
             id="org.epic.perleditor.preferences.SourceFormatterPreferencePage">
         </page>
-	    <page
+        <page
 	     	name="Source Critic"
 	     	category="org.epic.core.preferences.PerlMainPreferencePage"
             class="org.epic.perleditor.preferences.SourceCriticPreferencePage"
@@ -306,7 +306,7 @@
 
             <action
                 definitionId="org.epic.perleditor.commands.openDeclaration"
-                label="Open SUB Declaration"
+                label="Open Declaration"
                 icon="icons/open-source.gif"
                 class="org.epic.perleditor.actions.DefaultRetargetEditorDelegate"
                 menubarPath="org.epic.perleditor.contextMenu.nav"
@@ -602,7 +602,7 @@
 	        isGoToPreviousNavigationTarget="false">
         </specification>
     </extension>
-
+    
     <extension
     	id="perlProblemMarker"
     	point="org.eclipse.core.resources.markers"

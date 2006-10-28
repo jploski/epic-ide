@@ -438,7 +438,7 @@ public class PreferenceConstants {
 	public static final String  EDITOR_STRING_COLOR = IPerlColorConstants.STRING_COLOR;
 	public static final String  EDITOR_KEYWORD1_COLOR = IPerlColorConstants.KEYWORD1_COLOR;
 	public static final String  EDITOR_KEYWORD2_COLOR = IPerlColorConstants.KEYWORD2_COLOR;
-	public static final String  EDITOR_KEYWORD3_COLOR =IPerlColorConstants.KEYWORD3_COLOR;
+	public static final String  EDITOR_VARIABLE_COLOR = IPerlColorConstants.VARIABLE_COLOR;
 	public static final String  EDITOR_COMMENT1_COLOR = IPerlColorConstants.COMMENT1_COLOR;
 	public static final String  EDITOR_COMMENT2_COLOR = IPerlColorConstants.COMMENT2_COLOR;
 	public static final String  EDITOR_LITERAL1_COLOR = IPerlColorConstants.LITERAL1_COLOR;
@@ -451,9 +451,9 @@ public class PreferenceConstants {
 	public static final String  EDITOR_INVALID_COLOR = IPerlColorConstants.INVALID_COLOR;
 	
 	public static final String  EDITOR_STRING_COLOR_BOLD = IPerlColorConstants.STRING_COLOR + EDITOR_BOLD_SUFFIX;
-	public static final  String  EDITOR_KEYWORD1_COLOR_BOLD = IPerlColorConstants.KEYWORD1_COLOR + EDITOR_BOLD_SUFFIX;
+	public static final String  EDITOR_KEYWORD1_COLOR_BOLD = IPerlColorConstants.KEYWORD1_COLOR + EDITOR_BOLD_SUFFIX;
 	public static final String  EDITOR_KEYWORD2_COLOR_BOLD = IPerlColorConstants.KEYWORD2_COLOR + EDITOR_BOLD_SUFFIX;
-	public static final String  EDITOR_KEYWORD3_COLOR_BOLD =IPerlColorConstants.KEYWORD3_COLOR + EDITOR_BOLD_SUFFIX;
+	public static final String  EDITOR_VARIABLE_COLOR_BOLD = IPerlColorConstants.VARIABLE_COLOR + EDITOR_BOLD_SUFFIX;
 	public static final String  EDITOR_COMMENT1_COLOR_BOLD = IPerlColorConstants.COMMENT1_COLOR + EDITOR_BOLD_SUFFIX;
 	public static final String  EDITOR_COMMENT2_COLOR_BOLD = IPerlColorConstants.COMMENT2_COLOR + EDITOR_BOLD_SUFFIX;
 	public static final String  EDITOR_LITERAL1_COLOR_BOLD = IPerlColorConstants.LITERAL1_COLOR + EDITOR_BOLD_SUFFIX;
@@ -578,8 +578,8 @@ public class PreferenceConstants {
 			PreferenceConverter.setDefault(store, PreferenceConstants.EDITOR_KEYWORD2_COLOR, new RGB(160, 0, 240));
 			store.setDefault(PreferenceConstants.EDITOR_KEYWORD2_COLOR_BOLD, false);
 			
-			PreferenceConverter.setDefault(store, PreferenceConstants.EDITOR_KEYWORD3_COLOR, new RGB(160, 32, 0));
-			store.setDefault(PreferenceConstants.EDITOR_KEYWORD3_COLOR_BOLD, false);
+			PreferenceConverter.setDefault(store, PreferenceConstants.EDITOR_VARIABLE_COLOR, new RGB(160, 0, 240));
+			store.setDefault(PreferenceConstants.EDITOR_VARIABLE_COLOR_BOLD, false);
 			
 			PreferenceConverter.setDefault(store, PreferenceConstants.EDITOR_COMMENT1_COLOR, new RGB(178, 0, 34));
 			store.setDefault(PreferenceConstants.EDITOR_COMMENT1_COLOR_BOLD, false);

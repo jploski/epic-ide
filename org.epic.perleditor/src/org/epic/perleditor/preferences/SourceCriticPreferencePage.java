@@ -1,7 +1,5 @@
 package org.epic.perleditor.preferences;
 
-import org.eclipse.core.runtime.FileLocator;
-
 import org.eclipse.jface.preference.PreferencePage;
 
 import org.eclipse.swt.SWT;
@@ -24,8 +22,6 @@ import org.epic.perleditor.PerlEditorPlugin;
 
 import java.io.File;
 import java.io.IOException;
-
-import java.net.URL;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -263,25 +259,13 @@ public class SourceCriticPreferencePage extends PreferencePage implements IWorkb
 
         removeErrorMessage("Enter path to critic executable");
 
-        try
-        {
-            URL resolved = FileLocator.resolve(new URL("file://" + location));
-            File f = new File(resolved.getFile());
-
-            if (! f.isFile())
-            {
-                addErrorMessage("Invalid perl critic location");
-            }
-            else
-            {
-                removeErrorMessage("Invalid perl critic location");
-            }
-
-        }
-        catch (IOException e)
+        if (! new File(location).isFile())
         {
             addErrorMessage("Invalid perl critic location");
-            // TODO log message
+        }
+        else
+        {
+            removeErrorMessage("Invalid perl critic location");
         }
     }
 

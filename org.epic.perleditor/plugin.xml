@@ -226,6 +226,11 @@
         	name="Extract Subroutine"
         	id="org.epic.perleditor.commands.extractSubroutine"
         	categoryId="org.epic.perleditor.commands.source" />
+        <command
+        	description="Clear Critic Markers"
+        	name="Clear Critic Markers"
+        	id="org.epic.perleditor.commands.clearCriticMarkers"
+        	categoryId="org.epic.perleditor.commands.source" />
     </extension>
 
     <extension point="org.eclipse.ui.bindings">
@@ -366,7 +371,7 @@
                 id="org.epic.perleditor.actions.ToggleCommentAction">
             </action>
             <action
-            	definitionId="org.epic.perleditor.actions.CritiqueSourceAction.owner"
+            	definitionId="org.epic.perleditor.commands.clearCriticMarkers"
   				label="Clear Critic Markers"
                 class="org.epic.perleditor.actions.ClearMarkerAction"
                 menubarPath="org.epic.perleditor.contextMenu.source/extraGroup"

@@ -9,6 +9,7 @@ import org.eclipse.core.runtime.*;
 import org.eclipse.core.variables.VariablesPlugin;
 import org.eclipse.debug.core.*;
 import org.eclipse.debug.core.model.*;
+import org.eclipse.debug.ui.IDebugUIConstants;
 import org.epic.core.PerlCore;
 import org.epic.core.util.PerlExecutableUtilities;
 import org.epic.debug.util.ExecutionArguments;
@@ -139,6 +140,7 @@ public abstract class Target extends DebugElement implements IDebugTarget
 		String prjName = null;
         String perlParams = null;
 		String progParams = null;
+        boolean consoleOutput = false;
 		mProcessName = "Perl-Interpreter";
 		try
 		{
@@ -158,6 +160,8 @@ public abstract class Target extends DebugElement implements IDebugTarget
 					EMPTY_STRING);
             progParams = VariablesPlugin.getDefault().getStringVariableManager()
                 .performStringSubstitution(progParams);
+            consoleOutput = mLaunch.getLaunchConfiguration().getAttribute(
+                IDebugUIConstants.ATTR_CAPTURE_IN_CONSOLE, true);
 		} catch (Exception ce)
 		{
 			PerlDebugPlugin.log(ce);
@@ -192,19 +196,19 @@ public abstract class Target extends DebugElement implements IDebugTarget
 				"Could not start Perl interpreter: error assambling command line",
 				e);
 		}
+        try
+        {
+            fCmdList.add("-I" + PerlDebugPlugin.getDefault().getInternalDebugInc());
+        }
+        catch (CoreException e)        
+        {
+            PerlDebugPlugin.getDefault().logError(
+                "Could not start Perl interpreter: getInternalDebugInc failed",
+                e);
+            return null;
+        }
 		if (mLaunch.getLaunchMode().equals(ILaunchManager.DEBUG_MODE))
 		{
-            try
-            {
-                fCmdList.add("-I" + PerlDebugPlugin.getDefault().getInternalDebugInc());
-            }
-            catch (CoreException e)        
-            {
-                PerlDebugPlugin.getDefault().logError(
-                    "Could not start Perl interpreter: getInternalDebugInc failed",
-                    e);
-                return null;
-            }            
 			fCmdList.add("-d");
 			mProcessName = "Perl-Debugger";
 		}
@@ -215,7 +219,11 @@ public abstract class Target extends DebugElement implements IDebugTarget
 		if (PerlEditorPlugin.getDefault().getTaintPreference())
 		{
 			fCmdList.add("-T");
-		}        
+		}
+        if (consoleOutput)
+        {
+            fCmdList.add("-Mautoflush_epic");
+        }
         if (perlParams != null && perlParams.length() > 0)
         {
             ExecutionArguments exArgs = new ExecutionArguments(perlParams);
@@ -229,6 +237,7 @@ public abstract class Target extends DebugElement implements IDebugTarget
 			ExecutionArguments exArgs = new ExecutionArguments(progParams);
 			fCmdList.addAll(exArgs.getProgramArgumentsL());
 		}
+        
 		String[] cmdParams =
 			(String[]) fCmdList.toArray(new String[fCmdList.size()]);
 

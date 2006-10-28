@@ -21,8 +21,6 @@ import org.epic.core.util.WidgetUtils;
 import org.epic.perleditor.PerlEditorPlugin;
 
 import java.io.File;
-import java.io.IOException;
-
 import java.util.ArrayList;
 import java.util.List;
 

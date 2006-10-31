@@ -72,7 +72,7 @@ public class PerlDocAction extends PerlEditorAction
         }
     }
 
-    protected String getPerlActionId()
+    protected String getPerlEditorActionId()
     {
         return PerlEditorActionIds.PERL_DOC;
     }

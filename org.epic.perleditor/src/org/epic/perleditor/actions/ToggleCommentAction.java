@@ -86,7 +86,7 @@ public class ToggleCommentAction extends PerlEditorAction
         }
     }
 
-    protected String getPerlActionId()
+    protected String getPerlEditorActionId()
     {
         return PerlEditorActionIds.TOGGLE_COMMENT;
     }

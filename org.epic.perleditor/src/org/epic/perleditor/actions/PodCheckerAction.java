@@ -1,6 +1,10 @@
 package org.epic.perleditor.actions;
 
+import org.eclipse.core.resources.IFile;
+import org.eclipse.ui.IFileEditorInput;
 import org.epic.perleditor.editors.PerlEditor;
+import org.epic.perleditor.editors.PerlEditorActionIds;
+import org.epic.perleditor.editors.util.PodChecker;
 
 public class PodCheckerAction extends PerlEditorAction
 {
@@ -12,14 +16,15 @@ public class PodCheckerAction extends PerlEditorAction
 
     protected void doRun()
     {
-        // TODO Auto-generated method stub
+        // TODO: check if editor is dirty before running
+        IFile file = ((IFileEditorInput) getEditor().getEditorInput()).getFile();
 
+        PodChecker.podchecker(file, getLog());
     }
 
-    protected String getPerlActionId()
+    protected String getPerlEditorActionId()
     {
-        // TODO Auto-generated method stub
-        return null;
+        return PerlEditorActionIds.POD_CHECKER;
     }
 
 }

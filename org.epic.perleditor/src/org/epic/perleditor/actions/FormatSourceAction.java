@@ -121,7 +121,7 @@ public class FormatSourceAction extends PerlEditorAction
         myTextWidget.setTopIndex(myTextWidget.getLineAtOffset(newPosAnchor) - lineOfScreen);
     }
 
-    protected String getPerlActionId()
+    protected String getPerlEditorActionId()
     {
         return PerlEditorActionIds.FORMAT_SOURCE;
     }

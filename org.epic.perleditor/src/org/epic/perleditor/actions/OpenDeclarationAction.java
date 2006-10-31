@@ -60,7 +60,7 @@ public class OpenDeclarationAction extends PerlEditorAction
         }
     }
     
-    protected String getPerlActionId()
+    protected String getPerlEditorActionId()
     {
         return PerlEditorActionIds.OPEN_DECLARATION;
     }

@@ -1,18 +1,15 @@
 package org.epic.perleditor.editors.util;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.ILog;
-
 import org.eclipse.jface.text.TextUtilities;
-
 import org.epic.core.util.ScriptExecutor;
 import org.epic.core.util.StatusFactory;
 import org.epic.perleditor.preferences.SourceCriticPreferencePage;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 
 /**
@@ -71,7 +68,7 @@ public class SourceCritic extends ScriptExecutor
         }
 
         additionalOptions.add("-verbose");
-        additionalOptions.add("%f:%s:%l:%c:%m:%e\n");
+        additionalOptions.add("%f~|~%s~|~%l~|~%c~|~%m~|~%e\n");
 
         return additionalOptions;
     }
@@ -91,7 +88,7 @@ public class SourceCritic extends ScriptExecutor
 
     private final Violation parseLine(String toParse)
     {
-        String[] tmp = toParse.split("\\:");
+        String[] tmp = toParse.split("~\\|~");
 
         Violation violation = new Violation();
 
@@ -117,7 +114,7 @@ public class SourceCritic extends ScriptExecutor
         Violation[] violations = new Violation[lines.length];
         for (int i = 0; i < lines.length; i++)
         {
-            System.out.println("critic: " + lines[i]);
+            // System.out.println("critic: " + lines[i]);
             violations[i] = parseLine(lines[i]);
         }
 

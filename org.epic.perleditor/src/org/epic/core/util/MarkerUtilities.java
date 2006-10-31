@@ -15,8 +15,6 @@ public class MarkerUtilities
 {
     //~ Static fields/initializers
 
-    private static String OWNER_KEY = "org.epic.core.resource.marker.owner";
-
     private static IMarker[] EMPTY_ARRAY = new IMarker[0];
 
     //~ Instance fields
@@ -35,27 +33,9 @@ public class MarkerUtilities
 
     //~ Methods
 
-    public void createProblemMarker(IResource resource, String owner, Map attributes)
+    public void createMarker(IResource resource, String type, Map attributes)
     {
-        createMarker(resource, IMarker.PROBLEM, owner, attributes);
-    }
-
-//    public void setResource(IResource resource)
-//    {
-//        this.resource = resource;
-//    }
-//
-//    public IResource getResource()
-//    {
-//        return this.resource;
-//    }
-
-    public void createMarker(IResource resource, String type, String owner, Map attributes)
-    {
-        assert isNotNullOrEmpty(owner);
         assert attributes != null;
-
-        attributes.put(OWNER_KEY, owner);
 
         try
         {
@@ -124,31 +104,14 @@ public class MarkerUtilities
         }
     }
 
-    public void deleteProblemMarkers(IResource resource, String owner)
-    {
-        deleteMarkers(resource, IMarker.PROBLEM, owner);
-    }
-
-    public void deleteMarkers(IResource resource, String type, String owner)
+    public void deleteMarkers(IResource resource, String type)
     {
         assert isNotNullOrEmpty(type);
-        assert isNotNullOrEmpty(owner);
 
-        IMarker[] markers = findMarkers(resource, type);
+        IMarker[] toDelete = findMarkers(resource, type);
 
         // no markers found
-        if (markers.length == 0) { return; }
-
-        IMarker[] toDelete = new IMarker[markers.length];
-
-        int deleteIndex = 0;
-        for (int i = 0; i < markers.length; i++)
-        {
-            if (shouldDelete(markers[i], owner))
-            {
-                toDelete[deleteIndex++] = markers[i];
-            }
-        }
+        if (toDelete.length == 0) { return; }
 
         try
         {
@@ -206,24 +169,11 @@ public class MarkerUtilities
         attributes.put(IMarker.CHAR_END, new Integer(end));
     }
 
-//    private IMarker[] findMarkers(String type)
-//    {
-//        try
-//        {
-//            return resource.findMarkers(type, true, IResource.DEPTH_ZERO);
-//        }
-//        catch (CoreException e)
-//        {
-//            log.log(StatusFactory.createError(pluginId, "unable to find markers", e));
-//            return EMPTY_ARRAY;
-//        }
-//    }
-
     private IMarker[] findMarkers(IResource resource, String type)
     {
         try
         {
-            return resource.findMarkers(type, true, IResource.DEPTH_ZERO);
+            return resource.findMarkers(type, true, IResource.DEPTH_INFINITE);
         }
         catch (CoreException e)
         {
@@ -235,23 +185,6 @@ public class MarkerUtilities
     private boolean isNotNullOrEmpty(String s)
     {
         return ((s != null) && ! "".equals(s)) ? true : false;
-    }
-
-    private boolean shouldDelete(IMarker marker, String owner)
-    {
-        try
-        {
-            return (owner.equals(marker.getAttribute(OWNER_KEY))) ? true : false;
-        }
-        catch (CoreException e)
-        {
-            log.log(StatusFactory.createError(pluginId, "unable to delete marker", e));
-            /*
-             * should not happen, but probably better to remove the marker then run the risk of it
-             * being stale
-             */
-            return true;
-        }
     }
 
 }

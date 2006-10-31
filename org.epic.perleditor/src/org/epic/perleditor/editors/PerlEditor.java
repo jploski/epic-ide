@@ -106,7 +106,7 @@ public class PerlEditor extends TextEditor implements IPropertyChangeListener
     public void dispose()
     {
         PerlEditorPlugin.getDefault().getPreferenceStore().removePropertyChangeListener(this);
-        
+
         uninstallAnnotationListener();
 
         try
@@ -180,7 +180,7 @@ public class PerlEditor extends TextEditor implements IPropertyChangeListener
             ILocationProvider l = (ILocationProvider)
                 input.getAdapter(ILocationProvider.class);
 
-            input = FileUtilities.getFileEditorInput(l.getPath(l).makeAbsolute());            
+            input = FileUtilities.getFileEditorInput(l.getPath(l).makeAbsolute());
             if (input == null) throw new CoreException(new Status(
                 IStatus.ERROR,
                 PerlEditorPlugin.getPluginId(),
@@ -447,10 +447,20 @@ public class PerlEditor extends TextEditor implements IPropertyChangeListener
             PerlEditorCommandIds.CONTENT_ASSIST,
             PerlEditorActionIds.CONTENT_ASSIST);
 
+        // each marker clearing action gets its own wiring
+        wireAction(new ClearMarkerAction.Critic(this), PerlEditorCommandIds.CLEAR_MARKER,
+            PerlEditorActionIds.CLEAR_CRITIC_MARKERS);
+        wireAction(new ClearMarkerAction.PodChecker(this), PerlEditorCommandIds.CLEAR_MARKER,
+            PerlEditorActionIds.CLEAR_POD_MARKERS);
+        wireAction(new ClearMarkerAction.AllMarkers(this), PerlEditorCommandIds.CLEAR_MARKER,
+            PerlEditorActionIds.CLEAR_ALL_MARKERS);
+
+        wireAction(new PodCheckerAction(this), PerlEditorCommandIds.POD_CHECKER,
+            PerlEditorActionIds.POD_CHECKER);
         wireAction(new ToggleCommentAction(this), PerlEditorCommandIds.TOGGLE_COMMENT,
             PerlEditorActionIds.TOGGLE_COMMENT);
-        wireAction(new CritiqueSourceAction(this), PerlEditorCommandIds.CRITIQUE_SOURCE,
-            PerlEditorActionIds.CRITIQUE_SOURCE);
+        wireAction(new PerlCriticAction(this), PerlEditorCommandIds.CRITIQUE_SOURCE,
+            PerlEditorActionIds.PERL_CRITIC);
         wireAction(new FormatSourceAction(this), PerlEditorCommandIds.FORMAT_SOURCE,
             PerlEditorActionIds.FORMAT_SOURCE);
         wireAction(new Jump2BracketAction(this), PerlEditorCommandIds.MATCHING_BRACKET,
@@ -681,7 +691,7 @@ public class PerlEditor extends TextEditor implements IPropertyChangeListener
 			public void run() {
 				try {
 			        ModuleCompletionHelper completionHelper =
-			            ModuleCompletionHelper.getInstance();						
+			            ModuleCompletionHelper.getInstance();
 					completionHelper.scanForModules(PerlEditor.this);
 				}
 				catch (CoreException e)

@@ -43,7 +43,7 @@
         </page>
         <page
             name="Perl::Critic"
-            category="org.epic.core.preferences.PerlMainPreferencePage"
+	     	category="org.epic.core.preferences.PerlMainPreferencePage"
             class="org.epic.perleditor.preferences.SourceCriticPreferencePage"
             id="org.epic.perleditor.preferences.SourceCriticPreferencePage" />
         <page
@@ -53,7 +53,7 @@
             id="org.epic.perleditor.preferences.TaskTagsPreferencePage">
         </page>
 
-        <!-- editor sub items -->
+		<!-- editor sub items -->
         <page
             name="Content Assist"
             category="org.epic.perleditor.preferences.EpicPerlEditorPreferencePage"
@@ -61,10 +61,10 @@
             id="org.epic.perleditor.preferences.CodeAssistPreferencePage">
         </page>
         <page
-            name="Folding"
-            category="org.epic.perleditor.preferences.EpicPerlEditorPreferencePage"
-            class="org.epic.perleditor.preferences.FoldingPreferencePage"
-            id="org.epic.perleditor.preferences.FoldingPreferencePage" />
+        	name="Folding"
+        	category="org.epic.perleditor.preferences.EpicPerlEditorPreferencePage"
+        	class="org.epic.perleditor.preferences.FoldingPreferencePage"
+        	id="org.epic.perleditor.preferences.FoldingPreferencePage" />
         <page
             category="org.epic.perleditor.preferences.EpicPerlEditorPreferencePage"
             class="org.epic.perleditor.preferences.MarkOccurrencesPreferencePage"
@@ -232,10 +232,10 @@
             id="org.epic.perleditor.commands.toggleMarkOccurrences"
             categoryId="org.epic.perleditor.commands.source" />
         <command
-            description="Extract Subroutine"
-            name="Extract Subroutine"
-            id="org.epic.perleditor.commands.extractSubroutine"
-            categoryId="org.epic.perleditor.commands.source" />
+        	description="Extract Subroutine"
+        	name="Extract Subroutine"
+        	id="org.epic.perleditor.commands.extractSubroutine"
+        	categoryId="org.epic.perleditor.commands.source" />
     </extension>
 
     <extension point="org.eclipse.ui.bindings">
@@ -321,7 +321,7 @@
 
             <action
                 definitionId="org.epic.perleditor.commands.openDeclaration"
-                label="Open SUB Declaration"
+                label="Open Declaration"
                 icon="icons/open-source.gif"
                 class="org.epic.perleditor.actions.DefaultRetargetEditorDelegate"
                 menubarPath="org.epic.perleditor.contextMenu.nav"
@@ -405,30 +405,30 @@
                 class="org.epic.perleditor.actions.DefaultRetargetEditorDelegate"
                 menubarPath="org.epic.perleditor.contextMenu.source/criticGroup"
                 id="org.epic.perleditor.actions.ClearMarkerAction#Critic">
-                <enablement>
+              <enablement>
                     <systemProperty
                         name="sourceCriticEnabled"
                         value="true" />
-                </enablement>
-            </action>
-            <action
+              </enablement>
+		   </action>
+           <action
                 definitionId="org.epic.perleditor.commands.perlCritic"
                 label="Perl::Critic"
                 class="org.epic.perleditor.actions.DefaultRetargetEditorDelegate"
                 menubarPath="org.epic.perleditor.contextMenu.source/criticGroup"
                 id="org.epic.perleditor.actions.PerlCriticAction">
-                <enablement>
+              <enablement>
                     <systemProperty
                         name="sourceCriticEnabled"
                         value="true" />
-                </enablement>
+              </enablement>
             </action>
 
 			<!-- miscGroup -->
-			<action
+            <action
 				definitionId="org.epic.perleditor.commands.clearMarkers"
 				label="Clear All EPIC Markers"
-				class="org.epic.perleditor.actions.DefaultRetargetEditorDelegate"
+                class="org.epic.perleditor.actions.DefaultRetargetEditorDelegate"
                 menubarPath="org.epic.perleditor.contextMenu.source/miscGroup"
                 id="org.epic.perleditor.actions.ClearMarkerAction#AllMarkers" />
 
@@ -436,6 +436,7 @@
     </extension>
 
     <extension point="org.eclipse.ui.actionSets">
+
         <actionSet
             label="Perl Coding"
             description="Perl Coding"
@@ -467,7 +468,7 @@
             </menu>
 
             <action
-                definitionId="org.epic.perleditor.commands.extractSubroutine"
+            	definitionId="org.epic.perleditor.commands.extractSubroutine"
                 label="Extract Subroutine"
                 retarget="true"
                 menubarPath="org.epic.perleditor.topLevelMenu.refactor/refactorGroup"
@@ -500,7 +501,7 @@
             <action
                 definitionId="org.epic.perleditor.commands.formatSource"
                 label="Format"
-                retarget="true"
+				retarget="true"
                 menubarPath="org.epic.perleditor.topLevelMenu.source/editGroup"
                 id="org.epic.perleditor.actions.FormatSourceAction" />
             <action
@@ -568,7 +569,7 @@
 				menubarPath="org.epic.perleditor.topLevelMenu.source/miscGroup"
 				id="org.epic.perleditor.actions.ClearMarkerAction#AllMarkers" />
 
-        </actionSet>
+		</actionSet>
 
         <actionSet
             id="org.epic.perleditor.toolbar.actionSet.presentation"
@@ -682,12 +683,12 @@
             showInNextPrevDropdownToolbarActionKey="showOccurrenceInNextPrevDropdownToolbarAction"
             showInNextPrevDropdownToolbarAction="true"
             isGoToNextNavigationTargetKey="isOccurrenceGoToNextNavigationTarget"
-            isGoToNextNavigationTarget="false"
+	        isGoToNextNavigationTarget="false"
             isGoToPreviousNavigationTargetKey="isOccurrenceGoToPreviousNavigationTarget"
-            isGoToPreviousNavigationTarget="false">
+	        isGoToPreviousNavigationTarget="false">
         </specification>
     </extension>
-
+    
     <!--
         marker names are defined relative to the plugin id
 
@@ -702,11 +703,11 @@
     </extension>
 
     <extension
-        id="perlProblemMarker"
-        point="org.eclipse.core.resources.markers"
-        name="Perl Problem">
+    	id="perlProblemMarker"
+    	point="org.eclipse.core.resources.markers"
+    	name="Perl Problem">
         <super type="org.epic.perleditor.markers.epic" />
-        <persistent value="true" />
+		<persistent value="true"/>
     </extension>
 
     <extension
@@ -718,30 +719,30 @@
 
     <extension
         point="org.eclipse.core.resources.markers"
-        id="markers.critic"
-        name="Perl Critic">
+		id="markers.critic"
+		name="Perl Critic">
         <super type="org.epic.perleditor.markers.epic" />
-    </extension>
+	</extension>
 
     <extension point="org.eclipse.ui.editors.annotationTypes">
-        <type
+      <type
             name="org.epic.perleditor.markers.critic.error"
             markerType="org.epic.perleditor.markers.critic"
             super="org.eclipse.ui.workbench.texteditor.error"
             markerSeverity="2">
-        </type>
-        <type
+      </type>
+      <type
             name="org.epic.perleditor.markers.critic.warning"
             markerType="org.epic.perleditor.markers.critic"
             super="org.eclipse.ui.workbench.texteditor.warning"
             markerSeverity="1">
-        </type>
-        <type
+      </type>
+      <type
             name="org.epic.perleditor.markers.critic.info"
             markerType="org.epic.perleditor.markers.critic"
             super="org.eclipse.ui.workbench.texteditor.info"
             markerSeverity="0">
-        </type>
-    </extension>
+      </type>
+   </extension>
 
 </plugin>

@@ -27,7 +27,7 @@ public abstract class PerlEditorAction extends Action
         assert editor != null;
         this.editor = editor;
 
-        setId(getPerlActionId());
+        setId(getPerlEditorActionId());
     }
 
     //~ Methods
@@ -51,7 +51,7 @@ public abstract class PerlEditorAction extends Action
     /**
      * @return a constant from PerlEditorActionIds which identifies this action
      */
-    protected abstract String getPerlActionId();
+    protected abstract String getPerlEditorActionId();
 
     /**
      * @return the PerlEditor in which the action operates
@@ -61,7 +61,7 @@ public abstract class PerlEditorAction extends Action
         return editor;
     }
 
-    protected void log(IStatus status)
+    protected final void log(IStatus status)
     {
         getLog().log(status);
     }
@@ -69,12 +69,12 @@ public abstract class PerlEditorAction extends Action
     /**
      * @return the log that could be used for reporting problems during the action
      */
-    protected ILog getLog()
+    protected final ILog getLog()
     {
         return PerlEditorPlugin.getDefault().getLog();
     }
 
-    protected String getPluginId()
+    protected final String getPluginId()
     {
         return PerlEditorPlugin.getPluginId();
     }
@@ -83,7 +83,7 @@ public abstract class PerlEditorAction extends Action
      * @return returns the resource on which to create the marker, or <code>null</code> if there is
      *         no applicable resource.
      */
-    protected IResource getResource()
+    protected final IResource getResource()
     {
         return (IResource) ((IAdaptable) editor.getEditorInput()).getAdapter(IResource.class);
     }

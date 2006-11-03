@@ -13,6 +13,7 @@ package org.epic.debug.ui;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.ui.*;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
@@ -67,7 +68,7 @@ public class LaunchConfigurationArgumentsTab
     public void createControl(Composite parent)
     {
         Font font = parent.getFont();
-        Composite comp = new Composite(parent, parent.getStyle());
+        Composite comp = new Composite(parent, SWT.NONE);
         GridLayout layout = new GridLayout(1, true);
         comp.setLayout(layout);
         comp.setFont(font);

@@ -47,8 +47,6 @@ public class LaunchConfigurationDelegate
 	{
 		mLaunchConfiguration = configuration;
 		mLaunch = launch;
-
-		System.out.println("Launch: " + mLaunchConfiguration.getLocation());
         
         launch.setSourceLocator(new SourceLocator());
 

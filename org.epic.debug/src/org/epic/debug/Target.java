@@ -2,7 +2,7 @@ package org.epic.debug;
 
 import java.io.File;
 import java.text.MessageFormat;
-import java.util.List;
+import java.util.*;
 
 import org.eclipse.core.resources.*;
 import org.eclipse.core.runtime.*;
@@ -283,11 +283,12 @@ public abstract class Target extends DebugElement implements IDebugTarget
 				e1);
 		}
 
-		
-		//	if( ! isTerminated())
-
-		/**************org***/
-		mProcess = DebugPlugin.newProcess(mLaunch, mJavaProcess, mProcessName);
+        Map attr = new HashMap(1);
+        attr.put(
+            IProcess.ATTR_PROCESS_TYPE,
+            PerlLaunchConfigurationConstants.PERL_PROCESS_TYPE);
+		mProcess = DebugPlugin.newProcess(
+            mLaunch, mJavaProcess, mProcessName, attr);
 
 		return (mJavaProcess);
 

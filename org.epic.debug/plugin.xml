@@ -303,4 +303,18 @@
             <adapter type="org.eclipse.debug.ui.actions.ILaunchable"/>
          </factory>
     </extension>
+
+    <extension
+         point="org.eclipse.ui.console.consolePatternMatchListeners">
+      <consolePatternMatchListener
+            class="org.epic.debug.ui.PerlConsoleTracker"
+            regex=".*? at (\S+ line \d+)\."
+            qualifier="line \d"
+            id="org.epic.debug.ui.PerlConsoleTracker">
+         <enablement>
+             <test property="org.eclipse.debug.ui.processTypeTest" value="perl"/>
+         </enablement>
+      </consolePatternMatchListener>
+    </extension>
+
 </plugin>

@@ -30,5 +30,6 @@ Require-Bundle: org.eclipse.core.runtime,
  org.epic.perleditor,
  org.epic.regexp,
  org.eclipse.core.variables,
- org.epic.lib
+ org.epic.lib,
+ org.eclipse.ui.console
 Eclipse-AutoStart: true

@@ -74,11 +74,11 @@ public class PerlSourceViewerConfiguration extends SourceViewerConfiguration
         assistant.setProposalPopupOrientation(ContentAssistant.PROPOSAL_OVERLAY);
         assistant.setContextInformationPopupOrientation(ContentAssistant.CONTEXT_INFO_ABOVE);
         assistant.setContextInformationPopupBackground(
-            PerlEditorPlugin.getDefault().getColor(new RGB(150, 150, 0)));
+            PerlEditorPlugin.getDefault().getColor(new RGB(0, 0, 0)));
         assistant.setProposalSelectorBackground(
-            PerlEditorPlugin.getDefault().getColor(new RGB(254, 241, 233)));
+            PerlEditorPlugin.getDefault().getColor(new RGB(255, 255, 255)));
         assistant.setInformationControlCreator(getInformationControlCreator(sourceViewer));
-
+        
         return assistant;
     }
 

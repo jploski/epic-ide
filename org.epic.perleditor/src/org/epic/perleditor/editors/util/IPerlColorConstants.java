@@ -27,7 +27,7 @@ public interface IPerlColorConstants {
 	String STRING_COLOR = "nullColor";
 	String KEYWORD1_COLOR = "keyword1Color";
 	String KEYWORD2_COLOR = "keyword2Color";
-	String KEYWORD3_COLOR ="keyword3Color";
+	String VARIABLE_COLOR = "variableColor";
 	String COMMENT1_COLOR = "comment1Color";
 	String COMMENT2_COLOR = "comment2Color";
 	String LITERAL1_COLOR = "literal1Color";

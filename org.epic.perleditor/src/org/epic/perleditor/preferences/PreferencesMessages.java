@@ -24,7 +24,7 @@ public class PreferencesMessages extends NLS
 
     public static String keyword2Color;
 
-    public static String keyword3Color;
+    public static String variableColor;
 
     public static String comment1Color;
 

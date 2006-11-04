@@ -1,9 +1,6 @@
 package org.epic.perleditor;
 
 import java.io.File;
-import java.io.IOException;
-import java.net.URI;
-import java.net.URL;
 import java.util.*;
 
 import org.eclipse.core.resources.IWorkspace;
@@ -18,10 +15,10 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.team.core.IFileTypeInfo;
 import org.eclipse.team.core.Team;
 import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.editors.text.TextFileDocumentProvider;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.epic.core.util.PerlExecutor;
-import org.epic.perleditor.editors.PerlDocumentProvider;
 import org.epic.perleditor.editors.util.PerlColorProvider;
 import org.epic.perleditor.preferences.*;
 import org.osgi.framework.BundleContext;
@@ -305,7 +302,7 @@ public class PerlEditorPlugin extends AbstractUIPlugin {
 
 	public synchronized IDocumentProvider getDocumentProvider() {
 		if (fDocumentProvider == null)
-			fDocumentProvider = new PerlDocumentProvider();
+			fDocumentProvider = new TextFileDocumentProvider();
 		return fDocumentProvider;
 	}
 

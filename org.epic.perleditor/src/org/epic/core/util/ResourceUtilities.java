@@ -1,7 +1,6 @@
 package org.epic.core.util;
 
 import java.io.*;
-import java.net.URI;
 import java.net.URL;
 import java.util.Enumeration;
 import java.util.zip.ZipEntry;
@@ -85,7 +84,6 @@ public class ResourceUtilities
                     if (entry.getName().startsWith(pathInPlugin))
                         extractZipEntry(zipFile, entry, destDir);               
                 }
-                System.err.println("returning location: " + location);
                 return location;
             }
             finally
@@ -189,7 +187,8 @@ public class ResourceUtilities
     {
         if (entry.isDirectory())
         {
-            if (!new File(destBase, entry.getName()).mkdirs())
+            File outDir = new File(destBase, entry.getName());
+            if (!outDir.mkdirs() && !outDir.isDirectory())
                 throw new IOException("Failed to extract " + entry.getName());
         }
         else
@@ -199,10 +198,11 @@ public class ResourceUtilities
             
             try
             {
+                File outFile = new File(destBase, entry.getName());
+                outFile.getParentFile().mkdirs();
+                
                 in = zipFile.getInputStream(entry);
-                out = new BufferedOutputStream(
-                    new FileOutputStream(
-                        new File(destBase, entry.getName())));
+                out = new BufferedOutputStream(new FileOutputStream(outFile));
                 
                 byte[] buf = new byte[4096];
                 int bread;

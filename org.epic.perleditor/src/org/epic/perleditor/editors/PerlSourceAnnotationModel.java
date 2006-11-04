@@ -8,28 +8,24 @@ package org.epic.perleditor.editors;
 
 import org.eclipse.ui.texteditor.ResourceMarkerAnnotationModel;
 import org.eclipse.core.resources.IMarker;
-import org.eclipse.ui.IFileEditorInput;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.ui.texteditor.MarkerAnnotation;
 
 /**
  * @author ruehl
- *
+ * 
  * To change the template for this generated type comment go to
  * Window>Preferences>Java>Code Generation>Code and Comments
  */
-public class PerlSourceAnnotationModel extends ResourceMarkerAnnotationModel {
+public class PerlSourceAnnotationModel extends ResourceMarkerAnnotationModel
+{
+    public PerlSourceAnnotationModel(IResource input)
+    {
+        super(input);
+    }
 
-
-			
-			    public PerlSourceAnnotationModel(IFileEditorInput input) {
-					super(input.getFile());
-				}
-
-				protected MarkerAnnotation createMarkerAnnotation(IMarker marker) {
-					return new PerlMarkerAnnotation(marker);
-				}
-
-			
-			
-			
+    protected MarkerAnnotation createMarkerAnnotation(IMarker marker)
+    {
+        return new PerlMarkerAnnotation(marker);
+    }
 }

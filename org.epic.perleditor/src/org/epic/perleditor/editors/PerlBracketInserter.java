@@ -192,10 +192,18 @@ class PerlBracketInserter implements VerifyKeyListener
         char closingChar)
     {
         final int offset = selection.x;
-        final int length = selection.y;
+        final int length = selection.y;        
         
         try
         {
+            // Duplication of apostrophes in a comment/POD is undesirable:
+            if (keystrokeChar == '\'' && offset > 0)
+            {
+                String partitionType = doc.getPartition(offset-1).getType();
+                if (PartitionTypes.POD.equals(partitionType) ||
+                    PartitionTypes.COMMENT.equals(partitionType)) return;
+            }
+            
             if (isClosingChar(doc, offset, keystrokeChar))
             {
                 // The user has just typed a closing char

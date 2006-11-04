@@ -5,6 +5,18 @@ CVS
 
 		Editor:
 
+Version 0.5.18 - 4-November-2006
+		Debugger:
+		* Fixed Bug [ 1560511 ] Error parsing debugger variables
+		* Fixed Bug [ 1544625 ] <STDIN> hangs execution
+
+		Editor:
+		* Initial integration of Perl::Critic
+		* Fixed Bug [ 1576126 ] Smart typing for quotes should be turned off in comments
+		* Fixed Bug [ 1586304 ] User-defined syntax highlighting for variables
+		* Fixed Bug [ 1590543 ] Source/Format fails with Could not extract resources...
+		* Fixed Bug [ 1589280 ] Search & Replace mangles source
+
 Version 0.5.17 - 21-October-2006
 		Debugger:
 		* Fixed Bug [ 1564111 ] "Error Parsing Debugger Variables" When env LANG=zh_CN.GBK

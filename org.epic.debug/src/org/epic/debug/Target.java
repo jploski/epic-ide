@@ -9,6 +9,7 @@ import org.eclipse.core.runtime.*;
 import org.eclipse.core.variables.VariablesPlugin;
 import org.eclipse.debug.core.*;
 import org.eclipse.debug.core.model.*;
+import org.eclipse.debug.ui.IDebugUIConstants;
 import org.epic.core.PerlCore;
 import org.epic.core.util.PerlExecutableUtilities;
 import org.epic.debug.util.ExecutionArguments;
@@ -139,6 +140,7 @@ public abstract class Target extends DebugElement implements IDebugTarget
 		String prjName = null;
         String perlParams = null;
 		String progParams = null;
+        boolean consoleOutput = false;
 		mProcessName = "Perl-Interpreter";
 		try
 		{
@@ -158,6 +160,8 @@ public abstract class Target extends DebugElement implements IDebugTarget
 					EMPTY_STRING);
             progParams = VariablesPlugin.getDefault().getStringVariableManager()
                 .performStringSubstitution(progParams);
+            consoleOutput = mLaunch.getLaunchConfiguration().getAttribute(
+                IDebugUIConstants.ATTR_CAPTURE_IN_CONSOLE, true);
 		} catch (Exception ce)
 		{
 			PerlDebugPlugin.log(ce);
@@ -192,8 +196,6 @@ public abstract class Target extends DebugElement implements IDebugTarget
 				"Could not start Perl interpreter: error assambling command line",
 				e);
 		}		
-		if (mLaunch.getLaunchMode().equals(ILaunchManager.DEBUG_MODE))
-        {
             try
             {
                 fCmdList.add("-I" + PerlDebugPlugin.getDefault().getInternalDebugInc());
@@ -205,6 +207,8 @@ public abstract class Target extends DebugElement implements IDebugTarget
                     e);
                 return null;
             }            
+		if (mLaunch.getLaunchMode().equals(ILaunchManager.DEBUG_MODE))
+		{
 			fCmdList.add("-d");
 			mProcessName = "Perl-Debugger";
 		}
@@ -216,6 +220,10 @@ public abstract class Target extends DebugElement implements IDebugTarget
 		{
 			fCmdList.add("-T");
 		}        
+        if (consoleOutput)
+        {
+            fCmdList.add("-Mautoflush_epic");
+        }
         if (perlParams != null && perlParams.length() > 0)
         {
             ExecutionArguments exArgs = new ExecutionArguments(perlParams);

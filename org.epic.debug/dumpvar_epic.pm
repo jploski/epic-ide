@@ -449,6 +449,8 @@ sub findsubs {
 
 sub dumpvar_epic {
     my ($package,$m,@vars) = @_;
+    my ($dollar_comma, $dollar_backslash) = ($,, $\);
+    ($,, $\) = undef;
     local(%address,$key,$val,$^W);
     $m=-1;
     $package .= "::" unless $package =~ /::$/;
@@ -478,7 +480,8 @@ sub dumpvar_epic {
       $CompleteTotal += $TotalStrings;
       print "Grand total = $CompleteTotal bytes (1 level deep) + overhead.\n";
     }
-    print "E"
+    print "E";
+    ($,, $\) = ($dollar_comma, $dollar_backslash);
 }
 
 sub scalarUsage {

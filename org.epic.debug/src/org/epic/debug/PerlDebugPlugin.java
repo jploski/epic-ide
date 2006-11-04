@@ -433,6 +433,9 @@ public class PerlDebugPlugin extends AbstractUIPlugin {
         File dumpvarFile;
         try
         {
+            PerlDebugPlugin.getDefault().extractTempFile(
+                "autoflush_epic.pm", null);
+            
             dumpvarFile = PerlDebugPlugin.getDefault().extractTempFile(
                 "dumpvar_epic.pm", null);
             

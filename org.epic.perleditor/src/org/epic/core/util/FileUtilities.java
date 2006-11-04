@@ -40,7 +40,10 @@ public class FileUtilities
         catch (CoreException e)
         {
             IStatus[] status;
-            if (root.getLocation().equals(fPath.removeLastSegments(1)))
+            IPath folderPath = fPath.removeLastSegments(1);
+            
+            if (root.getLocation().isPrefixOf(folderPath) ||
+                folderPath.isPrefixOf(root.getLocation()))    
             {
                 status = new IStatus[] {
                     e.getStatus(),
@@ -48,7 +51,8 @@ public class FileUtilities
                         IStatus.ERROR,
                         PerlEditorPlugin.getPluginId(),
                         IStatus.OK,
-                        "EPIC cannot access files located directly in the workspace folder, sorry.",
+                        "EPIC cannot access files located in folders on the path " +
+                        "to the workspace folder, nor within the workspace folder itself.",
                         null)
                     };
             }

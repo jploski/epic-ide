@@ -1,12 +1,47 @@
 package org.epic.perleditor.editors;
 
+import org.eclipse.core.filebuffers.FileBuffers;
+import org.eclipse.core.filebuffers.ITextFileBufferManager;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jface.text.*;
 import org.eclipse.swt.graphics.Point;
+import org.eclipse.ui.IFileEditorInput;
 
 public class TestFindReplace extends BasePDETestCase
 {
-    public void testAll()
-        throws Exception
+    public void testTextBuffer() throws Exception
+    {
+        // This test checks whether the document obtained from the
+        // editor is managed by TextFileBufferManager. Were it not
+        // the case, then operations such as Search/Replace would
+        // execute on the disk version of the file instead of the
+        // working copy (see bug #1589280).
+        
+        PerlEditor editor = openEditor("EPICTest/test_FindReplace.pl");
+
+        IPath fileLocation =
+            ((IFileEditorInput) editor.getEditorInput()).getFile().getLocation();
+        
+        ITextFileBufferManager bm = FileBuffers.getTextFileBufferManager();
+        bm.connect(fileLocation, new NullProgressMonitor());
+        
+        try
+        {
+            IDocument doc = editor.getViewer().getDocument();
+            doc.replace(0, 0, "abc");
+            
+            String bufText = bm.getTextFileBuffer(fileLocation).getDocument().get();           
+            assertEquals(doc.get(), bufText);
+        }
+        finally
+        {
+            bm.disconnect(fileLocation, new NullProgressMonitor());
+            closeEditor(editor);
+        }
+    }
+    
+    public void testFindReplace() throws Exception
     {
         PerlEditor editor = openEditor("EPICTest/test_FindReplace.pl");
 
@@ -19,9 +54,10 @@ public class TestFindReplace extends BasePDETestCase
             IFindReplaceTarget target = (IFindReplaceTarget) editor
                 .getAdapter(IFindReplaceTarget.class);
 
+            IDocument doc = editor.getViewer().getDocument();
             doFindReplace(target, "\\s*$", "", true);
             
-            IDocument doc = editor.getViewer().getDocument();            
+            //IDocument doc = editor.getViewer().getDocument();            
             IDocumentPartitioner partitioner = (IDocumentPartitioner)
                 doc.getDocumentPartitioner();
             

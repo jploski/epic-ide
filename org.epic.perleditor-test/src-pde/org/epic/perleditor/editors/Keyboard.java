@@ -82,47 +82,64 @@ public class Keyboard
         for (int i = 0; i < string.length(); i++)
         {
             char c = string.charAt(i);
-    
-            boolean uppercase;        
-            if (Character.isUpperCase(c))
-            {
-                c = Character.toLowerCase(c);
-                uppercase = true;
-            }
-            else if (uppercaseChars.contains(new Character(c)))
-            {
-                uppercase = true;
-            }
-            else uppercase = false;
-        
-            Event e;
             
-            if (uppercase)
+            if (c == '\n')
             {
+                Event e;
+
                 e = new Event();
                 e.type = SWT.KeyDown;
-                e.keyCode = SWT.SHIFT;
+                e.keyCode = 13;
                 display.post(e);
-            }
-            
-            e = new Event();
-            e.type = SWT.KeyDown;
-            e.character = c;
-            if (uppercase) e.stateMask = SWT.SHIFT;
-            display.post(e);
-    
-            e = new Event();
-            e.type = SWT.KeyUp;
-            e.character = c;
-            if (uppercase) e.stateMask = SWT.SHIFT;
-            display.post(e);
-            
-            if (uppercase)
-            {
+                
                 e = new Event();
                 e.type = SWT.KeyUp;
-                e.keyCode = SWT.SHIFT;
+                e.keyCode = 13;
                 display.post(e);
+            }
+            else
+            {
+                boolean uppercase;        
+                if (Character.isUpperCase(c))
+                {
+                    c = Character.toLowerCase(c);
+                    uppercase = true;
+                }
+                else if (uppercaseChars.contains(new Character(c)))
+                {
+                    uppercase = true;
+                }
+                else uppercase = false;
+            
+                Event e;
+                
+                if (uppercase)
+                {
+                    e = new Event();
+                    e.type = SWT.KeyDown;
+                    e.keyCode = SWT.SHIFT;
+                    display.post(e);
+                }
+                
+                e = new Event();
+                e.type = SWT.KeyDown;
+                e.character = c;
+                if (uppercase) e.stateMask = SWT.SHIFT;
+                display.post(e);
+        
+                e = new Event();
+                e.type = SWT.KeyUp;
+                e.character = c;
+                if (uppercase) e.stateMask = SWT.SHIFT;
+                display.post(e);
+                
+                if (uppercase)
+                {
+                    e = new Event();
+                    e.type = SWT.KeyUp;
+                    e.keyCode = SWT.SHIFT;
+                    display.post(e);
+                }
             }
             
             while (display.readAndDispatch());

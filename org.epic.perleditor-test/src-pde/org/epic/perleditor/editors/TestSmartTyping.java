@@ -92,6 +92,16 @@ public class TestSmartTyping extends BasePDETestCase
             Keyboard.typeString("'");
             Keyboard.typeString(";");
             assertEquals("print 'aaa';", testIface.getText());
+            
+            testIface.clear();
+            
+            Keyboard.typeString("# ' ok {");
+            assertEquals("# ' ok {}", testIface.getText());
+            
+            testIface.clear();
+            
+            Keyboard.typeString("=comment\nLet's go");
+            assertEquals("=comment\nLet's go", testIface.getText());
         }
         finally
         {

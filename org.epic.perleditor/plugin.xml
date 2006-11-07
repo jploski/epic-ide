@@ -542,7 +542,7 @@
             id="perl"
             base-type="org.eclipse.core.runtime.text"
             name="Perl Source File"
-            file-extensions="pl,pm,t">
+            file-extensions="pl, ipl, pm, cgi, epl, t">
             <describer class="org.epic.core.content.PerlContentDescriber" />
         </content-type>
     </extension>
@@ -580,21 +580,4 @@
 		<super type="org.eclipse.core.resources.problemmarker"/>
 		<persistent value="true"/>
     </extension>
-    
-	<extension
-      point="org.eclipse.core.filebuffers.annotationModelCreation">
-      <factory
-            contentTypeId="org.epic.perleditor.perl"
-            class="org.epic.perleditor.editors.PerlAnnotationModelFactory">
-      </factory>
-	</extension>
-   
-	<extension
-    	id="PerlDocumentSetupParticipant"
-    	point="org.eclipse.core.filebuffers.documentSetup">
-      <participant
-			contentTypeId="org.epic.perleditor.perl"
-            class="org.epic.perleditor.editors.PerlDocumentSetupParticipant">
-      </participant>
-	</extension>
 </plugin>

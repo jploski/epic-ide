@@ -2,9 +2,15 @@ Eclipse Perl Integration:
 
 CVS
 		Debugger:
+
+		Editor:
+
+Version 0.5.19 - 7-November-2006
+		Debugger:
 		* Implemented Feature Request [ 849979 ] Hyperlinks in Console window
 
 		Editor:
+		* Fixed Bug [ 1591216 ] Unable to open .pl files after updating plug-in
 
 Version 0.5.18 - 4-November-2006
 		Debugger:

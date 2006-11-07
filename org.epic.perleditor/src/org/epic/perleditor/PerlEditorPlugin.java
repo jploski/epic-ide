@@ -19,6 +19,7 @@ import org.eclipse.ui.editors.text.TextFileDocumentProvider;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.epic.core.util.PerlExecutor;
+import org.epic.perleditor.editors.PerlDocumentProvider;
 import org.epic.perleditor.editors.util.PerlColorProvider;
 import org.epic.perleditor.preferences.*;
 import org.osgi.framework.BundleContext;
@@ -302,7 +303,7 @@ public class PerlEditorPlugin extends AbstractUIPlugin {
 
 	public synchronized IDocumentProvider getDocumentProvider() {
 		if (fDocumentProvider == null)
-			fDocumentProvider = new TextFileDocumentProvider();
+			fDocumentProvider = new PerlDocumentProvider();
 		return fDocumentProvider;
 	}
 

@@ -744,21 +744,4 @@
             markerSeverity="0">
       </type>
    </extension>
-
-    <extension
-      point="org.eclipse.core.filebuffers.annotationModelCreation">
-      <factory
-            contentTypeId="org.epic.perleditor.perl"
-            class="org.epic.perleditor.editors.PerlAnnotationModelFactory">
-      </factory>
-    </extension>
-   
-    <extension
-    	id="PerlDocumentSetupParticipant"
-    	point="org.eclipse.core.filebuffers.documentSetup">
-      <participant
-			contentTypeId="org.epic.perleditor.perl"
-            class="org.epic.perleditor.editors.PerlDocumentSetupParticipant">
-      </participant>
-    </extension>
 </plugin>

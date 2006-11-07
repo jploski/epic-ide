@@ -1,0 +1,2 @@
+# This file is used to test whether opening files with strange extensions
+# is possible using PerlEditor (when it is associated with the given extension).

@@ -1,6 +1,5 @@
 package org.epic.perleditor.editors;
 
-import org.eclipse.core.filebuffers.*;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.text.IDocument;
@@ -31,9 +30,7 @@ public class PerlDocumentProvider extends TextFileDocumentProvider
     
     private void connectPerlPartitioner(IFileEditorInput input)
     {
-        ITextFileBufferManager bm = FileBuffers.getTextFileBufferManager();
-        ITextFileBuffer buf = bm.getTextFileBuffer(input.getFile().getLocation());
-        IDocument doc = buf.getDocument();
+        IDocument doc = getFileInfo(input).fTextFileBuffer.getDocument();
         
         if (doc.getDocumentPartitioner() == null)
         {

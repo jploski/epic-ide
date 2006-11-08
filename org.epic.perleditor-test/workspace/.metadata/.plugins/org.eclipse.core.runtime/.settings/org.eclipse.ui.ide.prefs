@@ -1,4 +1,6 @@
-#Wed Apr 12 21:13:24 CEST 2006
+#Wed Nov 08 20:40:14 CET 2006
 eclipse.preferences.version=1
-platformState=47
+tipsAndTricks=true
+platformState=106
 EXIT_PROMPT_ON_CLOSE_LAST_WINDOW=false
+quickStart=true

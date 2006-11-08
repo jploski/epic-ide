@@ -1,6 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section name="Workbench">
 	<list key="installedFeatures">
+		<item value="org.eclipse.jdt.source:3.1.2"/>
+		<item value="org.eclipse.jdt:3.1.2"/>
+		<item value="org.eclipse.pde.source:3.1.2"/>
+		<item value="org.eclipse.pde:3.1.2"/>
+		<item value="org.eclipse.platform.source:3.1.2"/>
+		<item value="org.eclipse.platform:3.1.2"/>
+		<item value="org.eclipse.rcp.source:3.1.2"/>
+		<item value="org.eclipse.rcp:3.1.2"/>
+		<item value="org.eclipse.sdk:3.1.2"/>
+		<item value="org.epic.feature.main:0.5.19"/>
 	</list>
 	<section name="CleanDialogSettings">
 		<item key="DIALOG_X_ORIGIN" value="296"/>

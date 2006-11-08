@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<projectDescription>
+	<name>epic_links</name>
+	<comment></comment>
+	<projects>
+	</projects>
+	<buildSpec>
+	</buildSpec>
+	<natures>
+		<nature>org.epic.perleditor.perlinkexternalfilesnature</nature>
+	</natures>
+	<linkedResources>
+		<link>
+			<name>1163014819764</name>
+			<type>2</type>
+			<location>/tmp</location>
+		</link>
+	</linkedResources>
+</projectDescription>

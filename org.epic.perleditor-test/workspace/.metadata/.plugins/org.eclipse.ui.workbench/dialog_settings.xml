@@ -6,8 +6,12 @@
 			<item value="org.eclipse.pde.runtime"/>
 		</list>
 	</section>
+	<section name="EditorSelectionDialog">
+		<item key="EditorSelectionDialog.STORE_ID_INTERNAL_EXTERNAL" value="false"/>
+	</section>
 	<section name="org.eclipse.ui.internal.dialogs.FilteredComboTree">
 		<list key="search">
+			<item value="Associa"/>
 			<item value="quick"/>
 			<item value="ed"/>
 			<item value="EPIC"/>

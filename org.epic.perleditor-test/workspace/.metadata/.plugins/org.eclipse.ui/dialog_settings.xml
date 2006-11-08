@@ -3,7 +3,7 @@
 	<section name="org.eclipse.ui.views.task">
 		<section name="filter">
 			<item key="contains" value="true"/>
-			<item key="selectionStatus" value="org.eclipse.core.resources.taskmarker:true:"/>
+			<item key="selectionStatus" value="org.eclipse.core.resources.taskmarker:true:org.eclipse.jdt.junit.junit_task:true:org.eclipse.compare.rejectedPatchMarker:true:org.eclipse.jdt.core.task:true:"/>
 			<item key="selectByPriority" value="false"/>
 			<item key="enabled" value="true"/>
 			<item key="filterOnMarkerLimit" value="true"/>

@@ -5,6 +5,12 @@ CVS
 
 		Editor:
 
+Version 0.5.20 - 8-November-2006
+		Debugger:
+
+		Editor:
+		* Fixed Bug [ 1591216 ] Unable to open .pl files after updating plug-in
+
 Version 0.5.19 - 7-November-2006
 		Debugger:
 		* Implemented Feature Request [ 849979 ] Hyperlinks in Console window

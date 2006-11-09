@@ -6,7 +6,6 @@ import java.util.List;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.ILog;
-import org.eclipse.jface.text.TextUtilities;
 import org.epic.core.util.ScriptExecutor;
 import org.epic.core.util.StatusFactory;
 import org.epic.perleditor.preferences.SourceCriticPreferencePage;
@@ -68,7 +67,7 @@ public class SourceCritic extends ScriptExecutor
         }
 
         additionalOptions.add("-verbose");
-        additionalOptions.add("%f~|~%s~|~%l~|~%c~|~%m~|~%e\n");
+        additionalOptions.add("%f~|~%s~|~%l~|~%c~|~%m~|~%e" + getSystemLineSeparator());
 
         return additionalOptions;
     }
@@ -104,13 +103,14 @@ public class SourceCritic extends ScriptExecutor
 
     private final Violation[] parseViolations(String toParse)
     {
+        String separator = getLineSeparator(toParse);
 
-        if ((toParse == null) || "".equals(toParse) || toParse.endsWith("OK\n"))
+        if ((toParse == null) || "".equals(toParse) || toParse.endsWith("OK" + separator))
         {
             return EMPTY_ARRAY;
         }
 
-        String[] lines = toParse.split(getLineSeparator(toParse));
+        String[] lines = toParse.split(separator);
         Violation[] violations = new Violation[lines.length];
         for (int i = 0; i < lines.length; i++)
         {
@@ -125,27 +125,7 @@ public class SourceCritic extends ScriptExecutor
         }
 
         return violations;
-
     }
-
-    private String getLineSeparator(String text)
-    {
-        return TextUtilities.determineLineDelimiter(text, System.getProperty("line.separator"));
-    }
-
-    private int parseInt(String s)
-    {
-        try
-        {
-            return Integer.valueOf(s).intValue();
-        }
-        catch (NumberFormatException e)
-        {
-            return 1;
-        }
-    }
-
-    //~ Inner Classes
 
     public static class Violation
     {

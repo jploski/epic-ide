@@ -174,18 +174,6 @@ public abstract class ScriptExecutor
         log.log(status);
     }
 
-    protected int parseInt(String s)
-    {
-        try
-        {
-            return Integer.valueOf(s).intValue();
-        }
-        catch (NumberFormatException e)
-        {
-            return 1;
-        }
-    }
-
     private File extractScripts() throws CoreException
     {
         return ResourceUtilities.extractResources(PerlEditorPlugin.getDefault(), "perlutils/");

@@ -114,7 +114,7 @@ public class SourceCritic extends ScriptExecutor
         Violation[] violations = new Violation[lines.length];
         for (int i = 0; i < lines.length; i++)
         {
-            // System.out.println("critic: " + lines[i]);
+            System.out.println("critic: " + lines[i]);
             violations[i] = parseLine(lines[i]);
         }
 
@@ -125,6 +125,20 @@ public class SourceCritic extends ScriptExecutor
         }
 
         return violations;
+    }
+
+    protected int parseInt(String s)
+    {
+        try
+        {
+            return Integer.valueOf(s).intValue();
+        }
+        catch (NumberFormatException e)
+        {
+            // TODO: I don't think we should mask exceptions like that.
+            // Better ignore the unparseable line and log a warning? 
+            return 1;
+        }
     }
 
     public static class Violation

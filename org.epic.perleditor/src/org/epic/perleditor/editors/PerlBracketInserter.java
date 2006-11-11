@@ -143,7 +143,7 @@ class PerlBracketInserter implements VerifyKeyListener
      */
     private boolean isClosingChar(IDocument doc, int offset, char c)
     {
-        if (c == '}' || c == ']' || c == '>') return true; // easy
+        if (c == '}' || c == ']' || c == '>' || c == ')') return true; // easy
         else if (offset == 0) return false; // easy
         else
         {

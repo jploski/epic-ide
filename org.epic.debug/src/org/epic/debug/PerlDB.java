@@ -1636,18 +1636,20 @@ public class PerlDB implements IDebugElement, ITerminate
             boolean unregister = false;
             for (int i = 0; i < events.length; i++)
             {
-                if (events[i].getKind() == DebugEvent.SUSPEND &&
-                    !isBreakPointReached())
+                if (events[i].getKind() == DebugEvent.SUSPEND)
                 {
-                    UIJob job = new UIJob("PerlDB.AutoResumeOnStart") {
-                        public IStatus runInUIThread(IProgressMonitor monitor)
-                        {
-                            startCommand(mCommandResume, mThreads[0]);
-                            return Status.OK_STATUS;
-                        }
-                    };
-                    job.setPriority(Job.SHORT);
-                    job.schedule();
+                    if (!isBreakPointReached())
+                    {
+                        UIJob job = new UIJob("PerlDB.AutoResumeOnStart") {
+                            public IStatus runInUIThread(IProgressMonitor monitor)
+                            {
+                                startCommand(mCommandResume, mThreads[0]);
+                                return Status.OK_STATUS;
+                            }
+                        };
+                        job.setPriority(Job.SHORT);
+                        job.schedule();
+                    }
                     unregister = true;
                     break;
                 }

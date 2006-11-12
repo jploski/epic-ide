@@ -77,6 +77,14 @@ public class SourceCritic extends ScriptExecutor
 
         // project specific critic config files
         IFile rc = resource.getProject().getFile(".perlcriticrc");
+        try
+        {
+            rc.refreshLocal(IResource.DEPTH_ZERO, null);
+        }
+        catch (CoreException e)
+        {
+            log(e.getStatus());
+        }
         if (rc.exists())
         {
             additionalOptions.add("-profile");

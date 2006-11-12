@@ -75,7 +75,7 @@ public class PodCheckerAction extends PerlUserJobAction
      */
     protected String getJobTitle(IResource resource)
     {
-        return "Executing Perl::Critic against " + resource.getName();
+        return "Executing Pod::Checker against " + resource.getName();
     }
 
     /*

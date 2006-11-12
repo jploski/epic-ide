@@ -24,6 +24,8 @@ import org.epic.perleditor.PerlEditorPlugin;
  */
 public class PerlPairMatcher implements ICharacterPairMatcher
 {
+    private static final char NO_PRETENDED_CHAR = '\u0000';
+    
     private final ILog log;
     private ISourceViewer viewer;
 	private IDocument fDocument;
@@ -48,13 +50,34 @@ public class PerlPairMatcher implements ICharacterPairMatcher
 		fDocument = document;
 		if (fDocument != null &&
             fDocument.getLength() > 0 &&
-            matchPairsAt() &&
+            matchPairsAt(NO_PRETENDED_CHAR) &&
             fStartPos != fEndPos)
         {
 			return new Region(fStartPos, fEndPos - fStartPos + 1);
         }
 		return null;
 	}
+    
+    /**
+     * Same as {@link #match}, but pretend that the given character
+     * is in the document at offset-1. Useful for finding the matching
+     * peer for a character which is about to be inserted.   
+     */
+    public IRegion match(IDocument document, int offset, char pretendPrevChar)
+    {
+        fOffset = offset;
+        if (fOffset < 0) return null;
+
+        fDocument = document;
+        if (fDocument != null &&
+            fDocument.getLength() > 0 &&
+            matchPairsAt(pretendPrevChar) &&
+            fStartPos != fEndPos)
+        {
+            return new Region(fStartPos, fEndPos - fStartPos + 1);
+        }
+        return null;
+    }
     
     /**
      * Sets the viewer used to optimize searching: if viewer != null,
@@ -91,7 +114,7 @@ public class PerlPairMatcher implements ICharacterPairMatcher
     {
 	}
 
-	private boolean matchPairsAt()
+	private boolean matchPairsAt(char pretendPrevChar)
     {
 		int i;
 		int pairIndex1 = BRACKETS.length;
@@ -103,8 +126,14 @@ public class PerlPairMatcher implements ICharacterPairMatcher
 		// get the char preceding the start position
 		try
         {
-			char prevChar = fDocument.getChar(Math.max(fOffset - 1, 0));
-			// search for opening peer character next to the activation point
+            boolean pretendPeer = pretendPrevChar != NO_PRETENDED_CHAR;
+			char prevChar =
+                pretendPeer
+                ? pretendPrevChar
+                : fDocument.getChar(Math.max(fOffset - 1, 0));
+
+			// check if the character before the activation point is
+            // an opening peer character (if so: we'll search forwards)
 			for (i = 0; i < BRACKETS.length; i += 2)
             {
 				if (prevChar == BRACKETS[i])
@@ -114,7 +143,8 @@ public class PerlPairMatcher implements ICharacterPairMatcher
 				}
 			}
 
-			// search for closing peer character next to the activation point
+			// check if the character before the activation point is
+            // a closing peer character (if so: we'll search backwards)
 			for (i = 1; i < BRACKETS.length; i += 2)
             {
 				if (prevChar == BRACKETS[i])
@@ -126,15 +156,27 @@ public class PerlPairMatcher implements ICharacterPairMatcher
 
 			if (fEndPos > -1)
             {
-				fAnchor = RIGHT;
-				fStartPos = searchForOpeningPeer(fEndPos, BRACKETS[pairIndex2 - 1], BRACKETS[pairIndex2], fDocument);
+                //if (pretendPeer) fEndPos--;
+				fAnchor = RIGHT;                
+				fStartPos = searchForOpeningPeer(
+                    fEndPos,
+                    BRACKETS[pairIndex2 - 1],
+                    BRACKETS[pairIndex2],
+                    fDocument,
+                    pretendPeer);
 				if (fStartPos > -1) return true;
 				else fEndPos= -1;
 			}
             else if (fStartPos > -1)
             {
+                //if (pretendPeer) fStartPos++;
 				fAnchor = LEFT;
-				fEndPos = searchForClosingPeer(fStartPos, BRACKETS[pairIndex1], BRACKETS[pairIndex1 + 1], fDocument);
+				fEndPos = searchForClosingPeer(
+                    fStartPos,
+                    BRACKETS[pairIndex1],
+                    BRACKETS[pairIndex1 + 1],
+                    fDocument,
+                    pretendPeer);
 				if (fEndPos > -1) return true;
 				else fStartPos= -1;
 			}
@@ -157,7 +199,8 @@ public class PerlPairMatcher implements ICharacterPairMatcher
         int offset,
         char openingPeer,
         char closingPeer,
-        IDocument document) throws BadLocationException
+        IDocument document,
+        boolean pretendPeer) throws BadLocationException
     {
         int end =
             viewer != null
@@ -170,14 +213,16 @@ public class PerlPairMatcher implements ICharacterPairMatcher
             closingPeer,
             openingPeer,
             1,
-            document);
+            document,
+            pretendPeer);
     }
 
 	private int searchForOpeningPeer(
         int offset,
         char openingPeer,
         char closingPeer,
-        IDocument document) throws BadLocationException
+        IDocument document,
+        boolean pretendPeer) throws BadLocationException
     {
         int end =
             viewer != null
@@ -190,7 +235,8 @@ public class PerlPairMatcher implements ICharacterPairMatcher
             openingPeer,
             closingPeer,
             -1,
-            document);
+            document,
+            pretendPeer);
 	}
     
     /**
@@ -206,6 +252,9 @@ public class PerlPairMatcher implements ICharacterPairMatcher
      * @param searchFrom    matching character for searchFor
      * @param direction     1 to search forwards, -1 to search backwards
      * @param document      document in which to search
+     * @param pretendPeer   true if we are running in make-believe mode:
+     *                      we just pretend that the searchFrom character
+     *                      is in the document
      * @return position of the matching searchFor character
      *         or -1 if such character is not found in the searched region
      */
@@ -215,13 +264,28 @@ public class PerlPairMatcher implements ICharacterPairMatcher
         char searchFor,
         char searchFrom,
         int direction,
-        IDocument document)
+        IDocument document,
+        boolean pretendPeer)
         throws BadLocationException
     {
-        int n = 0; // running count of 'searchFrom' chars not matched by 'searchFor' chars
+        // n is the running count of 'searchFrom' chars not matched by
+        // 'searchFor' chars:
+        int n = 0;
         int i = start;
         int min = start < end ? start : end;
         int max = start > end ? start+1 : end;
+        
+        if (start > end && pretendPeer)
+        {
+            // Normally, when setting out to search for an opening peer
+            // backwards, we go one step forward (see above) to make the
+            // first iteration of the search loop find the closing peer
+            // character. However, in the pretendPeer case, this closing
+            // peer character is not present in the document.
+            // We have to adjust accordingly to create the illusion
+            // of its presence:
+            n++; i--; max--;
+        }
         
         String text = document.get(min, max - min);
         if (text.length() == 0) return -1;

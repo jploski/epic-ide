@@ -40,13 +40,13 @@ public class PerlSourceViewerConfiguration extends SourceViewerConfiguration
         if (editor == null) return null;
         return new PerlAnnotationHover(editor);
     }
-
-    public IAutoIndentStrategy getAutoIndentStrategy(
+    
+    public IAutoEditStrategy[] getAutoEditStrategies(
         ISourceViewer sourceViewer, String contentType)
     {
-        return (IDocument.DEFAULT_CONTENT_TYPE.equals(contentType)
-            ? new PerlAutoIndentStrategy()
-            : new DefaultAutoIndentStrategy());
+        return PartitionTypes.COMMENT.equals(contentType)
+            ? new IAutoEditStrategy[] { new DefaultIndentLineAutoEditStrategy() }
+            : new IAutoEditStrategy[] { new PerlAutoIndentStrategy() };
     }
     
     public String[] getConfiguredContentTypes(ISourceViewer sourceViewer)

@@ -2,8 +2,11 @@ Eclipse Perl Integration:
 
 CVS
 		Debugger:
+		* Fixed Bug [ 1594699 ] Debugger continues instead of stepping
 
 		Editor:
+		* Fixed Bug [ 1593435 ] Closing parens doubled with smart typing enabled
+		* Implemented Feature Request [ 1595083 ] Improved auto-indent strategy
 
 Version 0.5.20 - 8-November-2006
 		Debugger:

@@ -39,6 +39,14 @@ sub poderror
 {
     my $self = shift;
     my %opts = (ref $_[0]) ? %{shift()} : ();
+    
+    # TODO: $_[0] above is sometimes a string, for example:
+    # *** WARNING: line containing nothing but whitespace in paragraph at line X in file Y
+    # These messages apparently also go to STDERR. 
+    # Try running this script on Twig.pm to see them.
+    # As a temporary (and probably wrong) workaround, let's ignore
+    # these cases to prevent an exception on the Java side:
+    return if !defined($opts{-line});
 
     # file:level:line:message
 

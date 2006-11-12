@@ -496,6 +496,8 @@ public class PreferenceConstants {
 
     public static final String SOURCE_CRITIC_LOCATION = "sourceCriticLocation";
 
+    public static final String SOURCE_CRITIC_SEVERITY_LEVEL = "sourceCriticLevel";
+
 
 	/**
 		 * Initializes the given preference store with the default values.

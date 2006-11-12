@@ -9,6 +9,7 @@ import org.epic.perleditor.editors.PerlEditor;
 import org.epic.perleditor.editors.PerlEditorActionIds;
 import org.epic.perleditor.editors.util.SourceCritic;
 import org.epic.perleditor.editors.util.SourceCritic.Violation;
+import org.epic.perleditor.preferences.PerlCriticPreferencePage;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -93,22 +94,7 @@ public class PerlCriticAction extends PerlUserJobAction
 
     private int getSeverity(int severity)
     {
-        switch (severity)
-        {
-            case 3:
-            case 4:
-            {
-                return IMarker.SEVERITY_WARNING;
-            }
-            case 5:
-            {
-                return IMarker.SEVERITY_ERROR;
-            }
-            default:
-            {
-                return IMarker.SEVERITY_INFO;
-            }
-        }
+        return PerlCriticPreferencePage.getMarkerSeverity(severity);
     }
 
 }

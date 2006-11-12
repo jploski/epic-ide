@@ -1,5 +1,7 @@
 package org.epic.perleditor.preferences;
 
+import org.eclipse.core.resources.IMarker;
+
 import org.eclipse.jface.preference.PreferencePage;
 
 import org.eclipse.swt.SWT;
@@ -9,6 +11,7 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Text;
@@ -21,19 +24,24 @@ import org.epic.core.util.WidgetUtils;
 import org.epic.perleditor.PerlEditorPlugin;
 
 import java.io.File;
+
 import java.util.ArrayList;
 import java.util.List;
 
 
 /**
  */
-public class SourceCriticPreferencePage extends PreferencePage implements IWorkbenchPreferencePage
+public class PerlCriticPreferencePage extends PreferencePage implements IWorkbenchPreferencePage
 {
     //~ Static fields/initializers
 
     private static final String DEFAULT_LOCATION = "/usr/bin/perlcritic";
 
+    private static final String[] LEVELS = { "Info", "Warning", "Error" };
+
     //~ Instance fields
+
+    private Combo[] comboButtons = new Combo[5];
 
     private Text customText;
 
@@ -45,6 +53,30 @@ public class SourceCriticPreferencePage extends PreferencePage implements IWorkb
     private Button useDefaultButton;
 
     //~ Methods
+
+    public static int getMarkerSeverity(int severity)
+    {
+        assert (severity > 0) && (severity <= 5) : "unknown severity " + severity;
+
+        String prefName = PreferenceConstants.SOURCE_CRITIC_SEVERITY_LEVEL + severity;
+        String level = PerlEditorPlugin.getDefault().getPreferenceStore().getString(prefName);
+
+        int markerLevel;
+        if ("error".equalsIgnoreCase(level))
+        {
+            markerLevel = IMarker.SEVERITY_ERROR;
+        }
+        else if ("warning".equalsIgnoreCase(level) || "".equals(level))
+        {
+            markerLevel = IMarker.SEVERITY_WARNING;
+        }
+        else
+        {
+            markerLevel = IMarker.SEVERITY_INFO;
+        }
+
+        return markerLevel;
+    }
 
     public static String getPerlCritic()
     {
@@ -71,6 +103,12 @@ public class SourceCriticPreferencePage extends PreferencePage implements IWorkb
 
         String location = customText.getText().equals("") ? DEFAULT_LOCATION : customText.getText();
         storeString(PreferenceConstants.SOURCE_CRITIC_LOCATION, location);
+
+        for (int i = 0; i < comboButtons.length; i++)
+        {
+            String prefName = PreferenceConstants.SOURCE_CRITIC_SEVERITY_LEVEL + (i + 1);
+            storeString(prefName, comboButtons[i].getText());
+        }
 
         return super.performOk();
     }
@@ -108,14 +146,15 @@ public class SourceCriticPreferencePage extends PreferencePage implements IWorkb
             {
                 public void widgetSelected(SelectionEvent event)
                 {
-                    customText.setText(loadCustomLocation());
+                    customText.setText(loadString(PreferenceConstants.SOURCE_CRITIC_LOCATION,
+                            DEFAULT_LOCATION));
                     customText.setEnabled(useCustomButton.getSelection());
 
                     validateLocation(customText.getText());
                 }
             });
 
-        // validation job to ensure this is correct?
+        // TODO: validation job to ensure this is correct?
         customText = WidgetUtils.createText(locations, "Path to perlcritic");
         customText.addModifyListener(new ModifyListener()
             {
@@ -124,6 +163,19 @@ public class SourceCriticPreferencePage extends PreferencePage implements IWorkb
                     validateLocation(customText.getText());
                 }
             });
+
+        WidgetUtils.createLabel(composite, "Severity Marker Settings");
+
+        Composite markerStyles = WidgetUtils.createGroup(composite, GridData.FILL_HORIZONTAL);
+
+        for (int i = 0; i < comboButtons.length; i++)
+        {
+            Composite c = WidgetUtils.createComposite(markerStyles, 2);
+
+            WidgetUtils.createLabel(c, "Level " + (i + 1));
+            comboButtons[i] = new Combo(c, SWT.READ_ONLY);
+            comboButtons[i].setItems(LEVELS);
+        }
 
         loadPreferences();
         toggleCriticEnabled(enabledButton.getSelection());
@@ -141,6 +193,11 @@ public class SourceCriticPreferencePage extends PreferencePage implements IWorkb
         useCustomButton.setSelection(false);
 
         customText.setText("");
+
+        for (int i = 0; i < comboButtons.length; i++)
+        {
+            comboButtons[i].setText("Warning");
+        }
 
         toggleCriticEnabled(false);
 
@@ -182,12 +239,6 @@ public class SourceCriticPreferencePage extends PreferencePage implements IWorkb
         return getPreferenceStore().getBoolean(name);
     }
 
-    private String loadCustomLocation()
-    {
-        String location = loadString(PreferenceConstants.SOURCE_CRITIC_LOCATION);
-        return (location.equals(DEFAULT_LOCATION) ? "" : location);
-    }
-
     private void loadPreferences()
     {
         enabledButton.setSelection(loadBoolean(PreferenceConstants.SOURCE_CRITIC_ENABLED));
@@ -196,12 +247,21 @@ public class SourceCriticPreferencePage extends PreferencePage implements IWorkb
         useDefaultButton.setSelection(useDefault);
         useCustomButton.setSelection(! useDefault);
 
-        customText.setText(loadCustomLocation());
+        customText.setText(loadString(PreferenceConstants.SOURCE_CRITIC_LOCATION,
+                DEFAULT_LOCATION));
+
+        for (int i = 0; i < comboButtons.length; i++)
+        {
+            String text =
+                loadString(PreferenceConstants.SOURCE_CRITIC_SEVERITY_LEVEL + (i + 1), "Warning");
+            comboButtons[i].setText(text);
+        }
     }
 
-    private String loadString(String name)
+    private String loadString(String name, String backup)
     {
-        return getPreferenceStore().getString(name);
+        String value = getPreferenceStore().getString(name);
+        return ("".equals(value) ? backup : value);
     }
 
     private void storeBoolean(String name, boolean value)
@@ -222,6 +282,11 @@ public class SourceCriticPreferencePage extends PreferencePage implements IWorkb
         useCustomButton.setEnabled(enabled);
 
         customText.setEnabled((enabled && ! useDefaultButton.getSelection()));
+
+        for (int i = 0; i < comboButtons.length; i++)
+        {
+            comboButtons[i].setEnabled(enabled);
+        }
     }
 
     private void validateEnabled()

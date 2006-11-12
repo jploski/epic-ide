@@ -9,7 +9,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.ILog;
 import org.epic.core.util.ScriptExecutor;
 import org.epic.core.util.StatusFactory;
-import org.epic.perleditor.preferences.SourceCriticPreferencePage;
+import org.epic.perleditor.preferences.PerlCriticPreferencePage;
 
 
 /**
@@ -22,6 +22,8 @@ public class SourceCritic extends ScriptExecutor
     //~ Static fields/initializers
 
     private static Violation[] EMPTY_ARRAY = new Violation[0];
+
+    private IResource resource;
 
     //~ Constructors
 
@@ -49,6 +51,8 @@ public class SourceCritic extends ScriptExecutor
         try
         {
             SourceCritic critic = new SourceCritic(log);
+            // meh - not sure if i'm happy w/ this, but it's needed in getCommandLineOpts
+            critic.resource = resource;
 
             String output = critic.run(args).stdout;
             return critic.parseViolations(output);
@@ -71,6 +75,14 @@ public class SourceCritic extends ScriptExecutor
             additionalOptions = new ArrayList(2);
         }
 
+        // project specific critic config files
+        IFile rc = resource.getProject().getFile(".perlcriticrc");
+        if (rc.exists())
+        {
+            additionalOptions.add("-profile");
+            additionalOptions.add(rc.getRawLocation().toOSString());
+        }
+
         additionalOptions.add("-verbose");
         additionalOptions.add("%f~|~%s~|~%l~|~%c~|~%m~|~%e" + getSystemLineSeparator());
 
@@ -82,7 +94,7 @@ public class SourceCritic extends ScriptExecutor
      */
     protected String getExecutable()
     {
-        return SourceCriticPreferencePage.getPerlCritic();
+        return PerlCriticPreferencePage.getPerlCritic();
     }
 
     /*

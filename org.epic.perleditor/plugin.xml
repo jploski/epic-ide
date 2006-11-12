@@ -44,7 +44,7 @@
         <page
             name="Perl::Critic"
             category="org.epic.core.preferences.PerlMainPreferencePage"
-            class="org.epic.perleditor.preferences.SourceCriticPreferencePage"
+            class="org.epic.perleditor.preferences.PerlCriticPreferencePage"
             id="org.epic.perleditor.preferences.SourceCriticPreferencePage" />
         <page
             class="org.epic.perleditor.preferences.TaskTagsPreferencePage"

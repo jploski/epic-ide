@@ -1,7 +1,7 @@
 #
 # $Id$
 #
-# EPIC replacement for perlcritic
+# EPIC replacement for podchecker
 #
 # allows the output format to be controlled for easier parsing and removes
 # the need for the user to specify a path to the executable. if the package
@@ -13,17 +13,17 @@ use strict;
 
 my $version;
 eval {
-    use Perl::Critic;
-    $version = $Perl::Critic::VERSION;
+    use Pod::Checker;
+    $version = $Pod::Checker::VERSION;
 
-    die if ($version < 0.17);
+    die if ($version < 1.42);
 };
 
 if ($@)
 {
     my $error =
-      "invalid Perl::Critic version ($version), please upgrade or install" .
-      " to version 0.17 or greater";
+      "invalid Pod::Checker version ($version), please upgrade" .
+      " to version 1.42 or greater";
 
     print STDERR "$error\n";
     exit(1);
@@ -53,7 +53,7 @@ sub poderror
       if (!%opts || ($opts{-severity} && $opts{-severity} eq 'WARNING'));
 
     my $out_fh = $self->output_handle() || \*STDERR;
-    print $out_fh ("$file:$level:$line:$msg\n")
+    print $out_fh ("$file~|~$level~|~$line~|~$msg\n")
       if ($self->{-warnings} || !%opts || $opts{-severity} ne 'WARNING');
 }
 

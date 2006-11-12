@@ -189,7 +189,7 @@
         <command
         	name="Clear Markers"
         	description="Clear EPIC Markers"
-        	id="org.epic.perleditorcommands.clearMarker"
+        	id="org.epic.perleditor.commands.clearMarker"
         	categoryId="org.epic.perleditor.commands.source" />
         <command
             name="Format Source"

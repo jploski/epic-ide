@@ -3,12 +3,14 @@ package org.epic.perleditor.editors.util;
 import java.util.ArrayList;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.ILog;
 import org.epic.core.util.ScriptExecutor;
 
 public class PodChecker extends ScriptExecutor
 {
+    private static Violation[] EMPTY_ARRAY = new Violation[0];
 
     protected PodChecker(ILog log)
     {
@@ -25,27 +27,63 @@ public class PodChecker extends ScriptExecutor
         return "perlutils/epicScripts";
     }
 
-    public static void podchecker(IFile file, ILog log)
+    public static Violation[] podchecker(IResource resource, ILog log)
     {
         ArrayList args = new ArrayList(1);
-        args.add(file.getRawLocation().toOSString());
+        args.add(((IFile) resource).getRawLocation().toOSString());
 
         try
         {
-        PodChecker checker = new PodChecker(log);
+            PodChecker checker = new PodChecker(log);
 
             String output = checker.run(args).stdout;
-            checker.parseViolations(output);
+            return checker.parseViolations(output);
         }
         catch (CoreException e)
         {
+            return EMPTY_ARRAY;
         }
 
     }
 
-    private void parseViolations(String output)
+    private final Violation[] parseViolations(String toParse)
     {
-        System.out.println(output);
+        if ((toParse == null) || "".equals(toParse))
+        {
+            return EMPTY_ARRAY;
+        }
+
+        String[] lines = toParse.split(getLineSeparator(toParse));
+        Violation[] violations = new Violation[lines.length];
+        for (int i = 0; i < lines.length; i++)
+        {
+            System.out.println("critic: " + lines[i]);
+            violations[i] = parseLine(lines[i]);
+        }
+
+        return violations;
+    }
+
+    private Violation parseLine(String toParse)
+    {
+        String[] tmp = toParse.split("~\\|~");
+
+        Violation violation = new Violation();
+
+        violation.file = tmp[0];
+        violation.severity = tmp[1];
+        violation.lineNumber = parseInt(tmp[2]);
+        violation.message = tmp[3];
+
+        return violation;
+    }
+
+    public static class Violation
+    {
+        public String file;
+        public int lineNumber;
+        public String severity;
+        public String message;
     }
 
 }

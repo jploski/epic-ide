@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.ILog;
 import org.epic.core.util.ScriptExecutor;
@@ -31,8 +32,9 @@ public class SourceCritic extends ScriptExecutor
 
     //~ Methods
 
-    public static Violation[] critique(IFile file, ILog log)
+    public static Violation[] critique(IResource resource, ILog log)
     {
+        IFile file = (IFile) resource;
         /*
          * it seems that Perl::Critic does not like receiving the editor input when invoked via the
          * perl executor (although it works fine from the command line outside of java land).
@@ -59,6 +61,9 @@ public class SourceCritic extends ScriptExecutor
         }
     }
 
+    /*
+     * @see org.epic.core.util.ScriptExecutor#getCommandLineOpts(java.util.List)
+     */
     protected List getCommandLineOpts(List additionalOptions)
     {
         if (additionalOptions == null || additionalOptions.isEmpty())
@@ -80,6 +85,9 @@ public class SourceCritic extends ScriptExecutor
         return SourceCriticPreferencePage.getPerlCritic();
     }
 
+    /*
+     * @see org.epic.core.util.ScriptExecutor#getScriptDir()
+     */
     protected String getScriptDir()
     {
         return "";
@@ -125,20 +133,6 @@ public class SourceCritic extends ScriptExecutor
         }
 
         return violations;
-    }
-
-    protected int parseInt(String s)
-    {
-        try
-        {
-            return Integer.valueOf(s).intValue();
-        }
-        catch (NumberFormatException e)
-        {
-            // TODO: I don't think we should mask exceptions like that.
-            // Better ignore the unparseable line and log a warning? 
-            return 1;
-        }
     }
 
     public static class Violation

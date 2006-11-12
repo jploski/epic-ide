@@ -174,6 +174,21 @@ public abstract class ScriptExecutor
         log.log(status);
     }
 
+    protected int parseInt(String s)
+    {
+        try
+        {
+            return Integer.valueOf(s).intValue();
+        }
+        catch (NumberFormatException e)
+        {
+        	// stacktrace will provide exact error location
+            log.log(StatusFactory.createError(getPluginId(), e.getMessage(), e));
+            // results in "Unknown" being displayed in the Problems view
+            return -1;
+        }
+    }
+
     private File extractScripts() throws CoreException
     {
         return ResourceUtilities.extractResources(PerlEditorPlugin.getDefault(), "perlutils/");
@@ -199,7 +214,7 @@ public abstract class ScriptExecutor
         }
         catch (IOException e)
         {
-            log.log(StatusFactory.createError(PerlEditorPlugin.getPluginId(), e.getMessage(), e));
+            log.log(StatusFactory.createError(getPluginId(), e.getMessage(), e));
             return null;
         }
     }

@@ -1,15 +1,7 @@
 package org.epic.perleditor.actions;
 
-import java.util.HashMap;
-
-import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.jobs.Job;
-
-import org.eclipse.ui.IFileEditorInput;
+import org.eclipse.core.resources.IResource;
 
 import org.epic.core.util.MarkerUtilities;
 
@@ -18,13 +10,16 @@ import org.epic.perleditor.editors.PerlEditorActionIds;
 import org.epic.perleditor.editors.util.SourceCritic;
 import org.epic.perleditor.editors.util.SourceCritic.Violation;
 
+import java.util.HashMap;
+import java.util.Map;
+
 
 /**
  * Runs Perl::Critic
  *
  * @see http://search.cpan.org/dist/Perl-Critic/
  */
-public class PerlCriticAction extends PerlEditorAction
+public class PerlCriticAction extends PerlUserJobAction
 {
     //~ Static fields/initializers
 
@@ -37,65 +32,83 @@ public class PerlCriticAction extends PerlEditorAction
         super(editor);
     }
 
-    //~ Methods
-
-    protected void doRun()
+    /*
+     * @see org.epic.perleditor.actions.PerlJobAction#createMarkerAttributes(org.epic.core.util.MarkerUtilities, java.lang.Object)
+     */
+    protected Map createMarkerAttributes(MarkerUtilities factory, Object violation)
     {
-        // TODO: check if editor is dirty before running
-        final IFile file = ((IFileEditorInput) getEditor().getEditorInput()).getFile();
-        final MarkerUtilities factory = new MarkerUtilities(getLog(), getPluginId());
+        Map attributes = new HashMap();
+        Violation v = (Violation) violation;
 
-        Job job = new Job("Executing Perl::Critic against " + file.getName())
-        {
-            protected IStatus run(IProgressMonitor monitor)
-            {
-                // cancelled while sitting in queue
-                if (monitor.isCanceled()) { return Status.CANCEL_STATUS; }
+        /*
+         * XXX: including the violation as part of the message is only temporary
+         *
+         * future enhancements should have the pbp info displayed as part of the marker annotation, or
+         * inside some kind of view that can be spawned to explain the critic warning.
+         *
+         * inclusion of a link to safari would be useful as well, but that depends on missing
+         * Perl::Critic functionality
+         */
+        factory.setMessage(attributes, v.message + " (" + v.pbp + ")");
+        factory.setLineNumber(attributes, v.lineNumber);
+        factory.setSeverity(attributes, getSeverity(v.severity));
 
-                factory.deleteMarkers(getResource(), METRICS_MARKER);
-                Violation[] violations = SourceCritic.critique(file, getLog());
+        attributes.put("pbp", v.pbp);
 
-                // check if we were cancelled while the thread was running
-                if (monitor.isCanceled()) { return Status.CANCEL_STATUS; }
-
-                for (int i = 0; i < violations.length; i++)
-                {
-                    createMarker(factory, violations[i]);
-                }
-
-                return Status.OK_STATUS;
-            }
-        };
-
-        job.setUser(true);
-        job.schedule();
+        return attributes;
     }
 
+    /*
+     * @see org.epic.perleditor.actions.PerlJobAction#doJob(org.eclipse.core.resources.IResource)
+     */
+    protected Object[] doJob(IResource resource)
+    {
+        return SourceCritic.critique(resource, getLog());
+    }
+
+    /*
+     * @see
+     * org.epic.perleditor.actions.PerlJobAction#getJobTitle(org.eclipse.core.resources.IResource)
+     */
+    protected String getJobTitle(IResource resource)
+    {
+        return "Executing Perl::Critic against " + resource.getName();
+    }
+
+    /*
+     * @see org.epic.perleditor.actions.PerlJobAction#getMarker()
+     */
+    protected String getMarker()
+    {
+        return METRICS_MARKER;
+    }
+
+    /*
+     * @see org.epic.perleditor.actions.PerlEditorAction#getPerlEditorActionId()
+     */
     protected String getPerlEditorActionId()
     {
         return PerlEditorActionIds.PERL_CRITIC;
     }
 
-    private void createMarker(MarkerUtilities factory, Violation violation)
+    private int getSeverity(int severity)
     {
-        HashMap attributes = new HashMap();
-
-        /*
-         * XXX: including the violation as part of the message is only temporary
-         *
-         * future enhancements should have the pbp info displayed as part of the marker annotation,
-         * or inside some kind of view that can be spawned to explain the critic warning.
-         *
-         * inclusion of a link to safari would be useful as well, but that depends on missing
-         * Perl::Critic functionality
-         */
-        factory.setMessage(attributes, violation.message + " (" + violation.pbp + ")");
-        factory.setLineNumber(attributes, violation.lineNumber);
-        factory.setSeverity(attributes, IMarker.SEVERITY_WARNING);
-
-        attributes.put("pbp", violation.pbp);
-
-        factory.createMarker(getResource(), METRICS_MARKER, attributes);
+        switch (severity)
+        {
+            case 3:
+            case 4:
+            {
+                return IMarker.SEVERITY_WARNING;
+            }
+            case 5:
+            {
+                return IMarker.SEVERITY_ERROR;
+            }
+            default:
+            {
+                return IMarker.SEVERITY_INFO;
+            }
+        }
     }
 
 }

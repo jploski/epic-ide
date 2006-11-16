@@ -102,6 +102,15 @@ public class TestSmartTyping extends BasePDETestCase
             
             Keyboard.typeString("=comment\nLet's go");
             assertEquals("=comment\nLet's go", testIface.getText());
+            
+            testIface.clear();
+            prefs.setValue(PreferenceConstants.AUTO_COMPLETION_BRACKET2, false);
+
+            Keyboard.typeString(" ");
+            Keyboard.left();
+            Keyboard.typeString("${()");
+
+            assertEquals("${() ", testIface.getText());
         }
         finally
         {

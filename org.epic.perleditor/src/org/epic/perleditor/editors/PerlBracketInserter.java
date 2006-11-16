@@ -3,6 +3,7 @@ package org.epic.perleditor.editors;
 import org.eclipse.core.runtime.*;
 import org.eclipse.jface.text.*;
 import org.eclipse.jface.text.source.ISourceViewer;
+import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.custom.VerifyKeyListener;
 import org.eclipse.swt.events.VerifyEvent;
 import org.eclipse.swt.graphics.Point;
@@ -86,7 +87,7 @@ class PerlBracketInserter implements VerifyKeyListener
         char closingChar = getClosingChar(event.character);
         if (closingChar == NON_BRACKET) return;
         
-        processBracketKeyStroke(
+        event.doit = processBracketKeyStroke(
             viewer.getDocument(),
             viewer.getSelectedRange(),
             event.character,
@@ -121,19 +122,6 @@ class PerlBracketInserter implements VerifyKeyListener
         default:
             return NON_BRACKET;
         }
-    }
-    
-    /**
-     * Tells PerlPartitioner to ignore the next document change event.
-     * It is safe to ignore because the real key stroke event will follow
-     * and be processed normally. We don't want PerlPartitioner to waste
-     * time processing the intermediate state occuring between the two events.
-     */
-    private void ignoreSmartTypingEvent(IDocument doc)
-    {
-        IDocumentPartitioner partitioner = doc.getDocumentPartitioner(); 
-        if (partitioner instanceof PerlPartitioner)
-            ((PerlPartitioner) partitioner).ignoreSmartTypingEvent();
     }
     
     /**
@@ -184,8 +172,10 @@ class PerlBracketInserter implements VerifyKeyListener
      *                      no selection (x, y = 0)
      * @param keystrokeChar character entered by the user
      * @param closingChar   the corresponding "closing" character
+     * @return true if the key stroke event should be processed,
+     *         false if it should be discarded
      */
-    private void processBracketKeyStroke(
+    private boolean processBracketKeyStroke(
         IDocument doc,
         Point selection,
         char keystrokeChar,
@@ -201,7 +191,7 @@ class PerlBracketInserter implements VerifyKeyListener
             {
                 String partitionType = doc.getPartition(offset-1).getType();
                 if (PartitionTypes.POD.equals(partitionType) ||
-                    PartitionTypes.COMMENT.equals(partitionType)) return;
+                    PartitionTypes.COMMENT.equals(partitionType)) return true;
             }
             
             if (isClosingChar(doc, offset, keystrokeChar))
@@ -211,9 +201,9 @@ class PerlBracketInserter implements VerifyKeyListener
                 if (offset + length < doc.getLength() &&
                     doc.getChar(offset + length) == closingChar)
                 {
-                    // There's already a closing char in front of us, so erase it
-                    ignoreSmartTypingEvent(doc);
-                    doc.replace(offset + length, 1, "");
+                    // There's already a closing char in front of us, so skip it
+                    skipChar();                    
+                    return false;
                 }
             }
             else
@@ -223,18 +213,32 @@ class PerlBracketInserter implements VerifyKeyListener
                 if (offset + length < doc.getLength() &&
                     doc.getChar(offset + length) == keystrokeChar)
                 {
-                    // There's already an opening char in front of us, so erase it
-                    ignoreSmartTypingEvent(doc);
-                    doc.replace(offset + length, 1, "");
+                    // There's already an opening char in front of us, so skip it
+                    skipChar();
+                    return false;
                 }
                 else
                 {
-                    // Auto-insert the closing char just after it
-                    ignoreSmartTypingEvent(doc);
-                    doc.replace(offset + length, 0, String.valueOf(closingChar));
+                    // Auto-insert the closing char just after it...
+                    char[] pair = new char[] { keystrokeChar, closingChar };
+                    doc.replace(offset, 0, String.valueOf(pair));
+                    // ...and position the caret after the entered char
+                    skipChar();
+                    return false;
                 }
             }
+            return true;
         }
-        catch (BadLocationException e) { logBadLocationException(e); }
+        catch (BadLocationException e)
+        {
+            logBadLocationException(e);
+            return true;
+        }
+    }
+    
+    private void skipChar()
+    {
+        StyledText text = viewer.getTextWidget();
+        text.setCaretOffset(text.getCaretOffset()+1);
     }
 }

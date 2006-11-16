@@ -27,8 +27,6 @@ public class PerlPartitioner implements
     private final ILog log;
     
     private IDocument doc;
-    private boolean ignoreDocumentChangedEvent;
-    private DocumentEvent ignoredEvent;
     private DocumentRewriteSession activeRewriteSession;
     private boolean initialized;
     private TokensList tokens;
@@ -160,13 +158,6 @@ public class PerlPartitioner implements
     {
         try
         {
-            if (ignoreDocumentChangedEvent)
-            {
-                ignoreDocumentChangedEvent = false;
-                ignoredEvent = event;
-                return null;
-            }
-    
             synchronized (TOKENS_LOCK)
             {
                 IRegion ret = documentChanged2Impl(event);
@@ -227,16 +218,6 @@ public class PerlPartitioner implements
     public Object getTokensLock()
     {
         return TOKENS_LOCK;
-    }
-    
-    /**
-     * Marks the next documentChanged event as coming from PerlBracketInserter
-     * and therefore safe to ignore (because it is will be followed by another
-     * event). This helps the smart typing feature improve performance.
-     */
-    public void ignoreSmartTypingEvent()
-    {
-        ignoreDocumentChangedEvent = true;
     }
 
     public void startRewriteSession(DocumentRewriteSession session)
@@ -311,15 +292,7 @@ public class PerlPartitioner implements
         String repl = event.getText();
         if (repl == null) repl = "";
         int shiftDelta = repl.length() - event.getLength();
-        
-        if (ignoredEvent != null) // compensate for ignoredEvent
-        {
-            repl = ignoredEvent.getText();
-            if (repl == null) repl = "";
-            shiftDelta += repl.length() - ignoredEvent.getLength();
-            ignoredEvent = null;
-        }
-        
+
         PerlToken sync;
         if (syncTokenI >= 0 && syncTokenI < tokens.size())
         {          

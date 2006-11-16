@@ -5,6 +5,11 @@ CVS
 
 		Editor:
 
+Version 0.5.22 - 16-November-2006
+		Editor:
+		* Fixed Bug [ 1596637 ] open file from subclipse plugin throws exception
+		* Fixed Bug [ 1597974 ] assertion failed: getPartition returned invalid result...
+
 Version 0.5.21 - 12-November-2006
 		Debugger:
 		* Fixed Bug [ 1594699 ] Debugger continues instead of stepping

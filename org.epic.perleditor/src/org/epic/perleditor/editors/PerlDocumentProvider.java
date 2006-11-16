@@ -5,7 +5,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IDocumentPartitioner;
 import org.eclipse.jface.text.source.IAnnotationModel;
-import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.editors.text.TextFileDocumentProvider;
 import org.epic.perleditor.PerlEditorPlugin;
 
@@ -20,7 +19,7 @@ public class PerlDocumentProvider extends TextFileDocumentProvider
     {
         super.connect(element);
 
-        connectPerlPartitioner((IFileEditorInput) element);         
+        connectPerlPartitioner(element);         
     }
     
     protected IAnnotationModel createAnnotationModel(IFile file)
@@ -28,9 +27,9 @@ public class PerlDocumentProvider extends TextFileDocumentProvider
         return new PerlSourceAnnotationModel(file);
     }
     
-    private void connectPerlPartitioner(IFileEditorInput input)
+    private void connectPerlPartitioner(Object input)
     {
-        IDocument doc = getFileInfo(input).fTextFileBuffer.getDocument();
+        IDocument doc = getDocument(input);
 
         if (doc.getDocumentPartitioner() == null)
         {

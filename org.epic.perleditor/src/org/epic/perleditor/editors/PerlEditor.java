@@ -631,6 +631,17 @@ public class PerlEditor extends TextEditor implements IPropertyChangeListener
         }
     }
 
+    /**
+     * @return the edited workspace resource or null if the editor's input
+     *         is not a workspace resource (example: remote files opened
+     *         while browsing CVS are not resources)
+     */
+    private IResource getResource()
+    {
+        return (IResource)
+            ((IAdaptable) getEditorInput()).getAdapter(IResource.class);
+    }
+
     private void installBracketInserter()
     {
         bracketInserter =
@@ -686,6 +697,9 @@ public class PerlEditor extends TextEditor implements IPropertyChangeListener
 
     private void installModuleCompletionHelper()
     {
+        IResource resource = getResource();
+        if (resource == null) return;
+        
         // load the module completion list in a low-priority background thread
     	Thread backgroundLoader = new Thread(new Runnable() {
 			public void run() {
@@ -719,12 +733,15 @@ public class PerlEditor extends TextEditor implements IPropertyChangeListener
 
     private void installSyntaxValidationThread()
     {
+        IResource resource = getResource();
+        if (resource == null) return;
+        
         // Always check syntax when editor is opened
         validationThread = new PerlSyntaxValidationThread();
         validationThread.setPriority(Thread.MIN_PRIORITY);
         validationThread.start();
         validationThread.setDocument(
-            (IResource) ((IAdaptable) getEditorInput()).getAdapter(IResource.class),
+            resource,
             sourceViewer.getDocument());
 
         // Register the validation thread if automatic checking is enabled
@@ -737,6 +754,9 @@ public class PerlEditor extends TextEditor implements IPropertyChangeListener
 
     private void installTasksReconciler()
     {
+        IResource resource = getResource();
+        if (resource == null) return;
+        
         tasksReconciler = new TasksReconciler(this);
     }
 

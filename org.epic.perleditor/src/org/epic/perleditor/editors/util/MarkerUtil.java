@@ -28,45 +28,45 @@ import org.epic.perleditor.editors.AddEditorMarker;
 /**
  * @author luelljoc
  *
- * Handles Marker setting and deletion 
- * 
+ * Handles Marker setting and deletion
+ *
  */
 public class MarkerUtil {
-	
+
 	//private ISourceViewer fViewer;
 	//private TextEditor fTextEditor;
 	private IResource fResource;
-	
+
 	private static final String EPIC_MARKER_USED_FLAG = "epic.markerUsedFlag";
-	
+
 
 //	public MarkerUtil(TextEditor textEditor, ISourceViewer viewer) {
 //		this.fTextEditor = textEditor;
 //		this.fViewer = viewer;
 //		resource = (IResource) ((IAdaptable) fTextEditor.getEditorInput()).getAdapter(IResource.class);
 //	}
-	
+
 	/**
 	 * Constructor
-	 * 
+	 *
 	 * @param resource The resource
 	 */
 	public MarkerUtil(IResource resource) {
 		fResource = resource;
 	}
-	
+
 	/**
 	 *  Sets used flag to false of all markers that have the specified marker type
-	 * 
+	 *
 	 * @param markerType The Marker type
 	 */
 	public void clearAllUsedFlags(String markerType) {
 		clearAllUsedFlags(markerType, null);
 	}
-	
+
 	/**
 	 *  Sets used flag to false of all markers that have the specified marker type
-	 * 
+	 *
 	 * @param markerType The Marker type
 	 * @param additionalAttribute Additional attribute to check for
 	 */
@@ -87,10 +87,10 @@ public class MarkerUtil {
 			e.printStackTrace();
 		}
 	}
-	
+
 	/**
 	 * Deletes all unused markers of given type
-	 * 
+	 *
 	 * @param markerType Marker Type
 	 */
 	public void removeUnusedMarkers(String markerType) {
@@ -105,12 +105,12 @@ public class MarkerUtil {
         // by EPIC *before* this fix. It should be removed some day in the
         // future, as it also (incorrectly) removes old problem markers set
         // by other plug-ins.
-        
+
         try
         {
             IMarker[] markers = fResource.findMarkers(
                 IMarker.PROBLEM, true, IResource.DEPTH_ONE);
-            
+
             for(int i = 0; i < markers.length; i++)
             {
                 if (markers[i].getCreationTime() < 1161441375673L)
@@ -123,10 +123,10 @@ public class MarkerUtil {
             e.printStackTrace();
         }
     }
-	
+
 	/**
 	 * Deletes all unused markers of given type
-	 * 
+	 *
 	 * @param markerType Marker Type
 	 * @param additionalAttribute Additional attribut to check for
 	 */
@@ -149,19 +149,19 @@ public class MarkerUtil {
 			e.printStackTrace();
 		}
 	}
-	
+
 	/**
 	 * Adds a marker
-	 * 
+	 *
 	 * @param attributes	Marker attributes
 	 * @param markerType Marker type
 	 */
 	public void addMarker(Map attributes, String markerType) {
 		attributes.put(EPIC_MARKER_USED_FLAG, Boolean.TRUE);
 		AddEditorMarker ed = new AddEditorMarker();
-		ed.addMarker(fResource, attributes, markerType); 
+		ed.addMarker(fResource, attributes, markerType);
 	}
-	
+
 	/**
 	 * @param makerType Marker Type
 	 * @param line Line Number
@@ -172,7 +172,7 @@ public class MarkerUtil {
 	public boolean isMarkerPresent(String makerType, int line, String text,  boolean setUsedFlag) {
 		return isMarkerPresent(makerType, line, text, null, setUsedFlag);
 	}
-	
+
 	/**
 	 * @param makerType Marker Type
 	 * @param line Line Number
@@ -183,25 +183,25 @@ public class MarkerUtil {
 	 */
 	public boolean isMarkerPresent(String makerType, int line, String text, String additionalAttribute, boolean setUsedFlag) {
 		boolean found = false;
-		
+
 		List markers = getMarkersForLine(fResource, line);
 	   for(int i = 0; i < markers.size(); i++) {
 	   		Marker marker = (Marker) markers.get(i);
 	   		String markerText = marker.getAttribute(IMarker.MESSAGE, (String) null);
-	   		
+
 	   		try {
 	   			if(!marker.getType().equals(makerType)) {
 		   			continue;
 		   		}
-	   			
+
 	   			if(additionalAttribute != null) {
 	   				// If additional attribute is not present check next marker
 	   				if(marker.getAttribute(additionalAttribute) == null) {
 	   					continue;
 	   				}
 	   			}
-	   			
-				if(markerText.equals(text)) {
+
+				if(markerText != null && markerText.equals(text)) {
 					found = true;
 					if(setUsedFlag) {
 						try {
@@ -218,13 +218,13 @@ public class MarkerUtil {
 				e.printStackTrace();
 			}
 	   }
-	   
+
 	   return found;
 	}
-	
+
 	/**
 	 *  Returns all markers which includes the ruler's line of activity.
-	 * 
+	 *
 	 * @param resource The reource
 	 * @param aLine The line number
 	 * @return List of all makers for given line
@@ -246,7 +246,7 @@ public class MarkerUtil {
 		}
 		return markers;
 	}
-	
+
 //	/**
 //	 * Returns all markers which includes the ruler's line of activity.
 //	*
@@ -273,11 +273,11 @@ public class MarkerUtil {
 //		}
 //		return markers;
 //	}
-//	
+//
 //	/**
 //	 * Returns distance of given line to specified position (1 = same line,
 //	 * 2 = included in given position, 0 = not related).
-//	 * 
+//	 *
 //	 * @param aPosition Position
 //	 * @param aDocument Document
 //	 * @param aLine Line number

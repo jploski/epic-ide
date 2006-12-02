@@ -8,6 +8,17 @@ import org.eclipse.core.runtime.*;
 import org.eclipse.swt.widgets.Display;
 import org.epic.debug.util.PathMapper;
 
+/**
+ * A low-level interface to the "perl -d" debugger process.
+ * This class supports the execution of commands which would normally
+ * be entered manually through the debugger's console. The actual
+ * communication with the debugger happens on a dedicated thread.
+ * Asynchronous (non-blocking) methods are provided for the long-running
+ * commands (such as "resume"). When these commands finish, they notify
+ * the registered listener using the event dispatch (Main) thread.
+ * 
+ * @author jploski
+ */
 class DebuggerInterface
 {
     private final Object LOCK = new Object();

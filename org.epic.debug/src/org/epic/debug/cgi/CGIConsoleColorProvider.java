@@ -4,7 +4,7 @@
  * To change the template for this generated file go to
  * Window&gt;Preferences&gt;Java&gt;Code Generation&gt;Code and Comments
  */
-package org.epic.debug.util;
+package org.epic.debug.cgi;
 
 /*******************************************************************************
  * Copyright (c) 2000, 2003 IBM Corporation and others.

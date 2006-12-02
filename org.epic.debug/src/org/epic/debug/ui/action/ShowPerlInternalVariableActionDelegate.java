@@ -5,7 +5,7 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.ui.IViewActionDelegate;
 import org.eclipse.ui.IViewPart;
-import org.epic.debug.PerlDB;
+import org.epic.debug.db.PerlDB;
 
 /**
  *
@@ -42,7 +42,7 @@ public class ShowPerlInternalVariableActionDelegate implements IViewActionDelega
 	 * @see org.eclipse.ui.IActionDelegate2#runWithEvent(org.eclipse.jface.action.IAction, org.eclipse.swt.widgets.Event)
 	 */
 	public void runWithEvent(IAction action, Event event) {
-		PerlDB.updateVariableView();
+		PerlDB.updateVariablesView();
 	}
 
 	/* (non-Javadoc)

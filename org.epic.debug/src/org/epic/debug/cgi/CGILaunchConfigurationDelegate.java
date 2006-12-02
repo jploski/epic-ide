@@ -1,4 +1,4 @@
-package org.epic.debug;
+package org.epic.debug.cgi;
 
 import java.io.*;
 import java.net.URL;
@@ -10,187 +10,87 @@ import org.eclipse.debug.core.model.IProcess;
 import org.epic.core.PerlCore;
 import org.epic.core.PerlProject;
 import org.epic.core.util.PerlExecutableUtilities;
-import org.epic.debug.util.CGIProxy;
+import org.epic.debug.*;
 import org.epic.debug.util.RemotePort;
 import org.osgi.framework.Bundle;
 
 /**
- * @author ruehl
- * 
- * To change this generated comment edit the template variable "typecomment":
- * Window>Preferences>Java>Templates. To enable and disable the creation of type
- * comments go to Window>Preferences>Java>Code Generation.
+ * Executes launch configurations of type "Perl CGI".
  */
-public class CGITarget extends DebugTarget implements IDebugEventSetListener
-{	
-    private int mWebserverPort;
-	private boolean mDebug;
-	private boolean mShutDownStarted;
-	private boolean mReConnect;
-	private Process mBrazilProcess;
-	private CGITarget mTarget;
-	private CGIProxy mCGIProxy;
-    private CGIBrowser mBrowser;
-
-	public CGITarget(ILaunch launch)
-	{
-		super(launch);
-		mDebug = launch.getLaunchMode().equals(ILaunchManager.DEBUG_MODE);
-        mProcessName = mDebug ? "CGI Perl Debugger" : "CGI Perl";
-		DebugPlugin.getDefault().addDebugEventListener(this);
-	}
-    
-    public IPath getLocalWorkingDir()
-        throws CoreException
+public class CGILaunchConfigurationDelegate extends LaunchConfigurationDelegate
+{
+    protected void doLaunch(
+        ILaunchConfiguration configuration,
+        String mode,
+        ILaunch launch,
+        IProgressMonitor monitor) throws CoreException
     {
-        String path = getLaunchAttribute(
-            PerlLaunchConfigurationConstants.ATTR_CGI_ROOT_DIR,
-            false);
+        RemotePort debugPort = createDebugPort(launch);
         
-        assert path != null;        
-        return new Path(path);
-    }
-    
-    public IProcess getProcess()
-    {
-        return mCGIProxy;
-    }
-    
-    public void handleDebugEvents(DebugEvent[] events)
-    {
-        for (int i = 0; i < events.length; i++)
-        {
-            if (events[i].getKind() == DebugEvent.TERMINATE &&
-                (events[i].getSource() == mProcess ||
-                 events[i].getSource() == mCGIProxy))
-            {
-                DebugPlugin.getDefault().asyncExec(new Runnable() {
-                    public void run() { terminate(); } });
-            }
-        }
-    }
-    
-    public boolean isTerminated()
-    {
-        if (mPerlDB == null) return !mReConnect;
-        return mPerlDB.isTerminated(this) && !mReConnect;
-    }
-    
-    public void shutdown(boolean unregister)
-    {
-        if (mShutDownStarted) return;
-        mReConnect = false;
-        mShutDownStarted = true;
-
-        super.shutdown(unregister);
         try
-        {
-            mCGIProxy.terminate();
-        } catch (DebugException e)
-        {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+        {            
+            CGIProxy cgiProxy = new CGIProxy(launch, "CGI Process");
+            int brazilPort = RemotePort.findFreePort();
+
+            IProcess process = startBrazil(
+                launch, cgiProxy, brazilPort, debugPort);
+            
+            cgiProxy.waitForConnect();
+            if (!cgiProxy.isConnected())
+            {
+                PerlDebugPlugin.getDefault().logError(
+                    "(CGI-Target) Could not connect to CGI-Proxy");
+                launch.terminate();
+                return;
+            }
+            launch.addProcess(cgiProxy);
+            
+            openBrowser(launch, brazilPort);
+            
+            if (debugPort != null)
+                createCGIDebugTarget(launch, process, debugPort);
         }
-        DebugPlugin.getDefault().removeDebugEventListener(this);
+        catch (CoreException e)
+        {
+            if (debugPort != null) debugPort.shutdown();
+            launch.terminate();
+            throw e;
+        }
     }
-
-	public void start()
-	{
-		mReConnect = true;
-
-		if (!startTarget()) terminate();
-		if (mDebug)
-		{
-			if (!startSession()) terminate();
-		}
-	}
-
-	public void terminate()
-	{
-		mReConnect = false;
-
-		if (mBrazilProcess != null) mBrazilProcess.destroy();
-		if (mBrowser != null) mBrowser.close();
-
-		shutdown();
-	}
-
-	void debugSessionTerminated()
-	{
-		mTarget = this;
-        mLaunch.removeDebugTarget(this);
-        mReConnect = false;
-        
-		Thread term = new Thread("EPIC-Debugger:waitForDebuggerReconnect")
-		{
-			public void run()
-			{
-				mTarget.startSession();
-				if( mTarget.mPerlDB.isTerminated())
-				{ 
-					mTarget.mPerlDB = null;
-					return;
-				}
-				mLaunch.addDebugTarget(mTarget);
-				((DebugTarget) mTarget).getDebugger().generateDebugInitEvent();
-				getDebugger().generateDebugInitEvent();
-			}
-		};
-
-		term.start();
-		fireChangeEvent();
-	}
-
-	void initPath()
-	{
-		mProjectDir = null;
-		mStartupFile = null;
-		mStartupFileAbsolut = null;
-	}
-
-    protected Process startPerlProcess()
-    {
-        return null;
-    }
-
-	boolean isLocal()
-    {
-		return true;
-	}
     
-    private BrazilProps createBrazilProps() throws CoreException
+    private BrazilProps createBrazilProps(
+        ILaunch launch,
+        CGIProxy cgiProxy,
+        int brazilPort,
+        int debugPort) throws CoreException
     {
-        String htmlRootDir = getLaunchAttribute(
+        String htmlRootDir = getLaunchAttribute(launch,
             PerlLaunchConfigurationConstants.ATTR_HTML_ROOT_DIR, true);
 
-        String cgiRootDir = getLaunchAttribute(
+        String cgiRootDir = getLaunchAttribute(launch,
             PerlLaunchConfigurationConstants.ATTR_CGI_ROOT_DIR, true);
                     
-        String cgiFileExtension = getLaunchAttribute(
+        String cgiFileExtension = getLaunchAttribute(launch,
             PerlLaunchConfigurationConstants.ATTR_CGI_FILE_EXTENSION, false);
-
-        String projectName = getLaunchAttribute(
-            PerlLaunchConfigurationConstants.ATTR_PROJECT_NAME, false);
         
-        String perlParams = getLaunchAttribute(
+        String perlParams = getLaunchAttribute(launch,
             PerlLaunchConfigurationConstants.ATTR_PERL_PARAMETERS, false);
         if (perlParams == null) perlParams = "";
         perlParams = perlParams.replaceAll("[\\n\\r]", " ");
         
-        PerlProject project = PerlCore.create(
-            PerlDebugPlugin.getWorkspace().getRoot().getProject(projectName));
+        PerlProject project = PerlCore.create(getProject(launch));
 
         String perlPath = PerlExecutableUtilities.getPerlInterpreterPath();
         if (perlPath == null) perlPath = ""; // TODO report an error?
 
         BrazilProps props = new BrazilProps();
 
-        props.add("cgi.InPort", mCGIProxy.getInPort());
-        props.add("cgi.OutPort", mCGIProxy.getOutPort());
-        props.add("cgi.ErrorPort", mCGIProxy.getErrorPort());
-        props.add("cgi.Debug", mDebug);
+        props.add("cgi.InPort", cgiProxy.getInPort());
+        props.add("cgi.OutPort", cgiProxy.getOutPort());
+        props.add("cgi.ErrorPort", cgiProxy.getErrorPort());
+        props.add("cgi.Debug", isDebugMode(launch));
         props.add("root", htmlRootDir);
-        props.add("port", mWebserverPort);
+        props.add("port", brazilPort);
         props.add("cgi.root", cgiRootDir);
         props.add("cgi.executable", perlPath);
         props.add("cgi.suffix", cgiFileExtension);
@@ -198,19 +98,40 @@ public class CGITarget extends DebugTarget implements IDebugEventSetListener
         props.add("cgi.DebugInclude", " -I" + PerlDebugPlugin.getDefault().getInternalDebugInc());
         props.add("cgi.RunInclude", PerlExecutableUtilities.getPerlIncArgs(project));        
 
-        String[] env = PerlDebugPlugin.getDebugEnv(this);
+        String[] env = PerlDebugPlugin.getDebugEnv(launch, debugPort);
         for (int i = 0; i < env.length; i++)
             props.add("cgi.ENV_" + env[i]);
         
         return props;    
     }
     
-    /**
-     * Fire a debug event marking the creation of this element.
-     */
-    private void fireCreationEvent(Object fSource)
+    private void createCGIDebugTarget(
+        ILaunch launch, IProcess process, RemotePort debugPort)
+        throws CoreException
     {
-        fireEvent(new DebugEvent(fSource, DebugEvent.CREATE));
+        if (debugPort.waitForConnect(true) != RemotePort.WAIT_OK)
+        {
+            PerlDebugPlugin.errorDialog("Could not connect to debug port!");
+            debugPort.shutdown();
+            launch.terminate();
+            return;
+        }
+        else
+        {
+            CGIDebugTarget target = new CGIDebugTarget(
+                launch, process, debugPort, getLocalWorkingDir(launch));
+
+            launch.addDebugTarget(target);
+        }
+    }
+    
+    private RemotePort createDebugPort(ILaunch launch)
+    {
+        if (!isDebugMode(launch)) return null;
+        
+        RemotePort debugPort = new RemotePort("DebugTarget.mDebugPort");
+        debugPort.startConnect();
+        return debugPort;
     }
     
     /**
@@ -283,22 +204,33 @@ public class CGITarget extends DebugTarget implements IDebugEventSetListener
         }
     }
     
-    private String getLaunchAttribute(String attrName, boolean isPath)
+    private String getLaunchAttribute(
+        ILaunch launch, String attrName, boolean isPath)
         throws CoreException
     {
-        String attrValue = mLaunch.getLaunchConfiguration().getAttribute(
+        String attrValue = launch.getLaunchConfiguration().getAttribute(
             attrName, (String) null);
         
         if (attrValue == null) return null;        
         else return new Path(attrValue).toString();
     }
     
-    private String getRelativeURL() throws CoreException
+    private IPath getLocalWorkingDir(ILaunch launch) throws CoreException
     {
-        String htmlRootFile = getLaunchAttribute(
+        String path = getLaunchAttribute(launch,
+            PerlLaunchConfigurationConstants.ATTR_CGI_ROOT_DIR,
+            false);
+    
+        assert path != null;        
+        return new Path(path);
+    }
+    
+    private String getRelativeURL(ILaunch launch) throws CoreException
+    {
+        String htmlRootFile = getLaunchAttribute(launch,
             PerlLaunchConfigurationConstants.ATTR_HTML_ROOT_FILE, true);
         
-        String htmlRootDir = getLaunchAttribute(
+        String htmlRootDir = getLaunchAttribute(launch,
             PerlLaunchConfigurationConstants.ATTR_HTML_ROOT_DIR, true);
         
         return
@@ -307,7 +239,7 @@ public class CGITarget extends DebugTarget implements IDebugEventSetListener
                 .removeFirstSegments(new Path(htmlRootDir).segments().length)
                 .toString();
     }
-    
+
     /**
      * @param path a list of File objects representing paths
      * @return a string with absolute paths separated by
@@ -325,10 +257,76 @@ public class CGITarget extends DebugTarget implements IDebugEventSetListener
         return buf.toString();
     }
     
-    private void startBrazil() throws CoreException
+    private void openBrowser(ILaunch launch, int httpPort)
+        throws CoreException
+    {
+        try
+        {
+            CGIBrowser browser = new CGIBrowser(
+                launch, getRelativeURL(launch), httpPort);
+            browser.open();
+        }
+        catch (CoreException e)
+        {
+            PerlDebugPlugin.getDefault().logError(
+                "Could not start web browser for CGI debugging.",
+                e);
+            throw e;
+        }
+    }
+    
+    private IProcess startBrazil(
+        ILaunch launch,
+        CGIProxy cgiProxy,
+        int brazilPort,
+        RemotePort debugPort) throws CoreException
+    {
+        try
+        {
+            createBrazilProps(
+                launch,
+                cgiProxy,
+                brazilPort,
+                debugPort != null ? debugPort.getServerPort() : -1
+                ).save();
+        }
+        catch (CoreException e)
+        {
+            PerlDebugPlugin.getDefault().logError(
+                "Could not read launch configuration attributes.",
+                e);
+            throw e;
+        }
+        catch (IOException e)
+        {
+            throw new CoreException(new Status(
+                IStatus.ERROR,
+                PerlDebugPlugin.getUniqueIdentifier(),
+                IStatus.OK,
+                "Could not create configuration file for web server.",
+                e));
+        }
+        
+        Process brazilProcess;
+        try { brazilProcess = startBrazilProcess(); }
+        catch (CoreException e)
+        {
+            PerlDebugPlugin.getDefault().logError(
+                "Could not start web server", e);
+            throw e;
+        }
+
+        return DebugPlugin.newProcess(launch, brazilProcess, "Web Server");
+    }
+    
+    private Process startBrazilProcess() throws CoreException
     {
         String javaExec =
-            getJavaHome() + File.separator + "bin" + File.separator + "java";
+            System.getProperty("java.home") +
+            File.separator +
+            "bin" +
+            File.separator +
+            "java";
         File workingDir =
             PerlDebugPlugin.getDefault().getStateLocation().toFile();
 
@@ -342,7 +340,7 @@ public class CGITarget extends DebugTarget implements IDebugEventSetListener
         
         try
         {
-            mBrazilProcess =
+            return
                 Runtime.getRuntime().exec(cmdParams, null, workingDir);
         }
         catch (IOException e)
@@ -354,77 +352,6 @@ public class CGITarget extends DebugTarget implements IDebugEventSetListener
                 "Could not start embedded web server: Runtime.exec failed",
                 e));
         }
-    }
-
-    private boolean startSession()
-    {
-        /* start debugger */
-        if (connectDebugger(false) != RemotePort.mWaitOK) return false;
-        return true;
-    }
-    
-    private boolean startTarget()
-    {
-        if (mDebug)
-        {
-            mDebugPort = new RemotePort("CGITarget.mDebugPort");
-            mDebugPort.startConnect();
-        }
-
-        mCGIProxy = new CGIProxy(mLaunch, "CGI-Process");
-        mWebserverPort = RemotePort.findFreePort();
-
-        try { createBrazilProps().save(); }
-        catch (CoreException e)
-        {
-            PerlDebugPlugin.getDefault().logError(
-                "Could not read launch configuration attributes.",
-                e);
-            return false;
-        }
-        catch (IOException e)
-        {
-            PerlDebugPlugin.getDefault().logError(
-                "Could not create configuration file for web server.",
-                e);
-            return false;
-        }
-        
-        try { startBrazil(); }
-        catch (CoreException e)
-        {
-            PerlDebugPlugin.getDefault().logError(
-                "Could not start web server",
-                e);
-            return false;
-        }
-
-        mProcess = DebugPlugin.newProcess(mLaunch, mBrazilProcess, "WEB-Server");
-        fireCreationEvent(mProcess);
-        
-        mCGIProxy.waitForConnect();
-        if (!mCGIProxy.isConnected())
-        {
-            PerlDebugPlugin.getDefault().logError(
-                "(CGI-Target) Could not connect to CGI-Proxy");
-            return false;
-        }
-        mLaunch.addProcess(mCGIProxy);
-        fireCreationEvent(mCGIProxy);
-        
-        try
-        {
-            mBrowser = new CGIBrowser(mLaunch, getRelativeURL(), mWebserverPort);
-            mBrowser.open();
-        }
-        catch (CoreException e)
-        {
-            PerlDebugPlugin.getDefault().logError(
-                "Could not start web browser for CGI debugging.",
-                e);
-            return false;
-        }
-        return true;
     }
     
     private File urlToFile(URL url)
@@ -443,7 +370,7 @@ public class CGITarget extends DebugTarget implements IDebugEventSetListener
             return new File(urlString.substring(5));
         }
     }
-    
+
     private static class BrazilProps
     {
         private StringBuffer props;

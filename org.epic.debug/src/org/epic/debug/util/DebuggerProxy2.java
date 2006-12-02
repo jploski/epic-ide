@@ -6,19 +6,18 @@ import java.util.*;
 import org.eclipse.core.runtime.PlatformObject;
 import org.eclipse.debug.core.*;
 import org.eclipse.debug.core.model.*;
-import org.eclipse.swt.widgets.Display;
 
 public class DebuggerProxy2 extends PlatformObject
     implements IProcess, ITerminate, IStreamsProxy
 {
 	private final ILaunch launch;
     private boolean terminated;
-    private DebugInProxy debugIn;
     private DebugOutProxy debugOut;
+    private DebugInProxy debugIn;
 
 	public DebuggerProxy2(
-        PrintWriter debugIn,
-        BufferedReader debugOut,
+        BufferedReader debugIn,
+        PrintWriter debugOut,
         ILaunch launch)
     {
 		this.launch = launch;
@@ -27,14 +26,14 @@ public class DebuggerProxy2 extends PlatformObject
 		fireCreationEvent();
 	}
     
-    public PrintWriter getDebugIn()
-    {
-        return debugIn;
-    }
-    
-    public BufferedReader getDebugOut()
+    public PrintWriter getDebugOut()
     {
         return debugOut;
+    }
+    
+    public BufferedReader getDebugIn()
+    {
+        return debugIn;
     }
 
 	public String getLabel()
@@ -102,12 +101,12 @@ public class DebuggerProxy2 extends PlatformObject
 
 	public IStreamMonitor getErrorStreamMonitor()
     {
-		return debugIn.getStreamMonitor();
+		return debugOut.getStreamMonitor();
 	}
 
 	public IStreamMonitor getOutputStreamMonitor()
     {
-		return debugOut.getStreamMonitor();
+		return debugIn.getStreamMonitor();
 	}
 
 	public void write(String input) throws IOException
@@ -140,7 +139,7 @@ public class DebuggerProxy2 extends PlatformObject
 		fireEvent(new DebugEvent(this, DebugEvent.TERMINATE));
 	}
     
-    private static class DebugInProxy extends PrintWriter implements IStreamMonitor
+    private static class DebugOutProxy extends PrintWriter implements IStreamMonitor
     {
         private static final String NL = System.getProperty("line.separator");
 
@@ -149,7 +148,7 @@ public class DebuggerProxy2 extends PlatformObject
         private final StringWriter buf;
         private final PrintWriter bw;
         
-        public DebugInProxy(PrintWriter w)
+        public DebugOutProxy(PrintWriter w)
         {
             super(w, true);
             this.w = w;
@@ -303,14 +302,14 @@ public class DebuggerProxy2 extends PlatformObject
         }
     }
     
-    private static class DebugOutProxy extends BufferedReader implements IStreamMonitor
+    private static class DebugInProxy extends BufferedReader implements IStreamMonitor
     {
         private static final String NL = System.getProperty("line.separator");
         
         private Set listeners;
         private StringBuffer buf;
         
-        public DebugOutProxy(Reader in)
+        public DebugInProxy(Reader in)
         {
             super(in);
             buf = new StringBuffer();

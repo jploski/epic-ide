@@ -12,339 +12,279 @@ import org.eclipse.debug.core.model.IStackFrame;
 import org.eclipse.debug.core.model.IThread;
 import org.eclipse.debug.core.model.IVariable;
 import org.epic.debug.ui.action.*;
+import org.epic.debug.varparser.PerlDebugValue;
 import org.epic.debug.varparser.PerlDebugVar;
 
 /**
  * @author ruehl
- *
- * To change this generated comment edit the template variable "typecomment":
- * Window>Preferences>Java>Templates.
- * To enable and disable the creation of type comments go to
- * Window>Preferences>Java>Code Generation.
  */
-public class StackFrame extends DebugElement implements IStackFrame {
+public class StackFrame extends DebugElement implements IStackFrame
+{
+    private static final IRegisterGroup[] NO_REGISTER_GROUPS =
+        new IRegisterGroup[0];
+    
+    private static final Set PERL_INTERNAL_VARS = initInternalVars();
+    
+    private final PerlDebugThread thread;
+    private final IPath path;
+    private final int lineNumber;
+    
+    private PerlDebugVar[] actualVars;
+    private PerlDebugVar[] displayedVars;
 
-	/**
-	 * Constructor for StackFrame.
-	 */
-	private IVariable [] mVars;
-	private PerlDebugThread mThread;
-	private int mIP_Line;
-	private IPath mIP_Path;
-	private List mVarsOrg;
-	static HashMap mPerlInternalVars;
+    /**
+     * Creates a top-level stack frame.
+     * Information about variables is currently available only for this frame.
+     */
+    public StackFrame(
+        PerlDebugThread thread,
+        IPath path,
+        int lineNumber,
+        PerlDebugVar[] vars) throws DebugException
+    {
+        super(thread.getDebugTarget());
 
-static{
-	ResourceBundle rb = 
-	ResourceBundle.getBundle("org.epic.debug.perlIntVars");
-	Enumeration e = rb.getKeys();
-	mPerlInternalVars = new HashMap();
-	while( e.hasMoreElements())
-		mPerlInternalVars.put(e.nextElement(),"1");
+        this.thread = thread;
+        this.path = path;
+        this.lineNumber = lineNumber;
+        this.actualVars = vars;
+        computeDisplayedVars();
+    }
+    
+    /**
+     * Creates a non-top-level stack frame.
+     * These frames currently do not provide information about variables.
+     */
+    public StackFrame(
+        PerlDebugThread thread,
+        IPath path,
+        int lineNumber,
+        String returnType,
+        String calledSub) throws DebugException
+    {
+        this(thread, path, lineNumber, new PerlDebugVar[0]);
+        
+        if (returnType.equals(".")) returnType = "void";
+        else if (returnType.equals("@")) returnType = "list";
+        else if (returnType.equals("$")) returnType = "scalar";
+        
+        displayedVars = new PerlDebugVar[2];
+        displayedVars[0] = new PerlDebugVar(
+            getDebugTarget(),
+            PerlDebugVar.GLOBAL_SCOPE,
+            "Called Function",
+            new PerlDebugValue(getDebugTarget(), null, calledSub));
+    
+        displayedVars[1] = new PerlDebugVar(
+            getDebugTarget(),
+            PerlDebugVar.GLOBAL_SCOPE,
+            "Return Type",
+            new PerlDebugValue(getDebugTarget(), null, returnType));
+    
+        displayedVars[0].setSpecial();
+        displayedVars[1].setSpecial();
+    }
 
-}
+    public boolean canResume()
+    {
+        return thread.canResume();
+    }
 
-   public StackFrame(PerlDebugThread fThread) {
-		super(fThread.getDebugTarget());
-		
-		mThread = fThread;
-		mVars = new PerlDebugVar[0];
-		}
-	/**
-	 * @see org.eclipse.debug.core.model.IStackFrame#getThread()
-	 */
-	public IThread getThread() {
-		return mThread;
-	}
-	
-	public PerlDebugThread getPerlThread() {
-			return mThread;
-		}
-	
-	/**
-	 * @see org.eclipse.debug.core.model.IStackFrame#getVariables()
-	 */
-	public IVariable[] getVariables() throws DebugException {
-		if (mVars == null)
-		{ getPerlThread();
-		}
-		return mVars;
-	}
+    public boolean canStepInto()
+    {
+        return thread.canStepInto();
+    }
 
-	public void updateVars() {
-		List vars= new ArrayList(mVarsOrg);
-		
-		String lVarname = null;
-		PerlDebugVar var = null;
-		
-		for (int i = 0; i < vars.size(); i++) {
-			{
-				try {
-					var = (PerlDebugVar) vars.get(i);
-					lVarname = var.getName();
-				} catch (DebugException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				if (var.isGlobalScope()
-						&& mPerlInternalVars.containsKey(lVarname)
-						&&  !ShowPerlInternalVariableActionDelegate.getPreferenceValue()
-				) 
-				{
-					vars.remove(i);
-					--i;
-				}
-				
-				if (var.isGlobalScope()
-						&& !mPerlInternalVars.containsKey(lVarname)
-						&&  !ShowGlobalVariableActionDelegate.getPreferenceValue()
-				) 
-				{
-					vars.remove(i);
-					--i;
-				}
-				
-				if (var.isLocalScope()
-						&&  !ShowLocalVariableActionDelegate.getPreferenceValue()
-				) 
-				{
-					vars.remove(i);
-					--i;
-				}
-			}
+    public boolean canStepOver()
+    {
+        return thread.canStepOver();
+    }
 
-		}
-		
-		try {
-			mVars= ((PerlDebugVar[]) vars.toArray(new PerlDebugVar[vars.size()]));
-		} catch (Exception e) {
-		};
-	}
+    public boolean canStepReturn()
+    {
+        return thread.canStepReturn();
+    }
 
-	
-	public void setVariables(PerlDebugVar[] fVars)
-	{
-		mVars = fVars;
-	}
-	
-	public void setVariables(List fVars) throws DebugException {
-		mVarsOrg = fVars;
-		updateVars();
-	}
-		/**
-	 * @see org.eclipse.debug.core.model.IStackFrame#hasVariables()
-	 */
-	public boolean hasVariables() throws DebugException {
-		return ( mVars != null && mVars.length > 0);
-	}
+    public boolean canSuspend()
+    {
+        return thread.canSuspend();
+    }
 
-	/**
-	 * @see org.eclipse.debug.core.model.IStackFrame#getLineNumber()
-	 */
-	public int getLineNumber() throws DebugException {
-		return get_IP_Line();
-	}
+    public boolean canTerminate()
+    {
+        return thread.canTerminate();
+    }
 
-	/**
-	 * @see org.eclipse.debug.core.model.IStackFrame#getCharStart()
-	 */
-	public int getCharStart() throws DebugException {
-		return -1;
-	}
+    public void computeDisplayedVars() throws DebugException
+    {
+        if (!isTopFrame()) return;
+        
+        List displayed = new ArrayList(actualVars.length);
+    
+        for (int i = 0; i < actualVars.length; i++)
+            if (isDisplayedVar(actualVars[i]))
+                displayed.add(actualVars[i]);
+    
+        displayedVars = ((PerlDebugVar[])
+            displayed.toArray(new PerlDebugVar[displayed.size()]));
+    }
 
-	/**
-	 * @see org.eclipse.debug.core.model.IStackFrame#getCharEnd()
-	 */
-	public int getCharEnd() throws DebugException {
-		return -1;
-	}
+    public int getCharEnd() throws DebugException
+    {
+        return -1;
+    }
 
-	/**
-	 * @see org.eclipse.debug.core.model.IStackFrame#getName()
-	 */
-	public String getName() throws DebugException {
-		return (mIP_Path.lastSegment()+"[line: "+Integer.toString(mIP_Line)+"]");
-	}
+    public int getCharStart() throws DebugException
+    {
+        return -1;
+    }
 
-	/**
-	 * @see org.eclipse.debug.core.model.IStackFrame#getRegisterGroups()
-	 */
-	public IRegisterGroup[] getRegisterGroups() throws DebugException {
-		return null;
-	}
+    public IDebugTarget getDebugTarget()
+    {
+        return thread.getDebugTarget();
+    }
 
-	/**
-	 * @see org.eclipse.debug.core.model.IStackFrame#hasRegisterGroups()
-	 */
-	public boolean hasRegisterGroups() throws DebugException {
-		return false;
-	}
+    public IPath getPath()
+    {
+        return path;
+    }
 
-	/**
-	 * @see org.eclipse.debug.core.model.IDebugElement#getModelIdentifier()
-	 */
-	public String getModelIdentifier() {
-		return PerlDebugPlugin.getUniqueIdentifier();
-	}
+    public ILaunch getLaunch()
+    {
+        return thread.getLaunch();
+    }
 
-	/**
-	 * @see org.eclipse.debug.core.model.IDebugElement#getDebugTarget()
-	 */
-	public IDebugTarget getDebugTarget() {
-		return mThread.getDebugTarget();
-	}
+    public int getLineNumber() throws DebugException
+    {
+        return lineNumber;
+    }
 
-	/**
-	 * @see org.eclipse.debug.core.model.IDebugElement#getLaunch()
-	 */
-	public ILaunch getLaunch() {
-		return mThread.getLaunch();
-	}
+    public String getModelIdentifier()
+    {
+        return PerlDebugPlugin.getUniqueIdentifier();
+    }
 
-	/**
-	 * @see org.eclipse.debug.core.model.IStep#canStepInto()
-	 */
-	public boolean canStepInto() {
-		return mThread.canStepInto();
-	}
+    public String getName() throws DebugException
+    {
+        return path.lastSegment() + "[line: " + Integer.toString(lineNumber) + "]";
+    }
 
-	/**
-	 * @see org.eclipse.debug.core.model.IStep#canStepOver()
-	 */
-	public boolean canStepOver() {
-		return  mThread.canStepOver();
-	}
+    public PerlDebugThread getPerlThread()
+    {
+        return thread;
+    }
 
-	/**
-	 * @see org.eclipse.debug.core.model.IStep#canStepReturn()
-	 */
-	public boolean canStepReturn() {
-		return mThread.canStepReturn();
-	}
+    public IRegisterGroup[] getRegisterGroups() throws DebugException
+    {
+        return NO_REGISTER_GROUPS;
+    }
 
-	/**
-	 * @see org.eclipse.debug.core.model.IStep#isStepping()
-	 */
-	public boolean isStepping() {
-		return mThread.isStepping();
-	}
+    public IThread getThread()
+    {
+        return thread;
+    }
 
-	/**
-	 * @see org.eclipse.debug.core.model.IStep#stepInto()
-	 */
-	public void stepInto() throws DebugException {
-		mThread.stepInto();
-	}
+    public IVariable[] getVariables() throws DebugException
+    {
+        return displayedVars;
+    }
 
-	/**
-	 * @see org.eclipse.debug.core.model.IStep#stepOver()
-	 */
-	public void stepOver() throws DebugException {
-		mThread.stepOver();
-	}
+    public boolean hasRegisterGroups() throws DebugException
+    {
+        return false;
+    }
 
-	/**
-	 * @see org.eclipse.debug.core.model.IStep#stepReturn()
-	 */
-	public void stepReturn() throws DebugException {
-		mThread.stepReturn();
-	}
+    public boolean hasVariables() throws DebugException
+    {
+        return displayedVars != null && displayedVars.length > 0;
+    }
 
-	/**
-	 * @see org.eclipse.debug.core.model.ISuspendResume#canResume()
-	 */
-	public boolean canResume() {
-		return mThread.canResume();
-		
-	}
+    public boolean isStepping()
+    {
+        return thread.isStepping();
+    }
 
-	/**
-	 * @see org.eclipse.debug.core.model.ISuspendResume#canSuspend()
-	 */
-	public boolean canSuspend() {
-		return mThread.canSuspend();
-	}
+    public boolean isSuspended()
+    {
+        return thread.isSuspended();
+    }
 
-	/**
-	 * @see org.eclipse.debug.core.model.ISuspendResume#isSuspended()
-	 */
-	public boolean isSuspended() {
-		return mThread.isSuspended();
-	}
+    public boolean isTerminated()
+    {
+        return thread.isTerminated();
+    }
 
-	/**
-	 * @see org.eclipse.debug.core.model.ISuspendResume#resume()
-	 */
-	public void resume() throws DebugException {
-		mThread.resume();
-	}
+    public void resume() throws DebugException
+    {
+        thread.resume();
+    }
 
-	/**
-	 * @see org.eclipse.debug.core.model.ISuspendResume#suspend()
-	 */
-	public void suspend() throws DebugException {
-		mThread.suspend();
-	}
+    public void stepInto() throws DebugException
+    {
+        thread.stepInto();
+    }
 
-	/**
-	 * @see org.eclipse.debug.core.model.ITerminate#canTerminate()
-	 */
-	public boolean canTerminate() {
-		return mThread.canTerminate();
-	}
+    public void stepOver() throws DebugException
+    {
+        thread.stepOver();
+    }
 
-	/**
-	 * @see org.eclipse.debug.core.model.ITerminate#isTerminated()
-	 */
-	public boolean isTerminated() {
-		return mThread.isTerminated();
-	}
+    public void stepReturn() throws DebugException
+    {
+        thread.stepReturn();
+    }
 
-	/**
-	 * @see org.eclipse.debug.core.model.ITerminate#terminate()
-	 */
-	public void terminate() throws DebugException {
-		mThread.terminate();
-	}
+    public void suspend() throws DebugException
+    {
+        thread.suspend();
+    }
 
-	/**
-	 * @see org.eclipse.core.runtime.IAdaptable#getAdapter(Class)
-	 */
-	public Object getAdapter(Class adapter) {
-		if( adapter == this.getClass() )
-			return this;
-		else
-		 return super.getAdapter(adapter);
-	}
+    public void terminate() throws DebugException
+    {
+        thread.terminate();
+    }
 
-	/**
-	 * @return
-	 */
-	public int get_IP_Line() {
-		return mIP_Line;
-	}
-
-	/**
-	 * @return
-	 */
-	public IPath get_IP_Path() {
-		return mIP_Path;
-	}
-
-	/**
-	 * @param i
-	 */
-	public void set_IP_Line(int i) {
-		mIP_Line = i;
-	}
-
-	/**
-	 * @param path
-	 */
-	public void set_IP_Path(IPath path) {
-		mIP_Path = path;
-	}
-
-	
-	
+    public String toString()
+    {
+        return path + ":" + lineNumber;
+    }
+    
+    private static Set initInternalVars()
+    {
+        ResourceBundle rb = ResourceBundle.getBundle("org.epic.debug.perlIntVars");
+        Enumeration e = rb.getKeys();
+        Set vars = new HashSet();
+        while (e.hasMoreElements()) vars.add(e.nextElement());
+        return vars;
+    }
+    
+    private boolean isDisplayedVar(PerlDebugVar var) throws DebugException
+    {
+        if (var.isGlobalScope())
+        {
+            boolean isPerlInternal =
+                PERL_INTERNAL_VARS.contains(var.getName()); 
+            
+            if (isPerlInternal &&
+                !ShowPerlInternalVariableActionDelegate.getPreferenceValue())    
+            {
+                return false;
+            }
+            if (!isPerlInternal &&
+                !ShowGlobalVariableActionDelegate.getPreferenceValue())
+            {
+                return false;
+            }
+        }
+        else if (!ShowLocalVariableActionDelegate.getPreferenceValue())
+        {
+            return false;
+        }
+        return true;
+    }
+    
+    private boolean isTopFrame()
+    {
+        return actualVars.length > 0;
+    }
 }

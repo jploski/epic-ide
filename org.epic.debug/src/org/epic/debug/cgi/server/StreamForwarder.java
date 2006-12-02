@@ -1,4 +1,4 @@
-package org.epic.debug.cgi;
+package org.epic.debug.cgi.server;
 
 import java.io.*;
 

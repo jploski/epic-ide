@@ -9,7 +9,6 @@ import org.eclipse.debug.core.model.IBreakpoint;
 
 public class PerlDebugModel
 {
-
     public static IBreakpoint lineBreakpointExists(IResource resource, int lineNumber) throws CoreException
     {
         String modelId = PerlDebugPlugin.getUniqueIdentifier();
@@ -38,7 +37,4 @@ public class PerlDebugModel
     {
         return marker != null && marker.exists();
     }
-
-
-
 }

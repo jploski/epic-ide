@@ -1,251 +1,171 @@
 package org.epic.debug.varparser;
+
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.debug.core.DebugException;
-import org.eclipse.debug.core.ILaunch;
-import org.eclipse.debug.core.model.DebugElement;
-import org.eclipse.debug.core.model.IDebugElement;
-import org.eclipse.debug.core.model.IDebugTarget;
-import org.eclipse.debug.core.model.IValue;
-import org.eclipse.debug.core.model.IVariable;
+import org.eclipse.debug.core.model.*;
+import org.epic.debug.PerlDebugPlugin;
 
-/*
- * Created on 16.01.2004
- *
- * To change the template for this generated file go to
- * Window>Preferences>Java>Code Generation>Code and Comments
- */
+public class PerlDebugVar extends DebugElement implements IVariable
+{
+    public static final int LOCAL_SCOPE = 1;
+    public static final int GLOBAL_SCOPE = 2;
+    
+    private final String name;
+    private final int scope;
 
-/**
- * @author ST
- *
- * To change the template for this generated type comment go to
- * Window>Preferences>Java>Code Generation>Code and Comments
- */
-public class PerlDebugVar extends DebugElement implements IVariable {
+    private PerlDebugValue value;
+    private int hasChanged;
+    private boolean special;
+    private boolean visited;
+    private boolean isSet;    
 
-	private IDebugElement mDebugger;
-	private String mName;
-	private PerlDebugValue mValue;
-	private int mHasChanged;
-	private boolean mHideImage;
-	private boolean mVisited;
-	private boolean mIsSet;
-	int mScope;
-	public static final int IS_LOCAL_SCOPE = 1; 
-	public static final int IS_GLOBAL_SCOPE = 2;  
-	
-	public boolean getHideImage()
-	{
-		return mHideImage;
-	}
-	
-	public boolean matches(PerlDebugVar fVar)
-	{
-		if( ! fVar.mName.equals(mName))
-			return(false);
-		if(  fVar.mScope != mScope )
-			return(false);
-			
-		return(true);
-	}
-			/**
-		 * Constructor for Variable.
-		 */
-		
+    public PerlDebugVar(
+        IDebugTarget parent,
+        int scope,
+        String name,
+        PerlDebugValue value)
+    {
+        super(parent);
 
-		public boolean isLocalScope()
-		{
-			return( mScope == IS_LOCAL_SCOPE);
-		}
-	
-		public boolean isGlobalScope()
-		{
-			return( mScope == IS_GLOBAL_SCOPE);
-		}
-	
-	public boolean calculateChangeFlags(PerlDebugVar fVarOrg)
-	{
-		if( fVarOrg.mVisited == true) 
-			return(false);
-		
-		fVarOrg.mVisited = true;
-		try{
-		
-		//System.out.println("-*-Comparing Var"+fVarOrg.getName()+"/"+getName());
-		if( ! getName().equals(fVarOrg.getName()) )
-		 {
-		 	System.err.println("*****Error****:Comparing Variables with different Names");
-		 	return false;
-		 }
-		 
-	    int ret = mValue.calculateChangeFlags(fVarOrg.getPdValue());
-	    
-	   
-	    setChangeFlags(ret,false);
-	    
-	    return( ret != PerlDebugValue.mValueUnchanged );
-	    	 
-	    } catch( Exception e ){System.out.println(e);}
-		
-		return false;	
-	}
-	
-	public void setChangeFlags(int fVal, boolean fRecourse)
-	{
-		if( mIsSet == true) return;
-		
-		else mIsSet = true;
-		mHasChanged = fVal;
-		
-		if( fRecourse )
-			mValue.setChangeFlags(fVal, fRecourse);
-	}
-	
-	/**
-	 * 
-	 */
-	public PerlDebugVar(IDebugElement fDebugger, int fScope) {
-		super(fDebugger.getDebugTarget());
-		mDebugger = fDebugger;
-		mName = null;
-		mValue = null;
-		mHideImage = false;
-		mScope = fScope;
-		mHasChanged = PerlDebugValue.mValueUnchanged;
-		mVisited = false;
-		mIsSet = false;
-	}
-	
-	public PerlDebugVar(IDebugElement fDebugger,int fScope, boolean fHide) {
-		super(fDebugger.getDebugTarget());
-			mDebugger = fDebugger;
-			mName = null;
-			mValue = null;
-			mHideImage = fHide;
-			mScope = fScope;
-			mVisited = false;
-			mIsSet = false;
-		}
+        this.scope = scope;
+        this.name = name;
+        this.value = value;
+        this.hasChanged = PerlDebugValue.VALUE_UNCHANGED;
+    }
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.debug.core.model.IVariable#getValue()
-	 */
-	public IValue getValue() throws DebugException {
-		return mValue;
-	}
-	
-	public PerlDebugValue getPdValue() throws DebugException {
-			return mValue;
-		}
-	/* (non-Javadoc)
-	 * @see org.eclipse.debug.core.model.IVariable#getName()
-	 */
-	public String getName() throws DebugException {
-		return mName;
-	}
-	
-	public void setName(String fName)
-	{
-		mName = fName;
-	}
-	
-	public void appendName(String fName)
-		{
-			mName = mName + fName;
-		}
+    public boolean calculateChangeFlags(PerlDebugVar oldVar)
+    {
+        if (oldVar.visited) return false;
+        oldVar.visited = true;
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.debug.core.model.IVariable#getReferenceTypeName()
-	 */
-	public String getReferenceTypeName() throws DebugException {
-		if( mValue != null )
-			return( mValue.getReferenceTypeName());
-		else
-			return null;
-	}
+        try
+        {
+            if (!getName().equals(oldVar.getName())) return false;
+    
+            int ret = value.calculateChangeFlags(oldVar.getPdValue());
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.debug.core.model.IVariable#hasValueChanged()
-	 */
-	public boolean hasValueChanged() throws DebugException {
-		return ( (mHasChanged & PerlDebugValue.mValueHasChanged) > 0);
-	}
+            setChangeFlags(ret, false);
+    
+            return ret != PerlDebugValue.VALUE_UNCHANGED;    
+        }
+        catch (DebugException e)
+        {
+            PerlDebugPlugin.log(new Status(
+                IStatus.ERROR,
+                PerlDebugPlugin.getUniqueIdentifier(),
+                IStatus.OK,
+                "PerlDebugVar.calculateChangeFlags failed",
+                e));
+            return false;
+        }
+    }
 
-	public boolean isTainted() throws DebugException {
-			return ( (mHasChanged & PerlDebugValue.mIsTainted) > 0);
-		}
- 
-	/* (non-Javadoc)
-	 * @see org.eclipse.debug.core.model.IDebugElement#getModelIdentifier()
-	 */
-	public String getModelIdentifier() {
-		return mDebugger.getModelIdentifier();
-	}
+    public String getModelIdentifier()
+    {
+        return getDebugTarget().getModelIdentifier();
+    }
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.debug.core.model.IDebugElement#getDebugTarget()
-	 */
-	public IDebugTarget getDebugTarget() {
-		return mDebugger.getDebugTarget();
-	}
+    public String getName() throws DebugException
+    {
+        return name;
+    }
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.debug.core.model.IDebugElement#getLaunch()
-	 */
-	public ILaunch getLaunch() {
-		return mDebugger.getLaunch();
-	}
+    public PerlDebugValue getPdValue()
+    {
+        return value;
+    }
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.debug.core.model.IValueModification#setValue(java.lang.String)
-	 */
-	public void setValue(String expression) throws DebugException {
-		
-	}
+    public String getReferenceTypeName() throws DebugException
+    {
+        if (value != null) return value.getReferenceTypeName();
+        else return null;
+    }
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.debug.core.model.IValueModification#setValue(org.eclipse.debug.core.model.PerlDebugValue)
-	 */
-	public void setValue(PerlDebugValue value) throws DebugException {
-		mValue= value;
+    public IValue getValue() throws DebugException
+    {
+        return value;
+    }
 
-	}
-	public void setValue(IValue value) throws DebugException {
-			mValue= (PerlDebugValue) value;
+    public boolean hasContentChanged() throws DebugException
+    {
+        return (hasChanged & PerlDebugValue.CONTENT_HAS_CHANGED) > 0;
+    }
 
-		}
-	/* (non-Javadoc)
-	 * @see org.eclipse.debug.core.model.IValueModification#supportsValueModification()
-	 */
-	public boolean supportsValueModification() {
-			return false;
-	}
+    public boolean hasValueChanged() throws DebugException
+    {
+        return (hasChanged & PerlDebugValue.VALUE_HAS_CHANGED) > 0;
+    }
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.debug.core.model.IValueModification#verifyValue(java.lang.String)
-	 */
-	public boolean verifyValue(String expression) throws DebugException {
-		return false;
-	}
+    public boolean isGlobalScope()
+    {
+        return scope == GLOBAL_SCOPE;
+    }
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.debug.core.model.IValueModification#verifyValue(org.eclipse.debug.core.model.PerlDebugValue)
-	 */
-	public boolean verifyValue(PerlDebugValue value) throws DebugException {
-		return false;
-	}
+    public boolean isLocalScope()
+    {
+        return scope == LOCAL_SCOPE;
+    }
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
-	 */
-	public Object getAdapter(Class adapter) {
-		if (adapter == this.getClass()) {
-			return this;
-		}
-		return super.getAdapter(adapter);
-	}
-	public boolean verifyValue(IValue fVal)
-	{
-		return false;
-	}
+    public boolean isSpecial()
+    {
+        return special;
+    }
 
+    public boolean matches(PerlDebugVar var)
+    {
+        if (!var.name.equals(name)) return false;
+        if (var.scope != scope) return false;
+
+        return true;
+    }
+
+    public void setChangeFlags(int flags, boolean recurse)
+    {
+        if (isSet == true) return;
+        else isSet = true;
+
+        hasChanged = flags;
+
+        if (recurse) value.setChangeFlags(flags, recurse);
+    }
+
+    public void setSpecial()
+    {
+        special = true;
+    }
+
+    public void setValue(String expression) throws DebugException
+    {
+    }
+
+    public void setValue(IValue value) throws DebugException
+    {
+        this.value = (PerlDebugValue) value;
+    }
+
+    public boolean supportsValueModification()
+    {
+        return false;
+    }
+
+    public String toString()
+    {
+        return name + " = " + value;
+    }
+
+    public boolean verifyValue(String expression) throws DebugException
+    {
+        return false;
+    }
+
+    public boolean verifyValue(PerlDebugValue value) throws DebugException
+    {
+        return false;
+    }
+
+    public boolean verifyValue(IValue fVal)
+    {
+        return false;
+    }
 }

@@ -2,7 +2,7 @@
 // work around classpath issues (EpicCGIHandler has no access to
 // org.epic.perleditor code). TODO: think up a better solution.
 
-package org.epic.debug.cgi;
+package org.epic.debug.cgi.server;
 
 import java.io.BufferedReader;
 import java.io.StringReader;

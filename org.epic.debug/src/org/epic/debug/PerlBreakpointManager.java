@@ -1,174 +1,150 @@
-/*
- * Created on 30.05.2003
- *
- * To change the template for this generated file go to
- * Window>Preferences>Java>Code Generation>Code and Comments
- */
-
-
 package org.epic.debug;
 
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
+import java.util.*;
 
 import org.eclipse.core.resources.IMarkerDelta;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.IBreakpointListener;
 import org.eclipse.debug.core.model.IBreakpoint;
-
+import org.epic.debug.db.PerlDB;
 
 /**
  * @author ruehl
- *
- * To change the template for this generated type comment go to
- * Window>Preferences>Java>Code Generation>Code and Comments
  */
-public class PerlBreakpointManager implements IBreakpointListener {
+public class PerlBreakpointManager implements IBreakpointListener
+{
+    private final Set debuggers;
 
-	/**
-	 * 
-	 */
-	private Set mDebuggerInstances;
-	private DebugPlugin mDebugPlugin;
-	
-	
-	public PerlBreakpointManager(DebugPlugin fPlugin) {
-		super();
-		mDebuggerInstances = new HashSet();
-		mDebugPlugin = fPlugin;
-		fPlugin.getBreakpointManager().addBreakpointListener(this);
-		}
+    public PerlBreakpointManager()
+    {
+        debuggers = new HashSet();
+        DebugPlugin.getDefault().getBreakpointManager()
+            .addBreakpointListener(this);
+    }
+    
+    public void addDebugger(PerlDB db)
+    {
+        debuggers.add(db);
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.debug.core.IBreakpointListener#breakpointAdded(org.eclipse.debug.core.model.IBreakpoint)
-	 */
-	public void breakpointAdded(IBreakpoint fBreakpoint) {
-		PerlDB db;
-		PerlBreakpoint bp;
+        IBreakpoint[] bps = DebugPlugin.getDefault().getBreakpointManager()
+            .getBreakpoints(PerlDebugPlugin.getUniqueIdentifier());
 
-		if( ! ( fBreakpoint instanceof PerlBreakpoint)  )
-					return;
-		bp = (PerlBreakpoint)fBreakpoint;
+        for (int i = 0; i < bps.length; i++)
+        {
+            PerlBreakpoint bp = (PerlBreakpoint) bps[i];
+            
+            try
+            {
+                if (bp.isEnabled())
+                {
+                    db.addBreakpoint(bp);
+                    bp.addDebugger(db);
+                }
+            }
+            catch (CoreException e)
+            {
+                PerlDebugPlugin.log(e);
+            }
+        }
+    }
 
-		try {
-			if( ! bp.isEnabled() ) return;
-		} catch (CoreException e1) {
-			// TODO Auto-generated catch block
-			
-			e1.printStackTrace();
-		}
-			for( Iterator i = mDebuggerInstances.iterator(); i.hasNext();)
-			{
-				db = (PerlDB) i.next();
-				db.addBreakpoint(bp);
-				bp.addDebuger(db);
-			}
-		
-		
+    public void breakpointAdded(IBreakpoint fBreakpoint)
+    {
+        if (!(fBreakpoint instanceof PerlBreakpoint)) return;
 
-		try {
-			bp.getMarker().setAttribute(PerlBreakpoint.IS_INSTALLED,true);
-		} catch (CoreException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
+        PerlBreakpoint bp = (PerlBreakpoint) fBreakpoint;
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.debug.core.IBreakpointListener#breakpointRemoved(org.eclipse.debug.core.model.IBreakpoint, org.eclipse.core.resources.IMarkerDelta)
-	 */
-	public void breakpointRemoved(IBreakpoint fBreakpoint, IMarkerDelta delta) {
-		PerlDB db;
-		PerlBreakpoint bp;
-		
-		if( ! ( fBreakpoint instanceof PerlBreakpoint)  )
-						return;
-		bp = (PerlBreakpoint)fBreakpoint;
-		
-		Object[] debuggers = bp.getDebuggers();
-		
-		for( int x = 0; x < debuggers.length; ++x)
-		{
-			db = (PerlDB) debuggers[x];
-			db.removeBreakpoint(bp);
-			bp.removeDebuger(db);
-		}
-		try {
-			bp.getMarker().setAttribute(PerlBreakpoint.IS_INSTALLED,false);
-		} catch (CoreException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
+        try
+        {
+            if (!bp.isEnabled()) return;
+        }
+        catch (CoreException e)
+        {
+            PerlDebugPlugin.log(e);
+            return;
+        }
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.debug.core.IBreakpointListener#breakpointChanged(org.eclipse.debug.core.model.IBreakpoint, org.eclipse.core.resources.IMarkerDelta)
-	 */
-		public void breakpointChanged(IBreakpoint breakpoint, IMarkerDelta delta) {
-		// TODO Auto-generated method stub
-		if( !(breakpoint instanceof PerlLineBreakpoint) ) return;
-		boolean enabled_old =( (Boolean) delta.getAttribute(IBreakpoint.ENABLED)).booleanValue();
-		boolean enabled_new = false;
-		try {
-			enabled_new = ( (Boolean) breakpoint.getMarker().getAttribute(IBreakpoint.ENABLED)).booleanValue();
-		} catch (CoreException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return;
-		}
-		if(  enabled_old != enabled_new )
-		{
-			if(enabled_new) this.breakpointAdded(breakpoint);
-			else this.breakpointRemoved(breakpoint, delta);
-		}
-		
-	}
-	
-	public void addDebugger( PerlDB fDb ) 
-	{
-		IBreakpoint[] bps;
-		
-		mDebuggerInstances.add(fDb);
-		bps= DebugPlugin.getDefault().getBreakpointManager().getBreakpoints(PerlDebugPlugin.getUniqueIdentifier());
-		for( int x = 0; x < bps.length; ++x)
-		{
-			try {
-				if( ((PerlBreakpoint)bps[x]).isEnabled())
-				{
-				fDb.addBreakpoint( ((PerlBreakpoint)bps[x]) );
-				((PerlBreakpoint)bps[x]).addDebuger(fDb);
-				}
-			} catch (CoreException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-		
-	}
-	
-	public Set getDebugger()
-	{
-		return mDebuggerInstances;
-	}
-	public void removeDebugger( PerlDB fDb)
-	{
-		IBreakpoint[] bps;
-		
-		mDebuggerInstances.remove(fDb);
-				
-		bps= DebugPlugin.getDefault().getBreakpointManager().getBreakpoints(PerlDebugPlugin.getUniqueIdentifier());
-		for( int x = 0; x < bps.length; ++x)
-		{
-			((PerlBreakpoint)bps[x]).removeDebuger(fDb);
-		}
-	}
-	
-	public void removeBreakpoint( IBreakpoint fBp)
-	{
-		try{
-		mDebugPlugin.getBreakpointManager().removeBreakpoint(fBp,true);
-		}catch (Exception e){PerlDebugPlugin.log(e);}
-	}
+        for (Iterator i = debuggers.iterator(); i.hasNext();)
+        {
+            PerlDB db = (PerlDB) i.next();
+            try
+            {
+                db.addBreakpoint(bp);
+                bp.addDebugger(db);
+            }
+            catch (CoreException e)
+            {
+                PerlDebugPlugin.log(e);
+            }
+        }
+    }
+
+    public void breakpointRemoved(IBreakpoint breakpoint, IMarkerDelta delta)
+    {
+        if (!(breakpoint instanceof PerlBreakpoint)) return;
+
+        PerlBreakpoint bp = (PerlBreakpoint) breakpoint;
+        PerlDB[] debuggers = bp.getDebuggers();
+
+        for (int i = 0; i < debuggers.length; i++)
+        {
+            PerlDB db = debuggers[i];
+            try
+            {
+                db.removeBreakpoint(bp);
+                bp.removeDebugger(db);
+            }
+            catch (CoreException e)
+            {
+                PerlDebugPlugin.log(e);
+            }
+        }
+    }
+
+    public void breakpointChanged(IBreakpoint breakpoint, IMarkerDelta delta)
+    {
+        if (!(breakpoint instanceof PerlLineBreakpoint)) return;
+
+        boolean enabledOld = ((Boolean) delta
+            .getAttribute(IBreakpoint.ENABLED)).booleanValue();
+        boolean enabledNew = false;
+        try
+        {
+            enabledNew = ((Boolean) breakpoint.getMarker().getAttribute(
+                IBreakpoint.ENABLED)).booleanValue();
+        }
+        catch (CoreException e)
+        {
+            PerlDebugPlugin.log(e);
+            return;
+        }
+        if (enabledOld != enabledNew)
+        {
+            if (enabledNew) this.breakpointAdded(breakpoint);
+            else this.breakpointRemoved(breakpoint, delta);
+        }
+    }
+
+    public void dispose()
+    {
+        DebugPlugin.getDefault().getBreakpointManager()
+            .removeBreakpointListener(this);
+    }
+
+    public Set getDebuggers()
+    {
+        return Collections.unmodifiableSet(debuggers);
+    }
+
+    public void removeDebugger(PerlDB db)
+    {
+        debuggers.remove(db);
+
+        IBreakpoint[] bps = DebugPlugin.getDefault().getBreakpointManager()
+            .getBreakpoints(PerlDebugPlugin.getUniqueIdentifier());
+
+        for (int i = 0; i < bps.length; i++)
+            ((PerlBreakpoint) bps[i]).removeDebugger(db);
+    }
 }

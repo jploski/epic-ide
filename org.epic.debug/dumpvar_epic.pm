@@ -20,7 +20,7 @@ $winsize = 80 unless defined $winsize;
 # Defaults
 
 # $globPrint = 1;
-$MaxUnwrapCount = 80;
+$MaxUnwrapCount = 200;
 $UnwrapCount = 0;
 $printUndef = 1 unless defined $printUndef;
 $tick = "auto" unless defined $tick;

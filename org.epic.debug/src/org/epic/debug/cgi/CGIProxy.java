@@ -5,7 +5,7 @@
  * Window&gt;Preferences&gt;Java&gt;Code Generation&gt;Code and Comments
  */
 
-package org.epic.debug.util;
+package org.epic.debug.cgi;
 
 import java.io.IOException;
 
@@ -14,6 +14,8 @@ import org.eclipse.core.runtime.PlatformObject;
 import org.eclipse.debug.core.*;
 import org.eclipse.debug.core.model.*;
 import org.epic.debug.PerlDebugPlugin;
+import org.epic.debug.util.OutputStreamMonitor;
+import org.epic.debug.util.RemotePort;
 
 /** 
  * @author ST
@@ -60,19 +62,19 @@ public class CGIProxy extends PlatformObject implements IProcess, ITerminate
 				{
 					int ret;
 					ret = mInStream.waitForConnect(false);
-					if (ret == RemotePort.mWaitError)
+					if (ret == RemotePort.WAIT_ERROR)
 						PerlDebugPlugin.getDefault().logError(
 							"Could not connect to CGI-Console");
-					if (ret == RemotePort.mWaitOK)
+					if (ret == RemotePort.WAIT_OK)
 					{
 						ret = mOutStream.waitForConnect(true);
-						if (ret == RemotePort.mWaitOK)
+						if (ret == RemotePort.WAIT_OK)
 							ret = mErrorStream.waitForConnect(true);
 					}
 
-					if (ret != RemotePort.mWaitOK)
+					if (ret != RemotePort.WAIT_OK)
 					{
-						if (ret == RemotePort.mWaitError)
+						if (ret == RemotePort.WAIT_ERROR)
 							PerlDebugPlugin.getDefault().logError(
 								"Could not connect to CGI-Console");
 						terminate();

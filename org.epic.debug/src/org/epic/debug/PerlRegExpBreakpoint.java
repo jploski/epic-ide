@@ -1,9 +1,3 @@
-/*
- * Created on 11.04.2003
- *
- * To change the template for this generated file go to
- * Window>Preferences>Java>Code Generation>Code and Comments
- */
 package org.epic.debug;
 
 import gnu.regexp.RE;
@@ -22,7 +16,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.epic.debug.ui.RegExpBPSettingsDialog;
 
 /**
- * @deprecated this class is no longer used - it is currently being kept around so parts of it's
+ * @deprecated this class is no longer used - it is currently being kept around so parts of its
  * implementation can be refactored out later
  */
 public class PerlRegExpBreakpoint extends PerlLineBreakpoint {

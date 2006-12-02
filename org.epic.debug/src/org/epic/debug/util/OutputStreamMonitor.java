@@ -165,7 +165,7 @@ public class OutputStreamMonitor implements IFlushableStreamMonitor {
 		}
 	}
 
-	protected void kill() {
+	public void kill() {
 		fKilled = true;
 	}
 
@@ -179,7 +179,7 @@ public class OutputStreamMonitor implements IFlushableStreamMonitor {
 	/**
 	 * Starts a thread which reads from the stream
 	 */
-	protected void startMonitoring() {
+	public void startMonitoring() {
 		if (fThread == null) {
 			fThread = new Thread(new Runnable() {
 				public void run() {

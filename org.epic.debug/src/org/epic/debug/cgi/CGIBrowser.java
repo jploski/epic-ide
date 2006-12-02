@@ -1,4 +1,4 @@
-package org.epic.debug;
+package org.epic.debug.cgi;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.DebugPlugin;
@@ -10,7 +10,9 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 import org.epic.core.views.browser.BrowserView;
-import org.epic.debug.cgi.CustomBrowser;
+import org.epic.debug.PerlDebugPlugin;
+import org.epic.debug.PerlLaunchConfigurationConstants;
+import org.epic.debug.cgi.server.CustomBrowser;
 
 /**
  * Represents a web browser instance launched to request a CGI script

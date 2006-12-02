@@ -1,4 +1,4 @@
-package org.epic.debug.cgi;
+package org.epic.debug.cgi.server;
 
 import java.util.*;
 
@@ -10,7 +10,7 @@ import sunlabs.brazil.server.Server;
  * This configuration is passed down from EPIC using the Brazil
  * properties file.
  */
-public class CGIConfig
+class CGIConfig
 {
     private final Server server;
     private final String propsPrefix;    

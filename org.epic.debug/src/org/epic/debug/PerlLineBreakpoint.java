@@ -1,6 +1,3 @@
-/*
- * Created on 11.04.2003
- */
 package org.epic.debug;
 
 import java.util.HashMap;
@@ -14,10 +11,8 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.DebugPlugin;
-import org.eclipse.debug.core.IBreakpointManager;
 import org.eclipse.debug.core.model.IBreakpoint;
 import org.eclipse.debug.core.model.ILineBreakpoint;
-
 
 /**
  * @author ruehl
@@ -78,8 +73,6 @@ public class PerlLineBreakpoint extends PerlBreakpoint implements ILineBreakpoin
         attributes.put(IBreakpoint.REGISTERED, Boolean.FALSE);
     }
 
-    /**
-     */
     public void createPerlLineBreakpoint(final IResource resource, final int lineNumber,
         final int charStart, final int charEnd, final boolean add, final Map attributes,
         final String markerType) throws DebugException
@@ -90,20 +83,11 @@ public class PerlLineBreakpoint extends PerlBreakpoint implements ILineBreakpoin
         {
             public void run(IProgressMonitor monitor) throws CoreException
             {
-
-                // create the marker
                 setMarker(resource.createMarker(markerType));
-                // setMarker(resource.createMarker("org.eclipse.debug.core.lineBreakpointMarker"));
-
-                // setMarker(resource.createMarker(IMarker.PROBLEM));
-
-                // add attributes
                 addLineBreakpointAttributes(attributes, getModelIdentifier(), true, lineNumber,
                     charStart, charEnd);
-                // set attributes
-                ensureMarker().setAttributes(attributes);
 
-                // add to breakpoint manager if requested
+                ensureMarker().setAttributes(attributes);
                 register(add);
             }
         };
@@ -111,25 +95,16 @@ public class PerlLineBreakpoint extends PerlBreakpoint implements ILineBreakpoin
         run(wr);
     }
 
-    /*
-     * @see org.eclipse.debug.core.model.ILineBreakpoint#getCharEnd()
-     */
     public int getCharEnd() throws CoreException
     {
         return ensureMarker().getAttribute(IMarker.CHAR_END, -1);
     }
 
-    /*
-     * @see org.eclipse.debug.core.model.ILineBreakpoint#getCharStart()
-     */
     public int getCharStart() throws CoreException
     {
         return ensureMarker().getAttribute(IMarker.CHAR_START, -1);
     }
 
-    /*
-     * @see org.eclipse.debug.core.model.ILineBreakpoint#getLineNumber()
-     */
     public int getLineNumber() throws CoreException
     {
         return ensureMarker().getAttribute(IMarker.LINE_NUMBER, -1);
@@ -148,9 +123,6 @@ public class PerlLineBreakpoint extends PerlBreakpoint implements ILineBreakpoin
         {
             setRegistered(false);
         }
-
-        IBreakpointManager m = DebugPlugin.getDefault().getBreakpointManager();
-        IBreakpoint[] b = m.getBreakpoints(PerlDebugPlugin.getUniqueIdentifier());
     }
 
     /**
@@ -235,13 +207,11 @@ public class PerlLineBreakpoint extends PerlBreakpoint implements ILineBreakpoin
     {
         setAttributes(new String[]{CONDITION_SUSPEND_ON_CHANGE}, new Object[]{Boolean.valueOf(enabled)});
         recreate();
-
     }
 
     public void setRegExp(String regExp)
     {
         this.regExp = regExp;
-
     }
 
     public void setConditionSuspendOnRegExp(boolean enabled) throws CoreException
@@ -249,5 +219,4 @@ public class PerlLineBreakpoint extends PerlBreakpoint implements ILineBreakpoin
         setAttributes(new String[]{CONDITION_SUSPEND_ON_REGEXP}, new Object[]{Boolean.valueOf(enabled)});
         recreate();
     }
-
 }

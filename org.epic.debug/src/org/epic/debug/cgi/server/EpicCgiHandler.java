@@ -25,7 +25,7 @@
  * Last modified by suhler on 02/05/02 11:15:33
  */
 
-package org.epic.debug.cgi;
+package org.epic.debug.cgi.server;
 
 import java.io.*;
 import java.net.Socket;

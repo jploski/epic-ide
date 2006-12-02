@@ -1,289 +1,216 @@
-/*
- * Created on 03.04.2004
- *
- * To change the template for this generated file go to
- * Window&gt;Preferences&gt;Java&gt;Code Generation&gt;Code and Comments
- */
-
 package org.epic.debug.util;
 
 import java.io.IOException;
 import java.io.PrintWriter;
 
-import org.eclipse.core.runtime.PlatformObject;
-import org.eclipse.debug.core.DebugEvent;
-import org.eclipse.debug.core.DebugException;
-import org.eclipse.debug.core.DebugPlugin;
-import org.eclipse.debug.core.ILaunch;
-import org.eclipse.debug.core.model.IDebugTarget;
-import org.eclipse.debug.core.model.IProcess;
-import org.eclipse.debug.core.model.IStreamMonitor;
-import org.eclipse.debug.core.model.IStreamsProxy;
-import org.eclipse.debug.core.model.ITerminate;
+import org.eclipse.core.runtime.*;
+import org.eclipse.debug.core.*;
+import org.eclipse.debug.core.model.*;
 import org.eclipse.debug.internal.core.InputStreamMonitor;
-import org.epic.debug.PerlDB;
+import org.epic.debug.db.PerlDB;
 
 /**
  * @author ST
- * 
- * To change the template for this generated type comment go to
- * Window&gt;Preferences&gt;Java&gt;Code Generation&gt;Code and Comments
  */
 public class DebuggerProxy extends PlatformObject
-		implements
-			IProcess,
-			ITerminate,
-			IStreamsProxy {
-	private OutputStreamMonitor mMonitorError;
-	private OutputStreamMonitor mMonitorOut;
-	private InputStreamMonitor mMonitorIn;
-	private PrintWriter mOut;
-	ILaunch mLaunch;
-	PerlDB mDebugger;
-	String mLabel;
-	RemotePort mIOStream;
-	RemotePort mErrorStream;
-	boolean mShutDown;
+    implements IProcess, ITerminate, IStreamsProxy
+{
+    private OutputStreamMonitor mMonitorError;
+    private OutputStreamMonitor mMonitorOut;
+    private InputStreamMonitor mMonitorIn;
+    private PrintWriter mOut;
+    private ILaunch mLaunch;
+    private PerlDB mDebugger;
+    private String mLabel;
+    private RemotePort mIOStream;
+    private RemotePort mErrorStream;
+    private boolean mShutDown;
+    private final String ioHost;
 
-	public DebuggerProxy(String fLabel, ILaunch fLaunch ) throws InstantiationException {
-		mLabel = fLabel;
-		mLaunch = fLaunch;
-		mShutDown = false;
-		create();
-	}
+    public DebuggerProxy(String fLabel, ILaunch fLaunch, String ioHost)
+    {
+        mLabel = fLabel;
+        mLaunch = fLaunch;
+        this.ioHost = ioHost;
 
-	public DebuggerProxy(PerlDB fDebugger, String fLabel)
-			throws InstantiationException {
-		mLabel = fLabel;
-		mShutDown = false;
-		create();
-		init(fDebugger);
-	}
+        create();
+        
+        mIOStream = new RemotePort("DebuggerProxy.mIOStream");
+        mIOStream.startConnect();
+        mErrorStream = new RemotePort("DebuggerProxy.mErrorStream");
+        mErrorStream.startConnect();
+    }
 
-	public void init(PerlDB fDebugger) throws InstantiationException {
-		mDebugger = fDebugger;
-		mLaunch = fDebugger.getLaunch();
+    public void init(PerlDB fDebugger) throws CoreException
+    {
+        mDebugger = fDebugger;
+        mLaunch = fDebugger.getLaunch();
+        
+        if (mIOStream.waitForConnect(true) != RemotePort.WAIT_OK)
+            throwCouldNotConnect();
 
-		int port;
+        if (mErrorStream.waitForConnect(true) != RemotePort.WAIT_OK)
+            throwCouldNotConnect();
 
-		//port =
-		// Integer.parseInt(getAttribute(PerlLaunchConfigurationConstants.ATTR_DEBUG_IO_PORT));
-		mIOStream = new RemotePort("DebuggerProxy.mIOStream");
-		mIOStream.startConnect();
-		mDebugger.redirectIO(mIOStream.getServerPort());
-		if (mIOStream.waitForConnect(true) != RemotePort.mWaitOK)
-			throw new InstantiationException(
-					"Could not Create Connection to Debugger Console");
+        mMonitorIn = new InputStreamMonitor(mIOStream.getOutStream());
+        mMonitorOut.setStream(mIOStream.getInStream());
+        mMonitorError.setStream(mErrorStream.getInStream());
+        mMonitorIn.startMonitoring();
+        mMonitorOut.startMonitoring();
+        mMonitorError.startMonitoring();
 
-		//port =
-		// Integer.parseInt(getAttribute(PerlLaunchConfigurationConstants.ATTR_DEBUG_ERROR_PORT));
-		mErrorStream = new RemotePort("DebuggerProxy.mErrorStream");
-		mErrorStream.startConnect();
-		mDebugger.redirectError(mErrorStream.getServerPort());
-		if (mErrorStream.waitForConnect(true) != RemotePort.mWaitOK)
-			throw new InstantiationException(
-					"Could not Create Connection to Debugger Console");
+        mOut = mIOStream.getWriteStream();
+        mLabel = "Remote Perl Script";
+    }
+    
+    public int getErrorPort()
+    {
+        return mErrorStream.getServerPort();
+    }
+    
+    public String getIOHost()
+    {
+        return ioHost;
+    }
+    
+    public int getIOPort()
+    {
+        return mIOStream.getServerPort();
+    }
 
-		mMonitorIn = new InputStreamMonitor(mIOStream.getOutStream());
-		mMonitorOut.setStream(mIOStream.getInStream());
-		mMonitorError.setStream(mErrorStream.getInStream());
-		mMonitorIn.startMonitoring();
-		mMonitorOut.startMonitoring();
-		mMonitorError.startMonitoring();
+    public String getLabel()
+    {
+        return mLabel;
+    }
 
-		mOut = mIOStream.getWriteStream();
+    public ILaunch getLaunch()
+    {
+        return mLaunch;
+    }
 
-		fireCreationEvent();
+    public IStreamsProxy getStreamsProxy()
+    {
+        return this;
+    }
 
-	}
+    public void setAttribute(String key, String value)
+    {
+        mLaunch.setAttribute(key, value);
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.debug.core.model.IProcess#getLabel()
-	 */
-	public String getLabel() {
-		return mLabel;
-	}
+    public String getAttribute(String key)
+    {
+        return mLaunch.getAttribute(key);
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.debug.core.model.IProcess#getLaunch()
-	 */
-	public ILaunch getLaunch() {
-		return mLaunch;
-	}
+    public int getExitValue() throws DebugException
+    {
+        return 0;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.debug.core.model.IProcess#getStreamsProxy()
-	 */
-	public IStreamsProxy getStreamsProxy() {
-		return this;
-	}
+    public Object getAdapter(Class adapter)
+    {
+        if (adapter.equals(IProcess.class)) return this;
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.debug.core.model.IProcess#setAttribute(java.lang.String,
-	 *      java.lang.String)
-	 */
-	public void setAttribute(String key, String value) {
-		mLaunch.setAttribute(key, value);
+        if (adapter.equals(IDebugTarget.class))
+        {
+            IDebugTarget[] targets = getLaunch().getDebugTargets();
 
-	}
+            for (int i = 0; i < targets.length; i++)
+                if (this.equals(targets[i].getProcess())) return targets[i];
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.debug.core.model.IProcess#getAttribute(java.lang.String)
-	 */
-	public String getAttribute(String key) {
-		return mLaunch.getAttribute(key);
-	}
+            return null;
+        }
+        return super.getAdapter(adapter);
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.debug.core.model.IProcess#getExitValue()
-	 */
-	public int getExitValue() throws DebugException {
-		return 0;
-	}
+    public boolean canTerminate()
+    {
+        if (mDebugger == null) return !mShutDown;
+        return mDebugger.canTerminate();
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
-	 */
-	public Object getAdapter(Class adapter) {
-		if (adapter.equals(IProcess.class)) {
-			return this;
-		}
-		if (adapter.equals(IDebugTarget.class)) {
-			ILaunch launch = getLaunch();
-			IDebugTarget[] targets = launch.getDebugTargets();
-			for (int i = 0; i < targets.length; i++) {
-				if (this.equals(targets[i].getProcess())) {
-					return targets[i];
-				}
-			}
-			return null;
-		}
-		return super.getAdapter(adapter);
-	}
+    public boolean isTerminated()
+    {
+        if (mDebugger == null) return !canTerminate();
+        return mDebugger.isTerminated();
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.debug.core.model.ITerminate#canTerminate()
-	 */
-	public boolean canTerminate() {
-		if (mDebugger == null)
-			return (!mShutDown);
-		return mDebugger.canTerminate();
-	}
+    public IStreamMonitor getErrorStreamMonitor()
+    {
+        return mMonitorError;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.debug.core.model.ITerminate#isTerminated()
-	 */
-	public boolean isTerminated() {
-		if (mDebugger == null)
-			return (!canTerminate());
-		return mDebugger.isTerminated();
-	}
+    public IStreamMonitor getOutputStreamMonitor()
+    {
+        return mMonitorOut;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.debug.core.model.ITerminate#terminate()
-	 */
-	public void terminate() throws DebugException {
-		if (mDebugger != null) {
-			mDebugger.terminate();
-		}
-		shutdown();
+    public void terminate() throws DebugException
+    {
+        if (mDebugger != null) mDebugger.terminate();
+        shutdown();
+    }
 
-	}
+    public void write(String input) throws IOException
+    {
+        if (mOut != null) mOut.print(input);
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.debug.core.model.IStreamsProxy#getErrorStreamMonitor()
-	 */
-	public IStreamMonitor getErrorStreamMonitor() {
-		return mMonitorError;
-	}
+    private void create()
+    {
+        mMonitorOut = new OutputStreamMonitor();
+        mMonitorError = new OutputStreamMonitor();
+        fireCreationEvent();
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.debug.core.model.IStreamsProxy#getOutputStreamMonitor()
-	 */
-	public IStreamMonitor getOutputStreamMonitor() {
-		return mMonitorOut;
-	}
+    /**
+     * Fire a debug event marking the creation of this element.
+     */
+    private void fireCreationEvent()
+    {
+        fireEvent(new DebugEvent(this, DebugEvent.CREATE));
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.debug.core.model.IStreamsProxy#write(java.lang.String)
-	 */
-	public void write(String input) throws IOException {
-		if( mOut != null)
-			mOut.print(input);
-	}
+    /**
+     * Fire a debug event
+     */
+    private void fireEvent(DebugEvent event)
+    {
+        DebugPlugin manager = DebugPlugin.getDefault();
+        if (manager != null)
+        {
+            manager.fireDebugEventSet(new DebugEvent[] { event });
+        }
+    }
 
-	/**
-	 * Fire a debug event marking the creation of this element.
-	 */
-	private void fireCreationEvent() {
-		fireEvent(new DebugEvent(this, DebugEvent.CREATE));
-	}
+    /**
+     * Fire a debug event marking the termination of this process.
+     */
+    private void fireTerminateEvent()
+    {
+        fireEvent(new DebugEvent(this, DebugEvent.TERMINATE));
+    }
 
-	/**
-	 * Fire a debug event
-	 */
-	private void fireEvent(DebugEvent event) {
-		DebugPlugin manager = DebugPlugin.getDefault();
-		if (manager != null) {
-			manager.fireDebugEventSet(new DebugEvent[]{event});
-		}
-	}
+    private void shutdown()
+    {
+        mShutDown = true;
+        if (mMonitorError != null) mMonitorError.kill();
+        if (mMonitorOut != null) mMonitorOut.kill();
+        if (mMonitorIn != null) mMonitorIn.close();
+        if (mMonitorOut != null) mMonitorOut.close();
+        if (mIOStream != null) mIOStream.shutdown();
+        if (mErrorStream != null) mErrorStream.shutdown();
+        fireTerminateEvent();
+    }
 
-	/**
-	 * Fire a debug event marking the termination of this process.
-	 */
-	private void fireTerminateEvent() {
-		fireEvent(new DebugEvent(this, DebugEvent.TERMINATE));
-	}
-
-	void shutdown() {
-		mShutDown= true;
-		if (mMonitorError != null)
-			mMonitorError.kill();
-		if (mMonitorOut != null)
-			mMonitorOut.kill();
-		if (mMonitorIn != null)
-			mMonitorIn.close();
-		if (mMonitorOut != null)
-			mOut.close();
-		if (mIOStream != null)
-			mIOStream.shutdown();
-		if (mErrorStream != null)
-			mErrorStream.shutdown();
-		fireTerminateEvent();
-	}
-	
-	private void create()
-	{
-			mMonitorOut = new OutputStreamMonitor();
-		mMonitorError = new OutputStreamMonitor();
-	}
-	
-	
+    private void throwCouldNotConnect() throws CoreException
+    {
+        throw new CoreException(new Status(
+            IStatus.ERROR,
+            DebugPlugin.getUniqueIdentifier(),
+            IStatus.OK,
+            "Timed out while waiting for IO redirect from the debugged process",
+            null));
+    }
 }

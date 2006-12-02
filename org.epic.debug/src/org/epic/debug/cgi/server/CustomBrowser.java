@@ -4,7 +4,7 @@
  * To change the template for this generated file go to
  * Window&gt;Preferences&gt;Java&gt;Code Generation&gt;Code and Comments
  */
-package org.epic.debug.cgi;
+package org.epic.debug.cgi.server;
 
 import java.util.ArrayList;
 import java.util.StringTokenizer;

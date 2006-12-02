@@ -21,6 +21,7 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.part.ViewPart;
 import org.epic.debug.*;
+import org.epic.debug.db.PerlDB;
 
  
 		
@@ -110,7 +111,7 @@ public class ExpressionView extends ViewPart {
 			PerlDebugThread thread =stackFrame.getPerlThread();
 			PerlDB db =thread.getPerlDB();
 						
-			String res = db.evaluateStatement( thread, expressionInput.getText()); 
+			String res = db.evaluateStatement(expressionInput.getText()); 
 			boolean isMatch = false;
 			if( res != null)
 			{

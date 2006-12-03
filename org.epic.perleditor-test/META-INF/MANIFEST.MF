@@ -13,6 +13,8 @@ Require-Bundle: org.junit,
  org.eclipse.ui.workbench.texteditor,
  org.eclipse.jface.text,
  org.epic.perleditor,
- org.epic.lib
+ org.epic.lib,
+ org.epic.debug,
+ org.eclipse.debug.core
 Bundle-ClassPath: cglib-full-2.0.2.jar,
  easymock.jar

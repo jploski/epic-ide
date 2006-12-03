@@ -1,0 +1,2 @@
+$var1 = T {'string'} with 0 vars
+$var2 = T {123} with 0 vars

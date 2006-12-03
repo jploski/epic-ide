@@ -53,7 +53,7 @@ public class PerlDebugValue extends DebugElement implements IValue
             }
 
             if ((type == null && previous.type != null)
-                || !type.equals(previous.type))
+                || (type != null && !type.equals(previous.type)))
             {
                 ret = VALUE_HAS_CHANGED;
             }

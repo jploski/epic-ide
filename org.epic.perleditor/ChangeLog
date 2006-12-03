@@ -5,6 +5,14 @@ CVS
 
 		Editor:
 
+Version 0.5.23 - 3-December-2006
+		Debugger:
+		* Major code refactoring
+		* Fixed Bug [ 1602375 ] Debugger hangs under windows
+
+		Editor:
+		* Fixed Bug [ 1604197 ] NPE occurs with TODO tag, but no description
+
 Version 0.5.22 - 16-November-2006
 		Editor:
 		* Fixed Bug [ 1596637 ] open file from subclipse plugin throws exception

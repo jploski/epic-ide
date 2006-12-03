@@ -4,6 +4,8 @@ CVS
 		Debugger:
 
 		Editor:
+		* Implemented Feature Request [ 1599854 ] Improved word stop recognition
+		* Fixed Bug [ 1608030 ] Delete Next/Previous Word misbehaves
 
 Version 0.5.23 - 3-December-2006
 		Debugger:

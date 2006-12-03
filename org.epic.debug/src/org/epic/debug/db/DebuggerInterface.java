@@ -98,8 +98,7 @@ class DebuggerInterface
                     
                 if (disposed) break;
 
-                asyncCommand.run();
-                asyncCommand = null;
+                asyncCommand.run();                
                 LOCK.notifyAll();
             }
         }                       
@@ -117,10 +116,7 @@ class DebuggerInterface
     
     public boolean isSuspended()
     {
-        synchronized (LOCK)
-        {
-            return asyncCommand == null;
-        }
+        return asyncCommand == null;
     }
     
     public IPPosition getCurrentIP() throws IOException
@@ -500,6 +496,7 @@ class DebuggerInterface
             catch (IOException e) { error = e; }
             finally
             {
+                asyncCommand = null;
                 if (notifyOnFinish && listener != null)
                 {
                     Display.getDefault().asyncExec(new Runnable() {
@@ -509,5 +506,10 @@ class DebuggerInterface
                 }
             }
         }
+        
+        public String toString()
+        {
+            return "Command #" + type + " {" + code + "}" + ", notify=" + notifyOnFinish;
+        }  
     }
 }

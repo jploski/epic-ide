@@ -492,25 +492,35 @@ public class PerlEditor extends TextEditor implements IPropertyChangeListener
         action.setActionDefinitionId(ITextEditorActionDefinitionIds.SELECT_LINE_START);
         setAction(ITextEditorActionDefinitionIds.SELECT_LINE_START, action);
 
-        action = new NextWordAction(ST.WORD_NEXT, false);
+        action = new NextWordAction(ST.WORD_NEXT, false, false);
         action.setActionDefinitionId(ITextEditorActionDefinitionIds.WORD_NEXT);
         setAction(ITextEditorActionDefinitionIds.WORD_NEXT, action);
-        textWidget.setKeyBinding(SWT.CTRL | SWT.ARROW_RIGHT, SWT.NULL);
+        textWidget.setKeyBinding(SWT.MOD1 | SWT.ARROW_RIGHT, SWT.NULL);
 
-        action = new NextWordAction(ST.SELECT_WORD_NEXT, true);
+        action = new NextWordAction(ST.SELECT_WORD_NEXT, true, false);
         action.setActionDefinitionId(ITextEditorActionDefinitionIds.SELECT_WORD_NEXT);
         setAction(ITextEditorActionDefinitionIds.SELECT_WORD_NEXT, action);
-        textWidget.setKeyBinding(SWT.CTRL | SWT.SHIFT | SWT.ARROW_RIGHT, SWT.NULL);
+        textWidget.setKeyBinding(SWT.MOD1 | SWT.MOD2 | SWT.ARROW_RIGHT, SWT.NULL);
 
-        action = new PreviousWordAction(ST.WORD_PREVIOUS, false);
+        action = new NextWordAction(ST.DELETE_WORD_NEXT, false, true);
+        action.setActionDefinitionId(ITextEditorActionDefinitionIds.DELETE_NEXT_WORD);
+        setAction(ITextEditorActionDefinitionIds.DELETE_NEXT_WORD, action);
+        textWidget.setKeyBinding(SWT.MOD1 | SWT.DEL, SWT.NULL);
+        
+        action = new PreviousWordAction(ST.WORD_PREVIOUS, false, false);
         action.setActionDefinitionId(ITextEditorActionDefinitionIds.WORD_PREVIOUS);
         setAction(ITextEditorActionDefinitionIds.WORD_PREVIOUS, action);
-        textWidget.setKeyBinding(SWT.CTRL | SWT.ARROW_LEFT, SWT.NULL);
+        textWidget.setKeyBinding(SWT.MOD1 | SWT.ARROW_LEFT, SWT.NULL);
 
-        action = new PreviousWordAction(ST.SELECT_WORD_PREVIOUS, true);
+        action = new PreviousWordAction(ST.SELECT_WORD_PREVIOUS, true, false);
         action.setActionDefinitionId(ITextEditorActionDefinitionIds.SELECT_WORD_PREVIOUS);
         setAction(ITextEditorActionDefinitionIds.SELECT_WORD_PREVIOUS, action);
-        textWidget.setKeyBinding(SWT.CTRL | SWT.SHIFT | SWT.ARROW_LEFT, SWT.NULL);
+        textWidget.setKeyBinding(SWT.MOD1 | SWT.MOD2 | SWT.ARROW_LEFT, SWT.NULL);
+        
+        action = new PreviousWordAction(ST.DELETE_WORD_PREVIOUS, true, false);
+        action.setActionDefinitionId(ITextEditorActionDefinitionIds.DELETE_PREVIOUS_WORD);
+        setAction(ITextEditorActionDefinitionIds.DELETE_PREVIOUS_WORD, action);
+        textWidget.setKeyBinding(SWT.MOD1 | SWT.BS, SWT.NULL);
     }
 
     /* Create SourceViewer so we can use the PerlSourceViewer class */
@@ -973,11 +983,13 @@ public class PerlEditor extends TextEditor implements IPropertyChangeListener
     protected abstract class WordNavigationAction extends TextNavigationAction
     {
         private boolean select;
+        private boolean delete;
 
-        protected WordNavigationAction(int code, boolean select)
+        protected WordNavigationAction(int code, boolean select, boolean delete)
         {
             super(getSourceViewer().getTextWidget(), code);
             this.select = select;
+            this.delete = delete;
         }
 
         public final void run()
@@ -1010,9 +1022,17 @@ public class PerlEditor extends TextEditor implements IPropertyChangeListener
             PerlPartitioner partitioner,
             int docLength);
 
+        protected final boolean isWordSeparator(char c)
+        {
+            return
+                !Character.isLetterOrDigit(c) &&
+                !Character.isWhitespace(c) &&
+                c != '_' && c != '&' && c != '$' && c != '@' && c != '%';
+        }
+        
         protected final void setCaretPosition(final int position)
         {
-            if (select)
+            if (select || delete)
             {
                 final ISourceViewer viewer = getSourceViewer();
                 final StyledText text = viewer.getTextWidget();
@@ -1023,10 +1043,30 @@ public class PerlEditor extends TextEditor implements IPropertyChangeListener
                     final int caret = text.getCaretOffset();
                     final int offset = modelOffset2WidgetOffset(viewer, position);
 
+                    int start, length;
                     if (caret == selection.x)
-                        text.setSelectionRange(selection.y, offset - selection.y);
+                    {
+                        start = selection.y;
+                        length = offset - selection.y;
+                    }
                     else
-                        text.setSelectionRange(selection.x, offset - selection.x);
+                    {
+                        start = selection.x;
+                        length = offset - selection.x;
+                    }
+                    
+                    if (select) text.setSelectionRange(start, length);
+                    else if (delete)
+                    {
+                        try
+                        {
+                            viewer.getDocument().replace(start, length, ""); //$NON-NLS-1$
+                        }
+                        catch (BadLocationException exception)
+                        {
+                            // Should not happen
+                        }
+                    }
                 }
             }
             else
@@ -1038,7 +1078,7 @@ public class PerlEditor extends TextEditor implements IPropertyChangeListener
     }
 
     /**
-     * Navigates or selects text up to the next word boundary.
+     * Navigates or selects/deletes text up to the next word boundary.
      */
     private final class NextWordAction extends WordNavigationAction
     {
@@ -1047,9 +1087,9 @@ public class PerlEditor extends TextEditor implements IPropertyChangeListener
          *        Action code for the default operation.
          *        Must be an action code from {@link org.eclipse.swt.custom.ST}.
          */
-        protected NextWordAction(int code, boolean select)
+        protected NextWordAction(int code, boolean select, boolean delete)
         {
-            super(code, select);
+            super(code, select, delete);
         }
 
         protected void run(
@@ -1085,13 +1125,28 @@ public class PerlEditor extends TextEditor implements IPropertyChangeListener
                         partitionEnd = partition.getOffset() + partition.getLength();
                     }
 
+                    // If we start in front of a word separator character,
+                    // just skip over it                    
+                    int tmp = position;
                     while (position < partitionEnd &&
-                           !Character.isWhitespace(document.getChar(position))) position++;
+                           isWordSeparator(document.getChar(position))) position++;
 
-                    while (position < length &&
+                    if (position == tmp)
+                    {
+                        // If we get here, we did not start in front of
+                        // a word separator. Then we skip until the next
+                        // word separator or whitespace, and also over
+                        // the whitespace
+                        
+                        while (position < partitionEnd &&
+                               !Character.isWhitespace(document.getChar(position)) &&
+                               !isWordSeparator(document.getChar(position))) position++;
+                        
+                        while (position < length &&
                            Character.isWhitespace(document.getChar(position)) &&
                            document.getChar(position) != '\n' &&
                            document.getChar(position) != '\r') position++;
+                    }
                 }
 
                 setCaretPosition(position);
@@ -1114,7 +1169,7 @@ public class PerlEditor extends TextEditor implements IPropertyChangeListener
     }
 
     /**
-     * Navigates or selects text up to the previous word boundary.
+     * Navigates or selects/deletes text up to the previous word boundary.
      */
     private final class PreviousWordAction extends WordNavigationAction
     {
@@ -1123,9 +1178,9 @@ public class PerlEditor extends TextEditor implements IPropertyChangeListener
          *        Action code for the default operation.
          *        Must be an action code from {@link org.eclipse.swt.custom.ST}.
          */
-        protected PreviousWordAction(int code, boolean select)
+        protected PreviousWordAction(int code, boolean select, boolean delete)
         {
-            super(code, select);
+            super(code, select, delete);
         }
 
         protected void run(
@@ -1166,13 +1221,28 @@ public class PerlEditor extends TextEditor implements IPropertyChangeListener
                         partitionStart = partition.getOffset();
                     }
 
+                    // If we start after a word separator character,
+                    // just skip over it                    
+                    int tmp = position;
                     while (position > partitionStart &&
+                           isWordSeparator(document.getChar(position-1))) position--;
+                    
+                    if (position == tmp)
+                    {
+                        // If we get here, we did not start after
+                        // a word separator. Then we skip the whitespace
+                        // (if present) and also the previous word
+                        // until whitespace or word separator
+                        
+                        while (position > partitionStart &&
                         Character.isWhitespace(document.getChar(position-1)) &&
                         document.getChar(position-1) != '\n' &&
                         document.getChar(position-1) != '\r') position--;
 
-                    while (position > partitionStart &&
-                           !Character.isWhitespace(document.getChar(position-1))) position--;
+                        while (position > partitionStart &&
+                               !Character.isWhitespace(document.getChar(position-1)) &&
+                               !isWordSeparator(document.getChar(position-1))) position--;
+                    }
                 }
 
                 setCaretPosition(position);

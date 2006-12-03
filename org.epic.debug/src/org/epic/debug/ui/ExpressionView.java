@@ -22,6 +22,7 @@ import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.part.ViewPart;
 import org.epic.debug.*;
 import org.epic.debug.db.PerlDB;
+import org.epic.debug.db.StackFrame;
 
  
 		

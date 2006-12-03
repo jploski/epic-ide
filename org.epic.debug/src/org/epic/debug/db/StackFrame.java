@@ -1,7 +1,10 @@
-package org.epic.debug;
+package org.epic.debug.db;
 
+import java.io.IOException;
 import java.util.*;
 
+import org.eclipse.core.runtime.*;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.ILaunch;
@@ -11,7 +14,10 @@ import org.eclipse.debug.core.model.IRegisterGroup;
 import org.eclipse.debug.core.model.IStackFrame;
 import org.eclipse.debug.core.model.IThread;
 import org.eclipse.debug.core.model.IVariable;
+import org.epic.debug.PerlDebugPlugin;
+import org.epic.debug.PerlDebugThread;
 import org.epic.debug.ui.action.*;
+import org.epic.debug.varparser.*;
 import org.epic.debug.varparser.PerlDebugValue;
 import org.epic.debug.varparser.PerlDebugVar;
 
@@ -20,6 +26,12 @@ import org.epic.debug.varparser.PerlDebugVar;
  */
 public class StackFrame extends DebugElement implements IStackFrame
 {
+    private static final String PADWALKER_ERROR =
+        "PadWalker module not found - please install";
+
+    private static final String DB_DUMP_LOCAL_VARS;    
+    private static final String DB_DUMP_GLOBAL_VARS;
+    
     private static final IRegisterGroup[] NO_REGISTER_GROUPS =
         new IRegisterGroup[0];
     
@@ -28,9 +40,18 @@ public class StackFrame extends DebugElement implements IStackFrame
     private final PerlDebugThread thread;
     private final IPath path;
     private final int lineNumber;
-    
+    private final boolean topFrame;
+    private final DebuggerInterface db;
+
+    private StackFrame previous;     
     private PerlDebugVar[] actualVars;
     private PerlDebugVar[] displayedVars;
+    
+    static
+    {
+        DB_DUMP_LOCAL_VARS = loadHelperScript("dump_local_vars.pl");
+        DB_DUMP_GLOBAL_VARS = loadHelperScript("dump_global_vars.pl");
+    }
 
     /**
      * Creates a top-level stack frame.
@@ -40,15 +61,17 @@ public class StackFrame extends DebugElement implements IStackFrame
         PerlDebugThread thread,
         IPath path,
         int lineNumber,
-        PerlDebugVar[] vars) throws DebugException
+        DebuggerInterface db,
+        StackFrame previous) throws DebugException
     {
         super(thread.getDebugTarget());
 
         this.thread = thread;
         this.path = path;
         this.lineNumber = lineNumber;
-        this.actualVars = vars;
-        computeDisplayedVars();
+        this.topFrame = true;
+        this.db = db;
+        this.previous = previous;
     }
     
     /**
@@ -62,27 +85,21 @@ public class StackFrame extends DebugElement implements IStackFrame
         String returnType,
         String calledSub) throws DebugException
     {
-        this(thread, path, lineNumber, new PerlDebugVar[0]);
+        super(thread.getDebugTarget());
+        
+        this.thread = thread;
+        this.path = path;
+        this.lineNumber = lineNumber;
+        this.topFrame = false;
+        this.db = null;
         
         if (returnType.equals(".")) returnType = "void";
         else if (returnType.equals("@")) returnType = "list";
         else if (returnType.equals("$")) returnType = "scalar";
         
         displayedVars = new PerlDebugVar[2];
-        displayedVars[0] = new PerlDebugVar(
-            getDebugTarget(),
-            PerlDebugVar.GLOBAL_SCOPE,
-            "Called Function",
-            new PerlDebugValue(getDebugTarget(), null, calledSub));
-    
-        displayedVars[1] = new PerlDebugVar(
-            getDebugTarget(),
-            PerlDebugVar.GLOBAL_SCOPE,
-            "Return Type",
-            new PerlDebugValue(getDebugTarget(), null, returnType));
-    
-        displayedVars[0].setSpecial();
-        displayedVars[1].setSpecial();
+        displayedVars[0] = createSpecialVar("Called Function", calledSub);
+        displayedVars[1] = createSpecialVar("Return Type", returnType);
     }
 
     public boolean canResume()
@@ -186,6 +203,12 @@ public class StackFrame extends DebugElement implements IStackFrame
 
     public IVariable[] getVariables() throws DebugException
     {
+        if (displayedVars == null && topFrame)
+        {
+            actualVars = readTopFrameVars();
+            computeDisplayedVars();
+            highlightChangedVariables();
+        }
         return displayedVars;
     }
 
@@ -249,6 +272,54 @@ public class StackFrame extends DebugElement implements IStackFrame
         return path + ":" + lineNumber;
     }
     
+    private PerlDebugVar createSpecialVar(String name, String value)
+    {
+        PerlDebugVar var = new PerlDebugVar(
+            getDebugTarget(),
+            PerlDebugVar.GLOBAL_SCOPE,
+            name,
+            new PerlDebugValue(getDebugTarget(), null, value));
+        
+        var.setSpecial();
+        return var;
+    }
+    
+    private void highlightChangedVariables() throws DebugException
+    {
+        if (previous == null ||
+            !previous.getPath().equals(this.getPath())) return;
+        
+        previous.previous = null; // avoid a memory leak
+
+        PerlDebugVar[] oldVars = (PerlDebugVar[]) previous.getVariables();
+        PerlDebugVar[] newVars = (PerlDebugVar[]) this.getVariables();
+    
+        boolean found;
+        for (int new_pos = 0; new_pos < newVars.length; ++new_pos)
+        {
+            found = false;
+            PerlDebugVar var_new = newVars[new_pos];
+            if (oldVars != null)
+            {
+                for (int org_pos = 0; (org_pos < oldVars.length)
+                    && !found; ++org_pos)
+                {
+                    PerlDebugVar var_org = oldVars[org_pos];
+                    if (var_new.matches(var_org))
+                    {
+                        found = true;
+                        var_new.calculateChangeFlags(var_org);
+                    }
+                }
+                if (!found)
+                {
+                    var_new.setChangeFlags(
+                        PerlDebugValue.VALUE_HAS_CHANGED, true);
+                }
+            }
+        }
+    }
+    
     private static Set initInternalVars()
     {
         ResourceBundle rb = ResourceBundle.getBundle("org.epic.debug.perlIntVars");
@@ -285,6 +356,69 @@ public class StackFrame extends DebugElement implements IStackFrame
     
     private boolean isTopFrame()
     {
-        return actualVars.length > 0;
+        return topFrame;
+    }
+    
+    private PerlDebugVar[] readTopFrameVars() throws DebugException
+    {
+        try
+        {
+            if (!db.isSuspended()) return new PerlDebugVar[] {
+                createSpecialVar(
+                    "Warning",
+                    "Variables are only available in suspended mode") };
+            
+            TokenVarParser varParser = new TokenVarParser(
+                getDebugTarget(), PerlDebugPlugin.getDefault().getLog());
+            
+            List vars = new ArrayList();        
+            if (ShowLocalVariableActionDelegate.getPreferenceValue())
+            {
+                String localVarsString = db.eval(DB_DUMP_LOCAL_VARS);
+                if (localVarsString.startsWith(PADWALKER_ERROR))
+                {
+                    vars.add(createSpecialVar(
+                        "Error",
+                        "Install PadWalker Perl module to see local variables"));
+                }
+                else
+                {                    
+                    varParser.parseVars(
+                        localVarsString,
+                        PerlDebugVar.LOCAL_SCOPE,
+                        vars);
+                }
+            }
+            String globalVarsString = db.eval(DB_DUMP_GLOBAL_VARS);
+            varParser.parseVars(
+                globalVarsString,
+                PerlDebugVar.GLOBAL_SCOPE,
+                vars);
+            
+            return (PerlDebugVar[]) vars.toArray(
+                new PerlDebugVar[vars.size()]);
+        }
+        catch (IOException e)
+        {
+            throw new DebugException(new Status(
+                IStatus.ERROR,
+                PerlDebugPlugin.getUniqueIdentifier(),
+                IStatus.OK,
+                "An error occurred while retrieving variables from the debugger process",
+                e));
+        }
+    }
+    
+    private static String loadHelperScript(String scriptName)
+    {
+        try
+        {
+            return PerlDebugPlugin.getDefault().loadHelperScript(scriptName);
+        }
+        catch (CoreException e)
+        {
+            PerlDebugPlugin.log(e);
+            return "print \"E\"";
+        }
     }
 }

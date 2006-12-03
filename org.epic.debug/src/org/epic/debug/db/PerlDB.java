@@ -3,32 +3,24 @@ package org.epic.debug.db;
 import gnu.regexp.REMatch;
 
 import java.io.*;
-import java.net.InetAddress;
 import java.util.*;
 
 import org.eclipse.core.runtime.*;
 import org.eclipse.debug.core.*;
 import org.eclipse.debug.core.model.*;
-import org.eclipse.swt.widgets.Display;
 import org.epic.debug.*;
 import org.epic.debug.db.DebuggerInterface.Command;
 import org.epic.debug.ui.action.ShowLocalVariableActionDelegate;
 import org.epic.debug.util.DebuggerProxy2;
-import org.epic.debug.varparser.*;
 import org.epic.perleditor.PerlEditorPlugin;
 
 /**
  * @author ruehl
  */
 public class PerlDB implements IDebugElement
-{   
-    private static final String PADWALKER_ERROR =
-        "PadWalker module not found - please install";
-    
+{
     private static boolean canDisplayLocalVars = true;
     
-    private final String DB_DUMP_LOCAL_VARS;    
-    private final String DB_DUMP_GLOBAL_VARS;    
     private final RE re = new RE();
 
     private final PerlDebugThread thread;
@@ -37,7 +29,6 @@ public class PerlDB implements IDebugElement
     private final IPath workingDir;
 
     private final DebuggerInterface db;
-    private final TokenVarParser varParser;
     private final BreakpointMap activeBreakpoints;
     private final BreakpointMap pendingBreakpoints;    
 
@@ -57,16 +48,12 @@ public class PerlDB implements IDebugElement
         public void sessionTerminated()
         {
             PerlDB.this.sessionTerminated();
-        } };
+        } };        
 
     public PerlDB(DebugTarget target) throws CoreException
     {
-        this.target = target;
-        
-        DB_DUMP_LOCAL_VARS = PerlDebugPlugin.getDefault().loadHelperScript("dump_local_vars.pl");
-        DB_DUMP_GLOBAL_VARS = PerlDebugPlugin.getDefault().loadHelperScript("dump_global_vars.pl");
-        
-        varParser = new TokenVarParser(target, PerlDebugPlugin.getDefault().getLog());
+        this.target = target;        
+
         workingDir = target.getLocalWorkingDir();        
 
         pendingBreakpoints = new BreakpointMap();
@@ -245,7 +232,7 @@ public class PerlDB implements IDebugElement
 
     public boolean isSuspended(IDebugElement dest)
     {
-        return !terminated && db.isSuspended();
+        return !terminated && currentCommand == null;
     }
 
     public boolean isTerminated()
@@ -480,47 +467,6 @@ public class PerlDB implements IDebugElement
         DebugPlugin.getDefault().fireDebugEventSet(new DebugEvent[] { event });
     }
 
-    private void highlightChangedVariables(
-        IStackFrame[] previousFrames,
-        IStackFrame[] currentFrames) throws DebugException
-    {
-        if (previousFrames == null || currentFrames == null) return;
-    
-        StackFrame previous = (StackFrame) previousFrames[0];
-        StackFrame current = (StackFrame) currentFrames[0];
-        
-        if (previous == null ||
-            !previous.getPath().equals(current.getPath())) return;
-    
-        PerlDebugVar[] oldVars = (PerlDebugVar[]) previous.getVariables();
-        PerlDebugVar[] newVars = (PerlDebugVar[]) current.getVariables();
-    
-        boolean found;
-        for (int new_pos = 0; new_pos < newVars.length; ++new_pos)
-        {
-            found = false;
-            PerlDebugVar var_new = newVars[new_pos];
-            if (oldVars != null)
-            {
-                for (int org_pos = 0; (org_pos < oldVars.length)
-                    && !found; ++org_pos)
-                {
-                    PerlDebugVar var_org = oldVars[org_pos];
-                    if (var_new.matches(var_org))
-                    {
-                        found = true;
-                        var_new.calculateChangeFlags(var_org);
-                    }
-                }
-                if (!found)
-                {
-                    var_new.setChangeFlags(
-                        PerlDebugValue.VALUE_HAS_CHANGED, true);
-                }
-            }
-        }
-    }
-
     private boolean insertPendingBreakpoints() throws CoreException
     {
         try
@@ -590,45 +536,7 @@ public class PerlDB implements IDebugElement
         return endIP;
     }
 
-    private PerlDebugVar[] readTopFrameVars() throws DebugException
-    {
-        try
-        {   
-            List vars = new ArrayList();        
-            if (ShowLocalVariableActionDelegate.getPreferenceValue())
-            {
-                String localVarsString = db.eval(DB_DUMP_LOCAL_VARS);
-                if (localVarsString.startsWith(PADWALKER_ERROR))
-                {
-                    PerlDebugPlugin.errorDialog(
-                        "Error displaying Local Variables\n" +
-                        "Install PadWalker on your Perl system or " +
-                        "disable displaying of local variables");
-                    canDisplayLocalVars = false;
-                }
-                else
-                {
-                    varParser.parseVars(
-                        localVarsString,
-                        PerlDebugVar.LOCAL_SCOPE,
-                        vars);
-                }
-            }
-            String globalVarsString = db.eval(DB_DUMP_GLOBAL_VARS);
-            varParser.parseVars(
-                globalVarsString,
-                PerlDebugVar.GLOBAL_SCOPE,
-                vars);
-            
-            return (PerlDebugVar[]) vars.toArray(
-                new PerlDebugVar[vars.size()]);
-        }
-        catch (IOException e)
-        {
-            throwDebugException(e);
-            return null;
-        }
-    }
+
 
     private void sessionTerminated()
     {
@@ -690,12 +598,19 @@ public class PerlDB implements IDebugElement
             String stackTrace = db.getStackTrace();
             REMatch[] matches = re.STACK_TRACE.getAllMatches(stackTrace);
             
+            IStackFrame[] previousFrames = thread.getStackFrames();
+            StackFrame previousTopFrame =
+                previousFrames != null
+                ? (StackFrame) previousFrames[0]
+                : null;
+            
             StackFrame[] frames = new StackFrame[matches.length + 1];
             frames[0] = new StackFrame(
                 thread,
                 currentIP.getPath(),
                 currentIP.getLine(),
-                readTopFrameVars());
+                db,
+                previousTopFrame);
     
             for (int pos = 0; pos < matches.length; ++pos)
             {
@@ -706,9 +621,8 @@ public class PerlDB implements IDebugElement
                     matches[pos].toString(1),
                     matches[pos].toString(2));
             }
-            IStackFrame[] previous = thread.getStackFrames();
+            
             thread.setStackFrames(frames);
-            highlightChangedVariables(previous, frames);
         }
         catch (IOException e)
         {

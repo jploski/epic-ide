@@ -173,11 +173,11 @@ public class PerlDebugThread extends DebugElement implements IThread
         {
             return this;
         }
-        if (adapter == StackFrame.class)
+        if (adapter == IStackFrame.class)
         {
             try
             {
-                return (StackFrame) getTopStackFrame();
+                return getTopStackFrame();
             }
             catch (DebugException e)
             {

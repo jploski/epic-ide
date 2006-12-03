@@ -18,6 +18,7 @@ import org.eclipse.ui.IEditorRegistry;
 import org.eclipse.ui.PlatformUI;
 import org.epic.core.util.FileUtilities;
 import org.epic.debug.*;
+import org.epic.debug.db.StackFrame;
 import org.epic.debug.varparser.PerlDebugVar;
 
 /**

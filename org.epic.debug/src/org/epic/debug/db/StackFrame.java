@@ -219,7 +219,7 @@ public class StackFrame extends DebugElement implements IStackFrame
 
     public boolean hasVariables() throws DebugException
     {
-        return displayedVars != null && displayedVars.length > 0;
+        return topFrame || displayedVars != null && displayedVars.length > 0;
     }
 
     public boolean isStepping()

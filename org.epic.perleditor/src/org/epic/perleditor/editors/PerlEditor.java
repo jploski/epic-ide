@@ -507,7 +507,7 @@ public class PerlEditor extends TextEditor implements IPropertyChangeListener
         setAction(ITextEditorActionDefinitionIds.SELECT_WORD_PREVIOUS, action);
         textWidget.setKeyBinding(SWT.MOD1 | SWT.MOD2 | SWT.ARROW_LEFT, SWT.NULL);
         
-        action = new PreviousWordAction(ST.DELETE_WORD_PREVIOUS, true, false);
+        action = new PreviousWordAction(ST.DELETE_WORD_PREVIOUS, false, true);
         action.setActionDefinitionId(ITextEditorActionDefinitionIds.DELETE_PREVIOUS_WORD);
         setAction(ITextEditorActionDefinitionIds.DELETE_PREVIOUS_WORD, action);
         textWidget.setKeyBinding(SWT.MOD1 | SWT.BS, SWT.NULL);

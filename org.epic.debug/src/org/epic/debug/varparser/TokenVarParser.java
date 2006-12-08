@@ -12,16 +12,17 @@ public class TokenVarParser
     private final IDebugTarget target;
     private final Stack varStack;
     private final HashMap varMap;
+    private final ILog log;
 
     private int scope;
     private int pos;
     private List vars;
     private char[] chars;
-    private ILog log;
 
     public TokenVarParser(IDebugTarget target, ILog log)
     {
         this.target = target;
+        this.log = log;
         this.varStack = new Stack();
         this.varMap = new HashMap();
     }

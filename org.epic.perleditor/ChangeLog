@@ -4,6 +4,8 @@ CVS
 		Debugger:
 
 		Editor:
+		* Fixed Bug [ 1598235 ] $args{y} breaks syntax highlighting
+		* Fixed Bug [ 1610304 ] Ctrl+Backspace selects instead of deleting
 
 Version 0.5.24 - 4-December-2006
 		Debugger:

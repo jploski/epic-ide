@@ -5,6 +5,7 @@ import java.util.*;
 import org.eclipse.core.runtime.*;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.util.ListenerList;
 import org.epic.core.parser.*;
 import org.epic.perleditor.PerlEditorPlugin;
 import org.epic.perleditor.editors.PerlPartitioner;
@@ -18,6 +19,7 @@ import org.epic.perleditor.editors.PerlPartitioner;
  */
 public class SourceFile
 {
+    private final ListenerList listeners = new ListenerList(1);
     private final ILog log;
     private final IDocument doc;
     private List pods;
@@ -38,6 +40,15 @@ public class SourceFile
         this.packages = Collections.EMPTY_LIST;
     }
     
+    /**
+     * Adds a listener for changes of this SourceFile.
+     * Has no effect if an identical listener is already registered.
+     */
+    public synchronized void addListener(ISourceFileListener listener)
+    {
+        listeners.add(listener);
+    }
+
     /**
      * @return the source document based on which this SourceFile was created;
      *         note that depending on the time when this method is called,
@@ -113,12 +124,29 @@ public class SourceFile
                     e));
             }
         }
+        fireSourceFileChanged();
+    }
+    
+    /**
+     * Removes the given listener from this SourceFile.
+     * Has no affect if an identical listener is not registered.
+     */
+    public synchronized void removeListener(ISourceFileListener listener)
+    {
+        listeners.remove(listener);
     }
     
     private void addPOD(PerlToken podStart, PerlToken podEnd)
         throws BadLocationException
     {
         pods.add(new PODComment(podStart, podEnd));
+    }
+    
+    private void fireSourceFileChanged()
+    {
+        Object[] listeners = this.listeners.getListeners();
+        for (int i = 0; i < listeners.length; i++)
+            ((ISourceFileListener) listeners[i]).sourceFileChanged(this);
     }
     
     private class ParsingState

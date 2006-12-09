@@ -265,8 +265,11 @@ public class PerlEditor extends TextEditor implements IPropertyChangeListener
 
             if (input instanceof IFileEditorInput)
             {
-                outlinePage = new PerlOutlinePage(source);
-                outlinePage.addSelectionChangedListener(new OutlineSelectionListener());
+                if (outlinePage == null)
+                {
+                    outlinePage = new PerlOutlinePage(source);
+                    outlinePage.addSelectionChangedListener(new OutlineSelectionListener());
+                }
                 return outlinePage;
             }
         }

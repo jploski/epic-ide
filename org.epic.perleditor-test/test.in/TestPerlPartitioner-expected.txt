@@ -520,3 +520,18 @@ hello world
 1566:1:NUMBER:{5}
 1567:1:OPERATOR:{)}
 1568:1:OPERATOR:{;}
+1569:2:__dftl_partition_content_type:{
+
+}
+1571:13:COMMENT:{# bug 1598235}
+1584:1:__dftl_partition_content_type:{
+}
+1585:2:VARIABLE:{$x}
+1587:1:__dftl_partition_content_type:{ }
+1588:1:OPERATOR:{=}
+1589:1:__dftl_partition_content_type:{ }
+1590:5:VARIABLE:{$args}
+1595:1:OPERATOR:{{}
+1596:1:__dftl_partition_content_type:{y}
+1597:1:OPERATOR:{}}
+1598:1:OPERATOR:{;}

@@ -406,7 +406,7 @@ public class PerlDB implements IDebugElement
     
             IPPosition endIP = maybeSkipStringEval(cmd);            
             
-            if (startIP != null && endIP.getPath().equals(startIP.getPath()))
+            if (startIP != null && !endIP.getPath().equals(startIP.getPath()))
                 insertPendingBreakpoints();
             
             updateStackFrames();

@@ -4,6 +4,13 @@ CVS
 		Debugger:
 
 		Editor:
+
+Version 0.5.25 - 12-December-2006
+		Debugger:
+		* Fixed Bug [ 1614061 ] Unreliable breakpoints in Test::Unit::TestCase
+		* Fixed Bug [ 1614048 ] Debugger sometimes ignores breakpoints
+
+		Editor:
 		* Fixed Bug [ 1598235 ] $args{y} breaks syntax highlighting
 		* Fixed Bug [ 1610304 ] Ctrl+Backspace selects instead of deleting
 

@@ -249,9 +249,9 @@ public class LocalLaunchConfigurationDelegate
             return null;
         }
         else
-        {
+        {            
             return new DebugTarget(
-                launch, process, debugPort, getLocalWorkingDir(launch));
+                launch, process, debugPort, getPathMapper(launch));
         }
     }
     

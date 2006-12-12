@@ -1,11 +1,11 @@
 package org.epic.debug.cgi;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.debug.core.*;
 import org.eclipse.debug.core.model.IProcess;
 import org.epic.debug.DebugTarget;
 import org.epic.debug.PerlDebugPlugin;
+import org.epic.debug.util.IPathMapper;
 import org.epic.debug.util.RemotePort;
 
 /**
@@ -43,7 +43,7 @@ public class CGIDebugTarget extends DebugTarget
             previous.getLaunch(),
             previous.getProcess(),
             previous.getRemotePort(),
-            previous.getLocalWorkingDir());
+            previous.getPathMapper());
 
         DebugPlugin.getDefault().addDebugEventListener(listener);
     }
@@ -52,9 +52,9 @@ public class CGIDebugTarget extends DebugTarget
         ILaunch launch,
         IProcess process,
         RemotePort debugPort,
-        IPath workingDir) throws CoreException
+        IPathMapper pathMapper) throws CoreException
     {
-        super(launch, process, debugPort, workingDir);
+        super(launch, process, debugPort, pathMapper);
         DebugPlugin.getDefault().addDebugEventListener(listener);
     }
     

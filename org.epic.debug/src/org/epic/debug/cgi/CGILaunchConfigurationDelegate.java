@@ -119,7 +119,7 @@ public class CGILaunchConfigurationDelegate extends LaunchConfigurationDelegate
         else
         {
             CGIDebugTarget target = new CGIDebugTarget(
-                launch, process, debugPort, getLocalWorkingDir(launch));
+                launch, process, debugPort, getPathMapper(launch));
 
             launch.addDebugTarget(target);
         }

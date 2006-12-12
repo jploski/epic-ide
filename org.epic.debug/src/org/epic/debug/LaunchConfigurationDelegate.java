@@ -5,6 +5,8 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.debug.core.*;
 import org.epic.core.*;
+import org.epic.debug.util.*;
+import org.epic.perleditor.PerlEditorPlugin;
 
 /**
  * Abstract base class for Perl launch configuration delegates.
@@ -35,6 +37,19 @@ public abstract class LaunchConfigurationDelegate
         String mode,
         ILaunch launch,
         IProgressMonitor monitor) throws CoreException;
+    
+    
+    protected IPathMapper getPathMapper(ILaunch launch) throws CoreException
+    {
+        String interpreterType = PerlEditorPlugin.getDefault()
+            .getPreferenceStore().getString(
+                PerlEditorPlugin.INTERPRETER_TYPE_PREFERENCE);
+
+        if (PerlEditorPlugin.INTERPRETER_TYPE_CYGWIN.equals(interpreterType))
+            return new CygwinPathMapper();
+        else
+            return new NullPathMapper();
+    }
 
     protected IProject getProject(ILaunch launch) throws CoreException
     {

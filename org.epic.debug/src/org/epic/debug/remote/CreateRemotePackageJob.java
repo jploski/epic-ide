@@ -14,8 +14,7 @@ import org.eclipse.ui.IEditorRegistry;
 import org.epic.core.PerlCore;
 import org.epic.core.PerlProject;
 import org.epic.debug.PerlDebugPlugin;
-import org.epic.debug.util.PathMapper;
-import org.epic.debug.util.PathMapping;
+import org.epic.debug.util.RemotePathMapper;
 
 /**
  * Creates a ZIP archive with project files and helper scripts.
@@ -29,12 +28,12 @@ public class CreateRemotePackageJob extends Job
     private final ZipOutputStream zipOut;
     private final ILaunch launch;
     private final RemoteLaunchConfigurationDelegate launchDelegate;
-    private final PathMapper mapper;
+    private final RemotePathMapper mapper;
     
     public CreateRemotePackageJob(        
         RemoteLaunchConfigurationDelegate launchDelegate,
         ILaunch launch,
-        PathMapper mapper) throws CoreException
+        RemotePathMapper mapper) throws CoreException
     {
         super("Create Remote Debug Package");
         
@@ -140,7 +139,8 @@ public class CreateRemotePackageJob extends Job
                 + "\" ) {die(\"Target directory does not exist!\")};\n"
                 + "chdir(\"" + launchDelegate.getRemoteProjectDir(launch) + "/"
                 + launchDelegate.getScriptPath(launch).removeLastSegments(1) + "\");"
-                + "\nsystem(\"perl -d " + createIncPath() + " ./"
+                + "\nsystem(\"perl -d " + createIncPath() + " "
+                + launchDelegate.getRemoteProjectDir(launch) + "/"
                 + launchDelegate.getScriptPath(launch) + "\");";
             zipOut.write(startDB.getBytes());
         }
@@ -230,12 +230,7 @@ public class CreateRemotePackageJob extends Job
         public boolean visit(IResource resource) throws CoreException
         {
             if (resource.isLinked() && resource instanceof IFolder)
-            {
-                String in = launchDelegate.getRemoteProjectDir(launch)
-                    + "/" + resource.getProjectRelativePath().toString();
-                String out = resource.getLocation().toString();
-                mapper.add(new PathMapping(in, out));
-            }
+                mapper.addLinkedFolderMapping((IFolder) resource);
 
             if (resource instanceof IFile)
             {

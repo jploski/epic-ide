@@ -163,7 +163,8 @@ public class DebugModelPresentation implements IDebugModelPresentation
             // TODO: shouldn't we return IEditorInput of an already
             // open editor, if possible?
             StackFrame frame = (StackFrame) element;
-            return FileUtilities.getFileEditorInput(frame.getPath());
+            if (frame.getLocalPath() == null) return null;
+            return FileUtilities.getFileEditorInput(frame.getLocalPath());
         }
         else if (element instanceof PerlBreakpoint)
         {

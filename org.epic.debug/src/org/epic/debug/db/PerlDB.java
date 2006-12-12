@@ -25,9 +25,6 @@ public class PerlDB implements IDebugElement
 
     private final PerlDebugThread thread;
 
-    // Working directory of the "perl -d" process
-    private final IPath workingDir;
-
     private final DebuggerInterface db;
     private final BreakpointMap activeBreakpoints;
     private final BreakpointMap pendingBreakpoints;    
@@ -52,9 +49,7 @@ public class PerlDB implements IDebugElement
 
     public PerlDB(DebugTarget target) throws CoreException
     {
-        this.target = target;        
-
-        workingDir = target.getLocalWorkingDir();        
+        this.target = target;
 
         pendingBreakpoints = new BreakpointMap();
         activeBreakpoints = new BreakpointMap();
@@ -80,7 +75,7 @@ public class PerlDB implements IDebugElement
         final int ioPort,
         final int errorPort) throws DebugException
     {
-        if (db == null) return;
+        if (db == null) return;                
         
         // This method is separate from the constructor because
         // callbacks to our DebugTarget may occur during its execution.
@@ -92,6 +87,9 @@ public class PerlDB implements IDebugElement
             redirectIO(ioHost, ioPort);
             redirectError(ioHost, errorPort);
         }
+        
+        if (target.getPathMapper().requiresEffectiveIncPath())
+            target.getPathMapper().setEffectiveIncPath(getEffectiveIncPath());
 
         PerlDebugPlugin.getPerlBreakPointManager().addDebugger(this);
         target.perlDBstarted(this);
@@ -203,19 +201,6 @@ public class PerlDB implements IDebugElement
         return target.getModelIdentifier();
     }
 
-    public void getRemoteInc(List out) throws CoreException
-    {
-        try
-        {
-            String output = db.eval(
-                ";{foreach $t(@INC) {print $DB::OUT $t.\"\\n\";}}");
-        
-            StringTokenizer s = new StringTokenizer(output, "\r\n");            
-            while (s.hasMoreTokens()) out.add(s.nextToken());
-        }
-        catch (IOException e) { throwDebugException(e); }
-    }
-
     public IThread[] getThreads()
     {
         return new IThread[] { thread };
@@ -276,9 +261,20 @@ public class PerlDB implements IDebugElement
 
         try
         {
-            db.switchToFile(bp.getResourcePath());
-            db.removeLineBreakpoint(
-                ((PerlLineBreakpoint) bp).getLineNumber());
+            IPath dbPath = getDebuggerPath(bp.getResourcePath());
+            
+            if (dbPath != null)
+            {
+                db.switchToFile(dbPath);
+                db.removeLineBreakpoint(
+                    ((PerlLineBreakpoint) bp).getLineNumber());
+            }
+            else
+            {
+                PerlDebugPlugin.errorDialog(
+                    "Could not remove breakpoint. Reason: unknown " +
+                    "remote mapping of local path " + bp.getResourcePath());
+            }
         }
         catch (IOException e)
         {
@@ -406,9 +402,6 @@ public class PerlDB implements IDebugElement
     
             IPPosition endIP = maybeSkipStringEval(cmd);            
             
-            if (startIP != null && !endIP.getPath().equals(startIP.getPath()))
-                insertPendingBreakpoints();
-            
             updateStackFrames();
             
             switch (cmd.getType())
@@ -422,7 +415,19 @@ public class PerlDB implements IDebugElement
                     : DebugEvent.STEP_END);
                 break;
             case DebuggerInterface.CMD_RESUME:
-                fireDebugEvent(DebugEvent.SUSPEND, DebugEvent.BREAKPOINT);
+                if (isBreakPointReached())
+                {
+                    fireDebugEvent(DebugEvent.SUSPEND, DebugEvent.BREAKPOINT);
+                }
+                else
+                {
+                    // We hit a "source file load" breakpoint.
+                    // Insert pending line breakpoints and continue.
+                    if (startIP != null && !endIP.getPath().equals(startIP.getPath()))
+                        insertPendingBreakpoints(); 
+                     
+                    resume(thread);
+                }
                 break;        
             }
         }
@@ -445,8 +450,6 @@ public class PerlDB implements IDebugElement
             return new DebuggerInterface(
                 in,
                 out,
-                workingDir,
-                target.getPathMapper(),
                 commandListener);
         }
         catch (IOException e)
@@ -467,12 +470,44 @@ public class PerlDB implements IDebugElement
         DebugPlugin.getDefault().fireDebugEventSet(new DebugEvent[] { event });
     }
 
+    private IPath getDebuggerPath(IPath epicPath)
+    {
+        return target.getPathMapper().getDebuggerPath(epicPath);
+    }
+    
+    private List getEffectiveIncPath() throws DebugException
+    {
+        try
+        {
+            List ret = new ArrayList();
+            String output = db.eval(
+                ";{foreach $t(@INC) {print $DB::OUT $t.\"\\n\";}}");
+        
+            StringTokenizer s = new StringTokenizer(output, "\r\n");            
+            while (s.hasMoreTokens()) ret.add(new Path(s.nextToken()));
+            return ret;
+        }
+        catch (IOException e) { throwDebugException(e); return null; }
+    }
+    
+    private IPath getEpicPath(IPath dbPath)
+    {
+        return target.getPathMapper().getEpicPath(dbPath);
+    }
+
     private boolean insertPendingBreakpoints() throws CoreException
     {
         try
         {
-            IPPosition pos = db.getCurrentIP();
-            Set bps = pendingBreakpoints.getBreakpoints(pos.getPath());
+            IPPosition pos = db.getCurrentIP();            
+            IPath epicPath = getEpicPath(pos.getPath());
+            if (epicPath == null)
+            {
+                unresolvedDebuggerPath(pos.getPath());
+                return false;
+            }
+            
+            Set bps = pendingBreakpoints.getBreakpoints(epicPath);
             if (bps.isEmpty()) return false;
         
             for (Iterator i = bps.iterator(); i.hasNext();)
@@ -499,11 +534,17 @@ public class PerlDB implements IDebugElement
         {
             IPPosition pos = db.getCurrentIP();
             if (pos == null) return false;
+            
+            IPath epicPath = getEpicPath(pos.getPath());
+            if (epicPath == null)
+            {
+                unresolvedDebuggerPath(pos.getPath());
+                return false;
+            }
         
             // XXX: this breaks if new breakpoint types are installed!
             PerlLineBreakpoint bp = (PerlLineBreakpoint)
-                activeBreakpoints.getBreakpoint(
-                    pos.getPath(), pos.getLine());
+                activeBreakpoints.getBreakpoint(epicPath, pos.getLine());
     
             return bp != null;
         }
@@ -546,15 +587,20 @@ public class PerlDB implements IDebugElement
     private boolean setBreakpoint(PerlBreakpoint bp, boolean isPending)
         throws IOException
     {
-        boolean success;
+        IPath dbPath = getDebuggerPath(bp.getResourcePath());
+        if (dbPath == null)
+        {
+            unresolvedEpicPath(bp.getResourcePath());
+            return false;
+        }
     
         if (!isPending)
         {
-            success = db.switchToFile(bp.getResourcePath());
+            boolean success = db.switchToFile(dbPath);
             if (!success)
             {
                 pendingBreakpoints.add(bp);
-                db.setLoadBreakpoint(bp.getResourcePath());
+                db.setLoadBreakpoint(dbPath);
                 return true;
             }
         }
@@ -609,15 +655,19 @@ public class PerlDB implements IDebugElement
                 thread,
                 currentIP.getPath(),
                 currentIP.getLine(),
+                getEpicPath(currentIP.getPath()),
                 db,
                 previousTopFrame);
     
             for (int pos = 0; pos < matches.length; ++pos)
             {
+                IPath dbPath = new Path(matches[pos].toString(3));
+                
                 frames[pos + 1] = new StackFrame(
                     thread,
-                    db.getPathFor(matches[pos].toString(3)),
+                    dbPath,
                     Integer.parseInt(matches[pos].toString(4)),
+                    getEpicPath(dbPath),
                     matches[pos].toString(1),
                     matches[pos].toString(2));
             }
@@ -628,5 +678,27 @@ public class PerlDB implements IDebugElement
         {
             throwDebugException(e);
         }
+    }
+
+    private void unresolvedDebuggerPath(IPath dbPath)
+    {
+        PerlDebugPlugin.log(new Status(
+            IStatus.WARNING,
+            PerlDebugPlugin.getUniqueIdentifier(),
+            IStatus.OK,
+            "Could not map remote path " + dbPath +
+            " to a local path. Some breakpoints may be ignored.",
+            null));
+    }
+    
+    private void unresolvedEpicPath(IPath epicPath)
+    {
+        PerlDebugPlugin.log(new Status(
+            IStatus.WARNING,
+            PerlDebugPlugin.getUniqueIdentifier(),
+            IStatus.OK,
+            "Could not map local path " + epicPath +
+            " to a remote path. Some breakpoints may be ignored.",
+            null));
     }
 }

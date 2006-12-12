@@ -39,11 +39,12 @@ public class StackFrame extends DebugElement implements IStackFrame
     
     private final PerlDebugThread thread;
     private final IPath path;
+    private final IPath localPath;
     private final int lineNumber;
     private final boolean topFrame;
     private final DebuggerInterface db;
 
-    private StackFrame previous;     
+    private StackFrame previous;
     private PerlDebugVar[] actualVars;
     private PerlDebugVar[] displayedVars;
     
@@ -61,6 +62,7 @@ public class StackFrame extends DebugElement implements IStackFrame
         PerlDebugThread thread,
         IPath path,
         int lineNumber,
+        IPath localPath,
         DebuggerInterface db,
         StackFrame previous) throws DebugException
     {
@@ -68,6 +70,7 @@ public class StackFrame extends DebugElement implements IStackFrame
 
         this.thread = thread;
         this.path = path;
+        this.localPath = localPath;
         this.lineNumber = lineNumber;
         this.topFrame = true;
         this.db = db;
@@ -82,6 +85,7 @@ public class StackFrame extends DebugElement implements IStackFrame
         PerlDebugThread thread,
         IPath path,
         int lineNumber,
+        IPath localPath,
         String returnType,
         String calledSub) throws DebugException
     {
@@ -89,6 +93,7 @@ public class StackFrame extends DebugElement implements IStackFrame
         
         this.thread = thread;
         this.path = path;
+        this.localPath = localPath;
         this.lineNumber = lineNumber;
         this.topFrame = false;
         this.db = null;
@@ -161,6 +166,19 @@ public class StackFrame extends DebugElement implements IStackFrame
         return thread.getDebugTarget();
     }
 
+    /**
+     * @return path of the stack frame, valid in the file system
+     *         of EPIC, or null if the path could not be resolved
+     */
+    public IPath getLocalPath()
+    {
+        return localPath;
+    }
+    
+    /**
+     * @return path of the stack frame, valid in the file system
+     *         of "perl -d"; this path is not necessarily local to EPIC
+     */
     public IPath getPath()
     {
         return path;
@@ -363,7 +381,8 @@ public class StackFrame extends DebugElement implements IStackFrame
     {
         try
         {
-            if (!db.isSuspended()) return new PerlDebugVar[] {
+            if (db.isDisposed()) return new PerlDebugVar[0];
+            else if (!db.isSuspended()) return new PerlDebugVar[] {
                 createSpecialVar(
                     "Warning",
                     "Variables are only available in suspended mode") };

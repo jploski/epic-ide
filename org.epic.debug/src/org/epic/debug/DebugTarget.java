@@ -5,12 +5,10 @@ import java.io.PrintWriter;
 
 import org.eclipse.core.resources.IMarkerDelta;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.debug.core.*;
 import org.eclipse.debug.core.model.*;
 import org.epic.debug.db.PerlDB;
 import org.epic.debug.util.*;
-import org.epic.perleditor.PerlEditorPlugin;
 
 /**
  * An implementation of IDebugTarget which tracks a Perl debugger
@@ -21,31 +19,26 @@ public class DebugTarget extends PerlTarget
     private final IProcess process;
     private final RemotePort debugPort;
     private final PerlDB perlDB;
-    private final IPath workingDir;
+    private final IPathMapper pathMapper;
     
     public DebugTarget(
         ILaunch launch,
         IProcess process,
         RemotePort debugPort,
-        IPath workingDir) throws CoreException
+        IPathMapper pathMapper) throws CoreException
     {
         super(launch);
         
         this.process = process;
         this.debugPort = debugPort;
-        this.workingDir = workingDir;
         this.perlDB = new PerlDB(this);
+        this.pathMapper = pathMapper;
         if (!perlDB.isTerminated()) initDebugger();
     }
     
     public PerlDB getDebugger()
     {
         return perlDB;
-    }
-    
-    public IPath getLocalWorkingDir() throws CoreException
-    {
-        return workingDir;
     }
     
     public String getName() throws DebugException
@@ -83,15 +76,9 @@ public class DebugTarget extends PerlTarget
         return debugPort.getWriteStream();
     }
 
-    public PathMapper getPathMapper()
+    public IPathMapper getPathMapper()
     {
-        String interpreterType = PerlEditorPlugin.getDefault()
-            .getPreferenceStore().getString(
-                PerlEditorPlugin.INTERPRETER_TYPE_PREFERENCE);
-
-        if (interpreterType.equals(PerlEditorPlugin.INTERPRETER_TYPE_CYGWIN))
-            return new PathMapperCygwin();
-        else return null;
+        return pathMapper;
     }
 
     public void debugSessionTerminated()

@@ -7,7 +7,6 @@ import org.eclipse.core.runtime.*;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
-import org.epic.core.PerlCore;
 import org.epic.debug.*;
 import org.epic.debug.util.*;
 
@@ -23,10 +22,9 @@ public class RemoteLaunchConfigurationDelegate
         ILaunch launch,
         IProgressMonitor monitor) throws CoreException
     {
-        PathMapper mapper = new PathMapper();
-        mapper.add(new PathMapping(
-            getRemoteProjectDir(launch),
-            PerlCore.create(getProject(launch)).getProjectDir().toString()));
+        RemotePathMapper mapper = new RemotePathMapper(
+            getProject(launch),
+            getRemoteProjectDir(launch));
         
         if (shouldCreateDebugPackage(launch))
         {
@@ -70,11 +68,8 @@ public class RemoteLaunchConfigurationDelegate
             return;
         }
         
-        IPath workingDir = getProject(launch).getLocation().append(
-            getScriptPath(launch).removeLastSegments(1));        
-        
         RemoteDebugTarget target = new RemoteDebugTarget(
-            launch, process, debugPort, mapper, workingDir);
+            launch, process, debugPort, mapper);
         launch.addDebugTarget(target);
         
         if (!target.getDebugger().isTerminated())

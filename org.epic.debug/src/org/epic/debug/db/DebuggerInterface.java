@@ -6,7 +6,6 @@ import java.io.*;
 
 import org.eclipse.core.runtime.*;
 import org.eclipse.swt.widgets.Display;
-import org.epic.debug.util.PathMapper;
 
 /**
  * A low-level interface to the "perl -d" debugger process.
@@ -27,8 +26,6 @@ class DebuggerInterface
 
     private final BufferedReader in;
     private final PrintWriter out;
-    private final IPath workingDir;
-    private final PathMapper pathMapper;
     private final IListener listener;
     
     private final Thread thread;
@@ -53,14 +50,10 @@ class DebuggerInterface
     public DebuggerInterface(
         BufferedReader in,
         PrintWriter out,
-        IPath workingDir,
-        PathMapper pathMapper,
         IListener listener) throws IOException
     {        
         this.in = in;
         this.out = out;
-        this.workingDir = workingDir;
-        this.pathMapper = pathMapper;
         this.listener = listener;
         
         thread = new Thread(new Runnable() {
@@ -114,6 +107,11 @@ class DebuggerInterface
         return runSyncCommand(CMD_EXEC, code);
     }
     
+    public boolean isDisposed()
+    {
+        return disposed;
+    }
+    
     public boolean isSuspended()
     {
         return asyncCommand == null;
@@ -140,10 +138,9 @@ class DebuggerInterface
             if (temp != null) result = temp;
         }
 
-        int line = Integer.parseInt(result.toString(2));
-        IPath file = getPathFor(result.toString(1));
-
-        return new IPPosition(file, line);
+        return new IPPosition(
+            new Path(result.toString(1)),
+            Integer.parseInt(result.toString(2)));
     }
     
     public String getPerlVersion() throws IOException
@@ -213,9 +210,17 @@ class DebuggerInterface
         return re.SET_LINE_BREAKPOINT.getAllMatches(output).length == 0;
     }
     
+    /**
+     * Sets a breakpoint that will be triggered on loading of a given
+     * source file.
+     * 
+     * @param path
+     *        path to the source file, specific to the debugger's
+     *        environment
+     */
     public void setLoadBreakpoint(IPath path) throws IOException
     {
-        runSyncCommand(CMD_EXEC, "b load " + getRelativePath(path));
+        runSyncCommand(CMD_EXEC, "b load " + path);
     }
     
     public Command asyncStepInto()
@@ -248,36 +253,21 @@ class DebuggerInterface
         runSyncCommand(CMD_STEP_RETURN, null);
     }
     
+    /**
+     * Switches the debugging context to the given source file.
+     * This affects commands such as {@link #setLineBreakpoint(int)}.
+     * 
+     * @param path
+     *        path to the source file, specific to the debugger's
+     *        environment
+     * @return true if the operation succeeded,
+     *         false if the source file has not been loaded yet
+     */
     public boolean switchToFile(IPath path) throws IOException
     {
-        String output =
-            runSyncCommand(CMD_EXEC, "f " + getRelativePath(path));
+        String output = runSyncCommand(CMD_EXEC, "f " + path);
 
         return re.SWITCH_FILE_FAIL.getAllMatches(output).length == 0;
-    }
-    
-    public IPath getPathFor(String filename)
-    {
-        IPath file = new Path(filename);
-
-        if (!file.isAbsolute())
-        {
-            file = workingDir.append(file);
-        }
-        else if (pathMapper != null)
-        {
-            file = pathMapper.mapPath(file);
-        }
-        return file;
-    }
-    
-    private String getRelativePath(IPath fPath)
-    {
-        if (!workingDir.isPrefixOf(fPath)) return fPath.toString();
-    
-        int match = workingDir.matchingFirstSegments(fPath);
-        IPath path = fPath.removeFirstSegments(match).makeRelative().setDevice(null);
-        return path.toString();
     }
     
     private Command runAsyncCommand(int command, String code, boolean notifyOnFinish)

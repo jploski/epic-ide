@@ -31,6 +31,10 @@ class IPPosition
         return line;
     }
 
+    /**
+     * @return path of the stack frame, valid in the file system
+     *         of "perl -d"; this path is not necessarily local to EPIC
+     */
     public IPath getPath()
     {
         return path;

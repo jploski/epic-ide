@@ -20,7 +20,6 @@ public class PerlOutlinePage extends ContentOutlinePage
     
     public PerlOutlinePage(SourceFile source)
     {
-        System.err.println("Create PerlOutlinePage " + hashCode());
         this.source = source;
     }
 

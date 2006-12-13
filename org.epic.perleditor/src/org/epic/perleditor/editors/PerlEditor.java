@@ -1063,6 +1063,11 @@ public class PerlEditor extends TextEditor implements IPropertyChangeListener
                     {
                         try
                         {
+                            if (length < 0)
+                            {
+                                start += length;
+                                length = Math.abs(length);
+                            }
                             viewer.getDocument().replace(start, length, ""); //$NON-NLS-1$
                         }
                         catch (BadLocationException exception)

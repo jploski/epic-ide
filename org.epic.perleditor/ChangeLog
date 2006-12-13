@@ -4,6 +4,7 @@ CVS
 		Debugger:
 
 		Editor:
+		* Fixed Bug [ 1615151 ] Ctrl+Backspace does not work
 
 Version 0.5.25 - 12-December-2006
 		Debugger:

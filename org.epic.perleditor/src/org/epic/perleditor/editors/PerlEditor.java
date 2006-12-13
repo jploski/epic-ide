@@ -1048,6 +1048,11 @@ public class PerlEditor extends TextEditor implements IPropertyChangeListener
                     if (select) text.setSelectionRange(start, length);
                     else if (delete)
                     {
+                        if (length < 0)
+                        {
+                            start += length;
+                            length = Math.abs(length);
+                        }
                         try
                         {
                             viewer.getDocument().replace(start, length, ""); //$NON-NLS-1$

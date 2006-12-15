@@ -172,7 +172,8 @@ public class TokenVarParser
                         PerlDebugPlugin.getUniqueIdentifier(),
                         IStatus.OK,
                         "An error occurred while parsing debugger variables; " +
-                        "contents of the Variables view may be inaccurate",
+                        "contents of the Variables view may be inaccurate. " +
+                        "Failure caused by string: {" + String.valueOf(chars) + "}",
                         e));
                 }
                 if (e.canRecover()) recover();

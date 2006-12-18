@@ -20,7 +20,7 @@ $winsize = 80 unless defined $winsize;
 # Defaults
 
 # $globPrint = 1;
-$MaxUnwrapCount = 80;
+$MaxUnwrapCount = 200;
 $UnwrapCount = 0;
 $printUndef = 1 unless defined $printUndef;
 $tick = "auto" unless defined $tick;
@@ -365,14 +365,14 @@ sub dumpglob {
     }
     if (($key !~ /^_</ or $dumpDBFiles) and @entry) {
       print buildName("\@$key") ;
-      unwrap(\@entry,3+$off,$m) ;
+      DumpElem \@entry, 3+$off, $m;
     }
     if ($key ne "main::" && $key ne "DB::" && %entry
 	&& ($dumpPackages or $key !~ /::$/)
 	&& ($key !~ /^_</ or $dumpDBFiles)
 	&& !($package eq "dumpvar_epic" and $key eq "stab")) {
       print buildName("\%$key" );
-      unwrap(\%entry,3+$off,$m) ;
+      DumpElem \%entry, 3+$off, $m;
     }
     if (defined ($fileno = fileno(*entry))) {
       print( buildName("FileHandle($key)").buildString("=> fileno($fileno)" ));

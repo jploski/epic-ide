@@ -365,14 +365,14 @@ sub dumpglob {
     }
     if (($key !~ /^_</ or $dumpDBFiles) and @entry) {
       print buildName("\@$key") ;
-      unwrap(\@entry,3+$off,$m) ;
+      DumpElem \@entry, 3+$off, $m;
     }
     if ($key ne "main::" && $key ne "DB::" && %entry
 	&& ($dumpPackages or $key !~ /::$/)
 	&& ($key !~ /^_</ or $dumpDBFiles)
 	&& !($package eq "dumpvar_epic" and $key eq "stab")) {
       print buildName("\%$key" );
-      unwrap(\%entry,3+$off,$m) ;
+      DumpElem \%entry, 3+$off, $m;
     }
     if (defined ($fileno = fileno(*entry))) {
       print( buildName("FileHandle($key)").buildString("=> fileno($fileno)" ));

@@ -220,7 +220,7 @@ class DebuggerInterface
      */
     public void setLoadBreakpoint(IPath path) throws IOException
     {
-        runSyncCommand(CMD_EXEC, "b load " + path);
+        runSyncCommand(CMD_EXEC, "b load " + path.toOSString());
     }
     
     public Command asyncStepInto()
@@ -265,7 +265,7 @@ class DebuggerInterface
      */
     public boolean switchToFile(IPath path) throws IOException
     {
-        String output = runSyncCommand(CMD_EXEC, "f " + path);
+        String output = runSyncCommand(CMD_EXEC, "f " + path.toOSString());
 
         return re.SWITCH_FILE_FAIL.getAllMatches(output).length == 0;
     }

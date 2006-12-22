@@ -4,6 +4,13 @@ CVS
 		Debugger:
 
 		Editor:
+
+Version 0.5.26 - 22-December-2006
+		Debugger:
+		* Fixed Bug [ 1620809 ] Debugger ignores breakpoints
+		* Fixed Bug [ 1166095 ] 'Error Parsing Debugger Variables'.
+
+		Editor:
 		* Fixed Bug [ 1615151 ] Ctrl+Backspace does not work
 
 Version 0.5.25 - 12-December-2006

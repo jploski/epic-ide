@@ -5,6 +5,10 @@ CVS
 
 		Editor:
 
+Version 0.5.27 - 27-December-2006
+		Debugger:
+		* Fixed Bug [ 1623087 ] Remote debugger ignores breakpoints
+
 Version 0.5.26 - 22-December-2006
 		Debugger:
 		* Fixed Bug [ 1620809 ] Debugger ignores breakpoints

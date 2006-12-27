@@ -31,6 +31,7 @@ class DebuggerInterface
     private final Thread thread;
     private final String perlVersion;    
     
+    private Boolean windows;
     private boolean disposed;
     private Command asyncCommand;
 
@@ -142,6 +143,11 @@ class DebuggerInterface
             new Path(result.toString(1)),
             Integer.parseInt(result.toString(2)));
     }
+
+    public String getOS() throws IOException
+    {
+        return runSyncCommand(CMD_EXEC, "print $DB::OUT $^O;").trim();
+    }
     
     public String getPerlVersion() throws IOException
     {
@@ -220,7 +226,7 @@ class DebuggerInterface
      */
     public void setLoadBreakpoint(IPath path) throws IOException
     {
-        runSyncCommand(CMD_EXEC, "b load " + path.toOSString());
+        runSyncCommand(CMD_EXEC, "b load " + getOSPath(path));
     }
     
     public Command asyncStepInto()
@@ -265,9 +271,27 @@ class DebuggerInterface
      */
     public boolean switchToFile(IPath path) throws IOException
     {
-        String output = runSyncCommand(CMD_EXEC, "f " + path.toOSString());
+        String output = runSyncCommand(CMD_EXEC, "f " + getOSPath(path));
 
         return re.SWITCH_FILE_FAIL.getAllMatches(output).length == 0;
+    }
+    
+    private String getOSPath(IPath path) throws IOException
+    {
+        if (isWindows()) return path.toString().replace('/', '\\');
+        else return path.toString();
+    }
+    
+    private boolean isWindows() throws IOException
+    {
+        if (windows == null)
+        {
+            String os = getOS();
+            windows = new Boolean(
+                os.equalsIgnoreCase("mswin32") ||
+                os.equalsIgnoreCase("netware"));
+        }
+        return windows.booleanValue();
     }
     
     private Command runAsyncCommand(int command, String code, boolean notifyOnFinish)

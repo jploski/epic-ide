@@ -5,6 +5,13 @@ CVS
 
 		Editor:
 
+Version 0.5.28 - 02-January-2007
+		Debugger:
+		* Fixed Bug [ 1626159 ] Can't load Oracle.dll in CGI mode
+
+		Editor:
+		* Fixed Bug [ 1236592 ] Eclipse crash - SWTError: No more handles
+
 Version 0.5.27 - 27-December-2006
 		Debugger:
 		* Fixed Bug [ 1623087 ] Remote debugger ignores breakpoints

@@ -95,12 +95,17 @@ public class CGILaunchConfigurationDelegate extends LaunchConfigurationDelegate
         props.add("cgi.executable", perlPath);
         props.add("cgi.suffix", cgiFileExtension);
         props.add("cgi.PerlParams", perlParams);
-        props.add("cgi.DebugInclude", " -I" + PerlDebugPlugin.getDefault().getInternalDebugInc());
+        props.add("cgi.DebugInclude", "-I" + PerlDebugPlugin.getDefault().getInternalDebugInc());
         props.add("cgi.RunInclude", PerlExecutableUtilities.getPerlIncArgs(project));        
 
         String[] env = PerlDebugPlugin.getDebugEnv(launch, debugPort);
         for (int i = 0; i < env.length; i++)
-            props.add("cgi.ENV_" + env[i]);
+        {
+            int j = env[i].indexOf('=');
+            if (j > 0) props.add(
+                "cgi.ENV_" + env[i].substring(0,j),
+                env[i].substring(j+1));
+        }
         
         return props;    
     }
@@ -213,16 +218,6 @@ public class CGILaunchConfigurationDelegate extends LaunchConfigurationDelegate
         
         if (attrValue == null) return null;        
         else return new Path(attrValue).toString();
-    }
-    
-    private IPath getLocalWorkingDir(ILaunch launch) throws CoreException
-    {
-        String path = getLaunchAttribute(launch,
-            PerlLaunchConfigurationConstants.ATTR_CGI_ROOT_DIR,
-            false);
-    
-        assert path != null;        
-        return new Path(path);
     }
     
     private String getRelativeURL(ILaunch launch) throws CoreException
@@ -373,11 +368,11 @@ public class CGILaunchConfigurationDelegate extends LaunchConfigurationDelegate
 
     private static class BrazilProps
     {
-        private StringBuffer props;
+        private final Properties props;
         
         public BrazilProps()
         {
-            props = new StringBuffer();                        
+            props = new Properties();                        
         }
         
         public void add(String name, boolean value)
@@ -397,18 +392,9 @@ public class CGILaunchConfigurationDelegate extends LaunchConfigurationDelegate
                 add(name + "[" + j + "]", i.next().toString());
         }
         
-        public void add(String value)
-        {
-            props.append(value);
-            props.append('\n');
-        }
-        
         public void add(String name, String value)
         {
-            props.append(name);
-            props.append('=');
-            props.append(value);
-            props.append('\n');
+            props.put(name, value);
         }
         
         public void save() throws IOException
@@ -422,9 +408,8 @@ public class CGILaunchConfigurationDelegate extends LaunchConfigurationDelegate
             OutputStream out = null;            
             try
             {
-                out = new FileOutputStream(propsFile, true);                
-                byte[] propsBytes = props.toString().getBytes();
-                out.write(propsBytes, 0, propsBytes.length);
+                out = new FileOutputStream(propsFile, true);
+                props.store(out, null);
             }
             finally
             {

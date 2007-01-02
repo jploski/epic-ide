@@ -11,7 +11,7 @@ import org.epic.perleditor.templates.DocumentTemplateContext;
 import org.epic.perleditor.templates.Template;
 import org.epic.perleditor.templates.Templates;
 import org.epic.perleditor.templates.perl.CompilationUnitContextType;
-import org.epic.perleditor.editors.PerlImages;
+import org.epic.perleditor.PerlPluginImages;
 import org.epic.perleditor.templates.perl.IPerlCompletionProposal;
 
 import org.eclipse.jface.text.BadLocationException;
@@ -93,7 +93,7 @@ public class TemplateEngine {
 		Template[] templates= Templates.getInstance().getTemplates();
 		for (int i= 0; i != templates.length; i++)
 			if (context.canEvaluate(templates[i]))
-				fProposals.add(new TemplateProposal(templates[i], context, region, viewer, PerlImages.IMG_OBJS_TEMPLATE.createImage())); 
+				fProposals.add(new TemplateProposal(templates[i], context, region, viewer, PerlPluginImages.get(PerlPluginImages.IMG_OBJS_TEMPLATE))); 
 	}
 
 }

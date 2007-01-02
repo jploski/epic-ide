@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import org.epic.perleditor.templates.ContextType;
 import org.epic.perleditor.templates.perl.CompilationUnitContextType;
 import org.epic.perleditor.templates.perl.PerlUnitContext;
-import org.epic.perleditor.editors.PerlImages;
+import org.epic.perleditor.PerlPluginImages;
 //import net.sourceforge.phpdt.internal.ui.text.java.IPHPCompletionProposal;
 
 import org.eclipse.jface.text.BadLocationException;
@@ -95,7 +95,7 @@ public class SubroutineEngine {
 			subroutine = (String) identifiers[i];
 				
 			if (context.canEvaluate(subroutine, true)) {
-				fProposals.add(new SubroutineProposal(subroutine, context, region, viewer, PerlImages.ICON_SUBROUTINE.createImage(), PerlImages.ICON_SUBROUTINE.createImage())); 
+				fProposals.add(new SubroutineProposal(subroutine, context, region, viewer, PerlPluginImages.get(PerlPluginImages.IMG_ICON_SUBROUTINE), PerlPluginImages.get(PerlPluginImages.IMG_ICON_SUBROUTINE))); 
       }
     }
 	}

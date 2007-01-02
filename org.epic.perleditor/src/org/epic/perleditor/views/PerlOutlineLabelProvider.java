@@ -4,28 +4,21 @@ import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
 import org.epic.core.model.*;
 import org.epic.core.model.Package;
-import org.epic.perleditor.editors.PerlImages;
+import org.epic.perleditor.PerlPluginImages;
 
 public class PerlOutlineLabelProvider extends LabelProvider
 {	
-	private static final Image imageSubNode = PerlImages.ICON_SUBROUTINE_NODE.createImage();
-    private static final Image imagePackageNode = PerlImages.ICON_PACKAGE_NODE.createImage();
-    private static final Image imageUse = PerlImages.ICON_USE.createImage();
-    private static final Image imageUseNode = PerlImages.ICON_USE_NODE.createImage();
-    private static final Image imageSub = PerlImages.ICON_SUBROUTINE.createImage();
-    private static final Image imageConstructor = PerlImages.ICON_CONSTRUCTOR.createImage();
-	
 	public Image getImage(Object element)
     {
         if (element instanceof Subroutine)
         {
             Subroutine sub = (Subroutine) element;
-            if ("new".equals(sub.getName())) return imageConstructor;
-            else return imageSub;
+            if ("new".equals(sub.getName())) return PerlPluginImages.get(PerlPluginImages.IMG_ICON_CONSTRUCTOR);
+            else return PerlPluginImages.get(PerlPluginImages.IMG_ICON_SUBROUTINE);
         }
         else if (element instanceof ModuleUse)
         {
-            return imageUse;
+            return PerlPluginImages.get(PerlPluginImages.IMG_ICON_USE);
         }
         else if (element instanceof PerlOutlineContentProvider.PackageElem)
         {
@@ -33,13 +26,13 @@ public class PerlOutlineLabelProvider extends LabelProvider
                 (PerlOutlineContentProvider.PackageElem) element;
             
             if (elem.name.equals(PerlOutlineContentProvider.SUBROUTINES))
-                return imageSubNode;
+                return PerlPluginImages.get(PerlPluginImages.IMG_ICON_SUBROUTINE_NODE);
             else if (elem.name.equals(PerlOutlineContentProvider.MODULES))
-                return imageUseNode;
+                return PerlPluginImages.get(PerlPluginImages.IMG_ICON_USE_NODE);
         }
         else if (element instanceof Package)
         {
-            return imagePackageNode;
+            return PerlPluginImages.get(PerlPluginImages.IMG_ICON_PACKAGE_NODE);
         }
 
         return null;

@@ -33,7 +33,7 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.eclipse.ui.wizards.newresource.BasicNewResourceWizard;
 
 import org.epic.core.util.NatureUtilities;
-import org.epic.perleditor.editors.PerlImages;
+import org.epic.perleditor.PerlPluginImages;
 
 /**
  * Standard workbench wizard that creates a new project resource in
@@ -260,8 +260,9 @@ public class PerlProjectResourceWizard
 		//URL installURL = Platform.getPlugin(PlatformUI.PLUGIN_ID).getDescriptor().getInstallURL();
 		//URL url = new URL(installURL, iconPath + "new_wizard.gif");//$NON-NLS-1$
 		//ImageDescriptor desc = ImageDescriptor.createFromURL(url);
-		ImageDescriptor desc = PerlImages.NEW_PROJECT_WIZARD;
-		setDefaultPageImageDescriptor(desc);
+		setDefaultPageImageDescriptor(
+            PerlPluginImages.getDescriptor(
+                PerlPluginImages.IMG_NEW_PROJECT_WIZARD));
 		//}
 		//catch (MalformedURLException e) {
 		// Should not happen.  Ignore.

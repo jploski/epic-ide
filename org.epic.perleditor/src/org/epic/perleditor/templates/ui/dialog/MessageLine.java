@@ -1,6 +1,6 @@
 package org.epic.perleditor.templates.ui.dialog;
 
-import org.epic.perleditor.editors.PerlImages;
+import org.epic.perleditor.PerlPluginImages;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.swt.SWT;
@@ -41,11 +41,11 @@ public class MessageLine extends CLabel {
 		if (status.isOK()) {
 			return null;
 		} else if (status.matches(IStatus.ERROR)) {
-			return PerlImages.IMG_OBJS_ERROR.createImage();
+			return PerlPluginImages.get(PerlPluginImages.IMG_OBJS_ERROR);
 		} else if (status.matches(IStatus.WARNING)) {
-			return PerlImages.IMG_OBJS_WARNING.createImage();
+			return PerlPluginImages.get(PerlPluginImages.IMG_OBJS_WARNING);
 		} else if (status.matches(IStatus.INFO)) {
-			return PerlImages.IMG_OBJS_INFO.createImage();
+			return PerlPluginImages.get(PerlPluginImages.IMG_OBJS_INFO);
 		}
 		return null;
 	}

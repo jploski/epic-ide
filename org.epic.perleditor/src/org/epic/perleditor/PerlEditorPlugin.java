@@ -9,13 +9,13 @@ import org.eclipse.core.runtime.*;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.PreferenceConverter;
+import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.team.core.IFileTypeInfo;
 import org.eclipse.team.core.Team;
 import org.eclipse.ui.IWorkbenchWindow;
-import org.eclipse.ui.editors.text.TextFileDocumentProvider;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.epic.core.util.PerlExecutor;
@@ -336,6 +336,11 @@ public class PerlEditorPlugin extends AbstractUIPlugin {
     {
         if (!requirePerlCheckPassed) checkForPerlInterpreter(interactive);
         return requirePerlCheckPassed;
+    }
+    
+    protected ImageRegistry createImageRegistry()
+    {
+        return PerlPluginImages.getImageRegistry();
     }
 
     /**

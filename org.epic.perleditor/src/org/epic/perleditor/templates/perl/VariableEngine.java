@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import org.epic.perleditor.templates.ContextType;
 import org.epic.perleditor.templates.perl.CompilationUnitContextType;
 import org.epic.perleditor.templates.perl.PerlUnitContext;
-import org.epic.perleditor.editors.PerlImages;
+import org.epic.perleditor.PerlPluginImages;
 //import net.sourceforge.phpdt.internal.ui.text.java.IPHPCompletionProposal;
 
 import org.eclipse.jface.text.BadLocationException;
@@ -91,7 +91,7 @@ public class VariableEngine {
 			subroutine = (String) identifiers[i];
 				
 			if (context.canEvaluate(subroutine, false)) {
-				fProposals.add(new VariableProposal(subroutine, context, region, viewer, PerlImages.ICON_VARIABLE.createImage(), PerlImages.ICON_VARIABLE.createImage())); 
+				fProposals.add(new VariableProposal(subroutine, context, region, viewer, PerlPluginImages.get(PerlPluginImages.IMG_ICON_VARIABLE), PerlPluginImages.get(PerlPluginImages.IMG_ICON_VARIABLE))); 
 	  }
 	}
 	}

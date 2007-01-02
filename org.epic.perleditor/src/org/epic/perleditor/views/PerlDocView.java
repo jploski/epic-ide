@@ -31,7 +31,7 @@ import org.eclipse.ui.texteditor.ITextEditor;
 import org.epic.core.util.PerlExecutor;
 import org.epic.perleditor.PerlEditorPlugin;
 import org.epic.perleditor.popupmenus.PopupMessages;
-import org.epic.perleditor.editors.PerlImages;
+import org.epic.perleditor.PerlPluginImages;
 
 /**
  * @author luelljoc
@@ -89,7 +89,7 @@ public class PerlDocView extends ViewPart {
 		searchPerldocText.setLayoutData(gridData);
 		
 		searchPerldocButton = new Button(parent, SWT.PUSH | SWT.FLAT);
-		searchPerldocButton.setImage(PerlImages.ICON_SEARCH.createImage());
+		searchPerldocButton.setImage(PerlPluginImages.get(PerlPluginImages.IMG_ICON_SEARCH));
 		searchPerldocButton.setToolTipText("Search Perldoc");
 		
 		gridData = new GridData();
@@ -104,7 +104,7 @@ public class PerlDocView extends ViewPart {
 		highlightText.setLayoutData(gridData);
 		
 		highlightButton = new Button(parent, SWT.PUSH | SWT.FLAT);
-		highlightButton.setImage(PerlImages.ICON_MARK_OCCURRENCES.createImage());
+		highlightButton.setImage(PerlPluginImages.get(PerlPluginImages.IMG_ICON_MARK_OCCURRENCES));
 		highlightButton.setToolTipText("Highlight Text");
         
         tabFolder = new TabFolder(parent, SWT.BORDER);

@@ -472,7 +472,7 @@ public class PerlDB implements IDebugElement
 
     private IPath getDebuggerPath(IPath epicPath)
     {
-        return target.getPathMapper().getDebuggerPath(epicPath);
+        return target.getPathMapper().getDebuggerPath(epicPath, db);
     }
     
     private List getEffectiveIncPath() throws DebugException

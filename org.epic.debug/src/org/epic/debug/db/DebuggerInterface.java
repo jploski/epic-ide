@@ -18,7 +18,7 @@ import org.eclipse.swt.widgets.Display;
  * 
  * @author jploski
  */
-class DebuggerInterface
+public class DebuggerInterface
 {
     private final Object LOCK = new Object();
     private final RE re = new RE();
@@ -106,6 +106,17 @@ class DebuggerInterface
     public String eval(String code) throws IOException
     {
         return runSyncCommand(CMD_EXEC, code);
+    }
+    
+    /**
+     * @return true if the given path corresponds to a file in
+     *         the debugger's file system; false otherwise
+     */
+    public boolean fileExists(IPath path) throws IOException
+    {
+        // Get an OS-specific path with escaped backslashes
+        String osPath = getOSPath(path).replaceAll("\\\\", "\\\\\\\\");
+        return "1".equals(eval("print $DB::OUT -f '" + osPath + "'"));
     }
     
     public boolean isDisposed()

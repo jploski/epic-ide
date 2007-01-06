@@ -3,6 +3,7 @@ package org.epic.debug.util;
 import java.util.List;
 
 import org.eclipse.core.runtime.IPath;
+import org.epic.debug.db.DebuggerInterface;
 
 /**
  * An implementation of IPathMapper which "translates" paths into
@@ -11,11 +12,11 @@ import org.eclipse.core.runtime.IPath;
  */
 public class NullPathMapper implements IPathMapper
 {
-    public IPath getDebuggerPath(IPath epicPath)
+    public IPath getDebuggerPath(IPath epicPath, DebuggerInterface db)
     {
         return epicPath;
     }
-
+    
     public IPath getEpicPath(IPath dbPath)
     {
         return dbPath;

@@ -3,6 +3,7 @@ package org.epic.debug.util;
 import java.util.List;
 
 import org.eclipse.core.runtime.IPath;
+import org.epic.debug.db.DebuggerInterface;
 
 /**
  * Implementors are responsible for translating paths from the file
@@ -14,10 +15,12 @@ public interface IPathMapper
     /**
      * @param epicPath
      *        an absolute path valid in the EPIC file system
+     * @param db
+     *        interface through which the "perl -d" process can be queried
      * @return the corresponding absolute path valid in the debugger
      *         file system or null if the path could not be translated
      */
-    public IPath getDebuggerPath(IPath epicPath);
+    public IPath getDebuggerPath(IPath epicPath, DebuggerInterface db);
 
     /**
      * @param dbPath

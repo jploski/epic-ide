@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.runtime.IPath;
+import org.epic.debug.db.DebuggerInterface;
 
 /**
  * Base class for IPathMapper implementations which translate
@@ -26,7 +27,7 @@ public abstract class AbstractPathMapper implements IPathMapper
         dbPathPrefixes.add(dbPathPrefix);
     }
 
-    public IPath getDebuggerPath(IPath epicPath)
+    public IPath getDebuggerPath(IPath epicPath, DebuggerInterface db)
     {
         return swapPrefix(epicPath, epicPathPrefixes, dbPathPrefixes);
     }

@@ -1,12 +1,14 @@
 package org.epic.debug.util;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.*;
 
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.*;
 import org.epic.core.PerlCore;
+import org.epic.debug.db.DebuggerInterface;
 
 /**
  * Maps paths of a remote machine to local (EPIC) paths by attempting
@@ -14,6 +16,12 @@ import org.epic.core.PerlCore;
  */
 public class RemotePathMapper extends AbstractPathMapper
 {
+    private static final IPathChecker localPathChecker = new IPathChecker() {
+        public boolean fileExists(IPath path)
+        {
+            return path.toFile().exists();
+        } };
+    
     private final String remoteProjectDir;
     private final List epicInc;
     private List debuggerInc;
@@ -29,22 +37,28 @@ public class RemotePathMapper extends AbstractPathMapper
         addMapping(project.getLocation(), new Path(remoteProjectDir));
     }
     
+    public IPath getDebuggerPath(IPath epicPath, DebuggerInterface db)
+    {
+        // Paths under project dir are handled by the superclass:
+        IPath ret = super.getDebuggerPath(epicPath, db);
+        if (ret != null) return ret;
+        
+        IPath convertedPath = convertPath(
+            epicPath, epicInc, debuggerInc, new RemotePathChecker(db));
+        
+        // cache for later
+        if (convertedPath != null) addMapping(epicPath, convertedPath);
+        return convertedPath;
+    }
+    
     public IPath getEpicPath(IPath dbPath)
     {
         // Paths under remoteProjectDir are handled by the superclass:
         IPath ret = super.getEpicPath(dbPath);
         if (ret != null) return ret;
         
-        IPath relativePath = makeRelative(dbPath);
-        if (relativePath == null) return null;
-
-        for (Iterator i = epicInc.iterator(); i.hasNext();)
-        {
-            IPath incDir = (IPath) i.next();            
-            IPath epicPath = incDir.append(relativePath);            
-            if (epicPath.toFile().exists()) return epicPath;
-        }
-        return null;
+        return convertPath(
+            dbPath, debuggerInc, epicInc, localPathChecker);
     }
     
     public boolean requiresEffectiveIncPath()
@@ -69,9 +83,27 @@ public class RemotePathMapper extends AbstractPathMapper
         return paths;
     }
     
-    private IPath makeRelative(IPath dbPath)
+    private IPath convertPath(
+        IPath path,
+        List sourceIncDirs,
+        List targetIncDirs,
+        IPathChecker checker)
     {
-        for (Iterator i = debuggerInc.iterator(); i.hasNext();)
+        IPath relativePath = makeRelative(path, sourceIncDirs);
+        if (relativePath == null) return null;
+
+        for (Iterator i = targetIncDirs.iterator(); i.hasNext();)
+        {
+            IPath incDir = (IPath) i.next();            
+            IPath convertedPath = incDir.append(relativePath);
+            if (checker.fileExists(convertedPath)) return convertedPath;
+        }
+        return null;
+    }
+    
+    private IPath makeRelative(IPath dbPath, List incDirs)
+    {
+        for (Iterator i = incDirs.iterator(); i.hasNext();)
         {
             IPath incDir = (IPath) i.next();
             if (incDir.isPrefixOf(dbPath))
@@ -86,5 +118,26 @@ public class RemotePathMapper extends AbstractPathMapper
             folder.getLocation(),
             new Path(remoteProjectDir + "/" +
                 folder.getProjectRelativePath().toString()));
+    }
+    
+    private static interface IPathChecker
+    {
+        public boolean fileExists(IPath path);
+    }
+    
+    private static class RemotePathChecker implements IPathChecker
+    {
+        private final DebuggerInterface db;
+        
+        public RemotePathChecker(DebuggerInterface db)
+        {
+            this.db = db;
+        }
+        
+        public boolean fileExists(IPath path)
+        {
+            try { return db.fileExists(path); }
+            catch (IOException e) { return false; /* too bad :( */ }
+        }
     }
 }

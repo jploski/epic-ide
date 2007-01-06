@@ -1,36 +1,29 @@
 package org.epic.debug.ui.propertypages;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-
+import org.eclipse.jface.resource.JFaceResources;
+import org.eclipse.jface.text.*;
+import org.eclipse.jface.text.source.SourceViewer;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Group;
-import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Text;
-
+import org.eclipse.swt.widgets.*;
 import org.eclipse.ui.dialogs.PropertyPage;
-
 import org.epic.core.util.StatusFactory;
-
 import org.epic.debug.PerlDebugPlugin;
 import org.epic.debug.PerlLineBreakpoint;
-
-import gnu.regexp.RE;
-import gnu.regexp.REException;
-
-import java.util.ArrayList;
-import java.util.List;
+import org.epic.perleditor.PerlEditorPlugin;
+import org.epic.perleditor.editors.PerlPartitioner;
+import org.epic.perleditor.editors.PerlSourceViewerConfiguration;
 
 
 /**
@@ -45,27 +38,13 @@ public class PerlLineBreakpointPage extends PropertyPage
 
     //~ Instance fields
 
-    private Button conditionHasChanged;
-
-    private Button conditionIsTrue;
-
-    private Button conditionMatchesRegExp;
-
-    private Text conditionText;
+    private SourceViewer conditionText;
 
     private Button enableConditionButton;
 
     private Button enabledButton;
 
     private List errors = new ArrayList();
-
-    private Button hitCountButton;
-
-    private Text hitCountText;
-
-    private Text regExpText;
-
-    private Label suspendWhenLabel;
 
     //~ Methods
 
@@ -80,7 +59,6 @@ public class PerlLineBreakpointPage extends PropertyPage
             public void run(IProgressMonitor monitor) throws CoreException
             {
                 getBreakpoint().setEnabled(enabledButton.getSelection());
-                storeHitCount();
                 storeCondition();
             }
         };
@@ -151,10 +129,7 @@ public class PerlLineBreakpointPage extends PropertyPage
         try
         {
             createEnabledButton(composite);
-
-            // TODO: re-enable when implemented
-            // createHitCount(composite);
-            // createConditionEditor(composite);
+            createConditionEditor(composite);
         }
         catch (CoreException e)
         {
@@ -227,17 +202,33 @@ public class PerlLineBreakpointPage extends PropertyPage
     {
         Composite composite = createComposite(parent, 1);
         PerlLineBreakpoint breakpoint = getBreakpoint();
+        
+        conditionText = new SourceViewer(
+            composite, null, SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL);
+        IDocument document = new Document(breakpoint.getCondition());        
+        IDocumentPartitioner partitioner =
+            new PerlPartitioner(PerlDebugPlugin.getDefault().getLog());
+        
+        document.setDocumentPartitioner(partitioner);
+        partitioner.connect(document);
+        conditionText.configure(new PerlSourceViewerConfiguration(
+            PerlEditorPlugin.getDefault().getPreferenceStore(), null));
+        conditionText.setEditable(true);
+        conditionText.setDocument(document);
 
-        String condition = breakpoint.getCondition();
-        conditionText = createText(composite, (condition == null) ? "" : condition);
+        Control control = conditionText.getControl();
+        control.setFont(
+            JFaceResources.getFontRegistry().get(JFaceResources.TEXT_FONT));
+        GridData data = new GridData(GridData.FILL_BOTH);
+        data.widthHint = convertWidthInCharsToPixels(60);
+        data.heightHint = convertHeightInCharsToPixels(5);
+        control.setLayoutData(data);
 
-        conditionText.addModifyListener(new ModifyListener()
+        conditionText.addTextListener(new ITextListener() {
+            public void textChanged(TextEvent event)
             {
-                public void modifyText(ModifyEvent event)
-                {
-                    validateCondition();
-                }
-            });
+                validateCondition();
+            } });
     }
 
     /**
@@ -264,13 +255,7 @@ public class PerlLineBreakpointPage extends PropertyPage
 
         // TODO: replace this with basic source editor
         createCondition(groupComposite);
-
-        createSuspendOptions(groupComposite);
-        toggleSelectedSuspendOption(breakpoint);
-
         toggleConditionEnabled(enableConditionButton.getSelection());
-        // XXX: remove when condition editor fully implemented
-        enableConditionButton.setEnabled(false);
     }
 
     /**
@@ -296,52 +281,6 @@ public class PerlLineBreakpointPage extends PropertyPage
     }
 
     /**
-     * Creates the "hit count" checkbox and text field
-     */
-    private void createHitCount(Composite parent)
-    {
-        Composite composite = createComposite(parent, 2);
-        PerlLineBreakpoint breakpoint = getBreakpoint();
-
-        hitCountButton = createCheckButton(composite, PropertyPageMessages.hitCount);
-        hitCountButton.addSelectionListener(new SelectionAdapter()
-            {
-                public void widgetSelected(SelectionEvent event)
-                {
-                    hitCountText.setEnabled(hitCountButton.getSelection());
-                    validateHitCount();
-                }
-            });
-
-        int hits = breakpoint.getHitCount();
-        hitCountButton.setSelection(false);
-
-        String hitCount = "";
-        if (hits > 0)
-        {
-            hitCount = Integer.toString(hits);
-            hitCountButton.setSelection(true);
-        }
-
-        hitCountText = createText(composite, hitCount);
-        if (hits <= 0)
-        {
-            hitCountText.setEnabled(false);
-        }
-
-        hitCountText.addModifyListener(new ModifyListener()
-            {
-                public void modifyText(ModifyEvent event)
-                {
-                    validateHitCount();
-                }
-            });
-
-        // XXX: remove when hit count is implemented!
-        hitCountButton.setEnabled(false);
-    }
-
-    /**
      * Creates the line number, etc label fields
      */
     private void createLabels(Composite parent)
@@ -363,52 +302,6 @@ public class PerlLineBreakpointPage extends PropertyPage
         }
     }
 
-    /**
-     * Creates the "regexp match" text field
-     */
-    private void createRegExpMatch(Composite parent)
-    {
-        Composite composite = createComposite(parent, 1);
-        PerlLineBreakpoint breakpoint = getBreakpoint();
-
-        // TODO: add ignore-case, etc checkbox options
-
-        regExpText = createText(composite, breakpoint.getRegExp());
-        regExpText.addModifyListener(new ModifyListener()
-            {
-                public void modifyText(ModifyEvent e)
-                {
-                    validateRegExp();
-                }
-            });
-
-        regExpText.setEnabled(conditionMatchesRegExp.getSelection());
-    }
-
-    /**
-     * Creates the "suspend when" swt widgets
-     */
-    private void createSuspendOptions(Composite groupComposite)
-    {
-        suspendWhenLabel = createLabel(groupComposite, PropertyPageMessages.suspendWhen);
-
-        conditionIsTrue = createRadioButton(groupComposite, PropertyPageMessages.conditionIsTrue);
-        conditionHasChanged =
-            createRadioButton(groupComposite, PropertyPageMessages.conditionHasChanged);
-        conditionMatchesRegExp =
-            createRadioButton(groupComposite, PropertyPageMessages.conditionMatchesRegExp);
-        conditionMatchesRegExp.addSelectionListener(new SelectionAdapter()
-            {
-                public void widgetSelected(SelectionEvent event)
-                {
-                    regExpText.setEnabled(conditionMatchesRegExp.getSelection());
-                    validateRegExp();
-                }
-            });
-
-        createRegExpMatch(groupComposite);
-    }
-
     private void logError(String message, CoreException e)
     {
         String id = PerlDebugPlugin.getUniqueIdentifier();
@@ -416,7 +309,7 @@ public class PerlLineBreakpointPage extends PropertyPage
     }
 
     /**
-     * Stores the "condition" editor and the toggled "suspend when" condition
+     * Stores the "condition" editor.
      */
     private void storeCondition() throws CoreException
     {
@@ -427,81 +320,18 @@ public class PerlLineBreakpointPage extends PropertyPage
             breakpoint.setConditionEnabled(enableConditionButton.getSelection());
         }
 
-        if (! conditionText.getText().equals(breakpoint.getCondition()))
+        if (!conditionText.getDocument().get().equals(breakpoint.getCondition()))
         {
-            breakpoint.setCondition(conditionText.getText());
-        }
-
-        if (breakpoint.isConditionSuspendOnTrue() != conditionIsTrue.getSelection())
-        {
-            breakpoint.setConditionSuspendOnTrue(conditionIsTrue.getSelection());
-        }
-
-        if (breakpoint.isConditionSuspendOnChange() != conditionHasChanged.getSelection())
-        {
-            breakpoint.setConditionSuspendOnChange(conditionHasChanged.getSelection());
-        }
-
-        if (breakpoint.isConditionSuspendOnRegExp() != conditionMatchesRegExp.getSelection())
-        {
-            breakpoint.setConditionSuspendOnRegExp(conditionMatchesRegExp.getSelection());
-        }
-
-        if (! breakpoint.getRegExp().equals(conditionText.getText()))
-        {
-            breakpoint.setRegExp(conditionText.getText());
-        }
-
-    }
-
-    /**
-     * Stores the "hit count" text field
-     */
-    private void storeHitCount()
-    {
-        if (! hitCountButton.getSelection()) { return; }
-
-        try
-        {
-            PerlLineBreakpoint breakpoint = getBreakpoint();
-            breakpoint.setHitCount(Integer.parseInt(hitCountText.getText()));
-        }
-        catch (NumberFormatException e)
-        {
-            // will never happen due to validation routine
+            breakpoint.setCondition(conditionText.getDocument().get());
         }
     }
 
     /**
-     * Toggles the "condition" editor and associated "suspend when" options as enabled/disabled
+     * Toggles the "condition" editor as enabled/disabled
      */
     private void toggleConditionEnabled(boolean enabled)
     {
-        conditionText.setEnabled(enabled);
-        suspendWhenLabel.setEnabled(enabled);
-        conditionIsTrue.setEnabled(enabled);
-        conditionHasChanged.setEnabled(enabled);
-        conditionMatchesRegExp.setEnabled(enabled);
-    }
-
-    /**
-     * Toggles which "suspend when" condition is currently active on the page
-     */
-    private void toggleSelectedSuspendOption(PerlLineBreakpoint breakpoint) throws CoreException
-    {
-        if (breakpoint.isConditionSuspendOnTrue())
-        {
-            conditionIsTrue.setSelection(true);
-        }
-        else if (breakpoint.isConditionSuspendOnChange())
-        {
-            conditionHasChanged.setSelection(true);
-        }
-        else
-        {
-            conditionMatchesRegExp.setSelection(true);
-            regExpText.setEnabled(true);
-        }
+        conditionText.getTextWidget().setEnabled(enabled);
     }
 
     /**
@@ -515,7 +345,7 @@ public class PerlLineBreakpointPage extends PropertyPage
             return;
         }
 
-        if ("".equals(conditionText.getText()))
+        if ("".equals(conditionText.getDocument().get().trim()))
         {
             addErrorMessage(PropertyPageMessages.conditionBlankErrorMessage);
         }
@@ -523,68 +353,5 @@ public class PerlLineBreakpointPage extends PropertyPage
         {
             removeErrorMessage(PropertyPageMessages.conditionBlankErrorMessage);
         }
-
     }
-
-    /**
-     * Validates the "hit count" text field
-     */
-    private void validateHitCount()
-    {
-        if (! hitCountButton.getSelection())
-        {
-            removeErrorMessage(PropertyPageMessages.hitCountErrorMessage);
-            return;
-        }
-
-        try
-        {
-            int hitCount = Integer.parseInt(hitCountText.getText());
-            if (hitCount < 1)
-            {
-                addErrorMessage(PropertyPageMessages.hitCountErrorMessage);
-            }
-            else
-            {
-                removeErrorMessage(PropertyPageMessages.hitCountErrorMessage);
-            }
-        }
-        catch (NumberFormatException e)
-        {
-            addErrorMessage(PropertyPageMessages.hitCountErrorMessage);
-        }
-    }
-
-    /**
-     * Validates the "regexp match" text field
-     */
-    private void validateRegExp()
-    {
-        if (! conditionMatchesRegExp.getSelection())
-        {
-            removeErrorMessage(PropertyPageMessages.regExpBlankErrorMessage);
-            return;
-        }
-
-        if ("".equals(regExpText.getText()))
-        {
-            addErrorMessage(PropertyPageMessages.regExpBlankErrorMessage);
-            return;
-        }
-
-        removeErrorMessage(PropertyPageMessages.regExpBlankErrorMessage);
-
-        try
-        {
-            // TODO: include regexp options when validating
-            new RE(regExpText.getText());
-            removeErrorMessage(PropertyPageMessages.regExpInvalidErrorMessage);
-        }
-        catch (REException e)
-        {
-            addErrorMessage(PropertyPageMessages.regExpInvalidErrorMessage);
-            return;
-        }
-    }
-
 }

@@ -23,12 +23,6 @@ public class PerlLineBreakpoint extends PerlBreakpoint implements ILineBreakpoin
 
     private static final String PERL_LINE_BREAKPOINT = "org.epic.debug.perlLineBreakpointMarker"; // $NON-NLS-1$
 
-    private static final String CONDITION_SUSPEND_ON_TRUE = "org.epic.debug.conditionSuspendOnTrue";
-
-    private static final String CONDITION_SUSPEND_ON_CHANGE = "org.epic.debug.conditionSuspendOnChange";
-
-    private static final String CONDITION_SUSPEND_ON_REGEXP = "org.epic.debug.conditonSuspendOnRegExp";
-
     private static final String CONDITION_ENABLED = "org.epic.debug.conditionEnabled";
 
     private static final String CONDITION = "org.epic.debug.condition";
@@ -166,21 +160,6 @@ public class PerlLineBreakpoint extends PerlBreakpoint implements ILineBreakpoin
         return this.regExp;
     }
 
-    public boolean isConditionSuspendOnTrue() throws CoreException
-    {
-        return ensureMarker().getAttribute(CONDITION_SUSPEND_ON_TRUE, true);
-    }
-
-    public boolean isConditionSuspendOnChange() throws CoreException
-    {
-        return ensureMarker().getAttribute(CONDITION_SUSPEND_ON_CHANGE, false);
-    }
-
-    public boolean isConditionSuspendOnRegExp() throws CoreException
-    {
-        return ensureMarker().getAttribute(CONDITION_SUSPEND_ON_REGEXP, false);
-    }
-
     public boolean isConditionEnabled() throws CoreException
     {
         return ensureMarker().getAttribute(CONDITION_ENABLED, false);
@@ -196,27 +175,8 @@ public class PerlLineBreakpoint extends PerlBreakpoint implements ILineBreakpoin
         // TODO: re-register the breakpoint now that the attributs have changed (see JavaBreakpoint)
     }
 
-    public void setConditionSuspendOnTrue(boolean enabled) throws CoreException
-    {
-        setAttributes(new String[]{CONDITION_SUSPEND_ON_TRUE}, new Object[]{Boolean.valueOf(enabled)});
-        recreate();
-
-    }
-
-    public void setConditionSuspendOnChange(boolean enabled) throws CoreException
-    {
-        setAttributes(new String[]{CONDITION_SUSPEND_ON_CHANGE}, new Object[]{Boolean.valueOf(enabled)});
-        recreate();
-    }
-
     public void setRegExp(String regExp)
     {
         this.regExp = regExp;
-    }
-
-    public void setConditionSuspendOnRegExp(boolean enabled) throws CoreException
-    {
-        setAttributes(new String[]{CONDITION_SUSPEND_ON_REGEXP}, new Object[]{Boolean.valueOf(enabled)});
-        recreate();
     }
 }

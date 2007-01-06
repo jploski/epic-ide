@@ -609,7 +609,17 @@ public class PerlDB implements IDebugElement
         
         try
         {
-            if (db.setLineBreakpoint(((PerlLineBreakpoint) bp).getLineNumber()))
+            PerlLineBreakpoint lbp = (PerlLineBreakpoint) bp;
+            String condition = lbp.isConditionEnabled() ? lbp.getCondition() : null;
+            
+            if (condition != null)
+            {
+                condition = condition.replaceAll("\\n\\r", " ");
+                condition = condition.replaceAll("\\r", " ");
+                condition = condition.replaceAll("\\n", " ");
+            }
+
+            if (db.setLineBreakpoint(lbp.getLineNumber(), condition))
             {
                 activeBreakpoints.add(bp);
                 bp.addInstallation(this);

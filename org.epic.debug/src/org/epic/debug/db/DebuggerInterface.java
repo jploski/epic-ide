@@ -221,9 +221,12 @@ public class DebuggerInterface
         runSyncCommand(CMD_EXEC, command);
     }
     
-    public boolean setLineBreakpoint(int line) throws IOException
+    public boolean setLineBreakpoint(int line, String condition)
+        throws IOException
     {
-        String output = runSyncCommand(CMD_EXEC, "b " + line);
+        String output = runSyncCommand(
+            CMD_EXEC, "b " + line +
+            (condition != null ? (" " + condition) : ""));
         return re.SET_LINE_BREAKPOINT.getAllMatches(output).length == 0;
     }
     

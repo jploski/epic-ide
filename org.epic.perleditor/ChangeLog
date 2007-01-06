@@ -5,6 +5,11 @@ CVS
 
 		Editor:
 
+Version 0.5.29 - 06-January-2007
+		Debugger:
+		* Implemented Feature Request [ 1629417 ] Better handling of remote breakpoints
+		* Implemented Feature Request [ 1629390 ] Conditional breakpoints
+
 Version 0.5.28 - 02-January-2007
 		Debugger:
 		* Fixed Bug [ 1626159 ] Can't load Oracle.dll in CGI mode

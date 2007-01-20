@@ -4,6 +4,7 @@ CVS
 		Debugger:
 
 		Editor:
+		* Fixed Bug [ 1637794 ] predeclared subroutines displayed incorrectly in the outline
 
 Version 0.5.29 - 06-January-2007
 		Debugger:

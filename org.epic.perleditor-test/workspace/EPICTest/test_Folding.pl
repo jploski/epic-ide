@@ -20,6 +20,13 @@ testing
 =comment
 =cut
 
+sub sixth; # no folding
+
+if (1)
+{ 
+    
+}
+
 __END__
 
 sub fifth

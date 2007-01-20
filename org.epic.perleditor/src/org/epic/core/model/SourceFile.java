@@ -258,6 +258,11 @@ public class SourceFile
                 {
                     subName = t;
                 }
+                else if (type == PerlTokenTypes.SEMI)
+                {
+                    subKeyword = null;
+                    subName = null;
+                }
                 else if (type == PerlTokenTypes.OPEN_CURLY)
                 {
                     if (subName != null)

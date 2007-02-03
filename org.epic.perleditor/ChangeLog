@@ -4,6 +4,12 @@ CVS
 		Debugger:
 
 		Editor:
+
+Version 0.5.30 - 04-February-2007
+		Debugger:
+		* Fixed Bug [ 1651379 ] Debugger ignores breakpoints in modules (Windows)
+
+		Editor:
 		* Fixed Bug [ 1637794 ] predeclared subroutines displayed incorrectly in the outline
 
 Version 0.5.29 - 06-January-2007

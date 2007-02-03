@@ -98,8 +98,26 @@ public class LocalLaunchConfigurationDelegate
             ExecutionArguments exArgs = new ExecutionArguments(perlParams);
             fCmdList.addAll(exArgs.getProgramArgumentsL());
         }
-    
-        fCmdList.add(getScriptPath(launch).toOSString());
+        
+        if (isCygwin())
+        {
+            IPath cygwinPath = getPathMapper(launch).getDebuggerPath(
+                getScriptPath(launch), null);
+            
+            if (cygwinPath != null) fCmdList.add(cygwinPath.toString());
+            else throw new CoreException(new Status(
+                Status.ERROR,
+                PerlDebugPlugin.getUniqueIdentifier(),
+                Status.OK,
+                MessageFormat.format(
+                    "Could not translate path {0} into a Cygwin path.\n" +
+                    "Make sure your Cygwin mounts are configured properly.",
+                    new String[] { getScriptPath(launch).toOSString() }),
+                null
+                ));
+        }
+        else
+            fCmdList.add(getScriptPath(launch).toString());
         
         if (progParams != null && progParams.length() > 0)
         {

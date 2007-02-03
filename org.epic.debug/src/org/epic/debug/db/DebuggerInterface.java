@@ -30,8 +30,7 @@ public class DebuggerInterface
     
     private final Thread thread;
     private final String perlVersion;    
-    
-    private Boolean windows;
+
     private boolean disposed;
     private Command asyncCommand;
 
@@ -292,20 +291,7 @@ public class DebuggerInterface
     
     private String getOSPath(IPath path) throws IOException
     {
-        if (isWindows()) return path.toString().replace('/', '\\');
-        else return path.toString();
-    }
-    
-    private boolean isWindows() throws IOException
-    {
-        if (windows == null)
-        {
-            String os = getOS();
-            windows = new Boolean(
-                os.equalsIgnoreCase("mswin32") ||
-                os.equalsIgnoreCase("netware"));
-        }
-        return windows.booleanValue();
+        return path.toString();
     }
     
     private Command runAsyncCommand(int command, String code, boolean notifyOnFinish)

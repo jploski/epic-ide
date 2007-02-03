@@ -41,11 +41,7 @@ public abstract class LaunchConfigurationDelegate
     
     protected IPathMapper getPathMapper(ILaunch launch) throws CoreException
     {
-        String interpreterType = PerlEditorPlugin.getDefault()
-            .getPreferenceStore().getString(
-                PerlEditorPlugin.INTERPRETER_TYPE_PREFERENCE);
-
-        if (PerlEditorPlugin.INTERPRETER_TYPE_CYGWIN.equals(interpreterType))
+        if (isCygwin())
             return new CygwinPathMapper();
         else
             return new NullPathMapper();
@@ -81,6 +77,15 @@ public abstract class LaunchConfigurationDelegate
             PerlDebugPlugin.log(e);
             return null;
         }
+    }
+    
+    protected final boolean isCygwin()
+    {
+        String interpreterType = PerlEditorPlugin.getDefault()
+            .getPreferenceStore().getString(
+                PerlEditorPlugin.INTERPRETER_TYPE_PREFERENCE);
+
+        return PerlEditorPlugin.INTERPRETER_TYPE_CYGWIN.equals(interpreterType);
     }
     
     protected final boolean isDebugMode(ILaunch launch)

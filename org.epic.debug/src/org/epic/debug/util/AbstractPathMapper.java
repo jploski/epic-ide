@@ -1,7 +1,6 @@
 package org.epic.debug.util;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 import org.eclipse.core.runtime.IPath;
 import org.epic.debug.db.DebuggerInterface;
@@ -46,16 +45,31 @@ public abstract class AbstractPathMapper implements IPathMapper
     {
     }
     
-    private IPath swapPrefix(IPath path, List srcPrefixes, List targetPrefixes)
-    {   
-        for (int i = 0; i < srcPrefixes.size(); i++)
+    private IPath swapPrefix(IPath path, final List srcPrefixes, List targetPrefixes)
+    {
+        // We want to iterate over srcPrefixes in descending order by length,
+        // so that we replace the longest possible srcPrefix. Compute the order now:
+        Integer[] srcPrefixI = new Integer[srcPrefixes.size()];
+        for (int i = 0; i < srcPrefixI.length; i++) srcPrefixI[i] = new Integer(i);
+        Arrays.sort(srcPrefixI, new Comparator() {
+            public int compare(Object o1, Object o2)
+            {
+                int i1 = ((Integer) o1).intValue();
+                int i2 = ((Integer) o2).intValue();
+                
+                return
+                    srcPrefixes.get(i2).toString().length() -
+                    srcPrefixes.get(i1).toString().length();
+            } });
+        
+        for (int i = 0; i < srcPrefixI.length; i++)
         {
-            IPath srcPrefix = (IPath) srcPrefixes.get(i);
+            IPath srcPrefix = (IPath) srcPrefixes.get(srcPrefixI[i].intValue());
             
             if (srcPrefix.isPrefixOf(path))
             {
                 path = path.removeFirstSegments(srcPrefix.segmentCount());
-                return ((IPath) targetPrefixes.get(i)).append(path);
+                return ((IPath) targetPrefixes.get(srcPrefixI[i].intValue())).append(path);
             }
         }
         return null;

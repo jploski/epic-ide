@@ -117,6 +117,12 @@ public class SourceCritic extends ScriptExecutor
     {
         String[] tmp = toParse.split("~\\|~");
 
+        // handle cases where a line returned from critic doesn't have all 6 expected fields
+        if (tmp.length != 6)
+        {
+            return null;
+        }
+
         Violation violation = new Violation();
 
         violation.file = tmp[0];
@@ -139,20 +145,25 @@ public class SourceCritic extends ScriptExecutor
         }
 
         String[] lines = toParse.split(separator);
-        Violation[] violations = new Violation[lines.length];
+        ArrayList violations = new ArrayList();;
         for (int i = 0; i < lines.length; i++)
         {
             System.out.println("critic: " + lines[i]);
-            violations[i] = parseLine(lines[i]);
+
+            Violation v = parseLine(lines[i]);
+            if (v != null)
+            {
+                violations.add(v);
+            }
         }
 
-        if (violations.length == 0)
+        if (violations.size() == 0)
         {
             log(StatusFactory.createWarning(getPluginId(),
                     "Perl::Critic violations.length == 0, output change?"));
         }
 
-        return violations;
+        return (Violation[]) violations.toArray(new Violation[violations.size()]);
     }
 
     public static class Violation

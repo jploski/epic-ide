@@ -139,9 +139,25 @@ public class DebuggerProxy2 extends PlatformObject
 		fireEvent(new DebugEvent(this, DebugEvent.TERMINATE));
 	}
     
-    private static class DebugOutProxy extends PrintWriter implements IStreamMonitor
+    private static class DebugOutProxy extends PrintWriter
     {
         private static final String NL = System.getProperty("line.separator");
+
+        public final IStreamMonitor monitor = new IStreamMonitor() {
+            public void addListener(IStreamListener listener)
+            {
+                DebugOutProxy.this.addListener(listener);
+            }
+
+            public String getContents()
+            {
+                return DebugOutProxy.this.getContents();
+            }
+
+            public void removeListener(IStreamListener listener)
+            {
+                DebugOutProxy.this.removeListener(listener); 
+            } };
 
         private Set listeners;
         private final PrintWriter w;
@@ -284,7 +300,7 @@ public class DebuggerProxy2 extends PlatformObject
         
         public IStreamMonitor getStreamMonitor()
         {
-            return this;
+            return monitor;
         }
 
         public synchronized void removeListener(IStreamListener listener)
@@ -297,7 +313,7 @@ public class DebuggerProxy2 extends PlatformObject
             for (Iterator i = listeners.iterator(); i.hasNext();)
             {
                 final IStreamListener listener = (IStreamListener) i.next();
-                listener.streamAppended(text, this);
+                listener.streamAppended(text, monitor);
             }
         }
     }

@@ -4,6 +4,7 @@ CVS
 		Debugger:
 
 		Editor:
+		* Fixed Bug [ 1655539 ] Ctrl-Backspace deletes incorrectly with source folding
 
 Version 0.5.30 - 04-February-2007
 		Debugger:

@@ -1033,54 +1033,55 @@ public class PerlEditor extends TextEditor implements IPropertyChangeListener
                 c != '_' && c != '&' && c != '$' && c != '@' && c != '%';
         }
         
-        protected final void setCaretPosition(final int position)
-        {
-            if (select || delete)
+        protected final void setCaretPosition(final int modelOffset)
+        {   
+            final ISourceViewer viewer = getSourceViewer();
+            final StyledText text = viewer.getTextWidget();
+            
+            if (text == null || text.isDisposed()) return;
+            
+            if (select)
             {
-                final ISourceViewer viewer = getSourceViewer();
-                final StyledText text = viewer.getTextWidget();
-
-                if (text != null && !text.isDisposed())
+                Point selection = text.getSelection();                
+                int oldCaret = text.getCaretOffset();
+                int newCaret = modelOffset2WidgetOffset(viewer, modelOffset);
+                int anchor, mod;
+                
+                if (oldCaret == selection.x)
                 {
-                    final Point selection = text.getSelection();
-                    final int caret = text.getCaretOffset();
-                    final int offset = modelOffset2WidgetOffset(viewer, position);
+                    anchor = selection.y;
+                    mod = selection.x;
+                }
+                else
+                {
+                    anchor = selection.x;
+                    mod = selection.y;
+                }
+                if (newCaret < oldCaret) mod -= oldCaret-newCaret;
+                else mod += newCaret-oldCaret;
 
-                    int start, length;
-                    if (caret == selection.x)
-                    {
-                        start = selection.y;
-                        length = offset - selection.y;
-                    }
-                    else
-                    {
-                        start = selection.x;
-                        length = offset - selection.x;
-                    }
-                    
-                    if (select) text.setSelectionRange(start, length);
-                    else if (delete)
-                    {
-                        try
-                        {
-                            if (length < 0)
-                            {
-                                start += length;
-                                length = Math.abs(length);
-                            }
-                            viewer.getDocument().replace(start, length, ""); //$NON-NLS-1$
-                        }
-                        catch (BadLocationException exception)
-                        {
-                            // Should not happen
-                        }
-                    }
+                text.setSelection(anchor, mod);
+            }
+            else if (delete)
+            {
+                int oldOffset = widgetOffset2ModelOffset(
+                    viewer, text.getCaretOffset());
+                int start = oldOffset > modelOffset ? modelOffset : oldOffset;
+                int length = Math.abs(modelOffset - oldOffset);
+                
+                try
+                {
+                    viewer.getDocument().replace(start, length, ""); //$NON-NLS-1$
+                }
+                catch (BadLocationException exception)
+                {
+                    // Should not happen
                 }
             }
-            else
+            else // just move the caret
             {
-                getSourceViewer().getTextWidget().setCaretOffset(
-                    modelOffset2WidgetOffset(getSourceViewer(), position));
+                text.setCaretOffset(
+                    modelOffset2WidgetOffset(viewer, modelOffset));
             }
         }
     }
@@ -1151,9 +1152,9 @@ public class PerlEditor extends TextEditor implements IPropertyChangeListener
                                !isWordSeparator(document.getChar(position))) position++;
                         
                         while (position < length &&
-                           Character.isWhitespace(document.getChar(position)) &&
-                           document.getChar(position) != '\n' &&
-                           document.getChar(position) != '\r') position++;
+                            Character.isWhitespace(document.getChar(position)) &&
+                            document.getChar(position) != '\n' &&
+                            document.getChar(position) != '\r') position++;
                     }
                 }
 
@@ -1243,9 +1244,9 @@ public class PerlEditor extends TextEditor implements IPropertyChangeListener
                         // until whitespace or word separator
                         
                         while (position > partitionStart &&
-                        Character.isWhitespace(document.getChar(position-1)) &&
-                        document.getChar(position-1) != '\n' &&
-                        document.getChar(position-1) != '\r') position--;
+                            Character.isWhitespace(document.getChar(position-1)) &&
+                            document.getChar(position-1) != '\n' &&
+                            document.getChar(position-1) != '\r') position--;
 
                         while (position > partitionStart &&
                                !Character.isWhitespace(document.getChar(position-1)) &&

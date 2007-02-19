@@ -63,9 +63,26 @@ public class TokenVarParser
         try
         {
             PerlDebugVar referencedVar = (PerlDebugVar) this.varMap.get(value);
-            PerlDebugValue referencedVal = referencedVar.getPdValue();
-            PerlDebugValue val = new PerlDebugValue(
-                target, " ", referencedVal.getValueString());
+            PerlDebugValue val;
+            
+            if (referencedVar != null)
+            {
+                PerlDebugValue referencedVal = referencedVar.getPdValue();
+                val = new PerlDebugValue(
+                    target, " ", referencedVal.getValueString());
+            }
+            else
+            {
+                log.log(new Status(
+                    IStatus.WARNING,
+                    PerlDebugPlugin.getUniqueIdentifier(),
+                    IStatus.OK,
+                    "Unresolved reference {" + value + "} for variable {" + name + "}. " +
+                    "Contents of the Variables view may be inaccurate. ",
+                    null));
+
+                val = new PerlDebugValue(target, " ", "<unresolved reference>");
+            }
 
             PerlDebugVar var = new PerlDebugVar(target, scope, name, val);
 

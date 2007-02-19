@@ -2,6 +2,7 @@ Eclipse Perl Integration:
 
 CVS
 		Debugger:
+		* Fixed Bug [ 1663441 ] An internal error occurred during: "Fetching children...
 
 		Editor:
 		* Fixed Bug [ 1655539 ] Ctrl-Backspace deletes incorrectly with source folding

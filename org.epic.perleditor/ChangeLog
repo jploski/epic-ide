@@ -2,6 +2,11 @@ Eclipse Perl Integration:
 
 CVS
 		Debugger:
+
+		Editor:
+
+Version 0.5.31 - 25-February-2007
+		Debugger:
 		* Fixed Bug [ 1663441 ] An internal error occurred during: "Fetching children...
 		* Implemented Feature Request [ 1668287 ] Console pattern matching in CGI mode
 

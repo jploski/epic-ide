@@ -73,13 +73,13 @@ public class PerlDebugVar extends DebugElement implements IVariable
 
     public PerlDebugValue getPdValue()
     {
-        return value;
+        return (PerlDebugValue) value;
     }
 
     public String getReferenceTypeName() throws DebugException
     {
-        if (value != null) return value.getReferenceTypeName();
-        else return null;
+        IValue value = getValue();
+        return value != null ? value.getReferenceTypeName() : null;
     }
 
     public IValue getValue() throws DebugException

@@ -6,6 +6,7 @@ CVS
 
 		Editor:
 		* Fixed Bug [ 1655539 ] Ctrl-Backspace deletes incorrectly with source folding
+		* Implemented Feature Request [ 1668287 ] Console pattern matching in CGI mode
 
 Version 0.5.30 - 04-February-2007
 		Debugger:

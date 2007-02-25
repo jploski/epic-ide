@@ -41,7 +41,7 @@ public class CGIProxy extends PlatformObject implements IProcess, ITerminate
 	public CGIProxy(ILaunch fLaunch, String fLabel)
 	{
 		mLaunch = fLaunch;
-		((IProcess) this).setAttribute(ATTR_PROCESS_TYPE, "EpicCGIProxy");
+		setAttribute(ATTR_PROCESS_TYPE, "EpicCGIProxy");
 		mIsConnected = false;
 		mIsTerminated = false;
 		mLabel = fLabel;

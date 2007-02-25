@@ -34,7 +34,10 @@
             qualifier="line \d"
             id="org.epic.debug.ui.PerlConsoleTracker">
          <enablement>
+           <or>
              <test property="org.eclipse.debug.ui.processTypeTest" value="perl"/>
+             <test property="org.eclipse.debug.ui.processTypeTest" value="EpicCGIProxy"/>
+           </or>
          </enablement>
       </consolePatternMatchListener>
     </extension>
@@ -189,9 +192,6 @@
             id="org.epic.debug.sourceLocator.Local">
         </sourceLocator>
     </extension>
-
-
-
 
     <extension point="org.eclipse.debug.ui.consoleColorProviders">
         <consoleColorProvider

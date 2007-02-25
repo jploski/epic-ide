@@ -3,10 +3,10 @@ Eclipse Perl Integration:
 CVS
 		Debugger:
 		* Fixed Bug [ 1663441 ] An internal error occurred during: "Fetching children...
+		* Implemented Feature Request [ 1668287 ] Console pattern matching in CGI mode
 
 		Editor:
 		* Fixed Bug [ 1655539 ] Ctrl-Backspace deletes incorrectly with source folding
-		* Implemented Feature Request [ 1668287 ] Console pattern matching in CGI mode
 
 Version 0.5.30 - 04-February-2007
 		Debugger:

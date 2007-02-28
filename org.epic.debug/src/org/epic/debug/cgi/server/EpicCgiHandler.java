@@ -228,6 +228,17 @@ public class EpicCgiHandler implements Handler
         //Get Perl executable and generate comand array
         ArrayList commandList = new ArrayList();
         commandList.add(config.getPerlExecutable());
+        
+        // Add absolute path to local working directory to make
+        // perl -d refer to modules in the same directory by their
+        // absolute rather than relative paths (relevant when setting
+        // breakpoints).
+        //
+        // TODO: Cygwin path translation is missing here, this might
+        // cause problems; compare to LocalLaunchConfigurationDelegate
+        commandList.add("-I" +
+            cgiFile.getParentFile().getAbsolutePath().replace('\\', '/'));
+        
         commandList.addAll(config.getRunInclude());
 
         if (config.getDebugMode())

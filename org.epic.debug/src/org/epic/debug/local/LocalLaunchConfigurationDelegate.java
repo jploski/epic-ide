@@ -76,6 +76,13 @@ public class LocalLaunchConfigurationDelegate
             PerlCore.create(getProject(launch)));
     
         fCmdList.add("-I" + PerlDebugPlugin.getDefault().getInternalDebugInc());
+        
+        // Add absolute path to local working directory to make
+        // perl -d refer to modules in the same directory by their
+        // absolute rather than relative paths (relevant when setting
+        // breakpoints).
+        fCmdList.add("-I" + PerlExecutableUtilities.resolveIncPath(
+            getLocalWorkingDir(launch).toFile().getAbsolutePath()));
             
         if (launch.getLaunchMode().equals(ILaunchManager.DEBUG_MODE))
         {

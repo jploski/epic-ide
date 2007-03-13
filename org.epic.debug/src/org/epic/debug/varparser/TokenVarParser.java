@@ -65,6 +65,15 @@ public class TokenVarParser
             PerlDebugVar referencedVar = (PerlDebugVar) this.varMap.get(value);
             PerlDebugValue val;
             
+            if (referencedVar == null &&
+                value.startsWith("REF") &&
+                value.indexOf("-> ") != -1)
+            {
+                // we might have something like "REF(0x8429efc)-> HASH(0x824f0bc)"
+                value = value.substring(value.indexOf("-> ")+3);
+                referencedVar = (PerlDebugVar) this.varMap.get(value);
+            }
+            
             if (referencedVar != null)
             {
                 PerlDebugValue referencedVal = referencedVar.getPdValue();

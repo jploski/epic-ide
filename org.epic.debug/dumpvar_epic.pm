@@ -212,10 +212,10 @@ sub _stringify
     return _string($str . "") if ref \$str eq 'GLOB';
     
     my $strval = ${overload::}{'StrVal'};
-    $str = $strval->($str)
+    eval { $str = $strval->($str)
       if ref $str
       and %overload::
-      and defined $strval;
+      and defined $strval; };
 
     if ($tick eq 'auto')
     {
@@ -282,8 +282,8 @@ sub _unwrap
     {
         my $val = $v;
         my $strval = ${overload::}{'StrVal'};
-        $val = $strval->($v)
-          if %overload:: and defined $strval;
+        eval { $val = $strval->($v)
+          if %overload:: and defined $strval; };
 
         # Match type and address.
         # Unblessed references will look like TYPE(0x...)

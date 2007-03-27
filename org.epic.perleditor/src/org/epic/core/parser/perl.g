@@ -188,7 +188,10 @@ protected MATCH_EXPR
 
 OPER_DARROW
 	: "=>"
-	{ $setToken(createOperatorToken(PerlTokenTypes.OPER_DARROW, "=>")); };
+	{
+		$setToken(createOperatorToken(PerlTokenTypes.OPER_DARROW, "=>"));
+		afterArrow = true;
+	};
 
 OPER_ARROW
 	: "->"
@@ -244,7 +247,10 @@ OPER_PLUSEQ
 
 OPER_COMMA
 	: ','
-	{ $setToken(createOperatorToken(PerlTokenTypes.OPER_COMMA, ",")); };
+	{
+		$setToken(createOperatorToken(PerlTokenTypes.OPER_COMMA, ","));
+		afterArrow = false;
+	};
 
 OPER_EQ
 	: { !format }? '='

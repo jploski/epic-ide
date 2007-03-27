@@ -535,3 +535,21 @@ hello world
 1596:1:__dftl_partition_content_type:{y}
 1597:1:OPERATOR:{}}
 1598:1:OPERATOR:{;}
+1599:2:__dftl_partition_content_type:{
+
+}
+1601:13:COMMENT:{# bug 1685564}
+1614:1:__dftl_partition_content_type:{
+}
+1615:3:KEYWORD1:{use}
+1618:1:__dftl_partition_content_type:{ }
+1619:8:__dftl_partition_content_type:{constant}
+1627:1:__dftl_partition_content_type:{ }
+1628:8:__dftl_partition_content_type:{DEGTORAD}
+1636:1:__dftl_partition_content_type:{ }
+1637:2:OPERATOR:{=>}
+1639:1:__dftl_partition_content_type:{ }
+1640:2:__dftl_partition_content_type:{PI}
+1642:1:OPERATOR:{/}
+1643:3:NUMBER:{180}
+1646:1:OPERATOR:{;}

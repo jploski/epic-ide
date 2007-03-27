@@ -68,3 +68,6 @@ foo(x => 5, y => 'b', y/a/b/, 'x' x 5);
 
 # bug 1598235
 $x = $args{y};
+
+# bug 1685564
+use constant DEGTORAD => PI/180;

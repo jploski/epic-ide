@@ -5,6 +5,13 @@ CVS
 
 		Editor:
 
+Version 0.5.32 - 27-March-2007
+		Debugger:
+		* Major internal refactoring (in dumpvar_epic.pm)
+
+		Editor:
+		* Fixed Bug [ 1685564 ] Syntax "use constant" statements with division
+
 Version 0.5.31 - 25-February-2007
 		Debugger:
 		* Fixed Bug [ 1663441 ] An internal error occurred during: "Fetching children...

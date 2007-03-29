@@ -220,7 +220,7 @@ litigation.
    </license>
 
    <url>
-      <update label="EPIC Updates" url="http://e-p-i-c.sourceforge.net/updates"/>
+      <update label="EPIC Updates" url="http://e-p-i-c.sourceforge.net/updates/testing"/>
    </url>
 
    <plugin
@@ -241,8 +241,7 @@ litigation.
          id="org.epic.doc"
          download-size="0"
          install-size="0"
-         version="0.5.6"
-         unpack="true"/>
+         version="0.5.6"/>
 
    <plugin
          id="org.epic.debug"
@@ -255,13 +254,12 @@ litigation.
          id="org.epic.lib"
          download-size="0"
          install-size="0"
-         version="0.5.1"
-         unpack="true"/>
+         version="0.5.1"/>
 
    <plugin
          id="org.epic.source"
          download-size="0"
          install-size="0"
-         version="0.5.32"
-         unpack="true"/>
+         version="0.5.32"/>
+
 </feature>

@@ -25,6 +25,8 @@ public class PerlPresentationReconciler extends PresentationReconciler
 {        
     public PerlPresentationReconciler(IPreferenceStore prefs)
     {
+        setDocumentPartitioning(PartitionTypes.PERL_PARTITIONING);
+        
         DefaultDamagerRepairer ddr =
             new DefaultDamagerRepairer(new ColoringScanner(prefs));
         
@@ -102,8 +104,7 @@ public class PerlPresentationReconciler extends PresentationReconciler
             
             try
             {
-                String type = document.getPartition(offset).getType();
-                type = debugPartitionType(type, document);
+                String type = PartitionTypes.getPerlPartition(document, offset).getType();
 
                 if (type.equals(PartitionTypes.VARIABLE))
                 {
@@ -169,33 +170,6 @@ public class PerlPresentationReconciler extends PresentationReconciler
                 getColor(p, colorPref),
                 bgColor,
                 style);
-        }
-        
-        private String debugPartitionType(String type, IDocument doc)
-        {
-            if (textAttributes.get(type) != null) return type;
-        
-            StringBuffer buf = new StringBuffer();
-            if (doc instanceof IDocumentExtension3)
-            {
-                IDocumentExtension3 _doc = (IDocumentExtension3) doc;
-                String[] partitionings = _doc.getPartitionings();
-                for (int i = 0; i < partitionings.length; i++)
-                {
-                    if (i > 0) buf.append(',');
-                    buf.append(partitionings[i]);
-                }
-            }
-                
-            PerlEditorPlugin.getDefault().getLog().log(new Status(
-                IStatus.WARNING,
-                PerlEditorPlugin.getUniqueIdentifier(),
-                IStatus.OK,
-                "Unrecognized partition type {" + type +
-                "} in document with partitionings {" + buf + "}",
-                null));
-
-            return PartitionTypes.DEFAULT;
         }
         
         private Color getColor(PerlEditorPlugin p, String colorPref)

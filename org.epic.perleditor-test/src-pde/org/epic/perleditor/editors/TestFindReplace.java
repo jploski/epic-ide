@@ -59,7 +59,7 @@ public class TestFindReplace extends BasePDETestCase
             
             //IDocument doc = editor.getViewer().getDocument();            
             IDocumentPartitioner partitioner = (IDocumentPartitioner)
-                doc.getDocumentPartitioner();
+                PartitionTypes.getPerlPartitioner(doc);
             
             ITypedRegion[] regions =
                 partitioner.computePartitioning(0, doc.getLength());

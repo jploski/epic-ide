@@ -3,10 +3,10 @@ package org.epic.core.model;
 import java.util.*;
 
 import org.eclipse.core.runtime.*;
-import org.eclipse.jface.text.BadLocationException;
-import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.text.*;
 import org.epic.core.parser.*;
 import org.epic.perleditor.PerlEditorPlugin;
+import org.epic.perleditor.editors.PartitionTypes;
 import org.epic.perleditor.editors.PerlPartitioner;
 
 /**
@@ -89,9 +89,11 @@ public class SourceFile
     {
         this.pods = new ArrayList();
         this.packages = new ArrayList();
-        
-        PerlPartitioner partitioner = (PerlPartitioner) doc.getDocumentPartitioner();
+
+        PerlPartitioner partitioner = (PerlPartitioner)
+            PartitionTypes.getPerlPartitioner(doc);
         if (partitioner == null) return;
+
         synchronized (partitioner.getTokensLock())
         {
             try

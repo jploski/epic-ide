@@ -164,7 +164,7 @@ public class OccurrencesUpdater implements ISelectionChangedListener
         String text;
         if (textSelection.getLength() < 1)
         {
-            ITypedRegion typedRegion = doc.getDocumentPartitioner()
+            ITypedRegion typedRegion = PartitionTypes.getPerlPartitioner(doc)
                 .getPartition(textSelection.getOffset());
             text = doc.get(typedRegion.getOffset(), typedRegion.getLength());
         }
@@ -193,8 +193,8 @@ public class OccurrencesUpdater implements ISelectionChangedListener
      */
     private void markText(
         IDocument doc, String type, String text, IAnnotationModelExtension model)
-        throws BadLocationException
-    {
+        throws BadLocationException, BadPartitioningException
+    {        
         int offset = 0;
         String docText = doc.get();
         int index = docText.indexOf(text, offset);
@@ -203,7 +203,7 @@ public class OccurrencesUpdater implements ISelectionChangedListener
         while (index != -1)
         {
             offset = index + text.length();
-            String contentType = doc.getContentType(index);
+            String contentType = PartitionTypes.getPerlPartition(doc, index).getType();
             if (contentType.equals(type)
                 || (contentType.equals(PartitionTypes.LITERAL1) && type
                 	.equals(PartitionTypes.VARIABLE))
@@ -248,7 +248,7 @@ public class OccurrencesUpdater implements ISelectionChangedListener
      */
     private boolean shouldMark(IDocument doc, ITextSelection selection)
     {
-        IDocumentPartitioner partitioner = doc.getDocumentPartitioner();
+        IDocumentPartitioner partitioner = PartitionTypes.getPerlPartitioner(doc);
         ITypedRegion partition = partitioner.getPartition(selection.getOffset()); 
         String contentType = partition.getType();
         
@@ -389,8 +389,16 @@ public class OccurrencesUpdater implements ISelectionChangedListener
             this.lastMarkedText = text;
             removeAnnotations();
 
-            String type = doc.getContentType(textSelection.getOffset());
+            String type = PartitionTypes.getPerlPartition(doc, textSelection.getOffset()).getType();
             markText(doc, type, text, model);
+        }
+        catch (BadPartitioningException e)
+        {
+            logUnexpected(e);
+
+            // emergency clean-up
+            lastMarkedText = "";
+            removeAnnotations();
         }
         catch (BadLocationException e)
         {

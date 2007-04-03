@@ -226,7 +226,7 @@ public class PerlPairMatcher implements ICharacterPairMatcher
         String text = document.get(min, max - min);
         if (text.length() == 0) return -1;
         
-        String partitionType = document.getPartition(i).getType();
+        String partitionType = PartitionTypes.getPerlPartition(document, i).getType();
         boolean inLiteralOrComment = isLiteralOrComment(partitionType);
         
         while (direction == 1 && i < end ||
@@ -277,7 +277,7 @@ public class PerlPairMatcher implements ICharacterPairMatcher
     {
         if (inLiteralOrComment)
         {
-            if (!document.getPartition(i).getType().equals(partitionType))
+            if (!PartitionTypes.getPerlPartition(document, i).getType().equals(partitionType))
             {
                 // we started from within a literal or comment partition
                 // and didn't found a matching peer so far - don't leave
@@ -287,7 +287,7 @@ public class PerlPairMatcher implements ICharacterPairMatcher
         }
         else
         {
-            ITypedRegion partition = document.getPartition(i);
+            ITypedRegion partition = PartitionTypes.getPerlPartition(document, i);
             if (isLiteralOrComment(partition.getType()))
             {
                 // we started from non-literal/comment partition;

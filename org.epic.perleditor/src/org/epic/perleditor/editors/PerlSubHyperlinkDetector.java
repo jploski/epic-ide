@@ -42,7 +42,7 @@ public class PerlSubHyperlinkDetector implements IHyperlinkDetector
         
         try
         {
-            partition = (ITypedRegion) doc.getPartition(offset);
+            partition = (ITypedRegion) PartitionTypes.getPerlPartition(doc, offset);
             if (!PartitionTypes.DEFAULT.equals(partition.getType())) return null;
         }
         catch (BadLocationException e) { return null; }

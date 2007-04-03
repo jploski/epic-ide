@@ -36,8 +36,7 @@ import org.eclipse.swt.widgets.List;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.epic.perleditor.PerlEditorPlugin;
-import org.epic.perleditor.editors.PerlPartitioner;
-import org.epic.perleditor.editors.PerlSourceViewerConfiguration;
+import org.epic.perleditor.editors.*;
 
 /*
  * The page for setting the editor options.
@@ -416,11 +415,11 @@ public class PerlEditorPreferencePage extends PreferencePage implements IWorkben
 		
 		String content= loadPreviewContentFromFile("ColorSettingPreviewCode.txt"); //$NON-NLS-1$
 
-		IDocument document= new Document(content);
+		Document document= new Document(content);
 		IDocumentPartitioner partitioner =
             new PerlPartitioner(PerlEditorPlugin.getDefault().getLog()); 
 		partitioner.connect(document);
-		document.setDocumentPartitioner(partitioner);
+		document.setDocumentPartitioner(PartitionTypes.PERL_PARTITIONING, partitioner);
 	
 		fPreviewViewer.setDocument(document);
 		

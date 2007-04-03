@@ -999,7 +999,7 @@ public class PerlEditor extends TextEditor implements IPropertyChangeListener
             if (position == -1) return;
 
             PerlPartitioner partitioner =
-                (PerlPartitioner) document.getDocumentPartitioner();
+                (PerlPartitioner) PartitionTypes.getPerlPartitioner(document);
             int docLength = document.getLength();
 
             run(viewer, document, position, partitioner, docLength);

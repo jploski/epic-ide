@@ -330,7 +330,7 @@ public class OpenDeclarationAction extends PerlEditorAction
             while ((bread = r.read(buf)) > 0) sw.write(buf, 0, bread);
             Document doc = new Document(sw.toString());
             PerlPartitioner p = new PerlPartitioner(getLog());
-            doc.setDocumentPartitioner(p);
+            doc.setDocumentPartitioner(PartitionTypes.PERL_PARTITIONING, p);
             p.connect(doc);
             return doc;
         }
@@ -368,7 +368,8 @@ public class OpenDeclarationAction extends PerlEditorAction
 
         try
         {
-            ITypedRegion partition = doc.getPartition(selection.getOffset());
+            ITypedRegion partition = PartitionTypes.getPerlPartition(
+                doc, selection.getOffset());
             if (!partition.getType().equals(PartitionTypes.DEFAULT)) return null;
             else
             {

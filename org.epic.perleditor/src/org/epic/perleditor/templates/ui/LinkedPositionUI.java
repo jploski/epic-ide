@@ -5,6 +5,7 @@
 package org.epic.perleditor.templates.ui;
 
 //import net.sourceforge.phpdt.internal.ui.util.ExceptionHandler;
+import org.epic.perleditor.editors.PartitionTypes;
 import org.epic.perleditor.preferences.PreferenceConstants;
 import org.epic.perleditor.PerlEditorPlugin;
 
@@ -256,7 +257,7 @@ public class LinkedPositionUI implements LinkedPositionListener,
 		fgStore.addPropertyChangeListener(this);
 
 		try {
-			fContentType= document.getContentType(fFramePosition.offset);
+			fContentType= PartitionTypes.getPerlPartition(document, fFramePosition.offset).getType();
 			if (fViewer instanceof ITextViewerExtension2) {
 				((ITextViewerExtension2) fViewer).prependAutoEditStrategy(fManager, fContentType);
 			} else {

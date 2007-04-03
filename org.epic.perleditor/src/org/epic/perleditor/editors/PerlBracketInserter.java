@@ -139,7 +139,7 @@ class PerlBracketInserter implements VerifyKeyListener
             {
                 // A quote is a closing char when inserted to terminate a string literal,
                 // otherwise it is an opening char:
-                String partitionType = doc.getPartition(offset-1).getType();
+                String partitionType = PartitionTypes.getPerlPartition(doc, offset-1).getType();
                 return PartitionTypes.LITERAL1.equals(partitionType) ||
                        PartitionTypes.LITERAL2.equals(partitionType);
             }
@@ -189,7 +189,7 @@ class PerlBracketInserter implements VerifyKeyListener
             // Duplication of apostrophes in a comment/POD is undesirable:
             if (keystrokeChar == '\'' && offset > 0)
             {
-                String partitionType = doc.getPartition(offset-1).getType();
+                String partitionType = PartitionTypes.getPerlPartition(doc, offset-1).getType();
                 if (PartitionTypes.POD.equals(partitionType) ||
                     PartitionTypes.COMMENT.equals(partitionType)) return true;
             }

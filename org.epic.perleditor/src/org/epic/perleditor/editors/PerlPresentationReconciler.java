@@ -3,6 +3,8 @@ package org.epic.perleditor.editors;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.PreferenceConverter;
 import org.eclipse.jface.text.*;
@@ -101,7 +103,8 @@ public class PerlPresentationReconciler extends PresentationReconciler
             try
             {
                 String type = document.getPartition(offset).getType();
-                
+                type = debugPartitionType(type, document);
+
                 if (type.equals(PartitionTypes.VARIABLE))
                 {
                     // render first character (such as $, @ or %) in default color,
@@ -166,6 +169,33 @@ public class PerlPresentationReconciler extends PresentationReconciler
                 getColor(p, colorPref),
                 bgColor,
                 style);
+        }
+        
+        private String debugPartitionType(String type, IDocument doc)
+        {
+            if (textAttributes.get(type) != null) return type;
+        
+            StringBuffer buf = new StringBuffer();
+            if (doc instanceof IDocumentExtension3)
+            {
+                IDocumentExtension3 _doc = (IDocumentExtension3) doc;
+                String[] partitionings = _doc.getPartitionings();
+                for (int i = 0; i < partitionings.length; i++)
+                {
+                    if (i > 0) buf.append(',');
+                    buf.append(partitionings[i]);
+                }
+            }
+                
+            PerlEditorPlugin.getDefault().getLog().log(new Status(
+                IStatus.WARNING,
+                PerlEditorPlugin.getUniqueIdentifier(),
+                IStatus.OK,
+                "Unrecognized partition type {" + type +
+                "} in document with partitionings {" + buf + "}",
+                null));
+
+            return PartitionTypes.DEFAULT;
         }
         
         private Color getColor(PerlEditorPlugin p, String colorPref)

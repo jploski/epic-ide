@@ -60,11 +60,8 @@ public class TestFoldReconciler extends BaseTestCase
 
     private SourceFile loadSourceFile(String file) throws Exception
     {
-        PerlPartitioner partitioner = new PerlPartitioner(new Log());
         Document doc = new Document(readFile(file));
-
-        doc.setDocumentPartitioner(PartitionTypes.PERL_PARTITIONING, partitioner);
-        partitioner.connect(doc);
+        new PerlPartitioner(new Log(), doc);
 
         return new SourceFile(getLoggerForTests(), doc);
     }

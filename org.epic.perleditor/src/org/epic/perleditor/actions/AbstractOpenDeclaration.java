@@ -344,10 +344,8 @@ abstract class AbstractOpenDeclaration
             char[] buf = new char[4096];
             int bread;
             while ((bread = r.read(buf)) > 0) sw.write(buf, 0, bread);
-            Document doc = new Document(sw.toString());
-            PerlPartitioner p = new PerlPartitioner(getLog());
-            doc.setDocumentPartitioner(PartitionTypes.PERL_PARTITIONING, p);
-            p.connect(doc);
+            IDocument doc = new Document(sw.toString());
+            new PerlPartitioner(getLog(), doc);
             return doc;
         }
         finally

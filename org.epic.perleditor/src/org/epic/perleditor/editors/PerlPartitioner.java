@@ -37,7 +37,15 @@ public class PerlPartitioner implements
     {
         this.log = log;
         tokens = new TokensList();
-    }    
+    }
+    
+    public PerlPartitioner(ILog log, IDocument doc)
+    {
+        this(log);
+        ((IDocumentExtension3) doc).setDocumentPartitioner(
+            PartitionTypes.PERL_PARTITIONING, this);
+        connect(doc);
+    }
     
     public ITypedRegion[] computePartitioning(int offset, int length)
     {

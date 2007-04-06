@@ -420,11 +420,8 @@ public class PerlEditorPreferencePage extends PreferencePage implements IWorkben
 
 		String content= loadPreviewContentFromFile("ColorSettingPreviewCode.txt");
 
-		Document document= new Document(content);
-		IDocumentPartitioner partitioner =
-            new PerlPartitioner(PerlEditorPlugin.getDefault().getLog());
-		partitioner.connect(document);
-		document.setDocumentPartitioner(PartitionTypes.PERL_PARTITIONING, partitioner);
+		IDocument document= new Document(content);
+		new PerlPartitioner(PerlEditorPlugin.getDefault().getLog(), document);
 
 		fPreviewViewer.setDocument(document);
 

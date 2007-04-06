@@ -8,12 +8,9 @@ public class TestPerlPartitioner extends BaseTestCase
 {
     public void testSyntax() throws Exception
     {
-        PerlPartitioner partitioner = new PerlPartitioner(new Log());
         Document doc = new Document(readFile("workspace/EPICTest/syntax.pl"));
-        
-        doc.setDocumentPartitioner(PartitionTypes.PERL_PARTITIONING, partitioner);
-        partitioner.connect(doc);
-        
+        PerlPartitioner partitioner = new PerlPartitioner(new Log(), doc);
+
         ITypedRegion[] partitioning =
             partitioner.computePartitioning(0, doc.getLength());
         

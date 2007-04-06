@@ -29,17 +29,9 @@ public class PerlDocumentProvider extends TextFileDocumentProvider
     private void connectPerlPartitioner(Object input)
     {
         IDocument doc = getDocument(input);
-        IDocumentExtension3 _doc;
-
-        if (!(doc instanceof IDocumentExtension3)) return; // should never occur
-        else _doc = (IDocumentExtension3) doc; 
+        if (!(doc instanceof IDocumentExtension3)) return; // should never occur 
 
         if (PartitionTypes.getPerlPartitioner(doc) == null)
-        {
-            IDocumentPartitioner partitioner =
-                new PerlPartitioner(PerlEditorPlugin.getDefault().getLog());
-            _doc.setDocumentPartitioner(PartitionTypes.PERL_PARTITIONING, partitioner);
-            partitioner.connect(doc);
-        }
+            new PerlPartitioner(PerlEditorPlugin.getDefault().getLog(), doc);
     }
 }

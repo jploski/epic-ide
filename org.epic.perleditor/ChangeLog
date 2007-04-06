@@ -5,6 +5,10 @@ CVS
 
 		Editor:
 
+Version 0.5.33 - 06-April-2007
+		Editor:
+		* Fixed Bug [ 1695659 ] Cannot open *.html with EPIC in WDSC 7.0
+
 Version 0.5.32 - 27-March-2007
 		Debugger:
 		* Major internal refactoring (in dumpvar_epic.pm)

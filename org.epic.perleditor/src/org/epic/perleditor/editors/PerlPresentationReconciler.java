@@ -3,6 +3,8 @@ package org.epic.perleditor.editors;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.PreferenceConverter;
 import org.eclipse.jface.text.*;
@@ -23,6 +25,8 @@ public class PerlPresentationReconciler extends PresentationReconciler
 {        
     public PerlPresentationReconciler(IPreferenceStore prefs)
     {
+        setDocumentPartitioning(PartitionTypes.PERL_PARTITIONING);
+        
         DefaultDamagerRepairer ddr =
             new DefaultDamagerRepairer(new ColoringScanner(prefs));
         
@@ -100,7 +104,7 @@ public class PerlPresentationReconciler extends PresentationReconciler
             
             try
             {
-                String type = document.getPartition(offset).getType();
+                String type = PartitionTypes.getPerlPartition(document, offset).getType();
                 
                 if (type.equals(PartitionTypes.VARIABLE))
                 {

@@ -2,8 +2,7 @@ package org.epic.perleditor.editors;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jface.text.IDocument;
-import org.eclipse.jface.text.IDocumentPartitioner;
+import org.eclipse.jface.text.*;
 import org.eclipse.jface.text.source.IAnnotationModel;
 import org.eclipse.ui.editors.text.TextFileDocumentProvider;
 import org.epic.perleditor.PerlEditorPlugin;
@@ -30,12 +29,16 @@ public class PerlDocumentProvider extends TextFileDocumentProvider
     private void connectPerlPartitioner(Object input)
     {
         IDocument doc = getDocument(input);
+        IDocumentExtension3 _doc;
 
-        if (doc.getDocumentPartitioner() == null)
+        if (!(doc instanceof IDocumentExtension3)) return; // should never occur
+        else _doc = (IDocumentExtension3) doc; 
+
+        if (PartitionTypes.getPerlPartitioner(doc) == null)
         {
             IDocumentPartitioner partitioner =
                 new PerlPartitioner(PerlEditorPlugin.getDefault().getLog());
-            doc.setDocumentPartitioner(partitioner);
+            _doc.setDocumentPartitioner(PartitionTypes.PERL_PARTITIONING, partitioner);
             partitioner.connect(doc);
         }
     }

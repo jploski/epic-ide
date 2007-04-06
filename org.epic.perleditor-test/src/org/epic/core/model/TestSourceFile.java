@@ -7,6 +7,7 @@ import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.IDocument;
 import org.epic.perl.editor.test.BaseTestCase;
 import org.epic.perl.editor.test.Log;
+import org.epic.perleditor.editors.PartitionTypes;
 import org.epic.perleditor.editors.PerlPartitioner;
 
 public class TestSourceFile extends BaseTestCase
@@ -26,11 +27,11 @@ public class TestSourceFile extends BaseTestCase
     
     private void _testFile(String inFile, String outFile) throws IOException
     {
-        IDocument doc = new Document(readFile(inFile));
+        Document doc = new Document(readFile(inFile));
         String expected = readFile(outFile);
         
         PerlPartitioner partitioner = new PerlPartitioner(new Log());
-        doc.setDocumentPartitioner(partitioner);
+        doc.setDocumentPartitioner(PartitionTypes.PERL_PARTITIONING, partitioner);
         partitioner.connect(doc);
         
         SourceFile src = new SourceFile(new Log(), doc);

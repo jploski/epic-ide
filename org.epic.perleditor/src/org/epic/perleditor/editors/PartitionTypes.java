@@ -1,5 +1,7 @@
 package org.epic.perleditor.editors;
 
+import org.eclipse.jface.text.*;
+
 /**
  * Types of partitions that can appear in a Perl document,
  * also referred to as ITypedRegions and "content types".
@@ -8,7 +10,12 @@ package org.epic.perleditor.editors;
  */
 public class PartitionTypes
 {
-    public final static String DEFAULT = "__dftl_partition_content_type";
+    /**
+     * Name of the document partitioning managed by PerlPartitioner.
+     */
+    public static final String PERL_PARTITIONING = "org.epic.perleditor.perlPartitioning";
+
+    public final static String DEFAULT = IDocument.DEFAULT_CONTENT_TYPE;
     public final static String COMMENT = "COMMENT";
     public final static String POD = "POD";
     public final static String KEYWORD1 = "KEYWORD1";
@@ -31,6 +38,39 @@ public class PartitionTypes
         NUMBER,
         OPERATOR
         };
+    
+    /**
+     * Helper method which acts as
+     * org.eclipse.jface.text.IDocument#getPartition
+     * for the document partitioning managed by PerlPartitioner. 
+     */
+    public static ITypedRegion getPerlPartition(IDocument doc, int offset)
+        throws BadLocationException
+    {
+        if (!(doc instanceof IDocumentExtension3))
+            return doc.getPartition(offset); // should never occur
+
+        try
+        {
+            return ((IDocumentExtension3) doc).getPartition(
+                PERL_PARTITIONING, offset, false);
+        }
+        catch (BadPartitioningException e)
+        {
+            return doc.getPartition(offset); // should never occur
+        }
+    }
+    
+    /**
+     * Helper method which acts as
+     * org.eclipse.jface.text.IDocument#getDocumentPartitioner
+     * for the document partitioning managed by PerlPartitioner. 
+     */
+    public static IDocumentPartitioner getPerlPartitioner(IDocument doc)
+    {
+        if (!(doc instanceof IDocumentExtension3)) return null;
+        else return ((IDocumentExtension3) doc).getDocumentPartitioner(PERL_PARTITIONING); 
+    }
     
     public static String[] getTypes()
     {

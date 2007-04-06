@@ -50,7 +50,7 @@ public class TasksReconciler
         IDocument doc = docProvider.getDocument(input);
         if (doc == null) return;
         
-        PerlPartitioner partitioner = (PerlPartitioner) doc.getDocumentPartitioner();
+        PerlPartitioner partitioner = (PerlPartitioner) PartitionTypes.getPerlPartitioner(doc);
         if (partitioner == null) return;
         
         markerUtil = new MarkerUtil(((IFileEditorInput) input).getFile());         

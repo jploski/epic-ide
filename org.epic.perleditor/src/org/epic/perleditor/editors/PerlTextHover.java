@@ -108,7 +108,7 @@ public class PerlTextHover implements ITextHover
         try
         {        
             IDocument doc = textViewer.getDocument();
-            ITypedRegion partition = doc.getPartition(hoverRegion.getOffset());
+            ITypedRegion partition = PartitionTypes.getPerlPartition(doc, hoverRegion.getOffset());
             
             return
                 "@" + hoverRegion.getOffset() + ": " +partition.getOffset() +

@@ -38,7 +38,7 @@ public class TestEditorAssociation extends BasePDETestCase
         try
         {
             IDocument doc = editor.getViewer().getDocument();
-            assertTrue(doc.getDocumentPartitioner() instanceof PerlPartitioner);
+            assertTrue(PartitionTypes.getPerlPartitioner(doc) instanceof PerlPartitioner);
             assertTrue(editor.getViewer().getAnnotationModel() instanceof PerlSourceAnnotationModel);
         }
         finally

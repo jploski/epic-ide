@@ -23,8 +23,7 @@ import org.eclipse.swt.widgets.*;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.epic.perleditor.PerlEditorPlugin;
-import org.epic.perleditor.editors.PerlPartitioner;
-import org.epic.perleditor.editors.PerlSourceViewerConfiguration;
+import org.epic.perleditor.editors.*;
 import org.epic.perleditor.templates.*;
 import org.epic.perleditor.templates.ui.util.SWTUtil;
 
@@ -324,11 +323,11 @@ public class TemplatePreferencePage
     SourceViewer viewer =
       new SourceViewer(parent, null, SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL);
     //JavaTextTools tools = PerlEditorPlugin.getDefault().getJavaTextTools();
-    IDocument document = new Document();
+    Document document = new Document();
     IDocumentPartitioner partitioner = new PerlPartitioner(
         PerlEditorPlugin.getDefault().getLog());
 
-    document.setDocumentPartitioner(partitioner);
+    document.setDocumentPartitioner(PartitionTypes.PERL_PARTITIONING, partitioner);
     partitioner.connect(document);
 
     // TODO changed check

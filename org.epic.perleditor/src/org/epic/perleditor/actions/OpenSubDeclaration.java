@@ -80,7 +80,7 @@ class OpenSubDeclaration extends AbstractOpenDeclaration
 
         try
         {
-            ITypedRegion partition = doc.getPartition(selection.getOffset());
+            ITypedRegion partition = PartitionTypes.getPerlPartition(doc, selection.getOffset());
             if (!partition.getType().equals(PartitionTypes.DEFAULT)) return null;
             else
             {

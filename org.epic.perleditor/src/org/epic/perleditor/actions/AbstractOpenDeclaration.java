@@ -346,7 +346,7 @@ abstract class AbstractOpenDeclaration
             while ((bread = r.read(buf)) > 0) sw.write(buf, 0, bread);
             Document doc = new Document(sw.toString());
             PerlPartitioner p = new PerlPartitioner(getLog());
-            doc.setDocumentPartitioner(p);
+            doc.setDocumentPartitioner(PartitionTypes.PERL_PARTITIONING, p);
             p.connect(doc);
             return doc;
         }

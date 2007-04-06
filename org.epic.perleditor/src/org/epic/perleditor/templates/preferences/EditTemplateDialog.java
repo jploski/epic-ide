@@ -29,8 +29,7 @@ import org.eclipse.swt.widgets.*;
 import org.eclipse.ui.texteditor.ITextEditorActionConstants;
 import org.eclipse.ui.texteditor.IUpdate;
 import org.epic.perleditor.PerlEditorPlugin;
-import org.epic.perleditor.editors.PerlPartitioner;
-import org.epic.perleditor.editors.PerlSourceViewerConfiguration;
+import org.epic.perleditor.editors.*;
 import org.epic.perleditor.preferences.PreferenceConstants;
 import org.epic.perleditor.templates.*;
 import org.epic.perleditor.templates.ui.dialog.StatusDialog;
@@ -297,11 +296,11 @@ public class EditTemplateDialog extends StatusDialog {
 
 	private SourceViewer createEditor(Composite parent) {
 		SourceViewer viewer= new SourceViewer(parent, null, SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL);
-		IDocument document= new Document(fTemplate.getPattern());		 
+		Document document= new Document(fTemplate.getPattern());		 
 		IDocumentPartitioner partitioner =
             new PerlPartitioner(PerlEditorPlugin.getDefault().getLog());
 		
-		document.setDocumentPartitioner(partitioner);
+		document.setDocumentPartitioner(PartitionTypes.PERL_PARTITIONING, partitioner);
 		partitioner.connect(document);		
 		viewer.configure(new SimpleJavaSourceViewerConfiguration(fProcessor));
         viewer.setEditable(true);

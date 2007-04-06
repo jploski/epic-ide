@@ -1,16 +1,18 @@
 package org.epic.debug.util;
 
 import java.io.*;
-import java.net.ServerSocket;
-import java.net.Socket;
+import java.net.*;
 
 import org.epic.debug.PerlDebugPlugin;
 
 public class RemotePort
 {
-    public static final int mWaitOK = 1;
-    public static final int mWaitTerminate = 2;
-    public static final int mWaitError = 3;
+    private static final int DEFAULT_LOW_PORT = 5000;
+    private static final int DEFAULT_HIGH_PORT = 10000;
+    
+    public static final int WAIT_OK = 1;
+    public static final int WAIT_TERMINATE = 2;
+    public static final int WAIT_ERROR = 3;
     
     private ServerSocket mServer;
 	private Socket mClient;
@@ -24,13 +26,20 @@ public class RemotePort
 	private Thread mConnectionThread;
 	private volatile boolean mStop;
 
-	private static final int mStartPortSearch = 5000;
-	private static final int mEndPortSearch = 10000;
+	private final int mStartPortSearch;
+	private final int mEndPortSearch;
 
+    public RemotePort(String name, int startPortSearch, int endPortSearch)
+    {
+        this.name = name;
+        this.mStartPortSearch = startPortSearch;
+        this.mEndPortSearch = endPortSearch;
+    }
+    
 	public RemotePort(String name)
 	{
-        this.name = name;
-	}
+        this(name, DEFAULT_LOW_PORT, DEFAULT_HIGH_PORT);
+    }
     
     public static int findFreePort() 
     {
@@ -41,7 +50,7 @@ public class RemotePort
         boolean found = false;
         ServerSocket s = null;
 
-        for (int i = mStartPortSearch;(i < mEndPortSearch) && !found; i++)
+        for (int i = DEFAULT_LOW_PORT; i <= DEFAULT_HIGH_PORT && !found; i++)
         {
             try
             {
@@ -129,13 +138,8 @@ public class RemotePort
 	public void shutdown()
 	{
         //System.err.println("*************** " + this + " shutdown");
+        mServer = null;
         reset();
-        
-        if (mServer != null)
-        {
-            try { mServer.close(); } catch (IOException e) { PerlDebugPlugin.log(e); }
-            mServer = null;
-        }
         mStop = true;
 	}
 
@@ -149,7 +153,12 @@ public class RemotePort
 		return startConnect(true);
 	}
 
-	public int waitForConnect(boolean fTimeOut)
+    public int waitForConnect(boolean fTimeOut)
+    {
+        return waitForConnect(fTimeOut, true);
+    }
+
+	public int waitForConnect(boolean fTimeOut, boolean shutdownOnTimeout)
 	{
 		int port =  mServer.getLocalPort();
 		try
@@ -160,22 +169,22 @@ public class RemotePort
 			{
 				if (mStop) break;
 
-                if ((x % 10) == 0 && fTimeOut)
+/*                if ((x % 10) == 0 && fTimeOut)
     				System.out.println(
     					"Waiting for connect Port"
     						+ port
     						+ "(Try "
     						+ x
-    						+ " of 100)\n");
+    						+ " of 100)\n");*/
 						
 				Thread.sleep(100);
 			}
 
 			if (mClient == null)
 			{
-				shutdown();
-				if (mStop) return mWaitTerminate;
-				else return mWaitError;
+				if (shutdownOnTimeout) shutdown();
+				if (mStop) return WAIT_TERMINATE;
+				else return WAIT_ERROR;
 			}
 
 			mWriter = new PrintWriter(mClient.getOutputStream(), true);
@@ -184,14 +193,14 @@ public class RemotePort
         catch (IOException e)
 		{
 			PerlDebugPlugin.log(e);
-			return mWaitError;
+			return WAIT_ERROR;
 		}
         catch (InterruptedException e)
 		{
 			PerlDebugPlugin.log(e);
-			return mWaitError;
+			return WAIT_ERROR;
 		}
-		return mWaitOK;
+		return WAIT_OK;
 	}
     
     private BufferedReader createReader()
@@ -229,7 +238,12 @@ public class RemotePort
         mStop = false;
         mInStream = null;
         mOutStream = null;
-        mConnectionThread = null;
+        
+        if (mConnectionThread != null)
+        {
+            mConnectionThread.interrupt();
+            mConnectionThread = null;
+        }
     }
     
     private boolean startConnect(boolean fReconnect)
@@ -244,46 +258,17 @@ public class RemotePort
             assert mServer != null; // we're still listening
             found = true;
         }
-/*        {
-            reset();
-            found = false;
-            int count = 0, port = lastUsedPort;
-            do
-            {
-                try
-                {
-                    mServer = new ServerSocket(port);
-                    lastUsedPort = port;
-                    found = true;
-                    System.err.println("*****Reconnect ok***");
-                }
-                catch (IOException e)
-                {
-                    System.err.println("*****Reconnect failed***");
-                    try
-                    {
-                        Thread.sleep(100);
-                        count++;
-                    } catch (InterruptedException e1)
-                    {
-                        // TODO Auto-generated catch block
-                        e1.printStackTrace();
-                    }
-                    found = false;
-                }
-            }
-            while (!found && count < 100);
-        }*/
         else
         {
             reset();
 
             found = false;
-            for (int i = mStartPortSearch; i < mEndPortSearch && !found; i++)
+            for (int i = mStartPortSearch; i <= mEndPortSearch && !found; i++)
             {
                 try
                 {
                     mServer = new ServerSocket(i);
+                    mServer.setSoTimeout(5000);
                     lastUsedPort = i;
                     found = true;
                 }
@@ -302,21 +287,22 @@ public class RemotePort
         {
             public void run()
             {
-                int port = mServer.getLocalPort();
-                
                 try
+                {                    
+                    ServerSocket server = mServer;
+                    while (server != null && !isInterrupted())
+                    {
+                        try { mClient = server.accept(); }
+                        catch (SocketTimeoutException e) { }
+                    }
+                    if (mServer == null)
+                    {
+                        server.close();
+                    }
+                }
+                catch (IOException e)
                 {
-                    System.out.println(
-                        name + ": Trying to Accept on Port" + mServer.getLocalPort());
-                    mClient = mServer.accept();
-                    System.out.println(
-                        name + ": Accept on Port "
-                            + mServer.getLocalPort()
-                            + "!!!!!!!\n");
-                } catch (IOException e)
-                {
-                    System.out.println(
-                        name + ": Accept failed: " + port);
+                    PerlDebugPlugin.log(e);
                 }
             }
         };

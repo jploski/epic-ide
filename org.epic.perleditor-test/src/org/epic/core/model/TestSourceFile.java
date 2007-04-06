@@ -28,12 +28,10 @@ public class TestSourceFile extends BaseTestCase
     private void _testFile(String inFile, String outFile) throws IOException
     {
         Document doc = new Document(readFile(inFile));
+        new PerlPartitioner(new Log(), doc);
+
         String expected = readFile(outFile);
-        
-        PerlPartitioner partitioner = new PerlPartitioner(new Log());
-        doc.setDocumentPartitioner(PartitionTypes.PERL_PARTITIONING, partitioner);
-        partitioner.connect(doc);
-        
+
         SourceFile src = new SourceFile(new Log(), doc);
         src.parse();
         

@@ -2,14 +2,19 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Perl Debug Plug-in
 Bundle-SymbolicName: org.epic.debug; singleton:=true
-Bundle-Version: 0.4.11
+Bundle-Version: 0.5.24
 Bundle-Activator: org.epic.debug.PerlDebugPlugin
 Bundle-Vendor: EPIC Project
 Bundle-Localization: plugin
 Export-Package: org.epic.debug,
  org.epic.debug.cgi,
+ org.epic.debug.cgi.server,
+ org.epic.debug.db,
+ org.epic.debug.local,
+ org.epic.debug.remote,
  org.epic.debug.ui,
  org.epic.debug.ui.action,
+ org.epic.debug.ui.propertypages,
  org.epic.debug.util,
  org.epic.debug.varparser
 Require-Bundle: org.eclipse.core.runtime,
@@ -29,5 +34,6 @@ Require-Bundle: org.eclipse.core.runtime,
  org.epic.perleditor,
  org.epic.regexp,
  org.eclipse.core.variables,
- org.epic.lib
+ org.epic.lib,
+ org.eclipse.ui.console
 Eclipse-AutoStart: true

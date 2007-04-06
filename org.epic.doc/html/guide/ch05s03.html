@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"><head><title>Open SUB Declaration</title><link href="book.css" rel="stylesheet" type="text/css" /><meta content="DocBook XSL Stylesheets V1.68.1" name="generator" /><link rel="start" href="index.html" title="EPIC - User's Guide" /><link rel="up" href="ch05.html" title="Working with the Perl Editor" /><link rel="prev" href="ch05s02.html" title="Explain Errors and Warnings" /><link rel="next" href="ch05s04.html" title="Perldoc" /></head><body><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="N1042C" />Open SUB Declaration</h2></div></div></div><p>Open SUB Declaration allows the user to search for the declaration
-      of a specific SUBroutine.</p><div class="screenshot"><div class="mediaobject" align="center"><img src="images/OpenDeclaration_Menu.gif" align="middle" alt="Open SUB Declaration context menu" /></div></div><p>The search first determines what is selected. If no text is
-      selected, it attempts to find a subroutine name at the current cursor
-      position. The search will fail if no subroutine name is selected.</p><p>Due to the dynamic nature of Perl programs, the search is not
-      entirely reliable. For subroutine names qualified by a package prefix,
-      an attempt will be made to locate the appropriately named module file
-      using the @INC path. For unqualified subroutine names, the search will
-      first occur in the current editor and then extend to modules referenced
-      by 'use' statements.</p><p>If the subroutine declaration is found in a file inside workspace,
-      it will be highlighted in an existing or new editor.</p><div class="screenshot"><div class="mediaobject" align="center"><img src="images/OpenDeclaration_Found.gif" align="middle" alt="Open SUB Declaration result" /></div></div></div></body></html>
+<html xmlns="http://www.w3.org/1999/xhtml"><head><title>Open Declaration</title><link href="book.css" rel="stylesheet" type="text/css" /><meta content="DocBook XSL Stylesheets V1.71.0" name="generator" /><link rel="start" href="index.html" title="EPIC - User's Guide" /><link rel="up" href="ch05.html" title="Working with the Perl Editor" /><link rel="prev" href="ch05s02.html" title="Explain Errors and Warnings" /><link rel="next" href="ch05s04.html" title="Perldoc" /></head><body><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="N1042C" />Open Declaration</h2></div></div></div><p>Open Declaration allows the user to search for the declaration of
+      a specific subroutine or package.</p><div class="screenshot"><div class="mediaobject" align="center"><img src="images/OpenDeclaration_Menu.gif" align="middle" alt="Open Declaration context menu" /></div></div><p>The search first determines what is selected. If no text is
+      selected, it attempts to find a subroutine or package name at the
+      current cursor position. The search will fail if neither is
+      selected.</p><p>Due to the dynamic nature of Perl programs, the search is not
+      entirely reliable. For package names and subroutine names qualified by a
+      package prefix, an attempt will be made to locate the appropriately
+      named module file using the @INC path. For unqualified subroutine names,
+      the search will first occur in the current editor and then extend to
+      modules referenced by 'use' and (literal) 'require' statements.</p><p>If the declaration is found, it will be highlighted in an existing
+      or new editor.</p><div class="screenshot"><div class="mediaobject" align="center"><img src="images/OpenDeclaration_Found.gif" align="middle" alt="Open Declaration result" /></div></div></div></body></html>

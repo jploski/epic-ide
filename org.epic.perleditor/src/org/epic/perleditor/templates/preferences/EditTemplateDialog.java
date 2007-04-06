@@ -296,12 +296,9 @@ public class EditTemplateDialog extends StatusDialog {
 
 	private SourceViewer createEditor(Composite parent) {
 		SourceViewer viewer= new SourceViewer(parent, null, SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL);
-		Document document= new Document(fTemplate.getPattern());		 
-		IDocumentPartitioner partitioner =
-            new PerlPartitioner(PerlEditorPlugin.getDefault().getLog());
-		
-		document.setDocumentPartitioner(PartitionTypes.PERL_PARTITIONING, partitioner);
-		partitioner.connect(document);		
+		IDocument document= new Document(fTemplate.getPattern());
+        new PerlPartitioner(PerlEditorPlugin.getDefault().getLog(), document);
+
 		viewer.configure(new SimpleJavaSourceViewerConfiguration(fProcessor));
         viewer.setEditable(true);
 		viewer.setDocument(document);

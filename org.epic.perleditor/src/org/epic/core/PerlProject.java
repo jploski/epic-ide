@@ -1,7 +1,6 @@
 package org.epic.core;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.*;
 
 import org.eclipse.core.resources.IProject;
@@ -70,6 +69,18 @@ public class PerlProject extends PlatformObject
     {        
         XMLUtilities xmlUtil = new XMLUtilities();
         return makeAbsIncPath(xmlUtil.getIncludeEntries(project, true));
+    }
+
+    /**
+     * @return an unmodifiable list of Strings representing directories
+     *         in the project's include path. These are the exact entries
+     *         explicitly configured in the project's properties.
+     * @see {@link #getIncPath}
+     */
+    public List getRawIncPath()
+    {
+        XMLUtilities xmlUtil = new XMLUtilities();
+        return Arrays.asList(xmlUtil.getIncludeEntries(project, true));
     }
     
     /**

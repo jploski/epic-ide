@@ -2,7 +2,7 @@
 <feature
       id="org.epic.feature.main"
       label="EPIC"
-      version="0.4.30"
+      version="0.5.33"
       provider-name="Epic Project"
       plugin="org.epic.perleditor"
       image="icons/epic_install.jpg">
@@ -220,48 +220,46 @@ litigation.
    </license>
 
    <url>
-      <update label="EPIC Updates" url="http://e-p-i-c.sourceforge.net/updates"/>
+      <update label="EPIC Updates" url="http://e-p-i-c.sourceforge.net/updates/testing"/>
    </url>
 
    <plugin
          id="org.epic.regexp"
          download-size="0"
          install-size="0"
-         version="0.4.1"
+         version="0.5.1"
          unpack="false"/>
 
    <plugin
          id="org.epic.perleditor"
          download-size="0"
          install-size="0"
-         version="0.4.26"
+         version="0.5.26"
          unpack="false"/>
 
    <plugin
          id="org.epic.doc"
          download-size="0"
          install-size="0"
-         version="0.4.1"
-         unpack="true"/>
+         version="0.5.6"/>
 
    <plugin
          id="org.epic.debug"
          download-size="0"
          install-size="0"
-         version="0.4.11"
+         version="0.5.24"
          unpack="false"/>
 
    <plugin
          id="org.epic.lib"
          download-size="0"
          install-size="0"
-         version="0.4.1"
-         unpack="true"/>
+         version="0.5.1"/>
 
    <plugin
          id="org.epic.source"
          download-size="0"
          install-size="0"
-         version="0.4.30"
-         unpack="true"/>
+         version="0.5.33"/>
+
 </feature>

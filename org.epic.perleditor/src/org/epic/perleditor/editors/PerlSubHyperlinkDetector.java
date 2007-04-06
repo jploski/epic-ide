@@ -97,7 +97,7 @@ public class PerlSubHyperlinkDetector implements IHyperlinkDetector
         public void open()
         {
             OpenDeclarationAction action =
-                (OpenDeclarationAction) editor.getAction(PerlEditorActionIds.OPEN_SUB);
+                (OpenDeclarationAction) editor.getAction(PerlEditorActionIds.OPEN_DECLARATION);
             
             if (action != null) action.run(
                 new TextSelection(subNameRegion.getOffset(), subNameRegion.getLength()));

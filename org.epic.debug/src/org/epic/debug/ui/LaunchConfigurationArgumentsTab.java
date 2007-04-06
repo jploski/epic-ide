@@ -36,11 +36,20 @@ public class LaunchConfigurationArgumentsTab
     private ArgumentsBlock fProgramArgumentsBlock;
     private WorkingDirectoryBlock fWorkingDirectoryBlock;    
 
-    public LaunchConfigurationArgumentsTab()
+    /**
+     * @param perlArgumentsOnly
+     *        true if the "Program arguments" and "Working directory"
+     *        blocks should be suppressed; false if they should appear 
+     */
+    public LaunchConfigurationArgumentsTab(boolean perlArgumentsOnly)
     {
         fPerlArgumentsBlock = createPerlArgsBlock();
-        fProgramArgumentsBlock = createProgramArgsBlock();
-        fWorkingDirectoryBlock = createWorkingDirBlock();
+        
+        if (!perlArgumentsOnly)
+        {
+            fProgramArgumentsBlock = createProgramArgsBlock();
+            fWorkingDirectoryBlock = createWorkingDirBlock();
+        }
     }
 
     protected ArgumentsBlock createPerlArgsBlock()
@@ -77,9 +86,12 @@ public class LaunchConfigurationArgumentsTab
         comp.setLayoutData(gd);
         setControl(comp);
         
-        fProgramArgumentsBlock.createControl(comp);
-        fPerlArgumentsBlock.createControl(comp);
-        fWorkingDirectoryBlock.createControl(comp);
+        if (fProgramArgumentsBlock != null)
+            fProgramArgumentsBlock.createControl(comp);
+        if (fPerlArgumentsBlock != null)
+            fPerlArgumentsBlock.createControl(comp);
+        if (fWorkingDirectoryBlock != null)
+            fWorkingDirectoryBlock.createControl(comp);
     }
 
     public void dispose()
@@ -88,7 +100,9 @@ public class LaunchConfigurationArgumentsTab
 
     public boolean isValid(ILaunchConfiguration config)
     {
-        return fWorkingDirectoryBlock.isValid(config);
+        return fWorkingDirectoryBlock != null
+            ? fWorkingDirectoryBlock.isValid(config)
+            : true;
     }
 
     /**
@@ -96,23 +110,32 @@ public class LaunchConfigurationArgumentsTab
      */
     public void setDefaults(ILaunchConfigurationWorkingCopy config)
     {
-        fProgramArgumentsBlock.setDefaults(config);
-        fPerlArgumentsBlock.setDefaults(config);
-        fWorkingDirectoryBlock.setDefaults(config);
+        if (fProgramArgumentsBlock != null)
+            fProgramArgumentsBlock.setDefaults(config);
+        if (fPerlArgumentsBlock != null)
+            fPerlArgumentsBlock.setDefaults(config);
+        if (fWorkingDirectoryBlock != null)
+            fWorkingDirectoryBlock.setDefaults(config);
     }
 
     public void initializeFrom(ILaunchConfiguration configuration)
     {
-        fProgramArgumentsBlock.initializeFrom(configuration);
-        fPerlArgumentsBlock.initializeFrom(configuration);
-        fWorkingDirectoryBlock.initializeFrom(configuration);
+        if (fProgramArgumentsBlock != null)
+            fProgramArgumentsBlock.initializeFrom(configuration);
+        if (fPerlArgumentsBlock != null)
+            fPerlArgumentsBlock.initializeFrom(configuration);
+        if (fWorkingDirectoryBlock != null)
+            fWorkingDirectoryBlock.initializeFrom(configuration);
     }
 
     public void performApply(ILaunchConfigurationWorkingCopy configuration)
     {
-        fProgramArgumentsBlock.performApply(configuration);
-        fPerlArgumentsBlock.performApply(configuration);
-        fWorkingDirectoryBlock.performApply(configuration);
+        if (fProgramArgumentsBlock != null)
+            fProgramArgumentsBlock.performApply(configuration);
+        if (fPerlArgumentsBlock != null)
+            fPerlArgumentsBlock.performApply(configuration);
+        if (fWorkingDirectoryBlock != null)
+            fWorkingDirectoryBlock.performApply(configuration);
     }
 
     /**
@@ -135,15 +158,18 @@ public class LaunchConfigurationArgumentsTab
     public void setLaunchConfigurationDialog(ILaunchConfigurationDialog dialog)
     {
         super.setLaunchConfigurationDialog(dialog);
-        fWorkingDirectoryBlock.setLaunchConfigurationDialog(dialog);
-        fProgramArgumentsBlock.setLaunchConfigurationDialog(dialog);
-        fPerlArgumentsBlock.setLaunchConfigurationDialog(dialog);
+        if (fWorkingDirectoryBlock != null)
+            fWorkingDirectoryBlock.setLaunchConfigurationDialog(dialog);
+        if (fProgramArgumentsBlock != null)
+            fProgramArgumentsBlock.setLaunchConfigurationDialog(dialog);
+        if (fPerlArgumentsBlock != null)
+            fPerlArgumentsBlock.setLaunchConfigurationDialog(dialog);
     }
 
     public String getErrorMessage()
     {
         String m = super.getErrorMessage();
-        if (m == null)
+        if (m == null && fWorkingDirectoryBlock != null)
         {
             return fWorkingDirectoryBlock.getErrorMessage();
         }
@@ -153,7 +179,7 @@ public class LaunchConfigurationArgumentsTab
     public String getMessage()
     {
         String m = super.getMessage();
-        if (m == null)
+        if (m == null && fWorkingDirectoryBlock != null)
         {
             return fWorkingDirectoryBlock.getMessage();
         }

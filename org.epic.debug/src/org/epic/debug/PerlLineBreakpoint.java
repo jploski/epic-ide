@@ -1,9 +1,3 @@
-/*
- * Created on 11.04.2003
- *
- * To change the template for this generated file go to
- * Window>Preferences>Java>Code Generation>Code and Comments
- */
 package org.epic.debug;
 
 import java.util.HashMap;
@@ -17,138 +11,172 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.DebugPlugin;
-import org.eclipse.debug.core.IBreakpointManager;
 import org.eclipse.debug.core.model.IBreakpoint;
 import org.eclipse.debug.core.model.ILineBreakpoint;
 
-
 /**
  * @author ruehl
- *
- * To change the template for this generated type comment go to
- * Window>Preferences>Java>Code Generation>Code and Comments
  */
+public class PerlLineBreakpoint extends PerlBreakpoint implements ILineBreakpoint
+{
+    //~ Static fields/initializers
+
+    private static final String PERL_LINE_BREAKPOINT = "org.epic.debug.perlLineBreakpointMarker"; // $NON-NLS-1$
+
+    private static final String CONDITION_ENABLED = "org.epic.debug.conditionEnabled";
+
+    private static final String CONDITION = "org.epic.debug.condition";
+
+    private int hitCount = 0;
+
+    private String regExp = "";
+
+    //~ Constructors
+
+    public PerlLineBreakpoint()
+    {
+        super();
+    }
+
+    public PerlLineBreakpoint(IResource resource, int lineNumber) throws DebugException
+    {
+        this(resource, lineNumber, -1, -1, true, new HashMap(8), PERL_LINE_BREAKPOINT);
+    }
+
+    protected PerlLineBreakpoint(IResource resource, int lineNumber, int charStart, int charEnd,
+        boolean add, Map attributes, String markerType) throws DebugException
+    {
+        assert attributes != null;
+
+        createPerlLineBreakpoint(resource, lineNumber, charStart, charEnd, add, attributes,
+            markerType);
+    }
+
+    //~ Methods
+
+    public void addLineBreakpointAttributes(Map attributes, String modelIdentifier, boolean enabled,
+        int lineNumber, int charStart, int charEnd)
+    {
+        attributes.put(IBreakpoint.ID, modelIdentifier);
+        attributes.put(IMarker.LINE_NUMBER, new Integer(lineNumber));
+        attributes.put(IMarker.CHAR_START, new Integer(charStart));
+        attributes.put(IMarker.CHAR_END, new Integer(charEnd));
+        attributes.put(PerlBreakpoint.INVALID_POS, new Boolean(false));
+        attributes.put(IBreakpoint.PERSISTED, Boolean.TRUE);
+        attributes.put(IBreakpoint.ENABLED, Boolean.TRUE);
+        attributes.put(IBreakpoint.REGISTERED, Boolean.FALSE);
+    }
+
+    public void createPerlLineBreakpoint(final IResource resource, final int lineNumber,
+        final int charStart, final int charEnd, final boolean add, final Map attributes,
+        final String markerType) throws DebugException
+    {
+
+        IWorkspaceRunnable wr =
+            new IWorkspaceRunnable()
+        {
+            public void run(IProgressMonitor monitor) throws CoreException
+            {
+                setMarker(resource.createMarker(markerType));
+                addLineBreakpointAttributes(attributes, getModelIdentifier(), true, lineNumber,
+                    charStart, charEnd);
+
+                ensureMarker().setAttributes(attributes);
+                register(add);
+            }
+        };
+
+        run(wr);
+    }
+
+    public int getCharEnd() throws CoreException
+    {
+        return ensureMarker().getAttribute(IMarker.CHAR_END, -1);
+    }
+
+    public int getCharStart() throws CoreException
+    {
+        return ensureMarker().getAttribute(IMarker.CHAR_START, -1);
+    }
+
+    public int getLineNumber() throws CoreException
+    {
+        return ensureMarker().getAttribute(IMarker.LINE_NUMBER, -1);
+    }
+
+    /**
+     * Add this breakpoint to the breakpoint manager, or sets it as unregistered.
+     */
+    protected void register(boolean register) throws CoreException
+    {
+        if (register)
+        {
+            DebugPlugin.getDefault().getBreakpointManager().addBreakpoint(this);
+        }
+        else
+        {
+            setRegistered(false);
+        }
+    }
+
+    /**
+     * Execute the given workspace runnable
+     */
+    protected void run(IWorkspaceRunnable wr) throws DebugException
+    {
+        try
+        {
+            ResourcesPlugin.getWorkspace().run(wr, null);
+        }
+        catch (CoreException e)
+        {
+            throw new DebugException(e.getStatus());
+        }
+    }
+
+    public int getHitCount()
+    {
+        return this.hitCount;
+    }
+
+    public void setHitCount(int hitCount)
+    {
+        this.hitCount = hitCount;
+    }
+
+    public void setConditionEnabled(boolean conditionEnabled) throws CoreException {
+        setAttributes(new String[]{CONDITION_ENABLED}, new Object[]{Boolean.valueOf(conditionEnabled)});
+        recreate();
+    }
 
 
-public class PerlLineBreakpoint extends PerlBreakpoint implements ILineBreakpoint {
-	
-	private static final String Perl_LINE_BREAKPOINT = "org.epic.debug.perlLineBreakpointMarker"; //$NON-NLS-1$
-	
-	
-	public PerlLineBreakpoint() {
-						super();
-						Map attributes = new HashMap(10); 
-					}		
-					
-	public PerlLineBreakpoint(IResource resource, int lineNumber) throws DebugException, CoreException {
-				super();
-			    Map attributes = new HashMap(10); 
-				createPerlLineBreakpoint(resource,lineNumber, -1, -1, true, attributes,getMarkerID());
-			}
-			
-	
-	public PerlLineBreakpoint(IResource resource, int lineNumber, int charStart, int charEnd, boolean add, Map attributes) 
-		 	throws DebugException,CoreException {
-				super();
-				if( attributes == null)
-				{ attributes = new HashMap(10); }
-				createPerlLineBreakpoint(resource,lineNumber, charStart, charEnd, add, attributes,getMarkerID());
-		}
-		
-	String getMarkerID()
-	{
-		return(Perl_LINE_BREAKPOINT);
-	}
-	
-	/**
-	 * 
-	 */
-	public void  createPerlLineBreakpoint(final IResource resource,final int lineNumber,final int charStart, final int charEnd,final boolean add, final Map attributes, final String markerType) 
-		throws CoreException,DebugException{
-		
-		
-		IWorkspaceRunnable wr= new IWorkspaceRunnable() {
-					public void run(IProgressMonitor monitor) throws CoreException {
+    public void setCondition(String condition) throws CoreException {
+        setAttributes(new String []{CONDITION}, new Object[]{condition});
+        recreate();
+    }
 
-						// create the marker
-						setMarker(resource.createMarker(markerType));
-						//setMarker(resource.createMarker("org.eclipse.debug.core.lineBreakpointMarker"));
+    public String getRegExp()
+    {
+        return this.regExp;
+    }
 
-					   //setMarker(resource.createMarker(IMarker.PROBLEM));
+    public boolean isConditionEnabled() throws CoreException
+    {
+        return ensureMarker().getAttribute(CONDITION_ENABLED, false);
+    }
 
-						// add attributes
-						addLineBreakpointAttributes(attributes, getModelIdentifier(), true, lineNumber, charStart, charEnd);
-						// set attributes
-						ensureMarker().setAttributes(attributes);
+    public String getCondition() throws CoreException
+    {
+        return ensureMarker().getAttribute(CONDITION, null);
+    }
 
-						// add to breakpoint manager if requested
-						register(add);
-					}
-				};
-				run(wr);
-	}
+    private void recreate()
+    {
+        // TODO: re-register the breakpoint now that the attributs have changed (see JavaBreakpoint)
+    }
 
-
-	public void addLineBreakpointAttributes(Map attributes, String modelIdentifier, boolean enabled, int lineNumber, int charStart, int charEnd) {
-			//addBreakPointAttributes(attributes);
-			attributes.put(IBreakpoint.ID, modelIdentifier);
-			attributes.put(IMarker.LINE_NUMBER, new Integer(lineNumber));
-			attributes.put(IMarker.CHAR_START, new Integer(-1));
-			attributes.put(IMarker.CHAR_END, new Integer(-1));
-			attributes.put(PerlBreakpoint.INVALID_POS, new Boolean(false));
-			attributes.put(IBreakpoint.PERSISTED, Boolean.TRUE);
-		    attributes.put(IBreakpoint.ENABLED, Boolean.TRUE);
-		    attributes.put(IBreakpoint.REGISTERED, Boolean.FALSE);
-		    
-		}
-		
-	public int getLineNumber()
-	{
-		return getMarker().getAttribute(IMarker.LINE_NUMBER,-1);	
-	}
-	
-	public int getCharStart()
-	{
-		return getMarker().getAttribute(IMarker.CHAR_START,-1);	
-	}
-	
-	public int getCharEnd()
-	{
-		return getMarker().getAttribute(IMarker.CHAR_END,-1);	
-	}
-	/**
-		 * Add this breakpoint to the breakpoint manager,
-		 * or sets it as unregistered.
-		 */
-		protected void register(boolean register) throws CoreException {
-			if (register) {
-				DebugPlugin.getDefault().getBreakpointManager().addBreakpoint(this);
-			} else {
-				setRegistered(false);
-			}
-			IBreakpointManager m  = DebugPlugin.getDefault().getBreakpointManager();
-			IBreakpoint [] b = m.getBreakpoints(PerlDebugPlugin.getUniqueIdentifier());
-		}
-		
-	/**
-		 * @see IBreakpoint#setMarker(IMarker)
-		 */
-		public void setMarker(IMarker marker) throws CoreException {
-			super.setMarker(marker);
-			//configureAtStartup();
-		}
-	
-
-	/**
-		 * Execute the given workspace runnable
-		 */
-		protected void run(IWorkspaceRunnable wr) throws DebugException {
-			try {
-				ResourcesPlugin.getWorkspace().run(wr, null);
-			} catch (CoreException e) {
-				throw new DebugException(e.getStatus());
-			}
-		}
-		
-	
+    public void setRegExp(String regExp)
+    {
+        this.regExp = regExp;
+    }
 }

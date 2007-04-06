@@ -34,7 +34,7 @@ import org.eclipse.swt.widgets.*;
 import org.epic.core.views.browser.BrowserView;
 import org.epic.debug.PerlDebugPlugin;
 import org.epic.debug.PerlLaunchConfigurationConstants;
-import org.epic.debug.cgi.CustomBrowser;
+import org.epic.debug.cgi.server.CustomBrowser;
 
 
 public class LaunchConfigurationCGIBrowserTab

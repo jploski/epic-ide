@@ -1,217 +1,143 @@
-/*
- * Created on 16.01.2004
- *
- * To change the template for this generated file go to
- * Window>Preferences>Java>Code Generation>Code and Comments
- */
 package org.epic.debug.varparser;
-import java.util.Iterator;
+
+import java.util.*;
 
 import org.eclipse.debug.core.DebugException;
-import org.eclipse.debug.core.ILaunch;
-import org.eclipse.debug.core.model.DebugElement;
-import org.eclipse.debug.core.model.IDebugElement;
-import org.eclipse.debug.core.model.IDebugTarget;
-import org.eclipse.debug.core.model.IValue;
-import org.eclipse.debug.core.model.IVariable;
+import org.eclipse.debug.core.model.*;
+import org.epic.debug.PerlDebugPlugin;
 
-/**
- * @author ST
- *
- * To change the template for this generated type comment go to
- * Window>Preferences>Java>Code Generation>Code and Comments
- */
-public class PerlDebugValue extends DebugElement implements IValue {
+public class PerlDebugValue extends DebugElement implements IValue
+{
+    private static final IVariable[] NO_VARS = new IVariable[0];
+    
+    public static final int CONTENT_HAS_CHANGED = 1;
+    public static final int VALUE_HAS_CHANGED = 2;
+    public static final int VALUE_UNCHANGED = 0;
 
-	public static int mIsTainted = 1;
-	public static int mValueHasChanged =2;
-	public static int mValueUnchanged =0;
-	
-	java.util.ArrayList mVars = new java.util.ArrayList();
-	String mValue;
-	String mType;
-	IDebugElement mDebugger;
-	
-	static String changeFlagsToString(int fVal)
-	{
-		String erg =" ";
-		
-			if( (fVal & mValueHasChanged) > 0 )
-				erg = erg+"*****Changed";
-			if( (fVal & mIsTainted) > 0 )
-				erg = erg+"*****Tainted";
-			if( fVal == mValueUnchanged )
-				erg= "+++unchanged";
-				
-			return erg;
-				
-	}
-	
-	void setChangeFlags(int fVal, boolean fRecourse)
-		{
-	
-			Iterator it = mVars.iterator();
-			
-			while( it.hasNext() )
-			{
-				((PerlDebugVar)it.next()).setChangeFlags(fVal,fRecourse);
-			}
-			
-		}
-		
-	public int calculateChangeFlags(PerlDebugValue fValOrg)
-	{
-		int ret =0;
-	  try{
-	  	
-		//System.out.println("-*-Comparing Value"+fValOrg.mValue+"/"+mValue);
-			if( ((mValue == null) && (fValOrg.getValueString()!= null))
-				|| ! mValue.equals(fValOrg.getValueString()) )
-			 	{
-					ret = mValueHasChanged;
-				} 
-		 	
-			if( ((mType == null) && (fValOrg.mType != null))
-				|| ! mType.equals(fValOrg.mType) )
-				{
-					ret = mValueHasChanged;
-				}
-			
-			
-			int count_org = fValOrg.mVars.size();
-			int count_new = mVars.size();
-			PerlDebugVar var_org,var_new;
-			
-			boolean found;
-			
-			if( count_org != count_new)
-				ret |= mIsTainted;
-								
-			for( int new_pos = 0; new_pos < count_new; ++new_pos)
-			{
-				found = false;
-				var_new = (PerlDebugVar) mVars.get(new_pos);
-				
-				for( int org_pos = 0; (org_pos < count_org) && !found; ++org_pos)
-				{
-					var_org = (PerlDebugVar) fValOrg.mVars.get(org_pos);
-					if( var_org.getName().equals(var_new.getName() ) )
-					{
-						found = true;
-						if (var_new.calculateChangeFlags(var_org) )
-						 ret |= mIsTainted;
-					}
-				}
-				
-				if ( !found )
-				{
-					var_new.setChangeFlags(mValueHasChanged,true);
-					ret |=  mIsTainted;
-				}
-			}	
-			
-		
-			return(ret);					 
-		
-			} catch( Exception e ){System.out.println(e);}
-		
-			return(mValueUnchanged);
-		}
-	/**
-	 * 
-	 */
-	public PerlDebugValue(IDebugElement fDebugger) {
-		super(fDebugger.getDebugTarget());
-		mValue = null;
-		mType = null;
-		mDebugger = fDebugger;
-	}
+    private final List vars;
+    private final String value;
+    private final String type;
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.debug.core.model.IValue#getReferenceTypeName()
-	 */
-	public String getReferenceTypeName() throws DebugException {
-		return mType;
-	}
+    public PerlDebugValue(IDebugTarget parent, String type, String value)
+    {
+        this(parent, type, value, NO_VARS);
+    }
+    
+    public PerlDebugValue(
+        IDebugTarget parent,
+        String type,
+        String value,
+        IVariable[] vars)
+    {
+        super(parent);
 
-	public void setType(String fType)
-	{
-		mType = fType;
-	}
-	/* (non-Javadoc)
-	 * @see org.eclipse.debug.core.model.IValue#getValueString()
-	 */
-	public String getValueString() throws DebugException {
-		return mValue;
-	}
-	
-	public void setValue(String fVal)
-	{
-		mValue = fVal; 
-	}
-	
-	public void appendValue(String fVal)
-		{
-			if (mValue == null )
-				mValue = fVal;
-			else
-				mValue = mValue + fVal; 
-		}
-	
-	/* (non-Javadoc)
-	 * @see org.eclipse.debug.core.model.IValue#isAllocated()
-	 */
-	public boolean isAllocated() throws DebugException {
-		return true;
-	}
+        this.type = type;
+        this.value = value;
+        this.vars = new ArrayList(Arrays.asList(vars));
+    }
+    
+    public void addVar(PerlDebugVar var)
+    {
+        vars.add(var);
+    }
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.debug.core.model.IValue#getVariables()
-	 */
-	public IVariable[] getVariables() throws DebugException {
-		return ((IVariable[])mVars.toArray(new IVariable[mVars.size()]));
-	}
+    public int calculateChangeFlags(PerlDebugValue previous)
+    {
+        int ret = 0;
+        try
+        {
+            if ((value == null && previous.getValueString() != null)
+                || !value.equals(previous.getValueString()))
+            {
+                ret = VALUE_HAS_CHANGED;
+            }
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.debug.core.model.IValue#hasVariables()
-	 */
-	public boolean hasVariables() throws DebugException {
-		return (mVars.size()>0);
-	}
+            if ((type == null && previous.type != null)
+                || (type != null && !type.equals(previous.type)))
+            {
+                ret = VALUE_HAS_CHANGED;
+            }
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.debug.core.model.IDebugElement#getModelIdentifier()
-	 */
-	public String getModelIdentifier() {
-		return mDebugger.getModelIdentifier();
-	}
+            int countOld = previous.vars.size();
+            int countNew = vars.size();           
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.debug.core.model.IDebugElement#getDebugTarget()
-	 */
-	public IDebugTarget getDebugTarget() {
-		return mDebugger.getDebugTarget();
-	}
+            if (countOld != countNew) ret |= CONTENT_HAS_CHANGED;
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.debug.core.model.IDebugElement#getLaunch()
-	 */
-	public ILaunch getLaunch() {
-		return mDebugger.getLaunch();
-	}
+            for (int newPos = 0; newPos < countNew; ++newPos)
+            {
+                boolean found = false;
+                PerlDebugVar varNew = (PerlDebugVar) vars.get(newPos);
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
-	 */
-	public Object getAdapter(Class adapter) {
-		if (adapter == this.getClass()) {
-			return this;
-		}
-		return super.getAdapter(adapter);
-	}
-	public void addVar(PerlDebugVar fVar )
-	{
-		mVars.add(fVar);
-	}
-	
+                for (int oldPos = 0; oldPos < countOld && !found; ++oldPos)
+                {
+                    PerlDebugVar varOld = (PerlDebugVar) previous.vars.get(oldPos);
+                    if (varOld.getName().equals(varNew.getName()))
+                    {
+                        found = true;
+                        if (varNew.calculateChangeFlags(varOld))
+                            ret |= CONTENT_HAS_CHANGED;
+                    }
+                }
+
+                if (!found)
+                {
+                    varNew.setChangeFlags(VALUE_HAS_CHANGED, true);
+                    ret |= CONTENT_HAS_CHANGED;
+                }
+            }
+            return ret;
+        }
+        catch (DebugException e)
+        {
+            PerlDebugPlugin.log(e);
+            return VALUE_UNCHANGED;
+        }        
+    }
+
+    public String getModelIdentifier()
+    {
+        return getDebugTarget().getModelIdentifier();
+    }
+
+    public String getReferenceTypeName() throws DebugException
+    {
+        return type;
+    }
+
+    public String getValueString() throws DebugException
+    {
+        return value;
+    }
+
+    public IVariable[] getVariables() throws DebugException
+    {
+        return (IVariable[]) vars.toArray(new IVariable[vars.size()]);
+    }
+
+    public boolean hasVariables() throws DebugException
+    {
+        return !vars.isEmpty();
+    }
+
+    public boolean isAllocated() throws DebugException
+    {
+        return true;
+    }
+    
+    public String toString()
+    {
+        return
+            "T" + (type != null ? type : "<null>") + "{" + value +
+            "} with " + vars.size() + " vars";
+    }
+    
+    void setChangeFlags(int value, boolean recurse)
+    {
+        Iterator i = vars.iterator();
+
+        while (i.hasNext())
+        {
+            ((PerlDebugVar) i.next()).setChangeFlags(value, recurse);
+        }
+    }
 }

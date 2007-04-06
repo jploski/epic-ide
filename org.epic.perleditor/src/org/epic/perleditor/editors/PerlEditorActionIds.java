@@ -4,20 +4,35 @@ package org.epic.perleditor.editors;
  * Constants identifying actions contributed by the org.epic.perleditor plug-in. These action ids
  * are shared by the plug-in manifest, PerlActionContributor, PerlEditor and PerlEditorAction.
  *
- * @author jploski
+ *@author jploski
  */
 public class PerlEditorActionIds
 {
     //~ Static fields/initializers
 
-    /** org.epic.perleditor.actions.CritiqueSourceAction */
-    public static final String CRITIQUE_SOURCE = "org.epic.perleditor.actions.CritiqueSourceAction";
+    /** org.epic.perleditor.actions.ClearMarkerAction#All */
+    public static final String CLEAR_ALL_MARKERS =
+        "org.epic.perleditor.actions.ClearMarkerAction#AllMarkers";
+
+    /** org.epic.perleditor.actions.ClearMarkerAction#PodChecker */
+    public static final String CLEAR_POD_MARKERS =
+        "org.epic.perleditor.actions.ClearMarkerAction#PodChecker";
+
+    /** org.epic.perleditor.actions.ClearMarkerAction#Critic */
+    public static final String CLEAR_CRITIC_MARKERS =
+        "org.epic.perleditor.actions.ClearMarkerAction#Critic";
+
+    /** org.epic.perleditor.actions.PodCheckerAction */
+    public static final String POD_CHECKER = "org.epic.perleditor.actions.PodCheckerAction";
+
+    /** org.epic.perleditor.actions.PerlCriticAction */
+    public static final String PERL_CRITIC = "org.epic.perleditor.actions.PerlCriticAction";
 
     /** org.epic.perleditor.actions.FormatSourceAction */
     public static final String FORMAT_SOURCE = "org.epic.perleditor.actions.FormatSourceAction";
 
     /** org.epic.perleditor.actions.HtmlExportAction */
-    public static final String HTML_EXPORT = "org.epic.perleditor.actions.HtmlExportAction";
+    public static final String HTML_EXPORT = "org.epic.perleditor.actions.ExportHtmlAction";
 
     /** org.epic.perleditor.actions.ContentAssistAction */
     public static final String CONTENT_ASSIST = "org.epic.perleditor.actions.ContentAssistAction";
@@ -29,7 +44,8 @@ public class PerlEditorActionIds
     public static final String TOGGLE_COMMENT = "org.epic.perleditor.actions.ToggleCommentAction";
 
     /** org.epic.perleditor.actions.OpenDeclarationAction */
-    public static final String OPEN_SUB = "org.epic.perleditor.actions.OpenDeclarationAction";
+    public static final String OPEN_DECLARATION =
+        "org.epic.perleditor.actions.OpenDeclarationAction";
 
     /** org.epic.perleditor.actions.PerlDocAction */
     public static final String PERL_DOC = "org.epic.perleditor.actions.PerlDocAction";
@@ -72,13 +88,17 @@ public class PerlEditorActionIds
     {
         return new String[]
             {
+                CLEAR_ALL_MARKERS,
+                CLEAR_POD_MARKERS,
+                CLEAR_CRITIC_MARKERS,
+                POD_CHECKER,
                 CONTENT_ASSIST,
-                CRITIQUE_SOURCE,
+                PERL_CRITIC,
                 EXTRACT_SUBROUTINE,
                 FORMAT_SOURCE,
                 HTML_EXPORT,
                 MATCHING_BRACKET,
-                OPEN_SUB,
+                OPEN_DECLARATION,
                 PERL_DOC,
                 TOGGLE_COMMENT,
                 VALIDATE_SYNTAX

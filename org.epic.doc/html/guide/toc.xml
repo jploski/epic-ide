@@ -41,7 +41,7 @@
 <topic href="html/guide/ch05.html" label="Working with the Perl Editor">
 <topic href="html/guide/ch05s01.html" label="Syntax Check"/>
 <topic href="html/guide/ch05s02.html" label="Explain Errors and Warnings"/>
-<topic href="html/guide/ch05s03.html" label="Open SUB Declaration"/>
+<topic href="html/guide/ch05s03.html" label="Open Declaration"/>
 <topic href="html/guide/ch05s04.html" label="Perldoc"/>
 <topic href="html/guide/ch05s05.html" label="Quick Reference"/>
 <topic href="html/guide/ch05s06.html" label="Code Assist">
@@ -68,26 +68,26 @@
 </topic>
 <topic href="html/guide/ch06s02.html" label="Creating Launch Configurations">
 <topic href="html/guide/ch06s02.html#N106C9" label="Perl Local: Running a Perl Script on the Local Machine"/>
-<topic href="html/guide/ch06s02.html#N1070D" label="Perl CGI: Run Perl Programs in a CGI Environment"/>
-<topic href="html/guide/ch06s02.html#N10783" label="Perl Remote: Debug a Perl Script on a Remote Machine"/>
+<topic href="html/guide/ch06s02.html#N10718" label="Perl CGI: Run Perl Programs in a CGI Environment"/>
+<topic href="html/guide/ch06s02.html#N1078A" label="Perl Remote: Debug a Perl Script on a Remote Machine"/>
 </topic>
 <topic href="html/guide/ch06s03.html" label="Breakpoints">
-<topic href="html/guide/ch06s03.html#N10863" label="Setting Breakpoints"/>
-<topic href="html/guide/ch06s03.html#N10879" label="Enabling or Disabling Breakpoints"/>
-<topic href="html/guide/ch06s03.html#N10885" label="Removing Breakpoints"/>
+<topic href="html/guide/ch06s03.html#N10869" label="Setting Breakpoints"/>
+<topic href="html/guide/ch06s03.html#N1087F" label="Enabling or Disabling Breakpoints"/>
+<topic href="html/guide/ch06s03.html#N1088B" label="Removing Breakpoints"/>
 </topic>
 <topic href="html/guide/ch06s04.html" label="Views in the Debug Perspective">
 <topic href="html/guide/ch06s04.html#debug-view" label="Debug View"/>
-<topic href="html/guide/ch06s04.html#N108C3" label="Variables View">
-<topic href="html/guide/ch06s04.html#N108F2" label="Customizing the Variables View"/>
+<topic href="html/guide/ch06s04.html#N108C9" label="Variables View">
+<topic href="html/guide/ch06s04.html#N108F8" label="Customizing the Variables View"/>
 </topic>
 <topic href="html/guide/ch06s04.html#breakpoints-view" label="Breakpoints View"/>
-<topic href="html/guide/ch06s04.html#N10940" label="Perl Expression View"/>
+<topic href="html/guide/ch06s04.html#N10946" label="Perl Expression View"/>
 </topic>
 <topic href="html/guide/ch06s05.html" label="Stepping Through the Execution of a Perl Program">
-<topic href="html/guide/ch06s05.html#N1097F" label="Step Over"/>
-<topic href="html/guide/ch06s05.html#N109A5" label="Step Into"/>
-<topic href="html/guide/ch06s05.html#N109CB" label="Run to Return"/>
+<topic href="html/guide/ch06s05.html#N10985" label="Step Over"/>
+<topic href="html/guide/ch06s05.html#N109AB" label="Step Into"/>
+<topic href="html/guide/ch06s05.html#N109D1" label="Run to Return"/>
 </topic>
 </topic>
 <topic href="html/guide/ch07.html" label="RegExp Plug-in">
@@ -97,7 +97,7 @@
 </topic>
 <topic href="html/guide/ch08.html" label="Known Bugs &amp; Problems">
 <topic href="html/guide/ch08s01.html" label="Debugger">
-<topic href="html/guide/ch08s01.html#N10A69" label="Problems Showing Local Variables"/>
+<topic href="html/guide/ch08s01.html#N10A6F" label="Problems Showing Local Variables"/>
 </topic>
 </topic>
 <topic href="html/guide/ch09.html" label="References"/>

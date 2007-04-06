@@ -76,7 +76,7 @@ public class ExportHtmlSourceAction extends PerlEditorAction
         }
     }
 
-    protected String getPerlActionId()
+    protected String getPerlEditorActionId()
     {
         return PerlEditorActionIds.HTML_EXPORT;
     }

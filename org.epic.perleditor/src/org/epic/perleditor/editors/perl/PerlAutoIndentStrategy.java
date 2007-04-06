@@ -1,306 +1,294 @@
 package org.epic.perleditor.editors.perl;
 
-/*
- * (c) Copyright IBM Corp. 2000, 2001.
- * All Rights Reserved.
- */
-
-import org.eclipse.jface.text.BadLocationException;
-import org.eclipse.jface.text.DefaultAutoIndentStrategy;
-import org.eclipse.jface.text.DocumentCommand;
-import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.text.*;
+import org.epic.perleditor.PerlEditorPlugin;
 import org.epic.perleditor.editors.util.PreferenceUtil;
-import org.epic.perleditor.editors.PerlEditorMessages;
-
+import org.epic.perleditor.editors.*;
 
 /**
  * Auto indent strategy sensitive to brackets.
  */
-public class PerlAutoIndentStrategy extends DefaultAutoIndentStrategy {
+public final class PerlAutoIndentStrategy extends DefaultIndentLineAutoEditStrategy
+{
+    private final PerlPairMatcher bracketMatcher =
+        new PerlPairMatcher(PerlEditorPlugin.getDefault().getLog());
+    
+    public PerlAutoIndentStrategy()
+    {
+    }
 
-	public PerlAutoIndentStrategy() {
-	}
+    public void customizeDocumentCommand(IDocument d, DocumentCommand c)
+    {
+        if (c.length == 0 &&
+            c.text != null &&
+            TextUtilities.endsWith(d.getLegalLineDelimiters(), c.text) != -1)
+        {
+            smartIndentAfterNewLine(d, c);
+        }
+        else if ("}".equals(c.text)) //$NON-NLS-1$
+        {
+            smartInsertAfterBracket(d, c);
+        }
+    }
 
-	/* 
-	 * Method declared on IAutoIndentStrategy
-	 */
-	public void customizeDocumentCommand(IDocument d, DocumentCommand c) {
-		if (c.length == 0 && c.text != null && endsWithDelimiter(d, c.text))
-			smartIndentAfterNewLine(d, c);
-		else if ("}".equals(c.text)) { //$NON-NLS-1$
-			smartInsertAfterBracket(d, c);
-		}
-	}
+    /**
+     * Returns the String at line with the leading whitespace removed.
+     * 
+     * @returns the String at line with the leading whitespace removed.
+     * @param document -
+     *            the document being parsed
+     * @param line -
+     *            the line being searched
+     */
+    private String getIndentOfLine(IDocument document, int line)
+        throws BadLocationException
+    {
+        if (line > -1)
+        {
+            int start = document.getLineOffset(line);
+            int end = start + document.getLineLength(line) - 1;
+            int whiteend = findEndOfWhiteSpace(document, start, end);
+            return document.get(start, whiteend - start);
+        }
+        else
+        {
+            return ""; //$NON-NLS-1$
+        }
+    }
+    
+    private boolean handleNewLineAfterHashClosingBracket(
+        IDocument document,
+        int whiteend,
+        StringBuffer textToInsert) throws BadLocationException
+    {
+        int docLength = document.getLength();
+        if (whiteend < docLength && "}".equals(document.get(whiteend, 1)))
+        {
+            // If we got here, then a new line is inserted on a line
+            // which starts with a } (after white space)
+            // Check if this } closes a hash; if so, make the new line
+            // indented just as the line which started the hash (with {)
+            
+            IRegion block = bracketMatcher.match(document, whiteend+1);
+            if (block != null && isHash(document, block))
+            {
+                int hashStartLine = document.getLineOfOffset(block.getOffset());
+                textToInsert.append(getIndentOfLine(document, hashStartLine));
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    private boolean handleNewLineAfterOpeningBracket(
+        IDocument document,
+        DocumentCommand command,
+        int start,
+        int line,
+        StringBuffer textToInsert) throws BadLocationException
+    {
+        // Quick check first:
+        String lineText = document.get(start, document.getLineLength(line));
+        int openBracketIndex = lineText.indexOf('{'); 
+        if (openBracketIndex == -1) return false;
+        
+        // If the { we're seeing is in a comment, don't bother
+        if (PartitionTypes.COMMENT.equals(
+            document.getPartition(start + openBracketIndex).getType())) 
+            return false;
+        
+        // Now the accurate (slower) check:
+        IRegion block = bracketMatcher.match(document, command.offset+1, '}');
+        if (block == null) return false;
+        
+        if (document.getLineOfOffset(block.getOffset()) == line)
+        {
+            textToInsert.append(PreferenceUtil.getTab(0));
+            return true;
+        }
+        return false;
+    }
+    
+    private void handleNewLineWithinBlock(
+        IDocument document,
+        DocumentCommand command,
+        StringBuffer textToInsert) throws BadLocationException
+    {
+        int docLength = document.getLength();
+        int p = command.offset == docLength
+            ? command.offset - 1
+            : command.offset;
+        int line = document.getLineOfOffset(p);
+        int start = document.getLineOffset(line);
+        int whiteend = findEndOfWhiteSpace(document, start, command.offset);
+        
+        if (handleNewLineAfterHashClosingBracket(
+            document, whiteend, textToInsert)) return;
+        
+        textToInsert.append(document.get(start, whiteend - start));
+        
+        // Check if the line on which the new line is inserted contains
+        // more open brackets than close brackets; if so, we will add
+        // an extra indent after the newline.
+        
+        handleNewLineAfterOpeningBracket(
+            document, command, start, line, textToInsert);
+    }
+    
+    private void handleNewLineBeforeClosingBracket(
+        IDocument document,
+        DocumentCommand command,
+        StringBuffer textToInsert) throws BadLocationException
+    {
+        IRegion block = bracketMatcher.match(document, command.offset+1);
+        if (block == null) return;
 
-	/**
-	 * Returns whether or not the text ends with one of the given search strings.
-	 */
-	private boolean endsWithDelimiter(IDocument d, String txt) {
+        boolean bothBracketsWereOnSameLine = 
+            document.getLineOfOffset(block.getOffset()) ==
+                document.getLineOfOffset(command.offset);
+        
+        textToInsert.append(getIndentOfLine(
+            document, document.getLineOfOffset(block.getOffset())));
 
-		String[] delimiters = d.getLegalLineDelimiters();
+        if (bothBracketsWereOnSameLine)
+        {
+            textToInsert.append(PreferenceUtil.getTab(0));
+            command.shiftsCaret = false;
+            command.caretOffset = command.offset + textToInsert.length();
+            textToInsert.append(TextUtilities.getDefaultLineDelimiter(document));
+            textToInsert.append(getIndentOfLine(
+                document, document.getLineOfOffset(block.getOffset())));            
+        }
+        if (isHash(document, block))
+        {
+            textToInsert.append(PreferenceUtil.getTab(0));
+        }
+    }
+    
+    private boolean isHash(IDocument document, IRegion block)
+        throws BadLocationException
+    {
+        int offset = block.getOffset() - 1;        
+        while (offset >= 0)
+        {
+            ITypedRegion p = document.getPartition(offset);
+            if (PartitionTypes.OPERATOR.equals(p.getType()))
+            {
+                String op = document.get(p.getOffset(), p.getLength());
+                if ("=".equals(op) ||
+                    "(".equals(op) ||
+                    "=>".equals(op)) return true;
+                else return false;
+            }
+            else
+            {
+                offset = p.getOffset()-1;
+            }
+        }
+        return false;
+    }
+    
+    private boolean newLineInsertedBeforeClosingBracket(
+        IDocument document,
+        DocumentCommand command) throws BadLocationException
+    {
+        return
+            command.offset < document.getLength() &&
+            document.getChar(command.offset) == '}';
+    }
 
-		for (int i = 0; i < delimiters.length; i++) {
-			if (txt.endsWith(delimiters[i]))
-				return true;
-		}
+    /**
+     * Set the indent of a new line based on the command provided
+     * in the supplied document.
+     * 
+     * @param document -
+     *            the document being parsed
+     * @param command -
+     *            the command being performed
+     */
+    private void smartIndentAfterNewLine(
+        IDocument document, DocumentCommand command)
+    {
+        int docLength = document.getLength();
+        if (command.offset == -1 || docLength == 0) return;
 
-		return false;
-	}
+        try
+        {
+            StringBuffer buf = new StringBuffer(command.text);
+            if (newLineInsertedBeforeClosingBracket(document, command))                
+            {
+                handleNewLineBeforeClosingBracket(document, command, buf);                
+            }
+            else
+            {
+                handleNewLineWithinBlock(document, command, buf);
+            }
+            command.text = buf.toString();
 
-	/**
-	 * Returns the line number of the next bracket after end.
-	 * @returns the line number of the next matching bracket after end
-	 * @param document - the document being parsed
-	 * @param line - the line to start searching back from
-	 * @param end - the end position to search back from
-	 * @param closingBracketIncrease - the number of brackets to skip
-	 */
-	protected int findMatchingOpenBracket(
-		IDocument document,
-		int line,
-		int end,
-		int closingBracketIncrease)
-		throws BadLocationException {
+        }
+        catch (BadLocationException excp)
+        {
+            System.out.println(PerlEditorMessages
+                .getString("AutoIndent.error.bad_location_1")); //$NON-NLS-1$
+        }
+    }
 
-		int start = document.getLineOffset(line);
-		int brackcount =
-			getBracketCount(document, start, end, false)
-				- closingBracketIncrease;
+    /**
+     * Set the indent of a bracket based on the command provided in the supplied
+     * document.
+     * 
+     * @param document -
+     *            the document being parsed
+     * @param command -
+     *            the command being performed
+     */
+    private void smartInsertAfterBracket(
+        IDocument document, DocumentCommand command)
+    {
+        if (command.offset == -1 || document.getLength() == 0) return;
 
-		// sum up the brackets counts of each line (closing brackets count negative, 
-		// opening positive) until we find a line the brings the count to zero
-		while (brackcount < 0) {
-			line--;
-			if (line < 0) {
-				return -1;
-			}
-			start = document.getLineOffset(line);
-			end = start + document.getLineLength(line) - 1;
-			brackcount += getBracketCount(document, start, end, false);
-		}
-		return line;
-	}
+        try
+        {
+            int p = (command.offset == document.getLength() ? command.offset - 1
+                : command.offset);
+            int line = document.getLineOfOffset(p);
+            int start = document.getLineOffset(line);
+            int whiteend = findEndOfWhiteSpace(document, start, command.offset);
 
-	/**
-	 * Returns the bracket value of a section of text. Closing brackets have a value of -1 and 
-	 * open brackets have a value of 1.
-	 * @returns the line number of the next matching bracket after end
-	 * @param document - the document being parsed
-	 * @param start - the start position for the search
-	 * @param end - the end position for the search
-	 * @param ignoreCloseBrackets - whether or not to ignore closing brackets in the count
-	 */
-	private int getBracketCount(
-		IDocument document,
-		int start,
-		int end,
-		boolean ignoreCloseBrackets)
-		throws BadLocationException {
+            // shift only when line does not contain any text up to
+            // the closing bracket
+            if (whiteend != command.offset) return;
+            
+            IRegion block = bracketMatcher.match(document, command.offset, '}');
+            if (block == null) return;
 
-		int begin = start;
-		int bracketcount = 0;
-		while (begin < end) {
-			char curr = document.getChar(begin);
-			begin++;
-			switch (curr) {
-				case '/' :
-					if (begin < end) {
-						char next = document.getChar(begin);
-						if (next == '*') {
-							// a comment starts, advance to the comment end
-							begin = getCommentEnd(document, begin + 1, end);
-						} else if (next == '/') {
-							// '//'-comment: nothing to do anymore on this line 
-							begin = end;
-						}
-					}
-					break;
-				case '*' :
-					if (begin < end) {
-						char next = document.getChar(begin);
-						if (next == '/') {
-							// we have been in a comment: forget what we read before
-							bracketcount = 0;
-							begin++;
-						}
-					}
-					break;
-				case '{' :
-					bracketcount++;
-					ignoreCloseBrackets = false;
-					break;
-				case '}' :
-					if (!ignoreCloseBrackets) {
-						bracketcount--;
-					}
-					break;
-				case '"' :
-				case '\'' :
-					begin = getStringEnd(document, begin, end, curr);
-					break;
-				default :
-					}
-		}
-		return bracketcount;
-	}
+            int indLine = document.getLineOfOffset(block.getOffset());
+            if (indLine == line) return;            
 
-	/**
-	 * Returns the end position a comment starting at pos.
-	 * @returns the end position a comment starting at pos
-	 * @param document - the document being parsed
-	 * @param position - the start position for the search
-	 * @param end - the end position for the search
-	 */
-	private int getCommentEnd(IDocument document, int position, int end)
-		throws BadLocationException {
-		int currentPosition = position;
-		while (currentPosition < end) {
-			char curr = document.getChar(currentPosition);
-			currentPosition++;
-			if (curr == '*') {
-				if (currentPosition < end
-					&& document.getChar(currentPosition) == '/') {
-					return currentPosition + 1;
-				}
-			}
-		}
-		return end;
-	}
-
-	/**
-	 * Returns the String at line with the leading whitespace removed.
-	 * @returns the String at line with the leading whitespace removed.
-	 * @param document - the document being parsed
-	 * @param line - the line being searched
-	 */
-	protected String getIndentOfLine(IDocument document, int line)
-		throws BadLocationException {
-		if (line > -1) {
-			int start = document.getLineOffset(line);
-			int end = start + document.getLineLength(line) - 1;
-			int whiteend = findEndOfWhiteSpace(document, start, end);
-			return document.get(start, whiteend - start);
-		} else {
-			return ""; //$NON-NLS-1$
-		}
-	}
-
-	/**
-	 * Returns the position of the character in the document after position.
-	 * @returns the next location of character.
-	 * @param document - the document being parsed
-	 * @param position - the position to start searching from
-	 * @param end - the end of the document
-	 * @param character - the character you are trying to match
-	 */
-	private int getStringEnd(
-		IDocument document,
-		int position,
-		int end,
-		char character)
-		throws BadLocationException {
-		int currentPosition = position;
-		while (currentPosition < end) {
-			char currentCharacter = document.getChar(currentPosition);
-			currentPosition++;
-			if (currentCharacter == '\\') {
-				// ignore escaped characters
-				currentPosition++;
-			} else if (currentCharacter == character) {
-				return currentPosition;
-			}
-		}
-		return end;
-	}
-
-	/**
-	 * Set the indent of a new line based on the command provided in the supplied document.
-	 * @param document - the document being parsed
-	 * @param command - the command being performed
-	 */
-	protected void smartIndentAfterNewLine(
-		IDocument document,
-		DocumentCommand command) {
-
-		int docLength = document.getLength();
-		if (command.offset == -1 || docLength == 0)
-			return;
-
-		try {
-			int p =
-				(command.offset == docLength
-					? command.offset - 1
-					: command.offset);
-			int line = document.getLineOfOffset(p);
-
-			StringBuffer buf = new StringBuffer(command.text);
-			if (command.offset < docLength
-				&& document.getChar(command.offset) == '}') {
-				int indLine =
-					findMatchingOpenBracket(document, line, command.offset, 0);
-				if (indLine == -1) {
-					indLine = line;
-				}
-				buf.append(getIndentOfLine(document, indLine));
-			} else {
-				int start = document.getLineOffset(line);
-				int whiteend =
-					findEndOfWhiteSpace(document, start, command.offset);
-				buf.append(document.get(start, whiteend - start));
-				if (getBracketCount(document, start, command.offset, true)
-					> 0) {
-					// Indent as many tabs as specified in preferences
-					buf.append(PreferenceUtil.getTab(0));
-				}
-			}
-			command.text = buf.toString();
-
-		} catch (BadLocationException excp) {
-			System.out.println(PerlEditorMessages.getString("AutoIndent.error.bad_location_1")); //$NON-NLS-1$
-		}
-	}
-
-	/**
-	 * Set the indent of a bracket based on the command provided in the supplied document.
-	 * @param document - the document being parsed
-	 * @param command - the command being performed
-	 */
-	protected void smartInsertAfterBracket(
-		IDocument document,
-		DocumentCommand command) {
-		if (command.offset == -1 || document.getLength() == 0)
-			return;
-
-		try {
-			int p =
-				(command.offset == document.getLength()
-					? command.offset - 1
-					: command.offset);
-			int line = document.getLineOfOffset(p);
-			int start = document.getLineOffset(line);
-			int whiteend = findEndOfWhiteSpace(document, start, command.offset);
-
-			// shift only when line does not contain any text up to the closing bracket
-			if (whiteend == command.offset) {
-				// evaluate the line with the opening bracket that matches out closing bracket
-				int indLine =
-					findMatchingOpenBracket(document, line, command.offset, 1);
-				if (indLine != -1 && indLine != line) {
-					// take the indent of the found line
-					StringBuffer replaceText =
-						new StringBuffer(getIndentOfLine(document, indLine));
-					// add the rest of the current line including the just added close bracket
-					replaceText.append(
-						document.get(whiteend, command.offset - whiteend));
-					replaceText.append(command.text);
-					// modify document command
-					command.length = command.offset - start;
-					command.offset = start;
-					command.text = replaceText.toString();
-				}
-			}
-		} catch (BadLocationException excp) {
-			System.out.println(PerlEditorMessages.getString("AutoIndent.error.bad_location_2")); //$NON-NLS-1$
-		}
-	}
+            // take the indent of the found line with an open bracket
+            StringBuffer replaceText = new StringBuffer(
+                getIndentOfLine(document, indLine));
+            // add the rest of the current line including the just added
+            // close bracket
+            replaceText.append(
+                document.get(whiteend, command.offset - whiteend));
+            if (isHash(document, block))
+            {
+                // if the closing bracket belongs to a Perl hash rather
+                // than a block, indent it to hang at the same column
+                // as the hash's content
+                replaceText.append(PreferenceUtil.getTab(0));
+            }
+            replaceText.append(command.text);
+            // modify document command
+            command.length = command.offset - start;
+            command.offset = start;
+            command.text = replaceText.toString();
+        }
+        catch (BadLocationException excp)
+        {
+            System.out.println(PerlEditorMessages
+                .getString("AutoIndent.error.bad_location_2")); //$NON-NLS-1$
+        }
+    }
 }

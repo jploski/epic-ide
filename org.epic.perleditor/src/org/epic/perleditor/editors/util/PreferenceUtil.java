@@ -23,11 +23,11 @@ public class PreferenceUtil {
             
             if (numSpaces > 0)
             {
-    			char[] indentChars = new char[numSpaces - (column % numSpaces)];
-    			for (int i = 0; i < indentChars.length; i++) {
-    				indentChars[i] = ' ';
-    			}
-                tabString = String.valueOf(indentChars);
+			    char[] indentChars = new char[numSpaces - (column % numSpaces)];
+			    for (int i = 0; i < indentChars.length; i++) {
+				    indentChars[i] = ' ';
+			    }
+			    tabString = String.valueOf(indentChars);
             }
             else tabString = "";
 		} else {

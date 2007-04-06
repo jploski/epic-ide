@@ -1,260 +1,251 @@
 package org.epic.debug.varparser;
 
+import java.util.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
+import org.eclipse.core.runtime.*;
 import org.eclipse.debug.core.DebugException;
-import org.epic.debug.PerlDB;
+import org.eclipse.debug.core.model.IDebugTarget;
 import org.epic.debug.PerlDebugPlugin;
 
+public class TokenVarParser
+{
+    private final IDebugTarget target;
+    private final Stack varStack;
+    private final HashMap varMap;
+    private final ILog log;
 
+    private int scope;
+    private int pos;
+    private List vars;
+    private char[] chars;
 
-/**
- * The main for this example. It accepts the name of a file as a commandline
- * argument, and will interpret the contents of the file.
- * 
- * <p>
- * This file is in the public domain.
- * </p>
- * 
- * @author Dan Bornstein, danfuzz@milk.com
- */
-public class TokenVarParser {
+    public TokenVarParser(IDebugTarget target, ILog log)
+    {
+        this.target = target;
+        this.log = log;
+        this.varStack = new Stack();
+        this.varMap = new HashMap();
+    }
 
-	private PerlDB mDebugger;
-	private int mScope;
+    public List parseVars(String text, int scope)
+    {
+        return parseVars(text, scope, new ArrayList());
+    }
 
-	java.util.Stack mVarStack = new java.util.Stack();
-	java.util.ArrayList mVarList = null; //new java.util.ArrayList();
-	HashMap mVarMap = new HashMap();
-	int mPos;
-	String indent;
-	char mChars[];
-	boolean mHasErrors;
+    public List parseVars(String text, int scope, List vars)
+    {
+        reset(text, scope, vars);
+        readVars();
 
-	public TokenVarParser(PerlDB fDebugger) {
-		mDebugger = fDebugger;
-	}
+        return vars;
+    }
 
-	public java.util.ArrayList parseVars(String fText, int fScope) {
-		return (parseVars(fText, fScope, new java.util.ArrayList()));
-	}
+    private void addVar(String name, String value)
+    {
+        PerlDebugVar var = new PerlDebugVar(
+            target, scope, name, new PerlDebugValue(target, " ", value));
 
-	public ArrayList parseVars(String fText, int fScope,
-			ArrayList fVarList) {
-		
-		mHasErrors = false;
-		
-		mVarMap.clear();
-		mVarStack.clear();
-		
-		
-		mChars = fText.toCharArray();
+        if (!varStack.empty())
+        {
+            ((PerlDebugVar) varStack.peek()).getPdValue().addVar(var);
+        }
+        varStack.push(var);
 
-		mScope = fScope;
-		
-		setVarList(fVarList);
+        int pos = value.indexOf(')');
+        if (pos > 0)
+        {
+            varMap.put(value.substring(0, pos + 1), var);
+        }
+    }
 
-		mPos = 0;
-		indent = " ";
-		try{
-		readVars();
-		}catch(Exception e){mHasErrors = true;}
-		if (mHasErrors) {
-			System.out.println("!!!!! Parse Error!!!!");
-			logParsError(fText);
-		} else {
-			System.out.println("!!!!! Parse OK!!!!");
-		}
-		return (getVars());
+    private void linkVar(String name, String value) throws ParseException
+    {
+        try
+        {
+            PerlDebugVar referencedVar = (PerlDebugVar) this.varMap.get(value);
+            PerlDebugValue val;
+            
+            if (referencedVar == null &&
+                value.startsWith("REF") &&
+                value.indexOf("-> ") != -1)
+            {
+                // we might have something like "REF(0x8429efc)-> HASH(0x824f0bc)"
+                value = value.substring(value.indexOf("-> ")+3);
+                referencedVar = (PerlDebugVar) this.varMap.get(value);
+            }
+            
+            if (referencedVar != null)
+            {
+                PerlDebugValue referencedVal = referencedVar.getPdValue();
+                val = new PerlDebugValue(
+                    target, " ", referencedVal.getValueString());
+            }
+            else
+            {
+                log.log(new Status(
+                    IStatus.WARNING,
+                    PerlDebugPlugin.getUniqueIdentifier(),
+                    IStatus.OK,
+                    "Unresolved reference {" + value + "} for variable {" + name + "}. " +
+                    "Contents of the Variables view may be inaccurate. ",
+                    null));
 
-	}
+                val = new PerlDebugValue(target, " ", "<unresolved reference>");
+            }
 
-	//***************************
-	 void readVars() {
-		int x = 1;
-		do {
-			x = readVar();
-		} while (x == 1);
-	}
+            PerlDebugVar var = new PerlDebugVar(target, scope, name, val);
 
-	 int readVar() {
-		String name, value;
+            if (!varStack.empty())
+            {
+                ((PerlDebugVar) varStack.peek()).getPdValue().addVar(var);
+            }
+            varStack.push(var);
+        }
+        catch (DebugException e)
+        {
+            throw new ParseException(
+                "linkVar failed for name={" + name + "}, value={" + value + "}",
+                true, e);
+        }
+    }
 
-		if (mChars[mPos] == 'E')
-			return (0);
-		while (mChars[mPos] != 'N') {
-			System.err.println("Name not found[" + mPos + "]\n");
-			mHasErrors = true;
-			++mPos;
-		};
-		mPos++;
-		name = readString();
-		value = readStrings();
-		//System.out.println(indent + name + "=" + value + "\n");
-		if(mChars[mPos] == 'R')
-		{
-			mPos++;
-			linkVar(name,value);
-		}
-		else
-		 { addVar(name,value); }
-		
-		
-		if (mChars[mPos] == 'I') {
-			mPos++;
-			String indentOrg = indent;
-			indent = indent + "   ";
-			readVars();
-			indent = indentOrg;
-		}
-		finalizeVar();
-		if (mChars[mPos] == 'O') {
-			mPos++;
-			return (0);
-		}
-		/* fine */
-		return (1);
-	}
-	 String readString() {
-		return (readString(true));
-	}
+    private String readString() throws ParseException
+    {
+        if (chars[pos] != 'S')
+            throw new ParseException("expected token S missing @" + pos, true);
 
-	 String readString(boolean fPrintError) {
-		if (mChars[mPos] != 'S') {
-			if (fPrintError) {
-				System.err.println("String not found[" + mPos + "]\n");
-				mHasErrors = true;
-			}
-			return (null);
-		};
-		mPos++;
-		String temp = new String(mChars, mPos, 8);
-		int length = Integer.parseInt(temp, 16);
-		mPos += 8;
-		temp = new String(mChars, mPos, length);
-		mPos += length;
-		return temp;
-	}
+        try
+        {
+            pos++;
+            String temp = new String(chars, pos, 8);
+            int length = Integer.parseInt(temp, 16);
+            pos += 8;
+            temp = new String(chars, pos, length);
+            pos += length;
+            return temp;
+        }
+        catch (Exception e) // NumberFormatException, IndexOutOfBoundsException
+        {
+            throw new ParseException("could not parse string @" + pos, true, e);
+        }
+    }
 
-	 String readStrings() {
-		String erg, temp;
+    private String readStrings() throws ParseException
+    {
+        StringBuffer buf = new StringBuffer(readString());
+        
+        while (pos < chars.length && chars[pos] == 'S')
+            buf.append(readString());
 
-		erg = readString();
-		if (erg == null)
-			return (null);
-		do {
-			temp = readString(false);
-			if (temp != null)
-				erg += temp;
-		} while (temp != null);
-		return (erg);
-	}
+        return buf.toString();
+    }
 
-	////**************************
+    private boolean readVar() throws ParseException
+    {
+        if (pos >= chars.length) throw new ParseException(
+            "unexpected end of stream", false);
+        
+        if (chars[pos] == 'E') return false;
+        if (chars[pos] != 'N')
+        {
+            throw new ParseException(
+                "expected token N missing @" + pos, true);                
+        }
 
-	public void setVarList(java.util.ArrayList fVarList) {
-		mVarList = fVarList;
-	}
+        pos++;
+        String name = readString();
+        String value = readStrings();
 
-	public PerlDebugVar[] getVarArray() {
-		return ((PerlDebugVar[]) mVarList.toArray(new PerlDebugVar[mVarList
-				.size()]));
-	}
+        if (chars[pos] == 'R')
+        {
+            pos++;
+            linkVar(name, value);
+        }
+        else
+        {
+            addVar(name, value);
+        }
 
-	public java.util.ArrayList getVars() {
-		return (mVarList);
-	}
-
-	
-	public void addVar(String fName, String fValue) {
-		PerlDebugVar var = new PerlDebugVar(mDebugger, mScope);
-		PerlDebugValue val = new PerlDebugValue(mDebugger);
-
-		try {
-			val.setType(" ");
-			val.setValue(fValue);
-			var.setName(fName);
-			var.setValue(val);
-
-			if (!mVarStack.empty()) {
-				((PerlDebugVar) mVarStack.peek()).getPdValue().addVar(var);
-
-			}
-
-		} catch (Exception e) {
-		};
-		mVarStack.push(var);
-		
-		int pos = fValue.indexOf(')');
-		if( pos > 0)
-		{
-		   mVarMap.put(fValue.substring(0,pos+1),var);	
-		}
-		
-	}
-
-	public void linkVar(String fName, String fValue) {
-		PerlDebugVar varRe = (PerlDebugVar) this.mVarMap.get(fValue);
-		PerlDebugVar var = new PerlDebugVar(mDebugger, mScope);
-		try {
-			PerlDebugValue valRe = varRe.getPdValue();
-	
-		PerlDebugValue val = new PerlDebugValue(mDebugger);
-			val.mVars = valRe.mVars;
-			val.setType(" ");
-			val.setValue(valRe.getValueString());
-			var.setName(fName);
-			var.setValue(val);
-
-			if (!mVarStack.empty()) {
-				((PerlDebugVar) mVarStack.peek()).getPdValue().addVar(var);
-			}
-		} catch (DebugException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		mVarStack.push(var);
-
-	}
-	public void finalizeVar() {
-		PerlDebugVar var;
-		var = (PerlDebugVar) mVarStack.pop();
-		try {
-			if (var.getPdValue().getValueString() == null) {
-				var.getPdValue().appendValue("...");
-			}
-		} catch (Exception e) {
-		}
-		if (mVarStack.empty())
-			mVarList.add(var);
-		try {
-		} catch (Exception e) {
-		};
-	}
-
-	private void logParsError(String fText) {
-
-		StringBuffer out = new StringBuffer();
-
-		out.append("*******************************\n");
-		out.append("*******************************\n");
-		out.append("+++++++Error Parsing Vars++++++\n");
-		out.append("*******************************\n");
-		out.append("*******************************\n");
-
-		out.append(fText);
-
-		out.append("-------------------------------\n");
-		out.append("-------------------------------\n");
-		out.append("+++++++Error Parsing Vars++++++\n");
-		out.append("-------------------------------\n");
-		out.append("-------------------------------\n");
-
-		PerlDebugPlugin.getDefault().logError(
-				"Error Parsing Debugger Variables",
-				new Exception(out.toString()));
-
-	}
-
+        if (chars[pos] == 'I')
+        {
+            pos++;
+            readVars();            
+        }
+        PerlDebugVar var = (PerlDebugVar) varStack.pop();
+        if (varStack.empty()) vars.add(var);
+        if (chars[pos] == 'O')
+        {
+            pos++;
+            return false;
+        }
+        return true;
+    }
+    
+    private void readVars()
+    {
+        for (;;)
+        {
+            boolean hasErrors = false;
+            
+            try { if (!readVar()) break; }
+            catch (ParseException e)
+            {
+                if (!hasErrors)
+                {
+                    hasErrors = true;
+                    log.log(new Status(
+                        IStatus.ERROR,
+                        PerlDebugPlugin.getUniqueIdentifier(),
+                        IStatus.OK,
+                        "An error occurred while parsing debugger variables; " +
+                        "contents of the Variables view may be inaccurate. " +
+                        "Failure caused by string: {" + String.valueOf(chars) + "}",
+                        e));
+                }
+                if (e.canRecover()) recover();
+                else break;
+            }
+        }
+    }
+    
+    private void recover()
+    {
+        // this recovery algorithm is simplistic and will not recover
+        // well from parsing errors encountered in nested variables
+        while (
+            pos < chars.length &&
+            chars[pos] != 'N' &&
+            chars[pos] != 'E') pos++;
+    }
+    
+    private void reset(String text, int scope, List vars)
+    {
+        this.varMap.clear();
+        this.varStack.clear();
+        this.chars = text.toCharArray();
+        this.scope = scope;
+        this.vars = vars;
+        this.pos = 0;
+    }
+    
+    private static class ParseException extends Exception
+    {
+        private final boolean canRecover;
+        
+        public ParseException(String msg, boolean canRecover)
+        {
+            this(msg, canRecover, null);
+        }
+        
+        public ParseException(String msg, boolean canRecover, Throwable cause)
+        {
+            super(msg, cause);
+            this.canRecover = canRecover;
+        }
+        
+        public boolean canRecover()
+        {
+            return canRecover;
+        }
+    }
 }

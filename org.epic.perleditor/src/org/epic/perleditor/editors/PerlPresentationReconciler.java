@@ -105,7 +105,7 @@ public class PerlPresentationReconciler extends PresentationReconciler
             try
             {
                 String type = PartitionTypes.getPerlPartition(document, offset).getType();
-
+                
                 if (type.equals(PartitionTypes.VARIABLE))
                 {
                     // render first character (such as $, @ or %) in default color,

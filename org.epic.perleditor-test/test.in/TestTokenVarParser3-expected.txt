@@ -1,0 +1,4 @@
+$obj = T {HASH(0x824eae4)...} with 3 vars
+ 'abc' = T {123} with 0 vars
+ 'key' = T {HASH(0x824eae4)...} with 0 vars
+ 'key2' = T {HASH(0x824eae4)...} with 0 vars

@@ -119,7 +119,7 @@ public class ResourceUtilities
                 String path = url.getPath();
                 assert path.startsWith("file:");
                 assert path.endsWith(".jar!/");
-                
+
                 path = path.substring(5, path.length()-2);
                 return new File(path);
             }

@@ -23,6 +23,7 @@ public class PerlMainPreferencePage
 	private Button warningsCheckBox;
 	private Button taintCheckBox;
     private Button debugConsoleCheckBox;
+    private Button suspendAtFirstCheckBox;
 
 	private Button validateCheckBox;
 	private Scale syntaxCheckInterval;
@@ -134,6 +135,15 @@ public class PerlMainPreferencePage
         debugConsoleCheckBox.setSelection(
             PerlEditorPlugin.getDefault().getDebugConsolePreference());
         debugConsoleCheckBox.setLayoutData(data);        
+
+        // Stop debugger at first line
+        data = new GridData(GridData.FILL_HORIZONTAL);
+        data.grabExcessHorizontalSpace = true;
+        suspendAtFirstCheckBox = new Button(top, SWT.CHECK);
+        suspendAtFirstCheckBox.setText("Suspend debugger at first statement");
+        suspendAtFirstCheckBox.setSelection(
+            PerlEditorPlugin.getDefault().getSuspendAtFirstPreference());
+        suspendAtFirstCheckBox.setLayoutData(data);
         
 		//WebBrowser preferences
 		Composite browserComposite = new Composite(top, SWT.NULL);
@@ -243,6 +253,8 @@ public class PerlMainPreferencePage
 			taintCheckBox.getSelection());
         PerlEditorPlugin.getDefault().setDebugConsolePreference(
             debugConsoleCheckBox.getSelection());
+        PerlEditorPlugin.getDefault().setSuspendAtFirstPreference(
+            suspendAtFirstCheckBox.getSelection());
 		PerlEditorPlugin.getDefault().setSyntaxValidationPreference(
             validateCheckBox.getSelection());
 		PerlEditorPlugin.getDefault().getPreferenceStore().setValue(PerlEditorPlugin.INTERPRETER_TYPE_PREFERENCE, interpreterTypeCombo.getText());

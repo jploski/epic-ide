@@ -1,14 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section name="Workbench">
 	<list key="installedFeatures">
-		<item value="org.epic.feature.main:0.4.18"/>
 	</list>
 	<section name="CleanDialogSettings">
 		<item key="DIALOG_X_ORIGIN" value="296"/>
 		<item key="DIALOG_HEIGHT" value="408"/>
 		<item key="DIALOG_Y_ORIGIN" value="171"/>
-		<item key="TOGGLE_SELECTED" value="false"/>
 		<item key="DIALOG_WIDTH" value="532"/>
+		<item key="TOGGLE_SELECTED" value="false"/>
 	</section>
 	<section name="NewWizardAction">
 	</section>

@@ -36,10 +36,10 @@ See build.properties for more information.
 		    description="All output formats"/>
 
 	<target name="build-pdf" depends="check-env" description="Single PDF file">
-		<fail message="Property fop.path must be defined and point to fop 0.20.5 installation directory.">
+		<fail message="Property fop.dir must be defined and point to fop 0.20.5 installation directory.">
 			<condition>
 				<or>
-					<not><isset property="fop.path"/></not>
+					<not><isset property="fop.dir"/></not>
 				</or>
 			</condition>
 		</fail>
@@ -101,6 +101,24 @@ See build.properties for more information.
 		<delete dir="temp"/>
 	</target>
 
+	<target name="build-dev-html" depends="check-env" description="Single HTML file (devguide)">
+		<delete dir="temp" failonerror="false"/>
+		<mkdir dir="temp"/>
+	    <xslt basedir="."
+		      destdir="temp"
+		      extension=".html"
+		      style="xhtml-single.xsl"
+		      includes="devguide.xml"
+			  force="true">
+	        <xmlcatalog refid="catalog"/>
+	    </xslt>
+		<copy todir="temp">
+			<fileset dir="." includes="book.css"/>
+		</copy>
+		<zip file="../dist/EPIC_Developer's_Guide.zip" basedir="temp" includes="**"/>
+		<delete dir="temp"/>
+	</target>
+	
 	<target name="build-latex" depends="check-env" description="Single LaTeX file (experimental)">
 		<mkdir dir="temp"/>
 	    <xslt basedir="."

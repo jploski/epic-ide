@@ -92,7 +92,7 @@ public class ExtractSubroutineAction extends PerlEditorAction
         }
     }
 
-    protected String getPerlActionId()
+    protected String getPerlEditorActionId()
     {
         return PerlEditorActionIds.EXTRACT_SUBROUTINE;
     }

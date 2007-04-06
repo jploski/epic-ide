@@ -20,7 +20,7 @@ public class Jump2BracketAction extends PerlEditorAction
         getEditor().jumpToMatchingBracket();
     }
 
-    protected String getPerlActionId()
+    protected String getPerlEditorActionId()
     {
         return PerlEditorActionIds.MATCHING_BRACKET;
     }

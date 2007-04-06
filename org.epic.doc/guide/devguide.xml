@@ -1,0 +1,521 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN"
+"http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd">
+<book>
+  <title>EPIC - Developer's Guide</title>
+
+  <preface>
+    <title>Introduction</title>
+
+    <para>This document introduces new developers to the EPIC project. It also
+    serves as a place for documenting the established development process and
+    the more important design and implementation decisions. It is intended as
+    a supplement to the inline (JavaDoc) documentation found in the source
+    code.</para>
+
+    <para>We assume that the reader is familiar with Java in general and the
+    Eclipse IDE (more precisely, JDT) in particular. Familiarity with Eclipse
+    plug-in development and best practices is important if you wish to
+    contribute larger features. However, it should not be necessary to help us
+    diagnose bugs. Also, getting involved in EPIC development can be a great
+    opportunity to learn about programming plug-ins.</para>
+  </preface>
+
+  <chapter id="preferences">
+    <title>Setting Up the Development Environment</title>
+
+    <para>This chapter explains how to set up a new workspace for debugging
+    EPIC and modifying its source code. You can either follow the steps
+    exactly or adjust them to match your own environment. We provide two
+    routes: a quick one for the impatient, and a thorough one for the
+    responsible.</para>
+
+    <section>
+      <title>Hacking EPIC in 15 Minutes</title>
+
+      <para>EPIC ships with complete source code. If you wish to debug
+      <emphasis>now</emphasis>, or try a quick fix, this short list of steps
+      is for you:</para>
+
+      <orderedlist>
+        <listitem>
+          <para>Install the ANTLR plug-in through its update site - follow
+          <ulink url="http://antlreclipse.sourceforge.net/">installation
+          instructions</ulink>.</para>
+        </listitem>
+
+        <listitem>
+          <para>Install the version of EPIC that you wish to hack (you
+          probably already have).</para>
+        </listitem>
+
+        <listitem>
+          <para>Set the default compiler compliance level to 1.4, both for the
+          source code and for class files (<menuchoice>
+              <guimenu>Window</guimenu>
+
+              <guimenuitem>Preferences...</guimenuitem>
+            </menuchoice>, then <menuchoice>
+              <guimenu>Java</guimenu>
+
+              <guimenuitem>Compiler</guimenuitem>
+            </menuchoice>).</para>
+        </listitem>
+
+        <listitem>
+          <para>Choose <menuchoice>
+              <guimenu>File</guimenu>
+
+              <guimenuitem>Import...</guimenuitem>
+            </menuchoice>, then <guilabel>External Plug-ins and
+          Fragments</guilabel>, then <guilabel>Projects with source
+          folders</guilabel>.</para>
+        </listitem>
+
+        <listitem>
+          <para>From the left pane, choose org.epic.* plug-ins, click
+          <guibutton>Add</guibutton>, then <guibutton>Finish</guibutton>. You
+          now have EPIC's source code in your workspace.</para>
+        </listitem>
+
+        <listitem>
+          <para>Choose <guimenuitem>Toggle ANTLR project nature</guimenuitem>
+          from the context menu on the project org.epic.perleditor.</para>
+        </listitem>
+
+        <listitem>
+          <para>Choose <menuchoice>
+              <guimenu>Project</guimenu>
+
+              <guimenuitem>Clean...</guimenuitem>
+            </menuchoice> and select org.epic.* projects. This step should
+          build all projects without errors.</para>
+        </listitem>
+
+        <listitem>
+          <para>Choose <menuchoice>
+              <guimenu>Run</guimenu>
+
+              <guimenuitem>Debug...</guimenuitem>
+            </menuchoice>, create a launch configuration of type Eclipse
+          Application, point it to some workspace and click
+          <guibutton>Debug</guibutton>. You can now change the EPIC code and
+          see the results immediately in the launched workbench. For some
+          changes, relaunching the workbench is required.</para>
+        </listitem>
+
+        <listitem>
+          <para>If you wish to distribute your changes (e.g., install them in
+          your <emphasis>real</emphasis> workbench), right-click on plugin.xml
+          in each of the plug-ins and choose <menuchoice>
+              <guimenu>PDE Tools</guimenu>
+
+              <guimenuitem>Create Ant Build File...</guimenuitem>
+            </menuchoice> from the context menu. This will create a build.xml
+          file. Right-click on it, choose <menuchoice>
+              <guimenu>Run As</guimenu>
+
+              <guimenuitem>Ant Build...</guimenuitem>
+            </menuchoice> and select the target named
+          <literal>zip.plugin</literal>. This will create an archive which you
+          can unzip under <literal>$ECLIPSE_HOME/plugins</literal> as a
+          replacement for the original version shipped with EPIC (which you
+          have to delete manually). Run Eclipse with the option
+          <literal>-clean</literal> to complete the installation.
+          Congratulations, you are now running your own version of
+          EPIC.</para>
+        </listitem>
+      </orderedlist>
+
+      <para>If you would like to contribute your modifications to the project,
+      a bit more preparation is in order. Forget the above steps and read
+      on.</para>
+    </section>
+
+    <section>
+      <title>Installing the Eclipse SDK and EPIC</title>
+
+      <para>The first step is to install Java and Eclipse. This might come as
+      a surprise because you must already have done it if you are using EPIC.
+      However, there is a catch: EPIC's code is meant to remain compatible
+      with the Eclipse 3.1.x series. While it will compile and run fine using
+      Eclipse 3.2 or later, there is a danger of introducing backwards
+      incompatible changes if you modify the source code. Therefore, it is
+      recommended to use Eclipse 3.1.2 during development. <ulink
+      url="http://download.eclipse.org/eclipse/downloads/drops/R-3.1.2-200601181600/index.php">Download
+      and install</ulink> it if you are serious about contributing to EPIC. If
+      you just wish to debug, 3.2 will do.</para>
+
+      <para>What about Java? The source code of EPIC currently requires a JDK
+      1.4-compliant compiler (because of the <literal>assert</literal>
+      keyword). Importantly, it does <emphasis>not</emphasis> require JDK 1.5;
+      none of the new language features are used. To honour this convention,
+      you may need to modify <menuchoice>
+          <guimenu>Java</guimenu>
+
+          <guimenuitem>Compiler</guimenuitem>
+        </menuchoice> preferences under <menuchoice>
+          <guimenu>Window</guimenu>
+
+          <guimenuitem>Preferences...</guimenuitem>
+        </menuchoice>.</para>
+
+      <para>Finally, install the version of EPIC which you are going to work
+      on, following the normal install procedure described in the User's
+      Guide. Even though you will download source code from the CVS, having
+      EPIC installed comes handy when you wish to import and modify the
+      relevant Eclipse plug-ins.</para>
+    </section>
+
+    <section>
+      <title>Installing the ANTLR Plug-In</title>
+
+      <para>To compile the source code of the EPIC editor (org.epic.perleditor
+      project), you will need the (free) ANTLR plug-in. Follow the <ulink
+      url="http://antlreclipse.sourceforge.net/">installation
+      instructions</ulink> from its web site.</para>
+    </section>
+
+    <section>
+      <title>Creating a New Workspace</title>
+
+      <para>You may wish to create a new workspace in which to keep EPIC
+      projects (<menuchoice>
+          <guimenu>File</guimenu>
+
+          <guimenuitem>Switch Workspace...</guimenuitem>
+        </menuchoice>). The full-blown development environment includes the
+      source code of Eclipse's own required plug-ins and takes up almost 150
+      MB of disk space. Operating in a dedicated workspace is a good idea for
+      the following reasons:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>You can throw it away easily.</para>
+        </listitem>
+
+        <listitem>
+          <para>There is no risk of messing up your existing projects.</para>
+        </listitem>
+
+        <listitem>
+          <para>You can set up workspace-wide preferences just for
+          EPIC.</para>
+        </listitem>
+
+        <listitem>
+          <para>Running (and debugging) multiple versions of EPIC is easier
+          with 1 version per workspace.</para>
+        </listitem>
+      </itemizedlist>
+    </section>
+
+    <section>
+      <title>Configuring CVS Repository Access</title>
+
+      <para>Switch to the <guilabel>CVS Repository Exploring</guilabel>
+      perspective and set up a new repository. The settings are typical for a
+      SourceForge project and can be found <ulink
+      url="https://sourceforge.net/cvs/?group_id=75859">here</ulink>. After
+      creating the repository item, browse into HEAD to see all EPIC
+      subprojects. Some of these subprojects are no longer maintained and
+      irrelevant. The following table describes the current and important
+      ones. You will definitely want to check out the first
+      four:<informaltable>
+          <tgroup cols="2">
+            <thead>
+              <row>
+                <entry>Project name</entry>
+
+                <entry>Description</entry>
+              </row>
+            </thead>
+
+            <tbody>
+              <row>
+                <entry><emphasis>org.epic.perleditor</emphasis></entry>
+
+                <entry align="left"><para>This is the main project, which
+                contains the editor and most views.</para></entry>
+              </row>
+
+              <row>
+                <entry><emphasis>org.epic.debug</emphasis></entry>
+
+                <entry align="left"><para>This is the second most important
+                project, which contains the debugger. Without this project,
+                launching Perl scripts would not be possible.</para></entry>
+              </row>
+
+              <row>
+                <entry><emphasis>org.epic.regexp</emphasis></entry>
+
+                <entry align="left"><para>This project implements the RegExp
+                Plug-In.</para></entry>
+              </row>
+
+              <row>
+                <entry><emphasis>org.epic.doc</emphasis></entry>
+
+                <entry>This project contains the online and offline
+                documentation, including the User's and Developer's
+                Guide.</entry>
+              </row>
+
+              <row>
+                <entry>org.epic.perleditor-test</entry>
+
+                <entry>This project contains the automated unit test suites,
+                see <xref linkend="creating-unit-tests" />.</entry>
+              </row>
+
+              <row>
+                <entry>org.epic.feature.main</entry>
+
+                <entry>This project contains the EPIC feature definition and
+                is only relevant for preparing releases, see <xref
+                linkend="preparing-release" /></entry>
+              </row>
+
+              <row>
+                <entry>org.epic.website</entry>
+
+                <entry>This project contains the entire contents of the EPIC
+                web site.</entry>
+              </row>
+            </tbody>
+          </tgroup>
+        </informaltable></para>
+
+      <section>
+        <title>Choosing a Branch</title>
+
+        <para>Before checking out any of the above projects, you must choose
+        which branch to check out from. EPIC development proceeds in two
+        branches:</para>
+
+        <itemizedlist>
+          <listitem>
+            <para>The HEAD branch contains the 'testing' version of EPIC. This
+            branch is intended to receive all bug fixes and new features.
+            While it might be considered a 'development' branch, it should not
+            be used to check in unfinished (untested) or broken code because
+            its content is periodically released to end users. If you wish to
+            debug a problem or get involved in general, this is the branch to
+            check out.</para>
+          </listitem>
+
+          <listitem>
+            <para>The 'stable' branch contains the 'stable' version of EPIC.
+            This branch is intended to only receive 'safe' bug fixes, that is,
+            ones for which the risk of breaking existing functionality is
+            minimal. Check out this branch if you wish to contribute a bug fix
+            (actually, you should also incorporate your bug fix into
+            HEAD).</para>
+          </listitem>
+        </itemizedlist>
+
+        <para>All projects except org.epic.website contain both the HEAD and
+        the 'stable' branch, which was created at the project level. If the
+        'stable' branch is not visible under <guilabel>Branches</guilabel> in
+        the <guilabel>CVS Repositories</guilabel> view, choose
+        <guilabel>Refresh Branches</guilabel> from the context menu to make it
+        appear.</para>
+      </section>
+    </section>
+
+    <section>
+      <title>Checking out the Projects</title>
+
+      <para>Having configured the CVS access, go ahead and check out the
+      projects which you are interested in. Select <guilabel>Check Out
+      As...</guilabel> from the context menu and then <guilabel>Checkout as a
+      project in the workspace</guilabel>. The project name should be kept
+      unchanged.</para>
+
+      <para>If the option <guilabel>Build automatically</guilabel> is checked
+      in menu <guilabel>Project</guilabel>, the compilation will start
+      immediately after checkout. However, it does not hurt to select all the
+      checked out projects after you are done and use <menuchoice>
+          <guimenu>Project</guimenu>
+
+          <guimenuitem>Clean...</guimenuitem>
+        </menuchoice> to get a clean build. There should be some warnings, but
+      no errors reported after this step.</para>
+    </section>
+
+    <section>
+      <title>Importing External Plug-ins</title>
+
+      <para>This step is optional. During development of EPIC, you will be
+      soon stepping through Eclipse code using the Java debugger. Quite
+      likely, you will also wish to modify the Eclipse code from time to time
+      during your debugging sessions. Finally you might want to step through
+      or modify ANTLR code on which EPIC parser is based. All these tasks are
+      supported by having the plug-ins referenced by EPIC in the workspace as
+      projects with source code.</para>
+
+      <para>In order to import the referenced projects, proceed as
+      follows:</para>
+
+      <orderedlist>
+        <listitem>
+          <para>(Optionally) Turn off automatic builds (<menuchoice>
+              <guimenu>Project</guimenu>
+
+              <guimenuitem>Build automatically</guimenuitem>
+            </menuchoice>). We are going to import many projects at once. If
+          your workbench does not have enough available memory (512 MB
+          recommended), you may experience OutOfMemoryErrors if the complete
+          build executes automatically.</para>
+        </listitem>
+
+        <listitem>
+          <para>Choose <menuchoice>
+              <guimenu>File</guimenu>
+
+              <guimenuitem>Import...</guimenuitem>
+            </menuchoice>, then <guilabel>External Plug-ins and
+          Fragments</guilabel>.</para>
+        </listitem>
+
+        <listitem>
+          <para>On the next screen, under <guilabel>Import As</guilabel>,
+          choose <guilabel>Projects with source folders</guilabel>. Keep other
+          options unchanged.</para>
+        </listitem>
+
+        <listitem>
+          <para>On the next screen, select all EPIC projects (org.epic.*) in
+          the left pane and click the <guibutton>Add</guibutton> button. Then,
+          click <guibutton>Required Plug-ins</guibutton>. Remove the EPIC
+          projects from the right pane. In the effect, only the plug-ins which
+          are required by EPIC remain in the right pane to be imported.</para>
+        </listitem>
+
+        <listitem>
+          <para>Add org.antlr from the left pane for import. This plug-in is
+          not required by EPIC, but useful to keep in the workspace as a
+          source code location for debugging. (If you try stepping into the
+          ANTLR code, you will be asked to provide a source code location;
+          choose <userinput>org.antlr/src-antlr</userinput> then.)</para>
+        </listitem>
+
+        <listitem>
+          <para>Click <guibutton>Finish</guibutton> to start the import. This
+          process takes a while.</para>
+        </listitem>
+
+        <listitem>
+          <para>If you turned off automatic builds in the first step, now is
+          time to build the imported projects - individually or in groups.
+          After all projects have been built, it is safe to turn automatic
+          builds back on.</para>
+        </listitem>
+      </orderedlist>
+    </section>
+
+    <section>
+      <title>Creating a Launch Configuration</title>
+
+      <para>During development, we want to be able to modify the source code
+      in the workspace and immediately see the effects of our changes in
+      another Eclipse workbench. We also want to be able to set breakpoints in
+      the source code and have that other workbench stop execution at them,
+      report values of variables to the debugger, etc. Both goals are
+      accomplished by creating a launch configuration of type Eclipse
+      Application. Essentially, the workbench instance which operates on the
+      workspace with EPIC's source code is used to launch and debug another
+      workbench instance, which uses its own workspace elsewhere in the file
+      system. Because we also imported Eclipse's own source code into the host
+      workspace in the previous step, we now have full control over the
+      execution of the hosted workbench.</para>
+
+      <para>To create a launch configuration for the hosted workbench, proceed
+      as follows:</para>
+
+      <orderedlist>
+        <listitem>
+          <para>Choose <menuchoice>
+              <guimenu>Run</guimenu>
+
+              <guimenuitem>Run...</guimenuitem>
+            </menuchoice>.</para>
+        </listitem>
+
+        <listitem>
+          <para>Under <guilabel>Configurations</guilabel>, choose
+          <guilabel>Eclipse Application</guilabel> and click
+          <guibutton>New</guibutton>.</para>
+        </listitem>
+
+        <listitem>
+          <para>Under <guilabel>Workspace Data</guilabel>, enter the path to
+          the workspace which should be used by the hosted workbench. If the
+          path points to a non-existing folder, this folder will be created,
+          just like when starting Eclipse normally.</para>
+        </listitem>
+
+        <listitem>
+          <para>Under <guilabel>VM Arguments</guilabel>, enter
+          <userinput>-ea</userinput> to enable assertions, and any other
+          arguments (for example, to increase the memory heap size).</para>
+        </listitem>
+
+        <listitem>
+          <para>Click <guibutton>Run</guibutton> to start the workbench.
+          Alternatively, apply changes and close the window and choose
+          <menuchoice>
+              <guimenu>Run</guimenu>
+
+              <guimenuitem>Debug...</guimenuitem>
+            </menuchoice> to launch the workbench in debug mode.</para>
+        </listitem>
+      </orderedlist>
+
+      <para>After a short while, another workbench will open. This workbench
+      is running EPIC code from the host workspace. When in debug mode,
+      changes made in the code will become immediately visible (subject to
+      restrictions of the JVM).</para>
+
+      <para>This step concludes setting up the basic development environment.
+      You are now able to modify and debug EPIC code. However, in order to
+      verify the quality of your contributions, you should also set up the
+      test environment and add unit tests along with your features or bug
+      fixes. At the very least, you should run the existing unit tests before
+      committing changes to CVS (or submitting patches) in order to protect
+      EPIC against regression bugs (breaking of previous functionality). This
+      topic is described in <xref linkend="creating-unit-tests" />.</para>
+    </section>
+  </chapter>
+
+  <chapter>
+    <title>Coding Conventions</title>
+
+    <para></para>
+  </chapter>
+
+  <chapter id="perl-projects">
+    <title id="creating-unit-tests">Creating Unit Tests</title>
+
+    <para></para>
+  </chapter>
+
+  <chapter>
+    <title>Updating Documentation</title>
+
+    <para></para>
+  </chapter>
+
+  <chapter id="eclipse-basics">
+    <title id="preparing-release">Preparing a Release</title>
+
+    <para></para>
+  </chapter>
+
+  <chapter id="references">
+    <title>References</title>
+
+    <para></para>
+  </chapter>
+</book>

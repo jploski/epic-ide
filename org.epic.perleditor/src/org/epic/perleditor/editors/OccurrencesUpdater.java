@@ -194,7 +194,7 @@ public class OccurrencesUpdater implements ISelectionChangedListener
     private void markText(
         IDocument doc, String type, String text, IAnnotationModelExtension model)
         throws BadLocationException, BadPartitioningException
-    {        
+    {
         int offset = 0;
         String docText = doc.get();
         int index = docText.indexOf(text, offset);

@@ -19,8 +19,14 @@ public class PerlEditorCommandIds
 {
     //~ Static fields/initializers
 
-    /** org.epic.perleditor.commands.critiqueSource */
-    public static final String CRITIQUE_SOURCE = "org.epic.perleditor.commands.critiqueSource";
+    /** org.epic.perleditor.commands.clearMarker */
+    public static final String CLEAR_MARKER = "org.epic.perleditor.commands.clearMarker";
+
+    /** org.epic.perleditor.commands.podChecker */
+    public static final String POD_CHECKER = "org.epic.perleditor.commands.podChecker";
+
+    /** org.epic.perleditor.commands.perlCritic */
+    public static final String CRITIQUE_SOURCE = "org.epic.perleditor.commands.perlCritic";
 
     /** org.epic.perleditor.commands.formatSource */
     public static final String FORMAT_SOURCE = "org.epic.perleditor.commands.formatSource";
@@ -41,7 +47,7 @@ public class PerlEditorCommandIds
     public static final String TOGGLE_COMMENT = "org.epic.perleditor.commands.toggleComment";
 
     /** org.epic.perleditor.commands.openDeclaration */
-    public static final String OPEN_SUB = "org.epic.perleditor.commands.openDeclaration";
+    public static final String OPEN_DECLARATION = "org.epic.perleditor.commands.openDeclaration";
 
     /** org.epic.perleditor.commands.searchPerlDoc */
     public static final String PERL_DOC = "org.epic.perleditor.commands.searchPerlDoc";

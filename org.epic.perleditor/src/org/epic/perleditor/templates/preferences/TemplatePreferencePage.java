@@ -323,12 +323,8 @@ public class TemplatePreferencePage
     SourceViewer viewer =
       new SourceViewer(parent, null, SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL);
     //JavaTextTools tools = PerlEditorPlugin.getDefault().getJavaTextTools();
-    Document document = new Document();
-    IDocumentPartitioner partitioner = new PerlPartitioner(
-        PerlEditorPlugin.getDefault().getLog());
-
-    document.setDocumentPartitioner(PartitionTypes.PERL_PARTITIONING, partitioner);
-    partitioner.connect(document);
+    IDocument document = new Document();
+    new PerlPartitioner(PerlEditorPlugin.getDefault().getLog(), document);
 
     // TODO changed check
 	PerlSourceViewerConfiguration sourceViewerConfiguration = new PerlSourceViewerConfiguration(PerlEditorPlugin.getDefault().getPreferenceStore(), null);

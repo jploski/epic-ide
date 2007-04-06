@@ -2,284 +2,276 @@
 <?eclipse version="3.0"?>
 <plugin>
 
-     <extension
-         id="org.epic.debug"
-         name="Epic Perl Debugger"
-         point="org.eclipse.debug.core.launchConfigurationTypes">
-      <launchConfigurationType
-            name="Perl Local"
-            delegate="org.epic.debug.LaunchConfigurationDelegate"
-            modes="run,debug"
-            public="true"
-            id="org.epic.debug.launchConfigurationPerl">
-      </launchConfigurationType>
-      <launchConfigurationType
-            name="Perl CGI"
-            delegate="org.epic.debug.LaunchConfigurationDelegate"
-            modes="run,debug"
-            public="true"
-            id="org.epic.debug.launchConfigurationPerlCGI">
-      </launchConfigurationType>
-       <launchConfigurationType
-            name="Perl Remote"
-            delegate="org.epic.debug.LaunchConfigurationDelegate"
-            modes="debug"
-            public="true"
-            id="org.epic.debug.launchConfigurationPerlRemote">
-      </launchConfigurationType>
-   </extension>
-   <extension
-         point="org.eclipse.debug.ui.launchConfigurationTabGroups">
-      <launchConfigurationTabGroup
-            type="org.epic.debug.launchConfigurationPerl"
-            class="org.epic.debug.ui.LaunchConfigurationDialog"
-            id="org.epic.debug.launchDialog">
-      </launchConfigurationTabGroup>
-   </extension>
-   <extension
-         point="org.eclipse.debug.ui.launchConfigurationTypeImages">
-      <launchConfigurationTypeImage
-            icon="icons/epic.gif"
-            configTypeID="org.epic.debug.launchConfigurationPerl"
-            id="org.epic.debug.launchimage">
-      </launchConfigurationTypeImage>
-   </extension>
-<!-- -->
-   <extension
-         point="org.eclipse.debug.ui.launchConfigurationTabGroups">
-      <launchConfigurationTabGroup
-            type="org.epic.debug.launchConfigurationPerlCGI"
-            class="org.epic.debug.ui.LaunchConfigurationDialogCGI"
-            id="org.epic.debug.launchDialogCGI">
-      </launchConfigurationTabGroup>
-   </extension>
-   <extension
-         point="org.eclipse.debug.ui.launchConfigurationTypeImages">
-      <launchConfigurationTypeImage
-            icon="icons/epic_cgi.gif"
-            configTypeID="org.epic.debug.launchConfigurationPerlCGI"
-            id="org.epic.debug.launchimage">
-      </launchConfigurationTypeImage>
-   </extension>
-<!-- -->
-<extension
-         point="org.eclipse.debug.ui.launchConfigurationTabGroups">
-      <launchConfigurationTabGroup
-            type="org.epic.debug.launchConfigurationPerlRemote"
-            class="org.epic.debug.ui.LaunchConfigurationRemoteDialog"
-            id="org.epic.debug.launchDialogRemote">
-      </launchConfigurationTabGroup>
-   </extension>
-   <extension
-         point="org.eclipse.debug.ui.launchConfigurationTypeImages">
-      <launchConfigurationTypeImage
-            icon="icons/epic_remote.gif"
-            configTypeID="org.epic.debug.launchConfigurationPerlRemote"
-            id="org.epic.debug.launchimage">
-      </launchConfigurationTypeImage>
-   </extension>
-<!-- -->
+    <extension point="org.eclipse.core.resources.markers"
+        id="perlLineBreakpointMarker">
+        <super type="org.eclipse.debug.core.breakpointMarker"></super>
+        <persistent value="true"></persistent>
+    </extension>
 
-
-
-
-
-
-   <extension
-         point="org.eclipse.debug.core.sourceLocators">
-      <sourceLocator
-            name="Perl Source Locator"
-            class="org.epic.debug.SourceLocator"
-            id="org.epic.debug.sourceLocator.Local">
-      </sourceLocator>
-   </extension>
-   <extension
-         point="org.eclipse.debug.ui.debugModelPresentations">
-      <debugModelPresentation
-            class="org.epic.debug.DebugModelPresentation"
-            id="org.epic.debug">
-      </debugModelPresentation>
-   </extension>
-   <extension
-         point="org.eclipse.ui.popupMenus">
-      <viewerContribution
-            targetID="#PerlRulerContext"
-            id="org.epic.debug.RulerPopupActions">
-         <action
-               label="Breakpoint Properties"
-               class="org.epic.debug.ui.action.ManageRegExpBreakpointRulerPropertyActionDelegate"
-               menubarPath="debug"
-               id="org.epic.ManageRegExpBreakpointRulerPropertyActionDelegate">
-         </action>
-      </viewerContribution>
-   </extension>
-   <extension
-         point="org.eclipse.ui.popupMenus">
-      <viewerContribution
-            targetID="#PerlRulerContext"
-            id="org.epic.debug.RulerPopupActions">
-         <action
-               label="Add RegExp Breakpoint"
-               class="org.epic.debug.ui.action.ManageRegExpBreakpointRulerActionDelegate"
-               menubarPath="debug"
-               id="org.epic.ManageRegExpBreakpointRulerActionDelegate">
-         </action>
-      </viewerContribution>
-   </extension>
     <extension
-         point="org.eclipse.ui.popupMenus">
-      <viewerContribution
+        id="perlRegExpBreakpointMarker"
+        point="org.eclipse.core.resources.markers">
+        <super type="org.epic.debug.perlLineBreakpointMarker"></super>
+        <attribute name="EPIC_SOURCE_LINE" />
+        <attribute name="EPIC_REG_EXP" />
+        <attribute name="EPIC_MATCH_TEXT" />
+        <persistent value="true"></persistent>
+    </extension>
+
+    <extension point="org.eclipse.core.runtime.adapters">
+        <factory
+            class="org.epic.debug.ui.action.RetargettableActionAdapterFactory"
+            adaptableType="org.epic.perleditor.editors.PerlEditor">
+            <adapter type="org.eclipse.debug.ui.actions.IToggleBreakpointsTarget" />
+        </factory>
+    </extension>
+
+    <extension
+         point="org.eclipse.ui.console.consolePatternMatchListeners">
+      <consolePatternMatchListener
+            class="org.epic.debug.ui.PerlConsoleTracker"
+            regex=".*? at (\S+ line \d+)\."
+            qualifier="line \d"
+            id="org.epic.debug.ui.PerlConsoleTracker">
+         <enablement>
+           <or>
+             <test property="org.eclipse.debug.ui.processTypeTest" value="perl"/>
+             <test property="org.eclipse.debug.ui.processTypeTest" value="EpicCGIProxy"/>
+           </or>
+         </enablement>
+      </consolePatternMatchListener>
+    </extension>
+
+    <extension point="org.eclipse.ui.editorActions">
+        <editorContribution
+            targetID="org.epic.perleditor.editors.PerlEditor"
+            id="org.epic.perleditor.editors.PerlEditor.BreakpointRulerActions">
+            <action
+                label="Toggle Breakpoint"
+                class="org.eclipse.debug.ui.actions.RulerToggleBreakpointActionDelegate"
+                actionID="RulerDoubleClick"
+                id="org.epic.debug.ui.action.ManageBreakpointRulerAction">
+            </action>
+        </editorContribution>
+    </extension>
+    
+	<extension point="org.eclipse.ui.popupMenus">
+        <viewerContribution
             targetID="#PerlRulerContext"
             id="org.epic.debug.RulerPopupActions">
-         <action
-               label="Add Remove Breakpoint"
-               class="org.epic.debug.ui.action.ManageBreakpointRulerActionDelegate"
-               menubarPath="debug"
-               id="org.epic.ManageBreakpointRulerActionDelegate">
-         </action>
-      </viewerContribution>
-   </extension>
-    
-   <extension
-         id="perlLineBreakpointMarker"
-         point="org.eclipse.core.resources.markers">
-      <super
-            type="org.eclipse.debug.core.breakpointMarker">
-      </super>
-      <persistent
-            value="true">
-      </persistent>
-   </extension>
-   <extension
-         point="org.eclipse.debug.core.breakpoints">
-      <breakpoint
-            markerType="org.epic.debug.perlLineBreakpointMarker"
-            class="org.epic.debug.PerlLineBreakpoint"
-            id="perlLineBreakpoint">
-      </breakpoint>
-   </extension>
-   <extension
-         id="perlRegExpBreakpointMarker"
-         point="org.eclipse.core.resources.markers">
-    <!--  <super
-            type="org.eclipse.debug.core.breakpointMarker">
-      </super> -->
-      <super
-            type="org.epic.debug.perlLineBreakpointMarker">
-      </super>
-      <attribute name = "EPIC_SOURCE_LINE"/>
-      <attribute name = "EPIC_REG_EXP"/>
-      <attribute name = "EPIC_MATCH_TEXT"/>
-      <persistent
-            value="true">
-      </persistent>
-   </extension>
-   <extension
-         point="org.eclipse.debug.core.breakpoints">
-      <breakpoint
-            markerType="org.epic.debug.perlRegExpBreakpointMarker"
-            class="org.epic.debug.PerlRegExpBreakpoint"
-            id="perlRegExpBreakpoint">
-      </breakpoint>
-   </extension>
-   <extension
-         point="org.eclipse.ui.views">
-      <view
+
+         	<action
+                label="Breakpoint Properties..."
+                class="org.epic.debug.ui.action.PerlBreakpointPropertiesRulerActionDelegate"
+                menubarPath="group.properties"
+                id="org.epic.debug.ui.action.PerlBreakpointPropertiesRulerActionDelegate">
+            </action>
+            <action
+                label="Enable/Disable Breakpoint"
+                helpContextId="enable_disable_breakpoint_action_context"
+                class="org.epic.debug.ui.action.RulerEnableDisableBreakpointActionDelegate"
+                menubarPath="debug"
+                id="org.epic.debug.ui.action.EnableDisableBreakpointRulerActionDelegate">
+            </action>
+            <action
+                label="Toggle Breakpoint"
+                class="org.eclipse.debug.ui.actions.RulerToggleBreakpointActionDelegate"
+                menubarPath="debug"
+                id="org.epic.ui.action.BreakpointRulerActionDelegate">
+            </action>
+
+        </viewerContribution>
+    </extension>
+
+	<extension point="org.eclipse.ui.propertyPages">
+		<page
+            objectClass="org.epic.debug.PerlLineBreakpoint"
+            adaptable="true"
+            name="Common"
+            class="org.epic.debug.ui.propertypages.PerlLineBreakpointPage"
+            id="org.epic.debug.ui.propertypages.breakpoint.common">
+		</page>
+	</extension>
+
+    <extension point="org.eclipse.ui.views">
+        <view
             name="Perl Expression View"
             icon="icons/expression_view.gif"
             category="org.epic.views"
             class="org.epic.debug.ui.ExpressionView"
             id="org.eclipse.debug.expressionview">
-      </view>
-   </extension>
-   <extension
-         point="org.eclipse.ui.viewActions">
-<!-- Contributions to Expression View Toolbar -->
-      <viewContribution
+        </view>
+    </extension>
+
+    <extension point="org.eclipse.ui.viewActions">
+        <!-- Contributions to Expression View Toolbar -->
+        <viewContribution
             targetID="org.eclipse.debug.ui.VariableView"
             id="org.epig.debug.showLocalVariablesAction">
-         <action
-               label="Show Local Variables"
-               icon="icons/epic.gif"
-               tooltip="Show Local Variable"
-               state="true"
-               class="org.epic.debug.ui.action.ShowLocalVariableActionDelegate"
-               menubarPath="additions"
-               id="org.epig.debug.showLocalVariablesAction">
-         </action>
-      </viewContribution>
-   </extension>
-   
-     <extension
-         point="org.eclipse.ui.viewActions">
-<!-- Contributions to Expression View Toolbar -->
-      <viewContribution
+            <action
+                label="Show Local Variables"
+                icon="icons/epic.gif"
+                tooltip="Show Local Variable"
+                state="true"
+                class="org.epic.debug.ui.action.ShowLocalVariableActionDelegate"
+                menubarPath="additions"
+                id="org.epig.debug.showLocalVariablesAction">
+            </action>
+        </viewContribution>
+        <viewContribution
             targetID="org.eclipse.debug.ui.VariableView"
             id="org.epig.debug.showGlobalVariablesAction">
-         <action
-               label="Show Global Variables"
-               icon="icons/epic.gif"
-               tooltip="Show Global Variable"
-               state="true"
-               class="org.epic.debug.ui.action.ShowGlobalVariableActionDelegate"
-               menubarPath="additions"
-               id="org.epig.debug.showLocalVariablesAction">
-         </action>
-      </viewContribution>
-   </extension>
-   
-     <extension
-         point="org.eclipse.ui.viewActions">
-<!-- Contributions to Expression View Toolbar -->
-      <viewContribution
+            <action
+                label="Show Global Variables"
+                icon="icons/epic.gif"
+                tooltip="Show Global Variable"
+                state="true"
+                class="org.epic.debug.ui.action.ShowGlobalVariableActionDelegate"
+                menubarPath="additions"
+                id="org.epig.debug.showLocalVariablesAction">
+            </action>
+        </viewContribution>
+        <viewContribution
             targetID="org.eclipse.debug.ui.VariableView"
             id="org.epig.debug.showPerlInternalVariablesAction">
-         <action
-               label="Show Perl internal Variables"
-               icon="icons/epic.gif"
-               tooltip="Show Perl Internal Variables"
-               state="false"
-               class="org.epic.debug.ui.action.ShowPerlInternalVariableActionDelegate"
-               menubarPath="additions"
-               id="org.epig.debug.showLocalVariablesAction">
-         </action>
-      </viewContribution>
-   </extension>
-   
+            <action
+                label="Show Perl internal Variables"
+                icon="icons/epic.gif"
+                tooltip="Show Perl Internal Variables"
+                state="false"
+                class="org.epic.debug.ui.action.ShowPerlInternalVariableActionDelegate"
+                menubarPath="additions"
+                id="org.epig.debug.showLocalVariablesAction">
+            </action>
+        </viewContribution>
+    </extension>
 
-   
-   
-   <extension
-         point="org.eclipse.debug.ui.consoleColorProviders">
-      <consoleColorProvider
-            class="org.epic.debug.util.CGIConsoleColorProvider"
+    <extension point="org.eclipse.debug.core.breakpoints">
+        <breakpoint
+            markerType="org.epic.debug.perlLineBreakpointMarker"
+            class="org.epic.debug.PerlLineBreakpoint"
+            id="perlLineBreakpoint">
+        </breakpoint>
+        <breakpoint
+            markerType="org.epic.debug.perlRegExpBreakpointMarker"
+            class="org.epic.debug.PerlRegExpBreakpoint"
+            id="perlRegExpBreakpoint">
+        </breakpoint>
+    </extension>
+
+    <extension point="org.eclipse.debug.core.launchConfigurationTypes"
+        id="org.epic.debug"
+        name="Epic Perl Debugger">
+        <launchConfigurationType
+            name="Perl Local"
+            delegate="org.epic.debug.local.LocalLaunchConfigurationDelegate"
+            modes="run,debug"
+            public="true"
+            id="org.epic.debug.launchConfigurationPerl">
+        </launchConfigurationType>
+        <launchConfigurationType
+            name="Perl CGI"
+            delegate="org.epic.debug.cgi.CGILaunchConfigurationDelegate"
+            modes="run,debug"
+            public="true"
+            id="org.epic.debug.launchConfigurationPerlCGI">
+        </launchConfigurationType>
+        <launchConfigurationType
+            name="Perl Remote"
+            delegate="org.epic.debug.remote.RemoteLaunchConfigurationDelegate"
+            modes="debug"
+            public="true"
+            id="org.epic.debug.launchConfigurationPerlRemote">
+        </launchConfigurationType>
+    </extension>
+
+    <extension point="org.eclipse.debug.core.sourceLocators">
+        <sourceLocator
+            name="Perl Source Locator"
+            class="org.epic.debug.SourceLocator"
+            id="org.epic.debug.sourceLocator.Local">
+        </sourceLocator>
+    </extension>
+
+    <extension point="org.eclipse.debug.ui.consoleColorProviders">
+        <consoleColorProvider
+            class="org.epic.debug.cgi.CGIConsoleColorProvider"
             processType="EpicCGIProxy"
-            id="org.epic.debug.CGIConsoleColorProvider">
-      </consoleColorProvider>
-   </extension>
-   <extension
-         point="org.eclipse.debug.ui.launchShortcuts">
-      <shortcut
+            id="org.epic.debug.cgi.CGIConsoleColorProvider">
+        </consoleColorProvider>
+    </extension>
+
+    <extension point="org.eclipse.debug.ui.debugModelPresentations">
+        <debugModelPresentation
+            class="org.epic.debug.ui.DebugModelPresentation"
+            id="org.epic.debug">
+        </debugModelPresentation>
+    </extension>
+
+    <extension point="org.eclipse.debug.ui.launchConfigurationTabGroups">
+        <launchConfigurationTabGroup
+            type="org.epic.debug.launchConfigurationPerl"
+            class="org.epic.debug.ui.LaunchConfigurationDialog"
+            id="org.epic.debug.launchDialog">
+        </launchConfigurationTabGroup>
+        <launchConfigurationTabGroup
+            type="org.epic.debug.launchConfigurationPerlCGI"
+            class="org.epic.debug.ui.LaunchConfigurationDialogCGI"
+            id="org.epic.debug.launchDialogCGI">
+        </launchConfigurationTabGroup>
+        <launchConfigurationTabGroup
+            type="org.epic.debug.launchConfigurationPerlRemote"
+            class="org.epic.debug.ui.LaunchConfigurationRemoteDialog"
+            id="org.epic.debug.launchDialogRemote">
+        </launchConfigurationTabGroup>
+    </extension>
+
+    <extension point="org.eclipse.debug.ui.launchConfigurationTypeImages">
+        <launchConfigurationTypeImage
+            icon="icons/epic.gif"
+            configTypeID="org.epic.debug.launchConfigurationPerl"
+            id="org.epic.debug.launchimage">
+        </launchConfigurationTypeImage>
+        <launchConfigurationTypeImage
+            icon="icons/epic_cgi.gif"
+            configTypeID="org.epic.debug.launchConfigurationPerlCGI"
+            id="org.epic.debug.launchimage">
+        </launchConfigurationTypeImage>
+        <launchConfigurationTypeImage
+            icon="icons/epic_remote.gif"
+            configTypeID="org.epic.debug.launchConfigurationPerlRemote"
+            id="org.epic.debug.launchimage">
+        </launchConfigurationTypeImage>
+    </extension>
+    <extension point="org.eclipse.debug.ui.launchShortcuts">
+        <shortcut
+            category="org.eclipse.jdt.ui.JavaPerspective"
             class="org.epic.debug.LaunchShortcut"
             icon="icons/epic.gif"
             id="org.epic.debug.LaunchShortcut"
             label="Perl Local"
             modes="run, debug">
-          
-          <contextualLaunch>
-           <enablement>
-             <with variable="selection">
-               <count value="1"/>
-               <iterate>
-                 <or>
-                   <test property="org.eclipse.debug.ui.matchesPattern" value="*.pl"/>
-                   <test property="org.eclipse.debug.ui.matchesPattern" value="*.pm"/>
-                   <test property="org.eclipse.debug.ui.matchesPattern" value="*.t"/>
-                 </or>
-               </iterate>
-             </with>
-           </enablement>
-  		 </contextualLaunch>
+
+            <contextualLaunch>
+                <enablement>
+                    <with variable="selection">
+                        <count value="1" />
+                        <iterate>
+                            <or>
+                                <test
+                                    property="org.eclipse.debug.ui.matchesPattern"
+                                    value="*.pl" />
+                                <test
+                                    property="org.eclipse.debug.ui.matchesPattern"
+                                    value="*.pm" />
+                                <test
+                                    property="org.eclipse.debug.ui.matchesPattern"
+                                    value="*.t" />
+                            </or>
+                        </iterate>
+                    </with>
+                </enablement>
+            </contextualLaunch>
          <perspective
                id="org.epic.core.Perspective">
          </perspective>
@@ -289,14 +281,8 @@
          <perspective
                id="org.eclipse.jdt.ui.JavaPerspective">
          </perspective>
-	</shortcut>
-	</extension>
-	<!-- Adapters for contextual launch -->
-	<extension point="org.eclipse.core.runtime.adapters">
-         <factory 
-            class="" 
-            adaptableType="org.eclipse.core.resources.IResource">
-            <adapter type="org.eclipse.debug.ui.actions.ILaunchable"/>
-         </factory>
+        </shortcut>
     </extension>
+	<!-- Adapters for contextual launch -->
+
 </plugin>

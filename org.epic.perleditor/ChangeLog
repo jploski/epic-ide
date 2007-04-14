@@ -4,6 +4,7 @@ CVS
 		Debugger:
 
 		Editor:
+		* Fixed Bug [ 1700095 ] wrong syntax highlighting when using qw//
 
 Version 0.5.33 (=0.6.0) - 06-April-2007
 		Editor:

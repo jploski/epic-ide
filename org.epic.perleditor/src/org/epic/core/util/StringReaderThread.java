@@ -1,4 +1,3 @@
-/* $Id$ */
 package org.epic.core.util;
 
 import java.io.IOException;

@@ -1,6 +1,4 @@
 #
-# $Id$
-#
 # EPIC replacement for podchecker
 #
 # allows the output format to be controlled for easier parsing and removes

@@ -11,8 +11,6 @@ import org.epic.perleditor.editors.util.SourceFormatter;
 
 /**
  * DOCUMENT ME!
- *
- * @version $Revision$, $Date$
  */
 public class FormatSourceAction extends PerlEditorAction
 {

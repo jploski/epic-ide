@@ -158,7 +158,7 @@ SUBST_OR_MATCH_OR_WORD // this disambiguation rule disfavours EXPRs too much :-(
 	=> { notOper = true; } t1:WORD { $setToken(t1); }
 	| { !afterArrow }? (("tr" | 's' | 'y') ~'}')
 	=> SUBST_EXPR { $setType(PerlTokenTypes.SUBST_EXPR); }
-	| { !afterArrow }? (("qq" | "qx" | "qw" | "qr" | 'm' | 'q') ~('a'..'z' | '0'..'9' | '_' | '}' | '\r' | '\n' | ' '))
+	| (("qq" | "qx" | "qw" | "qr" | 'm' | 'q') ~('a'..'z' | '0'..'9' | '_' | '}' | '\r' | '\n' | ' '))
 	=> MATCH_EXPR { $setType(PerlTokenTypes.MATCH_EXPR); }
 	| (NUMBER)
 	=> n:NUMBER { $setToken(n); }

@@ -71,3 +71,6 @@ $x = $args{y};
 
 # bug 1685564
 use constant DEGTORAD => PI/180;
+
+# bug 1700095
+my $hash_ref = {names => qw/lisa bart/ };

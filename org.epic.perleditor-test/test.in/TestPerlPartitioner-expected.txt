@@ -553,3 +553,27 @@ hello world
 1642:1:OPERATOR:{/}
 1643:3:NUMBER:{180}
 1646:1:OPERATOR:{;}
+1647:2:__dftl_partition_content_type:{
+
+}
+1649:13:COMMENT:{# bug 1700095}
+1662:1:__dftl_partition_content_type:{
+}
+1663:2:KEYWORD1:{my}
+1665:1:__dftl_partition_content_type:{ }
+1666:9:VARIABLE:{$hash_ref}
+1675:1:__dftl_partition_content_type:{ }
+1676:1:OPERATOR:{=}
+1677:1:__dftl_partition_content_type:{ }
+1678:1:OPERATOR:{{}
+1679:5:__dftl_partition_content_type:{names}
+1684:1:__dftl_partition_content_type:{ }
+1685:2:OPERATOR:{=>}
+1687:1:__dftl_partition_content_type:{ }
+1688:2:LITERAL2:{qw}
+1690:1:LITERAL2:{/}
+1691:9:LITERAL2:{lisa bart}
+1700:1:LITERAL2:{/}
+1701:1:__dftl_partition_content_type:{ }
+1702:1:OPERATOR:{}}
+1703:1:OPERATOR:{;}

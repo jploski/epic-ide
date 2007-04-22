@@ -254,7 +254,8 @@ public class EpicCgiHandler implements Handler
             commandList.addAll(exArgs.getProgramArgumentsL());
         }
 
-        commandList.add(cgiFile.getAbsolutePath());
+        try { commandList.add(cgiFile.getCanonicalPath()); }
+        catch (IOException e) { commandList.add(cgiFile.getAbsolutePath()); }
 
         // Look at the query and check for an =
         // If no '=', then use '+' as an argument delimiter
@@ -389,7 +390,7 @@ public class EpicCgiHandler implements Handler
         try
         {
             cgi = Runtime.getRuntime().exec(
-                command, env, new File(cgiFile.getParent()));
+                command, env, new File(cgiFile.getParentFile().getCanonicalPath()));
 
             DataInputStream in = new DataInputStream(
                 new BufferedInputStream(cgi.getInputStream()));

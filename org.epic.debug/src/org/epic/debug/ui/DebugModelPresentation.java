@@ -18,7 +18,7 @@ import org.eclipse.ui.IEditorRegistry;
 import org.eclipse.ui.PlatformUI;
 import org.epic.core.util.FileUtilities;
 import org.epic.debug.*;
-import org.epic.debug.db.StackFrame;
+import org.epic.debug.db.*;
 import org.epic.debug.varparser.PerlDebugVar;
 
 /**
@@ -147,22 +147,23 @@ public class DebugModelPresentation implements IDebugModelPresentation
     {
         try
         {
-            listener.detailComputed(value, value.getValueString());
+            listener.detailComputed(
+                value,
+                ((PerlValue) value).getDetailValue());
         }
         catch (DebugException e)
         {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            PerlDebugPlugin.log(e);
         }
     }
 
     public IEditorInput getEditorInput(Object element)
     {
-        if (element instanceof StackFrame)
+        if (element instanceof StackFrame2)
         {
             // TODO: shouldn't we return IEditorInput of an already
             // open editor, if possible?
-            StackFrame frame = (StackFrame) element;
+            StackFrame2 frame = (StackFrame2) element;
             if (frame.getLocalPath() == null) return null;
             return FileUtilities.getFileEditorInput(frame.getLocalPath());
         }
@@ -222,7 +223,6 @@ public class DebugModelPresentation implements IDebugModelPresentation
         }
         catch (CoreException e)
         {
-
             PerlDebugPlugin.log(e);
         }
         return flags;

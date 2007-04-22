@@ -21,8 +21,7 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.part.ViewPart;
 import org.epic.debug.*;
-import org.epic.debug.db.PerlDB;
-import org.epic.debug.db.StackFrame;
+import org.epic.debug.db.*;
 
  
 		
@@ -104,7 +103,7 @@ public class ExpressionView extends ViewPart {
 	private void evaluateExpression() {
 		
 		IAdaptable a = DebugUITools.getDebugContext();
-		StackFrame stackFrame = (StackFrame) a.getAdapter(StackFrame.class);
+		StackFrame2 stackFrame = (StackFrame2) a.getAdapter(StackFrame2.class);
 		if( stackFrame != null )
 		{
 			try{

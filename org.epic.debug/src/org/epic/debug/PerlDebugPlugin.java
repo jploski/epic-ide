@@ -213,7 +213,7 @@ public class PerlDebugPlugin extends AbstractUIPlugin
                 null);
     
             dumpvarFile = PerlDebugPlugin.getDefault().extractTempFile(
-                "dumpvar_epic.pm", null);
+                "dumpvar_epic2.pm", null);
     
             return PerlExecutableUtilities.resolveIncPath(dumpvarFile
                 .getParentFile().getAbsolutePath());

@@ -35,7 +35,9 @@ my $TOKEN_REUSED = "R";
 #########################
 my %address;
 
-
+# Dumps the content of all lexical variables from the current lexical scope
+# (that is, from the block in which the debugger stopped in user's code).
+#
 sub dump_lexical_vars
 {
     my $h = eval { PadWalker::peek_my(3) };
@@ -86,6 +88,12 @@ sub _dump_elem
     _unwrap($_[0], $_[1]) if ref $_[0];
 }
 
+# Dumps the content of a single variable.
+#
+# @param key    name of the variable, e.g. '$foo'
+# @param val    reference to the variable's value,
+#               e.g. an array/hash reference or reference to a scalar
+#
 sub _dump_lexical_var
 {
     return if $DB::signal;
@@ -266,6 +274,11 @@ sub _uniescape
           unpack("U*", $_[0]));
 }
 
+# Recursively dumps the content of a variable.
+#
+# @param v  reference to the variable's value,
+#           e.g. an array/hash reference or reference to a scalar
+#
 sub _unwrap
 {
     return if $DB::signal;

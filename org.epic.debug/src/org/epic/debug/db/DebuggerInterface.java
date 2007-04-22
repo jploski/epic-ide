@@ -20,7 +20,7 @@ import org.eclipse.swt.widgets.Display;
  */
 public class DebuggerInterface
 {
-    private final Object LOCK = new Object();
+    private final CommandSlot slot = new CommandSlot();
     private final RE re = new RE();
     private final char[] buf = new char[1024];
 
@@ -29,10 +29,10 @@ public class DebuggerInterface
     private final IListener listener;
     
     private final Thread thread;
-    private final String perlVersion;    
+    private final String perlVersion;
+    private Boolean hasPadWalker;
 
     private boolean disposed;
-    private Command asyncCommand;
 
     public static final int CMD_NONE = 0;
     public static final int CMD_STEP_INTO = 1;
@@ -72,29 +72,12 @@ public class DebuggerInterface
             try { runSyncCommand(CMD_EXEC, "q"); }
             catch (IOException e) { }
         
-            synchronized (LOCK)
+            synchronized (slot)
             {
                 disposed = true;
-                thread.interrupt();
+                slot.notifyAll();
             }
         }
-    }
-    
-    private void commandLoop()
-    {
-        synchronized (LOCK)
-        {
-            while (!disposed)
-            {   
-                while (!disposed && asyncCommand == null)
-                    try { LOCK.wait(); } catch (InterruptedException e) { }
-                    
-                if (disposed) break;
-
-                asyncCommand.run();                
-                LOCK.notifyAll();
-            }
-        }                       
     }
     
     public Command asyncEval(String code)
@@ -125,7 +108,7 @@ public class DebuggerInterface
     
     public boolean isSuspended()
     {
-        return asyncCommand == null;
+        return slot.isEmpty();
     }
     
     public IPPosition getCurrentIP() throws IOException
@@ -167,6 +150,23 @@ public class DebuggerInterface
     public String getStackTrace() throws IOException
     {
         return runSyncCommand(CMD_EXEC, "T");
+    }
+    
+    /**
+     * @return true if we have an installed version of PadWalker required
+     *         for dumping lexical variables; false otherwise
+     */
+    public boolean hasPadWalker() throws IOException
+    {
+        if (hasPadWalker == null)
+        {
+            String result = runSyncCommand(
+                CMD_EXEC,
+                "print $DB::OUT eval { require PadWalker; PadWalker->VERSION(0.08) }");
+            hasPadWalker = new Boolean("1.0".equals(result));
+        }
+
+        return hasPadWalker.booleanValue();
     }
     
     public void redirectError(String host, int port) throws IOException
@@ -289,6 +289,26 @@ public class DebuggerInterface
         return re.SWITCH_FILE_FAIL.getAllMatches(output).length == 0;
     }
     
+    private void commandLoop()
+    {
+        while (!disposed)
+        {   
+            final Command cmd = slot.get();
+            if (disposed) break;
+
+            cmd.run();
+            slot.remove();
+
+            if (cmd.isNotifyOnFinish() && listener != null)
+            {
+                Display.getDefault().asyncExec(new Runnable() {
+                    public void run() { 
+                        listener.commandFinished(cmd);
+                    } });
+            }
+        }
+    }
+
     private String getOSPath(IPath path) throws IOException
     {
         return path.toString();
@@ -296,25 +316,17 @@ public class DebuggerInterface
     
     private Command runAsyncCommand(int command, String code, boolean notifyOnFinish)
     {
-        synchronized (LOCK)
-        {
-            asyncCommand = new Command(command, code, notifyOnFinish);
-            LOCK.notifyAll();
-            return asyncCommand;
-        }
+        Command cmd = new Command(command, code, notifyOnFinish);
+        slot.put(cmd);
+        return cmd;
     }
     
     private String runSyncCommand(int command, String code)
         throws IOException
     {
-        synchronized (LOCK)        
-        {
-            Command cmd = runAsyncCommand(command, code, false);
-            while (asyncCommand != null && !disposed)
-                try { LOCK.wait(); } catch(InterruptedException e) {}
-
-            return cmd.getResult();
-        }
+        Command cmd = new Command(command, code, false);
+        slot.putAndWait(cmd);
+        return cmd.getResult();
     }
     
     private String runCommand(int command, String code) throws IOException
@@ -491,6 +503,11 @@ public class DebuggerInterface
             return code;
         }
         
+        public boolean isNotifyOnFinish()
+        {
+            return notifyOnFinish;
+        }
+        
         public boolean isStepCommand()
         {
             return
@@ -508,22 +525,58 @@ public class DebuggerInterface
         {
             try { result = runCommand(type, code); }
             catch (IOException e) { error = e; }
-            finally
-            {
-                asyncCommand = null;
-                if (notifyOnFinish && listener != null)
-                {
-                    Display.getDefault().asyncExec(new Runnable() {
-                        public void run() { 
-                            listener.commandFinished(Command.this);
-                        } });
-                }
-            }
         }
         
         public String toString()
         {
             return "Command #" + type + " {" + code + "}" + ", notify=" + notifyOnFinish;
         }  
+    }
+    
+    private class CommandSlot
+    {
+        private Command cmd;
+        
+        public synchronized Command get()
+        {
+            waitUntilFull();
+            return cmd;
+        }
+        
+        public synchronized boolean isEmpty()
+        {
+            return cmd == null;
+        }
+        
+        public synchronized void put(Command cmd)
+        {
+            waitUntilEmpty();
+            this.cmd = cmd;
+            notifyAll();
+        }
+        
+        public synchronized void putAndWait(Command cmd)
+        {
+            put(cmd);
+            waitUntilEmpty();
+        }
+        
+        public synchronized void remove()
+        {
+            this.cmd = null;
+            notifyAll();
+        }
+        
+        public synchronized void waitUntilEmpty()
+        {
+            while (cmd != null && !disposed)
+                try { wait(); } catch (InterruptedException e) { }
+        }
+        
+        public synchronized void waitUntilFull()
+        {
+            while (cmd == null && !disposed)
+                try { wait(); } catch (InterruptedException e) { }
+        }
     }
 }

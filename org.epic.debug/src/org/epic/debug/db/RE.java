@@ -29,7 +29,7 @@ class RE
         SESSION_FINISHED2 = newRE("Debugged program terminated.", false);
         IP_POS = newRE("^[^\\(]*\\((.*):(\\d+)\\):[\\n\\t]", false);
         IP_POS_EVAL = newRE("^[^\\(]*\\(eval\\s+\\d+\\)\\[(.*):(\\d+)\\]$", false);
-        IP_POS_CODE = newRE("^.*CODE\\(0x[0-9a-fA-F]+\\)\\(([^:]*):(\\d+)\\):[\\n\\t]", false);
+        IP_POS_CODE = newRE("^.*CODE\\(0x[0-9a-fA-F]+\\)\\((.*):(\\d+)\\):[\\n\\t]", false);
         SWITCH_FILE_FAIL = newRE("^No file", false);
         SET_LINE_BREAKPOINT = newRE("^Line \\d+ not breakable", false);
         ENTER_FRAME = newRE("^\\s*entering", false);

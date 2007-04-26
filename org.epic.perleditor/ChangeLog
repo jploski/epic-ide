@@ -4,6 +4,16 @@ CVS
 		Debugger:
 
 		Editor:
+
+Version 0.6.1 - 26-April-2007
+		Debugger:
+		* Fixed Bug [ 1706017 ] Wrong number of stack frames in Debug view [Win32]
+		* Fixed Bug [ 1706024 ] Can't open source file for stack frame (Win32)
+		* Implemented RFE [ 1705366 ] Incremental retrieval of variables in debugger
+		* Implemented RFE [ 1573144 ] Display variables from any stack frame
+		* Note: change highlighting in the Variables view is disabled in this version
+
+		Editor:
 		* Fixed Bug [ 1700095 ] wrong syntax highlighting when using qw//
 
 Version 0.5.33 (=0.6.0) - 06-April-2007

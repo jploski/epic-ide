@@ -128,20 +128,33 @@
                 state="true"
                 class="org.epic.debug.ui.action.ShowGlobalVariableActionDelegate"
                 menubarPath="additions"
-                id="org.epig.debug.showLocalVariablesAction">
+                id="org.epig.debug.showGlobalVariablesAction">
             </action>
         </viewContribution>
         <viewContribution
             targetID="org.eclipse.debug.ui.VariableView"
             id="org.epig.debug.showPerlInternalVariablesAction">
             <action
-                label="Show Perl internal Variables"
+                label="Show Perl Internal Variables"
                 icon="icons/epic.gif"
                 tooltip="Show Perl Internal Variables"
                 state="false"
                 class="org.epic.debug.ui.action.ShowPerlInternalVariableActionDelegate"
                 menubarPath="additions"
-                id="org.epig.debug.showLocalVariablesAction">
+                id="org.epig.debug.showPerlInternalVariablesAction">
+            </action>
+        </viewContribution>
+        <viewContribution
+            targetID="org.eclipse.debug.ui.VariableView"
+            id="org.epig.debug.showVarAddressAction">
+            <action
+                label="Show Addresses of Variables"
+                icon="icons/epic.gif"
+                tooltip="Show Addresses of Variables"
+                state="false"
+                class="org.epic.debug.ui.action.ShowVarAddressActionDelegate"
+                menubarPath="additions"
+                id="org.epig.debug.showVarAddressAction">
             </action>
         </viewContribution>
     </extension>

@@ -19,7 +19,6 @@ import org.eclipse.ui.PlatformUI;
 import org.epic.core.util.FileUtilities;
 import org.epic.debug.*;
 import org.epic.debug.db.*;
-import org.epic.debug.varparser.PerlDebugVar;
 
 /**
  * @author ruehl
@@ -32,38 +31,24 @@ public class DebugModelPresentation implements IDebugModelPresentation
 
     public Image getImage(Object element)
     {
-
-        if (element instanceof PerlDebugVar)
+        if (element instanceof PerlVariable)
         {
-            try
+            if (((PerlVariable) element).isPackageScope())
             {
-                if (((PerlDebugVar) element).isSpecial())
-                    return PerlDebugPlugin
-                        .getDefaultDesciptorImageRegistry()
-                        .get(
-                            new PerlImageDescriptor(
-                                DebugUITools
-                                    .getImageDescriptor(IDebugUIConstants.IMG_OBJS_BREAKPOINT_DISABLED),
-                                0));
-
-                if (((PerlDebugVar) element).isLocalScope())
+                if (false /* ((PerlVariable) element).hasContentChanged() */)
                 {
-                    if (((PerlDebugVar) element).hasContentChanged()) return PerlDebugPlugin
-                        .getDefaultDesciptorImageRegistry().get(
-                            PerlDebugImages.DESC_OBJS_CHANGED_DEBUG_VAR_LOCAL);
-                    else return PerlDebugPlugin
-                        .getDefaultDesciptorImageRegistry().get(
-                            PerlDebugImages.DESC_OBJS_DEBUG_VAR_LOCAL);
+                    return PerlDebugPlugin.getDefaultDesciptorImageRegistry().get(
+                        PerlDebugImages.DESC_OBJS_CHANGED_DEBUG_VAR_LOCAL);
                 }
-
-                if (((PerlDebugVar) element).hasContentChanged())
-                    return PerlDebugPlugin.getDefaultDesciptorImageRegistry()
-                        .get(PerlDebugImages.DESC_OBJS_CHANGED_DEBUG_VAR);
+                else
+                {
+                    return PerlDebugPlugin.getDefaultDesciptorImageRegistry().get(
+                        PerlDebugImages.DESC_OBJS_DEBUG_VAR_LOCAL);
+                }
             }
-            catch (DebugException e)
-            {
-                e.printStackTrace();
-            }
+            else if (false /* ((PerlVariable) element).hasContentChanged() */)
+                return PerlDebugPlugin.getDefaultDesciptorImageRegistry().get(
+                    PerlDebugImages.DESC_OBJS_CHANGED_DEBUG_VAR);
         }
 
         if (element instanceof IMarker)
@@ -159,11 +144,11 @@ public class DebugModelPresentation implements IDebugModelPresentation
 
     public IEditorInput getEditorInput(Object element)
     {
-        if (element instanceof StackFrame2)
+        if (element instanceof StackFrame)
         {
             // TODO: shouldn't we return IEditorInput of an already
             // open editor, if possible?
-            StackFrame2 frame = (StackFrame2) element;
+            StackFrame frame = (StackFrame) element;
             if (frame.getLocalPath() == null) return null;
             return FileUtilities.getFileEditorInput(frame.getLocalPath());
         }

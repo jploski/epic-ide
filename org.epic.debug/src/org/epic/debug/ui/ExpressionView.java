@@ -103,7 +103,7 @@ public class ExpressionView extends ViewPart {
 	private void evaluateExpression() {
 		
 		IAdaptable a = DebugUITools.getDebugContext();
-		StackFrame2 stackFrame = (StackFrame2) a.getAdapter(StackFrame2.class);
+		StackFrame stackFrame = (StackFrame) a.getAdapter(StackFrame.class);
 		if( stackFrame != null )
 		{
 			try{

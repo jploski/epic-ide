@@ -1,5 +1,5 @@
 ;{    
-do 'dumpvar_epic2.pm' unless defined &dumpvar_epic2::dump_lexical_vars;
+do 'dumpvar_epic.pm' unless defined &dumpvar_epic::dump_lexical_vars;
     
 #SET_OFFSET#
 #SET_VAREXPR#

@@ -1,51 +1,95 @@
-require 5.002;    # For (defined ref)
-
 package dumpvar_epic;
+
+# When updating, do not forget the POD description at the end of this file.
 
 binmode($DB::OUT, ":utf8");
 
 use strict;
 use warnings;
 
-# Needed for PrettyPrinter only:
+use Scalar::Util;
+use overload;
 
-# require 5.001;  # Well, it coredumps anyway undef DB in 5.000 (not now)
+use constant SEP => '|';
+use constant MAX_SCALAR_LENGTH => 65536; 
 
-# translate control chars to ^X - Randal Schwartz
-# Modifications to print types by Peter Gordon v1.0
+# Dumps all elements of an array.
+#
+# @param array  array (reference to a list)
+#
+sub dump_array
+{
+    my $array = shift;
+    
+    my $i = 0;
+    foreach my $elem(@{$array})
+    {
+        _dump_entity($i, \$$array[$i]);
+        $i++;
+    }
+}
 
-# Ilya Zakharevich -- patches after 5.001 (and some before ;-)
+# Dumps all elements of an array designated by an expression.
+#
+# @param frame_index    0 = top stack frame (in user's code),
+#                       1 = next lower frame etc.
+# @param expr           expression which, evaluated in context containing
+#                       the PadWalker stack frame $h, resolves to the desired
+#                       array (list reference)
+#
+sub dump_array_expr
+{
+    my $frame_index = shift;
+    my $expr = shift;
 
-# Won't dump symbol tables and contents of debugged files by default
+    my $h = eval { PadWalker::peek_my(3 + $frame_index) };
+    if (!$@) { dump_array(eval($expr)); }
+}
 
-# Defaults
+# Dumps all key-value pairs of a hash.
+#
+# @param hash   hash reference
+#
+sub dump_hash
+{
+    my $hash = shift;
+    _dump_keys($hash, 1);
+}
 
-my $MaxUnwrapCount = 200;
-my $UnwrapCount    = 0;
-my $tick           = "auto";
-my $unctrl         = 'quote';
-my $subdump        = 1;
-########################
-my $TOKEN_NAME   = "N";
-my $TOKEN_STRING = "S";
-my $TOKEN_IN     = "I";
-my $TOKEN_OUT    = "O";
-my $TOKEN_REUSED = "R";
+# Dumps all key-value pairs of a hash designated by an expression.
+#
+# @param frame_index    0 = top stack frame (in user's code),
+#                       1 = next lower frame etc.
+# @param expr           expression which, evaluated in context containing
+#                       the PadWalker stack frame $h, resolves to the desired
+#                       hash reference
+#
+sub dump_hash_expr
+{
+    my $frame_index = shift;
+    my $varexpr = shift;
 
-#########################
-my %address;
+    my $h = eval { PadWalker::peek_my(3 + $frame_index) };     
+    if (!$@) { dump_hash(eval($varexpr)); }
+}
 
-# Dumps the content of all lexical variables from the current lexical scope
-# (that is, from the block in which the debugger stopped in user's code).
+# Dumps all lexical variables from the stack frame with the given offset.
+#
+# @param frame_index    0 = top stack frame (in user's code),
+#                       1 = next lower frame etc.
 #
 sub dump_lexical_vars
 {
-    my $h = eval { PadWalker::peek_my(3) };
-    $@ and $@ =~ s/ at .*//, print $DB::OUT ($@);
-    _dump_lexical_var($_, $h->{$_}) for sort keys %$h;
-    print "E";
+    my $frame_index = shift;
+
+    my $h = eval { PadWalker::peek_my(3 + $frame_index) };
+    if (!$@) { _dump_keys($h, 0); }    
 }
 
+# Dumps all variables from a package's symbol table.
+#
+# @param package 	(optional) name of the package; default: 'main'
+#
 sub dump_package_vars
 {
     my $package = shift || '';
@@ -54,8 +98,6 @@ sub dump_package_vars
     my ($dollar_comma, $dollar_backslash) = ($,, $\);
     ($,, $\) = undef;
 
-    %address = ();
-    
     my %stab = %{main::};
     while ($package =~ /(\w+?::)/g) { %stab = $stab{$1}; }
 
@@ -66,69 +108,112 @@ sub dump_package_vars
         _dump_package_var($key, $val);
     }
 
-    print "E";
     ($,, $\) = ($dollar_comma, $dollar_backslash);
 }
 
-sub _CvGV_name_or_bust
-{
-    my $in = shift;
-
-    $in = \&$in;            # Hard reference...
-    eval { require Devel::Peek; 1 } or return;
-    my $gv = Devel::Peek::CvGV($in) or return;
-    *$gv{PACKAGE} . '::' . *$gv{NAME};
-}
-
-sub _dump_elem
-{
-    my $short = _stringify($_[0], ref $_[0]);
-
-    print "$short";
-    _unwrap($_[0], $_[1]) if ref $_[0];
-}
-
-# Dumps the content of a single variable.
+# The main subroutine which dumps an entity as described in the POD
+# section of this module.
 #
-# @param key    name of the variable, e.g. '$foo'
-# @param val    reference to the variable's value,
-#               e.g. an array/hash reference or reference to a scalar
+# @param name   name of the dumped entity
+# @param ent    reference to the dumped entity
 #
-sub _dump_lexical_var
+sub _dump_entity
 {
-    return if $DB::signal;
+    my $name = shift;
+    my $ent = shift;
+    
+    print _token($name);
+    
+    my @refchain = ( overload::StrVal($ent) );
+    my $entaddr = Scalar::Util::refaddr($ent);     
+    my $tmp = $ent;
+    my $cycle = 0;
 
-    my $key = shift;
-    my $val = shift;
+    while (ref($tmp) eq 'REF')
+    {        
+        my $tmp2 = ${$tmp};
+        $tmp = $tmp2;
+        push(@refchain, overload::StrVal($tmp));
+        if (Scalar::Util::refaddr($tmp) == $entaddr)
+        {
+            $cycle = 1;
+            last;
+        }        
+    }    
+    print SEP;
+    print _token($#refchain+1);
+    foreach my $t(@refchain)
+    {
+        print SEP;
+        print _token($t);
+    }
 
-    %address = ();
-    $UnwrapCount = 0;
+    my $val;
+    if ($cycle)
+    {
+        $val = 'cycle'; 
+    }
+    elsif (ref($tmp) eq 'HASH' || ref($tmp) eq 'ARRAY')
+    {
+        $val = '...';
+    }
+    elsif (ref($tmp) eq 'SCALAR')
+    {
+        if (defined($$tmp))
+        {
+            if (length($$tmp) > MAX_SCALAR_LENGTH)
+            {
+                $val = '\''.substr($$tmp, 0, MAX_SCALAR_LENGTH).'\'';
+            }
+            else
+            {
+                $val = '\''.$$tmp.'\'';
+            }
+        }
+        else { $val = 'undef'; }
+    }
+    else # CODE, GLOB, or possibly a blessed reference
+    {
+        if (overload::StrVal($tmp) eq ''.$tmp)
+        {
+            $val = '...'; # without stringify operation, treat as hash
+        }
+        else
+        {
+            $val = '\''.$tmp.'\''; # with stringify operation, treat as string
+        } 
+    }
 
-    if (UNIVERSAL::isa($val, 'ARRAY'))
+    print SEP;
+    print _token($val);
+    print SEP;
+    print _token(length($val));
+    print "\n";
+}
+
+# Dumps all key-value pairs contained in a hash.
+#
+# @param h          reference to a hash
+# @param add_ref    0 if the key values are already addresses, as in case of
+#                   a hash provided by PadWalker; 1 if the key values are normal
+#                   and therefore the address of each value has to be computed   
+#
+sub _dump_keys
+{
+    my $h = shift;
+    my $add_ref = shift;
+
+    foreach my $key(sort keys %$h)
     {
-        print _name("$key");
-        _unwrap($val, -1);
-    }
-    elsif (UNIVERSAL::isa($val, 'HASH'))
-    {
-        print _name("$key");
-        _unwrap($val, -1);
-    }
-    elsif (UNIVERSAL::isa($val, 'IO'))
-    {
-        print _name("FileHandle($key)") . _string("=> $val");
-    }
-    #  No lexical subroutines yet...
-    #  elsif (UNIVERSAL::isa($val,'CODE')) {
-    #    _dump_sub($off, $$val);
-    #  }
-    else
-    {
-        print _name(_unctrl($key));
-        _dump_elem($$val, -1);
+        _dump_entity($key, $add_ref ? \$h->{$key} : $h->{$key});
     }
 }
 
+# Dumps a single variable from a package's symbol table.
+#
+# @param key		key under which the variable is stored in the symbol table
+# @param val        associated value
+#
 sub _dump_package_var
 {
     return if $DB::signal;
@@ -137,124 +222,39 @@ sub _dump_package_var
     my $val = shift;
 
     local (*dumpvar_epic::entry);
-    *dumpvar_epic::entry = $val if (defined $val);
+    *dumpvar_epic::entry = $val if (defined($val));
 
-    my $fileno;
-    $UnwrapCount = 0;
-
-    if ($key !~ /^_</ and defined $dumpvar_epic::entry)
+    if ($key !~ /^_</ and defined $dumpvar_epic::entry) # SCALAR
     {
-        print _name("\$" . _unctrl($key));
-        _dump_elem($dumpvar_epic::entry, -1);
+    	_dump_entity('$'._unctrl($key), \$dumpvar_epic::entry);
     }
-    if ($key !~ /^_</ and @dumpvar_epic::entry)
+    if ($key !~ /^_</ and @dumpvar_epic::entry) # ARRAY
     {
-        print _name("\@$key");
-        _dump_elem(\@dumpvar_epic::entry, -1);
+    	_dump_entity('@'.$key, \@dumpvar_epic::entry);
     }
-    if (   $key ne "main::"
-        && $key ne "DB::"
-        && %dumpvar_epic::entry
-        && $key !~ /::$/
-        && $key !~ /^_</)
+    if ($key ne "main::" &&
+        $key ne "DB::" &&
+        %dumpvar_epic::entry &&
+        $key !~ /::$/ &&
+        $key !~ /^_</) # HASH
     {
-        print _name("\%$key");
-        _dump_elem(\%dumpvar_epic::entry, -1);
+    	_dump_entity('%'.$key, \%dumpvar_epic::entry)
     }
-    if (defined($fileno = fileno(*entry)))
+    if (defined(my $fileno = fileno(*entry)))
     {
-        print(
-            _name("FileHandle($key)") . _string("fileno($fileno)"));
+    	_dump_entity("FileHandle($key)", \"fileno($fileno)")
     }
 }
 
-sub _dump_sub
+# Outputs a single token as described in the POD section of this module.
+#
+# @param value      token's value 
+#
+sub _token
 {
-    my ($off, $sub) = @_;
-    my $ini = $sub;
-    my $s;
-    $sub = $1 if $sub =~ /^\{\*(.*)\}$/;
-    my $subref = defined $1 ? \&$sub : \&$ini;
-    my $place = $DB::sub{$sub}
-      || (($s = $dumpvar_epic::subs{"$subref"})    && $DB::sub{$s})
-      || (($s = _CvGV_name_or_bust($subref))       && $DB::sub{$s})
-      || ($subdump && ($s = _find_subs("$subref")) && $DB::sub{$s});
-    $place = '???' unless defined $place;
-    $s     = $sub  unless defined $s;
-    print _string(" -> &$s in $place");
-}
-
-sub _find_subs
-{
-    return undef unless %DB::sub;
-    my ($addr, $name, $loc);
-    while (($name, $loc) = each %DB::sub)
-    {
-        $addr = \&$name;
-        $dumpvar_epic::subs{"$addr"} = $name;
-    }
-    $subdump = 0;
-    $dumpvar_epic::subs{ shift() };
-}
-
-sub _name
-{
-    my $text = shift;
-
-    return $TOKEN_NAME . _string($text);
-}
-
-sub _string
-{
-    my $text = shift;
-
-    return sprintf("%s%08x%s", $TOKEN_STRING, length $text, $text);
-}
-
-sub _stringify
-{
-    my $str = shift;
-    my $noticks = shift || 0;
-
-    return _string('undef') unless defined $str;
-    return _string($str . "") if ref \$str eq 'GLOB';
+    my $value = shift;
     
-    my $strval = ${overload::}{'StrVal'};
-    eval { $str = $strval->($str)
-      if ref $str
-      and %overload::
-      and defined $strval; };
-
-    if ($tick eq 'auto')
-    {
-        if ($str =~ m/[\000-\011\013-\037\177]/)
-        {
-            $tick = '"';
-        }
-        else
-        {
-            $tick = "'";
-        }
-    }
-    if ($tick eq "'")
-    {
-        $str =~ s/([\'])/\\$1/g;
-    }
-    elsif ($unctrl eq 'unctrl')
-    {
-        $str =~ s/([\"])/\\$1/g;
-        $str =~ s/([\000-\037\177])/'^'.pack('c',ord($1)^64)/eg;
-    }
-    elsif ($unctrl eq 'quote')
-    {
-        $str =~ s/([\"\$\@])/\\$1/g if $tick eq '"';
-        $str =~ s/\033/\\e/g;
-        $str =~ s/([\000-\037\177])/'\\c'.chr(ord($1)^64)/eg;
-    }
-    $str = _uniescape($str);
-    ($noticks || $str =~ m/^\d+(\.\d*)?\Z/)
-      ? _string($str)
-      : _string($tick . $str . $tick);
+    return length($value).SEP.$value;
 }
 
 sub _unctrl
@@ -267,182 +267,220 @@ sub _unctrl
     return $key;
 }
 
-sub _uniescape
-{
-    join("",
-        map { $_ > 255 ? sprintf("\\x{%04X}", $_) : chr($_) }
-          unpack("U*", $_[0]));
-}
-
-# Recursively dumps the content of a variable.
-#
-# @param v  reference to the variable's value,
-#           e.g. an array/hash reference or reference to a scalar
-#
-sub _unwrap
-{
-    return if $DB::signal;
-    
-    my $v = shift;
-    my $m = shift || 0;    # maximum recursion depth
-
-    return if $m == 0;
-
-    my $item_type;
-
-    # Check for reused addresses
-    if (ref $v)
-    {
-        my $val = $v;
-        my $strval = ${overload::}{'StrVal'};
-        eval { $val = $strval->($v)
-          if %overload:: and defined $strval; };
-
-        # Match type and address.
-        # Unblessed references will look like TYPE(0x...)
-        # Blessed references will look like Class=TYPE(0x...)
-        my ($addr, $start_part);
-        ($start_part, $val) = split /=/, $val;
-        $val = $start_part unless defined $val;
-        ($item_type, $addr) =
-            $val =~ /([^\(]+)    # Keep stuff that's
-                                 # not an open paren
-                 \(              # Skip open paren
-                 (0x[0-9a-f]+)   # Save the address
-                 \)              # Skip close paren
-                 $/x;    # Should be at end now
-
-        if (defined $addr)
-        {
-            $address{$addr}++;
-            if ($address{$addr} > 1)
-            {
-                print $TOKEN_REUSED;
-                return;
-            }
-        }
-    }
-
-    if ($UnwrapCount > $MaxUnwrapCount)
-    {
-        print _string("...Cut...");
-        return;
-    }
-    $UnwrapCount++;
-
-    if (ref \$v eq 'GLOB')
-    {
-        # This is a raw glob. Special handling for that.
-        my $addr = "$v" . "";    # To avoid a bug with globs
-        $address{$addr}++;
-        if ($address{$addr} > 1)
-        {
-            print _string("*DUMPED_GLOB*");
-            $UnwrapCount--;
-            return;
-        }
-    }
-
-    if (ref $v eq 'Regexp')
-    {
-        # Reformat the regexp to look the standard way.
-        my $re = "$v";
-        $re =~ s,/,\\/,g;
-        print _string(" -> qr/$re/");
-        $UnwrapCount--;
-        return;
-    }
-
-    if ($item_type eq 'HASH')
-    {
-        # Hash ref or hash-based object.
-        my @sortKeys = sort keys(%$v);
-
-        if (@sortKeys) { print _string("...") . $TOKEN_IN }
-        for my $key (@sortKeys)
-        {
-            return if $DB::signal;
-            my $value = ${$v}{$key};
-            print $TOKEN_NAME, _stringify($key);
-            _dump_elem($value, $m - 1);
-        }
-        if   (@sortKeys) { print $TOKEN_OUT}
-        else             { print _string(" <empty hash> ") }
-    }
-    elsif ($item_type eq 'ARRAY')
-    {
-        # Array ref or array-based object. Also: undef.
-        # See how big the array is.
-
-        print _string("...") . $TOKEN_IN if @$v;
-
-        for my $num ($[ .. $#{$v})
-        {
-            return if $DB::signal;
-            print _name("[$num]");
-            if (exists $v->[$num])
-            {
-                if (defined $v->[$num])
-                {
-                    _dump_elem($v->[$num], $m - 1);
-                }
-                else
-                {
-                    print _string("undef");
-                }
-            }
-            else
-            {
-                print _string("empty slot");
-            }
-        }
-        if (@$v) { print $TOKEN_OUT }
-        else     { print _string(" <empty array> "); }
-    }
-    elsif ($item_type eq 'SCALAR')
-    {
-        unless (defined $$v)
-        {
-            print _string("-> undef");
-            $UnwrapCount--;
-            return;
-        }
-        print _string("-> ");
-        _dump_elem($$v, $m - 1);
-    }
-    elsif ($item_type eq 'REF')
-    {
-        print _string("-> $$v");
-        return unless defined $$v;
-        _unwrap($$v, $m - 1);
-    }
-    elsif ($item_type eq 'CODE')
-    {
-        # Code object or reference.
-        _string("-> ");
-        _dump_sub(0, $v);
-    }
-    elsif ($item_type eq 'GLOB')
-    {
-        # Glob object or reference.
-        print _string("-> "), _stringify($$v, 1);
-        
-        my $fileno;
-        if (defined($fileno = fileno($v)))
-        {
-            print _string("FileHandle({$$v}) => fileno($fileno)");
-        }
-    }
-    elsif (ref \$v eq 'GLOB')
-    {
-        my $fileno;
-        
-        # Raw glob (again?)
-        if (defined($fileno = fileno(\$v)))
-        {
-            print _string("FileHandle({$v}) => fileno($fileno)");
-        }
-    }
-}
-
 1;
+
+__DATA__
+
+=pod
+=head1 dumpvar_epic.pm
+
+This module is invoked by EPIC to dump contents of Perl variables in order to
+present them in the Variables view of the debugger.
+
+=head1 Dumpable entities 
+
+The I<entities> dumpable by this module can be classified as follows:
+
+=over
+
+=item * Type 1: lexical variables
+
+=item * Type 2: key-value pairs of a hash
+
+=item * Type 3: elements of a list
+
+=back
+
+=head1 Format of a dumped entity
+
+The dump format is designed to be reasonably concise and easy to parse
+while remaining human-readable to support debugging the debugger.
+
+An entity is dumped by printing a series of tokens. Each token is a utf8
+string and is preceded by its length expressed as a decimal integer.
+Tokens, as well as the token length and token content, are separated
+from each other with a pipe (vertical bar) character. Thus, the string
+C<"3|abc"> would contain a single three-character long token with value
+C<abc>, while the string C<"3|abc|2|de"> would contain two tokens, C<abc>
+and C<de>. The explicit token lengths solve the parsing difficulty
+caused by pipe characters potentially appearing inside of the token values.
+(Another way would have been to use escaping and un-escaping of separator
+characters, but it appeared less efficient and more cumbersome to implement.)
+In the following description the token lengths are omitted for clarity.
+
+The tokens which comprise a dumped entity are explained next,
+in the order in which they appear in the dump (examples are provided
+in the last section of this document):
+
+=over
+
+=item 1. (single token)
+
+entity name
+
+=over
+
+=item *
+
+a qualified name of a lexical variable (C<$x>, C<@x>, C<%x>) OR
+
+=item *
+
+an unqualified name of a hash key (C<x>) OR
+
+=item *
+
+an index of a list element (C<0>, C<1>, C<2>, ...)
+
+=back
+
+=item 2. (single token)
+
+number of tokens comprising "entity address and reference chain" that follows
+
+=item 3. (multiple tokens)
+
+entity address and reference chain
+
+The entity address is the address reported by Perl's built-in C<ref>
+function for a hypothetical variable which could be dereferenced
+using the C<${...}> operator to assign a new value to the entity.
+If the entity itself is a reference, the address of the referenced
+entity will be output in the following token, recursively until
+either an address of a non-reference entity is finally output or
+a cycle in the reference chain is detected. The final address in
+the reference chain denotes the value type or is equal to the first
+address in case of a circular reference chain.
+
+=item 4. (single token)
+
+entity value
+
+=over
+
+=item *
+
+If the entity is not a reference:
+
+=over
+
+=item *
+
+C<undef> (unquoted literal) for entities with an undefined value
+
+=item *
+
+C<...> (unquoted three dots literal) for hashes and lists
+
+=item *
+
+a singly quoted string value (C<'foo'>) for all other entities
+
+=back
+
+=item *
+
+If the entity is a reference:
+
+=over
+
+=item *
+
+the dumped value is of the final non-reference entity in the reference chain OR
+
+=item *
+
+C<cycle> (unquoted literal) in case of a circular reference chain OR
+
+=item *
+
+singly quoted value (C<'foo'>) of a referenced Perl object which supports
+stringification
+
+=back
+
+=back
+
+=item 5. (single token)
+
+character length of the entity value
+
+The total number of Unicode characters (as reported by Perl's length
+function) comprising the full string value of the dumped entity.
+The artificially inserted surrounding quotes are not counted.
+This number can be evaluated in EPIC to determine whether the string value
+was truncated before dumping.
+
+=back
+
+If multiple entities are dumped in a single request from EPIC (e.g. all elements
+of a list or all key-value pairs of a hash), then each entity's tokens are followed
+by a C<\n> (line feed) character.
+
+=head1 Examples
+
+This section contains some normative examples of dumps for the various entity
+types. Each example consists of a line which assigns a value to the entity
+and the dumped representation of the entity on the second line. Again, note
+that the string lengths that in reality appear in front of each token are
+skipped here for clarity.
+
+=head2 Type 1: lexical variables 
+
+    $x = 5
+
+        $x|1|SCALAR(0x123456)|'5'|3
+      
+    $x = 'st\'r'
+
+        $x|1|SCALAR(0x123456)|'st'r'|6
+
+    @x = ( 1, 2, 3 )
+
+        @x|1|ARRAY(0x123456)|...|3
+
+    %x = ( key => 'value' )
+
+        %x|1|HASH(0x123456)|...|3
+
+    $x = 5, $y = \$x
+
+        $y|2|REF(0x123457)|SCALAR(0x123456)|'5'|3
+
+    $x = [ 1, 2, 3 ]
+
+        $x|2|REF(0x123457)|ARRAY(0x123456)|...|3
+
+    $x = { key => 'value' }
+
+        $x|2|REF(0x123457)|HASH(0x123456)|...|3
+
+=head2 Type 2: key-value pairs of a hash 
+
+    $x->{"k ey"} = 5
+
+        k ey|1|SCALAR(0x123456)|'5'|3
+          
+    $x->{'key'} = 'str'
+
+        key|1|SCALAR(0x123456)|'str'|5
+          
+    $x->{'key'} = { other => 'value' }
+
+        key|2|REF(0x123457)|HASH(0x123456)|...|3
+          
+    $x->{'key'} = [ 1, 2, 3 ]
+
+        key|2|REF(0x123457)|ARRAY(0x123456)|...|3
+
+=head2 Type 3: elements of a list
+
+    $x[0] = 5
+
+        0|1|SCALAR(0x123456)|'5'|3
+          
+    $x[1] = 'str'
+
+        1|1|SCALAR(0x123456)|'str'|5
+
+=cut

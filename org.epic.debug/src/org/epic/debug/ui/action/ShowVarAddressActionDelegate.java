@@ -7,7 +7,7 @@ import org.eclipse.ui.IViewActionDelegate;
 import org.eclipse.ui.IViewPart;
 import org.epic.debug.db.PerlDB;
 
-public class ShowGlobalVariableActionDelegate implements IViewActionDelegate, org.eclipse.ui.IActionDelegate2
+public class ShowVarAddressActionDelegate implements IViewActionDelegate, org.eclipse.ui.IActionDelegate2
 {
     private static IAction action;
 
@@ -17,7 +17,7 @@ public class ShowGlobalVariableActionDelegate implements IViewActionDelegate, or
 
     public void init(IAction action)
     {
-        ShowGlobalVariableActionDelegate.action = action;
+        ShowVarAddressActionDelegate.action = action;
     }
 
     public void dispose()

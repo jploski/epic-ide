@@ -3,18 +3,18 @@ package org.epic.debug.db;
 import org.eclipse.core.runtime.Assert;
 
 /**
- * Used to read entities dumped by dumpvar_epic2.pm.
+ * Used to read entities dumped by dumpvar_epic.pm.
  * 
- * @see POD section in dumpvar_epic2.pm, which explains the dump format
+ * @see POD section in dumpvar_epic.pm, which explains the dump format
  * @author jploski
  */
-public class DumpedEntityReader
+class DumpedEntityReader
 {
     private final String input;
     private int i;
     
     /**
-     * @param input     a series of entities dumped by dumpvar_epic2
+     * @param input     a series of entities dumped by dumpvar_epic
      */
     public DumpedEntityReader(String input)
     {

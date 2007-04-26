@@ -15,7 +15,7 @@ import org.epic.debug.PerlDebugPlugin;
 public abstract class PerlVariable extends DebugElement implements IVariable
 {
     private final DebuggerInterface db;
-    private final StackFrame2 frame;
+    private final StackFrame frame;
     private final DumpedEntity entity;
     private PerlValue value;
     private String quotedName;
@@ -27,7 +27,7 @@ public abstract class PerlVariable extends DebugElement implements IVariable
      */
     protected PerlVariable(
         DebuggerInterface db,
-        StackFrame2 frame,
+        StackFrame frame,
         DumpedEntity entity) throws DebugException
     {
         super(frame.getDebugTarget());
@@ -90,7 +90,7 @@ public abstract class PerlVariable extends DebugElement implements IVariable
     /**
      * @return stack frame which contains this variable
      */
-    public StackFrame2 getStackFrame()
+    public StackFrame getStackFrame()
     {
         return frame;
     }
@@ -147,6 +147,15 @@ public abstract class PerlVariable extends DebugElement implements IVariable
     public boolean isHash() throws DebugException
     {
         return "HASH".equals(getReferenceTypeName());
+    }
+    
+    /**
+     * @return false if it is a package-scope variable;
+     *         true otherwise
+     */
+    public boolean isPackageScope()
+    {
+        return false;
     }
 
     /**

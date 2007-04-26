@@ -7,7 +7,7 @@ import org.eclipse.debug.core.DebugException;
  * 
  * @author jploski
  */
-public class ArrayElement extends PerlVariable
+class ArrayElement extends PerlVariable
 {
     private final PerlVariable array;
     

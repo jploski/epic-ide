@@ -7,11 +7,11 @@ import org.eclipse.debug.core.DebugException;
  * 
  * @author jploski
  */
-public class LexicalVariable extends PerlVariable
+class LexicalVariable extends PerlVariable
 {
     protected LexicalVariable(
         DebuggerInterface db,
-        StackFrame2 frame,
+        StackFrame frame,
         DumpedEntity entity) throws DebugException 
     {
         super(db, frame, entity);

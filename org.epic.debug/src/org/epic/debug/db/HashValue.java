@@ -11,7 +11,7 @@ import org.eclipse.debug.core.model.IVariable;
  * 
  * @author jploski
  */
-public class HashValue extends PerlValue
+class HashValue extends PerlValue
 {
     private final IVariable[] vars;
 

@@ -7,6 +7,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.model.*;
 import org.epic.debug.PerlDebugPlugin;
+import org.epic.debug.ui.action.ShowVarAddressActionDelegate;
 
 /**
  * Abstract base class for objects representing values of PerlVariables.
@@ -74,7 +75,7 @@ public abstract class PerlValue extends DebugElement implements IValue
         DumpedEntity entity = holder.getDumpedEntity();
         String[] refChain = entity.getReferenceChain();
 
-        boolean suppressSelfAddress = true;
+        boolean suppressSelfAddress = !ShowVarAddressActionDelegate.getPreferenceValue();
         int start = suppressSelfAddress ? 1 : 0;
         
         StringBuffer buf = new StringBuffer();
@@ -112,7 +113,7 @@ public abstract class PerlValue extends DebugElement implements IValue
     /**
      * Dumps subvariables of the variable which holds this value. 
      * 
-     * @param subName   name of the dumpvar_epic2.pm subroutine which
+     * @param subName   name of the dumpvar_epic.pm subroutine which
      *                  should be invoked
      */
     protected String dumpEntity(String subName) throws DebugException
@@ -133,7 +134,7 @@ public abstract class PerlValue extends DebugElement implements IValue
             code = HelperScript.replace(
                 code,
                 "#SET_SUBREF#",
-                "my $subref = \\&dumpvar_epic2::" + subName + ";");
+                "my $subref = \\&dumpvar_epic::" + subName + ";");
             
             return holder.getDebuggerInterface().eval(code);
         }

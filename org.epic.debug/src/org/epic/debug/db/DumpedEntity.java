@@ -1,12 +1,12 @@
 package org.epic.debug.db;
 
 /**
- * A Java-side representation of an entity dumped by dumpvar_epic2.pm.
+ * A Java-side representation of an entity dumped by dumpvar_epic.pm.
  * 
- * @see POD section in dumpvar_epic2.pm, which explains dumped entities
+ * @see POD section in dumpvar_epic.pm, which explains dumped entities
  * @author jploski
  */
-public class DumpedEntity
+class DumpedEntity
 {
     private final String name;
     private final String[] refChain;

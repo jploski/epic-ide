@@ -11,7 +11,7 @@ import org.eclipse.debug.core.model.IVariable;
  * 
  * @author jploski
  */
-public class ScalarValue extends PerlValue
+class ScalarValue extends PerlValue
 {
     private static final IVariable[] NO_VARIABLES = new IVariable[0];
     

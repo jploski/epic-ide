@@ -7,7 +7,7 @@ import org.eclipse.debug.core.DebugException;
  * 
  * @author jploski
  */
-public class HashKey extends PerlVariable
+class HashKey extends PerlVariable
 {
     private final PerlVariable hash;
     

@@ -163,7 +163,7 @@ public class DebuggerInterface
             String result = runSyncCommand(
                 CMD_EXEC,
                 "print $DB::OUT eval { require PadWalker; PadWalker->VERSION(0.08) }");
-            hasPadWalker = new Boolean("1.0".equals(result));
+            hasPadWalker = new Boolean(result.length() > 0);
         }
 
         return hasPadWalker.booleanValue();

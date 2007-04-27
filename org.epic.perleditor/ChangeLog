@@ -5,6 +5,10 @@ CVS
 
 		Editor:
 
+Version 0.6.2 - 28-April-2007
+		Debugger:
+		* Fixed Bug [ 1709016 ] EPIC 0.6.1 requires PadWalker version to be 1.0
+
 Version 0.6.1 - 26-April-2007
 		Debugger:
 		* Fixed Bug [ 1706017 ] Wrong number of stack frames in Debug view [Win32]

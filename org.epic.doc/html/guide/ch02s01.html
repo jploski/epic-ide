@@ -5,5 +5,16 @@
       validation.</p><p>The validation interval indicates when to start validation after
       the editor becomes idle.</p><p>Apart from the standard interpreter type, the type can be switched
       to <span class="emphasis"><em>Cygwin</em></span>. In this case the @INC path is mapped to
-      be Cygwin compliant.</p><div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>On slower systems it might be useful to disable automatic syntax
+      be Cygwin compliant.</p><p>The two debugger-related preferences work as follows:</p><div class="itemizedlist"><ul type="disc"><li><p><span class="guilabel">Enable debugger console</span> is only useful if
+          you wish to debug EPIC itself and should not be activated otherwise.
+          This preference causes a special console to become available while
+          debugging Perl scripts. The console shows internal communication
+          between EPIC and the Perl debugger backend. To access this console,
+          you have to click on the item <span class="guilabel">perl -d</span> in the
+          <span class="guilabel">Debug</span> view.</p></li><li><p><span class="guilabel">Suspend debugger at first statement</span>
+          (active by default) causes the debugger to stop right at the
+          beginning of the debugged script, even if there are no breakpoints
+          set. If this preference is inactive, then the debugger will not
+          suspend until the first breakpoint is hit (or the script finishes
+          execution).</p></li></ul></div><div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>On slower systems it might be useful to disable automatic syntax
         validation. Syntax validation is still possible by using the <span><strong class="keycap">Shift</strong></span>-<span><strong class="keycap">F5</strong></span> function key.</p></div></div></body></html>

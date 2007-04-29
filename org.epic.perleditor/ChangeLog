@@ -2,6 +2,7 @@ Eclipse Perl Integration:
 
 CVS
 		Debugger:
+		* Implemented Feature Request [ 1709698 ] Do not redirect IO during remote debugging
 
 		Editor:
 

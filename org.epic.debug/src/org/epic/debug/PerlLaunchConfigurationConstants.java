@@ -34,6 +34,7 @@ public class PerlLaunchConfigurationConstants
     public static final String ATTR_REMOTE_HOST = "ATTR_REMOTE_HOST";
     public static final String ATTR_REMOTE = "ATTR_REMOTE";
     public static final String ATTR_REMOTE_CREATE_DEBUG_PACKAGE = "ATTR_REMOTE_CREATE_DEBUG_PACKAGE";
+    public static final String ATTR_REMOTE_CAPTURE_OUTPUT = "ATTR_REMOTE_CAPTURE_OUTPUT";
     public static final String ATTR_REMOTE_DEBUG_PACKAGE_PATH = "ATTR_REMOTE_DEBUG_PACKAGE_PATH";
 
     public static final String PERL_PROCESS_TYPE = "perl";

@@ -97,8 +97,10 @@ public class LaunchConfigurationRemoteMainTab
 	private GridLayout layout;
 	private FileFieldEditor mDebugPackageFilePath;
 	private Object checkComp;
-	private Label fCheckLabel;
-	private Button fCheckBox;
+	private Label fCreatePkgLabel;
+    private Label fCaptureOutLabel;
+	private Button fCreatePkgCheckBox;
+    private Button fCaptureOutCheckBox;
 	Composite mDebugPackageComp;
 	
 	private ProjectAndFileBlock fProjectAndFileBlock  = new ProjectAndFileBlock();;
@@ -274,6 +276,32 @@ public class LaunchConfigurationRemoteMainTab
 				updateLaunchConfigurationDialog();
 			}
 		});
+        
+        createVerticalSpacer(comp, 1);
+        Composite captureComp = new Composite(comp, SWT.NONE);
+        GridLayout captureLayout = new GridLayout();
+        captureLayout.numColumns = 3;
+        captureLayout.marginHeight = 0;
+        captureLayout.marginWidth = 0;
+        captureLayout.makeColumnsEqualWidth = true;
+        captureComp.setLayout(captureLayout);
+        gd = new GridData(GridData.FILL_HORIZONTAL);
+        captureComp.setLayoutData(gd);
+        captureComp.setFont(font);
+        
+        fCaptureOutLabel = new Label(captureComp, SWT.NONE);
+        fCaptureOutLabel.setText("Capture Output"); //$NON-NLS-1$
+        gd = new GridData();
+        gd.verticalAlignment = 1;
+        fCaptureOutLabel.setLayoutData(gd);
+        fCaptureOutLabel.setFont(font);
+        
+        fCaptureOutCheckBox = new Button(captureComp, SWT.CHECK | SWT.CENTER);
+        gd = new GridData(GridData.FILL_HORIZONTAL);
+        gd.horizontalSpan = 1;
+        fCaptureOutCheckBox.setLayoutData(gd);
+        fCaptureOutCheckBox.setFont(font);
+        
 		//********************************
 		createVerticalSpacer(comp, 1);
 		Composite checkComp = new Composite(comp, SWT.NONE);
@@ -287,21 +315,21 @@ public class LaunchConfigurationRemoteMainTab
 		checkComp.setLayoutData(gd);
 		checkComp.setFont(font);
 
-		fCheckLabel = new Label(checkComp, SWT.NONE);
-		fCheckLabel.setText("Create Debug Package"); //$NON-NLS-1$
+		fCreatePkgLabel = new Label(checkComp, SWT.NONE);
+		fCreatePkgLabel.setText("Create Debug Package"); //$NON-NLS-1$
 		gd = new GridData();
 		gd.verticalAlignment = 1;
-		fCheckLabel.setLayoutData(gd);
-		fCheckLabel.setFont(font);
-
+		fCreatePkgLabel.setLayoutData(gd);
+		fCreatePkgLabel.setFont(font);
+        
 		//fPortText = new Text(portComp, SWT.SINGLE | SWT.BORDER);
-		fCheckBox = new Button(checkComp, SWT.CHECK | SWT.CENTER);
+		fCreatePkgCheckBox = new Button(checkComp, SWT.CHECK | SWT.CENTER);
 		gd = new GridData(GridData.FILL_HORIZONTAL);
 		gd.horizontalSpan = 1;
-		fCheckBox.setLayoutData(gd);
-		fCheckBox.setFont(font);
+		fCreatePkgCheckBox.setLayoutData(gd);
+		fCreatePkgCheckBox.setFont(font);
 
-		fCheckBox.addSelectionListener(new SelectionListener() {
+		fCreatePkgCheckBox.addSelectionListener(new SelectionListener() {
 
 			public void widgetSelected(SelectionEvent e) {
 				// TODO Auto-generated method stub
@@ -314,7 +342,7 @@ public class LaunchConfigurationRemoteMainTab
 
 			}
 		});
-
+        
 		//********************************
 
 		layout = new GridLayout();
@@ -340,7 +368,7 @@ public class LaunchConfigurationRemoteMainTab
 	}
 
 	void calculatePackageFilePathEnabled() {
-		mDebugPackageFilePath.setEnabled(fCheckBox.getSelection(),
+		mDebugPackageFilePath.setEnabled(fCreatePkgCheckBox.getSelection(),
 				mDebugPackageComp);
 	}
 	/**
@@ -398,7 +426,7 @@ public class LaunchConfigurationRemoteMainTab
 
 	protected void updateDebugPackageFromConfig(ILaunchConfiguration config) {
 		String path = ""; //$NON-NLS-1$
-		boolean create = true;
+		boolean create = true, capture = true;
 
 		try {
 			path = config
@@ -409,12 +437,18 @@ public class LaunchConfigurationRemoteMainTab
 					.getAttribute(
 							PerlLaunchConfigurationConstants.ATTR_REMOTE_CREATE_DEBUG_PACKAGE,
 							true);
-		} catch (CoreException ce) {
+
+            capture = config
+                    .getAttribute(
+                    PerlLaunchConfigurationConstants.ATTR_REMOTE_CAPTURE_OUTPUT,
+                    true);
+        } catch (CoreException ce) {
 			PerlDebugPlugin.log(ce);
 		}
 
 		mDebugPackageFilePath.setStringValue(path);
-		this.fCheckBox.setSelection(create);
+		fCreatePkgCheckBox.setSelection(create);
+        fCaptureOutCheckBox.setSelection(capture);
 	}
 
 	protected void updateParamsFromConfig(ILaunchConfiguration config) {
@@ -452,15 +486,16 @@ public class LaunchConfigurationRemoteMainTab
 				(String) fDestText.getText());
 		config.setAttribute(PerlLaunchConfigurationConstants.ATTR_REMOTE_PORT,
 				(String) fPortText.getText());
-		config
-				.setAttribute(
-						PerlLaunchConfigurationConstants.ATTR_REMOTE_DEBUG_PACKAGE_PATH,
-						(String) mDebugPackageFilePath.getStringValue());
-		config
-				.setAttribute(
-						PerlLaunchConfigurationConstants.ATTR_REMOTE_CREATE_DEBUG_PACKAGE,
-						(boolean) fCheckBox.getSelection());
-	}
+		config.setAttribute(
+            PerlLaunchConfigurationConstants.ATTR_REMOTE_DEBUG_PACKAGE_PATH,
+			(String) mDebugPackageFilePath.getStringValue());
+		config.setAttribute(
+			PerlLaunchConfigurationConstants.ATTR_REMOTE_CREATE_DEBUG_PACKAGE,
+			(boolean) fCreatePkgCheckBox.getSelection());
+        config.setAttribute(
+            PerlLaunchConfigurationConstants.ATTR_REMOTE_CAPTURE_OUTPUT,
+            (boolean) fCaptureOutCheckBox.getSelection());
+    }
 
 	/**
 	 * @see org.eclipse.debug.ui.ILaunchConfigurationTab#dispose()
@@ -510,7 +545,7 @@ public class LaunchConfigurationRemoteMainTab
 			return false;
 		}
 
-		if (this.fCheckBox.getSelection()) {
+		if (this.fCreatePkgCheckBox.getSelection()) {
 
 			name = mDebugPackageFilePath.getStringValue();
 

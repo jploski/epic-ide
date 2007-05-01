@@ -2,9 +2,11 @@ package org.epic.debug.db;
 
 import java.util.*;
 
+import org.eclipse.core.runtime.Status;
 import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.model.IDebugTarget;
 import org.eclipse.debug.core.model.IVariable;
+import org.epic.debug.PerlDebugPlugin;
 
 /**
  * Represents contents of a Perl array (list).
@@ -38,11 +40,24 @@ class ArrayValue extends PerlValue
         DumpedEntityReader r = new DumpedEntityReader(content);
         List vars = new ArrayList();
         
-        while (r.hasMoreEntities())
-            vars.add(new ArrayElement(
-                getHolder().getDebuggerInterface(),
-                getHolder(),
-                r.nextEntity()));
+        try
+        {        
+            while (r.hasMoreEntities())
+                vars.add(new ArrayElement(
+                    getHolder().getDebuggerInterface(),
+                    getHolder(),
+                    r.nextEntity()));
+        }
+        catch (Exception e)
+        {
+            throw new DebugException(new Status(
+                Status.ERROR,
+                PerlDebugPlugin.getUniqueIdentifier(),
+                Status.OK,
+                "An error occurred while dumping array content; " +
+                "contents of the Variables view may become invalid",
+                e));
+        }
 
         return (IVariable[]) vars.toArray(new IVariable[vars.size()]);
     }

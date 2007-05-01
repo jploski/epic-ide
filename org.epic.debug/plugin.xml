@@ -157,6 +157,19 @@
                 id="org.epig.debug.showVarAddressAction">
             </action>
         </viewContribution>
+        <viewContribution
+            targetID="org.eclipse.debug.ui.VariableView"
+            id="org.epig.debug.highlightVarUpdatesAction">
+            <action
+                label="Highlight Updated Variables"
+                icon="icons/epic.gif"
+                tooltip="Highlight Updated Variables"
+                state="false"
+                class="org.epic.debug.ui.action.HighlightVarUpdatesActionDelegate"
+                menubarPath="additions"
+                id="org.epig.debug.highlightVarUpdatesAction">
+            </action>
+        </viewContribution>
     </extension>
 
     <extension point="org.eclipse.debug.core.breakpoints">

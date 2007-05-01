@@ -1,9 +1,12 @@
 package org.epic.debug.db;
 
+import java.util.*;
+
 import org.eclipse.core.runtime.Status;
 import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.model.*;
 import org.epic.debug.PerlDebugPlugin;
+import org.epic.debug.ui.action.HighlightVarUpdatesActionDelegate;
 
 /**
  * Abstract base class for objects that can appear in the Variables
@@ -19,6 +22,7 @@ public abstract class PerlVariable extends DebugElement implements IVariable
     private final DumpedEntity entity;
     private PerlValue value;
     private String quotedName;
+    private Boolean contentChanged;
     
     /**
      * @param db        interface to the Perl debugger
@@ -123,12 +127,38 @@ public abstract class PerlVariable extends DebugElement implements IVariable
         }
         return value;
     }
+    
+    public boolean hasContentChanged() throws DebugException
+    {
+        if (!HighlightVarUpdatesActionDelegate.getPreferenceValue())
+            return false;
+        
+        if (contentChanged == null) computeContentChanged();
+        return contentChanged.booleanValue();
+    }
 
     public boolean hasValueChanged() throws DebugException
     {
-        // TODO: reimplement change tracking and add a preference
-        // to disable it for speed
-        return false;
+        if (!HighlightVarUpdatesActionDelegate.getPreferenceValue())
+            return false;
+        
+        if (getName().startsWith("FileHandle"))
+        {
+            // TODO: we don't get correct addresses from dumpvar_epic
+            // under which to remember the values of GLOBs... so they
+            // always appear "fresh" at this point.
+            return false;
+        }
+        PerlVariable prev = (PerlVariable) getStackFrame().getPreviousVariable(this);
+        if (prev == null) return true;
+        
+        String now = getDumpedEntity().getImmediateValue();
+        if (now == null) now = "undef";
+
+        String then = prev.getDumpedEntity().getImmediateValue();
+        if (then == null) then = "undef";
+
+        return !now.equals(then) || Boolean.TRUE.equals(contentChanged);        
     }
 
     /**
@@ -249,6 +279,48 @@ public abstract class PerlVariable extends DebugElement implements IVariable
             }
         }
         return quotedName;
+    }
+    
+    private void computeContentChanged() throws DebugException
+    {
+        if (!getValue().hasVariables() || getName().equals("%!"))
+        {
+            // The hash %! seems special in that the addresses of
+            // its keys reported by dumpvar_epic are not constant.
+            // We ignore it to avoid false contentChanged alerts.
+            contentChanged = Boolean.FALSE;
+            return;
+        }
+        
+        LinkedList queue = new LinkedList();
+        Set visited = new HashSet(); // to avoid infinite recursion
+        queue.add(getValue().getVariables());
+        
+        long t1 = System.currentTimeMillis();
+        while (!queue.isEmpty())
+        {            
+            IVariable[] vars = (IVariable[]) queue.removeFirst();
+        
+            for (int i = 0; i < vars.length; i++)
+            {                
+                PerlVariable var = (PerlVariable) vars[i];
+                if (visited.add(var.getDumpedEntity().getAddress()))
+                {
+                    if (var.hasValueChanged())
+                    {
+                        contentChanged = Boolean.TRUE;
+                        return;
+                    }
+                    if (var.getValue().hasVariables())
+                        queue.add(var.getValue().getVariables());
+                }
+                if (System.currentTimeMillis() > t1 + 5000) 
+                {
+                    System.out.println("break");
+                }
+            }
+        }
+        contentChanged = Boolean.FALSE;
     }
     
     private void throwNotSupported() throws DebugException

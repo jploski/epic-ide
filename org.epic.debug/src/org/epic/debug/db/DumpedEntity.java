@@ -43,6 +43,27 @@ class DumpedEntity
     }
     
     /**
+     * @return the address uniquely representing this entity
+     */
+    public String getAddress()
+    {
+        // Return just the hex address, without the type qualifier.
+        // The reason is that we want uniqueness, but the type
+        // qualifier may change from SCALAR to REF after a value
+        // is assigned to the entity.
+        return addressFrom(refChain[0]);
+    }
+    
+    /**
+     * @return the address of whatever the entity directly points to;
+     *         same as {@link #getValue()} if the entity is not a reference 
+     */
+    public String getImmediateValue()
+    {
+        return refChain.length > 1 ? addressFrom(refChain[1]) : value;
+    }
+    
+    /**
      * @return name of the dumped entity, e.g. "$x", "%x", "\@x" for
      *         a lexical variable, "key" for a hash key, or "123" for
      *         an array index
@@ -138,5 +159,15 @@ class DumpedEntity
     public boolean isTruncated()
     {
         return isDefined() && value.length() < valueLength;
+    }
+    
+    private String addressFrom(String ref)
+    {
+        try
+        {
+            int i = ref.indexOf('(');
+            return ref.substring(i+1, ref.indexOf(')'));
+        }
+        catch (Exception e) { return ref; }
     }
 }

@@ -35,4 +35,11 @@ class HashKey extends PerlVariable
         
         return buf.toString();
     }
+    
+    public boolean hasValueChanged() throws DebugException
+    {
+        // see remarks in PerlVariable.hasContentChanged on
+        // why keys of %! require special treatment
+        return hash.getName().equals("%!") ? false : super.hasValueChanged();
+    }
 }

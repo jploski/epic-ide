@@ -27,8 +27,9 @@ public class StackFrame extends DebugElement implements IStackFrame
     private final IPath localPath;
     private final int lineNumber;
     private final DebuggerInterface db;
-    private final StackFrame previous;
+    private StackFrame previous;
     private final int frameIndex; // 0 = top stack frame, 1 = one below...
+    private final HashMap rememberedVariables; // only for RFE 1708299
     
     static
     {
@@ -46,6 +47,8 @@ public class StackFrame extends DebugElement implements IStackFrame
         int frameIndex) throws DebugException
     {
         super(thread.getDebugTarget());
+        
+        if (previous != null) previous.previous = null; // conserve memory
 
         this.thread = thread;
         this.path = path;
@@ -54,6 +57,10 @@ public class StackFrame extends DebugElement implements IStackFrame
         this.db = db;
         this.previous = previous;
         this.frameIndex = frameIndex;
+        this.rememberedVariables = new HashMap();
+        
+        if (HighlightVarUpdatesActionDelegate.getPreferenceValue())
+            getVariables();
     }
 
     public boolean canResume()
@@ -89,6 +96,7 @@ public class StackFrame extends DebugElement implements IStackFrame
     public void discardCachedVars()
     {
         this.vars = null;
+        rememberedVariables.clear();
         fireChangeEvent(DebugEvent.CONTENT);
     }
 
@@ -145,6 +153,17 @@ public class StackFrame extends DebugElement implements IStackFrame
         return thread;
     }
     
+    /**
+     * @return the given variable as it was on the previous suspend or
+     *         null if it is not remembered
+     */
+    public PerlVariable getPreviousVariable(PerlVariable var)
+    {
+        if (previous == null) return null;
+        return previous.getRememberedVariable(
+            var.getDumpedEntity().getAddress());
+    }
+    
     public IRegisterGroup[] getRegisterGroups() throws DebugException
     {
         return NO_REGISTER_GROUPS;
@@ -167,6 +186,9 @@ public class StackFrame extends DebugElement implements IStackFrame
                 if (ShowGlobalVariableActionDelegate.getPreferenceValue()) dumpGlobalVars(vars);
                 if (ShowLocalVariableActionDelegate.getPreferenceValue() && db.hasPadWalker()) dumpLocalVars(vars);
                 this.vars = (PerlVariable[]) vars.toArray(new PerlVariable[vars.size()]);
+
+                if (HighlightVarUpdatesActionDelegate.getPreferenceValue() &&
+                    rememberedVariables.isEmpty()) rememberVariables();
             }
             catch (IOException e)
             {
@@ -241,13 +263,26 @@ public class StackFrame extends DebugElement implements IStackFrame
         String globalVarsString = db.eval(DB_DUMP_GLOBAL_VARS);
         if (globalVarsString == null) return;
         
-        DumpedEntityReader r = new DumpedEntityReader(globalVarsString);
-        boolean showInternal = ShowPerlInternalVariableActionDelegate.getPreferenceValue();
-        while (r.hasMoreEntities())
+        try
         {
-            DumpedEntity ent = r.nextEntity();
-            if (showInternal || !PERL_INTERNAL_VARS.contains(ent.getName()))
-                vars.add(new PackageVariable(db, this, ent));
+            DumpedEntityReader r = new DumpedEntityReader(globalVarsString);
+            boolean showInternal = ShowPerlInternalVariableActionDelegate.getPreferenceValue();
+            while (r.hasMoreEntities())
+            {
+                DumpedEntity ent = r.nextEntity();
+                if (showInternal || !PERL_INTERNAL_VARS.contains(ent.getName()))
+                    vars.add(new PackageVariable(db, this, ent));
+            }
+        }
+        catch (Exception e)
+        {
+            throw new DebugException(new Status(
+                Status.ERROR,
+                PerlDebugPlugin.getUniqueIdentifier(),
+                Status.OK,
+                "An error occurred while dumping global variables; " +
+                "contents of the Variables view may become invalid",
+                e));
         }
     }
     
@@ -261,14 +296,32 @@ public class StackFrame extends DebugElement implements IStackFrame
         String localVarsString = db.eval(code);
         if (localVarsString == null) return;
         
-        DumpedEntityReader r = new DumpedEntityReader(localVarsString);                
-        while (r.hasMoreEntities())
-        {
-            vars.add(new LexicalVariable(
-                db,
-                this,
-                r.nextEntity()));
+        try
+        {        
+            DumpedEntityReader r = new DumpedEntityReader(localVarsString);                
+            while (r.hasMoreEntities())
+            {
+                vars.add(new LexicalVariable(
+                    db,
+                    this,
+                    r.nextEntity()));
+            }
         }
+        catch (Exception e)
+        {
+            throw new DebugException(new Status(
+                Status.ERROR,
+                PerlDebugPlugin.getUniqueIdentifier(),
+                Status.OK,
+                "An error occurred while dumping local variables; " +
+                "contents of the Variables view may become invalid",
+                e));
+        }
+    }
+    
+    private PerlVariable getRememberedVariable(String addr)
+    {
+        return (PerlVariable) rememberedVariables.get(addr);
     }
     
     private static Set initInternalVars()
@@ -278,5 +331,28 @@ public class StackFrame extends DebugElement implements IStackFrame
         Set vars = new HashSet();
         while (e.hasMoreElements()) vars.add(e.nextElement());
         return vars;
+    }
+    
+    private void rememberVariables() throws DebugException
+    {
+        LinkedList queue = new LinkedList();
+        queue.add(this.vars);
+        
+        while (!queue.isEmpty())
+        {
+            IVariable[] vars = (IVariable[]) queue.removeFirst();
+        
+            for (int i = 0; i < vars.length; i++)
+            {
+                PerlVariable var = (PerlVariable) vars[i];
+                String addr = var.getDumpedEntity().getAddress();
+                
+                if (rememberedVariables.put(addr, var) == null &&
+                    var.getValue().hasVariables())
+                {
+                    queue.add(var.getValue().getVariables());
+                }
+            }
+        }
     }
 }

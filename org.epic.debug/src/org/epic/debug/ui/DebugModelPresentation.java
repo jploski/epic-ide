@@ -33,22 +33,25 @@ public class DebugModelPresentation implements IDebugModelPresentation
     {
         if (element instanceof PerlVariable)
         {
-            if (((PerlVariable) element).isPackageScope())
+            boolean contentChanged = false;
+            try
             {
-                if (false /* ((PerlVariable) element).hasContentChanged() */)
-                {
-                    return PerlDebugPlugin.getDefaultDesciptorImageRegistry().get(
-                        PerlDebugImages.DESC_OBJS_CHANGED_DEBUG_VAR_LOCAL);
-                }
-                else
-                {
-                    return PerlDebugPlugin.getDefaultDesciptorImageRegistry().get(
-                        PerlDebugImages.DESC_OBJS_DEBUG_VAR_LOCAL);
-                }
+                contentChanged = ((PerlVariable) element).hasContentChanged();
             }
-            else if (false /* ((PerlVariable) element).hasContentChanged() */)
+            catch (DebugException e) { PerlDebugPlugin.log(e); }
+            
+            if (!((PerlVariable) element).isPackageScope())
+            {
+                return PerlDebugPlugin.getDefaultDesciptorImageRegistry().get(
+                    contentChanged
+                    ? PerlDebugImages.DESC_OBJS_CHANGED_DEBUG_VAR_LOCAL
+                    : PerlDebugImages.DESC_OBJS_DEBUG_VAR_LOCAL);
+            }
+            else if (contentChanged)
+            {
                 return PerlDebugPlugin.getDefaultDesciptorImageRegistry().get(
                     PerlDebugImages.DESC_OBJS_CHANGED_DEBUG_VAR);
+            }
         }
 
         if (element instanceof IMarker)

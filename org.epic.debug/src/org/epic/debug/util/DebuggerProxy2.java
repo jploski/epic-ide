@@ -288,9 +288,12 @@ public class DebuggerProxy2 extends PlatformObject
             fireAppended(s.substring(off, off+len));
         }
 
-        public synchronized void addListener(IStreamListener listener)
+        public void addListener(IStreamListener listener)
         {
-            listeners.add(listener);
+            synchronized (listeners)
+            {
+                listeners.add(listener);
+            }
         }
 
         public String getContents()
@@ -303,17 +306,23 @@ public class DebuggerProxy2 extends PlatformObject
             return monitor;
         }
 
-        public synchronized void removeListener(IStreamListener listener)
+        public void removeListener(IStreamListener listener)
         {
-            listeners.remove(listener);
+            synchronized (listeners)
+            {
+                listeners.remove(listener);
+            }
         }
         
-        private synchronized void fireAppended(String text)
+        private void fireAppended(final String text)
         {
-            for (Iterator i = listeners.iterator(); i.hasNext();)
+            synchronized(listeners)
             {
-                final IStreamListener listener = (IStreamListener) i.next();
-                listener.streamAppended(text, monitor);
+                for (Iterator i = listeners.iterator(); i.hasNext();)
+                {
+                    final IStreamListener listener = (IStreamListener) i.next();
+                    listener.streamAppended(text, monitor);
+                }
             }
         }
     }
@@ -377,9 +386,12 @@ public class DebuggerProxy2 extends PlatformObject
             return ret;
         }
 
-        public synchronized void addListener(IStreamListener listener)
+        public void addListener(IStreamListener listener)
         {
-            listeners.add(listener);
+            synchronized (listeners)
+            {
+                listeners.add(listener);
+            }
         }
         
         public String getContents()
@@ -392,17 +404,23 @@ public class DebuggerProxy2 extends PlatformObject
             return this;
         }
         
-        public synchronized void removeListener(IStreamListener listener)
+        public void removeListener(IStreamListener listener)
         {
-            listeners.remove(listener);
+            synchronized (listeners)
+            {
+                listeners.remove(listener);
+            }
         }
         
-        private synchronized void fireAppended(String text)
+        private void fireAppended(String text)
         {
-            for (Iterator i = listeners.iterator(); i.hasNext();)
+            synchronized (listeners)
             {
-                final IStreamListener listener = (IStreamListener) i.next();
-                listener.streamAppended(text, this);
+                for (Iterator i = listeners.iterator(); i.hasNext();)
+                {
+                    final IStreamListener listener = (IStreamListener) i.next();
+                    listener.streamAppended(text, this);
+                }
             }
         }
     }

@@ -42,22 +42,15 @@ class DumpedEntityReader
     
     private String token()
     {
-        try
-        {
-            int j = i;
-            while (input.charAt(i) != '|') i++;
-            
-            int tokenLength = Integer.parseInt(input.substring(j, i));
-            j = i;
-            i = j+tokenLength+1;
-            if (input.charAt(i) == '\n' || input.charAt(i) == '|') i++;
-    
-            return input.substring(j+1, j+tokenLength+1);
-        }
-        catch (StringIndexOutOfBoundsException e)
-        {
-            System.err.println("break");
-            return "";
-        }
+        int j = i;
+        while (input.charAt(i) != '|') i++;
+        
+        int tokenLength = Integer.parseInt(input.substring(j, i));
+        j = i;
+        i = j+tokenLength+1;
+        if (i < input.length() &&
+            (input.charAt(i) == '\n' || input.charAt(i) == '|')) i++;
+
+        return input.substring(j+1, j+tokenLength+1);
     }
 }

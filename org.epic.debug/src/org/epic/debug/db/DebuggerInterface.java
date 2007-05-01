@@ -369,18 +369,24 @@ public class DebuggerInterface
         return command & (CMD_MODIFIER_RANGE_START - 1);
     }
 
-    private boolean hasCommandTerminated(String fOutput)
+    private int hasCommandTerminated(String output)
     {
-        boolean erg;
-        int count;
+        // TODO: this way of finding out whether a command has terminated
+        // is not fool-proof. The debugge output may contain a fake
+        // command termination token, so there's a bug waiting to be
+        // uncovered here...
+        
+        REMatch[] matches;
 
-        erg = re.CMD_FINISHED1.isMatch(fOutput);
-        count = re.CMD_FINISHED1.getAllMatches(fOutput).length;
-        if (erg || (count > 0)) return (true);
+        matches = re.CMD_FINISHED1.getAllMatches(output);
+        if (matches != null && matches.length > 0)
+            return matches[matches.length-1].getStartIndex();
 
-        erg = re.CMD_FINISHED2.isMatch(fOutput);
-        count = re.CMD_FINISHED2.getAllMatches(fOutput).length;
-        return erg || (count > 0);
+        matches = re.CMD_FINISHED2.getAllMatches(output);
+        if (matches != null && matches.length > 0)
+            return matches[matches.length-1].getStartIndex();
+
+        return -1;
     }
 
     private boolean hasSessionTerminated(String fOutput)
@@ -429,33 +435,25 @@ public class DebuggerInterface
             // characters of the output; applying them to the whole output
             // (which can become *very* long) causes major performance problems
 
-            int inspectLen = Math.min(output.length(), 350);
+            int inspectLen = Math.min(output.length(), 350);            
             String currentOutput = output.substring(
                 output.length() - inspectLen,
                 output.length());
+            
+            int endIndex = hasCommandTerminated(currentOutput);
 
             if (count < 0 || hasSessionTerminated(currentOutput))
             {
                 fireSessionTerminated();
                 return null;
             }
-            else if (hasCommandTerminated(currentOutput))
+            else if (endIndex != -1)
             {
                 // Return command output without the trailing
                 // DB<nn> prompt
-
-                int lfIndex = output.lastIndexOf("\n");
-                int crIndex = output.lastIndexOf("\r");
-                
-                if (lfIndex < 0) lfIndex = Integer.MAX_VALUE;
-                if (crIndex < 0) crIndex = Integer.MAX_VALUE;
-                
-                int nlIndex = Math.min(crIndex, lfIndex);
-                if (nlIndex != Integer.MAX_VALUE)
-                {
-                    return output.substring(0, nlIndex);
-                }
-                else return output.toString();
+                String ret = output.substring(
+                    0, output.length() - inspectLen + endIndex);
+                return ret;
             }
         }
     }

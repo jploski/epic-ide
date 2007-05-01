@@ -2,9 +2,15 @@ Eclipse Perl Integration:
 
 CVS
 		Debugger:
-		* Implemented Feature Request [ 1709698 ] Do not redirect IO during remote debugging
 
 		Editor:
+
+Version 0.6.3 - 02-May-2007
+		Debugger:
+		* Implemented Feature Request [ 1709698 ] Do not redirect IO during remote debugging
+		* Implemented Feature Request [ 1708299 ] Highlighting of changed values in Variables view
+		* Fixed Bug [ 1710842 ] Possible deadlock when debugger console enabled
+		* Fixed Bug [ 1710845 ] StringIndexOutOfBoundsException in DumpedEntityReader
 
 Version 0.6.2 - 28-April-2007
 		Debugger:

@@ -81,15 +81,15 @@
 <topic href="html/guide/ch06s04.html" label="Views in the Debug Perspective">
 <topic href="html/guide/ch06s04.html#debug-view" label="Debug View"/>
 <topic href="html/guide/ch06s04.html#variables-view" label="Variables View">
-<topic href="html/guide/ch06s04.html#N1098C" label="Customizing the Variables View"/>
+<topic href="html/guide/ch06s04.html#N1097B" label="Customizing the Variables View"/>
 </topic>
 <topic href="html/guide/ch06s04.html#breakpoints-view" label="Breakpoints View"/>
-<topic href="html/guide/ch06s04.html#N109E2" label="Perl Expression View"/>
+<topic href="html/guide/ch06s04.html#N109E4" label="Perl Expression View"/>
 </topic>
 <topic href="html/guide/ch06s05.html" label="Stepping Through the Execution of a Perl Program">
-<topic href="html/guide/ch06s05.html#N10A21" label="Step Over"/>
-<topic href="html/guide/ch06s05.html#N10A47" label="Step Into"/>
-<topic href="html/guide/ch06s05.html#N10A6D" label="Run to Return"/>
+<topic href="html/guide/ch06s05.html#N10A23" label="Step Over"/>
+<topic href="html/guide/ch06s05.html#N10A49" label="Step Into"/>
+<topic href="html/guide/ch06s05.html#N10A6F" label="Run to Return"/>
 </topic>
 </topic>
 <topic href="html/guide/ch07.html" label="RegExp Plug-in">

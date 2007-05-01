@@ -14,8 +14,8 @@
         <title>Eclipse</title>
 
         <para>Before installing the EPIC plug-in, a recent version of Eclipse
-        has to be installed. The minimum requirement is version 3.1 of
-        Eclipse for EPIC 'stable' and version 3.2 of Eclipse for EPIC
+        has to be installed. The minimum requirement is version 3.1 of Eclipse
+        for EPIC 'stable' and version 3.2 of Eclipse for EPIC
         'testing'.</para>
 
         <para>Eclipse comes in two flavors. The <emphasis>SDK</emphasis>
@@ -2343,34 +2343,6 @@ $smtp-&gt;[content assist]</programlisting>
             </imageobject>
           </inlinemediaobject> icon.</para>
 
-        <para>If the value of a variable has changed since the last execution
-        step, it is highlighted. If changes in inner levels of complex
-        variables have occurred, the path to the changed variables is
-        indicated via delta symbols:</para>
-
-        <screenshot>
-          <mediaobject>
-            <imageobject>
-              <imagedata align="center" fileref="images/var_delta_complex.gif"
-                         format="GIF" />
-            </imageobject>
-
-            <textobject>
-              <phrase>Change Indicators in Variables View</phrase>
-            </textobject>
-          </mediaobject>
-        </screenshot>
-
-        <para>This makes it possible to see these kinds of changes even if
-        variables are collapsed.</para>
-
-        <note>
-          <para>Due to performance-related changes in the debugger code, the
-          change highlighting feature described above is temporarily disabled
-          in more recent versions of EPIC and likely to become optional in the
-          future.</para>
-        </note>
-
         <section>
           <title>Customizing the Variables View</title>
 
@@ -2384,6 +2356,40 @@ $smtp-&gt;[content assist]</programlisting>
           Orientation</guilabel>. Select <guilabel>Variables View
           Only</guilabel> to disable it. The details pane shows the value of
           primitive variables (especially useful for string variables).</para>
+
+          <bridgehead>Highlight Updated Variables</bridgehead>
+
+          <para>If you enable this option, the variables whose values have
+          changed during the last execution step (since the last suspend) and
+          new variables will be highlighted. If a change has occurred inside
+          of a complex variable, the variable will be highlighted and the path
+          to the changed value will also be indicated using delta
+          symbols:</para>
+
+          <screenshot>
+            <mediaobject>
+              <imageobject>
+                <imagedata align="center"
+                           fileref="images/var_delta_complex.gif" format="GIF" />
+              </imageobject>
+
+              <textobject>
+                <phrase>Change Indicators in Variables View</phrase>
+              </textobject>
+            </mediaobject>
+          </screenshot>
+
+          <para>This makes it possible to see these kinds of changes even if
+          variables are collapsed.</para>
+
+          <note>
+            <para>This feature requires EPIC to retrieve and remember the
+            value of every variable on each suspend. It may be very slow for
+            larger programs (e.g. it might take about 20 seconds for a program
+            containing data structures with 5000+ values). For this reason,
+            the option is disabled by default and should be used with
+            care.</para>
+          </note>
 
           <bridgehead>Select Variables to Display</bridgehead>
 

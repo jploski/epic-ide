@@ -16,19 +16,23 @@
         structure pointed to by the reference chain (or an indication of
         cyclic reference).</p><p>Global variables (including Perl internal variables) are marked
         with an <span class="inlinemediaobject"><img src="images/global_var.gif" /></span> icon, local variables with an
-        <span class="inlinemediaobject"><img src="images/local_var.gif" /></span> icon.</p><p>If the value of a variable has changed since the last execution
-        step, it is highlighted. If changes in inner levels of complex
-        variables have occurred, the path to the changed variables is
-        indicated via delta symbols:</p><div class="screenshot"><div class="mediaobject" align="center"><img src="images/var_delta_complex.gif" align="middle" alt="Change Indicators in Variables View" /></div></div><p>This makes it possible to see these kinds of changes even if
-        variables are collapsed.</p><div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>Due to performance-related changes in the debugger code, the
-          change highlighting feature described above is temporarily disabled
-          in more recent versions of EPIC and likely to become optional in the
-          future.</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h4 class="title"><a id="N1098C" />Customizing the Variables View</h4></div></div></div><p>You can customize the presentation with the configuration
-          menu:</p><h5><a id="N10991" />Show Details Pane</h5><p>To show the detail pane select <span class="guilabel">Vertical View
+        <span class="inlinemediaobject"><img src="images/local_var.gif" /></span> icon.</p><div class="section" lang="en"><div class="titlepage"><div><div><h4 class="title"><a id="N1097B" />Customizing the Variables View</h4></div></div></div><p>You can customize the presentation with the configuration
+          menu:</p><h5><a id="N10980" />Show Details Pane</h5><p>To show the detail pane select <span class="guilabel">Vertical View
           Orientation</span> or <span class="guilabel">Horizontal View
           Orientation</span>. Select <span class="guilabel">Variables View
           Only</span> to disable it. The details pane shows the value of
-          primitive variables (especially useful for string variables).</p><h5><a id="N109A1" />Select Variables to Display</h5><p>The variables view allows to select the following types of
+          primitive variables (especially useful for string variables).</p><h5><a id="N10990" />Highlight Updated Variables</h5><p>If you enable this option, the variables whose values have
+          changed during the last execution step (since the last suspend) and
+          new variables will be highlighted. If a change has occurred inside
+          of a complex variable, the variable will be highlighted and the path
+          to the changed value will also be indicated using delta
+          symbols:</p><div class="screenshot"><div class="mediaobject" align="center"><img src="images/var_delta_complex.gif" align="middle" alt="Change Indicators in Variables View" /></div></div><p>This makes it possible to see these kinds of changes even if
+          variables are collapsed.</p><div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>This feature requires EPIC to retrieve and remember the
+            value of every variable on each suspend. It may be very slow for
+            larger programs (e.g. it might take about 20 seconds for a program
+            containing data structures with 5000+ values). For this reason,
+            the option is disabled by default and should be used with
+            care.</p></div><h5><a id="N109A3" />Select Variables to Display</h5><p>The variables view allows to select the following types of
           variables for displaying by checking the corresponding menu
           entry:</p><div class="itemizedlist"><ul type="disc"><li><p>Perl Internal Variables: these are variables provided by
               the Perl interpreter like <code class="varname">$_</code>,
@@ -38,13 +42,13 @@
               <code class="literal">my</code>, more correctly called "lexical" variables
               in Perl. To show lexical variables, you need to <a href="ch02s09.html" title="Setting Up the Debugger">install the Perl PadWalker
               module</a>. The PadWalker module has some <a href="">problems</a> which influence viewing
-              of local variables.</p></li></ul></div><h5><a id="N109C5" />Show Addresses of Variables</h5><p>By default, EPIC shows the address to which a reference
+              of local variables.</p></li></ul></div><h5><a id="N109C7" />Show Addresses of Variables</h5><p>By default, EPIC shows the address to which a reference
           variable points, but it does not show the address of each
           non-reference variable. This additional information can be helpful
           when you wish to check which variable is pointed to by a reference.
           When enabled, the address of each variable (including scalar
           variables) will be displayed right before its value.</p></div></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a id="breakpoints-view" />Breakpoints View</h3></div></div></div><div class="screenshot"><div class="mediaobject" align="center"><img src="images/breakpoint_view.gif" align="middle" alt="Breakpoints View" /></div></div><p>The <span class="guilabel">Breakpoints</span> view shows all breakpoints
         (see <a href="ch06s03.html" title="Breakpoints">the section called “Breakpoints”</a>), their state and location.</p><p>By selecting one or more breakpoints and invoking the context
-        menu, you can enable, disable or remove these breakpoints.</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a id="N109E2" />Perl Expression View</h3></div></div></div><div class="screenshot"><div class="mediaobject" align="center"><img src="images/perl_expr_view.gif" align="middle" alt="Perl Expression View" /></div></div><p>The <span class="guilabel">Perl Expression View</span> allows you to
+        menu, you can enable, disable or remove these breakpoints.</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a id="N109E4" />Perl Expression View</h3></div></div></div><div class="screenshot"><div class="mediaobject" align="center"><img src="images/perl_expr_view.gif" align="middle" alt="Perl Expression View" /></div></div><p>The <span class="guilabel">Perl Expression View</span> allows you to
         execute any valid Perl code within the current context of the program
         executed in debug mode.</p><div class="orderedlist"><ol type="1"><li><p>Open the view (<span class="guimenu">Window</span> → <span class="guisubmenu">Open View</span> → <span class="guimenuitem">Other</span>, then <span class="guimenu">EPIC</span> → <span class="guimenuitem">Perl Expression View</span>).</p></li><li><p>Enter the code to execute.</p></li><li><p>Press the <span class="inlinemediaobject"><img src="images/perl_expr_run.gif" /></span> symbol.</p></li></ol></div></div></div></body></html>

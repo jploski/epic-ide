@@ -2,8 +2,10 @@ Eclipse Perl Integration:
 
 CVS
 		Debugger:
+		* Fixed Bug [ 1719825 ] An internal error occurred during: "PerlDB.commandFinished".
 
 		Editor:
+		* Fixed Bug [ 1720833 ] Highlight error with regular expression
 
 Version 0.6.3 - 02-May-2007
 		Debugger:

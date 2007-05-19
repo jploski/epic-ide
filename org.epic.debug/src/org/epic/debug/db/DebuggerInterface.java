@@ -113,6 +113,7 @@ public class DebuggerInterface
     public IPPosition getCurrentIP() throws IOException
     {
         String output = runSyncCommand(CMD_EXEC, ".");
+        if (output == null) return null;
 
         // mRe_IP_Pos_CODE handles locations like
         //     main::CODE(0x814f960)(/some/path/trycatch.pl:7):

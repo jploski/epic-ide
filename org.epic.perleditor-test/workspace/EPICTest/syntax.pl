@@ -71,3 +71,6 @@ $x = $args{y};
 
 # bug 1685564
 use constant DEGTORAD => PI/180;
+
+# bug 1720833
+$barvar =~ s:\/:\\:g;

@@ -556,6 +556,24 @@ hello world
 1647:2:__dftl_partition_content_type:{
 
 }
+1649:13:COMMENT:{# bug 1720833}
+1662:1:__dftl_partition_content_type:{
+}
+1663:7:VARIABLE:{$barvar}
+1670:1:__dftl_partition_content_type:{ }
+1671:2:OPERATOR:{=~}
+1673:1:__dftl_partition_content_type:{ }
+1674:1:LITERAL2:{s}
+1675:1:LITERAL2:{:}
+1676:2:LITERAL2:{\/}
+1678:1:LITERAL2:{:}
+1679:2:LITERAL2:{\\}
+1681:1:LITERAL2:{:}
+1682:1:LITERAL2:{g}
+1683:1:OPERATOR:{;}
+1647:2:__dftl_partition_content_type:{
+
+}
 1649:13:COMMENT:{# bug 1700095}
 1662:1:__dftl_partition_content_type:{
 }

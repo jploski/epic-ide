@@ -2,6 +2,11 @@ Eclipse Perl Integration:
 
 CVS
 		Debugger:
+
+		Editor:
+
+Version 0.6.4 - 21-May-2007
+		Debugger:
 		* Fixed Bug [ 1719825 ] An internal error occurred during: "PerlDB.commandFinished".
 
 		Editor:

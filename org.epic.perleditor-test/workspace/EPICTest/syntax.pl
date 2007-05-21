@@ -74,3 +74,6 @@ use constant DEGTORAD => PI/180;
 
 # bug 1720833
 $barvar =~ s:\/:\\:g;
+
+# bug 1700095
+my $hash_ref = {names => qw/lisa bart/ };

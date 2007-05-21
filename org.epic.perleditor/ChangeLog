@@ -4,6 +4,7 @@ CVS
 		Debugger:
 
 		Editor:
+		* Fixed Bug [ 1722253 ] Number literals - wrong syntax coloring
 
 Version 0.6.4 - 21-May-2007
 		Debugger:

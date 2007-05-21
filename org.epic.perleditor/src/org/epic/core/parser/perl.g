@@ -397,7 +397,9 @@ OPEN_POD
 	;
 
 protected NUMBER
-	: ("0x" ('0'..'9' | 'A'..'F' | 'a'..'f')) | ('0'..'9')+
+	: ("0x" ('0'..'9' | 'A'..'F' | 'a'..'f' | '_')+)
+	| ("0b" ('0' | '1' | '_')+)
+	| ('0'..'9' | '_')+
 	{
 		slashRegexp = qmarkRegexp = glob = afterArrow = false;
 		$setType(PerlTokenTypes.NUMBER);

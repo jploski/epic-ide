@@ -571,27 +571,62 @@ hello world
 1681:1:LITERAL2:{:}
 1682:1:LITERAL2:{g}
 1683:1:OPERATOR:{;}
-1647:2:__dftl_partition_content_type:{
+1684:2:__dftl_partition_content_type:{
 
 }
-1649:13:COMMENT:{# bug 1700095}
-1662:1:__dftl_partition_content_type:{
+1686:13:COMMENT:{# bug 1700095}
+1699:1:__dftl_partition_content_type:{
 }
-1663:2:KEYWORD1:{my}
-1665:1:__dftl_partition_content_type:{ }
-1666:9:VARIABLE:{$hash_ref}
-1675:1:__dftl_partition_content_type:{ }
-1676:1:OPERATOR:{=}
-1677:1:__dftl_partition_content_type:{ }
-1678:1:OPERATOR:{{}
-1679:5:__dftl_partition_content_type:{names}
-1684:1:__dftl_partition_content_type:{ }
-1685:2:OPERATOR:{=>}
-1687:1:__dftl_partition_content_type:{ }
-1688:2:LITERAL2:{qw}
-1690:1:LITERAL2:{/}
-1691:9:LITERAL2:{lisa bart}
-1700:1:LITERAL2:{/}
-1701:1:__dftl_partition_content_type:{ }
-1702:1:OPERATOR:{}}
-1703:1:OPERATOR:{;}
+1700:2:KEYWORD1:{my}
+1702:1:__dftl_partition_content_type:{ }
+1703:9:VARIABLE:{$hash_ref}
+1712:1:__dftl_partition_content_type:{ }
+1713:1:OPERATOR:{=}
+1714:1:__dftl_partition_content_type:{ }
+1715:1:OPERATOR:{{}
+1716:5:__dftl_partition_content_type:{names}
+1721:1:__dftl_partition_content_type:{ }
+1722:2:OPERATOR:{=>}
+1724:1:__dftl_partition_content_type:{ }
+1725:2:LITERAL2:{qw}
+1727:1:LITERAL2:{/}
+1728:9:LITERAL2:{lisa bart}
+1737:1:LITERAL2:{/}
+1738:1:__dftl_partition_content_type:{ }
+1739:1:OPERATOR:{}}
+1740:1:OPERATOR:{;}
+1741:2:__dftl_partition_content_type:{
+
+}
+1743:13:COMMENT:{# bug 1722253}
+1756:1:__dftl_partition_content_type:{
+}
+1757:2:KEYWORD1:{my}
+1759:1:__dftl_partition_content_type:{ }
+1760:8:VARIABLE:{@numbers}
+1768:1:__dftl_partition_content_type:{ }
+1769:1:OPERATOR:{=}
+1770:1:__dftl_partition_content_type:{ }
+1771:1:OPERATOR:{(}
+1772:5:NUMBER:{12345}
+1777:1:OPERATOR:{.}
+1778:2:NUMBER:{67}
+1780:1:OPERATOR:{,}
+1781:1:__dftl_partition_content_type:{ }
+1782:15:NUMBER:{345_000_000_000}
+1797:1:OPERATOR:{,}
+1798:1:__dftl_partition_content_type:{ }
+1799:1:NUMBER:{3}
+1800:1:OPERATOR:{.}
+1801:8:NUMBER:{14_15_92}
+1809:1:OPERATOR:{,}
+1810:1:__dftl_partition_content_type:{ }
+1811:13:NUMBER:{4_294_967_296}
+1824:1:OPERATOR:{,}
+1825:1:__dftl_partition_content_type:{ }
+1826:13:NUMBER:{0b110_100_100}
+1839:1:OPERATOR:{,}
+1840:1:__dftl_partition_content_type:{ }
+1841:11:NUMBER:{0xdead_beef}
+1852:1:OPERATOR:{)}
+1853:1:OPERATOR:{;}

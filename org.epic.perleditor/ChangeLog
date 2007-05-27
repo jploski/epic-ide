@@ -9,6 +9,7 @@ Version 0.6.5 - 27-May-2007
 		Debugger:
 		* Major internal refactoring
 		* Fixed Bug [ 1705011 ] CGI,no breakpoints,100% cpu perl.exe zombies,ignore use lib,
+		* Fixed Bug [ 1672279 ] No stop on breakpoints EPIC 0.5.31
 
 		Editor:
 		* Fixed Bug [ 1722253 ] Number literals - wrong syntax coloring

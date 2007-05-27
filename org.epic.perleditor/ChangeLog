@@ -2,6 +2,8 @@ Eclipse Perl Integration:
 
 CVS
 		Debugger:
+		* Major internal refactoring
+		* Fixed Bug [ 1705011 ] CGI,no breakpoints,100% cpu perl.exe zombies,ignore use lib,
 
 		Editor:
 		* Fixed Bug [ 1722253 ] Number literals - wrong syntax coloring

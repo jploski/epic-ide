@@ -21,7 +21,6 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.editors.text.TextEditor;
 import org.eclipse.ui.part.FileEditorInput;
 import org.epic.core.util.FileUtilities;
-import org.epic.debug.db.PerlDB;
 
 /**
  * @author ruehl
@@ -30,28 +29,8 @@ public abstract class PerlBreakpoint extends Breakpoint
 {
     public static final String INVALID_POS = "PerlDebug_INVALID_POS";
 
-    private final Set debuggers; // TODO why?
-    private final Set installations;
-
     public PerlBreakpoint()
     {
-        debuggers = new HashSet();
-        installations = new HashSet();
-    }
-
-    public void addDebugger(PerlDB db)
-    {
-        debuggers.add(db);
-    }
-
-    public void addInstallation(PerlDB db)
-    {
-        installations.add(db);
-    }
-
-    public PerlDB[] getDebuggers()
-    {
-        return (PerlDB[]) debuggers.toArray(new PerlDB[debuggers.size()]);
     }
 
     public IEditorInput getEditorInput()
@@ -86,25 +65,9 @@ public abstract class PerlBreakpoint extends Breakpoint
         return getMarker().getResource().getLocation();
     }
 
-    public boolean isInstalled()
-    {
-        return installations.size() > 0;
-    }
-
     public boolean isInvalidBreakpointPosition()
     {
         return getMarker().getAttribute(INVALID_POS, false);
-    }
-
-    public void removeDebugger(PerlDB db)
-    {
-        debuggers.remove(db);
-        removeInstallation(db);
-    }
-
-    public void removeInstallation(PerlDB db)
-    {
-        installations.remove(db);
     }
 
     public void setInvalidBreakpointPosition(boolean value)

@@ -36,10 +36,6 @@ public class PerlDebugPlugin extends AbstractUIPlugin
 
     private static String mSystemEnv[];
 
-    private static PerlBreakpointManager mBreakPointmanager;
-
-    private ArrayList mDebugger;
-
     private static PerlImageDescriptorRegistry defaultPerlImageDescriptorRegistry = new PerlImageDescriptorRegistry();
 
     private final static String mDebugOptionsEnvPrefix = "PERLDB_OPTS=RemotePort=";
@@ -211,7 +207,10 @@ public class PerlDebugPlugin extends AbstractUIPlugin
         {
             PerlDebugPlugin.getDefault().extractTempFile("autoflush_epic.pm",
                 null);
-    
+
+            PerlDebugPlugin.getDefault().extractTempFile("epic_breakpoints.pm",
+                null);
+
             dumpvarFile = PerlDebugPlugin.getDefault().extractTempFile(
                 "dumpvar_epic.pm", null);
     
@@ -224,11 +223,6 @@ public class PerlDebugPlugin extends AbstractUIPlugin
                 .getUniqueIdentifier(), IStatus.OK,
                 "extractTempFile failed on dumpvar_epic.pm", e));
         }
-    }
-
-    public static PerlBreakpointManager getPerlBreakPointManager()
-    {
-        return mBreakPointmanager;
     }
 
     /**
@@ -383,56 +377,15 @@ public class PerlDebugPlugin extends AbstractUIPlugin
         log(IStatus.ERROR, fText, fException);
     }
 
-    public void registerDebugEventListener(IDebugEventSetListener fListener)
-    {
-        DebugPlugin.getDefault().addDebugEventListener(fListener);
-    }
-
-    public void registerDebugTarget(PerlTarget fDebug)
-    {
-        mDebugger.add(fDebug);
-    }
-
-    public void shutdown()
-    {
-        Iterator i = mDebugger.iterator();
-    
-        while (i.hasNext())
-        {
-            PerlTarget db = (PerlTarget) i.next();
-            if (db != null) try
-            {
-                db.terminate();
-            }
-            catch (DebugException e)
-            {
-            }
-        }
-        mBreakPointmanager.dispose();
-    }
-
     public void start(BundleContext context) throws Exception
     {
         super.start(context);
-    
-        mBreakPointmanager = new PerlBreakpointManager();
-        mDebugger = new ArrayList();
     
         getLog().addLogListener(
             new LogWriter(
                 new File(getStateLocation() + File.separator + ".log"),
                 mLogLevel));
         getLog().addLogListener(new LogWriter(System.err, mScreenLogLevel));
-    }
-
-    public void unregisterDebugTarget(PerlTarget fDebug)
-    {
-        mDebugger.remove(fDebug);
-    }
-
-    public void unregisterDebugEventListener(IDebugEventSetListener fListener)
-    {
-        DebugPlugin.getDefault().removeDebugEventListener(fListener);
     }
 
     private static String getPerlDebugEnv(int debugPort)

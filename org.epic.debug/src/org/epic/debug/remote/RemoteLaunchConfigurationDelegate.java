@@ -8,6 +8,7 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.epic.debug.*;
+import org.epic.debug.db.PerlDebugThread;
 import org.epic.debug.util.*;
 
 /**
@@ -72,8 +73,8 @@ public class RemoteLaunchConfigurationDelegate
             launch, process, debugPort, mapper);
         launch.addDebugTarget(target);
         
-        if (!target.getDebugger().isTerminated())
-            process.init(target.getDebugger());
+        if (!target.isTerminated())
+            process.init((PerlDebugThread) target.getThreads()[0]);
         else
             launch.terminate();
     }

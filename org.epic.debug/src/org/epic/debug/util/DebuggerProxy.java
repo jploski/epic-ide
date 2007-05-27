@@ -7,7 +7,7 @@ import org.eclipse.core.runtime.*;
 import org.eclipse.debug.core.*;
 import org.eclipse.debug.core.model.*;
 import org.eclipse.debug.internal.core.InputStreamMonitor;
-import org.epic.debug.db.PerlDB;
+import org.epic.debug.db.PerlDebugThread;
 
 /**
  * @author ST
@@ -20,7 +20,7 @@ public class DebuggerProxy extends PlatformObject
     private InputStreamMonitor mMonitorIn;
     private PrintWriter mOut;
     private ILaunch mLaunch;
-    private PerlDB mDebugger;
+    private PerlDebugThread mDebugger;
     private String mLabel;
     private RemotePort mIOStream;
     private RemotePort mErrorStream;
@@ -41,7 +41,7 @@ public class DebuggerProxy extends PlatformObject
         mErrorStream.startConnect();
     }
 
-    public void init(PerlDB fDebugger) throws CoreException
+    public void init(PerlDebugThread fDebugger) throws CoreException
     {
         mDebugger = fDebugger;
         mLaunch = fDebugger.getLaunch();

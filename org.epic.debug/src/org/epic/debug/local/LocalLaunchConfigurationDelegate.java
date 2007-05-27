@@ -265,7 +265,7 @@ public class LocalLaunchConfigurationDelegate
         
         IProcess process = startPerlProcess(
             launch, "Perl Debugger", debugPort.getServerPort());
-        
+
         if (debugPort.waitForConnect(true) != RemotePort.WAIT_OK)
         {
             PerlDebugPlugin.errorDialog(

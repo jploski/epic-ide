@@ -179,4 +179,10 @@ public class PerlLineBreakpoint extends PerlBreakpoint implements ILineBreakpoin
     {
         this.regExp = regExp;
     }
+    
+    public String toString()
+    {
+        try { return getResourcePath() + ":" + getLineNumber(); }
+        catch (Exception e) { return super.toString(); }
+    }
 }

@@ -204,10 +204,10 @@ public class DebugModelPresentation implements IDebugModelPresentation
             {
                 flags |= PerlImageDescriptor.ENABLED;
             }
-            if (breakpoint.isInstalled())
+            /*if (breakpoint.isInstalled()) // TODO restore this functionality?
             {
                 flags |= PerlImageDescriptor.INSTALLED;
-            }
+            }*/
         }
         catch (CoreException e)
         {

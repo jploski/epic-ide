@@ -28,12 +28,21 @@ public class CGIDebugTarget extends DebugTarget
         public void handleDebugEvents(DebugEvent[] events)
         {
             for (int i = 0; i < events.length; i++)
-                if (events[i].getKind() == DebugEvent.TERMINATE &&
-                    getProcess().equals(events[i].getSource()))
+            {
+                try
                 {
-                    shutdown(); // interrupt the acceptNewDebugger thread
-                    return;
+                    if (events[i].getKind() == DebugEvent.TERMINATE &&
+                        getThreads()[0].equals(events[i].getSource()))
+                    {
+                        debugSessionTerminated();
+                        return;
+                    }
                 }
+                catch (DebugException e)
+                {
+                    PerlDebugPlugin.log(e);
+                }
+            }
         }
     };
     

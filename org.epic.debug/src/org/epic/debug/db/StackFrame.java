@@ -8,7 +8,6 @@ import org.eclipse.debug.core.DebugEvent;
 import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.model.*;
 import org.epic.debug.PerlDebugPlugin;
-import org.epic.debug.PerlDebugThread;
 import org.epic.debug.ui.action.*;
 
 public class StackFrame extends DebugElement implements IStackFrame
@@ -176,7 +175,7 @@ public class StackFrame extends DebugElement implements IStackFrame
 
     public IVariable[] getVariables() throws DebugException
     {
-        if (db.isDisposed() || !db.isSuspended()) return new IVariable[0];
+        if (!thread.isSuspended()) return new IVariable[0];
         if (this.vars == null)
         {        
             try

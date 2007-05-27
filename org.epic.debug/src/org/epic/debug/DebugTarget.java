@@ -1,24 +1,42 @@
 package org.epic.debug;
 
-import java.io.BufferedReader;
-import java.io.PrintWriter;
+import java.io.*;
+import java.util.*;
 
 import org.eclipse.core.resources.IMarkerDelta;
-import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.*;
 import org.eclipse.debug.core.*;
 import org.eclipse.debug.core.model.*;
-import org.epic.debug.db.PerlDB;
+import org.epic.debug.db.DebuggerInterface;
+import org.epic.debug.db.PerlDebugThread;
+import org.epic.debug.ui.action.ShowLocalVariableActionDelegate;
 import org.epic.debug.util.*;
+import org.epic.perleditor.PerlEditorPlugin;
 
 /**
  * An implementation of IDebugTarget which tracks a Perl debugger
  * process and communicates with it using a TCP port.
  */
 public class DebugTarget extends PerlTarget
-{   
+{
+    private final IDebugEventSetListener listener = new IDebugEventSetListener() {
+        public void handleDebugEvents(DebugEvent[] events)
+        {
+            for (int i = 0; i < events.length; i++)
+            {
+                if (events[i].getKind() == DebugEvent.TERMINATE &&
+                    getProcess().equals(events[i].getSource()))
+                {
+                    shutdown(); // interrupt the acceptNewDebugger thread
+                    return;
+                }
+            }
+        } };
+    
     private final IProcess process;
     private final RemotePort debugPort;
-    private final PerlDB perlDB;
+    private final PerlDebugThread thread;
+    private final DebuggerInterface db;
     private final IPathMapper pathMapper;
     
     public DebugTarget(
@@ -28,17 +46,17 @@ public class DebugTarget extends PerlTarget
         IPathMapper pathMapper) throws CoreException
     {
         super(launch);
-        
+                
         this.process = process;
         this.debugPort = debugPort;
-        this.perlDB = new PerlDB(this);
         this.pathMapper = pathMapper;
-        if (!perlDB.isTerminated()) initDebugger();
-    }
-    
-    public PerlDB getDebugger()
-    {
-        return perlDB;
+        this.db = createDebuggerInterface();        
+        checkPadWalker();
+        this.thread = new PerlDebugThread(this, db);
+        
+        DebugPlugin.getDefault().addDebugEventListener(listener);
+        
+        fireCreationEvent();
     }
     
     public String getName() throws DebugException
@@ -49,31 +67,11 @@ public class DebugTarget extends PerlTarget
     public IProcess getProcess()
     {
         return process;
-    }
-    
-    public RemotePort getRemotePort()
-    {
-        return debugPort;
-    }
+    }    
 
     public boolean isLocal()
     {
         return true;
-    }
-    
-    public int getDebugPort()
-    {
-        return debugPort.getServerPort();
-    }
-    
-    public BufferedReader getDebugReadStream()
-    {
-        return debugPort.getReadStream();
-    }
-
-    public PrintWriter getDebugWriteStream()
-    {
-        return debugPort.getWriteStream();
     }
 
     public IPathMapper getPathMapper()
@@ -81,28 +79,19 @@ public class DebugTarget extends PerlTarget
         return pathMapper;
     }
 
-    public void debugSessionTerminated()
-    {
-        shutdown();
-    }
-
-    public void perlDBstarted(PerlDB perlDB)
-    {
-    }
-
     public IThread[] getThreads() throws DebugException
     {
-        return perlDB.getThreads();
+        return new IThread[] { thread };
     }
 
     public boolean hasThreads() throws DebugException
     {
-        return perlDB.getThreads() != null;
+        return true;
     }
 
     public boolean supportsBreakpoint(IBreakpoint breakpoint)
     {
-        return false;
+        return false; // TODO?
     }
 
     public boolean canTerminate()
@@ -112,37 +101,37 @@ public class DebugTarget extends PerlTarget
 
     public boolean isTerminated()
     {
-        return perlDB.isTerminated(this);
+        return thread.isTerminated();
     }
 
     public void terminate() throws DebugException
     {
-        shutdown();
+        thread.terminate();
     }
 
     public boolean canResume()
     {
-        return perlDB.canResume(this);
+        return thread.canResume();
     }
 
     public boolean canSuspend()
     {
-        return perlDB.canSuspend(this);
+        return thread.canSuspend();
     }
 
     public boolean isSuspended()
     {
-        return perlDB.isSuspended(this);
+        return thread.isSuspended();
     }
 
     public void resume() throws DebugException
     {
-        perlDB.resume(this);
+        thread.resume();
     }
 
     public void suspend() throws DebugException
     {
-        perlDB.suspend(this);
+        thread.suspend();
     }
 
     public void breakpointAdded(IBreakpoint breakpoint)
@@ -183,14 +172,94 @@ public class DebugTarget extends PerlTarget
         return null;
     }
     
-    protected void initDebugger() throws DebugException
-    {
-        getDebugger().init(null, -1, -1);
-    }
-    
     protected void shutdown()
     {
+        DebugPlugin.getDefault().removeDebugEventListener(listener);
         debugPort.shutdown();
         super.shutdown();
+    }
+    
+    protected RemotePort getRemotePort()
+    {
+        return debugPort;
+    }
+    
+    protected DebuggerInterface initDebuggerInterface(DebuggerInterface db)
+        throws DebugException
+    {
+        if (getPathMapper().requiresEffectiveIncPath())
+            getPathMapper().setEffectiveIncPath(getEffectiveIncPath(db));       
+
+        return db;
+    }
+    
+    protected final void throwDebugException(IOException e) throws DebugException
+    {
+        throw new DebugException(new Status(
+            IStatus.ERROR,
+            PerlDebugPlugin.getUniqueIdentifier(),
+            IStatus.OK,
+            "An error occurred during communication with the debugger process",
+            e));
+    }
+    
+    private void checkPadWalker() throws DebugException
+    {
+        try
+        {
+            if (ShowLocalVariableActionDelegate.getPreferenceValue() &&
+                !db.hasPadWalker())
+            {
+                PerlDebugPlugin.errorDialog(
+                    "Error displaying local variables\n" +
+                    "Install PadWalker and restart Eclipse " +
+                    "or disable displaying of local variables.");
+            }
+        }
+        catch (IOException e)
+        {
+            throwDebugException(e);
+        }
+    }
+
+    private DebuggerInterface createDebuggerInterface()
+        throws DebugException
+    {
+        BufferedReader in = debugPort.getReadStream();
+        PrintWriter out = debugPort.getWriteStream();
+
+        if (PerlEditorPlugin.getDefault().getDebugConsolePreference())
+        {
+            DebuggerProxy2 p = new DebuggerProxy2(in, out, getLaunch());
+            getLaunch().addProcess(p);
+            in = p.getDebugIn();
+            out = p.getDebugOut();
+        }
+        
+        try
+        {   
+            return initDebuggerInterface(new DebuggerInterface(in, out));
+        }
+        catch (IOException e)
+        {
+            throwDebugException(e);
+            return null; // unreachable
+        }
+    }
+    
+    private List getEffectiveIncPath(DebuggerInterface db)
+        throws DebugException
+    {
+        try
+        {
+            List ret = new ArrayList();
+            String output = db.eval(
+                ";{foreach $t(@INC) {print $DB::OUT $t.\"\\n\";}}");
+        
+            StringTokenizer s = new StringTokenizer(output, "\r\n");            
+            while (s.hasMoreTokens()) ret.add(new Path(s.nextToken()));
+            return ret;
+        }
+        catch (IOException e) { throwDebugException(e); return null; }
     }
 }

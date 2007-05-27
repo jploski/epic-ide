@@ -52,6 +52,7 @@ public class CreateRemotePackageJob extends Job
         {
             addProjectFilesToArchive(monitor);
             addHelperScriptToArchive("dumpvar_epic.pm");
+            addHelperScriptToArchive("epic_breakpoints.pm");
             addHelperScriptToArchive("autoflush_epic.pm");
             addStartScriptToArchive();
 

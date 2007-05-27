@@ -121,6 +121,8 @@ public abstract class PerlValue extends DebugElement implements IValue
         try
         {
             PerlVariable holder = getHolder();
+            if (!holder.getStackFrame().getThread().isSuspended()) return "";
+
             String code = HelperScript.replace(
                 DB_DUMP_ENTITY,
                 "#SET_OFFSET#",

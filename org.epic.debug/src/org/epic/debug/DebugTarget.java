@@ -54,8 +54,7 @@ public class DebugTarget extends PerlTarget
         checkPadWalker();
         this.thread = new PerlDebugThread(this, db);
         
-        DebugPlugin.getDefault().addDebugEventListener(listener);
-        
+        registerDebugEventListener(listener);        
         fireCreationEvent();
     }
     
@@ -174,7 +173,7 @@ public class DebugTarget extends PerlTarget
     
     protected void shutdown()
     {
-        DebugPlugin.getDefault().removeDebugEventListener(listener);
+        unregisterDebugEventListener(listener);
         debugPort.shutdown();
         super.shutdown();
     }
@@ -193,6 +192,11 @@ public class DebugTarget extends PerlTarget
         return db;
     }
     
+    protected void registerDebugEventListener(IDebugEventSetListener listener)
+    {
+        DebugPlugin.getDefault().addDebugEventListener(listener);
+    }
+    
     protected final void throwDebugException(IOException e) throws DebugException
     {
         throw new DebugException(new Status(
@@ -202,8 +206,13 @@ public class DebugTarget extends PerlTarget
             "An error occurred during communication with the debugger process",
             e));
     }
+
+    protected void unregisterDebugEventListener(IDebugEventSetListener listener)
+    {
+        DebugPlugin.getDefault().removeDebugEventListener(listener);
+    }
     
-    private void checkPadWalker() throws DebugException
+    protected void checkPadWalker() throws DebugException
     {
         try
         {
@@ -221,6 +230,11 @@ public class DebugTarget extends PerlTarget
             throwDebugException(e);
         }
     }
+    
+    protected boolean getDebugConsolePreference()
+    {
+        return PerlEditorPlugin.getDefault().getDebugConsolePreference();
+    }
 
     private DebuggerInterface createDebuggerInterface()
         throws DebugException
@@ -228,7 +242,7 @@ public class DebugTarget extends PerlTarget
         BufferedReader in = debugPort.getReadStream();
         PrintWriter out = debugPort.getWriteStream();
 
-        if (PerlEditorPlugin.getDefault().getDebugConsolePreference())
+        if (getDebugConsolePreference())
         {
             DebuggerProxy2 p = new DebuggerProxy2(in, out, getLaunch());
             getLaunch().addProcess(p);

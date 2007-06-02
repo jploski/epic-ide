@@ -45,7 +45,10 @@ public class DebuggerInterface
     
     public DebuggerInterface(BufferedReader in, PrintWriter out)
         throws IOException
-    {        
+    {
+        assert in != null;
+        assert out != null;
+        
         this.in = in;
         this.out = out;
         

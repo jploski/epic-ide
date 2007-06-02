@@ -188,6 +188,8 @@ public class StackFrame extends DebugElement implements IStackFrame
 
                 if (HighlightVarUpdatesActionDelegate.getPreferenceValue() &&
                     rememberedVariables.isEmpty()) rememberVariables();
+                
+                fireChangeEvent(DebugEvent.CONTENT);
             }
             catch (IOException e)
             {

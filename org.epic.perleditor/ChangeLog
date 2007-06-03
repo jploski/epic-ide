@@ -5,6 +5,11 @@ CVS
 
 		Editor:
 
+Version 0.6.6 - 3-Jun-2007
+		Debugger:
+		* Fixed Bug [ 1730254 ] Annoying focus grabbing in 0.6.5 CGI debugger
+		* Fixed Bug [ 1728827 ] Exhaustingly slow debugger
+
 Version 0.6.5 - 27-May-2007
 		Debugger:
 		* Major internal refactoring

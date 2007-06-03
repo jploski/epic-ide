@@ -74,6 +74,7 @@ public class PerlDebugThread extends DebugElement implements IThread
             resume.setSystem(true);
             resume.schedule();
         }
+        else fireSuspendEvent(DebugEvent.BREAKPOINT);
     }
 
     public boolean canResume()
@@ -384,8 +385,15 @@ public class PerlDebugThread extends DebugElement implements IThread
         }
         synchronized (LOCK)
         {
+            // Firing a SUSPENDED event causes the workbench to grab
+            // focus or pop-up to the front of the window stack.
+            // PerlDebugThread calls suspended to complete its
+            // initialization, but it might resume right after that,
+            // so we don't issue a SUSPENDED event in this case.
+
+            boolean wasInitializing = state == INITIALIZING;
             state = SUSPENDED;
-            fireSuspendEvent(kind);
+            if (!wasInitializing) fireSuspendEvent(kind);
         }
     }
     

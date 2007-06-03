@@ -6,6 +6,10 @@
 			<item value="org.eclipse.pde.runtime"/>
 		</list>
 	</section>
+	<section name="WorkbenchPreferenceDialogSettings">
+		<item key="DIALOG_X_ORIGIN" value="255"/>
+		<item key="DIALOG_Y_ORIGIN" value="74"/>
+	</section>
 	<section name="EditorSelectionDialog">
 		<item key="EditorSelectionDialog.STORE_ID_INTERNAL_EXTERNAL" value="false"/>
 	</section>

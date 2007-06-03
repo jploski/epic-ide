@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<launchConfiguration type="org.epic.debug.launchConfigurationPerlRemote">
+<stringAttribute key="ATTR_REMOTE_DEST" value="/home/jploski/EPICTest"/>
+<stringAttribute key="ATTR_REMOTE_HOST" value="127.0.0.1"/>
+<stringAttribute key="ATTR_REMOTE" value="REMOTE"/>
+<stringAttribute key="ATTR_REMOTE_PORT" value="5000"/>
+<booleanAttribute key="ATTR_REMOTE_CREATE_DEBUG_PACKAGE" value="true"/>
+<booleanAttribute key="ATTR_REMOTE_CAPTURE_OUTPUT" value="true"/>
+<stringAttribute key="ATTR_REMOTE_DEBUG_PACKAGE_PATH" value="/tmp/EPICTest.zip"/>
+<stringAttribute key="ATTR_PROGRAM_PARAMETERS" value=""/>
+<stringAttribute key="ATTR_STARTUP_FILE" value="test_Debugger.pl"/>
+<stringAttribute key="ATTR_PROJECT_NAME" value="EPICTest"/>
+</launchConfiguration>

@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section name="Workbench">
+	<section name="org.eclipse.ui.texteditor.GotoLineAction$GotoLineDialog_dialogBounds">
+		<item key="DIALOG_X_ORIGIN" value="305"/>
+		<item key="DIALOG_Y_ORIGIN" value="313"/>
+	</section>
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog">
 		<item key="wholeword" value="false"/>
 		<item key="incremental" value="false"/>
@@ -7,8 +11,8 @@
 		<item key="y" value="473"/>
 		<item key="selection" value="&#x0A;="/>
 		<item key="wrap" value="true"/>
-		<item key="x" value="503"/>
 		<item key="casesensitive" value="false"/>
+		<item key="x" value="503"/>
 		<list key="findhistory">
 			<item value="\n="/>
 			<item value="next_sibling"/>
@@ -19,7 +23,7 @@
 			<item value="sub cmp"/>
 			<item value="parse_url"/>
 		</list>
-		<list key="replacehistory" value="parse_url">
+		<list key="replacehistory">
 			<item value="bar"/>
 			<item value="X"/>
 			<item value="haha"/>

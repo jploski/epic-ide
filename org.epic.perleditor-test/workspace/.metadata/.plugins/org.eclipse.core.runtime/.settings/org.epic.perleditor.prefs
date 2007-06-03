@@ -1,4 +1,4 @@
-#Fri Apr 06 17:53:01 CEST 2007
+#Sun Jun 03 17:11:17 CEST 2007
 PERL_EXECUTABLE="/usr/bin/perl"
 SHOW_WARNINGS=0
 autoCompletionBracket4=false
@@ -6,6 +6,7 @@ autoCompletionBracket3=false
 autoCompletionBracket2=false
 autoCompletionBracket1=false
 SYNTAX_VALIDATION_PREFERENCE=0
+ENABLE_DEBUG_CONSOLE=0
 SYNTAX_VALIDATION_IDLE_INTERVAL=2000
 eclipse.preferences.version=1
 USE_TAINT_MODE=0

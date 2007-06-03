@@ -85,8 +85,9 @@ public class BasePDETestCase extends BaseTestCase
      */
     protected void spinEventLoop(long timeMillis)
         throws InterruptedException
-    {
+    {        
         Display display = Display.getDefault();
+        while (display.readAndDispatch());
         long t1 = System.currentTimeMillis();
         while (t1 + timeMillis > System.currentTimeMillis())
         {

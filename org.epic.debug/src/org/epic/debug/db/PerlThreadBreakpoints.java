@@ -107,8 +107,7 @@ class PerlThreadBreakpoints
 
         pendingBreakpoints = new BreakpointMap();
         activeBreakpoints = new BreakpointMap();
-        
-        installPendingBreakpointsSupport();
+
         installInitialBreakpoints();
         
         DebugPlugin.getDefault().getBreakpointManager().addBreakpointListener(listener);
@@ -250,12 +249,6 @@ class PerlThreadBreakpoints
                 PerlDebugPlugin.log(e);
             }
         }
-    }
-    
-    private void installPendingBreakpointsSupport() throws DebugException
-    {
-        try { db.eval(";{ use epic_breakpoints; epic_breakpoints::init(); };"); }
-        catch (IOException e) { thread.throwDebugException(e); }
     }
     
     private boolean removeBreakpoint(PerlBreakpoint bp)

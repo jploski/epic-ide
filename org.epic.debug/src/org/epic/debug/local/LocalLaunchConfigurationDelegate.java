@@ -30,12 +30,21 @@ public class LocalLaunchConfigurationDelegate
         ILaunch launch,
         IProgressMonitor monitor) throws CoreException
     {
-        PerlTarget target =
-            isDebugMode(launch)
-            ? startDebugTarget(configuration, launch, monitor)
-            : startRunTarget(configuration, launch, monitor);
-        
-        if (target != null) launch.addDebugTarget(target);  
+        try
+        {
+            PerlTarget target =
+                isDebugMode(launch)
+                ? startDebugTarget(configuration, launch, monitor)
+                : startRunTarget(configuration, launch, monitor);
+            
+            launch.addDebugTarget(target);
+        }
+        catch (CoreException e)
+        {
+            launch.terminate();
+            if (e.getStatus().getCode() != DebugTarget.SESSION_TERMINATED)
+                throw e;
+        }
     }
     
     public boolean preLaunchCheck(

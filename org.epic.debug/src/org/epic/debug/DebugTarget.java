@@ -9,6 +9,7 @@ import org.eclipse.debug.core.*;
 import org.eclipse.debug.core.model.*;
 import org.epic.debug.db.DebuggerInterface;
 import org.epic.debug.db.PerlDebugThread;
+import org.epic.debug.db.DebuggerInterface.SessionTerminatedException;
 import org.epic.debug.ui.action.ShowLocalVariableActionDelegate;
 import org.epic.debug.util.*;
 import org.epic.perleditor.PerlEditorPlugin;
@@ -19,6 +20,8 @@ import org.epic.perleditor.PerlEditorPlugin;
  */
 public class DebugTarget extends PerlTarget
 {
+    public static final int SESSION_TERMINATED = 10000;
+    
     private final IDebugEventSetListener listener = new IDebugEventSetListener() {
         public void handleDebugEvents(DebugEvent[] events)
         {
@@ -39,6 +42,12 @@ public class DebugTarget extends PerlTarget
     private final DebuggerInterface db;
     private final IPathMapper pathMapper;
     
+    /**
+     * @exception DebugException with status SESSION_TERMINATED
+     *            if the Perl process associated with this DebugTarget
+     *            has terminated prematurely, most probably due to
+     *            compile-time errors in the script to be executed
+     */
     public DebugTarget(
         ILaunch launch,
         IProcess process,
@@ -46,16 +55,29 @@ public class DebugTarget extends PerlTarget
         IPathMapper pathMapper) throws CoreException
     {
         super(launch);
-                
-        this.process = process;
-        this.debugPort = debugPort;
-        this.pathMapper = pathMapper;
-        this.db = createDebuggerInterface();        
-        checkPadWalker();
-        this.thread = new PerlDebugThread(this, db);
         
-        registerDebugEventListener(listener);        
-        fireCreationEvent();
+        try
+        {
+            this.process = process;
+            this.debugPort = debugPort;
+            this.pathMapper = pathMapper;
+            this.db = createDebuggerInterface();
+            
+            checkPadWalker();
+            this.thread = new PerlDebugThread(this, db);
+            
+            registerDebugEventListener(listener);        
+            fireCreationEvent();
+        }
+        catch (SessionTerminatedException e)
+        {
+            throw new DebugException(new Status(
+                IStatus.OK,
+                PerlDebugPlugin.getUniqueIdentifier(),
+                DebugTarget.SESSION_TERMINATED,
+                "Debugger session terminated (compile error?)",
+                e));
+        }
     }
     
     public String getName() throws DebugException
@@ -237,7 +259,7 @@ public class DebugTarget extends PerlTarget
     }
 
     private DebuggerInterface createDebuggerInterface()
-        throws DebugException
+        throws SessionTerminatedException, DebugException
     {
         BufferedReader in = debugPort.getReadStream();
         PrintWriter out = debugPort.getWriteStream();
@@ -253,6 +275,10 @@ public class DebugTarget extends PerlTarget
         try
         {   
             return initDebuggerInterface(new DebuggerInterface(in, out));
+        }
+        catch (SessionTerminatedException e)
+        {
+            throw e; // happens on compile errors in the script
         }
         catch (IOException e)
         {

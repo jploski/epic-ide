@@ -42,6 +42,14 @@ public class PerlDebugPlugin extends AbstractUIPlugin
 
     private final static String mDebugOptionsValue = "DumpReused ReadLine=0";
 
+    /**
+     * This little piece of magic makes perl5db.pl compatible with
+     * epic_breakpoints.pm (and avoid stepping into epic_breakpoints, too).
+     */
+    private static final String EPIC_BREAKPOINTS_PATCH =
+        "\\{ use epic_breakpoints; my \\$osingle = \\$single; \\$single = 0; " +
+        "\\$single = epic_breakpoints::_postponed(\\$filename, \\$line) || \\$osingle; }\n";
+
     public PerlDebugPlugin()
     {
         plugin = this;
@@ -129,6 +137,60 @@ public class PerlDebugPlugin extends AbstractUIPlugin
     }
 
     /**
+     * Loads perl5db.pl from the local Perl distribution and patches
+     * it to make it compatible with epic_breakpoints.pm. Saves the
+     * patched copy to a location from where it will be picked up
+     * by "perl -d".
+     * 
+     * @return on success, file with the patched perl5db.pl
+     */
+    public File patchPerl5Db() throws IOException, CoreException
+    {
+        List inc = new ArrayList();
+        createDefaultIncPath(inc);
+        
+        File perl5DbFile = null;
+        for (Iterator i = inc.iterator(); i.hasNext();)
+        {
+            File f = new File((String) i.next(), "perl5db.pl");
+            if (f.exists()) { perl5DbFile = f; break; }
+        }
+
+        if (perl5DbFile == null)
+            throw new CoreException(new Status(
+                IStatus.ERROR,
+                PerlDebugPlugin.getUniqueIdentifier(),
+                IStatus.OK,
+                "Fatal: failed to find source perl5db.pl for epic_breakpoints.pm",
+                null));
+
+        String perl5db = loadScript("perl5db.pl", new FileInputStream(perl5DbFile));
+        String newPerl5Db = perl5db.replaceFirst(
+            "return unless \\$postponed_file\\{\\$filename\\};",
+            EPIC_BREAKPOINTS_PATCH + "$0");
+        
+        if (newPerl5Db.equals(perl5db)) throw new CoreException(new Status(
+            IStatus.ERROR,
+            PerlDebugPlugin.getUniqueIdentifier(),
+            IStatus.OK,
+            "Fatal: failed to patch perl5db.pl for epic_breakpoints.pm",
+            null));
+
+        File destFile = new File(getStateLocation().toString(), "perl5db.pl");
+        BufferedOutputStream out = null;
+        try
+        {
+            out = new BufferedOutputStream(new FileOutputStream(destFile));
+            out.write(newPerl5Db.getBytes("ISO-8859-1"));
+            return destFile;
+        }
+        finally
+        {
+            if (out != null) try { out.close(); } catch (IOException e) { }
+        }
+    }
+    
+    /**
      * Returns the active workbench shell or <code>null</code> if none
      * 
      * @return the active workbench shell or <code>null</code> if none
@@ -205,14 +267,10 @@ public class PerlDebugPlugin extends AbstractUIPlugin
         File dumpvarFile;
         try
         {
-            PerlDebugPlugin.getDefault().extractTempFile("autoflush_epic.pm",
-                null);
-
-            PerlDebugPlugin.getDefault().extractTempFile("epic_breakpoints.pm",
-                null);
-
-            dumpvarFile = PerlDebugPlugin.getDefault().extractTempFile(
-                "dumpvar_epic.pm", null);
+            extractTempFile("autoflush_epic.pm", null);
+            extractTempFile("epic_breakpoints.pm", null);
+            patchPerl5Db();
+            dumpvarFile = extractTempFile("dumpvar_epic.pm", null);
     
             return PerlExecutableUtilities.resolveIncPath(dumpvarFile
                 .getParentFile().getAbsolutePath());
@@ -285,36 +343,18 @@ public class PerlDebugPlugin extends AbstractUIPlugin
      */
     public String loadHelperScript(String scriptName) throws CoreException
     {
-        BufferedReader in = null;
-        StringWriter sw = new StringWriter();
-        PrintWriter out = new PrintWriter(sw);
-    
         try
         {
-            in = new BufferedReader(new InputStreamReader(getBundle().getEntry(
-                scriptName).openStream(), "ISO-8859-1"));
-    
-            String line;
-            while ((line = in.readLine()) != null)
-                out.println(line);
-            out.close();
-            return sw.toString();
+            return loadScript(scriptName, getBundle().getEntry(scriptName).openStream());
         }
         catch (IOException e)
         {
-            throw new CoreException(new Status(IStatus.ERROR, PerlDebugPlugin
-                .getUniqueIdentifier(), IStatus.OK,
-                "Could not load helper script " + scriptName, e));
-        }
-        finally
-        {
-            if (in != null) try
-            {
-                in.close();
-            }
-            catch (Exception e)
-            {
-            }
+            throw new CoreException(new Status(
+                IStatus.ERROR,
+                PerlDebugPlugin.getUniqueIdentifier(),
+                IStatus.OK,
+                "Could not find helper script " + scriptName,
+                e));
         }
     }
 
@@ -403,6 +443,44 @@ public class PerlDebugPlugin extends AbstractUIPlugin
         }
         return mDebugOptionsEnvPrefix + host + ":" + debugPort + " "
             + mDebugOptionsValue;
+    }
+    
+    private String loadScript(String scriptName, InputStream inStream)
+        throws CoreException
+    {
+        BufferedReader in = null;
+        StringWriter sw = new StringWriter();
+        PrintWriter out = new PrintWriter(sw);
+    
+        try
+        {
+            in = new BufferedReader(new InputStreamReader(inStream, "ISO-8859-1"));
+    
+            String line;
+            while ((line = in.readLine()) != null)
+                out.println(line);
+            out.close();
+            return sw.toString();
+        }
+        catch (IOException e)
+        {
+            throw new CoreException(new Status(
+                IStatus.ERROR,
+                PerlDebugPlugin.getUniqueIdentifier(),
+                IStatus.OK,
+                "Could not load script " + scriptName,
+                e));
+        }
+        finally
+        {
+            if (in != null) try
+            {
+                in.close();
+            }
+            catch (Exception e)
+            {
+            }
+        }
     }
 
     private void log(int fSeverity, String fText, Exception fException)

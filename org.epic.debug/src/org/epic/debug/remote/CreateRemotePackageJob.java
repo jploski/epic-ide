@@ -54,6 +54,7 @@ public class CreateRemotePackageJob extends Job
             addHelperScriptToArchive("dumpvar_epic.pm");
             addHelperScriptToArchive("epic_breakpoints.pm");
             addHelperScriptToArchive("autoflush_epic.pm");
+            addPerl5DbToArchive();
             addStartScriptToArchive();
 
             return Status.OK_STATUS;
@@ -82,13 +83,10 @@ public class CreateRemotePackageJob extends Job
     private void addHelperScriptToArchive(String scriptName) throws CoreException
     {
         try
-        {
-            String prefix = launchDelegate.getScriptPath(launch).removeLastSegments(1).toString();
-            if (prefix.length() > 0) prefix += "/";
-            
+        {            
             addFileToArchive(
                 PerlDebugPlugin.getDefault().getBundle().getEntry(scriptName).openStream(),
-                prefix + scriptName);
+                getWorkingDirPrefix() + scriptName);
         }
         catch (IOException e)
         {
@@ -124,6 +122,26 @@ public class CreateRemotePackageJob extends Job
         finally
         {
             try { in.close(); } catch (IOException e) { }
+        }
+    }
+    
+    private void addPerl5DbToArchive() throws CoreException
+    {
+        try
+        {
+            File perl5Db = PerlDebugPlugin.getDefault().patchPerl5Db();
+            addFileToArchive(
+                new BufferedInputStream(new FileInputStream(perl5Db)),
+                getWorkingDirPrefix() + "perl5db.pl");
+        }
+        catch (IOException e)
+        {
+            throw new CoreException(new Status(
+                IStatus.ERROR,
+                PerlDebugPlugin.getUniqueIdentifier(),
+                IStatus.OK,
+                "Could not add patched perl5db.pl to archive",
+                e));
         }
     }
     
@@ -221,6 +239,13 @@ public class CreateRemotePackageJob extends Job
     private IProject getProject() throws CoreException
     {
         return launchDelegate.getProject(launch);
+    }
+    
+    private String getWorkingDirPrefix() throws CoreException
+    {
+        String prefix = launchDelegate.getScriptPath(launch).removeLastSegments(1).toString();
+        if (prefix.length() > 0) prefix += "/";
+        return prefix;
     }
 
     private class ProjectFileArchiver implements IResourceVisitor

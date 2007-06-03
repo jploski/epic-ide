@@ -69,14 +69,19 @@ public class RemoteLaunchConfigurationDelegate
             return;
         }
         
-        RemoteDebugTarget target = new RemoteDebugTarget(
-            launch, process, debugPort, mapper);
-        launch.addDebugTarget(target);
-        
-        if (!target.isTerminated())
+        try
+        {
+            RemoteDebugTarget target = new RemoteDebugTarget(
+                launch, process, debugPort, mapper);
+            launch.addDebugTarget(target);
             process.init((PerlDebugThread) target.getThreads()[0]);
-        else
+        }
+        catch (CoreException e)
+        {
             launch.terminate();
+            if (e.getStatus().getCode() != DebugTarget.SESSION_TERMINATED)
+                throw e;
+        }
     }
     
     protected IProject getProject(ILaunch launch) throws CoreException

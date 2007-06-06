@@ -17,7 +17,8 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.epic.core.util.PerlExecutableUtilities;
 import org.epic.core.util.PerlExecutor;
 import org.epic.debug.ui.PerlImageDescriptorRegistry;
-import org.epic.debug.util.LogWriter;
+import org.epic.debug.util.*;
+import org.epic.perleditor.PerlEditorPlugin;
 import org.osgi.framework.BundleContext;
 
 public class PerlDebugPlugin extends AbstractUIPlugin
@@ -149,10 +150,23 @@ public class PerlDebugPlugin extends AbstractUIPlugin
         List inc = new ArrayList();
         createDefaultIncPath(inc);
         
+        String interpreterType = PerlEditorPlugin.getDefault()
+            .getPreferenceStore().getString(
+                PerlEditorPlugin.INTERPRETER_TYPE_PREFERENCE);
+
+        IPathMapper mapper;        
+        if (PerlEditorPlugin.INTERPRETER_TYPE_CYGWIN.equals(interpreterType))
+            mapper = new CygwinPathMapper();
+        else
+            mapper = new NullPathMapper();
+        
         File perl5DbFile = null;
         for (Iterator i = inc.iterator(); i.hasNext();)
         {
-            File f = new File((String) i.next(), "perl5db.pl");
+            File dir = mapper.getEpicPath(
+                new Path((String) i.next())).toFile();
+
+            File f = new File(dir, "perl5db.pl");
             if (f.exists()) { perl5DbFile = f; break; }
         }
 

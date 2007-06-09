@@ -48,8 +48,8 @@ public class PerlDebugPlugin extends AbstractUIPlugin
      * epic_breakpoints.pm (and avoid stepping into epic_breakpoints, too).
      */
     private static final String EPIC_BREAKPOINTS_PATCH =
-        "\\{ use epic_breakpoints; my \\$osingle = \\$single; \\$single = 0; " +
-        "\\$single = epic_breakpoints::_postponed(\\$filename, \\$line) || \\$osingle; }\n";
+        "{ use epic_breakpoints; my $osingle = $single; $single = 0; " +
+        "$single = epic_breakpoints::_postponed($filename, $line) || $osingle; }\n";
 
     public PerlDebugPlugin()
     {
@@ -178,24 +178,28 @@ public class PerlDebugPlugin extends AbstractUIPlugin
                 "Fatal: failed to find source perl5db.pl for epic_breakpoints.pm",
                 null));
 
+        // Note: we do not use String.replaceAll because of bug 1734045
         String perl5db = loadScript("perl5db.pl", new FileInputStream(perl5DbFile));
-        String newPerl5Db = perl5db.replaceFirst(
-            "return unless \\$postponed_file\\{\\$filename\\};",
-            EPIC_BREAKPOINTS_PATCH + "$0");
-        
-        if (newPerl5Db.equals(perl5db)) throw new CoreException(new Status(
+        String marker = "return unless $postponed_file{$filename};";
+        int i = perl5db.indexOf(marker);
+        if (i == -1) throw new CoreException(new Status(
             IStatus.ERROR,
             PerlDebugPlugin.getUniqueIdentifier(),
             IStatus.OK,
             "Fatal: failed to patch perl5db.pl for epic_breakpoints.pm",
             null));
 
+        StringBuffer newPerl5Db = new StringBuffer();
+        newPerl5Db.append(perl5db.substring(0, i));
+        newPerl5Db.append(EPIC_BREAKPOINTS_PATCH);
+        newPerl5Db.append(perl5db.substring(i));
+
         File destFile = new File(getStateLocation().toString(), "perl5db.pl");
         BufferedOutputStream out = null;
         try
         {
             out = new BufferedOutputStream(new FileOutputStream(destFile));
-            out.write(newPerl5Db.getBytes("ISO-8859-1"));
+            out.write(newPerl5Db.toString().getBytes("ISO-8859-1"));
             return destFile;
         }
         finally

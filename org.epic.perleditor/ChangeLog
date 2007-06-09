@@ -4,7 +4,11 @@ CVS
 		Debugger:
 
 		Editor:
+
+Version 0.6.7 - 9-Jun-2007
+		Debugger:
 		* Fixed Bug [ 1732242 ] Fatal: failed to find source perl5db.pl for epic_breakpoints
+		* Fixed Bug [ 1734045 ] Debugger fails: "use" not allowed in expression
 
 Version 0.6.6 - 3-Jun-2007
 		Debugger:

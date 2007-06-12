@@ -32,12 +32,12 @@ class ArrayElement extends PerlVariable
     public String getExpression() throws DebugException
     {
         StringBuffer buf = new StringBuffer();
-        int refCount = getDumpedEntity().getReferenceCount() - 1;
+        int refCount = getDumpedEntity().getReferenceCount();
         
         for (int i = 0; i < refCount; i++) buf.append("${");
-        buf.append(array.getExpression());
-        buf.append(getName());
+        buf.append(array.getExpression());        
         for (int i = 0; i < refCount; i++) buf.append("}");
+        buf.append(getName());
         
         return buf.toString();
     }

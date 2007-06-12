@@ -5,6 +5,10 @@ CVS
 
 		Editor:
 
+Version 0.6.8 - 12-Jun-2007
+		Debugger:
+		* Fixed Bug [ 1734893 ] Array of hashes does not display correctly in Variables
+
 Version 0.6.7 - 9-Jun-2007
 		Debugger:
 		* Fixed Bug [ 1732242 ] Fatal: failed to find source perl5db.pl for epic_breakpoints

@@ -69,7 +69,13 @@ sub dump_hash_expr
     my $frame_index = shift;
     my $varexpr = shift;
 
-    my $h = eval { PadWalker::peek_my(3 + $frame_index) };     
+    my $h = eval { PadWalker::peek_my(3 + $frame_index) };
+{
+    use Data::Dumper;
+    open(FL,'>>/tmp/res');
+    print FL Dumper($h);
+    close(FL);
+}     
     if (!$@) { dump_hash(eval($varexpr)); }
 }
 

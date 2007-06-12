@@ -1,0 +1,6 @@
+#!/usr/bin/perl
+
+use Data::Dumper;
+
+my $arr = [ { key => 1 }, { key => 2 } ];
+print Dumper($arr);

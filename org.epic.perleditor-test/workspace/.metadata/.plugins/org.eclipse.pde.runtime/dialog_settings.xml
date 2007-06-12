@@ -2,8 +2,8 @@
 <section name="Workbench">
 	<section name="org.eclipse.pde.internal.runtime.logview.LogView">
 		<item key="info" value="true"/>
-		<item key="warning" value="true"/>
 		<item key="limit" value="50"/>
+		<item key="warning" value="true"/>
 		<item key="useLimit" value="true"/>
 		<item key="allSessions" value="true"/>
 		<item key="error" value="true"/>

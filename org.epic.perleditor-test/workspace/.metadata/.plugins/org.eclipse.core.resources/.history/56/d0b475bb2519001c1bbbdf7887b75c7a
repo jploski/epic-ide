@@ -1,0 +1,11 @@
+#!/usr/bin/perl
+
+use Data::Dumper;
+
+my $arr = [ { key => 1 }, { key => 2 } ];
+my @list = ( { key => 1 }, { key => 2 } );
+my @list2 = ( 1, 2, 3 );
+my $arr2 = [ 'aa', 'bb' ];
+
+print Dumper($arr);
+print Dumper(\@list);

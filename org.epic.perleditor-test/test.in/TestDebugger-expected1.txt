@@ -1,0 +1,34 @@
+$arr=ARRAY(0)=..., with {[0]=HASH(1)=..., with {key='1'
+}
+[1]=HASH(2)=..., with {key='2'
+}
+}
+$arr2=ARRAY(3)=..., with {[0]='aa'
+[1]='bb'
+[2]=ARRAY(4)=..., with {[0]='1'
+[1]='2'
+[2]='3'
+}
+}
+$hash=HASH(5)=..., with {key1=ARRAY(3)=..., with {[0]='aa'
+[1]='bb'
+[2]=ARRAY(4)=..., with {[0]='1'
+[1]='2'
+[2]='3'
+}
+}
+key2=REF(6)->ARRAY(6)=..., with {[0]=HASH(1)=..., with {key='1'
+}
+[1]=HASH(2)=..., with {key='2'
+}
+}
+}
+@list=..., with {[0]=HASH(7)=..., with {key='1'
+}
+[1]=HASH(8)=..., with {key='2'
+}
+}
+@list2=..., with {[0]='1'
+[1]='2'
+[2]='3'
+}

@@ -1,8 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section name="Workbench">
 	<list key="installedFeatures">
+		<item value="org.eclipse.cdt:3.1.2.200702150621"/>
+		<item value="org.eclipse.jdt.source:3.2.1.r321_v20060905-R4CM1Znkvre9wC-"/>
+		<item value="org.eclipse.jdt:3.2.1.r321_v20060905-R4CM1Znkvre9wC-"/>
+		<item value="org.eclipse.pde.source:3.2.1.r321_v20060823-6vYLLdQ3Nk8DrFG"/>
+		<item value="org.eclipse.pde:3.2.1.r321_v20060823-6vYLLdQ3Nk8DrFG"/>
+		<item value="org.eclipse.platform.source:3.2.1.r321_v20060921-b_XVA-INSQSyMtx"/>
+		<item value="org.eclipse.platform:3.2.1.r321_v20060921-b_XVA-INSQSyMtx"/>
+		<item value="org.eclipse.rcp.patch1:3.2.2.v20070330_322"/>
+		<item value="org.eclipse.rcp.source:3.2.1.r321_v20060801-2ekW2BxmcpPUOoq"/>
+		<item value="org.eclipse.rcp:3.2.1.r321_v20060801-2ekW2BxmcpPUOoq"/>
 		<item value="org.eclipse.sdk:3.2.1.r321_v20060801-tQ1w49KnTArT0FZ"/>
-		<item value="org.epic.feature.main:0.6.2"/>
+		<item value="org.epic.feature.main:0.5.37"/>
+		<item value="org.tigris.subversion.subclipse:1.2.0"/>
 	</list>
 	<section name="org.eclipse.ui.views.task">
 	</section>
@@ -10,8 +21,8 @@
 		<item key="DIALOG_X_ORIGIN" value="296"/>
 		<item key="DIALOG_HEIGHT" value="408"/>
 		<item key="DIALOG_Y_ORIGIN" value="171"/>
-		<item key="DIALOG_WIDTH" value="532"/>
 		<item key="TOGGLE_SELECTED" value="false"/>
+		<item key="DIALOG_WIDTH" value="532"/>
 	</section>
 	<section name="NewWizardAction">
 	</section>

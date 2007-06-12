@@ -1,5 +1,10 @@
 package org.epic.debug;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import org.eclipse.debug.core.*;
 import org.eclipse.debug.core.model.*;
 import org.eclipse.debug.ui.DebugUITools;
@@ -18,6 +23,8 @@ public class TestDebugger extends BasePDETestCase
 {
     private Thread mainThread;
     private long tStart, tEnd;
+    private Map varAddrs;
+    private int nextVarID;
     
     private TestDriver testStepPerformanceListener = new TestDriver() {
         public void handleDebugEvents(DebugEvent[] events)
@@ -35,7 +42,10 @@ public class TestDebugger extends BasePDETestCase
                     }
                 }
             }
-        } };
+        }
+        
+        protected String getScriptName() { return "test_Debugger.pl"; }
+        };
 
     private TestDriver testBreakpointsListener = new TestDriver() {
         public void handleDebugEvents(DebugEvent[] events)
@@ -58,16 +68,49 @@ public class TestDebugger extends BasePDETestCase
                     }
                 }
             }
-        } };
+        } 
+
+        protected String getScriptName() { return "test_Debugger.pl"; }
+        };
+
+    private TestDriver testVariablesListener = new TestDriver() {
+        public void handleDebugEvents(DebugEvent[] events)
+        {
+            super.handleDebugEvents(events);
+            for (int i = 0; i < events.length; i++)
+            {
+                if (events[i].getSource() instanceof IStackFrame)
+                {
+                    IStackFrame frame = (IStackFrame) events[i].getSource();
+                    if (events[i].getKind() == DebugEvent.CHANGE &&
+                        events[i].getDetail() == DebugEvent.CONTENT)
+                    {
+                        try
+                        {
+                            StringBuffer buf = new StringBuffer();
+                            varsToString(frame.getVariables(), buf);
+                            appendData(buf.toString());
+                        }
+                        catch (Exception e) {e.printStackTrace();}
+                        resume(frame.getThread());
+                    }
+                }
+            }
+        }
+
+        protected String getScriptName() { return "test_Variables.pl"; }
+        };
         
     protected void setUp() throws Exception
     {
         super.setUp();
         
+        varAddrs = new HashMap();
+        nextVarID = 0;
         mainThread = Thread.currentThread();
         tStart = tEnd = 0L;
     }
-    
+
     public void testBreakpoints() throws Exception
     {
         launchDebuggerAndWait(testBreakpointsListener, false);
@@ -89,8 +132,18 @@ public class TestDebugger extends BasePDETestCase
             "(actual duration: " + (tEnd-tStart) + " ms)",
             tEnd-tStart < 13000);
     }
+    
+    public void testVariables() throws Exception
+    {
+        launchDebuggerAndWait(testVariablesListener, false);
 
-    private ILaunchConfiguration getLaunchConfig() throws Exception
+        String expected = readFile("test.in/TestDebugger-expected1.txt");
+        String actual = testVariablesListener.getData();
+        assertEquals(expected, actual);
+    }
+
+    private ILaunchConfiguration getLaunchConfig(String scriptName)
+        throws Exception
     {
         ILaunchConfiguration[] configs = DebugPlugin.getDefault()
             .getLaunchManager().getLaunchConfigurations();
@@ -105,15 +158,15 @@ public class TestDebugger extends BasePDETestCase
                     PerlLaunchConfigurationConstants.ATTR_STARTUP_FILE,
                     (String) null);
             
-            if ("test_Debugger.pl".equals(config.getName()) &&
+            if (scriptName.equals(config.getName()) &&
                 "EPICTest".equals(projectName) &&
-                "test_Debugger.pl".equals(scriptFile)) return config;
+                scriptName.equals(scriptFile)) return config;
         }
         return null;
     }
     
     private void launchDebuggerAndWait(
-        IDebugEventSetListener listener,
+        TestDriver listener,
         boolean suspendAtFirst)
         throws Exception
     {
@@ -125,7 +178,7 @@ public class TestDebugger extends BasePDETestCase
             PerlEditorPlugin.getDefault().setDebugConsolePreference(false);
             PerlEditorPlugin.getDefault().setSuspendAtFirstPreference(suspendAtFirst);
 
-            ILaunchConfiguration config = getLaunchConfig();
+            ILaunchConfiguration config = getLaunchConfig(listener.getScriptName());
             assert config != null;
             
             DebugPlugin.getDefault().addDebugEventListener(listener);
@@ -156,7 +209,14 @@ public class TestDebugger extends BasePDETestCase
             editor = findEditor("EPICTest/test_Debugger.pl");
             if (editor != null) closeEditor(editor);
             editor = findEditor("EPICTest/test_Debugger2.pl");
-            if (editor != null) closeEditor(editor);            
+            if (editor != null) closeEditor(editor);
+            editor = findEditor("EPICTest/test_Variables.pl");
+            if (editor != null) closeEditor(editor);
+            
+            // not sure why the delay at this point is necessary,
+            // but without it testVariables fails with EOF from
+            // debugger :(
+            spinEventLoop(3000);
         }
     }
 
@@ -180,12 +240,49 @@ public class TestDebugger extends BasePDETestCase
             } });
     }
     
+    private void varsToString(IVariable[] vars, StringBuffer buf)
+        throws Exception
+    {
+        final String HEX_ADDR = "0x[0-9a-z]+";
+        final Pattern p = Pattern.compile(HEX_ADDR, Pattern.DOTALL);
+        
+        for (int i = 0; i < vars.length; i++)
+        {
+            String val = vars[i].getValue().getValueString();
+            Matcher m = p.matcher(val);
+            
+            if (m.find())
+            {
+                Integer id = (Integer) varAddrs.get(m.group());
+                if (id == null)
+                {
+                    id = new Integer(nextVarID);
+                    nextVarID++;
+                    varAddrs.put(m.group(), id);
+                }
+                val = val.replaceAll(HEX_ADDR, id.toString());
+            }
+            
+            buf.append(vars[i].getName());
+            buf.append('=');
+            buf.append(val);
+            
+            if (vars[i].getValue().hasVariables())
+            {
+                buf.append(", with {");
+                varsToString(vars[i].getValue().getVariables(), buf);
+                buf.append('}');
+            }
+            buf.append("\n");
+        }
+    }
+    
     /**
      * Base class for debugger test drivers. An instance drives the
      * test by responding to DebugEvents and collects some data along
      * the way. The data can be evaluated upon test's completion.
      */
-    private class TestDriver implements IDebugEventSetListener
+    private abstract class TestDriver implements IDebugEventSetListener
     {
         private StringBuffer data;
         
@@ -230,5 +327,7 @@ public class TestDebugger extends BasePDETestCase
         {
             data.append(str);
         }
+        
+        protected abstract String getScriptName();
     }
 }

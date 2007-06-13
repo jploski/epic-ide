@@ -2,9 +2,13 @@ Eclipse Perl Integration:
 
 CVS
 		Debugger:
-		* Fixed Bug [ 1736604 ] Content of @main::foo not displayed in Variables
 
 		Editor:
+
+Version 0.6.9 - 13-June-2007
+		Debugger:
+		* Fixed Bug [ 1736604 ] Content of @main::foo not displayed in Variables
+		* Fixed Bug [ 1735629 ] An error occurred while dumping array content
 
 Version 0.6.8 - 12-June-2007
 		Debugger:

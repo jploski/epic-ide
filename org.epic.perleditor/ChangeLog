@@ -2,6 +2,7 @@ Eclipse Perl Integration:
 
 CVS
 		Debugger:
+		* Fixed Bug [ 1736604 ] Content of @main::foo not displayed in Variables
 
 		Editor:
 

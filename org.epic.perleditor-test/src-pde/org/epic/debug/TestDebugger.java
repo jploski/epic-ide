@@ -130,7 +130,7 @@ public class TestDebugger extends BasePDETestCase
         assertTrue(
             "why is this test running slower than expected? " +
             "(actual duration: " + (tEnd-tStart) + " ms)",
-            tEnd-tStart < 13000);
+            tEnd-tStart < 13100);
     }
     
     public void testVariables() throws Exception

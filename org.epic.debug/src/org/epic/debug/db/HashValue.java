@@ -50,6 +50,7 @@ class HashValue extends PerlValue
         }
         catch (Exception e)
         {
+            PerlDebugPlugin.log(e);
             throw new DebugException(new Status(
                 Status.ERROR,
                 PerlDebugPlugin.getUniqueIdentifier(),

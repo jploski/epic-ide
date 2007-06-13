@@ -277,6 +277,7 @@ public class StackFrame extends DebugElement implements IStackFrame
         }
         catch (Exception e)
         {
+            PerlDebugPlugin.log(e);
             throw new DebugException(new Status(
                 Status.ERROR,
                 PerlDebugPlugin.getUniqueIdentifier(),

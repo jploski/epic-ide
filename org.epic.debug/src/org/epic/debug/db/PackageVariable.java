@@ -19,9 +19,13 @@ class PackageVariable extends PerlVariable
     
     public String getExpression() throws DebugException
     {
+        String name = getName();
+        
         StringBuffer buf = new StringBuffer();
         buf.append('\\');
-        buf.append(getName());
+        buf.append(name.charAt(0));
+        buf.append("main::");
+        buf.append(name.substring(1));
         return buf.toString();
     }
     

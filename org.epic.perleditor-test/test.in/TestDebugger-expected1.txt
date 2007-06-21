@@ -15,7 +15,20 @@ key2=REF(3)->ARRAY(3)=..., with {[0]=HASH(4)=..., with {key='1'
 }
 }
 }
-$arr=ARRAY(6)=..., with {[0]=HASH(4)=..., with {key='1'
+$foo3=ARRAY(6)=..., with {[0]='1'
+[1]='2'
+[2]='3'
+}
+%h=..., with {key='val'
+}
+$h2=HASH(7)=..., with {key='val'
+}
+$ref1=HASH(8)=..., with {key='val'
+}
+$ref2=REF(9)->HASH(9)=..., with {key='val'
+}
+$scal='123'
+$arr=ARRAY(10)=..., with {[0]=HASH(4)=..., with {key='1'
 }
 [1]=HASH(5)=..., with {key='2'
 }
@@ -27,7 +40,7 @@ $arr2=ARRAY(1)=..., with {[0]='aa'
 [2]='3'
 }
 }
-$foo2=ARRAY(7)=..., with {[0]='1'
+$foo2=ARRAY(11)=..., with {[0]='1'
 [1]='2'
 [2]='3'
 [3]=HASH(0)=..., with {key1=ARRAY(1)=..., with {[0]='aa'
@@ -57,9 +70,9 @@ key2=REF(3)->ARRAY(3)=..., with {[0]=HASH(4)=..., with {key='1'
 }
 }
 }
-@list=..., with {[0]=HASH(8)=..., with {key='1'
+@list=..., with {[0]=HASH(12)=..., with {key='1'
 }
-[1]=HASH(9)=..., with {key='2'
+[1]=HASH(13)=..., with {key='2'
 }
 }
 @list2=..., with {[0]='1'

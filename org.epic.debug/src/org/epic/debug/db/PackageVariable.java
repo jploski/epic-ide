@@ -20,12 +20,27 @@ class PackageVariable extends PerlVariable
     public String getExpression() throws DebugException
     {
         String name = getName();
-        
         StringBuffer buf = new StringBuffer();
-        buf.append('\\');
-        buf.append(name.charAt(0));
+        
+        int refCount = getDumpedEntity().getReferenceCount();
+        
+        char deref; // the outermost dereference operator
+        if (isArray()) deref = '@';
+        else if (isHash()) deref = '%';
+        else deref = '$';
+
+        buf.append('\\'); // we want the whole expr to be a reference
+        for (int i = 0; i < refCount; i++)
+        {
+            buf.append(deref);
+            buf.append("{");
+            deref = '$'; // inner dereferences are always ${..}
+        }
+        buf.append(deref);
         buf.append("main::");
         buf.append(name.substring(1));
+        for (int i = 0; i < refCount; i++) buf.append("}");
+        
         return buf.toString();
     }
     

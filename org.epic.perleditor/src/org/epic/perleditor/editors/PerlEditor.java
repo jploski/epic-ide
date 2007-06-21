@@ -73,6 +73,8 @@ public class PerlEditor extends TextEditor implements IPropertyChangeListener
         setDocumentProvider(PerlEditorPlugin.getDefault().getDocumentProvider());
         PerlEditorPlugin.getDefault().getPreferenceStore().addPropertyChangeListener(this);
         setKeyBindingScopes(new String[] { "org.epic.perleditor.perlEditorScope" });
+        setEditorContextMenuId("#PerlEditorContext"); //$NON-NLS-1$
+        setRulerContextMenuId("#PerlRulerContext"); //$NON-NLS-1$
     }
 
     public void createPartControl(Composite parent)
@@ -547,28 +549,6 @@ public class PerlEditor extends TextEditor implements IPropertyChangeListener
         getSourceViewerDecorationSupport(sourceViewer);
 
         return sourceViewer;
-    }
-
-    public void rulerContextMenuAboutToShow(IMenuManager menu) {
-		super.rulerContextMenuAboutToShow(menu);
-		ViewerActionBuilder builder = new ViewerActionBuilder();
-		builder.readViewerContributions("#PerlRulerContext",
-				getSelectionProvider(), this);
-		builder.contribute(menu, null, true);
-	}
-
-
-    /**
-     * The PerlEditor implementation of this AbstractTextEditor method adds any
-     * PerlEditor specific entries.
-     */
-    protected void editorContextMenuAboutToShow(IMenuManager menu)
-    {
-        super.editorContextMenuAboutToShow(menu);
-        ViewerActionBuilder builder = new ViewerActionBuilder();
-        builder.readViewerContributions("#PerlEditorContext",
-            getSelectionProvider(), this);
-        builder.contribute(menu, null, true);
     }
 
     protected void handlePreferenceStoreChanged(PropertyChangeEvent event)

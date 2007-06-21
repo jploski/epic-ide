@@ -298,7 +298,7 @@
         </objectContribution>
 
         <viewerContribution
-            targetID="#TextRulerContext"
+            targetID="#PerlRulerContext"
             id="org.epic.perleditor.ExplainRulerPopupActions">
             <action
                 label="%ExplainErrorsRulerAction.label"

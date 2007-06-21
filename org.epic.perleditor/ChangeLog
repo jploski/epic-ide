@@ -5,6 +5,13 @@ CVS
 
 		Editor:
 
+Version 0.6.10 - 21-June-2007
+		Debugger:
+		* Fixed Bug [ 1741069 ] Array contents not displayed correctly in Variables
+
+		Editor:
+		* Fixed Bug [ 1653354 ] NPE in ExplainErrorsRulerAction
+
 Version 0.6.9 - 13-June-2007
 		Debugger:
 		* Fixed Bug [ 1736604 ] Content of @main::foo not displayed in Variables

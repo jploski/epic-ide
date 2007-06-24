@@ -113,6 +113,8 @@ sub _add_pending
 sub _postponed
 {
     my $filename = shift;
+    return if (index($filename, ' (autosplit') > 0); # see bug 1742003
+    
     my $line = shift;
     my $source_path = _abs_path($filename);
     

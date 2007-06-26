@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Perl Debug Plug-in
 Bundle-SymbolicName: org.epic.debug; singleton:=true
-Bundle-Version: 0.6.10
+Bundle-Version: 0.6.11
 Bundle-Activator: org.epic.debug.PerlDebugPlugin
 Bundle-Vendor: EPIC Project
 Bundle-Localization: plugin

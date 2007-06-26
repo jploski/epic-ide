@@ -347,7 +347,11 @@ public class DebuggerInterface
     private synchronized void outputLine(String line)
     {
         //System.err.println("->D: {" + line + "}");
-        if (out != null) out.println(line);
+        if (out != null)
+        {
+            out.println(line);
+            out.flush();
+        }
     }
     
     private String readCommandOutput()

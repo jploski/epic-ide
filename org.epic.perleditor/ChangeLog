@@ -5,6 +5,10 @@ CVS
 
 		Editor:
 
+Version 0.6.11 - 26-June-2007
+		Debugger:
+		* Fixed Bug [ 1742785 ] Certain variable types crash the variables view in eclipse
+
 Version 0.6.10 - 21-June-2007
 		Debugger:
 		* Fixed Bug [ 1741069 ] Array contents not displayed correctly in Variables

@@ -24,23 +24,37 @@ class PackageVariable extends PerlVariable
         
         int refCount = getDumpedEntity().getReferenceCount();
         
-        char deref; // the outermost dereference operator
-        if (isArray()) deref = '@';
-        else if (isHash()) deref = '%';
-        else deref = '$';
-
-        buf.append('\\'); // we want the whole expr to be a reference
-        for (int i = 0; i < refCount; i++)
+        if (refCount == 0)
         {
-            buf.append(deref);
-            buf.append("{");
-            deref = '$'; // inner dereferences are always ${..}
+            if (isHash())
+            {
+                // we want the whole expr to be a reference,
+                // but beware that the \%main::hash->{key} does not work
+                // +{%main::hash}->{key} does the trick nicely
+                buf.append("+{"); 
+                buf.append(name.substring(0, 1));
+                buf.append("main::");
+                buf.append(name.substring(1));
+                buf.append('}');
+            }
+            else
+            {
+                buf.append('\\'); // we want the whole expr to be a reference
+                buf.append(name.substring(0, 1));
+                buf.append("main::");
+                buf.append(name.substring(1));
+            }
         }
-        buf.append(deref);
-        buf.append("main::");
-        buf.append(name.substring(1));
-        for (int i = 0; i < refCount; i++) buf.append("}");
-        
+        else
+        {
+            for (int i = 0; i < refCount-1; i++)
+            {
+                buf.append("${");
+            }
+            buf.append("$main::");
+            buf.append(name.substring(1));
+            for (int i = 0; i < refCount-1; i++) buf.append("}");
+        }
         return buf.toString();
     }
     

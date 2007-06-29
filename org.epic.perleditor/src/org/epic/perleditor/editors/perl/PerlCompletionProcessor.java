@@ -7,6 +7,7 @@ import java.util.regex.Pattern;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.text.*;
 import org.eclipse.jface.text.contentassist.*;
+import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.editors.text.TextEditor;
 import org.epic.core.model.ISourceElement;
 import org.epic.core.util.PerlExecutor;
@@ -46,13 +47,16 @@ public class PerlCompletionProcessor implements IContentAssistProcessor
     {
 		// get the current document's text, up to caret position
 		IDocument document = viewer.getDocument();
+        ITextSelection selection = (ITextSelection) viewer.getSelectionProvider().getSelection();        
+        if (selection.getLength() > 0) return NO_PROPOSALS;
+
 		String lastTextLine = null;
 		try
         {
             int lastLine = document.getLineOfOffset(documentOffset);
+            int lineStartOffset = document.getLineOffset(lastLine);
             lastTextLine = document.get(
-                document.getLineOffset(lastLine),
-                document.getLineLength(lastLine));
+                lineStartOffset, documentOffset - lineStartOffset);
         }
         catch (BadLocationException ble)
         {
@@ -350,7 +354,7 @@ public class PerlCompletionProcessor implements IContentAssistProcessor
     private String getModuleNamePrefix(String line)
     {
         Pattern pattern = Pattern.compile(
-            ".*use\\s*(.*)$", Pattern.MULTILINE | Pattern.DOTALL);
+            "\\s*use[ \\t]+(\\S*)\\s*$", Pattern.MULTILINE | Pattern.DOTALL);
         Matcher matcher = pattern.matcher(line);
         return matcher.matches() ? matcher.group(1) : null;
     }

@@ -4,6 +4,7 @@ CVS
 		Debugger:
 
 		Editor:
+		* Fixed Bug [ 1736256 ] No template expansion after typing '...use'
 
 Version 0.6.11 - 26-June-2007
 		Debugger:

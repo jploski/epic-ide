@@ -80,3 +80,6 @@ my $hash_ref = {names => qw/lisa bart/ };
 
 # bug 1722253
 my @numbers = (12345.67, 345_000_000_000, 3.14_15_92, 4_294_967_296, 0b110_100_100, 0xdead_beef);
+
+# bug 1750197
+$foo->{mCustomerSet};

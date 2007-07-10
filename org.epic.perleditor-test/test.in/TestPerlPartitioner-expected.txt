@@ -630,3 +630,15 @@ hello world
 1841:11:NUMBER:{0xdead_beef}
 1852:1:OPERATOR:{)}
 1853:1:OPERATOR:{;}
+1854:2:__dftl_partition_content_type:{
+
+}
+1856:13:COMMENT:{# bug 1750197}
+1869:1:__dftl_partition_content_type:{
+}
+1870:4:VARIABLE:{$foo}
+1874:2:OPERATOR:{->}
+1876:1:OPERATOR:{{}
+1877:12:__dftl_partition_content_type:{mCustomerSet}
+1889:1:OPERATOR:{}}
+1890:1:OPERATOR:{;}

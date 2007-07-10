@@ -5,6 +5,7 @@ CVS
 
 		Editor:
 		* Fixed Bug [ 1736256 ] No template expansion after typing '...use'
+		* Fixed Bug [ 1750197 ] normal code will be interpreted as regular expression
 
 Version 0.6.11 - 26-June-2007
 		Debugger:

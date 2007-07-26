@@ -8,6 +8,7 @@ import java.util.regex.Pattern;
 import org.eclipse.debug.core.*;
 import org.eclipse.debug.core.model.*;
 import org.eclipse.debug.ui.DebugUITools;
+import org.eclipse.jface.action.*;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.*;
 import org.epic.perleditor.PerlEditorPlugin;
@@ -135,11 +136,26 @@ public class TestDebugger extends BasePDETestCase
     
     public void testVariables() throws Exception
     {
-        launchDebuggerAndWait(testVariablesListener, false);
-
-        String expected = readFile("test.in/TestDebugger-expected1.txt");
-        String actual = testVariablesListener.getData();
-        assertEquals(expected, actual);
+        boolean savedShowGlobalVariables = getShowVariablesPreference(
+            "org.epic.debug.showGlobalVariablesAction");
+        
+        try
+        {
+            setShowVariablesPreference(
+                "org.epic.debug.showGlobalVariablesAction", true);
+            
+            launchDebuggerAndWait(testVariablesListener, false);
+    
+            String expected = readFile("test.in/TestDebugger-expected1.txt");
+            String actual = testVariablesListener.getData();
+            assertEquals(expected, actual);
+        }
+        finally
+        {
+            setShowVariablesPreference(
+                "org.epic.debug.showGlobalVariablesAction",
+                savedShowGlobalVariables);
+        }
     }
 
     private ILaunchConfiguration getLaunchConfig(String scriptName)
@@ -228,6 +244,33 @@ public class TestDebugger extends BasePDETestCase
                 try { thread.resume(); }
                 catch (DebugException e) { e.printStackTrace(); }
             } });
+    }
+    
+    private IAction getShowVariablesAction(String id)
+    {
+        IViewPart variablesView = findView("org.eclipse.debug.ui.VariableView");
+        IMenuManager man =
+            variablesView.getViewSite().getActionBars().getMenuManager();
+        
+        ActionContributionItem item = 
+            (ActionContributionItem) man.find(id);
+        
+        return item.getAction();
+    }
+    
+    private boolean getShowVariablesPreference(String id)
+    {
+        return getShowVariablesAction(id).isChecked();
+    }
+    
+    private void setShowVariablesPreference(String id, boolean value)
+    {
+        IAction action = getShowVariablesAction(id);
+        if (action.isChecked() != value)
+        {
+            action.setChecked(value);
+            action.run();
+        }
     }
     
     private void stepInto(final IThread thread)

@@ -5,8 +5,7 @@ import java.util.Iterator;
 import java.util.Set;
 
 import org.eclipse.core.resources.IMarkerDelta;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.*;
 import org.eclipse.debug.core.*;
 import org.eclipse.debug.core.model.IBreakpoint;
 import org.epic.debug.*;
@@ -81,6 +80,9 @@ class PerlThreadBreakpoints
     private static final String DB_ADD_BREAK =
         ";{\n#PARAMS#\nepic_breakpoints::add_breakpoint($file, $line, $cond);\n};";
 
+    private static final String DB_GET_ABS_PATH =
+        ";{\n#PARAMS#\nepic_breakpoints::get_abs_path($file);\n};";
+    
     private static final String DB_REMOVE_BREAK =
         ";{\n#PARAMS#\nepic_breakpoints::remove_breakpoint($file, $line);\n};";
     
@@ -116,6 +118,30 @@ class PerlThreadBreakpoints
     public void dispose()
     {
         DebugPlugin.getDefault().getBreakpointManager().removeBreakpointListener(listener);
+    }
+    
+    public IPath getAbsDBPath(IPath relativeDBPath) throws CoreException
+    {
+        // This method is necessary to resolve relative paths that may
+        // be returned by IPPosition.getPath(). Such paths are returned
+        // if the script contains something like "use lib 'foo';"
+        // We resolve them through epic_breakpoints.pm, hoping for
+        // the best...
+        
+        try
+        {
+            String code = HelperScript.replace(
+                DB_GET_ABS_PATH,
+                "#PARAMS#",
+                "my $file = <<'EOT';\n" + relativeDBPath + "\nEOT\n");                
+            
+            return new Path(db.eval(code).trim());
+        }
+        catch (IOException e)
+        {
+            thread.throwDebugException(e);
+            return null;
+        }
     }
     
     public IBreakpoint getCurrentBreakpoint() throws CoreException

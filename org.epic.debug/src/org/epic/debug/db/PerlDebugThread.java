@@ -310,6 +310,12 @@ public class PerlDebugThread extends DebugElement implements IThread
     
     IPath getEpicPath(IPath dbPath)
     {
+        if (!dbPath.isAbsolute())
+        {
+            try { dbPath = bp.getAbsDBPath(dbPath); }
+            catch (CoreException e) { PerlDebugPlugin.log(e); }
+        }
+        
         return ((DebugTarget) getDebugTarget()).getPathMapper()
             .getEpicPath(dbPath);
     }

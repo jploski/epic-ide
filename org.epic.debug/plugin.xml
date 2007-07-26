@@ -107,7 +107,7 @@
         <!-- Contributions to Expression View Toolbar -->
         <viewContribution
             targetID="org.eclipse.debug.ui.VariableView"
-            id="org.epig.debug.showLocalVariablesAction">
+            id="org.epic.debug.showLocalVariablesAction">
             <action
                 label="Show Local Variables"
                 icon="icons/epic.gif"
@@ -115,25 +115,25 @@
                 state="true"
                 class="org.epic.debug.ui.action.ShowLocalVariableActionDelegate"
                 menubarPath="additions"
-                id="org.epig.debug.showLocalVariablesAction">
+                id="org.epic.debug.showLocalVariablesAction">
             </action>
         </viewContribution>
         <viewContribution
             targetID="org.eclipse.debug.ui.VariableView"
-            id="org.epig.debug.showGlobalVariablesAction">
+            id="org.epic.debug.showGlobalVariablesAction">
             <action
                 label="Show Global Variables"
                 icon="icons/epic.gif"
                 tooltip="Show Global Variable"
-                state="true"
+                state="false"
                 class="org.epic.debug.ui.action.ShowGlobalVariableActionDelegate"
                 menubarPath="additions"
-                id="org.epig.debug.showGlobalVariablesAction">
+                id="org.epic.debug.showGlobalVariablesAction">
             </action>
         </viewContribution>
         <viewContribution
             targetID="org.eclipse.debug.ui.VariableView"
-            id="org.epig.debug.showPerlInternalVariablesAction">
+            id="org.epic.debug.showPerlInternalVariablesAction">
             <action
                 label="Show Perl Internal Variables"
                 icon="icons/epic.gif"
@@ -141,12 +141,12 @@
                 state="false"
                 class="org.epic.debug.ui.action.ShowPerlInternalVariableActionDelegate"
                 menubarPath="additions"
-                id="org.epig.debug.showPerlInternalVariablesAction">
+                id="org.epic.debug.showPerlInternalVariablesAction">
             </action>
         </viewContribution>
         <viewContribution
             targetID="org.eclipse.debug.ui.VariableView"
-            id="org.epig.debug.showVarAddressAction">
+            id="org.epic.debug.showVarAddressAction">
             <action
                 label="Show Addresses of Variables"
                 icon="icons/epic.gif"
@@ -154,12 +154,12 @@
                 state="false"
                 class="org.epic.debug.ui.action.ShowVarAddressActionDelegate"
                 menubarPath="additions"
-                id="org.epig.debug.showVarAddressAction">
+                id="org.epic.debug.showVarAddressAction">
             </action>
         </viewContribution>
         <viewContribution
             targetID="org.eclipse.debug.ui.VariableView"
-            id="org.epig.debug.highlightVarUpdatesAction">
+            id="org.epic.debug.highlightVarUpdatesAction">
             <action
                 label="Highlight Updated Variables"
                 icon="icons/epic.gif"
@@ -167,7 +167,7 @@
                 state="false"
                 class="org.epic.debug.ui.action.HighlightVarUpdatesActionDelegate"
                 menubarPath="additions"
-                id="org.epig.debug.highlightVarUpdatesAction">
+                id="org.epic.debug.highlightVarUpdatesAction">
             </action>
         </viewContribution>
     </extension>

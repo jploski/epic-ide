@@ -553,7 +553,9 @@ public class PerlEditor extends TextEditor implements IPropertyChangeListener
 
     protected void handlePreferenceStoreChanged(PropertyChangeEvent event)
     {
-        if (sourceViewer == null || sourceViewer.getTextWidget() == null) return;
+        if (sourceViewer == null ||
+            sourceViewer.getTextWidget() == null ||
+            bracketInserter == null) return;
 
         try
         {

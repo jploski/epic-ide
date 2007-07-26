@@ -4,6 +4,13 @@ CVS
 		Debugger:
 
 		Editor:
+
+Version 0.6.12 - 26-July-2007
+		Debugger:
+		* Fixed Bug [ 1761095 ] Breakpoints ignored in modules from "use lib"
+		* Fixed Bug [ 1761167 ] Show Global Variables out-of-sync with actual setting
+
+		Editor:
 		* Fixed Bug [ 1736256 ] No template expansion after typing '...use'
 		* Fixed Bug [ 1750197 ] normal code will be interpreted as regular expression
 

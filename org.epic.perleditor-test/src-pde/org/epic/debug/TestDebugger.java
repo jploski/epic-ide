@@ -119,8 +119,9 @@ public class TestDebugger extends BasePDETestCase
         // check that (only) the expected breakpoints were hit
         assertEquals(
             "test_Debugger2.pl[line: 2]" +
-            "test_Debugger.pl[line: 12]" +
-            "test_Debugger.pl[line: 21]" +
+            "TestDebugger3.pm[line: 5]" +
+            "test_Debugger.pl[line: 16]" +
+            "test_Debugger.pl[line: 25]" +
             "test_Debugger2.pl[line: 2]",
             testBreakpointsListener.getData());
     }

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <workbench version="2.0">
 <workbenchAdvisor/>
-<window height="870" width="1070" x="53" y="99">
+<window x="53" y="99" width="1070" height="870">
 <fastViewData fastViewLocation="1024"/>
 <perspectiveBar>
 <itemSize x="160"/>
@@ -25,11 +25,11 @@
 <coolItem id="group.help" itemType="typeGroupMarker"/>
 <coolItem id="org.eclipse.ui.workbench.help" itemType="typeToolBarContribution" x="-1" y="-1"/>
 </coolbarLayout>
-<page aggregateWorkingSetId="Aggregate for window 1180790581835" focus="true" label="Workspace - Debug">
+<page label="Workspace - Debug" aggregateWorkingSetId="Aggregate for window 1180790581835" focus="true">
 <editors>
 <editorArea activeWorkbook="DefaultEditorWorkbook">
 <info part="DefaultEditorWorkbook">
-<folder appearance="1" expanded="2">
+<folder expanded="2" appearance="1">
 <presentation id="org.eclipse.ui.presentations.WorkbenchPresentationFactory"/>
 </folder>
 </info>
@@ -37,7 +37,7 @@
 </editors>
 <views>
 <view id="org.eclipse.ui.views.TaskList" partName="Tasks">
-<viewState columnWidth0="34" columnWidth1="34" columnWidth2="215" columnWidth3="90" columnWidth4="165" columnWidth5="422" columnWidth6="0" horizontalPosition="0" verticalPosition="0">
+<viewState columnWidth0="34" columnWidth1="34" columnWidth2="215" columnWidth3="90" columnWidth4="165" columnWidth5="422" columnWidth6="0" verticalPosition="0" horizontalPosition="0">
 <columnOrder columnOrderIndex="0"/>
 <columnOrder columnOrderIndex="1"/>
 <columnOrder columnOrderIndex="2"/>
@@ -68,8 +68,9 @@
 <viewState activate="true" allSessions="true" column2="793" column3="150" column4="540" error="true" info="true" limit="50" orderType="2" orderValue="-1" useLimit="true" warning="true"/>
 </view>
 <view id="org.eclipse.ui.views.ResourceNavigator" partName="Navigator">
-<viewState LINK_NAVIGATOR_TO_EDITOR="0" sorter="1">
-<filters>&#x0A;<filter element="*.aux" isEnabled="true"/>
+<viewState sorter="1" LINK_NAVIGATOR_TO_EDITOR="0">
+<filters>&#x0A;<filter element="*.class" isEnabled="false"/>
+<filter element="*.aux" isEnabled="true"/>
 <filter element="*.toc" isEnabled="true"/>
 <filter element="*.idx" isEnabled="true"/>
 <filter element="*.log" isEnabled="true"/>
@@ -77,19 +78,19 @@
 <filter element="*.bbl" isEnabled="true"/>
 <filter element="*.blg" isEnabled="true"/>
 <filter element=".project" isEnabled="true"/>
-<filter element="*.class" isEnabled="false"/>
 <filter element=".*" isEnabled="false"/>
 </filters>
 <expanded>&#x0A;<element path="/EPICTest"/>
+<element path="/EPICTest/noinc"/>
 </expanded>
-<selection>&#x0A;<element path="/EPICTest/test_Variables.pl"/>
+<selection>&#x0A;<element path="/EPICTest/test_Debugger.pl"/>
 </selection>
 </viewState>
 </view>
 </views>
-<perspectives activePart="org.eclipse.debug.ui.VariableView" activePerspective="org.eclipse.debug.ui.DebugPerspective">
-<perspective editorAreaVisible="1" fixed="0" version="0.016">
-<descriptor class="org.eclipse.debug.internal.ui.DebugPerspectiveFactory" id="org.eclipse.debug.ui.DebugPerspective" label="Debug"/>
+<perspectives activePerspective="org.eclipse.debug.ui.DebugPerspective" activePart="org.eclipse.debug.ui.VariableView">
+<perspective version="0.016" editorAreaVisible="1" fixed="0">
+<descriptor id="org.eclipse.debug.ui.DebugPerspective" label="Debug" class="org.eclipse.debug.internal.ui.DebugPerspectiveFactory"/>
 <alwaysOnActionSet id="org.eclipse.ui.edit.text.actionSet.openExternalFile"/>
 <alwaysOnActionSet id="org.eclipse.ui.edit.text.actionSet.annotationNavigation"/>
 <alwaysOnActionSet id="org.eclipse.ui.edit.text.actionSet.navigation"/>
@@ -105,9 +106,9 @@
 <alwaysOnActionSet id="org.eclipse.debug.ui.breakpointActionSet"/>
 <alwaysOnActionSet id="org.eclipse.jdt.debug.ui.JDTDebugActionSet"/>
 <alwaysOnActionSet id="org.eclipse.jdt.ui.JavaActionSet"/>
-<alwaysOnActionSet id="org.eclipse.cdt.debug.ui.debugActionSet"/>
 <alwaysOnActionSet id="ish.ecletex.actionSet"/>
 <alwaysOnActionSet id="com.jpl.test.actionSet"/>
+<alwaysOnActionSet id="com.objfac.xmleditor.XMLActionSet"/>
 <alwaysOnActionSet id="org.eclipse.debug.ui.debugActionSet"/>
 <show_view_action id="org.eclipse.debug.ui.DebugView"/>
 <show_view_action id="org.eclipse.debug.ui.VariableView"/>
@@ -130,35 +131,35 @@
 <view id="org.eclipse.ui.views.ContentOutline"/>
 <layout>
 <mainWindow>
-<info folder="true" part="org.eclipse.debug.internal.ui.NavigatorFolderView">
-<folder activePageID="org.eclipse.debug.ui.DebugView" appearance="2" expanded="2">
-<page content="org.eclipse.debug.ui.DebugView" label="Debug"/>
-<page content="org.eclipse.ui.views.ResourceNavigator" label="LabelNotFound"/>
-<page content="org.eclipse.jdt.ui.PackageExplorer" label="LabelNotFound"/>
-<page content="org.eclipse.jdt.ui.TypeHierarchy" label="LabelNotFound"/>
+<info part="org.eclipse.debug.internal.ui.NavigatorFolderView" folder="true">
+<folder activePageID="org.eclipse.debug.ui.DebugView" expanded="2" appearance="2">
+<page label="Debug" content="org.eclipse.debug.ui.DebugView"/>
+<page label="LabelNotFound" content="org.eclipse.ui.views.ResourceNavigator"/>
+<page label="LabelNotFound" content="org.eclipse.jdt.ui.PackageExplorer"/>
+<page label="LabelNotFound" content="org.eclipse.jdt.ui.TypeHierarchy"/>
 <presentation id="org.eclipse.ui.presentations.WorkbenchPresentationFactory">
 <part id="0"/>
 </presentation>
 </folder>
 </info>
-<info folder="true" part="stickyFolderRight" ratio="0.74953616" ratioLeft="808" ratioRight="270" relationship="2" relative="org.eclipse.debug.internal.ui.NavigatorFolderView">
-<folder appearance="2" expanded="2">
-<page content="org.eclipse.help.ui.HelpView" label="LabelNotFound"/>
-<page content="org.eclipse.ui.internal.introview" label="LabelNotFound"/>
-<page content="org.eclipse.ui.cheatsheets.views.CheatSheetView" label="LabelNotFound"/>
+<info part="stickyFolderRight" relative="org.eclipse.debug.internal.ui.NavigatorFolderView" relationship="2" ratioLeft="808" ratioRight="270" ratio="0.74953616" folder="true">
+<folder expanded="2" appearance="2">
+<page label="LabelNotFound" content="org.eclipse.help.ui.HelpView"/>
+<page label="LabelNotFound" content="org.eclipse.ui.internal.introview"/>
+<page label="LabelNotFound" content="org.eclipse.ui.cheatsheets.views.CheatSheetView"/>
 </folder>
 </info>
-<info folder="true" part="org.eclipse.debug.internal.ui.ConsoleFolderView" ratio="0.75" ratioLeft="558" ratioRight="186" relationship="4" relative="org.eclipse.debug.internal.ui.NavigatorFolderView">
-<folder activePageID="org.eclipse.ui.console.ConsoleView" appearance="2" expanded="2">
-<page content="org.eclipse.ui.console.ConsoleView" label="Console"/>
-<page content="org.eclipse.ui.views.TaskList" label="Tasks"/>
-<page content="org.eclipse.ui.views.BookmarkView" label="LabelNotFound"/>
-<page content="org.eclipse.ui.views.PropertySheet" label="LabelNotFound"/>
-<page content="org.eclipse.jdt.debug.ui.DisplayView" label="LabelNotFound"/>
-<page content="org.eclipse.search.SearchResultView" label="LabelNotFound"/>
-<page content="org.eclipse.pde.runtime.LogView" label="Error Log"/>
-<page content="org.epic.perleditor.views.PerlDocView" label="LabelNotFound"/>
-<page content="org.epic.perleditor.views.ExplainErrorsView" label="LabelNotFound"/>
+<info part="org.eclipse.debug.internal.ui.ConsoleFolderView" relative="org.eclipse.debug.internal.ui.NavigatorFolderView" relationship="4" ratioLeft="558" ratioRight="186" ratio="0.75" folder="true">
+<folder activePageID="org.eclipse.ui.console.ConsoleView" expanded="2" appearance="2">
+<page label="Console" content="org.eclipse.ui.console.ConsoleView"/>
+<page label="Tasks" content="org.eclipse.ui.views.TaskList"/>
+<page label="LabelNotFound" content="org.eclipse.ui.views.BookmarkView"/>
+<page label="LabelNotFound" content="org.eclipse.ui.views.PropertySheet"/>
+<page label="LabelNotFound" content="org.eclipse.jdt.debug.ui.DisplayView"/>
+<page label="LabelNotFound" content="org.eclipse.search.SearchResultView"/>
+<page label="Error Log" content="org.eclipse.pde.runtime.LogView"/>
+<page label="LabelNotFound" content="org.epic.perleditor.views.PerlDocView"/>
+<page label="LabelNotFound" content="org.epic.perleditor.views.ExplainErrorsView"/>
 <presentation id="org.eclipse.ui.presentations.WorkbenchPresentationFactory">
 <part id="0"/>
 <part id="1"/>
@@ -166,22 +167,22 @@
 </presentation>
 </folder>
 </info>
-<info part="org.eclipse.ui.editorss" ratio="0.4498208" ratioLeft="251" ratioRight="307" relationship="4" relative="org.eclipse.debug.internal.ui.NavigatorFolderView"/>
-<info folder="true" part="org.eclipse.debug.internal.ui.OutlineFolderView" ratio="0.74953616" ratioLeft="808" ratioRight="270" relationship="2" relative="org.eclipse.ui.editorss">
-<folder activePageID="org.eclipse.ui.views.ContentOutline" appearance="2" expanded="2">
-<page content="org.eclipse.ui.views.ContentOutline" label="Outline"/>
-<page content="org.eclipse.ant.ui.views.AntView" label="LabelNotFound"/>
+<info part="org.eclipse.ui.editorss" relative="org.eclipse.debug.internal.ui.NavigatorFolderView" relationship="4" ratioLeft="251" ratioRight="307" ratio="0.4498208"/>
+<info part="org.eclipse.debug.internal.ui.OutlineFolderView" relative="org.eclipse.ui.editorss" relationship="2" ratioLeft="808" ratioRight="270" ratio="0.74953616" folder="true">
+<folder activePageID="org.eclipse.ui.views.ContentOutline" expanded="2" appearance="2">
+<page label="Outline" content="org.eclipse.ui.views.ContentOutline"/>
+<page label="LabelNotFound" content="org.eclipse.ant.ui.views.AntView"/>
 <presentation id="org.eclipse.ui.presentations.WorkbenchPresentationFactory">
 <part id="0"/>
 </presentation>
 </folder>
 </info>
-<info folder="true" part="org.eclipse.debug.internal.ui.ToolsFolderView" ratio="0.5" ratioLeft="539" ratioRight="539" relationship="2" relative="org.eclipse.debug.internal.ui.NavigatorFolderView">
-<folder activePageID="org.eclipse.debug.ui.VariableView" appearance="2" expanded="2">
-<page content="org.eclipse.debug.ui.VariableView" label="Variables"/>
-<page content="org.eclipse.debug.ui.BreakpointView" label="Breakpoints"/>
-<page content="org.eclipse.debug.ui.ExpressionView" label="LabelNotFound"/>
-<page content="org.eclipse.debug.ui.RegisterView" label="LabelNotFound"/>
+<info part="org.eclipse.debug.internal.ui.ToolsFolderView" relative="org.eclipse.debug.internal.ui.NavigatorFolderView" relationship="2" ratioLeft="539" ratioRight="539" ratio="0.5" folder="true">
+<folder activePageID="org.eclipse.debug.ui.VariableView" expanded="2" appearance="2">
+<page label="Variables" content="org.eclipse.debug.ui.VariableView"/>
+<page label="Breakpoints" content="org.eclipse.debug.ui.BreakpointView"/>
+<page label="LabelNotFound" content="org.eclipse.debug.ui.ExpressionView"/>
+<page label="LabelNotFound" content="org.eclipse.debug.ui.RegisterView"/>
 <presentation id="org.eclipse.ui.presentations.WorkbenchPresentationFactory">
 <part id="0"/>
 <part id="1"/>
@@ -191,8 +192,8 @@
 </mainWindow>
 </layout>
 </perspective>
-<perspective editorAreaVisible="1" fixed="0" version="0.016">
-<descriptor class="org.epic.core.Perspective" id="org.epic.core.Perspective" label="Perl"/>
+<perspective version="0.016" editorAreaVisible="1" fixed="0">
+<descriptor id="org.epic.core.Perspective" label="Perl" class="org.epic.core.Perspective"/>
 <alwaysOnActionSet id="org.eclipse.ui.edit.text.actionSet.openExternalFile"/>
 <alwaysOnActionSet id="org.eclipse.ui.edit.text.actionSet.navigation"/>
 <alwaysOnActionSet id="org.eclipse.ui.edit.text.actionSet.convertLineDelimitersTo"/>
@@ -207,6 +208,7 @@
 <alwaysOnActionSet id="org.eclipse.ui.WorkingSetActionSet"/>
 <alwaysOnActionSet id="ish.ecletex.actionSet"/>
 <alwaysOnActionSet id="com.jpl.test.actionSet"/>
+<alwaysOnActionSet id="com.objfac.xmleditor.XMLActionSet"/>
 <show_view_action id="org.eclipse.ui.views.ResourceNavigator"/>
 <show_view_action id="org.eclipse.ui.views.BookmarkView"/>
 <show_view_action id="org.eclipse.ui.views.ContentOutline"/>
@@ -224,31 +226,33 @@
 <view id="org.eclipse.ui.views.ResourceNavigator"/>
 <view id="org.eclipse.ui.views.ContentOutline"/>
 <view id="org.eclipse.ui.views.TaskList"/>
+<view id="org.eclipse.pde.runtime.LogView"/>
 <view id="org.eclipse.ui.console.ConsoleView"/>
 <view id="org.eclipse.debug.ui.VariableView"/>
-<layout>&#x0A;<mainWindow>&#x0A;<info folder="true" part="topLeft">&#x0A;<folder activePageID="org.eclipse.ui.views.ResourceNavigator" appearance="2" expanded="2">&#x0A;<page content="org.eclipse.ui.views.ResourceNavigator" label="Navigator"/>
-<page content="org.eclipse.ui.views.BookmarkView" label="LabelNotFound"/>
-<page content="org.eclipse.ui.views.ContentOutline" label="Outline"/>
+<layout>&#x0A;<mainWindow>&#x0A;<info part="topLeft" folder="true">&#x0A;<folder activePageID="org.eclipse.ui.views.ResourceNavigator" expanded="2" appearance="2">&#x0A;<page label="Navigator" content="org.eclipse.ui.views.ResourceNavigator"/>
+<page label="LabelNotFound" content="org.eclipse.ui.views.BookmarkView"/>
+<page label="Outline" content="org.eclipse.ui.views.ContentOutline"/>
 <presentation id="org.eclipse.ui.presentations.WorkbenchPresentationFactory">&#x0A;<part id="0"/>
 <part id="1"/>
 </presentation>
 </folder>
 </info>
-<info folder="true" part="stickyFolderRight" ratio="0.75" ratioLeft="903" ratioRight="301" relationship="2" relative="topLeft">&#x0A;<folder appearance="2" expanded="2">&#x0A;<page content="org.eclipse.help.ui.HelpView" label="LabelNotFound"/>
-<page content="org.eclipse.ui.internal.introview" label="LabelNotFound"/>
-<page content="org.eclipse.ui.cheatsheets.views.CheatSheetView" label="LabelNotFound"/>
+<info part="stickyFolderRight" relative="topLeft" relationship="2" ratioLeft="903" ratioRight="301" ratio="0.75" folder="true">&#x0A;<folder expanded="2" appearance="2">&#x0A;<page label="LabelNotFound" content="org.eclipse.help.ui.HelpView"/>
+<page label="LabelNotFound" content="org.eclipse.ui.internal.introview"/>
+<page label="LabelNotFound" content="org.eclipse.ui.cheatsheets.views.CheatSheetView"/>
 </folder>
 </info>
-<info part="org.eclipse.ui.editorss" ratio="0.2599668" ratioLeft="313" ratioRight="891" relationship="2" relative="topLeft"/>
-<info folder="true" part="org.eclipse.ui.internal.ViewStack@1fce2f2" ratio="0.65964526" ratioLeft="595" ratioRight="307" relationship="4" relative="org.eclipse.ui.editorss">&#x0A;<folder activePageID="org.eclipse.debug.ui.VariableView" appearance="2" expanded="2">&#x0A;<page content="org.eclipse.ui.views.TaskList" label="Tasks"/>
-<page content="org.eclipse.pde.runtime.LogView" label="LabelNotFound"/>
-<page content="org.epic.perleditor.views.ExplainErrorsView" label="LabelNotFound"/>
-<page content="org.epic.perleditor.views.PerlDocView" label="LabelNotFound"/>
-<page content="org.eclipse.ui.console.ConsoleView" label="Console"/>
-<page content="org.eclipse.debug.ui.VariableView" label="Variables"/>
+<info part="org.eclipse.ui.editorss" relative="topLeft" relationship="2" ratioLeft="313" ratioRight="891" ratio="0.2599668"/>
+<info part="org.eclipse.ui.internal.ViewStack@1fce2f2" relative="org.eclipse.ui.editorss" relationship="4" ratioLeft="595" ratioRight="307" ratio="0.65964526" folder="true">&#x0A;<folder activePageID="org.eclipse.debug.ui.VariableView" expanded="2" appearance="2">&#x0A;<page label="Tasks" content="org.eclipse.ui.views.TaskList"/>
+<page label="Error Log" content="org.eclipse.pde.runtime.LogView"/>
+<page label="LabelNotFound" content="org.epic.perleditor.views.ExplainErrorsView"/>
+<page label="LabelNotFound" content="org.epic.perleditor.views.PerlDocView"/>
+<page label="Console" content="org.eclipse.ui.console.ConsoleView"/>
+<page label="Variables" content="org.eclipse.debug.ui.VariableView"/>
 <presentation id="org.eclipse.ui.presentations.WorkbenchPresentationFactory">&#x0A;<part id="0"/>
 <part id="1"/>
 <part id="2"/>
+<part id="3"/>
 </presentation>
 </folder>
 </info>
@@ -259,164 +263,169 @@
 <workingSets/>
 <navigationHistory>
 <editors>
-<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.epic.perleditor.editors.PerlEditor" path="/EPICTest/test_Debugger2.pl"/>
-<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.epic.perleditor.editors.PerlEditor" path="/EPICTest/test_Debugger.pl"/>
-<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.epic.perleditor.editors.PerlEditor" path="/EPICTest/test_Variables.pl"/>
-<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.epic.perleditor.editors.PerlEditor" path="/EPICTest/test_Debugger2.pl"/>
-<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.epic.perleditor.editors.PerlEditor" path="/EPICTest/test_Debugger.pl"/>
-<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.epic.perleditor.editors.PerlEditor" path="/EPICTest/test_Debugger2.pl"/>
-<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.epic.perleditor.editors.PerlEditor" path="/EPICTest/test_Debugger.pl"/>
-<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.epic.perleditor.editors.PerlEditor" path="/EPICTest/test_ExplainErrors.pl"/>
+<editor id="org.epic.perleditor.editors.PerlEditor" factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/EPICTest/test_Debugger2.pl"/>
+<editor id="org.epic.perleditor.editors.PerlEditor" factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/EPICTest/test_Debugger.pl"/>
+<editor id="org.epic.perleditor.editors.PerlEditor" factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/epic_links/1185456323934/Cwd.pm"/>
+<editor id="org.epic.perleditor.editors.PerlEditor" factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/EPICTest/test_Variables.pl"/>
+<editor id="org.epic.perleditor.editors.PerlEditor" factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/EPICTest/noinc/TestDebugger3.pm"/>
+<editor id="org.epic.perleditor.editors.PerlEditor" factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/EPICTest/test_Debugger.pl"/>
+<editor id="org.epic.perleditor.editors.PerlEditor" factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/EPICTest/test_Debugger2.pl"/>
+<editor id="org.epic.perleditor.editors.PerlEditor" factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/EPICTest/test_Debugger.pl"/>
+<editor id="org.epic.perleditor.editors.PerlEditor" factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/epic_links/1185456323934/Cwd.pm"/>
+<editor id="org.epic.perleditor.editors.PerlEditor" factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/EPICTest/test_Variables.pl"/>
+<editor id="org.epic.perleditor.editors.PerlEditor" factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/EPICTest/test_Debugger2.pl"/>
+<editor id="org.epic.perleditor.editors.PerlEditor" factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/EPICTest/noinc/TestDebugger3.pm"/>
+<editor id="org.epic.perleditor.editors.PerlEditor" factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/EPICTest/test_Debugger.pl"/>
 </editors>
-<item historyLabel="test_Debugger.pl" index="1">
-<position info="not_deleted" x="117" y="0"/>
+<item historyLabel="test_Debugger2.pl" index="0">
+<position/>
 </item>
 <item historyLabel="test_Debugger.pl" index="1">
-<position info="not_deleted" x="162" y="0"/>
-</item>
-<item historyLabel="test_Debugger.pl" index="1">
-<position info="not_deleted" x="185" y="0"/>
-</item>
-<item historyLabel="test_Debugger.pl" index="1">
-<position info="not_deleted" x="203" y="0"/>
-</item>
-<item historyLabel="test_Debugger.pl" index="1">
-<position info="not_deleted" x="226" y="0"/>
-</item>
-<item historyLabel="test_Debugger.pl" index="1">
-<position info="not_deleted" x="242" y="0"/>
-</item>
-<item historyLabel="test_Debugger.pl" index="1">
-<position info="not_deleted" x="258" y="0"/>
-</item>
-<item historyLabel="test_Debugger.pl" index="1">
-<position info="not_deleted" x="278" y="0"/>
-</item>
-<item historyLabel="test_Debugger.pl" index="1">
-<position info="not_deleted" x="321" y="0"/>
+<position/>
 </item>
 <item historyLabel="test_Debugger2.pl" index="0">
-<position info="not_deleted" x="29" y="0"/>
-</item>
-<item historyLabel="test_Variables.pl" index="2">
-<position info="not_deleted" x="228" y="0"/>
-</item>
-<item historyLabel="test_Debugger2.pl" index="3">
 <position/>
 </item>
-<item historyLabel="test_Debugger.pl" index="4">
-<position info="not_deleted" x="117" y="0"/>
+<item historyLabel="test_Debugger.pl" index="1">
+<position x="84" y="0" info="not_deleted"/>
 </item>
-<item historyLabel="test_Debugger.pl" index="4">
-<position info="not_deleted" x="242" y="0"/>
+<item historyLabel="test_Debugger.pl" index="1">
+<position x="97" y="0" info="not_deleted"/>
 </item>
-<item historyLabel="test_Debugger2.pl" index="3">
+<item historyLabel="test_Debugger.pl" index="1">
+<position x="117" y="0" info="not_deleted"/>
+</item>
+<item historyLabel="test_Debugger.pl" index="1">
+<position x="162" y="0" info="not_deleted"/>
+</item>
+<item historyLabel="test_Debugger.pl" index="1">
+<position x="185" y="0" info="not_deleted"/>
+</item>
+<item historyLabel="test_Debugger.pl" index="1">
+<position x="203" y="0" info="not_deleted"/>
+</item>
+<item historyLabel="test_Debugger.pl" index="1">
+<position x="226" y="0" info="not_deleted"/>
+</item>
+<item historyLabel="test_Debugger.pl" index="1">
+<position x="242" y="0" info="not_deleted"/>
+</item>
+<item historyLabel="test_Debugger.pl" index="1">
+<position x="258" y="0" info="not_deleted"/>
+</item>
+<item historyLabel="test_Debugger.pl" index="1">
+<position x="278" y="0" info="not_deleted"/>
+</item>
+<item historyLabel="Cwd.pm" index="2">
+<position x="5562" y="0" info="not_deleted"/>
+</item>
+<item historyLabel="test_Debugger.pl" index="1">
+<position x="321" y="0" info="not_deleted"/>
+</item>
+<item historyLabel="test_Debugger2.pl" index="0">
+<position x="29" y="0" info="not_deleted"/>
+</item>
+<item historyLabel="test_Variables.pl" index="3">
 <position/>
 </item>
-<item historyLabel="test_Debugger.pl" index="4">
-<position info="not_deleted" x="54" y="0"/>
-</item>
-<item historyLabel="test_Debugger2.pl" index="3">
+<item historyLabel="TestDebugger3.pm" index="4">
 <position/>
 </item>
-<item historyLabel="test_Debugger.pl" index="4">
-<position info="not_deleted" x="84" y="0"/>
-</item>
-<item historyLabel="test_Debugger.pl" index="4">
-<position info="not_deleted" x="97" y="0"/>
-</item>
-<item historyLabel="test_Debugger.pl" index="4">
-<position info="not_deleted" x="117" y="0"/>
-</item>
-<item historyLabel="test_Debugger.pl" index="4">
-<position info="not_deleted" x="162" y="0"/>
-</item>
-<item historyLabel="test_Debugger.pl" index="4">
-<position info="not_deleted" x="185" y="0"/>
-</item>
-<item historyLabel="test_Debugger.pl" index="4">
-<position info="not_deleted" x="203" y="0"/>
-</item>
-<item historyLabel="test_Debugger.pl" index="4">
-<position info="not_deleted" x="226" y="0"/>
-</item>
-<item historyLabel="test_Debugger.pl" index="4">
-<position info="not_deleted" x="242" y="0"/>
-</item>
-<item historyLabel="test_Debugger.pl" index="4">
-<position info="not_deleted" x="258" y="0"/>
-</item>
-<item historyLabel="test_Debugger.pl" index="4">
-<position info="not_deleted" x="278" y="0"/>
-</item>
-<item historyLabel="test_Debugger.pl" index="4">
-<position info="not_deleted" x="321" y="0"/>
-</item>
-<item historyLabel="test_Debugger2.pl" index="3">
-<position info="not_deleted" x="29" y="0"/>
-</item>
-<item historyLabel="test_Variables.pl" index="2">
-<position info="not_deleted" x="228" y="0"/>
-</item>
-<item historyLabel="test_Debugger2.pl" index="5">
+<item historyLabel="test_Debugger.pl" index="5">
 <position/>
 </item>
-<item historyLabel="test_Debugger.pl" index="6">
-<position info="not_deleted" x="117" y="0"/>
+<item historyLabel="TestDebugger3.pm" index="4">
+<position x="31" y="0" info="not_deleted"/>
 </item>
-<item historyLabel="test_Debugger.pl" index="6">
-<position info="not_deleted" x="242" y="0"/>
+<item historyLabel="test_Debugger.pl" index="5">
+<position x="315" y="0" info="not_deleted"/>
 </item>
-<item historyLabel="test_Debugger2.pl" index="5">
+<item historyLabel="TestDebugger3.pm" index="4">
+<position x="31" y="0" info="not_deleted"/>
+</item>
+<item historyLabel="test_Debugger2.pl" index="6">
 <position/>
 </item>
-<item historyLabel="test_Debugger.pl" index="6">
-<position info="not_deleted" x="54" y="0"/>
+<item historyLabel="TestDebugger3.pm" index="4">
+<position x="34" y="0" info="not_deleted"/>
 </item>
-<item historyLabel="test_Debugger2.pl" index="5">
+<item historyLabel="test_Debugger.pl" index="7">
 <position/>
 </item>
-<item historyLabel="test_Debugger.pl" index="6">
-<position info="not_deleted" x="84" y="0"/>
-</item>
-<item historyLabel="test_Debugger.pl" index="6">
-<position info="not_deleted" x="97" y="0"/>
-</item>
-<item historyLabel="test_Debugger.pl" index="6">
-<position info="not_deleted" x="117" y="0"/>
-</item>
-<item historyLabel="test_Debugger.pl" index="6">
-<position info="not_deleted" x="162" y="0"/>
-</item>
-<item historyLabel="test_Debugger.pl" index="6">
-<position info="not_deleted" x="185" y="0"/>
-</item>
-<item historyLabel="test_Debugger.pl" index="6">
-<position info="not_deleted" x="203" y="0"/>
-</item>
-<item historyLabel="test_Debugger.pl" index="6">
-<position info="not_deleted" x="226" y="0"/>
-</item>
-<item historyLabel="test_Debugger.pl" index="6">
-<position info="not_deleted" x="242" y="0"/>
-</item>
-<item historyLabel="test_Debugger.pl" index="6">
-<position info="not_deleted" x="258" y="0"/>
-</item>
-<item historyLabel="test_Debugger.pl" index="6">
-<position info="not_deleted" x="278" y="0"/>
-</item>
-<item historyLabel="test_Debugger.pl" index="6">
-<position info="not_deleted" x="321" y="0"/>
-</item>
-<item historyLabel="test_Debugger2.pl" index="5">
-<position info="not_deleted" x="29" y="0"/>
-</item>
-<item historyLabel="test_Variables.pl" index="2">
-<position info="not_deleted" x="228" y="0"/>
-</item>
-<item active="true" historyLabel="test_ExplainErrors.pl" index="7">
+<item historyLabel="test_Debugger.pl" index="7">
 <position/>
+</item>
+<item historyLabel="test_Debugger2.pl" index="6">
+<position/>
+</item>
+<item historyLabel="test_Debugger.pl" index="7">
+<position/>
+</item>
+<item historyLabel="test_Debugger2.pl" index="6">
+<position/>
+</item>
+<item historyLabel="test_Debugger.pl" index="7">
+<position/>
+</item>
+<item historyLabel="TestDebugger3.pm" index="4">
+<position x="34" y="0" info="not_deleted"/>
+</item>
+<item historyLabel="test_Debugger.pl" index="7">
+<position x="143" y="0" info="not_deleted"/>
+</item>
+<item historyLabel="test_Debugger.pl" index="7">
+<position x="156" y="0" info="not_deleted"/>
+</item>
+<item historyLabel="test_Debugger.pl" index="7">
+<position x="176" y="0" info="not_deleted"/>
+</item>
+<item historyLabel="test_Debugger.pl" index="7">
+<position x="221" y="0" info="not_deleted"/>
+</item>
+<item historyLabel="test_Debugger.pl" index="7">
+<position x="244" y="0" info="not_deleted"/>
+</item>
+<item historyLabel="test_Debugger.pl" index="7">
+<position x="262" y="0" info="not_deleted"/>
+</item>
+<item historyLabel="test_Debugger.pl" index="7">
+<position x="285" y="0" info="not_deleted"/>
+</item>
+<item historyLabel="test_Debugger.pl" index="7">
+<position x="301" y="0" info="not_deleted"/>
+</item>
+<item historyLabel="test_Debugger.pl" index="7">
+<position x="317" y="0" info="not_deleted"/>
+</item>
+<item historyLabel="test_Debugger.pl" index="7">
+<position x="337" y="0" info="not_deleted"/>
+</item>
+<item historyLabel="Cwd.pm" index="8">
+<position x="5562" y="0" info="not_deleted"/>
+</item>
+<item historyLabel="test_Debugger.pl" index="7">
+<position x="380" y="0" info="not_deleted"/>
+</item>
+<item historyLabel="test_Debugger2.pl" index="6">
+<position x="29" y="0" info="not_deleted"/>
+</item>
+<item historyLabel="test_Variables.pl" index="9">
+<position x="413" y="0" info="not_deleted"/>
+</item>
+<item historyLabel="test_Debugger2.pl" index="10">
+<position/>
+</item>
+<item historyLabel="TestDebugger3.pm" index="11">
+<position x="34" y="0" info="not_deleted"/>
+</item>
+<item historyLabel="test_Debugger.pl" index="12">
+<position x="176" y="0" info="not_deleted"/>
+</item>
+<item historyLabel="test_Debugger.pl" index="12">
+<position x="301" y="0" info="not_deleted"/>
+</item>
+<item active="true" historyLabel="test_Debugger2.pl" index="10">
+<position x="29" y="0" info="not_deleted"/>
 </item>
 </navigationHistory>
 <stickyState>
@@ -439,6 +448,18 @@
 </trimLayout>
 </window>
 <mruList>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.epic.perleditor.editors.PerlEditor" name="test_Debugger2.pl" tooltip="EPICTest/test_Debugger2.pl">
+<persistable path="/EPICTest/test_Debugger2.pl"/>
+</file>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.epic.perleditor.editors.PerlEditor" name="test_Variables.pl" tooltip="EPICTest/test_Variables.pl">
+<persistable path="/EPICTest/test_Variables.pl"/>
+</file>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.epic.perleditor.editors.PerlEditor" name="test_Debugger.pl" tooltip="EPICTest/test_Debugger.pl">
+<persistable path="/EPICTest/test_Debugger.pl"/>
+</file>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.epic.perleditor.editors.PerlEditor" name="TestDebugger3.pm" tooltip="EPICTest/noinc/TestDebugger3.pm">
+<persistable path="/EPICTest/noinc/TestDebugger3.pm"/>
+</file>
 <file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.epic.perleditor.editors.PerlEditor" name="test_Folding.pl" tooltip="EPICTest/test_Folding.pl">
 <persistable path="/EPICTest/test_Folding.pl"/>
 </file>
@@ -460,15 +481,6 @@
 <file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.epic.perleditor.editors.PerlEditor" name="test_PerlDoc.pl" tooltip="EPICTest/test_PerlDoc.pl">
 <persistable path="/EPICTest/test_PerlDoc.pl"/>
 </file>
-<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.epic.perleditor.editors.PerlEditor" name="test_Variables.pl" tooltip="EPICTest/test_Variables.pl">
-<persistable path="/EPICTest/test_Variables.pl"/>
-</file>
-<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.epic.perleditor.editors.PerlEditor" name="test_Debugger.pl" tooltip="EPICTest/test_Debugger.pl">
-<persistable path="/EPICTest/test_Debugger.pl"/>
-</file>
-<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.epic.perleditor.editors.PerlEditor" name="test_Debugger2.pl" tooltip="EPICTest/test_Debugger2.pl">
-<persistable path="/EPICTest/test_Debugger2.pl"/>
-</file>
 <file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.epic.perleditor.editors.PerlEditor" name="TestOpenSub.pm" tooltip="EPICTest/lib/TestOpenSub.pm">
 <persistable path="/EPICTest/lib/TestOpenSub.pm"/>
 </file>
@@ -478,11 +490,8 @@
 <file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.epic.perleditor.editors.PerlEditor" name="test_OpenSub.pl" tooltip="EPICTest/test_OpenSub.pl">
 <persistable path="/EPICTest/test_OpenSub.pl"/>
 </file>
-<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.epic.perleditor.editors.PerlEditor" name="EPIC-TestEditorAssociation37509.pl" tooltip="epic_links/1163014819764/EPIC-TestEditorAssociation37509.pl">
-<persistable path="/epic_links/1163014819764/EPIC-TestEditorAssociation37509.pl"/>
-</file>
-<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.epic.perleditor.editors.PerlEditor" name="test_EditorAssociation.pre" tooltip="EPICTest/test_EditorAssociation.pre">
-<persistable path="/EPICTest/test_EditorAssociation.pre"/>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.epic.perleditor.editors.PerlEditor" name="EPIC-TestEditorAssociation26909.pl" tooltip="epic_links/1185456211439/EPIC-TestEditorAssociation26909.pl">
+<persistable path="/epic_links/1185456211439/EPIC-TestEditorAssociation26909.pl"/>
 </file>
 </mruList>
 </workbench>

@@ -69,13 +69,7 @@ sub dump_hash_expr
     my $frame_index = shift;
     my $varexpr = shift;
 
-    my $h = eval { PadWalker::peek_my(3 + $frame_index) };
-{
-    use Data::Dumper;
-    open(FL,'>>/tmp/res');
-    print FL Dumper($h);
-    close(FL);
-}     
+    my $h = eval { PadWalker::peek_my(3 + $frame_index) };     
     if (!$@) { dump_hash(eval($varexpr)); }
 }
 
@@ -229,26 +223,35 @@ sub _dump_package_var
 
     local (*dumpvar_epic::entry);
     *dumpvar_epic::entry = $val if (defined($val));
-
-    if ($key !~ /^_</ and defined $dumpvar_epic::entry) # SCALAR
+    
+    eval
     {
-    	_dump_entity('$'._unctrl($key), \$dumpvar_epic::entry);
-    }
-    if ($key !~ /^_</ and @dumpvar_epic::entry) # ARRAY
+        if ($key !~ /^_</ and defined $dumpvar_epic::entry) # SCALAR
+        {
+        	_dump_entity('$'._unctrl($key), \$dumpvar_epic::entry);
+        }
+        if ($key !~ /^_</ and @dumpvar_epic::entry) # ARRAY
+        {
+        	_dump_entity('@'.$key, \@dumpvar_epic::entry);
+        }
+        if ($key ne "main::" &&
+            $key ne "DB::" &&
+            %dumpvar_epic::entry &&
+            $key !~ /::$/ &&
+            $key !~ /^_</) # HASH
+        {
+        	_dump_entity('%'.$key, \%dumpvar_epic::entry);
+        }
+        if (defined(my $fileno = fileno(*entry)))
+        {
+        	_dump_entity("FileHandle($key)", \"fileno($fileno)");
+        }
+    };
+    if ($@ ne '')
     {
-    	_dump_entity('@'.$key, \@dumpvar_epic::entry);
-    }
-    if ($key ne "main::" &&
-        $key ne "DB::" &&
-        %dumpvar_epic::entry &&
-        $key !~ /::$/ &&
-        $key !~ /^_</) # HASH
-    {
-    	_dump_entity('%'.$key, \%dumpvar_epic::entry)
-    }
-    if (defined(my $fileno = fileno(*entry)))
-    {
-    	_dump_entity("FileHandle($key)", \"fileno($fileno)")
+        # Do not let the error spread to our caller.
+        # See Bug 1735629 for a real example in which $@ ne '' here.
+        _dump_entity("Error($key)", \"$@");
     }
 }
 

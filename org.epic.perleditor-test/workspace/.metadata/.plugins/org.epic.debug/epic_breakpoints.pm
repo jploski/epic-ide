@@ -39,6 +39,17 @@ sub add_breakpoint
     # note/TODO: $@ ne '' here if the line was not breakable
 }
 
+# Converts a relative path in the debugger file system to absolute.
+#
+# @param source_path    relative path to the source file
+#
+sub get_abs_path
+{
+    no warnings;
+    eval { print $DB::OUT _abs_path(@_) };
+    # TODO: some sort of error reporting?
+}
+
 # Removes a breakpoint from a given source file.
 # Depending on the debugger's state the breakpoint is removed immediately
 # or added to the pending list. The invoker should not care.
@@ -113,6 +124,8 @@ sub _add_pending
 sub _postponed
 {
     my $filename = shift;
+    return if (index($filename, ' (autosplit') > 0); # see bug 1742003
+    
     my $line = shift;
     my $source_path = _abs_path($filename);
     

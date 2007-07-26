@@ -1,0 +1,8 @@
+package TestDebugger3;
+
+sub foobar
+{
+	print "Hello, world\n";
+}
+
+1;

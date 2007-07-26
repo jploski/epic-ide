@@ -2,10 +2,14 @@
 
 use strict;
 use warnings;
+use lib 'noinc';
 
 use Cwd;
+use TestDebugger3;
 
 require 'test_Debugger2.pl';
+
+TestDebugger3::foo();
 
 my $x = 123;
 my $str = 'string';

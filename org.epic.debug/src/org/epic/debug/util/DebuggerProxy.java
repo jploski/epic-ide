@@ -18,7 +18,6 @@ public class DebuggerProxy extends PlatformObject
     private OutputStreamMonitor mMonitorError;
     private OutputStreamMonitor mMonitorOut;
     private InputStreamMonitor mMonitorIn;
-    private PrintWriter mOut;
     private ILaunch mLaunch;
     private PerlDebugThread mDebugger;
     private String mLabel;
@@ -59,7 +58,6 @@ public class DebuggerProxy extends PlatformObject
         mMonitorOut.startMonitoring();
         mMonitorError.startMonitoring();
 
-        mOut = mIOStream.getWriteStream();
         mLabel = "Remote Perl Script";
     }
     
@@ -154,7 +152,7 @@ public class DebuggerProxy extends PlatformObject
 
     public void write(String input) throws IOException
     {
-        if (mOut != null) mOut.print(input);
+        if (mMonitorIn != null) mMonitorIn.write(input);
     }
 
     private void create()

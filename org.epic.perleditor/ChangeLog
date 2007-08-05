@@ -2,9 +2,10 @@ Eclipse Perl Integration:
 
 CVS
 		Debugger:
+		* Fixed Bug [ 1767958 ] STDIN not forwarded in remote debug mode
 
 		Editor:
-		* Fixed Bug [ 1760636 ] Error notifying a preference change listener.
+		* Fixed Bug [ 1760636 ] Error notifying a preference change listener
 
 Version 0.6.12 - 26-July-2007
 		Debugger:

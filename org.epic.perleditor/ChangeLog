@@ -2,6 +2,11 @@ Eclipse Perl Integration:
 
 CVS
 		Debugger:
+
+		Editor:
+
+Version 0.6.13 - 8-August-2007
+		Debugger:
 		* Fixed Bug [ 1767958 ] STDIN not forwarded in remote debug mode
 
 		Editor:

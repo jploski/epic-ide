@@ -70,7 +70,7 @@ public class RegExpPlugin extends AbstractUIPlugin {
 			
 		try
 		{
-			installURL = Platform.resolve(installURL);
+			installURL = FileLocator.resolve(installURL);
 		} catch (IOException e)
 		{
 			e.printStackTrace();

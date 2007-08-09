@@ -1,35 +1,41 @@
 package org.epic.regexp.views;
 
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.ui.actions.ActionFactory;
-import org.eclipse.ui.part.*;
-import org.eclipse.swt.graphics.Image;
-import org.eclipse.jface.action.*;
-import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.ui.*;
-import org.eclipse.swt.widgets.Menu;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.graphics.*;
-import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.custom.*;
-import org.eclipse.swt.events.FocusListener;
-import org.eclipse.swt.events.FocusEvent;
-import org.epic.regexp.RegExpPlugin;
+import gnu.regexp.RE;
+import gnu.regexp.REException;
+import gnu.regexp.REMatch;
 
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.StringTokenizer;
 
-import gnu.regexp.RE;
-import gnu.regexp.REMatch;
-import gnu.regexp.REException;
+import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.IMenuListener;
+import org.eclipse.jface.action.IMenuManager;
+import org.eclipse.jface.action.IToolBarManager;
+import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.action.Separator;
+import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.StyleRange;
+import org.eclipse.swt.custom.StyledText;
+import org.eclipse.swt.events.FocusEvent;
+import org.eclipse.swt.events.FocusListener;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Menu;
+import org.eclipse.ui.IActionBars;
+import org.eclipse.ui.actions.ActionFactory;
+import org.eclipse.ui.part.ViewPart;
 
 public class RegExpView extends ViewPart {
 
@@ -43,7 +49,6 @@ public class RegExpView extends ViewPart {
 	};
 
 	class DebugInfo {
-		private RE re;
 
 		private List subexpressions = new ArrayList();
 
@@ -211,7 +216,7 @@ public class RegExpView extends ViewPart {
 
 	private int debugPosition = 0;
 
-	private static final String SHORTCUTS_RESOURCE_BUNDLE = "org.epic.regexp.shortcuts";
+	private static final String SHORTCUTS_FILE = "shortcuts";
 
 	/**
 	 * The constructor.
@@ -318,7 +323,9 @@ public class RegExpView extends ViewPart {
 		manager.add(cutAction);
 		manager.add(copyAction);
 		manager.add(pasteAction);
-		createShortcutsMenu(manager);
+		if(regExpText.isFocusControl()) {
+			createShortcutsMenu(manager);
+		}
 
 		// Other plug-ins can contribute there actions here
 		manager.add(new Separator("Additions"));
@@ -345,12 +352,9 @@ public class RegExpView extends ViewPart {
 		Action shortcut;
 
 		try {
-			File shortcutsFile = new File(RegExpPlugin.getPlugInDir()
-					+ File.separator + "shortcuts");
+			 InputStream is = getClass().getResourceAsStream(SHORTCUTS_FILE);
 			
-			
-			FileInputStream fin = new FileInputStream(shortcutsFile);
-			BufferedReader br = new BufferedReader(new InputStreamReader(fin));
+			BufferedReader br = new BufferedReader(new InputStreamReader(is));
 
 			String line;
 
@@ -497,8 +501,6 @@ public class RegExpView extends ViewPart {
 			RE re = new RE(regExpText.getText(), eflags);
 
 			REMatch[] matches = re.getAllMatches(matchText.getText());
-
-			String matchesString = "";
 
 			result = matches.length > 0 ? true : false;
 

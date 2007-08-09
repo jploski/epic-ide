@@ -4,6 +4,9 @@ CVS
 		Debugger:
 
 		Editor:
+		
+		RegExp:
+		* Shorcuts context menu entries have been reenabled.
 
 Version 0.6.13 - 8-August-2007
 		Debugger:

@@ -1,5 +1,8 @@
 package TestOpenSub;
 
+use base qw(Exporter);
+our @EXPORT = qw(some_sub);
+
 sub other_sub
 {
 	print "this is my 

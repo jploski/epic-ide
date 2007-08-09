@@ -147,8 +147,16 @@ abstract class AbstractOpenDeclaration
         if (searchString == null) return Result.invalidSearch();
         
         String targetModule = getTargetModule(searchString);        
-        if (targetModule != null)
+        if (targetModule != null && targetModule.equals("main"))
         {
+            // Treat search for 'main::some_sub' exactly the same way
+            // as a search for 'some_sub'
+            targetModule = null;
+            searchString = getLocalSearchString(searchString);
+        }
+        
+        if (targetModule != null)
+        {   
             String localSearchString = getLocalSearchString(searchString);
             File moduleFile = findModuleFile(targetModule);
             

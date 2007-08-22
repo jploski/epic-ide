@@ -210,12 +210,7 @@ public abstract class PerlVariable extends DebugElement implements IVariable
      */
     public void setValue(IValue value) throws DebugException
     {
-        throw new DebugException(new Status(
-            Status.ERROR,
-            PerlDebugPlugin.getUniqueIdentifier(),
-            DebugException.NOT_SUPPORTED,
-            "Operation not supported",
-            null));
+    	throwNotSupported();
     }
 
     /**
@@ -294,9 +289,8 @@ public abstract class PerlVariable extends DebugElement implements IVariable
         
         LinkedList queue = new LinkedList();
         Set visited = new HashSet(); // to avoid infinite recursion
-        queue.add(getValue().getVariables());
-        
-        long t1 = System.currentTimeMillis();
+        queue.add(getPerlVariables(getValue()));
+
         while (!queue.isEmpty())
         {            
             IVariable[] vars = (IVariable[]) queue.removeFirst();
@@ -312,15 +306,25 @@ public abstract class PerlVariable extends DebugElement implements IVariable
                         return;
                     }
                     if (var.getValue().hasVariables())
-                        queue.add(var.getValue().getVariables());
-                }
-                if (System.currentTimeMillis() > t1 + 5000) 
-                {
-                    System.out.println("break");
+                        queue.add(getPerlVariables(var.getValue()));
                 }
             }
         }
         contentChanged = Boolean.FALSE;
+    }
+    
+    private IVariable[] getPerlVariables(IValue value) throws DebugException
+    {
+    	IVariable[] vars = value.getVariables();
+    	if (vars.length == 0 || vars[0] instanceof PerlVariable) return vars;
+    	else
+    	{
+    		assert vars[0] instanceof ArraySlice;
+    		List elements = new ArrayList();
+    		for (int i = 0; i < vars.length; i++)
+    			elements.addAll(Arrays.asList(getPerlVariables(vars[i].getValue()))); 
+    		return (IVariable[]) elements.toArray(new IVariable[elements.size()]);
+    	}
     }
     
     private void throwNotSupported() throws DebugException

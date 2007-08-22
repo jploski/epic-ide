@@ -21,7 +21,7 @@ class ArrayValue extends PerlValue
         throws DebugException
     {
         super(target, holder);
-        
+
         this.vars = parseArrayContent(dumpEntity("dump_array_expr"));
     }
     
@@ -38,15 +38,39 @@ class ArrayValue extends PerlValue
     private IVariable[] parseArrayContent(String content) throws DebugException
     {
         DumpedEntityReader r = new DumpedEntityReader(content);
+        List slices = null;
         List vars = new ArrayList();
         
         try
-        {        
+        {
+        	int i = 0, sliceStartI = 0;
             while (r.hasMoreEntities())
+            {
                 vars.add(new ArrayElement(
                     getHolder().getDebuggerInterface(),
                     getHolder(),
                     r.nextEntity()));
+
+                i++;
+                
+                if (vars.size() == 1000)
+                {
+                	if (slices == null) slices = new ArrayList();
+                	slices.add(new ArraySlice(getHolder(), vars, sliceStartI));
+                	sliceStartI = i;
+                	vars = new ArrayList();
+                }
+            }
+            if (slices != null)
+            {
+            	if (!vars.isEmpty())
+            		slices.add(new ArraySlice(getHolder(), vars, sliceStartI));
+            	return (IVariable[]) slices.toArray(new IVariable[slices.size()]);
+            }
+            else
+            {
+            	return (IVariable[]) vars.toArray(new IVariable[vars.size()]);
+            }
         }
         catch (Exception e)
         {
@@ -59,7 +83,5 @@ class ArrayValue extends PerlValue
                 "contents of the Variables view may become invalid",
                 e));
         }
-
-        return (IVariable[]) vars.toArray(new IVariable[vars.size()]);
     }
 }

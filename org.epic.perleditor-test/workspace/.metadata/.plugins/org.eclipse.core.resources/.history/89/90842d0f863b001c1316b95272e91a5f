@@ -1,8 +1,0 @@
-package Bar;
-
-sub boo
-{
-	print "Hello, world\n";
-}
-
-1;

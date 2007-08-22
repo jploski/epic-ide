@@ -8,7 +8,7 @@ public class TestEditorAssociation extends BasePDETestCase
 {
     public void testOpen() throws Exception
     {   
-        // This test checks whether opening files with a strang extension
+        // This test checks whether opening files with a strange extension
         // which are associated with the PerlEditor works as expected.
 
         assertOkay(openEditor("EPICTest/test_EditorAssociation.pre"));
@@ -38,7 +38,7 @@ public class TestEditorAssociation extends BasePDETestCase
         try
         {
             IDocument doc = editor.getViewer().getDocument();
-            assertTrue(PartitionTypes.getPerlPartitioner(doc) instanceof PerlPartitioner);
+            assertTrue(PartitionTypes.getPerlPartitioner(doc) instanceof PerlPartitioner);            
             assertTrue(editor.getViewer().getAnnotationModel() instanceof PerlSourceAnnotationModel);
         }
         finally

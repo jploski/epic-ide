@@ -4,6 +4,13 @@ CVS
 		Debugger:
 
 		Editor:
+
+Version 0.6.14 - 22-August-2007
+		Debugger:
+		* Fixed Bug [ 1779782 ] Variables view very slow showing big arrays
+		* Implemented Feature Request [ 1779784 ] Show array slices in Variables view
+
+		Editor:
 		* Fixed Bug [ 1771183 ] Open sub definition fails with main:: prefix
 		
 		RegExp:

@@ -4,6 +4,7 @@ CVS
 		Debugger:
 
 		Editor:
+		* Fixed Bug [ 1783596 ] Slow variable autocompletion
 
 Version 0.6.14 - 22-August-2007
 		Debugger:

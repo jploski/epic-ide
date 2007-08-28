@@ -7,11 +7,12 @@ import java.util.regex.Pattern;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.text.*;
 import org.eclipse.jface.text.contentassist.*;
-import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.editors.text.TextEditor;
 import org.epic.core.model.ISourceElement;
 import org.epic.core.util.PerlExecutor;
 import org.epic.perleditor.PerlEditorPlugin;
+import org.epic.perleditor.editors.PartitionTypes;
+import org.epic.perleditor.editors.PerlPartitioner;
 import org.epic.perleditor.preferences.CodeAssistPreferences;
 import org.epic.perleditor.templates.*;
 import org.epic.perleditor.templates.perl.*;
@@ -78,8 +79,8 @@ public class PerlCompletionProcessor implements IContentAssistProcessor
                     computeVariableProposals(viewer, documentOffset),
                     computeTemplateProposals(viewer, documentOffset)
                     ));
-		}
-	}
+        }
+    }
     
     public IContextInformation[] computeContextInformation(
         ITextViewer viewer,
@@ -151,6 +152,7 @@ public class PerlCompletionProcessor implements IContentAssistProcessor
         if (contextType == null) return NO_PROPOSALS;
 
     	Set variables = getCompletionVariables(viewer, documentOffset);
+
     	VariableEngine varsEngine = new VariableEngine(contextType);
 
 		varsEngine.complete(
@@ -185,13 +187,7 @@ public class PerlCompletionProcessor implements IContentAssistProcessor
     			String key = viewer.getDocument().get(documentOffset, 1);
     			if (variableChars.indexOf(key) != -1)
                 {
-    				variablesModel =
-    					SourceParser.getElements(
-    						viewer.getDocument(),
-                            "([$@%][a-z0-9A-Z_]+)\\s*[,)=;]",
-    						"",
-    						"",
-    						true);
+                    variablesModel = getVariableElements(viewer, documentOffset);
     			}
                 else if (filehandleChars.indexOf(key) != -1)
                 {
@@ -228,6 +224,35 @@ public class PerlCompletionProcessor implements IContentAssistProcessor
 		}
 		return variables;
 	}
+    
+    private List getVariableElements(ITextViewer viewer, int documentOffset)
+        throws BadLocationException
+    {
+        IDocument doc = viewer.getDocument();
+        IDocumentPartitioner p = 
+            ((IDocumentExtension3) doc).getDocumentPartitioner(
+                PartitionTypes.PERL_PARTITIONING);
+        
+        if (!(p instanceof PerlPartitioner)) return Collections.EMPTY_LIST;
+
+        ITypedRegion[] regions =
+            ((PerlPartitioner) p)
+            .computePartitioning(0, documentOffset);
+        
+        List elements = new ArrayList();
+
+        for (int i = 0; i < regions.length; i++)
+        {
+            if (regions[i].getType().equals(PartitionTypes.VARIABLE))
+            {
+                String name = doc.get(regions[i].getOffset(), regions[i].getLength());
+                if (name.length() > 1 && name.charAt(1) == '{') continue; // ignore ${@foo} and the like
+                elements.add(new SourceElement(
+                    name, regions[i].getOffset(), regions[i].getLength()));
+            }
+        }
+        return elements;
+    }
 
 	private String getClassName(int documentOffset, IDocument document)
     {

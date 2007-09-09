@@ -6,7 +6,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.eclipse.jface.text.IDocument;
-import org.epic.core.model.ISourceElement;
 
 /**
  * Used to match interesting patterns in source code.
@@ -110,7 +109,7 @@ public class SourceParser
             text,
             (flags & DELETE_POD) == DELETE_POD,
             (flags & DELETE_COMMENT) == DELETE_COMMENT);        
-        
+
         Pattern p = Pattern.compile(regexp, Pattern.MULTILINE | Pattern.DOTALL);
         Matcher m = p.matcher(text);
         List results = new ArrayList();
@@ -163,34 +162,5 @@ public class SourceParser
             while (m.find()) blankCharRange(textChars, m.start(), m.end());
         }
         return String.valueOf(textChars);
-    }
-    
-    private static class SourceElement implements ISourceElement
-    {
-        private final String name;
-        private final int offset;
-        private final int length;
-        
-        public SourceElement(String name, int offset, int length)
-        {
-            this.name = name;
-            this.offset = offset;
-            this.length = length;
-        }
-
-        public int getLength()
-        {
-            return length;
-        }
-
-        public String getName()
-        {
-            return name;
-        }
-
-        public int getOffset()
-        {
-            return offset;
-        }
     }
 }

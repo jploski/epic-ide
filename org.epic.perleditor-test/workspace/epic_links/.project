@@ -11,6 +11,11 @@
 	</natures>
 	<linkedResources>
 		<link>
+			<name>1189348420681</name>
+			<type>2</type>
+			<location>/linux2/usr/lib/perl/5.8.8</location>
+		</link>
+		<link>
 			<name>1187818501633</name>
 			<type>2</type>
 			<location>/tmp</location>

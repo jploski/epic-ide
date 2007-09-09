@@ -22,6 +22,12 @@ testing
 
 sub sixth; # no folding
 
+sub optional_1(;$) {
+}
+
+sub optional_2($;$) {
+}
+
 if (1)
 { 
     

@@ -167,6 +167,7 @@ public class SourceFile
         private PerlToken subKeyword;
         private PerlToken useKeyword;
         private PerlToken subName;
+        private boolean inSubProto;
         
         public ParsingState(List tokens)
         {
@@ -250,20 +251,33 @@ public class SourceFile
         
         private void updateSubState() throws BadLocationException
         {
-            if (subKeyword == null)
+            if (type == PerlTokenTypes.KEYWORD_SUB)
             {
-                if (type == PerlTokenTypes.KEYWORD_SUB) subKeyword = t;
+                subKeyword = t;
+                subName = null;
+                inSubProto = false;
             }
-            else
+            if (subKeyword != null)
             {
                 if (subName == null && type == PerlTokenTypes.WORD)
                 {
                     subName = t;
                 }
-                else if (type == PerlTokenTypes.SEMI)
+                else if (!inSubProto && type == PerlTokenTypes.SEMI)
                 {
+                    // Here we apparently have something like sub foo;
+                    // But not something like sub foo($;$) { ... }
                     subKeyword = null;
                     subName = null;
+                    inSubProto = false;
+                }
+                else if (type == PerlTokenTypes.OPEN_PAREN)
+                {
+                    inSubProto = true;
+                }
+                else if (type == PerlTokenTypes.CLOSE_PAREN)
+                {
+                    inSubProto = false;
                 }
                 else if (type == PerlTokenTypes.OPEN_CURLY)
                 {
@@ -275,6 +289,7 @@ public class SourceFile
                     }
                     subKeyword = null;
                     subName = null;
+                    inSubProto = false;
                 }
             }
         }

@@ -25,9 +25,9 @@ public class PerlCompletionProcessor implements IContentAssistProcessor
     private static final IPerlCompletionProposal[] NO_PROPOSALS =
         new IPerlCompletionProposal[0];
     
-    // package-scope to enable unit testing
-    static Pattern MODULE_PREFIX_PATTERN = Pattern.compile("([A-Za-z0-9_]+(::|->))+");
-    static Pattern VAR_PREFIX_PATTERN = Pattern.compile("\\$[A-Za-z0-9_]+(::|->)$");
+    // public to enable unit testing
+    public static Pattern MODULE_PREFIX_PATTERN = Pattern.compile("([A-Za-z0-9_]+(::|->))+");
+    public static Pattern VAR_PREFIX_PATTERN = Pattern.compile("\\$[A-Za-z0-9_]+(::|->)$");
     
 	private final IContextInformationValidator fValidator = new Validator();
     private final PerlCompletionProposalComparator fComparator = new PerlCompletionProposalComparator();    

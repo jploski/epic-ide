@@ -4,6 +4,8 @@ CVS
 		Debugger:
 
 		Editor:
+
+Version 0.6.15 - 9-September-2007
 		* Fixed Bug [ 1783596 ] Slow variable autocompletion
 		* Fixed Bug [ 1772573 ] subroutine folding fails if all parameters are optional
 

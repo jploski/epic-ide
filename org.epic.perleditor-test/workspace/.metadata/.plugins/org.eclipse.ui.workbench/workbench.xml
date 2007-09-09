@@ -8,16 +8,17 @@
 </perspectiveBar>
 <coolbarLayout locked="0">
 <coolItem id="group.file" itemType="typeGroupMarker"/>
-<coolItem id="org.eclipse.ui.workbench.file" itemType="typeToolBarContribution" x="96" y="26"/>
+<coolItem id="org.eclipse.ui.workbench.file" itemType="typeToolBarContribution" x="102" y="28"/>
 <coolItem id="additions" itemType="typeGroupMarker"/>
 <coolItem id="com.jpl.callback.actionSet" itemType="typeToolBarContribution" x="36" y="26"/>
 <coolItem id="com.jpl.test.actionSet" itemType="typeToolBarContribution" x="36" y="26"/>
-<coolItem id="org.eclipse.debug.ui.launchActionSet" itemType="typeToolBarContribution" x="78" y="26"/>
+<coolItem id="com.objfac.xmleditor.XMLActionSet" itemType="typeToolBarContribution" x="66" y="28"/>
+<coolItem id="org.eclipse.debug.ui.launchActionSet" itemType="typeToolBarContribution" x="82" y="28"/>
 <coolItem id="org.eclipse.jdt.ui.JavaElementCreationActionSet" itemType="typeToolBarContribution" x="96" y="26"/>
-<coolItem id="org.eclipse.search.searchActionSet" itemType="typeToolBarContribution" x="36" y="26"/>
-<coolItem id="org.epic.perleditor.toolbar.actionSet.presentation" itemType="typeToolBarContribution" x="36" y="26"/>
+<coolItem id="org.eclipse.search.searchActionSet" itemType="typeToolBarContribution" x="38" y="28"/>
+<coolItem id="org.epic.perleditor.toolbar.actionSet.presentation" itemType="typeToolBarContribution" x="38" y="28"/>
 <coolItem id="group.nav" itemType="typeGroupMarker"/>
-<coolItem id="org.eclipse.ui.workbench.navigate" itemType="typeToolBarContribution" x="104" y="26"/>
+<coolItem id="org.eclipse.ui.workbench.navigate" itemType="typeToolBarContribution" x="110" y="28"/>
 <coolItem id="group.editor" itemType="typeGroupMarker"/>
 <coolItem id="org.epic.perleditor.editors.PerlEditor" itemType="typePlaceholder" x="-1" y="-1"/>
 <coolItem id="group.help" itemType="typeGroupMarker"/>
@@ -50,7 +51,7 @@
 <element path="/EPICTest/lib"/>
 </expanded>
 <selection>
-<element path="/EPICTest"/>
+<element path="/epic_links"/>
 </selection>
 </viewState>
 </view>
@@ -317,26 +318,26 @@
 <file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.epic.perleditor.editors.PerlEditor" name="TestOpenSub.pm" tooltip="EPICTest/lib/TestOpenSub.pm">
 <persistable path="/EPICTest/lib/TestOpenSub.pm"/>
 </file>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.epic.perleditor.editors.PerlEditor" name="test_OpenSub3.pl" tooltip="EPICTest/test_OpenSub3.pl">
+<persistable path="/EPICTest/test_OpenSub3.pl"/>
+</file>
 <file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.epic.perleditor.editors.PerlEditor" name="test_OpenSub2.pl" tooltip="EPICTest/test_OpenSub2.pl">
 <persistable path="/EPICTest/test_OpenSub2.pl"/>
 </file>
 <file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.epic.perleditor.editors.PerlEditor" name="test_OpenSub.pl" tooltip="EPICTest/test_OpenSub.pl">
 <persistable path="/EPICTest/test_OpenSub.pl"/>
 </file>
-<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.epic.perleditor.editors.PerlEditor" name="EPIC-TestEditorAssociation27678.pl" tooltip="epic_links/1163014819764/EPIC-TestEditorAssociation27678.pl">
-<persistable path="/epic_links/1163014819764/EPIC-TestEditorAssociation27678.pl"/>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.epic.perleditor.editors.PerlEditor" name="EPIC-TestEditorAssociation22303.pl" tooltip="epic_links/1163014819764/EPIC-TestEditorAssociation22303.pl">
+<persistable path="/epic_links/1163014819764/EPIC-TestEditorAssociation22303.pl"/>
 </file>
 <file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.epic.perleditor.editors.PerlEditor" name="test_EditorAssociation.pre" tooltip="EPICTest/test_EditorAssociation.pre">
 <persistable path="/EPICTest/test_EditorAssociation.pre"/>
 </file>
-<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.epic.perleditor.editors.PerlEditor" name="EPIC-TestEditorAssociation11803.pl" tooltip="epic_links/1163014819764/EPIC-TestEditorAssociation11803.pl">
-<persistable path="/epic_links/1163014819764/EPIC-TestEditorAssociation11803.pl"/>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.epic.perleditor.editors.PerlEditor" name="EPIC-TestEditorAssociation19215.pl" tooltip="epic_links/1163014819764/EPIC-TestEditorAssociation19215.pl">
+<persistable path="/epic_links/1163014819764/EPIC-TestEditorAssociation19215.pl"/>
 </file>
-<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.epic.perleditor.editors.PerlEditor" name="TestPackage.pm" tooltip="EPICTest/lib/TestPackage.pm">
-<persistable path="/EPICTest/lib/TestPackage.pm"/>
-</file>
-<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.epic.perleditor.editors.PerlEditor" name="test_Completion.pl" tooltip="EPICTest/test_Completion.pl">
-<persistable path="/EPICTest/test_Completion.pl"/>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.epic.perleditor.editors.PerlEditor" name="EPIC-TestEditorAssociation27678.pl" tooltip="epic_links/1163014819764/EPIC-TestEditorAssociation27678.pl">
+<persistable path="/epic_links/1163014819764/EPIC-TestEditorAssociation27678.pl"/>
 </file>
 </mruList>
 </workbench>

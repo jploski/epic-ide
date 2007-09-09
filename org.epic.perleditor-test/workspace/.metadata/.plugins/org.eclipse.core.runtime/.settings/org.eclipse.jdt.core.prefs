@@ -1,4 +1,4 @@
-#Wed Nov 08 20:39:17 CET 2006
+#Sun Sep 09 17:05:42 CEST 2007
 eclipse.preferences.version=1
 org.eclipse.jdt.core.builder.resourceCopyExclusionFilter=,*.g
-org.eclipse.jdt.core.classpathVariable.ANTLR_HOME=/home/jpl/eclipse-workspaces/workspace-epic-testing/org.antlr
+org.eclipse.jdt.core.classpathVariable.ANTLR_HOME=/home/jpl/eclipse-workspaces/workspace-epic-stable/org.antlr

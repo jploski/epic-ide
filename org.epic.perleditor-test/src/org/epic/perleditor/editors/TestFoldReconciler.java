@@ -36,7 +36,7 @@ public class TestFoldReconciler extends BaseTestCase
         sourceFile.parse();
 
         uut.reconcile();
-        Assert.assertEquals(5, mockModel.size());
+        Assert.assertEquals(7, mockModel.size());
 
         sourceFile = loadSourceFile("workspace/EPICTest/folding/test_folding1.pl");
         sourceFile.parse();

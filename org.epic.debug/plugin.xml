@@ -63,7 +63,7 @@
          	<action
                 label="Breakpoint Properties..."
                 class="org.epic.debug.ui.action.PerlBreakpointPropertiesRulerActionDelegate"
-                menubarPath="group.properties"
+                menubarPath="debug"
                 id="org.epic.debug.ui.action.PerlBreakpointPropertiesRulerActionDelegate">
             </action>
             <action

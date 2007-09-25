@@ -4,6 +4,7 @@ CVS
 		Debugger:
 
 		Editor:
+		* Fixed Bug [ 1802186 ] Breakpoint properties label missing
 
 Version 0.6.15 - 9-September-2007
 		* Fixed Bug [ 1783596 ] Slow variable autocompletion

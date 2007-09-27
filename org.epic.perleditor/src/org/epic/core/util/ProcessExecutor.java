@@ -41,7 +41,7 @@ public class ProcessExecutor
      */
     public ProcessExecutor(String charsetName)
     {
-        this.charsetName = null;
+        this.charsetName = charsetName;
         this.stdout = new StringReaderThread(":ProcessExecutor:stdout");
         this.stderr = new StringReaderThread(":ProcessExecutor:stderr");        
     }

@@ -71,6 +71,11 @@ public class SourceFormatter extends ScriptExecutor
             return toFormat;
         }
     }
+    
+    protected String getCharsetName()
+    {
+        return "utf8";
+    }
 
     /*
      * @see org.epic.core.util.ScriptExecutor#getCommandLineOpts(java.util.List)

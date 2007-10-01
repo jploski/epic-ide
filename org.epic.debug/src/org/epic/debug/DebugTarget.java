@@ -99,6 +99,11 @@ public class DebugTarget extends PerlTarget
     {
         return pathMapper;
     }
+    
+    public IThread getThread()
+    {
+    	return thread;
+    }
 
     public IThread[] getThreads() throws DebugException
     {

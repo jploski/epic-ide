@@ -73,7 +73,8 @@ public abstract class ScriptExecutor
     {
         File workingDir = getWorkingDir();
 
-        PerlExecutor executor = new PerlExecutor(ignoresBrokenPipe());
+        PerlExecutor executor = new PerlExecutor(
+            getCharsetName(), ignoresBrokenPipe());
         try
         {
             List cmdArgs = new ArrayList(1);
@@ -101,6 +102,17 @@ public abstract class ScriptExecutor
         {
             executor.dispose();
         }
+    }
+
+    /**
+     * @return name of a supported
+     *         {@link java.nio.charset.Charset </code>charset<code>}
+     *         which should be used to encode/decode communication with
+     *         the Perl interpreter, or null to use platform default
+     */
+    protected String getCharsetName()
+    {
+        return null;
     }
 
     /**

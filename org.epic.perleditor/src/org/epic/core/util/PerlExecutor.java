@@ -48,7 +48,22 @@ public class PerlExecutor
      */
     public PerlExecutor(boolean ignoreBrokenPipe)
     {
-        executor = new ProcessExecutor(); // TODO: charset?
+        this(null, ignoreBrokenPipe);
+    }
+    
+    /**
+     * This constructor is for PerlValidator's use, other clients should
+     * have no need to use it.
+     * 
+     * @param charsetName
+     *        The name of a supported
+     *        {@link java.nio.charset.Charset </code>charset<code>}
+     * @param ignoreBrokenPipe
+     *        see {@link ProcessExecutor#ignoreBrokenPipe}
+     */
+    public PerlExecutor(String charsetName, boolean ignoreBrokenPipe)
+    {
+        executor = new ProcessExecutor(charsetName);
         if (ignoreBrokenPipe) executor.ignoreBrokenPipe();
     }
     

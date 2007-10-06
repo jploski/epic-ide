@@ -55,9 +55,9 @@ public class PerlEditorPreferencePage extends PreferencePage implements IWorkben
 		new OverlayPreferenceStore.OverlayKey(OverlayPreferenceStore.INT, PreferenceConstants.INSERT_TABS_ON_INDENT),
 		new OverlayPreferenceStore.OverlayKey(OverlayPreferenceStore.BOOLEAN, PreferenceConstants.SPACES_INSTEAD_OF_TABS),
 		new OverlayPreferenceStore.OverlayKey(OverlayPreferenceStore.STRING, PreferenceConstants.EDITOR_LINE_NUMBER_RULER_COLOR),
+        new OverlayPreferenceStore.OverlayKey(OverlayPreferenceStore.BOOLEAN, PreferenceConstants.EDITOR_LINE_WRAP),
 		new OverlayPreferenceStore.OverlayKey(OverlayPreferenceStore.BOOLEAN, PreferenceConstants.EDITOR_LINE_NUMBER_RULER),
 		new OverlayPreferenceStore.OverlayKey(OverlayPreferenceStore.STRING, PreferenceConstants.EDITOR_LINE_NUMBER_RULER_COLOR),
-		new OverlayPreferenceStore.OverlayKey(OverlayPreferenceStore.BOOLEAN, PreferenceConstants.EDITOR_LINE_NUMBER_RULER),
 		new OverlayPreferenceStore.OverlayKey(OverlayPreferenceStore.STRING, PreferenceConstants.EDITOR_CURRENT_LINE_COLOR),
 		new OverlayPreferenceStore.OverlayKey(OverlayPreferenceStore.BOOLEAN, PreferenceConstants.EDITOR_CURRENT_LINE),
 		new OverlayPreferenceStore.OverlayKey(OverlayPreferenceStore.STRING, PreferenceConstants.EDITOR_PRINT_MARGIN_COLOR),
@@ -525,8 +525,11 @@ public class PerlEditorPreferencePage extends PreferencePage implements IWorkben
 		addCheckBox(appearanceComposite, PreferencesMessages.showOverviewRuler,
                 PreferenceConstants.EDITOR_OVERVIEW_RULER, 0);
 
-		addCheckBox(appearanceComposite, PreferencesMessages.showLineNumbers,
-                PreferenceConstants.EDITOR_LINE_NUMBER_RULER, 0);
+        addCheckBox(appearanceComposite, PreferencesMessages.showLineNumbers,
+            PreferenceConstants.EDITOR_LINE_NUMBER_RULER, 0);
+        
+		addCheckBox(appearanceComposite, PreferencesMessages.wrapLines,
+                PreferenceConstants.EDITOR_LINE_WRAP, 0);
 
 //		addCheckBox(appearanceComposite, PreferencesMessages.highlightMatchingBrackets,
 //		        PreferenceConstants.EDITOR_MATCHING_BRACKETS, 0);

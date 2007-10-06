@@ -89,6 +89,15 @@ public class PreferenceConstants {
      */
     public final static String EDITOR_SUB_WORD_NAVIGATION= "subWordNavigation"; //$NON-NLS-1$
 
+    /**
+     * A named preference that controls whether the 'line wrap' feature is
+     * enabled.
+     * <p>
+     * Value is of type <code>Boolean</code>.
+     * </p>
+     */
+    public final static String EDITOR_LINE_WRAP = "lineWrap"; //$NON-NLS-1$
+
 	/**
 	 * A named preference that controls whether source folding is turned on or off.
 	 * <p>
@@ -564,6 +573,8 @@ public class PreferenceConstants {
 
             store.setDefault(PreferenceConstants.EDITOR_SMART_HOME_END, true);
             store.setDefault(PreferenceConstants.EDITOR_SUB_WORD_NAVIGATION, true);
+
+            store.setDefault(PreferenceConstants.EDITOR_LINE_WRAP, false);
 
 			store.setDefault(PreferenceConstants.INSERT_TABS_ON_INDENT, 1);
 

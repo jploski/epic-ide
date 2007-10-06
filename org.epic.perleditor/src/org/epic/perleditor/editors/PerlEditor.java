@@ -547,6 +547,8 @@ public class PerlEditor extends TextEditor implements IPropertyChangeListener
         // configured
         installBracketMatcher();
         getSourceViewerDecorationSupport(sourceViewer);
+        
+        sourceViewer.getTextWidget().setWordWrap(true);
 
         return sourceViewer;
     }
@@ -574,6 +576,19 @@ public class PerlEditor extends TextEditor implements IPropertyChangeListener
                     if (newValue) installAnnotationListener();
                     else uninstallAnnotationListener();
                 }
+            }
+            else if (event.getProperty().equals(PreferenceConstants.EDITOR_LINE_WRAP))
+            {
+                boolean oldValue = event.getOldValue() != null
+                    ? Boolean.valueOf(event.getOldValue().toString()).booleanValue()
+                    : false;
+
+                boolean newValue = event.getOldValue() != null
+                    ? Boolean.valueOf(event.getNewValue().toString()).booleanValue()
+                    : false;
+
+                if (newValue != oldValue)
+                    sourceViewer.getTextWidget().setWordWrap(newValue);
             }
             else
             {

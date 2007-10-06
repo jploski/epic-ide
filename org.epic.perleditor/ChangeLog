@@ -2,6 +2,11 @@ Eclipse Perl Integration:
 
 CVS
 		Debugger:
+
+		Editor:
+
+Version 0.6.16 - 6-October-2007
+		Debugger:
 		* Fixed Bug [ 1805904 ] Cannot terminate CGI debugging session
 
 		Editor:

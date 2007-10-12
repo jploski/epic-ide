@@ -4,6 +4,7 @@ CVS
 		Debugger:
 
 		Editor:
+		* Implemented Feature Request [ 1812499 ] Refresh outline explicitly
 
 Version 0.6.16 - 6-October-2007
 		Debugger:

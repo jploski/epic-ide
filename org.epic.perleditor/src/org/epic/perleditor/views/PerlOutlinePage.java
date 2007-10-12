@@ -1,11 +1,15 @@
 package org.epic.perleditor.views;
 
-import java.util.*;
+import java.util.Iterator;
 
+import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.viewers.*;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.views.contentoutline.ContentOutlinePage;
-import org.epic.core.model.*;
+import org.epic.core.ResourceMessages;
+import org.epic.core.model.SourceFile;
+import org.epic.core.model.Subroutine;
 
 public class PerlOutlinePage extends ContentOutlinePage
 {
@@ -33,6 +37,19 @@ public class PerlOutlinePage extends ContentOutlinePage
         viewer.setSorter(new ViewerSorter());
         viewer.setInput(source);
         viewer.expandAll();
+        
+        IMenuManager menuMan = getSite().getActionBars().getMenuManager();
+        menuMan.add(new RefreshAction());
+    }
+    
+    public void refresh()
+    {
+        if (source != null)
+        {
+            SourceFile sameSource = source;
+            source = null;
+            updateContent(sameSource);
+        }
     }
 
     public void updateContent(SourceFile source)
@@ -68,5 +85,26 @@ public class PerlOutlinePage extends ContentOutlinePage
             setSelection(new StructuredSelection(lastCaretSub));
         else
             setSelection(StructuredSelection.EMPTY);
+    }
+    
+    /**
+     * This action is here as a fault tolerance measure - the outline
+     * view may, unfortunately, become garbled due to some bug in EPIC.
+     * To alleviate this problem somewhat, we give the user a way for
+     * explicit recovery.
+     */
+    private class RefreshAction extends Action
+    {
+        public RefreshAction()
+        {
+            setText(ResourceMessages.getString("PerlOutlinePage.RefreshAction.label")); //$NON-NLS-1$
+            setToolTipText(ResourceMessages.getString("PerlOutlinePage.RefreshAction.tooltip")); //$NON-NLS-1$
+            setDescription(ResourceMessages.getString("PerlOutlinePage.RefreshAction.descr")); //$NON-NLS-1$
+        }
+        
+        public void run()
+        {
+            refresh();
+        }
     }
 }

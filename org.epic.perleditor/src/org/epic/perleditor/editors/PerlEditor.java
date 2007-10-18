@@ -548,7 +548,9 @@ public class PerlEditor extends TextEditor implements IPropertyChangeListener
         installBracketMatcher();
         getSourceViewerDecorationSupport(sourceViewer);
         
-        sourceViewer.getTextWidget().setWordWrap(true);
+        sourceViewer.getTextWidget().setWordWrap(
+            getPreferenceStore().getBoolean(
+                PreferenceConstants.EDITOR_LINE_WRAP));
 
         return sourceViewer;
     }

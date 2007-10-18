@@ -4,7 +4,10 @@ CVS
 		Debugger:
 
 		Editor:
+
+Version 0.6.17 - 18-October-2007
 		* Implemented Feature Request [ 1812499 ] Refresh outline explicitly
+		* Fixed Bug [ 1810913 ] word wrap option does not 'stick'
 
 Version 0.6.16 - 6-October-2007
 		Debugger:

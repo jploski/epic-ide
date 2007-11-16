@@ -20,7 +20,7 @@ COMMENT: '#' (NOT_NEWLINE)* (NEWLINE! | '\uFFFF'!);
 SEMI
 	: ';'
 	{
-		format = glob = afterArrow = false;
+		format = glob = afterArrow = afterDArrow = false;
 		qmarkRegexp = slashRegexp = true;
 		$setToken(createOperatorToken(PerlTokenTypes.SEMI, ";"));
 	}
@@ -158,7 +158,7 @@ SUBST_OR_MATCH_OR_WORD // this disambiguation rule disfavours EXPRs too much :-(
 	=> { notOper = true; } t1:WORD { $setToken(t1); }
 	| { !afterArrow }? (("tr" | 's' | 'y') ~'}')
 	=> SUBST_EXPR { $setType(PerlTokenTypes.SUBST_EXPR); }
-	| (("qq" | "qx" | "qw" | "qr" | 'm' | 'q') ~('a'..'z' | '0'..'9' | '_' | '}' | '\r' | '\n' | ' '))
+	| { !afterArrow || afterDArrow }? (("qq" | "qx" | "qw" | "qr" | 'm' | 'q') ~('a'..'z' | '0'..'9' | '_' | '}' | '\r' | '\n' | ' '))
 	=> MATCH_EXPR { $setType(PerlTokenTypes.MATCH_EXPR); }
 	| (NUMBER)
 	=> n:NUMBER { $setToken(n); }
@@ -190,7 +190,7 @@ OPER_DARROW
 	: "=>"
 	{
 		$setToken(createOperatorToken(PerlTokenTypes.OPER_DARROW, "=>"));
-		afterArrow = true;
+		afterArrow = afterDArrow = true;
 	};
 
 OPER_ARROW
@@ -211,7 +211,7 @@ OPER_NOTEQ
 
 OPER_EQMATCH
 	: "=~"
-	{ afterArrow = false; $setToken(createOperatorToken(PerlTokenTypes.OPER_EQMATCH, "=~")); };
+	{ afterArrow = afterDArrow = false; $setToken(createOperatorToken(PerlTokenTypes.OPER_EQMATCH, "=~")); };
 
 OPER_EQNOTMATCH
 	: "!~"
@@ -249,7 +249,7 @@ OPER_COMMA
 	: ','
 	{
 		$setToken(createOperatorToken(PerlTokenTypes.OPER_COMMA, ","));
-		afterArrow = false;
+		afterArrow = afterDArrow = false;
 	};
 
 OPER_EQ
@@ -277,7 +277,7 @@ OPER_DOTDOT
 
 OPER_DOT
 	: '.'
-	{ afterArrow = false; $setToken(createOperatorToken(PerlTokenTypes.OPER_DOT, ".")); };
+	{ afterArrow = afterDArrow = false; $setToken(createOperatorToken(PerlTokenTypes.OPER_DOT, ".")); };
 
 OPER_BSLASH
 	: '\\'
@@ -392,7 +392,7 @@ OPER_LT
 
 OPEN_POD
 	: { getColumn() == 1 }?
-	'=' (NOT_NEWLINE)+ (NEWLINE! | '\uFFFF'!)
+	'=' ID (NOT_NEWLINE)* (NEWLINE! | '\uFFFF'!)
 	{ getParent().expectPODEnd(); }
 	;
 
@@ -401,7 +401,7 @@ protected NUMBER
 	| ("0b" ('0' | '1' | '_')+)
 	| ('0'..'9') ('0'..'9' | '_')*
 	{
-		slashRegexp = qmarkRegexp = glob = afterArrow = false;
+		slashRegexp = qmarkRegexp = glob = afterArrow = afterDArrow = false;
 		$setType(PerlTokenTypes.NUMBER);
 	};
 

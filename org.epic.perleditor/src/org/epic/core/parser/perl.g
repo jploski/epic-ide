@@ -392,7 +392,7 @@ OPER_LT
 
 OPEN_POD
 	: { getColumn() == 1 }?
-	'=' (NOT_NEWLINE)+ (NEWLINE! | '\uFFFF'!)
+	'=' ID (NOT_NEWLINE)* (NEWLINE! | '\uFFFF'!)
 	{ getParent().expectPODEnd(); }
 	;
 

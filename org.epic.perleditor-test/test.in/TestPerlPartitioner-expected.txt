@@ -642,3 +642,19 @@ hello world
 1877:12:__dftl_partition_content_type:{mCustomerSet}
 1889:1:OPERATOR:{}}
 1890:1:OPERATOR:{;}
+1891:2:__dftl_partition_content_type:{
+
+}
+1893:13:COMMENT:{# bug 1833354}
+1906:1:__dftl_partition_content_type:{
+}
+1907:3:__dftl_partition_content_type:{foo}
+1910:1:OPERATOR:{(}
+1911:3:__dftl_partition_content_type:{key}
+1914:2:__dftl_partition_content_type:{ 
+}
+1916:2:OPERATOR:{=>}
+1918:1:__dftl_partition_content_type:{ }
+1919:1:NUMBER:{0}
+1920:1:OPERATOR:{)}
+1921:1:OPERATOR:{;}

@@ -4,6 +4,7 @@ CVS
 		Debugger:
 
 		Editor:
+		* Fixed Bug [ 1833354 ] => begins POD comment
 
 Version 0.6.17 - 18-October-2007
 		* Implemented Feature Request [ 1812499 ] Refresh outline explicitly

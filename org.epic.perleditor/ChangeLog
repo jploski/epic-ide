@@ -5,6 +5,7 @@ CVS
 
 		Editor:
 		* Fixed Bug [ 1833354 ] => begins POD comment
+		* Fixed Bug [ 1817653 ] No sync of outline view to cursor pos on collapsed subs
 
 Version 0.6.17 - 18-October-2007
 		* Implemented Feature Request [ 1812499 ] Refresh outline explicitly

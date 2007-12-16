@@ -628,7 +628,7 @@ public class PerlEditor extends TextEditor implements IPropertyChangeListener
         {
             syncToOutline = true;
 
-            int caretOffset = sourceViewer.getTextWidget().getCaretOffset();
+            int caretOffset = sourceViewer.getSelectedRange().x;
             int caretLine = source.getDocument().getLineOfOffset(caretOffset);
 
             outlinePage.updateSelection(caretLine);

@@ -277,7 +277,7 @@ public class PerlCompletionProcessor implements IContentAssistProcessor
 
 				// **** Get the classname ***
                 Pattern p = Pattern.compile(
-                    "\\" + objName + "\\s*=\\s*([a-zA-Z:->]+)(->|::|;)");
+                    "\\" + objName + "\\s*=\\s*([a-zA-Z:->0-9_]+)(->|::|;)");
                 Matcher m = p.matcher(text);
                 
                 String className = null;

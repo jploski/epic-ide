@@ -4,6 +4,9 @@ CVS
 		Debugger:
 
 		Editor:
+
+Version 0.6.18 - 10-January-2008
+		Editor:
 		* Fixed Bug [ 1833354 ] => begins POD comment
 		* Fixed Bug [ 1817653 ] No sync of outline view to cursor pos on collapsed subs
 		* Fixed Bug [ 1868914 ] Autocompletion fails when a mod name has digit, underscore

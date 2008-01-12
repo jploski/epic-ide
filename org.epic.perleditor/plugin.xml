@@ -404,11 +404,6 @@
                 class="org.epic.perleditor.actions.DefaultRetargetEditorDelegate"
                 menubarPath="org.epic.perleditor.contextMenu.source/criticGroup"
                 id="org.epic.perleditor.actions.ClearMarkerAction#Critic">
-                <enablement>
-                    <systemProperty
-                        name="sourceCriticEnabled"
-                        value="true" />
-                </enablement>
             </action>
             <action
                 definitionId="org.epic.perleditor.commands.perlCritic"
@@ -416,11 +411,6 @@
                 class="org.epic.perleditor.actions.DefaultRetargetEditorDelegate"
                 menubarPath="org.epic.perleditor.contextMenu.source/criticGroup"
                 id="org.epic.perleditor.actions.PerlCriticAction">
-                <enablement>
-                    <systemProperty
-                        name="sourceCriticEnabled"
-                        value="true" />
-                </enablement>
             </action>
 
 			<!-- miscGroup -->
@@ -531,11 +521,6 @@
                 retarget="true"
                 menubarPath="org.epic.perleditor.topLevelMenu.source/criticGroup"
                 id="org.epic.perleditor.actions.ClearMarkerAction#Critic">
-                <enablement>
-                    <systemProperty
-                        name="sourceCriticEnabled"
-                        value="true" />
-                </enablement>
             </action>
             <action
                 definitionId="org.epic.perleditor.commands.perlCritic"
@@ -543,11 +528,6 @@
                 retarget="true"
                 menubarPath="org.epic.perleditor.topLevelMenu.source/criticGroup"
                 id="org.epic.perleditor.actions.PerlCriticAction">
-                <enablement>
-                    <systemProperty
-                        name="sourceCriticEnabled"
-                        value="true" />
-                </enablement>
             </action>
 
 			<!-- html export -->
@@ -757,4 +737,10 @@
         </type>
     </extension>
 
-</plugin>
+	<extension point="org.eclipse.ui.perspectiveExtensions">
+		<perspectiveExtension targetID="org.epic.core.Perspective">
+        	<showInPart id="org.eclipse.ui.views.ResourceNavigator"/>
+        </perspectiveExtension>
+	</extension>
+</plugin>   
+

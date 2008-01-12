@@ -10,6 +10,7 @@ import org.eclipse.core.runtime.ILog;
 import org.epic.core.util.ScriptExecutor;
 import org.epic.core.util.StatusFactory;
 import org.epic.perleditor.preferences.PerlCriticPreferencePage;
+import org.epic.perleditor.preferences.PreferenceConstants;
 
 
 /**
@@ -32,7 +33,7 @@ public class SourceCritic extends ScriptExecutor
         super(log);
     }
 
-    //~ Methods
+    //~ Methods   
 
     public static Violation[] critique(IResource resource, ILog log)
     {

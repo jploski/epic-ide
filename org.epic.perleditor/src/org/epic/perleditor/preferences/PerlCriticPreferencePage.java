@@ -83,6 +83,12 @@ public class PerlCriticPreferencePage extends PreferencePage implements IWorkben
         return PerlEditorPlugin.getDefault().getPreferenceStore().getString(
                 PreferenceConstants.SOURCE_CRITIC_LOCATION);
     }
+    
+    public static boolean isPerlCriticEnabled()
+    {
+        return PerlEditorPlugin.getDefault().getPreferenceStore().getBoolean(
+            PreferenceConstants.SOURCE_CRITIC_ENABLED);
+    }
 
     /*
      * @see org.eclipse.ui.IWorkbenchPreferencePage#init(org.eclipse.ui.IWorkbench)

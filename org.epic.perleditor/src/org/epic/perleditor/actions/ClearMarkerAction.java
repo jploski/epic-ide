@@ -1,17 +1,13 @@
 package org.epic.perleditor.actions;
 
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.*;
 import org.eclipse.core.runtime.jobs.Job;
-
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
-
 import org.epic.core.util.MarkerUtilities;
-
 import org.epic.perleditor.editors.PerlEditor;
 import org.epic.perleditor.editors.PerlEditorActionIds;
+import org.epic.perleditor.editors.util.SourceCritic;
 
 
 /**

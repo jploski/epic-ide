@@ -9,6 +9,7 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.epic.core.util.MarkerUtilities;
 
 import org.epic.perleditor.editors.PerlEditor;
+import org.epic.perleditor.preferences.PerlCriticPreferencePage;
 
 import java.util.Collections;
 import java.util.Map;
@@ -28,6 +29,18 @@ public abstract class PerlUserJobAction extends PerlEditorAction
     }
 
     //~ Methods
+    
+    /**
+     * Checks preconditions (e.g., related to configuration settings)
+     * that must be true in order to run this action. This is run in
+     * foreground. If a broken precondition is detected, the subclass
+     * should display an informative error message for the user and
+     * return false to prevent the background job from running.
+     */
+    protected boolean checkJobPreconditions()
+    {
+        return true;
+    }
 
     /**
      * Performs the actual job work.
@@ -76,6 +89,8 @@ public abstract class PerlUserJobAction extends PerlEditorAction
      */
     protected final void doRun()
     {
+        if (!checkJobPreconditions()) return;
+        
         // TODO: check if editor is dirty before running
         final String marker = getMarker();
         final IResource resource = getResource();

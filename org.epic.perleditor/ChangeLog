@@ -4,6 +4,8 @@ CVS
 		Debugger:
 
 		Editor:
+		* Fixed Bug [ 1870056 ] Problems with Perl::Critic's enablement
+		* Implemented Feature Request [ 1870058 ] Show In... context menu action
 
 Version 0.6.18 - 10-January-2008
 		Editor:

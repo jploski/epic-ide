@@ -288,7 +288,13 @@ public class PerlPartitioner implements
         if (syncTokenI < 0) syncTokenI = -1;
         else
         {
-            syncTokenI++;
+            // We add some extra tokens to syncTokenI in order to
+            // hit a token after the current line. This is important
+            // for performance when commenting out single lines in
+            // a large file - we want the sync token to be found
+            // and all tokens on the present line vanish because of
+            // the comment action:
+            syncTokenI += 50;
             if (syncTokenI >= tokens.size()) syncTokenI = -1;
         }
     }
@@ -327,7 +333,6 @@ public class PerlPartitioner implements
             parseStartCurly = null;
             tokens.truncate(0);
         }
-        
         lexer.reset(null, doc, parseStartCurly);
         try
         {

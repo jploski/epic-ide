@@ -4,6 +4,9 @@ CVS
 		Debugger:
 
 		Editor:
+
+Version 0.6.19 - 25-January-2008
+		Editor:
 		* Fixed Bug [ 1870056 ] Problems with Perl::Critic's enablement
 		* Fixed Bug [ 1879954 ] Slow syntax highlighting when typing # comments
 		* Implemented Feature Request [ 1870058 ] Show In... context menu action

@@ -87,3 +87,27 @@ $foo->{mCustomerSet};
 # bug 1833354
 foo(key 
 => 0);
+
+# bug 1882813
+say "hi";
+my $amount ||= $product->cost;
+$amount /= 5;
+$amount **= 2;
+$amount |= 2;
+$amount &= 2;
+$amount ^= 2;
+$amount >>= 2;
+$amount <<= 2;
+my $str =~ /=/s;
+print <<EOT;
+heredoc here
+EOT
+$amount = $str // 5;
+$amount //= $str;
+$amount =~ //;
+state $s1 = 100;
+sub foo($_$) { }
+UNITCHECK { }
+$amount ~~ $str;
+$amount ~~ /regex/s;
+sub _bla {}

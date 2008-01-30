@@ -4,6 +4,7 @@ CVS
 		Debugger:
 
 		Editor:
+		* Fixed Bug [ 1882813 ] New Perl 5.10 operators
 
 Version 0.6.19 - 25-January-2008
 		Editor:

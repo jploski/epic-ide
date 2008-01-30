@@ -47,7 +47,9 @@ OPEN_DQUOTE: '"'  { getParent().expectStringEnd('"'); };
 
 MAYBE_SPECIAL_VAR
 	: { !proto }? (
-	("**")
+	("**=")
+	=> "**=" { $setToken(createOperatorToken(PerlTokenTypes.OPER_MULMULEQ, "**=")); }
+	| ("**")
 	=> "**" { $setToken(createOperatorToken(PerlTokenTypes.OPER_MULMUL, "**")); }
 	| ("*=")
 	=> "*=" { $setToken(createOperatorToken(PerlTokenTypes.OPER_MULEQ, "*=")); }
@@ -64,12 +66,6 @@ MAYBE_SPECIAL_VAR
 	| (VAR_START) // incomplete variable
 	=> VAR_START { $setType(PerlTokenTypes.VAR); }
 	);
-
-protected OPER_MODEQ: ;
-protected OPER_MULEQ: ;
-protected OPER_MULMUL: ;
-protected OPER_MUL: ;
-protected OPER_MOD: ;
 
 protected SPECIAL_VAR
 	// see English.pm for the *? operators
@@ -113,13 +109,28 @@ OPER_OR:     "||" { $setToken(createOperatorToken(PerlTokenTypes.OPER_OR, "||"))
 OPER_LTEQ:   "<=" { $setToken(createOperatorToken(PerlTokenTypes.OPER_LTEQ, "<=")); };
 OPER_GTEQ:   ">=" { $setToken(createOperatorToken(PerlTokenTypes.OPER_GTEQ, ">=")); };
 
+OPER_ANDANDEQ: "&&=" { $setToken(createOperatorToken(PerlTokenTypes.OPER_ANDANDEQ, "&&=")); };
+OPER_OROREQ:   "||=" { $setToken(createOperatorToken(PerlTokenTypes.OPER_OROREQ, "||=")); };
+
 PROTO
 	: { proto }?
-	('$' | '@' | '%' | '*' | ';' | '\\' | '&' | WS)+
+	('$' | '@' | '%' | '*' | ';' | '\\' | '&' | '_' | WS)+
 	{ proto = false; }
 	;
 
 OPER_S: "-s" { $setToken(createOperatorToken(PerlTokenTypes.OPER_S, "-s")); };
+
+OPER_SLASHSLASH
+	: { !slashRegexp }? "//"
+	{
+		$setToken(createOperatorToken(PerlTokenTypes.OPER_SLASHSLASH, "//"));
+	};
+
+OPER_SLASHSLASHEQ
+	: { !slashRegexp }? "//="
+	{
+		$setToken(createOperatorToken(PerlTokenTypes.OPER_SLASHSLASHEQ, "//="));
+	};
 
 OPEN_SLASH
 	: '/'
@@ -213,6 +224,10 @@ OPER_EQMATCH
 	: "=~"
 	{ afterArrow = afterDArrow = false; $setToken(createOperatorToken(PerlTokenTypes.OPER_EQMATCH, "=~")); };
 
+OPER_SMARTMATCH
+	: "~~"
+	{ afterArrow = afterDArrow = false; $setToken(createOperatorToken(PerlTokenTypes.OPER_SMARTMATCH, "~~")); };
+
 OPER_EQNOTMATCH
 	: "!~"
 	{ $setToken(createOperatorToken(PerlTokenTypes.OPER_EQNOTMATCH, "!~")); };
@@ -242,6 +257,34 @@ OPER_PLUSEQ
 	: "+="
 	{
 		$setToken(createOperatorToken(PerlTokenTypes.OPER_PLUSPLUS, "+="));
+		qmarkRegexp = false;
+	};
+
+OPER_ANDEQ
+	: "&="
+	{
+		$setToken(createOperatorToken(PerlTokenTypes.OPER_OREQ, "&="));
+		qmarkRegexp = false;
+	};
+
+OPER_OREQ
+	: "|="
+	{
+		$setToken(createOperatorToken(PerlTokenTypes.OPER_OREQ, "|="));
+		qmarkRegexp = false;
+	};
+
+OPER_XOREQ
+	: "^="
+	{
+		$setToken(createOperatorToken(PerlTokenTypes.OPER_XOREQ, "^="));
+		qmarkRegexp = false;
+	};
+
+OPER_DIVEQ
+	: { !slashRegexp }? "/="
+	{
+		$setToken(createOperatorToken(PerlTokenTypes.OPER_DIVEQ, "/="));
 		qmarkRegexp = false;
 	};
 
@@ -287,6 +330,7 @@ OPEN_PAREN
 	: '('
 	{
 		$setToken(createOperatorToken(PerlTokenTypes.OPEN_PAREN, "("));
+		if (afterSub) { afterSub = false; proto = true; }
 		format = false;
 		glob = qmarkRegexp = slashRegexp = true;
 	};
@@ -334,12 +378,16 @@ OPER_LSHIFT_OR_HEREDOC
 	: (OPEN_HEREDOC) //("<<" (WS)?  ('"' | '\'' | '`' | 'A'..'Z'))
 	=> OPEN_HEREDOC
 	   { $setType(PerlTokenTypes.OPEN_HEREDOC); }
+	| ("<<=")
+	=> OPER_LSHIFTEQ
+	   { $setToken(createOperatorToken(PerlTokenTypes.OPER_LSHIFTEQ, "<<=")); }	
 	| ("<<" (WS)? ~('"' | '\'' | '`' | 'A'..'Z'))
 	=> OPER_LSHIFT
 	   { $setToken(createOperatorToken(PerlTokenTypes.OPER_LSHIFT, "<<")); }
 	;
 
 protected OPER_LSHIFT: "<<";
+protected OPER_LSHIFTEQ: "<<=";
 
 protected OPEN_HEREDOC
 	:
@@ -369,6 +417,14 @@ OPER_RSHIFT
 	: ">>"
 	{
 		$setToken(createOperatorToken(PerlTokenTypes.OPER_RSHIFT, ">>"));
+		qmarkRegexp = slashRegexp = false;
+	}
+	;
+
+OPER_RSHIFTEQ
+	: ">>="
+	{
+		$setToken(createOperatorToken(PerlTokenTypes.OPER_RSHIFTEQ, ">>="));
 		qmarkRegexp = slashRegexp = false;
 	}
 	;
@@ -411,7 +467,7 @@ protected WORD
 		String str = $getText;
 		
 		if ("use".equals(str)) $setType(PerlTokenTypes.KEYWORD_USE);
-		else if ("sub".equals(str)) { afterSub = proto = true; $setType(PerlTokenTypes.KEYWORD_SUB); }
+		else if ("sub".equals(str)) { afterSub = true; $setType(PerlTokenTypes.KEYWORD_SUB); }
 		else if ("package".equals(str)) { $setType(PerlTokenTypes.KEYWORD_PACKAGE); }
 		else if ("format".equals(str) && !afterSub) { format = true; $setType(PerlTokenTypes.KEYWORD_FORMAT); }
 		else if ("__END__".equals(str)) { $setType(Token.EOF_TYPE); }

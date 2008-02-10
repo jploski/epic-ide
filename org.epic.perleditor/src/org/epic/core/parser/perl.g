@@ -115,7 +115,7 @@ OPER_GTEQ:   ">=" { $setToken(createOperatorToken(PerlTokenTypes.OPER_GTEQ, ">="
 
 PROTO
 	: { proto }?
-	('$' | '@' | '%' | '*' | ';' | '\\' | '&' | WS)+
+	('$' | '@' | '%' | '*' | ';' | '\\' | '&' | '_' | WS)+
 	{ proto = false; }
 	;
 
@@ -156,7 +156,7 @@ OPEN_QMARK
 SUBST_OR_MATCH_OR_WORD // this disambiguation rule disfavours EXPRs too much :-(
 	: { !afterArrow }? ((SUBST_OR_MATCH_OPER | 'x') (('A'..'Z' | 'a'..'z' | '0'..'9') | ((WS_CHAR)* "=>")))
 	=> { notOper = true; } t1:WORD { $setToken(t1); }
-	| { !afterArrow }? (("tr" | 's' | 'y') ~'}')
+	| { !afterArrow && !afterSub }? (("tr" | 's' | 'y') ~'}')
 	=> SUBST_EXPR { $setType(PerlTokenTypes.SUBST_EXPR); }
 	| { !afterArrow || afterDArrow }? (("qq" | "qx" | "qw" | "qr" | 'm' | 'q') ~('a'..'z' | '0'..'9' | '_' | '}' | '\r' | '\n' | ' '))
 	=> MATCH_EXPR { $setType(PerlTokenTypes.MATCH_EXPR); }
@@ -287,6 +287,7 @@ OPEN_PAREN
 	: '('
 	{
 		$setToken(createOperatorToken(PerlTokenTypes.OPEN_PAREN, "("));
+		if (afterSub) { afterSub = false; proto = true; }
 		format = false;
 		glob = qmarkRegexp = slashRegexp = true;
 	};
@@ -411,7 +412,7 @@ protected WORD
 		String str = $getText;
 		
 		if ("use".equals(str)) $setType(PerlTokenTypes.KEYWORD_USE);
-		else if ("sub".equals(str)) { afterSub = proto = true; $setType(PerlTokenTypes.KEYWORD_SUB); }
+		else if ("sub".equals(str)) { afterSub = true; $setType(PerlTokenTypes.KEYWORD_SUB); }
 		else if ("package".equals(str)) { $setType(PerlTokenTypes.KEYWORD_PACKAGE); }
 		else if ("format".equals(str) && !afterSub) { format = true; $setType(PerlTokenTypes.KEYWORD_FORMAT); }
 		else if ("__END__".equals(str)) { $setType(Token.EOF_TYPE); }

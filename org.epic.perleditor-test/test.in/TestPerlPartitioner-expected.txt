@@ -856,3 +856,18 @@ EOT
 2304:1:__dftl_partition_content_type:{ }
 2305:1:OPERATOR:{{}
 2306:1:OPERATOR:{}}
+2307:2:__dftl_partition_content_type:{
+
+}
+2309:13:COMMENT:{# bug 1890775}
+2322:1:__dftl_partition_content_type:{
+}
+2323:8:__dftl_partition_content_type:{some_sub}
+2331:1:OPERATOR:{(}
+2332:9:__dftl_partition_content_type:{other_sub}
+2341:1:__dftl_partition_content_type:{ }
+2342:1:OPERATOR:{/}
+2343:1:__dftl_partition_content_type:{ }
+2344:1:NUMBER:{4}
+2345:1:OPERATOR:{)}
+2346:1:OPERATOR:{;}

@@ -114,3 +114,6 @@ sub _bla {}
 
 # bug 1888190
 sub tr_bar {}
+
+# bug 1890775
+some_sub(other_sub / 4);

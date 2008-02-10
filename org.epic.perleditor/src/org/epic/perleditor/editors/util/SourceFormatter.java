@@ -5,6 +5,7 @@ import org.eclipse.core.runtime.ILog;
 
 import org.eclipse.jface.preference.IPreferenceStore;
 
+import org.epic.core.util.CommandLineTokenizer;
 import org.epic.core.util.ScriptExecutor;
 
 import org.epic.perleditor.PerlEditorPlugin;
@@ -139,12 +140,8 @@ public class SourceFormatter extends ScriptExecutor
         }
 
         // Read additional options
-        StringTokenizer st =
-            new StringTokenizer(store.getString(SourceFormatterPreferences.PERLTIDY_OPTIONS));
-        while (st.hasMoreTokens())
-        {
-            args.add(st.nextToken());
-        }
+        args.addAll(CommandLineTokenizer.tokenize(
+            store.getString(SourceFormatterPreferences.PERLTIDY_OPTIONS)));
 
         // Add additionally passed options
         if (additionalOptions != null)

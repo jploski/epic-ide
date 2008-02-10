@@ -6,6 +6,7 @@ CVS
 		Editor:
 		* Fixed Bug [ 1882813 ] New Perl 5.10 operators
 		* Fixed Bug [ 1888190 ] subs that start with "tr_" break the Outline
+		* Fixed Bug [ 1881070 ] Perltidy options
 
 Version 0.6.19 - 25-January-2008
 		Editor:

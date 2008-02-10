@@ -18,7 +18,16 @@ public class TestCommandLineTokenizer extends BaseTestCase
             "c:/Program Files/Perl/bin/perl.exe,first arg,second,3rd");
         _test(
             "somewhat\\weird \\command\\\"line",
-            "somewhat\\weird,\\command\\\"line");
+            "somewhat\\weird,\\command\"line");
+        _test(
+            "foo=\"one two three\"",
+            "foo=one two three");
+        _test(
+            "foo=\\\"one two three\\\"",
+            "foo=\"one,two,three\"");
+        _test(
+            "foo=\"\\\"one two three\\\"\"",
+            "foo=\"one two three\"");
         _test(
             "\"somewhat\\weird \\command\\\"line\" bang",
             "somewhat\\weird \\command\"line,bang");

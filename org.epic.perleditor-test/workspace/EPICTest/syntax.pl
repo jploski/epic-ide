@@ -111,3 +111,6 @@ UNITCHECK { }
 $amount ~~ $str;
 $amount ~~ /regex/s;
 sub _bla {}
+
+# bug 1888190
+sub tr_bar {}

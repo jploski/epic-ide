@@ -844,3 +844,15 @@ EOT
 2275:1:__dftl_partition_content_type:{ }
 2276:1:OPERATOR:{{}
 2277:1:OPERATOR:{}}
+2278:2:__dftl_partition_content_type:{
+
+}
+2280:13:COMMENT:{# bug 1888190}
+2293:1:__dftl_partition_content_type:{
+}
+2294:3:KEYWORD1:{sub}
+2297:1:__dftl_partition_content_type:{ }
+2298:6:__dftl_partition_content_type:{tr_bar}
+2304:1:__dftl_partition_content_type:{ }
+2305:1:OPERATOR:{{}
+2306:1:OPERATOR:{}}

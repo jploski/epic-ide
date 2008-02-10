@@ -167,7 +167,7 @@ OPEN_QMARK
 SUBST_OR_MATCH_OR_WORD // this disambiguation rule disfavours EXPRs too much :-(
 	: { !afterArrow }? ((SUBST_OR_MATCH_OPER | 'x') (('A'..'Z' | 'a'..'z' | '0'..'9') | ((WS_CHAR)* "=>")))
 	=> { notOper = true; } t1:WORD { $setToken(t1); }
-	| { !afterArrow }? (("tr" | 's' | 'y') ~'}')
+	| { !afterArrow && !afterSub }? (("tr" | 's' | 'y') ~'}')
 	=> SUBST_EXPR { $setType(PerlTokenTypes.SUBST_EXPR); }
 	| { !afterArrow || afterDArrow }? (("qq" | "qx" | "qw" | "qr" | 'm' | 'q') ~('a'..'z' | '0'..'9' | '_' | '}' | '\r' | '\n' | ' '))
 	=> MATCH_EXPR { $setType(PerlTokenTypes.MATCH_EXPR); }

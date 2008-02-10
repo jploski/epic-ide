@@ -437,7 +437,7 @@ protected WORD
 		}
 		else glob = false;
 		
-		slashRegexp = !afterArrow;
+		slashRegexp = !(afterArrow || slashRegexp);
 		qmarkRegexp = afterArrow = notOper = false;
 	}
 	;

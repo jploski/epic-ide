@@ -4,6 +4,9 @@ CVS
 		Debugger:
 
 		Editor:
+
+Version 0.6.20 - 10-February-2008
+		Editor:
 		* Fixed Bug [ 1882813 ] New Perl 5.10 operators
 		* Fixed Bug [ 1888190 ] subs that start with "tr_" break the Outline
 		* Fixed Bug [ 1881070 ] Perltidy options

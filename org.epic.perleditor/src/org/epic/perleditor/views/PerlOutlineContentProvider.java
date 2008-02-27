@@ -192,7 +192,9 @@ public class PerlOutlineContentProvider implements ITreeContentProvider
         
         public boolean equals(Object obj)
         {
-            if (!(obj instanceof Package)) return false;
+        	if (obj == this) return true;
+        	if ((obj instanceof PackageElem)) obj = ((PackageElem) obj).pkg;
+        	else if (!(obj instanceof Package)) return false;
             
             Package pkg = (Package) obj;
             return pkg.equals(this.pkg) && name.equals(this.name);

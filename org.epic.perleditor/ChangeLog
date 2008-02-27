@@ -4,6 +4,7 @@ CVS
 		Debugger:
 
 		Editor:
+		* Fixed Bug [ 1903265 ] Caret randomly jumps to sub name while typing
 
 Version 0.6.20 - 10-February-2008
 		Editor:

@@ -36,50 +36,16 @@ See build.properties for more information.
 		    description="All output formats"/>
 
 	<target name="build-pdf" depends="check-env" description="Single PDF file">
-		<fail message="Property fop.dir must be defined and point to fop 0.20.5 installation directory.">
-			<condition>
-				<or>
-					<not><isset property="fop.dir"/></not>
-				</or>
-			</condition>
-		</fail>
-		<!-- Don't forget to update your Ant classpath (see build.properties) -->
-		<taskdef name="fop" 
-		         classname="org.apache.fop.tools.anttasks.Fop">
-		         <classpath>
-		            <pathelement location="${fop.dir}/build/fop.jar"/>
-		            <pathelement location="${fop.dir}/lib/avalon-framework-cvs-20020806.jar"/>
-		            <pathelement location="${fop.dir}/lib/batik.jar"/>
-		         </classpath>
-		</taskdef>
-		<mkdir dir="temp"/>
-	    <xslt basedir="."
-		      destdir="temp"
-		      extension=".fo"
-		      style="fo-single.xsl"
-		      includes="guide.xml"
-			  force="true">
-	        <xmlcatalog refid="catalog"/>
-	    </xslt>
-	    <xslt basedir="temp"
-		      destdir="temp"
-		      extension=".xml"
-		      style="identity.xsl"
-		      includes="guide.fo"
-			  force="true">
-	        <xmlcatalog refid="catalog"/>
-	    </xslt>
-		<move file="temp/guide.xml" tofile="temp/guide.fo" overwrite="true"/>
-	    <xslt basedir="temp"
-		      destdir="temp"
-		      extension=".xml"
-		      style="fo-postprocess.xsl"
-		      includes="guide.fo"
-			  force="true">
-	        <xmlcatalog refid="catalog"/>
-	    </xslt>
-		<fop fofile="temp/guide.xml" outfile="../dist/EPIC_User's_Guide.pdf" messagelevel="error"/>
-		<delete dir="temp"/>
+		<exec executable="dblatex">
+			<arg value="-b" />
+			<arg value="pdftex" />
+			<arg value="--texstyle=guide.sty" />
+			<arg value="-P" />
+			<arg value="doc.collab.show=0" />
+			<arg value="guide.xml" />
+			<arg value="-o" />
+			<arg value="../dist/EPIC_User's_Guide.pdf" />
+		</exec>
 	</target>
 	
 	<target name="build-html" depends="check-env" description="Single HTML file">

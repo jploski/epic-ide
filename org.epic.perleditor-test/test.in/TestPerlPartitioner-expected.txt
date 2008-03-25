@@ -871,3 +871,48 @@ EOT
 2344:1:NUMBER:{4}
 2345:1:OPERATOR:{)}
 2346:1:OPERATOR:{;}
+2347:2:__dftl_partition_content_type:{
+
+}
+2349:13:COMMENT:{# bug 1921439}
+2362:1:__dftl_partition_content_type:{
+}
+2363:4:KEYWORD2:{grep}
+2367:1:__dftl_partition_content_type:{ }
+2368:1:LITERAL2:{/}
+2369:3:LITERAL2:{A|B}
+2372:1:LITERAL2:{/}
+2373:1:OPERATOR:{,}
+2374:1:__dftl_partition_content_type:{ }
+2375:1:LITERAL1:{'}
+2376:1:LITERAL1:{A}
+2377:1:LITERAL1:{'}
+2378:1:OPERATOR:{,}
+2379:1:__dftl_partition_content_type:{ }
+2380:1:LITERAL1:{'}
+2381:1:LITERAL1:{B}
+2382:1:LITERAL1:{'}
+2383:1:OPERATOR:{,}
+2384:1:__dftl_partition_content_type:{ }
+2385:1:LITERAL1:{'}
+2386:1:LITERAL1:{C}
+2387:1:LITERAL1:{'}
+2388:1:OPERATOR:{;}
+2389:2:__dftl_partition_content_type:{
+
+}
+2391:13:COMMENT:{# bug 1914490}
+2404:1:__dftl_partition_content_type:{
+}
+2405:6:VARIABLE:{@array}
+2411:1:__dftl_partition_content_type:{ }
+2412:1:OPERATOR:{=}
+2413:1:__dftl_partition_content_type:{ }
+2414:5:KEYWORD2:{split}
+2419:1:__dftl_partition_content_type:{ }
+2420:1:LITERAL2:{/}
+2421:1:LITERAL2:{-}
+2422:1:LITERAL2:{/}
+2423:1:OPERATOR:{,}
+2424:20:VARIABLE:{$hyphenDelimitedLine}
+2444:1:OPERATOR:{;}

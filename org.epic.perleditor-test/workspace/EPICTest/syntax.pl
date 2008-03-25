@@ -117,3 +117,9 @@ sub tr_bar {}
 
 # bug 1890775
 some_sub(other_sub / 4);
+
+# bug 1921439
+grep /A|B/, 'A', 'B', 'C';
+
+# bug 1914490
+@array = split /-/,$hyphenDelimitedLine;

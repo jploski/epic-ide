@@ -4,7 +4,15 @@ CVS
 		Debugger:
 
 		Editor:
+
+Version 0.6.22 - 25-March-2008
+		Debugger:
+		* Fixed Bug [ 1925536 ] Timed out while waiting for IO redirect
+
+		Editor:
 		* Fixed Bug [ 1594186 ] Inserting templates on proper indentation levels
+		* Fixed Bug [ 1914490 ] syntax coloring off after 'split'
+		* Fixed Bug [ 1921439 ] Syntax Highlighting Breaks after Regex Alternation in grep
 
 Version 0.6.21 - 27-February-2008
 		* Fixed Bug [ 1903265 ] Caret randomly jumps to sub name while typing

@@ -7,6 +7,7 @@ import org.eclipse.core.runtime.*;
 import org.eclipse.debug.core.*;
 import org.eclipse.debug.core.model.*;
 import org.eclipse.debug.internal.core.InputStreamMonitor;
+import org.epic.debug.PerlLaunchConfigurationConstants;
 import org.epic.debug.db.PerlDebugThread;
 
 /**
@@ -45,18 +46,21 @@ public class DebuggerProxy extends PlatformObject
         mDebugger = fDebugger;
         mLaunch = fDebugger.getLaunch();
         
-        if (mIOStream.waitForConnect(true) != RemotePort.WAIT_OK)
-            throwCouldNotConnect();
+        if (shouldRedirectIO())
+        {
+            if (mIOStream.waitForConnect(true) != RemotePort.WAIT_OK)
+                throwCouldNotConnect();
+    
+            if (mErrorStream.waitForConnect(true) != RemotePort.WAIT_OK)
+                throwCouldNotConnect();
 
-        if (mErrorStream.waitForConnect(true) != RemotePort.WAIT_OK)
-            throwCouldNotConnect();
-
-        mMonitorIn = new InputStreamMonitor(mIOStream.getOutStream());
-        mMonitorOut.setStream(mIOStream.getInStream());
-        mMonitorError.setStream(mErrorStream.getInStream());
-        mMonitorIn.startMonitoring();
-        mMonitorOut.startMonitoring();
-        mMonitorError.startMonitoring();
+            mMonitorIn = new InputStreamMonitor(mIOStream.getOutStream());
+            mMonitorOut.setStream(mIOStream.getInStream());
+            mMonitorError.setStream(mErrorStream.getInStream());
+            mMonitorIn.startMonitoring();
+            mMonitorOut.startMonitoring();
+            mMonitorError.startMonitoring();
+        }
 
         mLabel = "Remote Perl Script";
     }
@@ -188,6 +192,20 @@ public class DebuggerProxy extends PlatformObject
     private void fireTerminateEvent()
     {
         fireEvent(new DebugEvent(this, DebugEvent.TERMINATE));
+    }
+    
+    private boolean shouldRedirectIO()
+    {
+        try
+        {
+            return mLaunch.getLaunchConfiguration().getAttribute(
+                PerlLaunchConfigurationConstants.ATTR_REMOTE_CAPTURE_OUTPUT,
+                true);
+        }
+        catch (CoreException e)
+        {
+            return true; /* should never occur */
+        }
     }
 
     private void shutdown()

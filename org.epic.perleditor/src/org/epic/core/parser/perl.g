@@ -482,6 +482,7 @@ protected WORD
     		else if (KEYWORDS2.contains(str))
     		{
     			glob = str.equals("unlink");
+    			slashRegexp = false; // actually becomes true, see below!
     			$setType(PerlTokenTypes.KEYWORD2);
     		}
     		else if (OPERATORS.contains(str) && !afterArrow && !notOper)

@@ -58,25 +58,38 @@ public class DebugTarget extends PerlTarget
         
         try
         {
-            this.process = process;
-            this.debugPort = debugPort;
-            this.pathMapper = pathMapper;
-            this.db = createDebuggerInterface();
-            
-            checkPadWalker();
-            this.thread = new PerlDebugThread(this, db);
-            
-            registerDebugEventListener(listener);        
-            fireCreationEvent();
+            try
+            {
+                this.process = process;
+                this.debugPort = debugPort;
+                this.pathMapper = pathMapper;
+                this.db = createDebuggerInterface();
+                
+                checkPadWalker();
+                this.thread = new PerlDebugThread(this, db);
+                
+                registerDebugEventListener(listener);        
+                fireCreationEvent();
+            }
+            catch (SessionTerminatedException e)
+            {
+                throw new DebugException(new Status(
+                    IStatus.OK,
+                    PerlDebugPlugin.getUniqueIdentifier(),
+                    DebugTarget.SESSION_TERMINATED,
+                    "Debugger session terminated (compile error?)",
+                    e));
+            }
         }
-        catch (SessionTerminatedException e)
+        catch (CoreException e)
         {
-            throw new DebugException(new Status(
-                IStatus.OK,
-                PerlDebugPlugin.getUniqueIdentifier(),
-                DebugTarget.SESSION_TERMINATED,
-                "Debugger session terminated (compile error?)",
-                e));
+            shutdown();
+            throw e;
+        }
+        catch (RuntimeException e)
+        {
+            shutdown();
+            throw e;
         }
     }
     

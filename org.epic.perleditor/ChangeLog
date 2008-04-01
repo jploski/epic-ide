@@ -2,6 +2,8 @@ Eclipse Perl Integration:
 
 CVS
 		Debugger:
+		* Fixed Bug [ 1931512 ] Debugger port sometimes not released
+		* Fixed Bug [ 1931516 ] Undefined references in epic_breakpoints.pm
 
 		Editor:
 

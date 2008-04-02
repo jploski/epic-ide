@@ -28,6 +28,8 @@ public class PerlLineBreakpoint extends PerlBreakpoint implements ILineBreakpoin
     private static final String CONDITION = "org.epic.debug.condition";
 
     private int hitCount = 0;
+    
+    private int removedLineNumber = -1;
 
     private String regExp = "";
 
@@ -54,7 +56,7 @@ public class PerlLineBreakpoint extends PerlBreakpoint implements ILineBreakpoin
 
     //~ Methods
 
-    public void addLineBreakpointAttributes(Map attributes, String modelIdentifier, boolean enabled,
+    private void addLineBreakpointAttributes(Map attributes, String modelIdentifier, boolean enabled,
         int lineNumber, int charStart, int charEnd)
     {
         attributes.put(IBreakpoint.ID, modelIdentifier);
@@ -67,7 +69,7 @@ public class PerlLineBreakpoint extends PerlBreakpoint implements ILineBreakpoin
         attributes.put(IBreakpoint.REGISTERED, Boolean.FALSE);
     }
 
-    public void createPerlLineBreakpoint(final IResource resource, final int lineNumber,
+    private void createPerlLineBreakpoint(final IResource resource, final int lineNumber,
         final int charStart, final int charEnd, final boolean add, final Map attributes,
         final String markerType) throws DebugException
     {
@@ -101,7 +103,19 @@ public class PerlLineBreakpoint extends PerlBreakpoint implements ILineBreakpoin
 
     public int getLineNumber() throws CoreException
     {
-        return ensureMarker().getAttribute(IMarker.LINE_NUMBER, -1);
+        return removedLineNumber != -1
+        		? removedLineNumber
+        		: ensureMarker().getAttribute(IMarker.LINE_NUMBER, -1);
+    }
+    
+    public void pendingRemove() throws CoreException
+    {
+    	super.pendingRemove();
+    	
+    	// Remember the last line number the breakpoint marker had
+    	// before it was removed; we need it to remove the breakpoint
+    	// from the Perl debugger when it suspends next time:
+    	this.removedLineNumber = getLineNumber(); 
     }
 
     /**

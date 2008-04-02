@@ -29,9 +29,9 @@ class PerlThreadBreakpoints
     private final IBreakpointListener listener = new IBreakpointListener() {
         public void breakpointAdded(IBreakpoint breakpoint)
         {
-            if (!(breakpoint instanceof PerlBreakpoint)) return;
+            if (!(breakpoint instanceof PerlLineBreakpoint)) return;
 
-            PerlBreakpoint bp = (PerlBreakpoint) breakpoint;
+            PerlLineBreakpoint bp = (PerlLineBreakpoint) breakpoint;
 
             try { if (!bp.isEnabled()) return; }
             catch (CoreException e)
@@ -40,7 +40,24 @@ class PerlThreadBreakpoints
                 return;
             }
             if (thread.isSuspended()) addBreakpoint(bp);
-            else pendingBreakpoints.add(bp);            
+            else
+            {
+            	try
+            	{
+            		// If we had a pending remove for this breakpoint,
+            		// it is cancelled by this newer add request.
+            		// Otherwise, we have to create a pending add.
+            		
+            		if (pendingBreakpoints.remove(bp, false))
+            			activeBreakpoints.add(bp);
+            		else
+            			pendingBreakpoints.add(bp);
+            	}
+            	catch (CoreException e)
+                {
+                    PerlDebugPlugin.log(e);
+                }
+            }
         }
 
         public void breakpointChanged(IBreakpoint breakpoint, IMarkerDelta delta)
@@ -69,11 +86,34 @@ class PerlThreadBreakpoints
 
         public void breakpointRemoved(IBreakpoint breakpoint, IMarkerDelta delta)
         {
-            if (!(breakpoint instanceof PerlBreakpoint)) return;
+            if (!(breakpoint instanceof PerlLineBreakpoint)) return;
 
-            PerlBreakpoint bp = (PerlBreakpoint) breakpoint;
+            PerlLineBreakpoint bp = (PerlLineBreakpoint) breakpoint;
             if (thread.isSuspended()) removeBreakpoint(bp);
-            else pendingBreakpoints.add(bp);
+            else
+            {
+            	try
+            	{
+            		// If we had a pending add for this breakpoint,
+            		// it is cancelled by this newer remove request.
+            		// Otherwise, we have to create a pending remove.
+            		
+            		if (pendingBreakpoints.remove(bp, true))
+            		{
+            			// nothing to do
+            		}
+            		else
+            		{
+                    	activeBreakpoints.remove(bp);
+                    	pendingBreakpoints.add(bp);
+            			bp.pendingRemove();
+            		}
+            	}
+                catch (CoreException e)
+                {
+                    PerlDebugPlugin.log(e);
+                }
+            }
         }
     };
     

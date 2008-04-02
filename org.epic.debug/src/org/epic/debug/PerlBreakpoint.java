@@ -69,6 +69,10 @@ public abstract class PerlBreakpoint extends Breakpoint
     {
         return getMarker().getAttribute(INVALID_POS, false);
     }
+    
+    public void pendingRemove() throws CoreException
+    {
+    }
 
     public void setInvalidBreakpointPosition(boolean value)
         throws CoreException

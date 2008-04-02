@@ -1,11 +1,18 @@
 package org.epic.debug.db;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.epic.debug.*;
+import org.epic.debug.PerlBreakpoint;
+import org.epic.debug.PerlDebugPlugin;
+import org.epic.debug.PerlLineBreakpoint;
 
 /**
  * Used to map each source file path to a set of PerlBreakpoints.
@@ -21,7 +28,7 @@ class BreakpointMap
         breakpoints = new HashMap();
     }
 
-    public void add(PerlBreakpoint bp)
+    public synchronized void add(PerlBreakpoint bp)
     {
         String path = canonPath(bp.getResourcePath());
         if (path == null) return;
@@ -35,7 +42,7 @@ class BreakpointMap
         set.add(bp);
     }
 
-    public boolean contains(PerlBreakpoint bp)
+    public synchronized boolean contains(PerlBreakpoint bp)
     {
         String path = canonPath(bp.getResourcePath());
         if (path == null) return false;
@@ -46,16 +53,16 @@ class BreakpointMap
         return set.contains(bp);
     }
 
-    public Set getBreakpoints(IPath path)
+    public synchronized Set getBreakpoints(IPath path)
     {
         String canonPath = canonPath(path);
         if (canonPath == null) return Collections.EMPTY_SET;
         
         Set set = (Set) breakpoints.get(canonPath);
-        return set != null ? set : Collections.EMPTY_SET;
+        return set != null ? new HashSet(set) : Collections.EMPTY_SET;
     }
 
-    public PerlBreakpoint getBreakpoint(IPath path, int line)
+    public synchronized PerlBreakpoint getBreakpoint(IPath path, int line)
     {
         String canonPath = canonPath(path);
 
@@ -80,18 +87,43 @@ class BreakpointMap
         }
         return null;
     }
+    
+    public synchronized boolean remove(PerlLineBreakpoint bp, boolean enabled)
+    	throws CoreException
+    {
+    	String path = canonPath(bp.getResourcePath());
+    	
+    	Set set = (Set) breakpoints.get(path);
+        if (set == null) return false;
+        
+        int lineNumber = bp.getLineNumber();
+        
+        for (Iterator i = set.iterator(); i.hasNext();)
+        {
+        	PerlBreakpoint other = (PerlBreakpoint) i.next();
+        	if (!(other instanceof PerlLineBreakpoint)) continue;
+        	
+        	if (((PerlLineBreakpoint) other).getLineNumber() == lineNumber &&
+        	    other.isEnabled() == enabled)
+        	{
+        		i.remove();
+        		return true;
+        	}
+        }
+        return false;
+    }
 
-    public boolean remove(PerlBreakpoint bp)
+    public synchronized boolean remove(PerlBreakpoint bp)
     {
         String path = canonPath(bp.getResourcePath());
 
         Set set = (Set) breakpoints.get(path);
-        if (set == null) return (false);
+        if (set == null) return false;
 
         return set.remove(bp);
     }
     
-    private String canonPath(IPath path)
+    private synchronized String canonPath(IPath path)
     {
         // here we do the path comparisons on canonical path to avoid
         // any ambiguities due to symlinks and the like

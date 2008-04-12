@@ -1,12 +1,10 @@
 package org.epic.perleditor.editors.util;
 
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.ILog;
+import org.eclipse.core.runtime.*;
 
 import org.eclipse.jface.preference.IPreferenceStore;
 
-import org.epic.core.util.CommandLineTokenizer;
-import org.epic.core.util.ScriptExecutor;
+import org.epic.core.util.*;
 
 import org.epic.perleditor.PerlEditorPlugin;
 import org.epic.perleditor.preferences.PreferenceConstants;
@@ -15,8 +13,6 @@ import org.epic.perleditor.preferences.SourceFormatterPreferences;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.StringTokenizer;
-
 
 /**
  * Formats perl source code using PerlTidy
@@ -44,6 +40,7 @@ public class SourceFormatter extends ScriptExecutor
      *         formatted
      */
     public static String format(String toFormat, ILog log)
+        throws CoreException
     {
         return format(toFormat, Collections.EMPTY_LIST, log);
     }
@@ -59,18 +56,37 @@ public class SourceFormatter extends ScriptExecutor
      *         formatted
      */
     public static String format(String toFormat, List additionalArgs, ILog log)
+        throws CoreException
     {
-        try
+        ProcessOutput out = new SourceFormatter(log).run(toFormat, additionalArgs);
+        
+        if (out.stdout.startsWith("skipping file: "))
         {
-            return new SourceFormatter(log).run(toFormat, additionalArgs).stdout;
+            String error = truncateString(out.stdout, 160);
+            throw new SourceFormatterException(new Status(
+                IStatus.ERROR,
+                PerlEditorPlugin.getPluginId(),
+                IStatus.OK,
+                "perltidy returned unexpected output via stdout, " +
+                "possibly due to invalid options in Source Formatter " +
+                "preferences:\n\n" + error,
+                null),
+                out.stdout);
         }
-        catch (CoreException e)
+        else if (out.stderr.length() != 0)
         {
-            log.log(e.getStatus());
-
-            // return the original text being formatted
-            return toFormat;
+            String error = truncateString(out.stderr, 320);
+            throw new SourceFormatterException(new Status(
+                IStatus.ERROR,
+                PerlEditorPlugin.getPluginId(),
+                IStatus.OK,
+                "perltidy returned unexpected output via stderr, " +
+                "possibly due to invalid options in Source Formatter " +
+                "preferences:\n\n" + error,
+                null),
+                out.stdout);
         }
+        else return out.stdout;
     }
     
     protected String getCharsetName()
@@ -167,5 +183,12 @@ public class SourceFormatter extends ScriptExecutor
     {
         return "perlutils/perltidy";
     }
-
+    
+    private static String truncateString(String str, int maxLen)
+    {
+        if (maxLen < str.length())
+            return str.substring(0, Math.min(str.length(), maxLen)) + "...";
+        else
+            return str;
+    } 
 }

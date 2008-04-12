@@ -1,5 +1,6 @@
 package org.epic.perleditor.actions;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.text.BadLocationException;
@@ -85,6 +86,10 @@ public class ExtractSubroutineAction extends PerlEditorAction
 
             // format and insert the new subroutine code
             doc.replace(offset, 0, lineSep + SourceFormatter.format(result[1], getLog()));
+        }
+        catch (CoreException e)
+        {
+            log(e.getStatus());
         }
         catch (BadLocationException e)
         {

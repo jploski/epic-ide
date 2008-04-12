@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
 
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.DirectoryDialog;
@@ -47,32 +49,44 @@ public class ExportHtmlSourceAction extends PerlEditorAction
         directoryDialog.setFilterPath(lastSelectedDir);
 
         String outputDir = directoryDialog.open();
+        if (outputDir == null) return;
+        
+        lastSelectedDir = outputDir;
 
-        if (outputDir != null)
+        // Export options
+        List cmdList = new ArrayList();
+
+        cmdList.add("-html");
+        cmdList.add("-opath");
+        cmdList.add(outputDir);
+
+        // Add additional options
+        IPreferenceStore store = PerlEditorPlugin.getDefault().getPreferenceStore();
+        StringTokenizer st =
+            new StringTokenizer(store.getString(
+                    SourceFormatterPreferences.HTML_EXPORT_OPTIONS));
+        while (st.hasMoreTokens())
         {
-            lastSelectedDir = outputDir;
+            cmdList.add(st.nextToken());
+        }
 
-            // Export options
-            List cmdList = new ArrayList();
+        // last thing has to be the input file name
+        cmdList.add(filePath);
 
-            cmdList.add("-html");
-            cmdList.add("-opath");
-            cmdList.add(outputDir);
-
-            // Add additional options
-            IPreferenceStore store = PerlEditorPlugin.getDefault().getPreferenceStore();
-            StringTokenizer st =
-                new StringTokenizer(store.getString(
-                        SourceFormatterPreferences.HTML_EXPORT_OPTIONS));
-            while (st.hasMoreTokens())
-            {
-                cmdList.add(st.nextToken());
-            }
-
-            // last thing has to be the input file name
-            cmdList.add(filePath);
-
-            SourceFormatter.format(editor.getViewer().getDocument().get(), cmdList, getLog());
+        try
+        {
+            SourceFormatter.format(
+                editor.getViewer().getDocument().get(),
+                cmdList,
+                getLog());
+        }
+        catch (CoreException e)
+        {
+            log(e.getStatus());
+            MessageDialog.openError(
+                getEditor().getSite().getShell(),
+                "HTML export failed",
+                e.getMessage());
         }
     }
 

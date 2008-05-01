@@ -122,12 +122,12 @@ public class XMLUtilities {
 	}
 
 	private void writeOutput(Document doc, OutputStream out) throws IOException {
-		XMLOutputter xmlout = new XMLOutputter();
+		Format xmlFormat = Format.getPrettyFormat();
+		xmlFormat.setLineSeparator(System.getProperty("line.separator"));
+		//xmlFormat.setTextMode(Format.TextMode.NORMALIZE);
+		xmlFormat.setEncoding(CHARSET);
 
-		xmlout.setIndent(true);
-		xmlout.setNewlines(true);
-		//xmlout.setTextNormalize(true);
-		xmlout.setEncoding(CHARSET);
+		XMLOutputter xmlout = new XMLOutputter(xmlFormat);
         xmlout.output(doc, out);
 	}
 

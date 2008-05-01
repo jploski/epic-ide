@@ -8,7 +8,7 @@ Bundle-Localization: plugin
 Require-Bundle: org.eclipse.osgi
 Bundle-ClassPath: lib/brazil_mini.jar,
  lib/gnu-regexp-1.1.4.jar,
- lib/jdom.jar,
+ lib/jdom-1.1.jar,
  lib/antlr-2.7.5.jar
 Export-Package: antlr,
  antlr.actions.cpp,

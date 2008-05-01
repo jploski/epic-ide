@@ -2,12 +2,18 @@ Eclipse Perl Integration:
 
 CVS
 		Debugger:
+
+		Editor:
+
+Version 0.6.23 - 1-May-2008
+		Debugger:
 		* Fixed Bug [ 1931512 ] Debugger port sometimes not released
 		* Fixed Bug [ 1931516 ] Undefined references in epic_breakpoints.pm
 		* Fixed Bug [ 1932366 ] Adding/removing breakpoints unreliable when not suspended
 
 		Editor:
 		* Fixed Bug [ 1102327 ] Perltidy - wrong option causes Error
+		* Fixed Bug [ 1948274 ] Editor crashes w/ Unhandled Event Loop Exception (java heap)
 
 Version 0.6.22 - 25-March-2008
 		Debugger:

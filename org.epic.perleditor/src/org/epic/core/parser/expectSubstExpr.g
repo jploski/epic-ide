@@ -22,7 +22,7 @@ options
 }
 
 OPEN_QUOTE: OPEN_QUOTE1 | OPEN_QUOTE2;
-COMMENT: { expectComment }? '#' (NOTNEWLINE)* NEWLINE!;
+COMMENT: { expectComment }? '#' (NOT_NEWLINE)* (NEWLINE! | '\uFFFF'!);
 WS: (' ' | '\t' | NEWLINE)+ { expectComment = true; };
 
 protected OPEN_QUOTE1
@@ -58,6 +58,6 @@ NEWLINE:
     ;
 
 protected
-NOTNEWLINE:
-	~('\r' | '\n')
+NOT_NEWLINE:
+	~('\r' | '\n' | '\uFFFF')
 	;

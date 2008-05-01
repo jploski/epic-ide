@@ -77,7 +77,7 @@
 		<copy todir="${feature.base}/features/org.epic.feature.main_0.6.22" failonerror="true" overwrite="false">
 			<fileset dir="${basedir}" includes="feature.xml,icons/,license.html"			/>
 		</copy>
-		<eclipse.idReplacer featureFilePath="${feature.base}/features/org.epic.feature.main_0.6.22/feature.xml"  selfVersion="0.6.22" featureIds="" pluginIds="org.epic.regexp,0.6.0,org.epic.perleditor,0.6.7,org.epic.doc,0.6.1,org.epic.debug,0.6.14,org.epic.lib,0.6.0,org.epic.source,0.6.14,"/>
+		<eclipse.idReplacer featureFilePath="${feature.base}/features/org.epic.feature.main_0.6.22/feature.xml"  selfVersion="0.6.22" featureIds="" pluginIds="org.epic.regexp,0.6.1,org.epic.perleditor,0.6.15,org.epic.doc,0.6.1,org.epic.debug,0.6.16,org.epic.lib,0.6.0,org.epic.source,0.6.22,"/>
 		<antcall target="rootFiles${os}_${ws}_${arch}"/>
 	</target>
 	<target name="rootFiles*_*_*">

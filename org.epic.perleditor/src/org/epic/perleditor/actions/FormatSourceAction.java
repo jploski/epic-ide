@@ -1,12 +1,15 @@
 package org.epic.perleditor.actions;
 
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.source.ISourceViewer;
-import org.eclipse.swt.custom.StyledText;
+import org.eclipse.swt.graphics.Point;
 import org.epic.perleditor.editors.PerlEditor;
 import org.epic.perleditor.editors.PerlEditorActionIds;
 import org.epic.perleditor.editors.util.SourceFormatter;
+import org.epic.perleditor.editors.util.SourceFormatterException;
 
 
 /**
@@ -27,103 +30,123 @@ public class FormatSourceAction extends PerlEditorAction
 
     protected void doRun()
     {
-        PerlEditor editor = getEditor();
-        IDocument document = editor.getDocumentProvider().getDocument(editor.getEditorInput());
+        IDocument doc = getEditor().getDocumentProvider().getDocument(
+            getEditor().getEditorInput());
 
-        StringBuffer text = new StringBuffer();
-        text.append(document.get());
-        if (text.length() == 0) { return; }
+        if (doc.getLength() == 0) return;
 
-        // create an Anchor
+        StringBuffer text = new StringBuffer(doc.get());
+        String anchor = getAnchorString(text);
 
-        String myLineSep = "";
+        ISourceViewer viewer = getEditor().getViewer();
+        int anchorOffset = getAnchorOffset(viewer, doc);
+        // insert an anchor comment at the end of the line with carret
+        // we'll find it back to reposition the caret after reformatting
+        text.insert(anchorOffset, anchor);
 
-        try
-        {
-            myLineSep = document.getLineDelimiter(0);
-        }
-        catch (BadLocationException e)
-        {
-            // nothing needs to be done, no LineSep
-        }
+        String formattedText = runFormatter(text);
 
-        String posAnchor = "φί§²";
-        String insertAnchor = "#" + posAnchor;
-
-        while (text.indexOf(insertAnchor) >= 0)
-        {
-            insertAnchor += posAnchor;
-        }
-
-        ISourceViewer viewer = editor.getViewer();
-        StyledText myTextWidget = viewer.getTextWidget();
-
-        // get the point to insert the Anchor
-
-        int lineOfScreen = myTextWidget.getLineAtOffset(myTextWidget.getCaretOffset());
-
-        int insPos = 0;
-
-        if (lineOfScreen > 0)
-        {
-            if (lineOfScreen == myTextWidget.getLineCount() - 1)            {
-                insPos = text.length();
-            }
-            else
-            {
-                insPos = myTextWidget.getOffsetAtLine(lineOfScreen + 1) - myLineSep.length();
-            }
-
-            // insert the Anchor
-
-            text.insert(insPos, insertAnchor);
-
-            // rel. Pos on the Screen
-
-            lineOfScreen -= myTextWidget.getTopIndex();
-        }
-
-        StringBuffer newText = new StringBuffer();
-        String formatText = SourceFormatter.format(text + "", getLog());
-        newText.append(formatText);
-
-        if (formatText == null ||            formatText.length() == 0 ||            newText.equals(text) ||            formatText.equals(insertAnchor))        {
-            // no news after formatting!
+        if (formattedText == null ||            formattedText.equals(text.toString()) ||            formattedText.equals(anchor))        {
             return;
         }
-
-        int newPosAnchor = 0;
-
-        if (insPos > 0)
+        
+        StringBuffer newText = new StringBuffer(formattedText);
+        anchorOffset = newText.indexOf(anchor);
+        if (anchorOffset > 0)
         {
-            newPosAnchor = newText.indexOf(insertAnchor);
-            // fix for [ 1077441 ] - LeO: Frankly said, don't know how this
-            // could happen!
-            if (newPosAnchor < 0)
+            // remove the anchor comment and the preceeding whitespace
+            // which might have been inserted by perltidy
+            int len = anchor.length() + 1;
+            anchorOffset--;
+            while (anchorOffset >= 0 &&
+                Character.isWhitespace(newText.charAt(anchorOffset)))
             {
-                newText.delete(0, newText.length());
-                newText.append(SourceFormatter.format(document.get(), getLog()));
-                newPosAnchor = 0;
-            }
-            else
-            {
-                newText.delete(newPosAnchor, newPosAnchor + insertAnchor.length());
-            }
+                anchorOffset--;
+                len++;
         }
+            newText.delete(anchorOffset+1, anchorOffset+len);
+        }
+        else
+            anchorOffset = 0;
 
-        document.set(newText.toString());
-
-        // set the new Cursor pos at the beginning of the Line
-
-        myTextWidget.setCaretOffset(myTextWidget.getOffsetAtLine(
-                myTextWidget.getLineAtOffset(newPosAnchor)));
-
-        myTextWidget.setTopIndex(myTextWidget.getLineAtOffset(newPosAnchor) - lineOfScreen);
+        doc.set(newText.toString());
+        viewer.setSelectedRange(anchorOffset, 0);
+        viewer.revealRange(anchorOffset, 0);
     }
 
     protected String getPerlEditorActionId()
-    {
+        {
         return PerlEditorActionIds.FORMAT_SOURCE;
+        }
+
+    private int getAnchorOffset(ISourceViewer viewer, IDocument doc)
+        {
+        try
+            {
+            Point sel = viewer.getSelectedRange();
+            int docOffset = sel != null ? sel.x : 0;
+            int line = doc.getLineOfOffset(docOffset);
+            int i = doc.getLineOffset(line) + doc.getLineLength(line);
+            i--;
+            while (
+                (doc.getChar(i) == '\n' || doc.getChar(i) == '\r') &&
+                doc.getLineOfOffset(i) == line) i--;
+            return i+1;
+            }
+        catch (BadLocationException e)
+            {
+            return 0;
+            }
     }
 
+    private String getAnchorString(StringBuffer docText)
+    {
+        String posAnchor = "φί§²";
+        StringBuffer buf = new StringBuffer();
+        buf.append('#');
+        buf.append(posAnchor);        
+        while (docText.indexOf(buf.toString()) >= 0)
+            buf.append(posAnchor);
+        return buf.toString();
+        }
+
+    private void handleCoreException(CoreException e)
+        {
+        log(e.getStatus());
+        MessageDialog.openError(
+            getEditor().getSite().getShell(),
+            "Source formatter failed",
+            e.getMessage());
+        }
+
+    private String runFormatter(StringBuffer text)
+        {
+        try
+            {
+            return SourceFormatter.format(text.toString(), getLog());
+            }
+        catch (SourceFormatterException e)
+            {
+            if (e.output == null)
+            {
+                handleCoreException(e);
+                return null;
+            }
+            if (MessageDialog.openQuestion(
+                getEditor().getSite().getShell(),
+                "Source formatter failed",
+                e.getMessage() +
+                "\nUse formatter's output anyway?"))
+            {
+                return e.output;
+        }
+            return null;
+    }
+        catch (CoreException e)
+    {
+            handleCoreException(e);
+            return null;
+    }
+
+}
 }

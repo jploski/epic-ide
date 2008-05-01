@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
 
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.DirectoryDialog;
@@ -47,9 +49,8 @@ public class ExportHtmlSourceAction extends PerlEditorAction
         directoryDialog.setFilterPath(lastSelectedDir);
 
         String outputDir = directoryDialog.open();
+        if (outputDir == null) return;
 
-        if (outputDir != null)
-        {
             lastSelectedDir = outputDir;
 
             // Export options
@@ -72,8 +73,21 @@ public class ExportHtmlSourceAction extends PerlEditorAction
             // last thing has to be the input file name
             cmdList.add(filePath);
 
-            SourceFormatter.format(editor.getViewer().getDocument().get(), cmdList, getLog());
+        try
+        {
+            SourceFormatter.format(
+                editor.getViewer().getDocument().get(),
+                cmdList,
+                getLog());
         }
+        catch (CoreException e)
+        {
+            log(e.getStatus());
+            MessageDialog.openError(
+                getEditor().getSite().getShell(),
+                "HTML export failed",
+                e.getMessage());
+    }
     }
 
     protected String getPerlEditorActionId()

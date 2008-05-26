@@ -5,6 +5,10 @@ CVS
 
 		Editor:
 
+Version 0.6.24 - 26-May-2008
+		Debugger:
+		* Fixed Bug [ 1972281 ] URIs with PATH_INFO not recognized in CGI debug
+
 Version 0.6.23 - 1-May-2008
 		Debugger:
 		* Fixed Bug [ 1931512 ] Debugger port sometimes not released

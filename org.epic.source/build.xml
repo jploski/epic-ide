@@ -45,7 +45,7 @@
 		<antcall target="gather.bin.parts">
 			<param name="destination.temp.folder" value="${temp.folder}/"/>
 		</antcall>
-		<zip destfile="${plugin.destination}/org.epic.source_0.5.45.jar" basedir="${temp.folder}/org.epic.source_0.5.45" filesonly="false" whenempty="skip" update="false"/>
+		<zip destfile="${plugin.destination}/org.epic.source_0.5.46.jar" basedir="${temp.folder}/org.epic.source_0.5.46" filesonly="false" whenempty="skip" update="false"/>
 		<delete dir="${temp.folder}"/>
 	</target>
 
@@ -56,8 +56,8 @@
 	</target>
 
 	<target name="gather.bin.parts" depends="init" if="destination.temp.folder">
-		<mkdir dir="${destination.temp.folder}/org.epic.source_0.5.45"/>
-		<copy todir="${destination.temp.folder}/org.epic.source_0.5.45" failonerror="true" overwrite="false">
+		<mkdir dir="${destination.temp.folder}/org.epic.source_0.5.46"/>
+		<copy todir="${destination.temp.folder}/org.epic.source_0.5.46" failonerror="true" overwrite="false">
 			<fileset dir="${basedir}" includes="src/,META-INF/,plugin.xml,."			/>
 		</copy>
 	</target>
@@ -72,8 +72,8 @@
 	</target>
 
 	<target name="clean" depends="init" description="Clean the plug-in: org.epic.source of all the zips, jars and logs created.">
-		<delete file="${plugin.destination}/org.epic.source_0.5.45.jar"/>
-		<delete file="${plugin.destination}/org.epic.source_0.5.45.zip"/>
+		<delete file="${plugin.destination}/org.epic.source_0.5.46.jar"/>
+		<delete file="${plugin.destination}/org.epic.source_0.5.46.zip"/>
 		<delete dir="${temp.folder}"/>
 	</target>
 
@@ -96,7 +96,7 @@
 		<delete>
 			<fileset dir="${temp.folder}" includes="**/*.bin.log"			/>
 		</delete>
-		<zip destfile="${plugin.destination}/org.epic.source_0.5.45.zip" basedir="${temp.folder}" filesonly="true" whenempty="skip" update="false"/>
+		<zip destfile="${plugin.destination}/org.epic.source_0.5.46.zip" basedir="${temp.folder}" filesonly="true" whenempty="skip" update="false"/>
 		<delete dir="${temp.folder}"/>
 	</target>
 

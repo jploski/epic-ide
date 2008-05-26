@@ -553,7 +553,7 @@ public class EpicCgiHandler implements Handler
             
             while (end < uri.length())
             {
-                end = uri.indexOf(File.separatorChar, start);
+                end = uri.indexOf('/', start);
                 if (end < 0) end = uri.length();
 
                 String s = uri.substring(1, end);

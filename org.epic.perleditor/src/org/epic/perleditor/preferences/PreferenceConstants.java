@@ -534,7 +534,7 @@ public class PreferenceConstants
     public static final String MODULE_STARTER_DEFAULT_LOCATION = "moduleStarterDefaultLocation"; //$NON-NLS-1$
     public static final String MODULE_STARTER_LOCATION = "moduleStarterLocation"; //$NON-NLS-1$
     public static final String MODULE_STARTER_OVERRIDE_CONFIG = "moduleStarterOverrideConfig"; //$NON-NLS-1$
-    public static final String MODULE_STARTER_EMAIL = "moduelStarterEmail"; //$NON-NLS-1$
+    public static final String MODULE_STARTER_EMAIL = "moduleStarterEmail"; //$NON-NLS-1$
     public static final String MODULE_STARTER_AUTHOR = "moduleStarterAuthor"; //$NON-NLS-1$
     public static final String MODULE_STARTER_ADDN_OPTS = "moduleStarterAddnOpts"; //$NON-NLS-1$
 
@@ -635,5 +635,13 @@ public class PreferenceConstants
         store.setDefault(PreferenceConstants.EDITOR_OPERATOR_COLOR_BOLD, false);
         store.setDefault(PreferenceConstants.EDITOR_NUMBER_COLOR_BOLD, false);
         store.setDefault(PreferenceConstants.EDITOR_INVALID_COLOR_BOLD, false);
+        
+        store.setDefault(PreferenceConstants.MODULE_STARTER_ENABLED, false);
+        store.setDefault(PreferenceConstants.MODULE_STARTER_DEFAULT_LOCATION, true);
+        store.setDefault(PreferenceConstants.MODULE_STARTER_LOCATION, ""); //$NON-NLS-1$
+        store.setDefault(PreferenceConstants.MODULE_STARTER_OVERRIDE_CONFIG, true);
+        store.setDefault(PreferenceConstants.MODULE_STARTER_EMAIL, ""); //$NON-NLS-1$
+        store.setDefault(PreferenceConstants.MODULE_STARTER_AUTHOR, System.getProperty("user.name")); //$NON-NLS-1$
+        store.setDefault(PreferenceConstants.MODULE_STARTER_ADDN_OPTS, ""); //$NON-NLS-1$
     }
 }

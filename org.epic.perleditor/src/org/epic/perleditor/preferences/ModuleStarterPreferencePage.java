@@ -15,6 +15,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
@@ -97,7 +98,7 @@ public class ModuleStarterPreferencePage extends PreferencePage implements
             {
                 customLocationText.setText(loadString(
                     PreferenceConstants.MODULE_STARTER_LOCATION,
-                    DEFAULT_LOCATION));
+                    DEFAULT_LOCATION, false));
                 customLocationText.setEnabled(useCustomButton.getSelection()
                     && moduleEnabledButton.getSelection());
 
@@ -152,7 +153,7 @@ public class ModuleStarterPreferencePage extends PreferencePage implements
 
         toggleEnabled(moduleEnabledButton.getSelection());
 
-        loadPreferences();
+        loadPreferences(false);
 
         return null;
     }
@@ -217,13 +218,14 @@ public class ModuleStarterPreferencePage extends PreferencePage implements
     public void init(IWorkbench workbench)
     {
         setPreferenceStore(PerlEditorPlugin.getDefault().getPreferenceStore());
+        updateErrorMessage();
     }
 
     /*
      * @see org.eclipse.jface.preference.PreferencePage#performOk()
      */
     public boolean performOk()
-    {
+    {   
         storeBoolean(PreferenceConstants.MODULE_STARTER_ENABLED,
             moduleEnabledButton.getSelection());
 
@@ -251,14 +253,9 @@ public class ModuleStarterPreferencePage extends PreferencePage implements
      */
     protected void performDefaults()
     {
-        moduleEnabledButton.setSelection(true);
-        useDefaultButton.setSelection(true);
-        useCustomButton.setSelection(false);
-        customLocationText.setText("");
-        overrideConfigButton.setSelection(false);
-        authorText.setText(System.getProperty("user.name"));
-        emailText.setText("");
-        addnOptsText.setText("");
+        errors.clear();
+        loadPreferences(true);
+                
         super.performDefaults();
     }
 
@@ -268,23 +265,14 @@ public class ModuleStarterPreferencePage extends PreferencePage implements
     protected void removeErrorMessage(String message)
     {
         errors.remove(message);
-        if (errors.isEmpty())
-        {
-            addErrorMessage(null);
-        }
-        else
-        {
-            addErrorMessage((String) errors.get(errors.size() - 1));
-        }
+        updateErrorMessage();
     }
 
     private void addErrorMessage(String message)
     {
         errors.remove(message);
         errors.add(message);
-
-        setErrorMessage(message);
-        setValid(message == null);
+        updateErrorMessage();
     }
 
     private Composite createComposite(Composite parent, int numCols)
@@ -292,24 +280,46 @@ public class ModuleStarterPreferencePage extends PreferencePage implements
         return WidgetUtils.createComposite(parent, numCols);
     }
 
-    private boolean loadBoolean(String name)
+    private boolean loadBoolean(String name, boolean restoreDefault)
     {
-        return getPreferenceStore().getBoolean(name);
+        IPreferenceStore store = getPreferenceStore();
+        return restoreDefault ? store.getDefaultBoolean(name) : store.getBoolean(name);
     }
 
-    private void loadPreferences()
+    private void loadPreferences(boolean restoreDefaults)
     {
-        boolean useDefault = loadBoolean(PreferenceConstants.MODULE_STARTER_DEFAULT_LOCATION);
+        boolean useDefault = loadBoolean(PreferenceConstants.MODULE_STARTER_DEFAULT_LOCATION, restoreDefaults);
         useDefaultButton.setSelection(useDefault);
         useCustomButton.setSelection(!useDefault);
 
+        moduleEnabledButton.setSelection(loadBoolean(
+            PreferenceConstants.MODULE_STARTER_ENABLED,
+            restoreDefaults));
         customLocationText.setText(loadString(
-            PreferenceConstants.MODULE_STARTER_LOCATION, DEFAULT_LOCATION));
+            PreferenceConstants.MODULE_STARTER_LOCATION, "",
+            restoreDefaults));
+        overrideConfigButton.setSelection(loadBoolean(
+            PreferenceConstants.MODULE_STARTER_OVERRIDE_CONFIG,
+            restoreDefaults));
+        authorText.setText(loadString(
+            PreferenceConstants.MODULE_STARTER_AUTHOR, "",
+            restoreDefaults));
+        emailText.setText(loadString(
+            PreferenceConstants.MODULE_STARTER_EMAIL, "",
+            restoreDefaults));
+        addnOptsText.setText(loadString(
+            PreferenceConstants.MODULE_STARTER_ADDN_OPTS, "",
+            restoreDefaults));
+        
+        validateLocation(customLocationText.getText());
+        toggleEnabled(moduleEnabledButton.getSelection());
+        updateErrorMessage();
     }
 
-    private String loadString(String name, String backup)
+    private String loadString(String name, String backup, boolean restoreDefault)
     {
-        String value = getPreferenceStore().getString(name);
+        IPreferenceStore store = getPreferenceStore();
+        String value = restoreDefault ? store.getDefaultString(name) : store.getString(name);
         return ("".equals(value) ? backup : value);
     }
 
@@ -332,11 +342,19 @@ public class ModuleStarterPreferencePage extends PreferencePage implements
         useCustomButton.setEnabled(enabled);
         overrideConfigButton.setEnabled(enabled);
 
-        customLocationText.setEnabled((enabled && !useDefaultButton
-            .getSelection()));
+        customLocationText.setEnabled((enabled && !useDefaultButton.getSelection()));
         authorText.setEnabled(enabled && overrideConfigButton.getSelection());
         emailText.setEnabled(enabled && overrideConfigButton.getSelection());
         addnOptsText.setEnabled(enabled && overrideConfigButton.getSelection());
+    }
+    
+    private void updateErrorMessage()
+    {
+        String message = errors.isEmpty()
+            ? null : (String) errors.get(errors.size()-1);
+        
+        setErrorMessage(message);
+        setValid(message == null);
     }
 
     private void validateEnabled()
@@ -368,8 +386,9 @@ public class ModuleStarterPreferencePage extends PreferencePage implements
         }
 
         removeErrorMessage(ENTER_PATH_MSG);
-
-        if (!new File(location).isFile())
+        
+        if (moduleEnabledButton.getSelection() &&
+            !new File(location).isFile())
         {
             addErrorMessage(INVALID_PATH_ERR);
         }

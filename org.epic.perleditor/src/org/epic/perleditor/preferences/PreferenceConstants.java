@@ -529,8 +529,15 @@ public class PreferenceConstants
     public static final String SOURCE_CRITIC_LOCATION = "sourceCriticLocation"; //$NON-NLS-1$
 
     public static final String SOURCE_CRITIC_SEVERITY_LEVEL = "sourceCriticLevel"; //$NON-NLS-1$
-    
-    
+
+    public static final String MODULE_STARTER_ENABLED = "moduleStarterEnabled"; //$NON-NLS-1$
+    public static final String MODULE_STARTER_DEFAULT_LOCATION = "moduleStarterDefaultLocation"; //$NON-NLS-1$
+    public static final String MODULE_STARTER_LOCATION = "moduleStarterLocation"; //$NON-NLS-1$
+    public static final String MODULE_STARTER_OVERRIDE_CONFIG = "moduleStarterOverrideConfig"; //$NON-NLS-1$
+    public static final String MODULE_STARTER_EMAIL = "moduelStarterEmail"; //$NON-NLS-1$
+    public static final String MODULE_STARTER_AUTHOR = "moduleStarterAuthor"; //$NON-NLS-1$
+    public static final String MODULE_STARTER_ADDN_OPTS = "moduleStarterAddnOpts"; //$NON-NLS-1$
+
     private static final Object[] DEFAULT_COLORS = {
         PreferenceConstants.EDITOR_CURRENT_LINE_COLOR, new RGB(225, 235, 224),
         PreferenceConstants.EDITOR_PRINT_MARGIN_COLOR, new RGB(176, 180, 185), 

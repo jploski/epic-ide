@@ -50,7 +50,7 @@
               category="org.epic.core.preferences.PerlMainPreferencePage"
               class="org.epic.perleditor.preferences.ModuleStarterPreferencePage"
               id="org.epic.perleditor.preferences.ModuleStarterPreferencePage"
-              name="Module::Starter Preference Page">
+              name="Module::Starter">
         </page>
         <page
             class="org.epic.perleditor.preferences.TaskTagsPreferencePage"

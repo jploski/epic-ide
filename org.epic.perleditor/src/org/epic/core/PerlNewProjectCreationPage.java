@@ -36,8 +36,7 @@ import org.epic.perleditor.preferences.ModuleStarterPreferencePage;
 
 public class PerlNewProjectCreationPage extends WizardNewProjectCreationPage
 {
-	private Link moduleStarterPrefLink; // link element to Module::Starter pref
-	// page
+	private Link moduleStarterPrefLink;
 	private Button moduleButton;
 	private Label moduleNameLabel;
 	private Text moduleNameText;
@@ -87,6 +86,7 @@ public class PerlNewProjectCreationPage extends WizardNewProjectCreationPage
 		moduleButton.setToolTipText(ResourceMessages
 		    .getString("NewProject.moduleStarterTooltip"));
 
+		// link element to Module::Starter pref page
 		moduleStarterPrefLink = new Link(group, SWT.NONE);
 		moduleStarterPrefLink.setFont(group.getFont());
 		moduleStarterPrefLink.setText(ResourceMessages
@@ -104,8 +104,7 @@ public class PerlNewProjectCreationPage extends WizardNewProjectCreationPage
 				    moduleStarterID, new String[] { moduleStarterID }, data)
 				    .open();
 				// check if we changed the preferences
-				moduleButton.setEnabled(ModuleStarterPreferencePage
-				    .isModuleStarterEnabled());
+				toggleEnabled(ModuleStarterPreferencePage.isModuleStarterEnabled());
 			}
 		});
 
@@ -118,28 +117,40 @@ public class PerlNewProjectCreationPage extends WizardNewProjectCreationPage
 		moduleNameText.setLayoutData(moduleNameData);
 		moduleNameText.setFont(parent.getFont());
 
+        toggleEnabled(ModuleStarterPreferencePage.isModuleStarterEnabled());
+
 		setModuleName();
-
 	}
+    
+    public void setPageComplete(boolean complete)
+    {
+        super.setPageComplete(complete);
+        setModuleName();
+    }
 
-	void commitData()
+    boolean getUseModule()
+    {
+        return useModule;
+    }
+
+    String getModuleName()
+    {
+        return moduleNameText.getText().trim();
+    }
+
+	private void setModuleName()
 	{
-		setModuleName();
-		useModule = moduleButton.getSelection();
+        String projectName = getProjectName();
+        if (projectName == null || !useModule) projectName = "";
+        
+        if (moduleNameText != null)        
+            moduleNameText.setText(projectName.replaceAll("-", "::"));
 	}
-
-	boolean getUseModule()
-	{
-		return useModule;
-	}
-
-	String getModuleName()
-	{
-		return moduleNameText.getText().trim();
-	}
-
-	void setModuleName()
-	{
-		moduleNameText.setText(getProjectName().replaceAll("-", "::"));
-	}
+    
+    private void toggleEnabled(boolean enabled)
+    {
+        moduleButton.setEnabled(enabled);
+        moduleNameLabel.setEnabled(enabled);
+        moduleNameText.setEnabled(enabled);
+    }
 }

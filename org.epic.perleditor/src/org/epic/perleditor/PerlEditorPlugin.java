@@ -36,39 +36,6 @@ public class PerlEditorPlugin extends AbstractUIPlugin {
 
     private PerlColorProvider colorProvider = new PerlColorProvider();
 
-	public static final String PERL_EXECUTABLE_PREFERENCE = "PERL_EXECUTABLE";
-
-	private static final String PERL_EXECUTABLE_DEFAULT = "perl";
-
-	public static final String WEB_BROWSER_PREFERENCE = "WEB_BROWSER";
-
-	private static final String WEB_BROWSER_DEFAULT = "http://";
-
-	public static final String WARNINGS_PREFERENCE = "SHOW_WARNINGS";
-
-	public static final String TAINT_MODE_PREFERENCE = "USE_TAINT_MODE";
-
-    public static final String DEBUG_CONSOLE_PREFERENCE = "ENABLE_DEBUG_CONSOLE";
-
-    public static final String SUSPEND_AT_FIRST_PREFERENCE = "SUSPEND_AT_FIRST_CONSOLE";
-
-	private static final boolean WARNINGS_DEFAULT = true;
-
-	private static final boolean TAINT_MODE_DEFAULT = false;
-
-	public static final String INTERPRETER_TYPE_PREFERENCE = "INTERPRETER_TYPE";
-
-	public static final String INTERPRETER_TYPE_STANDARD = "Standard";
-
-	public static final String INTERPRETER_TYPE_CYGWIN = "Cygwin";
-
-	public static final String SYNTAX_VALIDATION_PREFERENCE = "SYNTAX_VALIDATION_PREFERENCE";
-	public static final boolean SYNTAX_VALIDATION_PREFERENCE_DEFAULT = true;
-
-	public static final String SYNTAX_VALIDATION_INTERVAL_PREFERENCE = "SYNTAX_VALIDATION_IDLE_INTERVAL";
-
-	public static final int SYNTAX_VALIDATION_INTERVAL_DEFAULT = 400;
-
 	private IDocumentProvider fDocumentProvider;
 
     private boolean requirePerlCheckPassed;
@@ -180,119 +147,37 @@ public class PerlEditorPlugin extends AbstractUIPlugin {
 	 *            the preference store to fill
 	 */
 	protected void initializeDefaultPreferences(IPreferenceStore store) {
-		store.setDefault(PERL_EXECUTABLE_PREFERENCE, PERL_EXECUTABLE_DEFAULT);
 		PreferenceConstants.initializeDefaultValues(store);
-		store.setDefault(INTERPRETER_TYPE_PREFERENCE,
-						INTERPRETER_TYPE_STANDARD);
-		store.setDefault(SYNTAX_VALIDATION_INTERVAL_PREFERENCE,
-				SYNTAX_VALIDATION_INTERVAL_DEFAULT);
-        store.setDefault(
-            PreferenceConstants.EDITOR_SYNC_OUTLINE_ON_CURSOR_MOVE,
-            true);
-        store.setDefault(SUSPEND_AT_FIRST_PREFERENCE, "1");
 		SourceFormatterPreferences.initializeDefaultValues(store);
 		CodeAssistPreferences.initializeDefaultValues(store);
 		TaskTagPreferences.initializeDefaults(store);
 		MarkOccurrencesPreferences.initializeDefaultValues(store);
 
-        System.setProperty(PreferenceConstants.SOURCE_CRITIC_ENABLED,
-                store.getString(PreferenceConstants.SOURCE_CRITIC_ENABLED));
+        System.setProperty(
+            PreferenceConstants.SOURCE_CRITIC_ENABLED,
+            store.getString(PreferenceConstants.SOURCE_CRITIC_ENABLED));
 	}
 
-	public String getExecutablePreference() {
-		return getPreferenceStore().getString(PERL_EXECUTABLE_PREFERENCE);
+	public String getPerlExecutable() {
+		return getPreferenceStore().getString(PreferenceConstants.DEBUG_PERL_EXECUTABLE);
 	}
 
-	public String getDefaultExecutablePreference() {
-		return PERL_EXECUTABLE_DEFAULT;
-	}
+	public void setPerlExecutable(String value) {
 
-	public void setExecutablePreference(String value) {
-
-		getPreferenceStore().setValue(PERL_EXECUTABLE_PREFERENCE, value);
+		getPreferenceStore().setValue(PreferenceConstants.DEBUG_PERL_EXECUTABLE, value);
         requirePerlErrorDisplayed = false;
         checkForPerlInterpreter(true);
 	}
-
-	public String getWebBrowserPreference() {
-		return getPreferenceStore().getString(WEB_BROWSER_PREFERENCE);
-	}
-
-	public String getDefaultWebBrowserPreference() {
-		return WEB_BROWSER_DEFAULT;
-	}
-
-	public void setWebBrowserPreference(String value) {
-
-		getPreferenceStore().setValue(WEB_BROWSER_PREFERENCE, value);
-	}
-
-	public boolean getWarningsPreference() {
-		String value = getPreferenceStore().getString(WARNINGS_PREFERENCE);
-
-		return value.equals("1") ? true : false;
-	}
-
-	public boolean getDefaultWarningsPreference() {
-		return WARNINGS_DEFAULT;
-	}
-
-	public void setTaintPreference(boolean value) {
-		getPreferenceStore().setValue(TAINT_MODE_PREFERENCE,
-				value == true ? "1" : "0");
-	}
-
-	public boolean getTaintPreference() {
-		String value = getPreferenceStore().getString(TAINT_MODE_PREFERENCE);
-
-		return value.equals("1") ? true : false;
-	}
-
-    public boolean getDebugConsolePreference() {
-        String value = getPreferenceStore().getString(DEBUG_CONSOLE_PREFERENCE);
-
+    
+    public boolean getBooleanPreference(String name) {
+        boolean ret = getPreferenceStore().getBoolean(name);
+        if (ret) return true;
+        
+        // sadly, necessary for backward-compatibility with
+        // old versions of EPIC:
+        String value = getPreferenceStore().getString(name);
         return value.equals("1") ? true : false;
     }
-
-    public void setDebugConsolePreference(boolean value) {
-        getPreferenceStore().setValue(DEBUG_CONSOLE_PREFERENCE,
-                value == true ? "1" : "0");
-    }
-
-    public boolean getSuspendAtFirstPreference() {
-        String value = getPreferenceStore().getString(SUSPEND_AT_FIRST_PREFERENCE);
-
-        return value.equals("1") ? true : false;
-    }
-
-    public void setSuspendAtFirstPreference(boolean value) {
-        getPreferenceStore().setValue(SUSPEND_AT_FIRST_PREFERENCE,
-                value == true ? "1" : "0");
-    }
-
-	public boolean getDefaultTaintPreference() {
-		return TAINT_MODE_DEFAULT;
-	}
-
-	public void setWarningsPreference(boolean value) {
-		getPreferenceStore().setValue(WARNINGS_PREFERENCE,
-				value == true ? "1" : "0");
-	}
-
-	public boolean getSyntaxValidationPreference() {
-		String value = getPreferenceStore().getString(SYNTAX_VALIDATION_PREFERENCE);
-
-		return value.equals("1") ? true : false;
-	}
-
-	public boolean getDefaultSyntaxValidationPreference() {
-		return SYNTAX_VALIDATION_PREFERENCE_DEFAULT;
-	}
-
-	public void setSyntaxValidationPreference(boolean value) {
-		getPreferenceStore().setValue(SYNTAX_VALIDATION_PREFERENCE,
-				value == true ? "1" : "0");
-	}
 
 	public static String getPluginId() {
         PerlEditorPlugin plugin = getDefault();

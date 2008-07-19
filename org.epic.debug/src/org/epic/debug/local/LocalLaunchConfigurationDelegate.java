@@ -17,6 +17,7 @@ import org.epic.debug.*;
 import org.epic.debug.util.ExecutionArguments;
 import org.epic.debug.util.RemotePort;
 import org.epic.perleditor.PerlEditorPlugin;
+import org.epic.perleditor.preferences.PreferenceConstants;
 
 /**
  * Executes launch configurations of type "Perl Local".
@@ -97,11 +98,13 @@ public class LocalLaunchConfigurationDelegate
         {
             fCmdList.add("-d");
         }
-        if (PerlEditorPlugin.getDefault().getWarningsPreference())
+        if (PerlEditorPlugin.getDefault().getBooleanPreference(
+            PreferenceConstants.DEBUG_SHOW_WARNINGS))
         {
             fCmdList.add("-w");
         }
-        if (PerlEditorPlugin.getDefault().getTaintPreference())
+        if (PerlEditorPlugin.getDefault().getBooleanPreference(
+            PreferenceConstants.DEBUG_TAINT_MODE))
         {
             fCmdList.add("-T");
         }        
@@ -149,8 +152,11 @@ public class LocalLaunchConfigurationDelegate
         String[] env,
         IPath workingDir)
     {
-        if (!PerlEditorPlugin.getDefault().getDebugConsolePreference())
+        if (!PerlEditorPlugin.getDefault().getBooleanPreference(
+            PreferenceConstants.DEBUG_DEBUG_CONSOLE))
+        {
             return;
+        }
 
         StringBuffer buf = new StringBuffer("Starting Perl debugger:\n");
         buf.append("Command line:\n");

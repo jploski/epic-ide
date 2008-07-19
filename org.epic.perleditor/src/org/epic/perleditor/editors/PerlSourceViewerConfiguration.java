@@ -144,7 +144,7 @@ public class PerlSourceViewerConfiguration extends SourceViewerConfiguration
             false);
 
         r.setDelay(prefs.getInt(
-            PerlEditorPlugin.SYNTAX_VALIDATION_INTERVAL_PREFERENCE));
+            PreferenceConstants.EDITOR_SYNTAX_VALIDATION_INTERVAL));
 
         return r;
     }

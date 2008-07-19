@@ -19,6 +19,7 @@ import org.epic.core.util.PerlExecutor;
 import org.epic.debug.ui.PerlImageDescriptorRegistry;
 import org.epic.debug.util.*;
 import org.epic.perleditor.PerlEditorPlugin;
+import org.epic.perleditor.preferences.PreferenceConstants;
 import org.osgi.framework.BundleContext;
 
 public class PerlDebugPlugin extends AbstractUIPlugin
@@ -152,10 +153,10 @@ public class PerlDebugPlugin extends AbstractUIPlugin
         
         String interpreterType = PerlEditorPlugin.getDefault()
             .getPreferenceStore().getString(
-                PerlEditorPlugin.INTERPRETER_TYPE_PREFERENCE);
+                PreferenceConstants.DEBUG_INTERPRETER_TYPE);
 
         IPathMapper mapper;        
-        if (PerlEditorPlugin.INTERPRETER_TYPE_CYGWIN.equals(interpreterType))
+        if (PreferenceConstants.DEBUG_INTERPRETER_TYPE_CYGWIN.equals(interpreterType))
             mapper = new CygwinPathMapper();
         else
             mapper = new NullPathMapper();

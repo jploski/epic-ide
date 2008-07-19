@@ -11,6 +11,7 @@ import org.eclipse.ui.texteditor.ITextEditor;
 import org.epic.core.PerlCore;
 import org.epic.core.PerlProject;
 import org.epic.perleditor.PerlEditorPlugin;
+import org.epic.perleditor.preferences.PreferenceConstants;
 
 /**
  * Responsible for the basic command lines used to invoke the Perl interpreter.
@@ -34,7 +35,7 @@ public class PerlExecutableUtilities
     public static List getPerlCommandLine()
     {
         return new ArrayList(CommandLineTokenizer.tokenize(
-            PerlEditorPlugin.getDefault().getExecutablePreference()));
+            PerlEditorPlugin.getDefault().getPerlExecutable()));
     }
 
     /**
@@ -104,9 +105,9 @@ public class PerlExecutableUtilities
     {
         String type = PerlEditorPlugin.getDefault()
             .getPreferenceStore().getString(
-                PerlEditorPlugin.INTERPRETER_TYPE_PREFERENCE);
+                PreferenceConstants.DEBUG_INTERPRETER_TYPE);
         
-        return type.equals(PerlEditorPlugin.INTERPRETER_TYPE_CYGWIN);
+        return type.equals(PreferenceConstants.DEBUG_INTERPRETER_TYPE_CYGWIN);
     }
     
     /**

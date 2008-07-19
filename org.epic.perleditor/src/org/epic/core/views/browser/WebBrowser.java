@@ -47,6 +47,7 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
 import org.epic.perleditor.PerlEditorPlugin;
+import org.epic.perleditor.preferences.PreferenceConstants;
 
 public class WebBrowser {
   static ResourceBundle resourceBundle = ResourceBundle
@@ -225,7 +226,9 @@ public class WebBrowser {
       });
       initialize(display, browser);
 //      browser.setUrl(getResourceString("Startup"));
-      browser.setUrl(PerlEditorPlugin.getDefault().getWebBrowserPreference());
+      browser.setUrl(
+          PerlEditorPlugin.getDefault().getPreferenceStore().getString(
+              PreferenceConstants.BROWSER_START_URL));
     }
   }
   /**

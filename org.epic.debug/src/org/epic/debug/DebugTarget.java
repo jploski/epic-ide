@@ -13,6 +13,7 @@ import org.epic.debug.db.DebuggerInterface.SessionTerminatedException;
 import org.epic.debug.ui.action.ShowLocalVariableActionDelegate;
 import org.epic.debug.util.*;
 import org.epic.perleditor.PerlEditorPlugin;
+import org.epic.perleditor.preferences.PreferenceConstants;
 
 /**
  * An implementation of IDebugTarget which tracks a Perl debugger
@@ -273,7 +274,8 @@ public class DebugTarget extends PerlTarget
     
     protected boolean getDebugConsolePreference()
     {
-        return PerlEditorPlugin.getDefault().getDebugConsolePreference();
+        return PerlEditorPlugin.getDefault().getBooleanPreference(
+            PreferenceConstants.DEBUG_DEBUG_CONSOLE);
     }
 
     private DebuggerInterface createDebuggerInterface()

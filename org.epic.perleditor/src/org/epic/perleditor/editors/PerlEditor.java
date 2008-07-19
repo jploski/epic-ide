@@ -342,9 +342,10 @@ public class PerlEditor extends TextEditor implements IPropertyChangeListener
 
         // Check if automatic syntax validation has to be enabled or disabled
         if (event.getProperty().equals(
-            PerlEditorPlugin.SYNTAX_VALIDATION_PREFERENCE))
+            PreferenceConstants.EDITOR_SYNTAX_VALIDATION))
         {
-            if (PerlEditorPlugin.getDefault().getSyntaxValidationPreference())
+            if (PerlEditorPlugin.getDefault().getBooleanPreference(
+                PreferenceConstants.EDITOR_SYNTAX_VALIDATION))
             {
                 if (!idleTimer.isRegistered(validationThread))
                 {
@@ -757,7 +758,8 @@ public class PerlEditor extends TextEditor implements IPropertyChangeListener
             sourceViewer.getDocument());
 
         // Register the validation thread if automatic checking is enabled
-        if (PerlEditorPlugin.getDefault().getSyntaxValidationPreference() &&
+        if (PerlEditorPlugin.getDefault().getBooleanPreference(
+            PreferenceConstants.EDITOR_SYNTAX_VALIDATION) &&
             idleTimer != null)
         {
             registerIdleListener(validationThread);

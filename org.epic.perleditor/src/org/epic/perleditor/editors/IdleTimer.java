@@ -14,6 +14,7 @@ import org.eclipse.swt.SWTException;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.widgets.Display;
 import org.epic.perleditor.PerlEditorPlugin;
+import org.epic.perleditor.preferences.PreferenceConstants;
 
 /**
  * Monitors an editor's document for changes and broadcasts change
@@ -121,9 +122,9 @@ public class IdleTimer extends Thread
             {
                 while (lastChange == -1) wait();
 
-                long sleep =
-                    PerlEditorPlugin.getDefault().getPreferenceStore().getLong(
-                        PerlEditorPlugin.SYNTAX_VALIDATION_INTERVAL_PREFERENCE);
+                int sleep =
+                    PerlEditorPlugin.getDefault().getPreferenceStore().getInt(
+                        PreferenceConstants.EDITOR_SYNTAX_VALIDATION_INTERVAL);
 
                 // note that lastChange might be increased by document
                 // changes occuring during the wait

@@ -9,6 +9,7 @@ import org.eclipse.debug.core.model.*;
 import org.eclipse.ui.progress.UIJob;
 import org.epic.debug.*;
 import org.epic.perleditor.PerlEditorPlugin;
+import org.epic.perleditor.preferences.PreferenceConstants;
 
 /**
  * This IThread implementation is responsible for processing user
@@ -58,7 +59,8 @@ public class PerlDebugThread extends DebugElement implements IThread
         suspended(DebugEvent.BREAKPOINT);
         
         if (!isBreakpointReached() &&
-            !PerlEditorPlugin.getDefault().getSuspendAtFirstPreference())
+            !PerlEditorPlugin.getDefault().getBooleanPreference(
+                PreferenceConstants.DEBUG_SUSPEND_AT_FIRST))
         {
             UIJob resume = new UIJob("PerlDebugThread.resume") {
                 public IStatus runInUIThread(IProgressMonitor monitor)

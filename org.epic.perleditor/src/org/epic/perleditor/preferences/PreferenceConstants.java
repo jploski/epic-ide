@@ -19,6 +19,55 @@ public class PreferenceConstants
     }
 
     /**
+     * Initial URL displayed in the Browser view
+     */
+    public static final String BROWSER_START_URL = "WEB_BROWSER";
+    
+    /**
+     * Whether or not the experimental debug console should be enabled
+     * when running Perl scripts
+     */
+    public static final String DEBUG_DEBUG_CONSOLE = "ENABLE_DEBUG_CONSOLE";
+    
+    /**
+     * Perl interpreter type (Cygwin or standard)
+     */
+    public static final String DEBUG_INTERPRETER_TYPE = "INTERPRETER_TYPE";
+    
+    /**
+     * One of the allowed values for DEBUG_INTERPRETER_TYPE
+     */
+    public static final String DEBUG_INTERPRETER_TYPE_STANDARD = "Standard";
+
+    /**
+     * One of the allowed values for DEBUG_INTERPRETER_TYPE
+     */
+    public static final String DEBUG_INTERPRETER_TYPE_CYGWIN = "Cygwin";
+    
+    /**
+     * Path to the Perl interpreter
+     */
+    public static final String DEBUG_PERL_EXECUTABLE = "PERL_EXECUTABLE";
+
+    /**
+     * Whether or not the -w option should be passed to Perl during
+     * syntax validation and script execution
+     */
+    public static final String DEBUG_SHOW_WARNINGS = "SHOW_WARNINGS";
+
+    /**
+     * Whether or not the debugger should suspend at the first
+     * executable statement 
+     */
+    public static final String DEBUG_SUSPEND_AT_FIRST = "SUSPEND_AT_FIRST_CONSOLE";
+    
+    /**
+     * Whether or not the -T option should be passed to Perl during
+     * syntax checking and script execution
+     */
+    public static final String DEBUG_TAINT_MODE = "USE_TAINT_MODE";
+
+    /**
      * A named preference that controls whether the current line highlighting is
      * turned on or off.
      * <p>
@@ -76,6 +125,17 @@ public class PreferenceConstants
      */
     public final static String EDITOR_SUB_WORD_NAVIGATION = "subWordNavigation"; //$NON-NLS-1$
 
+    /**
+     * Whether or not syntax validation should be performed in the editor
+     */
+    public static final String EDITOR_SYNTAX_VALIDATION = "SYNTAX_VALIDATION_PREFERENCE"; //$NON-NLS-1$
+    
+    /**
+     * Inactivity duration (in milliseconds) after which syntax validation
+     * is triggered in the editor (if it is enabled)
+     */
+    public static final String EDITOR_SYNTAX_VALIDATION_INTERVAL = "SYNTAX_VALIDATION_IDLE_INTERVAL"; //$NON-NLS-1$
+    
     /**
      * A named preference that controls whether the 'line wrap' feature is
      * enabled.
@@ -539,32 +599,32 @@ public class PreferenceConstants
     public static final String MODULE_STARTER_ADDN_OPTS = "moduleStarterAddnOpts"; //$NON-NLS-1$
 
     private static final Object[] DEFAULT_COLORS = {
-        PreferenceConstants.EDITOR_CURRENT_LINE_COLOR, new RGB(225, 235, 224),
-        PreferenceConstants.EDITOR_PRINT_MARGIN_COLOR, new RGB(176, 180, 185), 
-        PreferenceConstants.EDITOR_PROBLEM_INDICATION_COLOR, new RGB(255, 0, 128),
-        PreferenceConstants.EDITOR_WARNING_INDICATION_COLOR, new RGB(244, 200, 45),
-        PreferenceConstants.EDITOR_TASK_INDICATION_COLOR, new RGB(0, 128, 255),
-        PreferenceConstants.EDITOR_BOOKMARK_INDICATION_COLOR, new RGB(34, 164, 99),
-        PreferenceConstants.EDITOR_SEARCH_RESULT_INDICATION_COLOR, new RGB(192, 192, 192),
-        PreferenceConstants.EDITOR_UNKNOWN_INDICATION_COLOR, new RGB(0, 0, 0),
-        PreferenceConstants.EDITOR_LINE_NUMBER_RULER_COLOR, new RGB(0, 0, 0),
-        PreferenceConstants.EDITOR_LINKED_POSITION_COLOR, new RGB(0, 200, 100),
-        PreferenceConstants.EDITOR_MATCHING_BRACKETS_COLOR, new RGB(192, 192, 192),
+        EDITOR_CURRENT_LINE_COLOR, new RGB(225, 235, 224),
+        EDITOR_PRINT_MARGIN_COLOR, new RGB(176, 180, 185), 
+        EDITOR_PROBLEM_INDICATION_COLOR, new RGB(255, 0, 128),
+        EDITOR_WARNING_INDICATION_COLOR, new RGB(244, 200, 45),
+        EDITOR_TASK_INDICATION_COLOR, new RGB(0, 128, 255),
+        EDITOR_BOOKMARK_INDICATION_COLOR, new RGB(34, 164, 99),
+        EDITOR_SEARCH_RESULT_INDICATION_COLOR, new RGB(192, 192, 192),
+        EDITOR_UNKNOWN_INDICATION_COLOR, new RGB(0, 0, 0),
+        EDITOR_LINE_NUMBER_RULER_COLOR, new RGB(0, 0, 0),
+        EDITOR_LINKED_POSITION_COLOR, new RGB(0, 200, 100),
+        EDITOR_MATCHING_BRACKETS_COLOR, new RGB(192, 192, 192),
         
-        PreferenceConstants.EDITOR_STRING_COLOR, new RGB(0, 0, 0),
-        PreferenceConstants.EDITOR_KEYWORD1_COLOR, new RGB(160, 32, 240),
-        PreferenceConstants.EDITOR_KEYWORD2_COLOR, new RGB(160, 0, 240),
-        PreferenceConstants.EDITOR_VARIABLE_COLOR, new RGB(160, 0, 240),
-        PreferenceConstants.EDITOR_COMMENT1_COLOR, new RGB(178, 0, 34),
-        PreferenceConstants.EDITOR_COMMENT2_COLOR, new RGB(178, 34, 0),
-        PreferenceConstants.EDITOR_LITERAL1_COLOR, new RGB(0, 0, 255),
-        PreferenceConstants.EDITOR_LITERAL2_COLOR, new RGB(160, 32, 240),
-        PreferenceConstants.EDITOR_LABEL_COLOR, new RGB(160, 0, 240),
-        PreferenceConstants.EDITOR_FUNCTION_COLOR, new RGB(160, 32, 0),
-        PreferenceConstants.EDITOR_MARKUP_COLOR, new RGB(178, 0, 34),
-        PreferenceConstants.EDITOR_OPERATOR_COLOR, new RGB(178, 34, 0),
-        PreferenceConstants.EDITOR_NUMBER_COLOR, new RGB(160, 32, 0),
-        PreferenceConstants.EDITOR_INVALID_COLOR, new RGB(178, 0, 34),
+        EDITOR_STRING_COLOR, new RGB(0, 0, 0),
+        EDITOR_KEYWORD1_COLOR, new RGB(160, 32, 240),
+        EDITOR_KEYWORD2_COLOR, new RGB(160, 0, 240),
+        EDITOR_VARIABLE_COLOR, new RGB(160, 0, 240),
+        EDITOR_COMMENT1_COLOR, new RGB(178, 0, 34),
+        EDITOR_COMMENT2_COLOR, new RGB(178, 34, 0),
+        EDITOR_LITERAL1_COLOR, new RGB(0, 0, 255),
+        EDITOR_LITERAL2_COLOR, new RGB(160, 32, 240),
+        EDITOR_LABEL_COLOR, new RGB(160, 0, 240),
+        EDITOR_FUNCTION_COLOR, new RGB(160, 32, 0),
+        EDITOR_MARKUP_COLOR, new RGB(178, 0, 34),
+        EDITOR_OPERATOR_COLOR, new RGB(178, 34, 0),
+        EDITOR_NUMBER_COLOR, new RGB(160, 32, 0),
+        EDITOR_INVALID_COLOR, new RGB(178, 0, 34),
         };
 
     /**
@@ -574,44 +634,56 @@ public class PreferenceConstants
      */
     public static void initializeDefaultValues(IPreferenceStore store)
     {
-        store.setDefault(PreferenceConstants.EDITOR_CURRENT_LINE, true);
-        store.setDefault(PreferenceConstants.EDITOR_PRINT_MARGIN, false);
-        store.setDefault(PreferenceConstants.EDITOR_PRINT_MARGIN_COLUMN, 80);
-        store.setDefault(PreferenceConstants.EDITOR_PROBLEM_INDICATION, true);
-        store.setDefault(PreferenceConstants.EDITOR_ERROR_INDICATION_IN_OVERVIEW_RULER, true);
-        store.setDefault(PreferenceConstants.EDITOR_WARNING_INDICATION, true);
-        store.setDefault(PreferenceConstants.EDITOR_WARNING_INDICATION_IN_OVERVIEW_RULER, true);
-        store.setDefault(PreferenceConstants.EDITOR_TASK_INDICATION, false);
-        store.setDefault(PreferenceConstants.EDITOR_TASK_INDICATION_IN_OVERVIEW_RULER, true);
-        store.setDefault(PreferenceConstants.EDITOR_BOOKMARK_INDICATION, false);
-        store.setDefault(PreferenceConstants.EDITOR_BOOKMARK_INDICATION_IN_OVERVIEW_RULER, true);
-        store.setDefault(PreferenceConstants.EDITOR_SEARCH_RESULT_INDICATION, true);
-        store.setDefault(PreferenceConstants.EDITOR_SEARCH_RESULT_INDICATION_IN_OVERVIEW_RULER, true);
-        store.setDefault(PreferenceConstants.EDITOR_UNKNOWN_INDICATION, false);
-        store.setDefault(PreferenceConstants.EDITOR_UNKNOWN_INDICATION_IN_OVERVIEW_RULER, false);
-        store.setDefault(PreferenceConstants.EDITOR_OVERVIEW_RULER, true);
-        store.setDefault(PreferenceConstants.EDITOR_LINE_NUMBER_RULER, false);
-        store.setDefault(PreferenceConstants.EDITOR_FOREGROUND_DEFAULT_COLOR, true);
-        store.setDefault(PreferenceConstants.EDITOR_BACKGROUND_DEFAULT_COLOR, true);
-        store.setDefault(PreferenceConstants.EDITOR_TAB_WIDTH, 4);
-        store.setDefault(PreferenceConstants.EDITOR_SMART_HOME_END, true);
-        store.setDefault(PreferenceConstants.EDITOR_SUB_WORD_NAVIGATION, true);
-        store.setDefault(PreferenceConstants.EDITOR_LINE_WRAP, false);
-        store.setDefault(PreferenceConstants.INSERT_TABS_ON_INDENT, 1);
-        store.setDefault(PreferenceConstants.SPACES_INSTEAD_OF_TABS, false);
-        store.setDefault(PreferenceConstants.SOURCE_FOLDING, true);
-        store.setDefault(PreferenceConstants.PERLDOC_FOLDING, false);
-        store.setDefault(PreferenceConstants.SUBROUTINE_FOLDING, false);
-        store.setDefault(PreferenceConstants.SOURCE_CRITIC_ENABLED, false);
-        store.setDefault(PreferenceConstants.SOURCE_CRITIC_DEFAULT_LOCATION, true);
-        store.setDefault(PreferenceConstants.SOURCE_CRITIC_LOCATION, "");
-        store.setDefault(PreferenceConstants.AUTO_COMPLETION_QUOTE1, true);
-        store.setDefault(PreferenceConstants.AUTO_COMPLETION_QUOTE2, true);
-        store.setDefault(PreferenceConstants.AUTO_COMPLETION_BRACKET1, true);
-        store.setDefault(PreferenceConstants.AUTO_COMPLETION_BRACKET2, true);
-        store.setDefault(PreferenceConstants.AUTO_COMPLETION_BRACKET3, true);
-        store.setDefault(PreferenceConstants.AUTO_COMPLETION_BRACKET4, true);
-        store.setDefault(PreferenceConstants.EDITOR_MATCHING_BRACKETS, true);
+        store.setDefault(BROWSER_START_URL, "http://"); //$NON-NLS-1$
+        
+        store.setDefault(DEBUG_INTERPRETER_TYPE, DEBUG_INTERPRETER_TYPE_STANDARD);
+        store.setDefault(DEBUG_PERL_EXECUTABLE, "perl"); //$NON-NLS-1$
+        store.setDefault(DEBUG_SHOW_WARNINGS, true);
+        store.setDefault(DEBUG_TAINT_MODE, false);
+        store.setDefault(DEBUG_DEBUG_CONSOLE, false);
+        store.setDefault(DEBUG_SUSPEND_AT_FIRST, true);
+        
+        store.setDefault(EDITOR_SYNC_OUTLINE_ON_CURSOR_MOVE, true);
+        store.setDefault(EDITOR_SYNTAX_VALIDATION, true);
+        store.setDefault(EDITOR_SYNTAX_VALIDATION_INTERVAL, 400);
+        store.setDefault(EDITOR_CURRENT_LINE, true);
+        store.setDefault(EDITOR_PRINT_MARGIN, false);
+        store.setDefault(EDITOR_PRINT_MARGIN_COLUMN, 80);
+        store.setDefault(EDITOR_PROBLEM_INDICATION, true);
+        store.setDefault(EDITOR_ERROR_INDICATION_IN_OVERVIEW_RULER, true);
+        store.setDefault(EDITOR_WARNING_INDICATION, true);
+        store.setDefault(EDITOR_WARNING_INDICATION_IN_OVERVIEW_RULER, true);
+        store.setDefault(EDITOR_TASK_INDICATION, false);
+        store.setDefault(EDITOR_TASK_INDICATION_IN_OVERVIEW_RULER, true);
+        store.setDefault(EDITOR_BOOKMARK_INDICATION, false);
+        store.setDefault(EDITOR_BOOKMARK_INDICATION_IN_OVERVIEW_RULER, true);
+        store.setDefault(EDITOR_SEARCH_RESULT_INDICATION, true);
+        store.setDefault(EDITOR_SEARCH_RESULT_INDICATION_IN_OVERVIEW_RULER, true);
+        store.setDefault(EDITOR_UNKNOWN_INDICATION, false);
+        store.setDefault(EDITOR_UNKNOWN_INDICATION_IN_OVERVIEW_RULER, false);
+        store.setDefault(EDITOR_OVERVIEW_RULER, true);
+        store.setDefault(EDITOR_LINE_NUMBER_RULER, false);
+        store.setDefault(EDITOR_FOREGROUND_DEFAULT_COLOR, true);
+        store.setDefault(EDITOR_BACKGROUND_DEFAULT_COLOR, true);
+        store.setDefault(EDITOR_TAB_WIDTH, 4);
+        store.setDefault(EDITOR_SMART_HOME_END, true);
+        store.setDefault(EDITOR_SUB_WORD_NAVIGATION, true);
+        store.setDefault(EDITOR_LINE_WRAP, false);
+        store.setDefault(INSERT_TABS_ON_INDENT, 1);
+        store.setDefault(SPACES_INSTEAD_OF_TABS, false);
+        store.setDefault(SOURCE_FOLDING, true);
+        store.setDefault(PERLDOC_FOLDING, false);
+        store.setDefault(SUBROUTINE_FOLDING, false);
+        store.setDefault(SOURCE_CRITIC_ENABLED, false);
+        store.setDefault(SOURCE_CRITIC_DEFAULT_LOCATION, true);
+        store.setDefault(SOURCE_CRITIC_LOCATION, "");
+        store.setDefault(AUTO_COMPLETION_QUOTE1, true);
+        store.setDefault(AUTO_COMPLETION_QUOTE2, true);
+        store.setDefault(AUTO_COMPLETION_BRACKET1, true);
+        store.setDefault(AUTO_COMPLETION_BRACKET2, true);
+        store.setDefault(AUTO_COMPLETION_BRACKET3, true);
+        store.setDefault(AUTO_COMPLETION_BRACKET4, true);
+        store.setDefault(EDITOR_MATCHING_BRACKETS, true);
 
         for (int i = 0; i < DEFAULT_COLORS.length; i += 2)
         {
@@ -621,27 +693,27 @@ public class PreferenceConstants
                 (RGB) DEFAULT_COLORS[i+1]);
         }
         
-        store.setDefault(PreferenceConstants.EDITOR_STRING_COLOR_BOLD, false);
-        store.setDefault(PreferenceConstants.EDITOR_KEYWORD1_COLOR_BOLD, false);
-        store.setDefault(PreferenceConstants.EDITOR_KEYWORD2_COLOR_BOLD, false);
-        store.setDefault(PreferenceConstants.EDITOR_VARIABLE_COLOR_BOLD, false);
-        store.setDefault(PreferenceConstants.EDITOR_COMMENT1_COLOR_BOLD, false);
-        store.setDefault(PreferenceConstants.EDITOR_COMMENT2_COLOR_BOLD, true);
-        store.setDefault(PreferenceConstants.EDITOR_LITERAL1_COLOR_BOLD, false);
-        store.setDefault(PreferenceConstants.EDITOR_LITERAL2_COLOR_BOLD, false);
-        store.setDefault(PreferenceConstants.EDITOR_LABEL_COLOR_BOLD, false);
-        store.setDefault(PreferenceConstants.EDITOR_FUNCTION_COLOR_BOLD, false);
-        store.setDefault(PreferenceConstants.EDITOR_MARKUP_COLOR_BOLD, false);
-        store.setDefault(PreferenceConstants.EDITOR_OPERATOR_COLOR_BOLD, false);
-        store.setDefault(PreferenceConstants.EDITOR_NUMBER_COLOR_BOLD, false);
-        store.setDefault(PreferenceConstants.EDITOR_INVALID_COLOR_BOLD, false);
+        store.setDefault(EDITOR_STRING_COLOR_BOLD, false);
+        store.setDefault(EDITOR_KEYWORD1_COLOR_BOLD, false);
+        store.setDefault(EDITOR_KEYWORD2_COLOR_BOLD, false);
+        store.setDefault(EDITOR_VARIABLE_COLOR_BOLD, false);
+        store.setDefault(EDITOR_COMMENT1_COLOR_BOLD, false);
+        store.setDefault(EDITOR_COMMENT2_COLOR_BOLD, true);
+        store.setDefault(EDITOR_LITERAL1_COLOR_BOLD, false);
+        store.setDefault(EDITOR_LITERAL2_COLOR_BOLD, false);
+        store.setDefault(EDITOR_LABEL_COLOR_BOLD, false);
+        store.setDefault(EDITOR_FUNCTION_COLOR_BOLD, false);
+        store.setDefault(EDITOR_MARKUP_COLOR_BOLD, false);
+        store.setDefault(EDITOR_OPERATOR_COLOR_BOLD, false);
+        store.setDefault(EDITOR_NUMBER_COLOR_BOLD, false);
+        store.setDefault(EDITOR_INVALID_COLOR_BOLD, false);
         
-        store.setDefault(PreferenceConstants.MODULE_STARTER_ENABLED, false);
-        store.setDefault(PreferenceConstants.MODULE_STARTER_DEFAULT_LOCATION, true);
-        store.setDefault(PreferenceConstants.MODULE_STARTER_LOCATION, ""); //$NON-NLS-1$
-        store.setDefault(PreferenceConstants.MODULE_STARTER_OVERRIDE_CONFIG, true);
-        store.setDefault(PreferenceConstants.MODULE_STARTER_EMAIL, ""); //$NON-NLS-1$
-        store.setDefault(PreferenceConstants.MODULE_STARTER_AUTHOR, System.getProperty("user.name")); //$NON-NLS-1$
-        store.setDefault(PreferenceConstants.MODULE_STARTER_ADDN_OPTS, ""); //$NON-NLS-1$
+        store.setDefault(MODULE_STARTER_ENABLED, false);
+        store.setDefault(MODULE_STARTER_DEFAULT_LOCATION, true);
+        store.setDefault(MODULE_STARTER_LOCATION, ""); //$NON-NLS-1$
+        store.setDefault(MODULE_STARTER_OVERRIDE_CONFIG, true);
+        store.setDefault(MODULE_STARTER_EMAIL, ""); //$NON-NLS-1$
+        store.setDefault(MODULE_STARTER_AUTHOR, System.getProperty("user.name")); //$NON-NLS-1$
+        store.setDefault(MODULE_STARTER_ADDN_OPTS, ""); //$NON-NLS-1$
     }
 }

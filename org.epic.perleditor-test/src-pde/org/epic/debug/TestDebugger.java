@@ -9,10 +9,12 @@ import org.eclipse.debug.core.*;
 import org.eclipse.debug.core.model.*;
 import org.eclipse.debug.ui.DebugUITools;
 import org.eclipse.jface.action.*;
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.*;
 import org.epic.perleditor.PerlEditorPlugin;
 import org.epic.perleditor.editors.BasePDETestCase;
+import org.epic.perleditor.preferences.PreferenceConstants;
 
 /**
  * Assorted tests of the org.epic.debug plug-in. Note that these tests
@@ -187,13 +189,17 @@ public class TestDebugger extends BasePDETestCase
         boolean suspendAtFirst)
         throws Exception
     {
-        boolean p1 = PerlEditorPlugin.getDefault().getDebugConsolePreference();
-        boolean p2 = PerlEditorPlugin.getDefault().getSuspendAtFirstPreference();
+        IPreferenceStore prefs = PerlEditorPlugin.getDefault().getPreferenceStore();
+        
+        boolean p1 = PerlEditorPlugin.getDefault().getBooleanPreference(
+            PreferenceConstants.DEBUG_DEBUG_CONSOLE);
+        boolean p2 = PerlEditorPlugin.getDefault().getBooleanPreference(
+            PreferenceConstants.DEBUG_SUSPEND_AT_FIRST);
         
         try
         {
-            PerlEditorPlugin.getDefault().setDebugConsolePreference(false);
-            PerlEditorPlugin.getDefault().setSuspendAtFirstPreference(suspendAtFirst);
+            prefs.setValue(PreferenceConstants.DEBUG_DEBUG_CONSOLE, false);
+            prefs.setValue(PreferenceConstants.DEBUG_SUSPEND_AT_FIRST, suspendAtFirst);
 
             ILaunchConfiguration config = getLaunchConfig(listener.getScriptName());
             assert config != null;
@@ -219,8 +225,8 @@ public class TestDebugger extends BasePDETestCase
         }
         finally
         {
-            PerlEditorPlugin.getDefault().setDebugConsolePreference(p1);
-            PerlEditorPlugin.getDefault().setSuspendAtFirstPreference(p2);
+            prefs.setValue(PreferenceConstants.DEBUG_DEBUG_CONSOLE, p1);
+            prefs.setValue(PreferenceConstants.DEBUG_SUSPEND_AT_FIRST, p2);
             
             IEditorPart editor = null;
             editor = findEditor("EPICTest/test_Debugger.pl");

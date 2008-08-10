@@ -5,6 +5,11 @@ CVS
 
 		Editor:
 
+Version 0.6.25 - 10-Aug-2008
+		Debugger:
+		* Implemented Feature Request [ 2045172 ] Module::Starter integration
+		* Implemented Feature Request [ 2045001 ] Persistent Variables view options
+
 Version 0.6.24 - 26-May-2008
 		Debugger:
 		* Fixed Bug [ 1972281 ] URIs with PATH_INFO not recognized in CGI debug

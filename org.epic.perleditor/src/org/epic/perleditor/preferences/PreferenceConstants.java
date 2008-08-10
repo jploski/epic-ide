@@ -68,6 +68,36 @@ public class PreferenceConstants
     public static final String DEBUG_TAINT_MODE = "USE_TAINT_MODE";
 
     /**
+     * Whether or not updated variables should be highlighted in the
+     * Variables debug view
+     */
+    public static final String DEBUG_HIGHLIGHT_UPDATED_VARS = "highlightUpdatedVars";    
+
+    /**
+     * Whether or not "global" (package) variables should be displayed
+     * in the Variables debug view
+     */
+    public static final String DEBUG_SHOW_GLOBAL_VARS = "showGlobalVars";
+
+    /**
+     * Whether or not Perl internal (built-in) variables should be
+     * displayed in the Variables debug view
+     */
+    public static final String DEBUG_SHOW_INTERNAL_VARS = "showInternalVars";
+
+    /**
+     * Whether or not "local" (lexical) variables should be
+     * displayed in the Variables debug view
+     */
+    public static final String DEBUG_SHOW_LOCAL_VARS = "showLocalVars";
+
+    /**
+     * Whether or not memory addresses of variables should be
+     * displayed in the Variables debug view
+     */
+    public static final String DEBUG_SHOW_VARS_ADDRESS = "showVarsAddress";
+    
+    /**
      * A named preference that controls whether the current line highlighting is
      * turned on or off.
      * <p>
@@ -642,6 +672,13 @@ public class PreferenceConstants
         store.setDefault(DEBUG_TAINT_MODE, false);
         store.setDefault(DEBUG_DEBUG_CONSOLE, false);
         store.setDefault(DEBUG_SUSPEND_AT_FIRST, true);
+
+        // Variables debug view:
+        store.setDefault(DEBUG_HIGHLIGHT_UPDATED_VARS, false);
+        store.setDefault(DEBUG_SHOW_GLOBAL_VARS, false);
+        store.setDefault(DEBUG_SHOW_INTERNAL_VARS, false);
+        store.setDefault(DEBUG_SHOW_LOCAL_VARS, true);
+        store.setDefault(DEBUG_SHOW_VARS_ADDRESS, false);        
         
         store.setDefault(EDITOR_SYNC_OUTLINE_ON_CURSOR_MOVE, true);
         store.setDefault(EDITOR_SYNTAX_VALIDATION, true);

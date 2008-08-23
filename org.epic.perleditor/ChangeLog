@@ -4,6 +4,7 @@ CVS
 		Debugger:
 
 		Editor:
+		* Fixed Bug [ 2059660 ] shift left works different than in other eclipse editors
 
 Version 0.6.25 - 10-Aug-2008
 		Debugger:

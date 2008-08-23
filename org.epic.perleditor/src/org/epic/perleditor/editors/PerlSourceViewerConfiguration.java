@@ -115,7 +115,7 @@ public class PerlSourceViewerConfiguration extends SourceViewerConfiguration
 
     public String[] getIndentPrefixes(ISourceViewer sourceViewer, String contentType)
     {
-        return new String[] { PreferenceUtil.getTab(0), "\t" };
+        return new String[] { PreferenceUtil.getTab(0), "\t", "" };
     }
 
     public int getTabWidth(ISourceViewer sourceViewer)

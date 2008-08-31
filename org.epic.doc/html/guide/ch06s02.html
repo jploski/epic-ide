@@ -1,83 +1,395 @@
-<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"><head><title>Creating Launch Configurations</title><link href="book.css" rel="stylesheet" type="text/css" /><meta content="DocBook XSL Stylesheets V1.71.0" name="generator" /><link rel="start" href="index.html" title="EPIC - User's Guide" /><link rel="up" href="ch06.html" title="Using the Perl Debugger" /><link rel="prev" href="ch06s01.html" title="Launching Perl Programs" /><link rel="next" href="ch06s03.html" title="Breakpoints" /></head><body><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="launch-configurations" />Creating Launch Configurations</h2></div></div></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a id="N1074F" />Perl Local: Running a Perl Script on the Local Machine</h3></div></div></div><div class="screenshot"><div class="mediaobject" align="center"><img src="images/Debug_Local.gif" align="middle" alt="Perl Local Dialog" /></div></div><div class="orderedlist"><ol type="1"><li><p>Enter the name for the launch configuration in the
-            <span class="guilabel">Name</span> field.</p></li><li><p>In the <span class="guilabel">Main</span> tab</p><div class="itemizedlist"><ul type="disc"><li><p><span class="guilabel">Project</span> field: select the project
-                which contains the script to execute</p><div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>Only Perl projects (projects associated with a Perl
-                  nature) will be shown. If the project you require is not
-                  shown, see <a href="ch03s03.html" title="Converting an Existing Project">the section called “Converting an Existing Project”</a> for adding
-                  a Perl nature to your project.</p></div></li><li><p><span class="guilabel">File to execute</span> field: select the
-                script to execute</p><div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>Only files associated with the Perl editor will be
-                  shown. See <a href="ch02s07.html" title="Associating Files with the Perl Editor">the section called “Associating Files with the Perl Editor”</a> for
-                  details.</p></div></li></ul></div></li><li><p>If you wish to pass command-line parameters to the script or
-            to the Perl interpreter, enter them in the
-            <span class="guilabel">Arguments</span> tab.</p></li><li><p>If you wish to modify environment variables for the script,
-            enter them in the <span class="guilabel">Environment</span> tab.<div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>Be careful when removing or overriding the standard
-                environment variables. For example, the environment variable
-                %SYSTEMROOT% is essential for Perl socket IO to work under
-                Windows.</p></div></p></li><li><p>Press the <span class="guibutton">Apply</span> button</p></li></ol></div></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a id="N1079E" />Perl CGI: Run Perl Programs in a CGI Environment</h3></div></div></div><div class="screenshot"><div class="mediaobject" align="center"><img src="images/debug_cgi.gif" align="middle" alt="Perl CGI Dialog" /></div></div><div class="orderedlist"><ol type="1"><li><p>Enter the name for the launch configuration in the
-            <span class="guilabel">Name</span> field.</p></li><li><p>In the <span class="guilabel">Web Server</span> tab</p><div class="itemizedlist"><ul type="disc"><li><p><span class="guilabel">HTML Root Directory</span> field: enter
-                the base directory that contains all HTML files or use the
-                <span class="guibutton">Browse</span> button to select the appropriate
-                directory.</p></li><li><p><span class="guilabel">HTML Startup File</span> field: enter the
-                file name to be shown in the browser after startup or use the
-                <span class="guibutton">Browse</span> button to select this
-                file.</p></li><li><p><span class="guilabel">CGI Root Directory</span> field: enter the
-                base directory that contains all CGI files or use the
-                <span class="guibutton">Browse</span> button to select the appropriate
-                directory.</p></li><li><p><span class="guilabel">Extension for CGI files</span> field: this
-                is a comma separated list of file extensions (each starting
-                with a "." ) used for CGI files in the project.</p></li></ul></div></li><li><p>In the <span class="guilabel">Browser</span> tab, there are two
-            possible settings:</p><div class="itemizedlist"><ul type="disc"><li><p>Select <span class="guilabel">Custom Browser</span>: specify the
-                path to the browser executable and add the required command
-                line parameters. Use <code class="literal">%1</code> as a place holder
-                for the HTML file to be opened.</p></li><li><p>Select <span class="guilabel">Default System Browser</span> to
-                use the browser defined as default browser by your OS
-                preferences.</p></li></ul></div></li><li><p>If you wish to modify environment variables for the script,
-            enter them in the <span class="guilabel">Environment</span> tab.</p></li><li><p>If you wish to pass command-line parameters to the Perl
-            interpreter, enter them in the <span class="guilabel">Arguments</span>
-            tab.</p></li><li><p>Press the <span class="guibutton">Apply</span> button.</p></li></ol></div></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a id="N10810" />Perl Remote: Debug a Perl Script on a Remote Machine</h3></div></div></div><p><div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>This feature is not tested very well and should be
-            considered experimental.</p></div>Some points to consider:</p><div class="itemizedlist"><ul type="disc"><li><p>You need a Perl interpreter installed on the remote
-            host.</p></li><li><p>During debugging the remote host connects to the local
-            (Eclipse) host using three TCP ports: the debugger port, the
-            stdout/stdin port and the stderr port. The debugger port is
-            specified statically in the launch configuration (see below). The
-            two other ports are picked up from the range 5000-10000. (EPIC
-            attempts to reserve these ports in ascending order starting with
-            5000.) Make sure that your firewall does not block these required
-            connections.</p></li><li><p>Scripts executed and code shown are from different sources:
-            EPIC displays the code present on your local host and executes a
-            copy of this code on the remote host. So if you make changes
-            within your project please make sure to transfer these changes to
-            the remote host (see below for further details).</p><p>This problem gets more significant for code/modules provided
-            by your Perl installation. If modules on your local and remote
-            host differ, debugging results may be quite meaningless. So try to
-            have the same Perl version installed on both hosts and make sure
-            all modules you require (which are not part of your Eclipse
-            project) are identical.</p></li><li><p>@INC path handling: if the include path references
-            directories within your project or directories that are linked
-            into your projects, EPIC will include these modules in the list of
-            files to be copied to the remote host and adjust the @INC-path for
-            your remote host accordingly. Overall, it is best to set up
-            project-relative @INC paths in the project properties.</p></li></ul></div><div class="screenshot"><div class="mediaobject" align="center"><img src="images/debug_remote.gif" align="middle" alt="Perl Remote Dialog" /></div></div><div class="orderedlist"><ol type="1"><li><p>Enter the name for the launch configuration in the
-            <span class="guilabel">Name</span> field.</p></li><li><p>In the <span class="guilabel">Configuration</span> tab</p><div class="itemizedlist"><ul type="disc"><li><p><span class="guilabel">Project</span> field: select the project
-                to debug.</p><div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>Only Perl projects (projects associated with a Perl
-                  nature) will be shown. If the project you require is not
-                  shown, see <a href="ch03s03.html" title="Converting an Existing Project">the section called “Converting an Existing Project”</a> for adding
-                  a Perl nature to your project.</p></div></li><li><p><span class="guilabel">File to execute</span> field: select the
-                Perl file to execute.</p><div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>Only files associated with the Perl editor will be
-                  shown. See <a href="ch02s07.html" title="Associating Files with the Perl Editor">the section called “Associating Files with the Perl Editor”</a> for
-                  details.</p></div></li></ul></div></li><li><p><span class="guilabel">Local Host IP</span>: this is the IP-address
-            used by the remote host to connect to your local host. In most
-            cases the default value is appropriate.</p></li><li><p><span class="guilabel">Target Host Project Installation Path</span>:
-            the project's location on the remote host. Make sure that your
-            Eclipse project can be found at this location.</p></li><li><p><span class="guilabel">Port</span>: Port used by the remote debugger
-            to connect to the local host.</p></li><li><p><span class="guilabel">Create Debug Package</span>: if checked, a ZIP
-            file containing the project files to be transfered to the remote
-            host is created. This file is stored at the location indicated in
-            <span class="guilabel">Debug Package File Path</span>.</p></li><li><p>Press the <span class="guibutton">Debug</span> button. At this
-            point, the local host starts listening for a remote debugger
-            connection.</p></li><li><p>Extract the ZIP file to the location on your remote host
-            indicated in <span class="guilabel">Target Host Project Installation
-            Path</span>.</p></li><li><p>Start the script <span><strong class="command">start_epicDB.pl</strong></span> on your
-            remote host (it is included in the ZIP archive and thus located in
-            the project directory after extraction). This script starts the
-            debugger and makes it connect to the local host.</p></li><li><p>Enjoy debugging...</p></li></ol></div></div></div></body></html>
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta name="generator" content="HTML Tidy for Linux/x86 (vers 12 April 2005), see www.w3.org" />
+
+  <title>Creating Launch Configurations</title>
+  <link href="book.css" rel="stylesheet" type="text/css" />
+  <meta content="DocBook XSL-NS Stylesheets V1.73.0" name="generator" />
+  <link rel="start" href="index.html" title="EPIC - User's Guide" />
+  <link rel="up" href="ch06.html" title="Using the Perl Debugger" />
+  <link rel="prev" href="ch06s01.html" title="Launching Perl Programs" />
+  <link rel="next" href="ch06s03.html" title="Breakpoints" />
+</head>
+
+<body>
+  <div class="navheader">
+    <table summary="Navigation header" width="100%">
+      <tr>
+        <th align="center" colspan="3">Creating Launch Configurations</th>
+      </tr>
+
+      <tr>
+        <td align="left" width="20%"><a accesskey="p" href="ch06s01.html">Prev</a>&nbsp;</td>
+
+        <th align="center" width="60%">Using the Perl Debugger</th>
+
+        <td align="right" width="20%">&nbsp;<a accesskey="n" href="ch06s03.html">Next</a></td>
+      </tr>
+    </table>
+    <hr />
+  </div>
+
+  <div class="section" lang="en" xml:lang="en">
+    <div class="titlepage">
+      <div>
+        <div>
+          <h2 class="title" style="clear: both"><a id="launch-configurations" name=
+          "launch-configurations"></a>Creating Launch Configurations</h2>
+        </div>
+      </div>
+    </div>
+
+    <div class="section" lang="en" xml:lang="en">
+      <div class="titlepage">
+        <div>
+          <div>
+            <h3 class="title"><a id="N10751" name="N10751"></a>Perl Local: Running a Perl Script on
+            the Local Machine</h3>
+          </div>
+        </div>
+      </div>
+
+      <div class="screenshot">
+        <div class="mediaobject" align="center">
+          <img src="images/Debug_Local.gif" align="middle" alt="Perl Local Dialog" />
+        </div>
+      </div>
+
+      <div class="orderedlist">
+        <ol type="1">
+          <li>
+            <p>Enter the name for the launch configuration in the <span class=
+            "guilabel">Name</span> field.</p>
+          </li>
+
+          <li>
+            <p>In the <span class="guilabel">Main</span> tab</p>
+
+            <div class="itemizedlist">
+              <ul type="disc">
+                <li>
+                  <p><span class="guilabel">Project</span> field: select the project which contains
+                  the script to execute</p>
+
+                  <div class="note" style="margin-left: 0.5in; margin-right: 0.5in;">
+                    <h3 class="title">Note</h3>
+
+                    <p>Only Perl projects (projects associated with a Perl nature) will be shown.
+                    If the project you require is not shown, see <a class="xref" href=
+                    "ch03s03.html" title="Converting an Existing Project">the section called
+                    “Converting an Existing Project”</a> for adding a Perl nature to your
+                    project.</p>
+                  </div>
+                </li>
+
+                <li>
+                  <p><span class="guilabel">File to execute</span> field: select the script to
+                  execute</p>
+
+                  <div class="note" style="margin-left: 0.5in; margin-right: 0.5in;">
+                    <h3 class="title">Note</h3>
+
+                    <p>Only files associated with the Perl editor will be shown. See <a class=
+                    "xref" href="ch02s07.html" title="Associating Files with the Perl Editor">the
+                    section called “Associating Files with the Perl Editor”</a> for details.</p>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </li>
+
+          <li>
+            <p>If you wish to pass command-line parameters to the script or to the Perl
+            interpreter, enter them in the <span class="guilabel">Arguments</span> tab.</p>
+          </li>
+
+          <li>
+            <p>If you wish to modify environment variables for the script, enter them in the
+            <span class="guilabel">Environment</span> tab.</p>
+
+            <div class="note" style="margin-left: 0.5in; margin-right: 0.5in;">
+              <h3 class="title">Note</h3>
+
+              <p>Be careful when removing or overriding the standard environment variables. For
+              example, the environment variable %SYSTEMROOT% is essential for Perl socket IO to
+              work under Windows.</p>
+            </div>
+          </li>
+
+          <li>
+            <p>Press the <span class="guibutton">Apply</span> button</p>
+          </li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="section" lang="en" xml:lang="en">
+      <div class="titlepage">
+        <div>
+          <div>
+            <h3 class="title"><a id="N107A0" name="N107A0"></a>Perl CGI: Run Perl Programs in a CGI
+            Environment</h3>
+          </div>
+        </div>
+      </div>
+
+      <div class="screenshot">
+        <div class="mediaobject" align="center">
+          <img src="images/debug_cgi.gif" align="middle" alt="Perl CGI Dialog" />
+        </div>
+      </div>
+
+      <div class="orderedlist">
+        <ol type="1">
+          <li>
+            <p>Enter the name for the launch configuration in the <span class=
+            "guilabel">Name</span> field.</p>
+          </li>
+
+          <li>
+            <p>In the <span class="guilabel">Web Server</span> tab</p>
+
+            <div class="itemizedlist">
+              <ul type="disc">
+                <li>
+                  <p><span class="guilabel">HTML Root Directory</span> field: enter the base
+                  directory that contains all HTML files or use the <span class=
+                  "guibutton">Browse</span> button to select the appropriate directory.</p>
+                </li>
+
+                <li>
+                  <p><span class="guilabel">HTML Startup File</span> field: enter the file name to
+                  be shown in the browser after startup or use the <span class=
+                  "guibutton">Browse</span> button to select this file.</p>
+                </li>
+
+                <li>
+                  <p><span class="guilabel">CGI Root Directory</span> field: enter the base
+                  directory that contains all CGI files or use the <span class=
+                  "guibutton">Browse</span> button to select the appropriate directory.</p>
+                </li>
+
+                <li>
+                  <p><span class="guilabel">Extension for CGI files</span> field: this is a comma
+                  separated list of file extensions (each starting with a "." ) used for CGI files
+                  in the project.</p>
+                </li>
+              </ul>
+            </div>
+          </li>
+
+          <li>
+            <p>In the <span class="guilabel">Browser</span> tab, there are two possible
+            settings:</p>
+
+            <div class="itemizedlist">
+              <ul type="disc">
+                <li>
+                  <p>Select <span class="guilabel">Custom Browser</span>: specify the path to the
+                  browser executable and add the required command line parameters. Use <code class=
+                  "literal">%1</code> as a place holder for the HTML file to be opened.</p>
+                </li>
+
+                <li>
+                  <p>Select <span class="guilabel">Default System Browser</span> to use the browser
+                  defined as default browser by your OS preferences.</p>
+                </li>
+              </ul>
+            </div>
+          </li>
+
+          <li>
+            <p>If you wish to modify environment variables for the script, enter them in the
+            <span class="guilabel">Environment</span> tab.</p>
+          </li>
+
+          <li>
+            <p>If you wish to pass command-line parameters to the Perl interpreter, enter them in
+            the <span class="guilabel">Arguments</span> tab.</p>
+          </li>
+
+          <li>
+            <p>Press the <span class="guibutton">Apply</span> button.</p>
+          </li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="section" lang="en" xml:lang="en">
+      <div class="titlepage">
+        <div>
+          <div>
+            <h3 class="title"><a id="N10812" name="N10812"></a>Perl Remote: Debug a Perl Script on
+            a Remote Machine</h3>
+          </div>
+        </div>
+      </div>
+
+      <div class="note" style="margin-left: 0.5in; margin-right: 0.5in;">
+        <h3 class="title">Note</h3>
+
+        <p>This feature is not tested very well and should be considered experimental.</p>
+      </div>Some points to consider:
+
+      <div class="itemizedlist">
+        <ul type="disc">
+          <li>
+            <p>You need a Perl interpreter installed on the remote host.</p>
+          </li>
+
+          <li>
+            <p>During debugging the remote host connects to the local (Eclipse) host using three
+            TCP ports: the debugger port, the stdout/stdin port and the stderr port. The debugger
+            port is specified statically in the launch configuration (see below). The two other
+            ports are picked up from the range 5000-10000. (EPIC attempts to reserve these ports in
+            ascending order starting with 5000.) Make sure that your firewall does not block these
+            required connections.</p>
+          </li>
+
+          <li>
+            <p>Scripts executed and code shown are from different sources: EPIC displays the code
+            present on your local host and executes a copy of this code on the remote host. So if
+            you make changes within your project please make sure to transfer these changes to the
+            remote host (see below for further details).</p>
+
+            <p>This problem gets more significant for code/modules provided by your Perl
+            installation. If modules on your local and remote host differ, debugging results may be
+            quite meaningless. So try to have the same Perl version installed on both hosts and
+            make sure all modules you require (which are not part of your Eclipse project) are
+            identical.</p>
+          </li>
+
+          <li>
+            <p>@INC path handling: if the include path references directories within your project
+            or directories that are linked into your projects, EPIC will include these modules in
+            the list of files to be copied to the remote host and adjust the @INC-path for your
+            remote host accordingly. Overall, it is best to set up project-relative @INC paths in
+            the project properties.</p>
+          </li>
+        </ul>
+      </div>
+
+      <div class="screenshot">
+        <div class="mediaobject" align="center">
+          <img src="images/debug_remote.gif" align="middle" alt="Perl Remote Dialog" />
+        </div>
+      </div>
+
+      <div class="orderedlist">
+        <ol type="1">
+          <li>
+            <p>Enter the name for the launch configuration in the <span class=
+            "guilabel">Name</span> field.</p>
+          </li>
+
+          <li>
+            <p>In the <span class="guilabel">Configuration</span> tab</p>
+
+            <div class="itemizedlist">
+              <ul type="disc">
+                <li>
+                  <p><span class="guilabel">Project</span> field: select the project to debug.</p>
+
+                  <div class="note" style="margin-left: 0.5in; margin-right: 0.5in;">
+                    <h3 class="title">Note</h3>
+
+                    <p>Only Perl projects (projects associated with a Perl nature) will be shown.
+                    If the project you require is not shown, see <a class="xref" href=
+                    "ch03s03.html" title="Converting an Existing Project">the section called
+                    “Converting an Existing Project”</a> for adding a Perl nature to your
+                    project.</p>
+                  </div>
+                </li>
+
+                <li>
+                  <p><span class="guilabel">File to execute</span> field: select the Perl file to
+                  execute.</p>
+
+                  <div class="note" style="margin-left: 0.5in; margin-right: 0.5in;">
+                    <h3 class="title">Note</h3>
+
+                    <p>Only files associated with the Perl editor will be shown. See <a class=
+                    "xref" href="ch02s07.html" title="Associating Files with the Perl Editor">the
+                    section called “Associating Files with the Perl Editor”</a> for details.</p>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </li>
+
+          <li>
+            <p><span class="guilabel">Local Host IP</span>: this is the IP-address used by the
+            remote host to connect to your local host. In most cases the default value is
+            appropriate.</p>
+          </li>
+
+          <li>
+            <p><span class="guilabel">Target Host Project Installation Path</span>: the project's
+            location on the remote host. Make sure that your Eclipse project can be found at this
+            location.</p>
+          </li>
+
+          <li>
+            <p><span class="guilabel">Port</span>: Port used by the remote debugger to connect to
+            the local host.</p>
+          </li>
+
+          <li>
+            <p><span class="guilabel">Create Debug Package</span>: if checked, a ZIP file
+            containing the project files to be transfered to the remote host is created. This file
+            is stored at the location indicated in <span class="guilabel">Debug Package File
+            Path</span>.</p>
+          </li>
+
+          <li>
+            <p>Press the <span class="guibutton">Debug</span> button. At this point, the local host
+            starts listening for a remote debugger connection.</p>
+          </li>
+
+          <li>
+            <p>Extract the ZIP file to the location on your remote host indicated in <span class=
+            "guilabel">Target Host Project Installation Path</span>.</p>
+          </li>
+
+          <li>
+            <p>Start the script <span class="command"><strong>start_epicDB.pl</strong></span> on
+            your remote host (it is included in the ZIP archive and thus located in the project
+            directory after extraction). This script starts the debugger and makes it connect to
+            the local host.</p>
+          </li>
+
+          <li>
+            <p>Enjoy debugging...</p>
+          </li>
+        </ol>
+      </div>
+    </div>
+  </div>
+
+  <div class="navfooter">
+    <hr />
+
+    <table summary="Navigation footer" width="100%">
+      <tr>
+        <td align="left" width="40%"><a accesskey="p" href="ch06s01.html">Prev</a>&nbsp;</td>
+
+        <td align="center" width="20%"><a accesskey="u" href="ch06.html">Up</a></td>
+
+        <td align="right" width="40%">&nbsp;<a accesskey="n" href="ch06s03.html">Next</a></td>
+      </tr>
+
+      <tr>
+        <td valign="top" align="left" width="40%">Launching Perl Programs&nbsp;</td>
+
+        <td align="center" width="20%"><a accesskey="h" href="index.html">Home</a></td>
+
+        <td valign="top" align="right" width="40%">&nbsp;Breakpoints</td>
+      </tr>
+    </table>
+  </div>
+</body>
+</html>

@@ -1,0 +1,30 @@
+<?xml version='1.0'?>
+<!DOCTYPE catalog PUBLIC "-//OASIS//DTD Entity Resolution XML Catalog V1.0//EN"
+    "http://www.oasis-open.org/committees/entity/release/1.0/catalog.dtd">
+
+<!--
+
+This catalog had unfortunately to be created manually to satisfy
+the references from DocBook's chunker.xsl under Debian (otherwise
+the XSLT processor kept downloading the DTD from the Web).
+
+Not only that, but I had to create a bunch of symlinks in
+/usr/share/xml/xhtml/schema/dtd/1.0, otherwise the *.ent wouldn't
+be found. This necessity has been once reported as a bug already:
+http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=423087
+
+xhtml-lat1.ent -> /usr/share/xml/entities/xhtml/xhtml-lat1.ent
+xhtml-special.ent -> /usr/share/xml/entities/xhtml/xhtml-special.ent
+xhtml-symbol.ent -> /usr/share/xml/entities/xhtml/xhtml-symbol.ent
+
+-->
+
+<catalog xmlns="urn:oasis:names:tc:entity:xmlns:xml:catalog">
+
+<public publicId="-//W3C//DTD XHTML 1.0 Transitional//EN"
+        uri="/usr/share/xml/xhtml/schema/dtd/1.0/xhtml1-transitional.dtd"/>
+
+<system systemId="http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"
+        uri="/usr/share/xml/xhtml/schema/dtd/1.0/xhtml1-transitional.dtd"/>
+
+</catalog>

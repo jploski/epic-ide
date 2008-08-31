@@ -1,2 +1,340 @@
-<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"><head><title>EPIC - User's Guide</title><link href="book.css" rel="stylesheet" type="text/css" /><meta content="DocBook XSL Stylesheets V1.71.0" name="generator" /><link rel="start" href="index.html" title="EPIC - User's Guide" /><link rel="next" href="ch01.html" title="Plug-in Installation" /></head><body><div class="book" lang="en"><div class="titlepage"><div><div><h1 class="title"><a id="N10001" />EPIC - User's Guide</h1></div></div><hr /></div><div class="toc"><p><b>Table of Contents</b></p><dl><dt><span class="chapter"><a href="ch01.html">Plug-in Installation</a></span></dt><dd><dl><dt><span class="section"><a href="ch01s01.html">Prerequisites</a></span></dt><dd><dl><dt><span class="section"><a href="ch01s01.html#N1000D">Eclipse</a></span></dt><dt><span class="section"><a href="ch01s01.html#N10023">Perl</a></span></dt><dt><span class="section"><a href="ch01s01.html#N10032">Considerations when using Cygwin</a></span></dt></dl></dd><dt><span class="section"><a href="ch01s02.html">Installing EPIC</a></span></dt><dt><span class="section"><a href="ch01s03.html">Uninstalling EPIC</a></span></dt></dl></dd><dt><span class="chapter"><a href="ch02.html">Setting Up Preferences</a></span></dt><dd><dl><dt><span class="section"><a href="ch02s01.html">General Preferences</a></span></dt><dt><span class="section"><a href="ch02s02.html">Code Assist</a></span></dt><dt><span class="section"><a href="ch02s03.html">Editor</a></span></dt><dt><span class="section"><a href="ch02s04.html">Source Formatter</a></span></dt><dt><span class="section"><a href="ch02s05.html">Task Tags</a></span></dt><dt><span class="section"><a href="ch02s06.html">Templates</a></span></dt><dt><span class="section"><a href="ch02s07.html">Associating Files with the Perl Editor</a></span></dt><dt><span class="section"><a href="ch02s08.html">CVS Setup</a></span></dt><dt><span class="section"><a href="ch02s09.html">Setting Up the Debugger</a></span></dt></dl></dd><dt><span class="chapter"><a href="ch03.html">Perl Projects</a></span></dt><dd><dl><dt><span class="section"><a href="ch03s01.html">Creating a Project</a></span></dt><dt><span class="section"><a href="ch03s02.html">Perl Include Path</a></span></dt><dt><span class="section"><a href="ch03s03.html">Converting an Existing Project</a></span></dt><dt><span class="section"><a href="ch03s04.html">Recommended Project Layout</a></span></dt></dl></dd><dt><span class="chapter"><a href="ch04.html">Eclipse Basics</a></span></dt><dd><dl><dt><span class="section"><a href="ch04s01.html">Perspectives</a></span></dt><dt><span class="section"><a href="ch04s02.html">Views</a></span></dt><dt><span class="section"><a href="ch04s03.html">Using Perspectives</a></span></dt><dd><dl><dt><span class="section"><a href="ch04s03.html#N102E4">New Perspectives</a></span></dt><dt><span class="section"><a href="ch04s03.html#N1035F">Configuring Perspectives</a></span></dt><dt><span class="section"><a href="ch04s03.html#N103CE">Saving a User Defined Perspective</a></span></dt><dt><span class="section"><a href="ch04s03.html#N103F3">Resetting Perspectives</a></span></dt></dl></dd><dt><span class="section"><a href="ch04s04.html">Using Views</a></span></dt><dd><dl><dt><span class="section"><a href="ch04s04.html#N1042A">Opening Views</a></span></dt><dt><span class="section"><a href="ch04s04.html#N10448">Moving and Docking Views</a></span></dt></dl></dd></dl></dd><dt><span class="chapter"><a href="ch05.html">Working with the Perl Editor</a></span></dt><dd><dl><dt><span class="section"><a href="ch05s01.html">Syntax Check</a></span></dt><dt><span class="section"><a href="ch05s02.html">Explain Errors and Warnings</a></span></dt><dt><span class="section"><a href="ch05s03.html">Open Declaration</a></span></dt><dt><span class="section"><a href="ch05s04.html">Perldoc</a></span></dt><dt><span class="section"><a href="ch05s05.html">Quick Reference</a></span></dt><dt><span class="section"><a href="ch05s06.html">Code Assist</a></span></dt><dd><dl><dt><span class="section"><a href="ch05s06.html#N10521">Variable Inspection</a></span></dt><dt><span class="section"><a href="ch05s06.html#N10534">Module Inspection</a></span></dt></dl></dd><dt><span class="section"><a href="ch05s07.html">Task Markers</a></span></dt><dt><span class="section"><a href="ch05s08.html">Templates</a></span></dt><dd><dl><dt><span class="section"><a href="ch05s08.html#N1057A">Defining Templates</a></span></dt><dt><span class="section"><a href="ch05s08.html#N105AC">Using Templates</a></span></dt></dl></dd><dt><span class="section"><a href="ch05s09.html">Source Formatter</a></span></dt><dt><span class="section"><a href="ch05s10.html">Source Folding</a></span></dt><dt><span class="section"><a href="ch05s11.html">Refactoring</a></span></dt><dd><dl><dt><span class="section"><a href="ch05s11.html#N10617">Extract Subroutine</a></span></dt></dl></dd><dt><span class="section"><a href="ch05s12.html">HTML Export</a></span></dt><dt><span class="section"><a href="ch05s13.html">Outline View</a></span></dt></dl></dd><dt><span class="chapter"><a href="ch06.html">Using the Perl Debugger</a></span></dt><dd><dl><dt><span class="section"><a href="ch06s01.html">Launching Perl Programs</a></span></dt><dd><dl><dt><span class="section"><a href="ch06s01.html#N106AF">Launching Perl Programs in Run Mode</a></span></dt><dt><span class="section"><a href="ch06s01.html#N106EE">Re-launching a Perl Program</a></span></dt></dl></dd><dt><span class="section"><a href="ch06s02.html">Creating Launch Configurations</a></span></dt><dd><dl><dt><span class="section"><a href="ch06s02.html#N1074F">Perl Local: Running a Perl Script on the Local Machine</a></span></dt><dt><span class="section"><a href="ch06s02.html#N1079E">Perl CGI: Run Perl Programs in a CGI Environment</a></span></dt><dt><span class="section"><a href="ch06s02.html#N10810">Perl Remote: Debug a Perl Script on a Remote Machine</a></span></dt></dl></dd><dt><span class="section"><a href="ch06s03.html">Breakpoints</a></span></dt><dd><dl><dt><span class="section"><a href="ch06s03.html#N108EF">Setting Breakpoints</a></span></dt><dt><span class="section"><a href="ch06s03.html#N10905">Enabling or Disabling Breakpoints</a></span></dt><dt><span class="section"><a href="ch06s03.html#N10911">Removing Breakpoints</a></span></dt></dl></dd><dt><span class="section"><a href="ch06s04.html">Views in the Debug Perspective</a></span></dt><dd><dl><dt><span class="section"><a href="ch06s04.html#debug-view">Debug View</a></span></dt><dt><span class="section"><a href="ch06s04.html#variables-view">Variables View</a></span></dt><dt><span class="section"><a href="ch06s04.html#breakpoints-view">Breakpoints View</a></span></dt><dt><span class="section"><a href="ch06s04.html#N109E4">Perl Expression View</a></span></dt></dl></dd><dt><span class="section"><a href="ch06s05.html">Stepping Through the Execution of a Perl Program</a></span></dt><dd><dl><dt><span class="section"><a href="ch06s05.html#N10A23">Step Over</a></span></dt><dt><span class="section"><a href="ch06s05.html#N10A49">Step Into</a></span></dt><dt><span class="section"><a href="ch06s05.html#N10A6F">Run to Return</a></span></dt></dl></dd></dl></dd><dt><span class="chapter"><a href="ch07.html">RegExp Plug-in</a></span></dt><dd><dl><dt><span class="section"><a href="ch07s01.html">Enabling the RegExp View</a></span></dt><dt><span class="section"><a href="ch07s02.html">Using the RegExp Plug-in</a></span></dt><dt><span class="section"><a href="ch07s03.html">Debugging Regular Expressions</a></span></dt></dl></dd><dt><span class="chapter"><a href="ch08.html">Known Bugs &amp; Problems</a></span></dt><dt><span class="chapter"><a href="ch09.html">References</a></span></dt></dl></div></div></body></html>
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta name="generator" content="HTML Tidy for Linux/x86 (vers 12 April 2005), see www.w3.org" />
+
+  <title>EPIC - User's Guide</title>
+  <link href="book.css" rel="stylesheet" type="text/css" />
+  <meta content="DocBook XSL-NS Stylesheets V1.73.0" name="generator" />
+  <link rel="start" href="index.html" title="EPIC - User's Guide" />
+  <link rel="next" href="ch01.html" title="Plug-in Installation" />
+</head>
+
+<body>
+  <div class="navheader">
+    <table summary="Navigation header" width="100%">
+      <tr>
+        <th align="center" colspan="3">EPIC - User's Guide</th>
+      </tr>
+
+      <tr>
+        <td align="left" width="20%">&nbsp;</td>
+
+        <th align="center" width="60%">&nbsp;</th>
+
+        <td align="right" width="20%">&nbsp;<a accesskey="n" href="ch01.html">Next</a></td>
+      </tr>
+    </table>
+    <hr />
+  </div>
+
+  <div class="book" lang="en" xml:lang="en">
+    <div class="titlepage">
+      <div>
+        <div>
+          <h1 class="title"><a id="N10001" name="N10001"></a>EPIC - User's Guide</h1>
+        </div>
+      </div>
+      <hr />
+    </div>
+
+    <div class="toc">
+      <p><b>Table of Contents</b></p>
+
+      <dl>
+        <dt><span class="chapter"><a href="ch01.html">Plug-in Installation</a></span></dt>
+
+        <dd>
+          <dl>
+            <dt><span class="section"><a href="ch01s01.html">Prerequisites</a></span></dt>
+
+            <dd>
+              <dl>
+                <dt><span class="section"><a href="ch01s01.html#N1000F">Eclipse</a></span></dt>
+
+                <dt><span class="section"><a href="ch01s01.html#N10025">Perl</a></span></dt>
+
+                <dt><span class="section"><a href="ch01s01.html#N10034">Considerations when using
+                Cygwin</a></span></dt>
+              </dl>
+            </dd>
+
+            <dt><span class="section"><a href="ch01s02.html">Installing EPIC</a></span></dt>
+
+            <dt><span class="section"><a href="ch01s03.html">Uninstalling EPIC</a></span></dt>
+          </dl>
+        </dd>
+
+        <dt><span class="chapter"><a href="ch02.html">Setting Up Preferences</a></span></dt>
+
+        <dd>
+          <dl>
+            <dt><span class="section"><a href="ch02s01.html">General Preferences</a></span></dt>
+
+            <dt><span class="section"><a href="ch02s02.html">Code Assist</a></span></dt>
+
+            <dt><span class="section"><a href="ch02s03.html">Editor</a></span></dt>
+
+            <dt><span class="section"><a href="ch02s04.html">Source Formatter</a></span></dt>
+
+            <dt><span class="section"><a href="ch02s05.html">Task Tags</a></span></dt>
+
+            <dt><span class="section"><a href="ch02s06.html">Templates</a></span></dt>
+
+            <dt><span class="section"><a href="ch02s07.html">Associating Files with the Perl
+            Editor</a></span></dt>
+
+            <dt><span class="section"><a href="ch02s08.html">CVS Setup</a></span></dt>
+
+            <dt><span class="section"><a href="ch02s09.html">Setting Up the
+            Debugger</a></span></dt>
+          </dl>
+        </dd>
+
+        <dt><span class="chapter"><a href="ch03.html">Perl Projects</a></span></dt>
+
+        <dd>
+          <dl>
+            <dt><span class="section"><a href="ch03s01.html">Creating a Project</a></span></dt>
+
+            <dt><span class="section"><a href="ch03s02.html">Perl Include Path</a></span></dt>
+
+            <dt><span class="section"><a href="ch03s03.html">Converting an Existing
+            Project</a></span></dt>
+
+            <dt><span class="section"><a href="ch03s04.html">Recommended Project
+            Layout</a></span></dt>
+          </dl>
+        </dd>
+
+        <dt><span class="chapter"><a href="ch04.html">Eclipse Basics</a></span></dt>
+
+        <dd>
+          <dl>
+            <dt><span class="section"><a href="ch04s01.html">Perspectives</a></span></dt>
+
+            <dt><span class="section"><a href="ch04s02.html">Views</a></span></dt>
+
+            <dt><span class="section"><a href="ch04s03.html">Using Perspectives</a></span></dt>
+
+            <dd>
+              <dl>
+                <dt><span class="section"><a href="ch04s03.html#N102E6">New
+                Perspectives</a></span></dt>
+
+                <dt><span class="section"><a href="ch04s03.html#N10361">Configuring
+                Perspectives</a></span></dt>
+
+                <dt><span class="section"><a href="ch04s03.html#N103D0">Saving a User Defined
+                Perspective</a></span></dt>
+
+                <dt><span class="section"><a href="ch04s03.html#N103F5">Resetting
+                Perspectives</a></span></dt>
+              </dl>
+            </dd>
+
+            <dt><span class="section"><a href="ch04s04.html">Using Views</a></span></dt>
+
+            <dd>
+              <dl>
+                <dt><span class="section"><a href="ch04s04.html#N1042C">Opening
+                Views</a></span></dt>
+
+                <dt><span class="section"><a href="ch04s04.html#N1044A">Moving and Docking
+                Views</a></span></dt>
+              </dl>
+            </dd>
+          </dl>
+        </dd>
+
+        <dt><span class="chapter"><a href="ch05.html">Working with the Perl Editor</a></span></dt>
+
+        <dd>
+          <dl>
+            <dt><span class="section"><a href="ch05s01.html">Syntax Check</a></span></dt>
+
+            <dt><span class="section"><a href="ch05s02.html">Explain Errors and
+            Warnings</a></span></dt>
+
+            <dt><span class="section"><a href="ch05s03.html">Open Declaration</a></span></dt>
+
+            <dt><span class="section"><a href="ch05s04.html">Perldoc</a></span></dt>
+
+            <dt><span class="section"><a href="ch05s05.html">Quick Reference</a></span></dt>
+
+            <dt><span class="section"><a href="ch05s06.html">Code Assist</a></span></dt>
+
+            <dd>
+              <dl>
+                <dt><span class="section"><a href="ch05s06.html#N10523">Variable
+                Inspection</a></span></dt>
+
+                <dt><span class="section"><a href="ch05s06.html#N10536">Module
+                Inspection</a></span></dt>
+              </dl>
+            </dd>
+
+            <dt><span class="section"><a href="ch05s07.html">Task Markers</a></span></dt>
+
+            <dt><span class="section"><a href="ch05s08.html">Templates</a></span></dt>
+
+            <dd>
+              <dl>
+                <dt><span class="section"><a href="ch05s08.html#N1057C">Defining
+                Templates</a></span></dt>
+
+                <dt><span class="section"><a href="ch05s08.html#N105AE">Using
+                Templates</a></span></dt>
+              </dl>
+            </dd>
+
+            <dt><span class="section"><a href="ch05s09.html">Source Formatter</a></span></dt>
+
+            <dt><span class="section"><a href="ch05s10.html">Source Folding</a></span></dt>
+
+            <dt><span class="section"><a href="ch05s11.html">Refactoring</a></span></dt>
+
+            <dd>
+              <dl>
+                <dt><span class="section"><a href="ch05s11.html#N10619">Extract
+                Subroutine</a></span></dt>
+              </dl>
+            </dd>
+
+            <dt><span class="section"><a href="ch05s12.html">HTML Export</a></span></dt>
+
+            <dt><span class="section"><a href="ch05s13.html">Outline View</a></span></dt>
+          </dl>
+        </dd>
+
+        <dt><span class="chapter"><a href="ch06.html">Using the Perl Debugger</a></span></dt>
+
+        <dd>
+          <dl>
+            <dt><span class="section"><a href="ch06s01.html">Launching Perl
+            Programs</a></span></dt>
+
+            <dd>
+              <dl>
+                <dt><span class="section"><a href="ch06s01.html#N106B1">Launching Perl Programs in
+                Run Mode</a></span></dt>
+
+                <dt><span class="section"><a href="ch06s01.html#N106F0">Re-launching a Perl
+                Program</a></span></dt>
+              </dl>
+            </dd>
+
+            <dt><span class="section"><a href="ch06s02.html">Creating Launch
+            Configurations</a></span></dt>
+
+            <dd>
+              <dl>
+                <dt><span class="section"><a href="ch06s02.html#N10751">Perl Local: Running a Perl
+                Script on the Local Machine</a></span></dt>
+
+                <dt><span class="section"><a href="ch06s02.html#N107A0">Perl CGI: Run Perl Programs
+                in a CGI Environment</a></span></dt>
+
+                <dt><span class="section"><a href="ch06s02.html#N10812">Perl Remote: Debug a Perl
+                Script on a Remote Machine</a></span></dt>
+              </dl>
+            </dd>
+
+            <dt><span class="section"><a href="ch06s03.html">Breakpoints</a></span></dt>
+
+            <dd>
+              <dl>
+                <dt><span class="section"><a href="ch06s03.html#N108F1">Setting
+                Breakpoints</a></span></dt>
+
+                <dt><span class="section"><a href="ch06s03.html#N10907">Enabling or Disabling
+                Breakpoints</a></span></dt>
+
+                <dt><span class="section"><a href="ch06s03.html#N10913">Removing
+                Breakpoints</a></span></dt>
+              </dl>
+            </dd>
+
+            <dt><span class="section"><a href="ch06s04.html">Views in the Debug
+            Perspective</a></span></dt>
+
+            <dd>
+              <dl>
+                <dt><span class="section"><a href="ch06s04.html#debug-view">Debug
+                View</a></span></dt>
+
+                <dt><span class="section"><a href="ch06s04.html#variables-view">Variables
+                View</a></span></dt>
+
+                <dt><span class="section"><a href="ch06s04.html#breakpoints-view">Breakpoints
+                View</a></span></dt>
+
+                <dt><span class="section"><a href="ch06s04.html#N109E6">Perl Expression
+                View</a></span></dt>
+              </dl>
+            </dd>
+
+            <dt><span class="section"><a href="ch06s05.html">Stepping Through the Execution of a
+            Perl Program</a></span></dt>
+
+            <dd>
+              <dl>
+                <dt><span class="section"><a href="ch06s05.html#N10A25">Step Over</a></span></dt>
+
+                <dt><span class="section"><a href="ch06s05.html#N10A4B">Step Into</a></span></dt>
+
+                <dt><span class="section"><a href="ch06s05.html#N10A71">Run to
+                Return</a></span></dt>
+              </dl>
+            </dd>
+          </dl>
+        </dd>
+
+        <dt><span class="chapter"><a href="ch07.html">RegExp Plug-in</a></span></dt>
+
+        <dd>
+          <dl>
+            <dt><span class="section"><a href="ch07s01.html">Enabling the RegExp
+            View</a></span></dt>
+
+            <dt><span class="section"><a href="ch07s02.html">Using the RegExp
+            Plug-in</a></span></dt>
+
+            <dt><span class="section"><a href="ch07s03.html">Debugging Regular
+            Expressions</a></span></dt>
+          </dl>
+        </dd>
+
+        <dt><span class="chapter"><a href="ch08.html">Known Bugs &amp; Problems</a></span></dt>
+
+        <dt><span class="chapter"><a href="ch09.html">References</a></span></dt>
+      </dl>
+    </div>
+  </div>
+
+  <div class="navfooter">
+    <hr />
+
+    <table summary="Navigation footer" width="100%">
+      <tr>
+        <td align="left" width="40%">&nbsp;</td>
+
+        <td align="center" width="20%">&nbsp;</td>
+
+        <td align="right" width="40%">&nbsp;<a accesskey="n" href="ch01.html">Next</a></td>
+      </tr>
+
+      <tr>
+        <td valign="top" align="left" width="40%">&nbsp;</td>
+
+        <td align="center" width="20%">&nbsp;</td>
+
+        <td valign="top" align="right" width="40%">&nbsp;Plug-in Installation</td>
+      </tr>
+    </table>
+  </div>
+</body>
+</html>

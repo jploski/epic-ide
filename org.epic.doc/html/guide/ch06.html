@@ -1,2 +1,149 @@
-<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"><head><title>Using the Perl Debugger</title><link href="book.css" rel="stylesheet" type="text/css" /><meta content="DocBook XSL Stylesheets V1.71.0" name="generator" /><link rel="start" href="index.html" title="EPIC - User's Guide" /><link rel="up" href="index.html" title="EPIC - User's Guide" /><link rel="prev" href="ch05s13.html" title="Outline View" /><link rel="next" href="ch06s01.html" title="Launching Perl Programs" /></head><body><div class="chapter" lang="en"><div class="titlepage"><div><div><h2 class="title"><a id="using-debugger" />Using the Perl Debugger</h2></div></div></div><div class="toc"><p><b>Table of Contents</b></p><dl><dt><span class="section"><a href="ch06s01.html">Launching Perl Programs</a></span></dt><dd><dl><dt><span class="section"><a href="ch06s01.html#N106AF">Launching Perl Programs in Run Mode</a></span></dt><dt><span class="section"><a href="ch06s01.html#N106EE">Re-launching a Perl Program</a></span></dt></dl></dd><dt><span class="section"><a href="ch06s02.html">Creating Launch Configurations</a></span></dt><dd><dl><dt><span class="section"><a href="ch06s02.html#N1074F">Perl Local: Running a Perl Script on the Local Machine</a></span></dt><dt><span class="section"><a href="ch06s02.html#N1079E">Perl CGI: Run Perl Programs in a CGI Environment</a></span></dt><dt><span class="section"><a href="ch06s02.html#N10810">Perl Remote: Debug a Perl Script on a Remote Machine</a></span></dt></dl></dd><dt><span class="section"><a href="ch06s03.html">Breakpoints</a></span></dt><dd><dl><dt><span class="section"><a href="ch06s03.html#N108EF">Setting Breakpoints</a></span></dt><dt><span class="section"><a href="ch06s03.html#N10905">Enabling or Disabling Breakpoints</a></span></dt><dt><span class="section"><a href="ch06s03.html#N10911">Removing Breakpoints</a></span></dt></dl></dd><dt><span class="section"><a href="ch06s04.html">Views in the Debug Perspective</a></span></dt><dd><dl><dt><span class="section"><a href="ch06s04.html#debug-view">Debug View</a></span></dt><dt><span class="section"><a href="ch06s04.html#variables-view">Variables View</a></span></dt><dt><span class="section"><a href="ch06s04.html#breakpoints-view">Breakpoints View</a></span></dt><dt><span class="section"><a href="ch06s04.html#N109E4">Perl Expression View</a></span></dt></dl></dd><dt><span class="section"><a href="ch06s05.html">Stepping Through the Execution of a Perl Program</a></span></dt><dd><dl><dt><span class="section"><a href="ch06s05.html#N10A23">Step Over</a></span></dt><dt><span class="section"><a href="ch06s05.html#N10A49">Step Into</a></span></dt><dt><span class="section"><a href="ch06s05.html#N10A6F">Run to Return</a></span></dt></dl></dd></dl></div></div></body></html>
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta name="generator" content="HTML Tidy for Linux/x86 (vers 12 April 2005), see www.w3.org" />
+
+  <title>Using the Perl Debugger</title>
+  <link href="book.css" rel="stylesheet" type="text/css" />
+  <meta content="DocBook XSL-NS Stylesheets V1.73.0" name="generator" />
+  <link rel="start" href="index.html" title="EPIC - User's Guide" />
+  <link rel="up" href="index.html" title="EPIC - User's Guide" />
+  <link rel="prev" href="ch05s13.html" title="Outline View" />
+  <link rel="next" href="ch06s01.html" title="Launching Perl Programs" />
+</head>
+
+<body>
+  <div class="navheader">
+    <table summary="Navigation header" width="100%">
+      <tr>
+        <th align="center" colspan="3">Using the Perl Debugger</th>
+      </tr>
+
+      <tr>
+        <td align="left" width="20%"><a accesskey="p" href="ch05s13.html">Prev</a>&nbsp;</td>
+
+        <th align="center" width="60%">&nbsp;</th>
+
+        <td align="right" width="20%">&nbsp;<a accesskey="n" href="ch06s01.html">Next</a></td>
+      </tr>
+    </table>
+    <hr />
+  </div>
+
+  <div class="chapter" lang="en" xml:lang="en">
+    <div class="titlepage">
+      <div>
+        <div>
+          <h2 class="title"><a id="using-debugger" name="using-debugger"></a>Using the Perl
+          Debugger</h2>
+        </div>
+      </div>
+    </div>
+
+    <div class="toc">
+      <p><b>Table of Contents</b></p>
+
+      <dl>
+        <dt><span class="section"><a href="ch06s01.html">Launching Perl Programs</a></span></dt>
+
+        <dd>
+          <dl>
+            <dt><span class="section"><a href="ch06s01.html#N106B1">Launching Perl Programs in Run
+            Mode</a></span></dt>
+
+            <dt><span class="section"><a href="ch06s01.html#N106F0">Re-launching a Perl
+            Program</a></span></dt>
+          </dl>
+        </dd>
+
+        <dt><span class="section"><a href="ch06s02.html">Creating Launch
+        Configurations</a></span></dt>
+
+        <dd>
+          <dl>
+            <dt><span class="section"><a href="ch06s02.html#N10751">Perl Local: Running a Perl
+            Script on the Local Machine</a></span></dt>
+
+            <dt><span class="section"><a href="ch06s02.html#N107A0">Perl CGI: Run Perl Programs in
+            a CGI Environment</a></span></dt>
+
+            <dt><span class="section"><a href="ch06s02.html#N10812">Perl Remote: Debug a Perl
+            Script on a Remote Machine</a></span></dt>
+          </dl>
+        </dd>
+
+        <dt><span class="section"><a href="ch06s03.html">Breakpoints</a></span></dt>
+
+        <dd>
+          <dl>
+            <dt><span class="section"><a href="ch06s03.html#N108F1">Setting
+            Breakpoints</a></span></dt>
+
+            <dt><span class="section"><a href="ch06s03.html#N10907">Enabling or Disabling
+            Breakpoints</a></span></dt>
+
+            <dt><span class="section"><a href="ch06s03.html#N10913">Removing
+            Breakpoints</a></span></dt>
+          </dl>
+        </dd>
+
+        <dt><span class="section"><a href="ch06s04.html">Views in the Debug
+        Perspective</a></span></dt>
+
+        <dd>
+          <dl>
+            <dt><span class="section"><a href="ch06s04.html#debug-view">Debug View</a></span></dt>
+
+            <dt><span class="section"><a href="ch06s04.html#variables-view">Variables
+            View</a></span></dt>
+
+            <dt><span class="section"><a href="ch06s04.html#breakpoints-view">Breakpoints
+            View</a></span></dt>
+
+            <dt><span class="section"><a href="ch06s04.html#N109E6">Perl Expression
+            View</a></span></dt>
+          </dl>
+        </dd>
+
+        <dt><span class="section"><a href="ch06s05.html">Stepping Through the Execution of a Perl
+        Program</a></span></dt>
+
+        <dd>
+          <dl>
+            <dt><span class="section"><a href="ch06s05.html#N10A25">Step Over</a></span></dt>
+
+            <dt><span class="section"><a href="ch06s05.html#N10A4B">Step Into</a></span></dt>
+
+            <dt><span class="section"><a href="ch06s05.html#N10A71">Run to Return</a></span></dt>
+          </dl>
+        </dd>
+      </dl>
+    </div>
+  </div>
+
+  <div class="navfooter">
+    <hr />
+
+    <table summary="Navigation footer" width="100%">
+      <tr>
+        <td align="left" width="40%"><a accesskey="p" href="ch05s13.html">Prev</a>&nbsp;</td>
+
+        <td align="center" width="20%">&nbsp;</td>
+
+        <td align="right" width="40%">&nbsp;<a accesskey="n" href="ch06s01.html">Next</a></td>
+      </tr>
+
+      <tr>
+        <td valign="top" align="left" width="40%">Outline View&nbsp;</td>
+
+        <td align="center" width="20%"><a accesskey="h" href="index.html">Home</a></td>
+
+        <td valign="top" align="right" width="40%">&nbsp;Launching Perl Programs</td>
+      </tr>
+    </table>
+  </div>
+</body>
+</html>

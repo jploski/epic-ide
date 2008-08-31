@@ -1,2 +1,128 @@
-<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"><head><title>Working with the Perl Editor</title><link href="book.css" rel="stylesheet" type="text/css" /><meta content="DocBook XSL Stylesheets V1.71.0" name="generator" /><link rel="start" href="index.html" title="EPIC - User's Guide" /><link rel="up" href="index.html" title="EPIC - User's Guide" /><link rel="prev" href="ch04s04.html" title="Using Views" /><link rel="next" href="ch05s01.html" title="Syntax Check" /></head><body><div class="chapter" lang="en"><div class="titlepage"><div><div><h2 class="title"><a id="working-with-editor" />Working with the Perl Editor</h2></div></div></div><div class="toc"><p><b>Table of Contents</b></p><dl><dt><span class="section"><a href="ch05s01.html">Syntax Check</a></span></dt><dt><span class="section"><a href="ch05s02.html">Explain Errors and Warnings</a></span></dt><dt><span class="section"><a href="ch05s03.html">Open Declaration</a></span></dt><dt><span class="section"><a href="ch05s04.html">Perldoc</a></span></dt><dt><span class="section"><a href="ch05s05.html">Quick Reference</a></span></dt><dt><span class="section"><a href="ch05s06.html">Code Assist</a></span></dt><dd><dl><dt><span class="section"><a href="ch05s06.html#N10521">Variable Inspection</a></span></dt><dt><span class="section"><a href="ch05s06.html#N10534">Module Inspection</a></span></dt></dl></dd><dt><span class="section"><a href="ch05s07.html">Task Markers</a></span></dt><dt><span class="section"><a href="ch05s08.html">Templates</a></span></dt><dd><dl><dt><span class="section"><a href="ch05s08.html#N1057A">Defining Templates</a></span></dt><dt><span class="section"><a href="ch05s08.html#N105AC">Using Templates</a></span></dt></dl></dd><dt><span class="section"><a href="ch05s09.html">Source Formatter</a></span></dt><dt><span class="section"><a href="ch05s10.html">Source Folding</a></span></dt><dt><span class="section"><a href="ch05s11.html">Refactoring</a></span></dt><dd><dl><dt><span class="section"><a href="ch05s11.html#N10617">Extract Subroutine</a></span></dt></dl></dd><dt><span class="section"><a href="ch05s12.html">HTML Export</a></span></dt><dt><span class="section"><a href="ch05s13.html">Outline View</a></span></dt></dl></div></div></body></html>
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta name="generator" content="HTML Tidy for Linux/x86 (vers 12 April 2005), see www.w3.org" />
+
+  <title>Working with the Perl Editor</title>
+  <link href="book.css" rel="stylesheet" type="text/css" />
+  <meta content="DocBook XSL-NS Stylesheets V1.73.0" name="generator" />
+  <link rel="start" href="index.html" title="EPIC - User's Guide" />
+  <link rel="up" href="index.html" title="EPIC - User's Guide" />
+  <link rel="prev" href="ch04s04.html" title="Using Views" />
+  <link rel="next" href="ch05s01.html" title="Syntax Check" />
+</head>
+
+<body>
+  <div class="navheader">
+    <table summary="Navigation header" width="100%">
+      <tr>
+        <th align="center" colspan="3">Working with the Perl Editor</th>
+      </tr>
+
+      <tr>
+        <td align="left" width="20%"><a accesskey="p" href="ch04s04.html">Prev</a>&nbsp;</td>
+
+        <th align="center" width="60%">&nbsp;</th>
+
+        <td align="right" width="20%">&nbsp;<a accesskey="n" href="ch05s01.html">Next</a></td>
+      </tr>
+    </table>
+    <hr />
+  </div>
+
+  <div class="chapter" lang="en" xml:lang="en">
+    <div class="titlepage">
+      <div>
+        <div>
+          <h2 class="title"><a id="working-with-editor" name="working-with-editor"></a>Working with
+          the Perl Editor</h2>
+        </div>
+      </div>
+    </div>
+
+    <div class="toc">
+      <p><b>Table of Contents</b></p>
+
+      <dl>
+        <dt><span class="section"><a href="ch05s01.html">Syntax Check</a></span></dt>
+
+        <dt><span class="section"><a href="ch05s02.html">Explain Errors and
+        Warnings</a></span></dt>
+
+        <dt><span class="section"><a href="ch05s03.html">Open Declaration</a></span></dt>
+
+        <dt><span class="section"><a href="ch05s04.html">Perldoc</a></span></dt>
+
+        <dt><span class="section"><a href="ch05s05.html">Quick Reference</a></span></dt>
+
+        <dt><span class="section"><a href="ch05s06.html">Code Assist</a></span></dt>
+
+        <dd>
+          <dl>
+            <dt><span class="section"><a href="ch05s06.html#N10523">Variable
+            Inspection</a></span></dt>
+
+            <dt><span class="section"><a href="ch05s06.html#N10536">Module
+            Inspection</a></span></dt>
+          </dl>
+        </dd>
+
+        <dt><span class="section"><a href="ch05s07.html">Task Markers</a></span></dt>
+
+        <dt><span class="section"><a href="ch05s08.html">Templates</a></span></dt>
+
+        <dd>
+          <dl>
+            <dt><span class="section"><a href="ch05s08.html#N1057C">Defining
+            Templates</a></span></dt>
+
+            <dt><span class="section"><a href="ch05s08.html#N105AE">Using Templates</a></span></dt>
+          </dl>
+        </dd>
+
+        <dt><span class="section"><a href="ch05s09.html">Source Formatter</a></span></dt>
+
+        <dt><span class="section"><a href="ch05s10.html">Source Folding</a></span></dt>
+
+        <dt><span class="section"><a href="ch05s11.html">Refactoring</a></span></dt>
+
+        <dd>
+          <dl>
+            <dt><span class="section"><a href="ch05s11.html#N10619">Extract
+            Subroutine</a></span></dt>
+          </dl>
+        </dd>
+
+        <dt><span class="section"><a href="ch05s12.html">HTML Export</a></span></dt>
+
+        <dt><span class="section"><a href="ch05s13.html">Outline View</a></span></dt>
+      </dl>
+    </div>
+  </div>
+
+  <div class="navfooter">
+    <hr />
+
+    <table summary="Navigation footer" width="100%">
+      <tr>
+        <td align="left" width="40%"><a accesskey="p" href="ch04s04.html">Prev</a>&nbsp;</td>
+
+        <td align="center" width="20%">&nbsp;</td>
+
+        <td align="right" width="40%">&nbsp;<a accesskey="n" href="ch05s01.html">Next</a></td>
+      </tr>
+
+      <tr>
+        <td valign="top" align="left" width="40%">Using Views&nbsp;</td>
+
+        <td align="center" width="20%"><a accesskey="h" href="index.html">Home</a></td>
+
+        <td valign="top" align="right" width="40%">&nbsp;Syntax Check</td>
+      </tr>
+    </table>
+  </div>
+</body>
+</html>

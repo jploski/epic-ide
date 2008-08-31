@@ -7,13 +7,23 @@ See build.properties for more information.
 <project name="EPIC User's Guide" default="build-all" basedir=".">	
 	
 	<!--
-	NOTE:
+	NOTE 1:
 		In order for the xmlcatalog magic to work, you must add resolver.jar
 		from the xml-commons-resolver-1.1 distribution to your Ant classpath
 		("Window > Preferences > Ant > Runtime > Global Entries"). Do NOT add
 		resolver.jar to the 'endorsed' directory of your JRE/JDK or Ant will
 		complain that "catalogpath listing external catalogs will be ignored"
 		and misbehave!
+		
+	NOTE 2:
+		To get rid of errors like these ones (e.g. occurring with JDK 1.6.x):
+
+			Warning! file:.../autoidx.xsl: line 421: Attribute 'href' outside of element.
+			...
+			Error! Syntax error in '* or $generate.index != 0'.
+
+		download Xalan-J-2.7.1 and add its JARs to the Ant classpath:
+		serializer.jar, xalan.jar, xercesImpl.jar, xml-apis.jar		
 	-->
     <xmlcatalog id="catalog">
         <catalogpath>
@@ -26,6 +36,13 @@ See build.properties for more information.
 			<condition>
 				<or>
 					<not><isset property="xmlcatalog.path"/></not>
+				</or>
+			</condition>
+		</fail>
+		<fail message="Property tidy.path must be defined and point to the HTML Tidy executable.">
+			<condition>
+				<or>
+					<not><isset property="tidy.path"/></not>
 				</or>
 			</condition>
 		</fail>
@@ -116,6 +133,15 @@ See build.properties for more information.
 	        <xmlcatalog refid="catalog"/>
 	    </xslt>
 		<delete file="guide.html"/>
+		<apply executable="${tidy.path}" parallel="false" dir="temp" errorproperty="tidy.stderr">
+			<arg value="-modify"/>
+			<arg value="-utf8"/>
+			<arg value="-indent"/>
+			<arg value="-wrap"/>
+			<arg value="100"/>
+			<srcfile/>
+			<fileset dir="temp" includes="*.html"/>
+		</apply>
 		<mkdir dir="../html/guide"/>
 		<copy todir="../html/guide">
 			<fileset dir="temp" includes="**"/>
@@ -124,4 +150,52 @@ See build.properties for more information.
 		</copy>
 		<delete dir="temp"/>
 	</target>
+
+	<target name="build-web" depends="check-env" description="Multiple HTML format for the web site">
+		<mkdir dir="temp"/>
+	    <xslt basedir="."
+		      destdir="."
+		      extension=".html"
+		      style="xhtml-web.xsl"
+		      includes="guide.xml"
+			  force="true">
+	        <xmlcatalog refid="catalog"/>
+	    </xslt>
+	    <xslt basedir="temp"
+		      destdir="temp"
+		      extension=".html"
+		      style="xhtml-web-post.xsl"
+		      includes="*.php"
+			  force="true">
+	        <xmlcatalog refid="catalog"/>
+	    </xslt>
+		<move todir="temp" overwrite="true">
+			<fileset dir="temp">
+				<include name="*.html"/>
+			</fileset>
+			<mapper type="glob" from="*.html" to="*.php"/>
+		</move>
+		<apply executable="${tidy.path}" parallel="false" dir="temp" errorproperty="tidy.stderr">
+			<arg value="-modify"/>
+			<arg value="-utf8"/>
+			<arg value="-indent"/>
+			<arg value="-wrap"/>
+			<arg value="100"/>
+			<srcfile/>
+			<fileset dir="temp" includes="*.php"/>
+		</apply>
+		<replace dir="temp">
+			<include name="*.php"/>
+			<replacetoken><![CDATA[<?xml version="1.0" encoding="utf-8"?>]]></replacetoken>
+			<replacevalue></replacevalue>
+		</replace>
+		<delete dir="../../org.epic.website/htdocs/guide"/>
+		<mkdir dir="../../org.epic.website/htdocs/guide"/>
+		<copy todir="../../org.epic.website/htdocs/guide">
+			<fileset dir="temp" includes="**"/>
+			<fileset dir="." includes="images/**"/>
+		</copy>
+		<delete dir="temp"/>
+	</target>
+
 </project>

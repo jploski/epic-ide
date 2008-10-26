@@ -2407,7 +2407,8 @@ $smtp-&gt;[content assist]</programlisting>
             <listitem>
               <para>Global Variables: variables visible from everywhere in
               your program. More precisely, these are the variables from the
-              symbol table of the <literal>main</literal> package.</para>
+              symbol table of the package in which the debugger is suspended
+              or from the <literal>main</literal> package (in scripts).</para>
             </listitem>
 
             <listitem>

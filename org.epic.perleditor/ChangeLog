@@ -4,6 +4,13 @@ CVS
 		Debugger:
 
 		Editor:
+
+Version 0.6.26 - 26-Oct-2008
+		Debugger:
+		* Fixed Bug [ 2188379 ] Global variables can not be displayed
+		* Implemented Feature Request [ 2197630 ] Display package-scope ('our') variables in debugger
+
+		Editor:
 		* Fixed Bug [ 2059660 ] shift left works different than in other eclipse editors
 
 Version 0.6.25 - 10-Aug-2008

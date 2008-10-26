@@ -2,6 +2,9 @@
 
 use Data::Dumper;
 
+use lib 'noinc';
+use TestDebugger3;
+
 my $arr = [ { key => 1 }, { key => 2 } ];
 my @list = ( { key => 1 }, { key => 2 } );
 my @list2 = ( 1, 2, 3 );
@@ -15,5 +18,7 @@ $scal = 123;
 $ref1 = \%h;
 $ref2 = \$h2;
 my $foo2 = \@foo;
+
+TestDebugger3::foo();
 
 print "ok\n";

@@ -10,6 +10,7 @@ import org.eclipse.debug.core.model.*;
 import org.epic.debug.db.DebuggerInterface;
 import org.epic.debug.db.PerlDebugThread;
 import org.epic.debug.db.DebuggerInterface.SessionTerminatedException;
+import org.epic.debug.ui.action.ShowGlobalVariableActionDelegate;
 import org.epic.debug.ui.action.ShowLocalVariableActionDelegate;
 import org.epic.debug.util.*;
 import org.epic.perleditor.PerlEditorPlugin;
@@ -257,8 +258,9 @@ public class DebugTarget extends PerlTarget
     {
         try
         {
-            if (ShowLocalVariableActionDelegate.getPreferenceValue() &&
-                !db.hasPadWalker())
+            if ((ShowLocalVariableActionDelegate.getPreferenceValue() ||
+                ShowGlobalVariableActionDelegate.getPreferenceValue())
+                && !db.hasPadWalker())
             {
                 PerlDebugPlugin.errorDialog(
                     "Error displaying local variables\n" +

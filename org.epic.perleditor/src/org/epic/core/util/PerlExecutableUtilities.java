@@ -6,6 +6,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.*;
+import org.eclipse.core.variables.IStringVariableManager;
+import org.eclipse.core.variables.VariablesPlugin;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.epic.core.PerlCore;
@@ -34,8 +37,28 @@ public class PerlExecutableUtilities
      */
     public static List getPerlCommandLine()
     {
-        return new ArrayList(CommandLineTokenizer.tokenize(
-            PerlEditorPlugin.getDefault().getPerlExecutable()));
+        String perlExe = PerlEditorPlugin.getDefault().getPerlExecutable();
+        
+        try
+        {
+            IStringVariableManager varMgr = 
+                VariablesPlugin.getDefault().getStringVariableManager();
+            
+            perlExe = varMgr.performStringSubstitution(perlExe);
+        }
+        catch (CoreException e)
+        {
+            PerlEditorPlugin.getDefault().getLog().log(
+                new Status(Status.ERROR,
+                    PerlEditorPlugin.getPluginId(),
+                    IStatus.OK,
+                    "Variable substitution failed for Perl executable. " +
+                    "The literal value \"" + perlExe + "\" will be used. " +
+                    "Check Perl executable in EPIC Preferences.",
+                    e));
+        }
+        
+        return new ArrayList(CommandLineTokenizer.tokenize(perlExe));
     }
 
     /**

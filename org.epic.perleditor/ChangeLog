@@ -5,6 +5,10 @@ CVS
 
 		Editor:
 
+Version 0.6.26 - 28-Oct-2008
+		Editor:
+		* Implemented Feature Request [ 2204771 ] Enable variable substitution for Perl executable in prefs
+
 Version 0.6.26 - 26-Oct-2008
 		Debugger:
 		* Fixed Bug [ 2188379 ] Global variables can not be displayed

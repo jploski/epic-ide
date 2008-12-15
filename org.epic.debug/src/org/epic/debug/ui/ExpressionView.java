@@ -103,7 +103,7 @@ public class ExpressionView extends ViewPart {
 	private void evaluateExpression()
 	{
 		IAdaptable a = DebugUITools.getDebugContext();
-		StackFrame stackFrame = (StackFrame) a.getAdapter(StackFrame.class);
+		StackFrame stackFrame = a != null ? (StackFrame) a.getAdapter(StackFrame.class) : null;
 		if (stackFrame != null)
 		{
 			try
@@ -137,10 +137,14 @@ public class ExpressionView extends ViewPart {
             }
 		}
 		else
+        {
 			MessageDialog.openInformation(
-						this.getViewSite().getShell(),
-						"Error",
-						"Choose Context/Stack Frame for executing Statement\n" + this.expressionInput.getText());
+                this.getViewSite().getShell(),
+				"No stack frame selected",
+				"Before evaluating a Perl expression, first select a stack frame\n" +
+                "from a suspended debugger session in the Debug view to indicate\n" +
+                "the evaluation context.\n\n");
+        }
 	}
 	
 	private void setExpressionOutput(String text) {

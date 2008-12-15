@@ -139,11 +139,15 @@ public class TestDebugger extends BasePDETestCase
     
     public void testVariables() throws Exception
     {
+        boolean savedShowInternalVariables = getShowVariablesPreference(
+            "org.epic.debug.showPerlInternalVariablesAction");
         boolean savedShowGlobalVariables = getShowVariablesPreference(
             "org.epic.debug.showGlobalVariablesAction");
         
         try
         {
+            setShowVariablesPreference(
+                "org.epic.debug.showPerlInternalVariablesAction", false);
             setShowVariablesPreference(
                 "org.epic.debug.showGlobalVariablesAction", true);
             
@@ -155,6 +159,9 @@ public class TestDebugger extends BasePDETestCase
         }
         finally
         {
+            setShowVariablesPreference(
+                "org.epic.debug.showPerlInternalVariablesAction",
+                savedShowInternalVariables);
             setShowVariablesPreference(
                 "org.epic.debug.showGlobalVariablesAction",
                 savedShowGlobalVariables);

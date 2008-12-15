@@ -5,7 +5,12 @@ CVS
 
 		Editor:
 
-Version 0.6.26 - 28-Oct-2008
+Version 0.6.28 - 15-Dec-2008
+		Debugger:
+		* Fixed Bug [ 2431258 ] Perl internal variables not appearing
+		* Fixed Bug [ 2241882 ] NPE in Perl Expression View
+
+Version 0.6.27 - 28-Oct-2008
 		Editor:
 		* Implemented Feature Request [ 2204771 ] Enable variable substitution for Perl executable in prefs
 

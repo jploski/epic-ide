@@ -17,6 +17,7 @@ public class StackFrame extends DebugElement implements IStackFrame
     
     private static final String DB_DUMP_LOCAL_VARS;    
     private static final String DB_DUMP_GLOBAL_VARS;
+    private static final String DB_DUMP_INTERNAL_VARS;
     
     private static final Set PERL_INTERNAL_VARS = initInternalVars();
 
@@ -34,6 +35,7 @@ public class StackFrame extends DebugElement implements IStackFrame
     {
         DB_DUMP_LOCAL_VARS = HelperScript.load("dump_local_vars.pl");
         DB_DUMP_GLOBAL_VARS = HelperScript.load("dump_global_vars.pl");
+        DB_DUMP_INTERNAL_VARS = HelperScript.load("dump_internal_vars.pl");
     }
     
     public StackFrame(
@@ -182,6 +184,7 @@ public class StackFrame extends DebugElement implements IStackFrame
             {
                 List vars = new ArrayList();
                 
+                if (ShowPerlInternalVariableActionDelegate.getPreferenceValue()) dumpInternalVars(vars);
                 if (ShowGlobalVariableActionDelegate.getPreferenceValue()) dumpGlobalVars(vars);
                 if (ShowLocalVariableActionDelegate.getPreferenceValue() && db.hasPadWalker()) dumpLocalVars(vars);
                 this.vars = (PerlVariable[]) vars.toArray(new PerlVariable[vars.size()]);
@@ -267,11 +270,10 @@ public class StackFrame extends DebugElement implements IStackFrame
         try
         {
             DumpedEntityReader r = new DumpedEntityReader(globalVarsString);
-            boolean showInternal = ShowPerlInternalVariableActionDelegate.getPreferenceValue();
             while (r.hasMoreEntities())
             {
                 DumpedEntity ent = r.nextEntity();
-                if (showInternal || !PERL_INTERNAL_VARS.contains(ent.getName()))
+                if (!PERL_INTERNAL_VARS.contains(ent.getName()))
                     vars.add(new PackageVariable(db, this, ent));
             }
         }
@@ -287,7 +289,35 @@ public class StackFrame extends DebugElement implements IStackFrame
                 e));
         }
     }
-    
+
+    private void dumpInternalVars(List vars) throws IOException, DebugException
+    {
+        String internalVarsString = db.eval(DB_DUMP_INTERNAL_VARS);
+        if (internalVarsString == null) return;
+        
+        try
+        {
+            DumpedEntityReader r = new DumpedEntityReader(internalVarsString);
+            while (r.hasMoreEntities())
+            {
+                DumpedEntity ent = r.nextEntity();
+                if (PERL_INTERNAL_VARS.contains(ent.getName()))
+                    vars.add(new PackageVariable(db, this, ent));
+            }
+        }
+        catch (Exception e)
+        {
+            PerlDebugPlugin.log(e);
+            throw new DebugException(new Status(
+                Status.ERROR,
+                PerlDebugPlugin.getUniqueIdentifier(),
+                Status.OK,
+                "An error occurred while dumping Perl internal variables; " +
+                "contents of the Variables view may become invalid",
+                e));
+        }
+    }
+
     private void dumpLocalVars(List vars) throws IOException, DebugException
     {         
         String code = HelperScript.replace(

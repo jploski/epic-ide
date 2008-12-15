@@ -5,6 +5,10 @@ CVS
 
 		Editor:
 
+Version 0.6.29 - 15-Dec-2008
+		Debugger:
+		* Implemented Feature Request [ 2431423 ] Show @_ in Variables view
+
 Version 0.6.28 - 15-Dec-2008
 		Debugger:
 		* Fixed Bug [ 2431258 ] Perl internal variables not appearing

@@ -19,6 +19,6 @@ $ref1 = \%h;
 $ref2 = \$h2;
 my $foo2 = \@foo;
 
-TestDebugger3::foo();
+TestDebugger3::foo(123, 'abc');
 
 print "ok\n";

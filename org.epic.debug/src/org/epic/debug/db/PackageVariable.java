@@ -39,10 +39,17 @@ class PackageVariable extends PerlVariable
             }
             else
             {
-                buf.append('\\'); // we want the whole expr to be a reference
-                buf.append(name.substring(0, 1));
-                buf.append("main::");
-                buf.append(name.substring(1));
+                if ("@_".equals(name))
+                {
+                    buf.append("\\@_");
+                }
+                else
+                {
+                    buf.append('\\'); // we want the whole expr to be a reference
+                    buf.append(name.substring(0, 1));
+                    buf.append("main::");
+                    buf.append(name.substring(1));
+                }
             }
         }
         else

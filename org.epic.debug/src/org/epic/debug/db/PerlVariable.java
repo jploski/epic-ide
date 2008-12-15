@@ -119,7 +119,10 @@ public abstract class PerlVariable extends DebugElement implements IVariable
         }
         else if (isArray())
         {
-            value = new ArrayValue(getDebugTarget(), this);
+            if ("@_".equals(getName()))
+                value = new ArgsArrayValue(getDebugTarget(), this);
+            else
+                value = new ArrayValue(getDebugTarget(), this);
         }
         else // if (isScalar()) and "unsupported" types such as CODE, GLOB, ...
         {

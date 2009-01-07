@@ -217,9 +217,9 @@ public class ProjectAndFileBlock extends ProjectBlock
 				return true;
 			}
 
-			if (defaultEditorDescriptor.getId().equals(PERL_EDITOR_ID)
-					&& !resource.getFileExtension().equals(
-							EMB_PERL_FILE_EXTENSION)) {
+			if (defaultEditorDescriptor.getId().equals(PERL_EDITOR_ID) &&
+				!EMB_PERL_FILE_EXTENSION.equals(resource.getFileExtension()) &&
+				resource.getType() == IResource.FILE) {
 				fileList.add(resource.getFullPath().removeFirstSegments(1)
 						.toString());
 			}

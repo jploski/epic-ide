@@ -123,3 +123,6 @@ grep /A|B/, 'A', 'B', 'C';
 
 # bug 1914490
 @array = split /-/,$hyphenDelimitedLine;
+
+# bug 2537700
+grep !/foo/, @array;

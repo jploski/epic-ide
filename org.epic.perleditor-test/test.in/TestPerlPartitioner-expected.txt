@@ -916,3 +916,19 @@ EOT
 2423:1:OPERATOR:{,}
 2424:20:VARIABLE:{$hyphenDelimitedLine}
 2444:1:OPERATOR:{;}
+2445:2:__dftl_partition_content_type:{
+
+}
+2447:13:COMMENT:{# bug 2537700}
+2460:1:__dftl_partition_content_type:{
+}
+2461:4:KEYWORD2:{grep}
+2465:1:__dftl_partition_content_type:{ }
+2466:1:OPERATOR:{!}
+2467:1:LITERAL2:{/}
+2468:3:LITERAL2:{foo}
+2471:1:LITERAL2:{/}
+2472:1:OPERATOR:{,}
+2473:1:__dftl_partition_content_type:{ }
+2474:6:VARIABLE:{@array}
+2480:1:OPERATOR:{;}

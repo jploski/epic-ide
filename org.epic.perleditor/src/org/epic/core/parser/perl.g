@@ -322,6 +322,10 @@ OPER_DOT
 	: '.'
 	{ afterArrow = afterDArrow = false; $setToken(createOperatorToken(PerlTokenTypes.OPER_DOT, ".")); };
 
+OPER_NOT
+	: '!'
+	{ slashRegexp = true; $setToken(createOperatorToken(PerlTokenTypes.OPER_NOT, "!")); };
+
 OPER_BSLASH
 	: '\\'
 	{ $setToken(createOperatorToken(PerlTokenTypes.OPER_BSLASH, "\\")); };

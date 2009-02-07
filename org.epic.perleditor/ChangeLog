@@ -6,6 +6,7 @@ CVS
 
 		Editor:
 		* Fixed Bug [ 2537700 ] Editor fails highlight. grep + regexp
+		* Fixed Bug [ 2502366 ] Content assist and typed lexicals
 
 Version 0.6.29 - 15-Dec-2008
 		Debugger:

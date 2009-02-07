@@ -73,7 +73,7 @@ sub _abs_path
     my $cached = $abs_path_cache{$path};
     return $cached if $cached;
     
-    $cached = $abs_path_cache{$path} = abs_path($path);
+    eval { $cached = $abs_path_cache{$path} = abs_path($path); };
     return defined($cached) ? $cached : $path;
 }
 

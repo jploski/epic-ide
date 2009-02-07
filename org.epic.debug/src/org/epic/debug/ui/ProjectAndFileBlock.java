@@ -211,7 +211,7 @@ public class ProjectAndFileBlock extends ProjectBlock
 		public boolean visit(IResource resource) throws CoreException {
 			IEditorDescriptor defaultEditorDescriptor = PerlDebugPlugin
 					.getDefault().getWorkbench().getEditorRegistry()
-					.getDefaultEditor(resource.getFullPath().toString());
+					.getDefaultEditor(resource.getName());
 
 			if (defaultEditorDescriptor == null) {
 				return true;

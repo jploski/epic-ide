@@ -295,7 +295,6 @@
     </extension>
     <extension point="org.eclipse.debug.ui.launchShortcuts">
         <shortcut
-            category="org.eclipse.jdt.ui.JavaPerspective"
             class="org.epic.debug.LaunchShortcut"
             icon="icons/epic.gif"
             id="org.epic.debug.LaunchShortcut"
@@ -317,6 +316,9 @@
                                 <test
                                     property="org.eclipse.debug.ui.matchesPattern"
                                     value="*.t" />
+								<test
+                            		property="org.eclipse.debug.ui.matchesContentType"
+                                	value="org.epic.perleditor.perl" />
                             </or>
                         </iterate>
                     </with>

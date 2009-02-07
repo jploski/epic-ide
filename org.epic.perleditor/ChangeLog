@@ -2,8 +2,14 @@ Eclipse Perl Integration:
 
 CVS
 		Debugger:
+
+		Editor:
+
+Version 0.6.30 - 7-Feb-2009
+		Debugger:
 		* Fixed Bug [ 2513003 ] epic_breakpoints raises exception in Template::Toolkit
 		* Fixed Bug [ 2501676 ] debugger crash
+		* Fixed Bug [ 2433437 ] Content-type does not enable to run/debug perl scripts
 
 		Editor:
 		* Fixed Bug [ 2537700 ] Editor fails highlight. grep + regexp

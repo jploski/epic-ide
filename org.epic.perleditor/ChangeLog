@@ -3,6 +3,7 @@ Eclipse Perl Integration:
 CVS
 		Debugger:
 		* Fixed Bug [ 2513003 ] epic_breakpoints raises exception in Template::Toolkit
+		* Fixed Bug [ 2501676 ] debugger crash
 
 		Editor:
 		* Fixed Bug [ 2537700 ] Editor fails highlight. grep + regexp

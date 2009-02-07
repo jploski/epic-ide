@@ -157,7 +157,7 @@ public class PerlExecutableUtilities
         if (m.matches())
         {
             StringBuffer buf = new StringBuffer();
-            buf.append("/cygdrive/");
+            buf.append(CygwinMount.drivePrefix());
             buf.append(m.group(1));
             buf.append(m.group(2));
             return buf.toString();

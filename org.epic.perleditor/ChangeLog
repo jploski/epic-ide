@@ -2,6 +2,7 @@ Eclipse Perl Integration:
 
 CVS
 		Debugger:
+		* Fixed Bug [2513003] epic_breakpoints raises exception in Template::Toolkit
 
 		Editor:
 

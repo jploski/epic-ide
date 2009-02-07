@@ -376,6 +376,9 @@ public class StackFrame extends DebugElement implements IStackFrame
         
             for (int i = 0; i < vars.length; i++)
             {
+                if (!(vars[i] instanceof PerlVariable))
+                    continue; // could be an ArraySlice
+                
                 PerlVariable var = (PerlVariable) vars[i];
                 String addr = var.getDumpedEntity().getAddress();
                 

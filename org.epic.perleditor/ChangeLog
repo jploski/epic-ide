@@ -4,6 +4,7 @@ CVS
 		Debugger:
 
 		Editor:
+		* Fixed Bug [ 2502358 ] Content assist and "use base"
 
 Version 0.6.30 - 7-Feb-2009
 		Debugger:

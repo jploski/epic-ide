@@ -348,19 +348,18 @@ public class PerlCompletionProcessor implements IContentAssistProcessor
 			"use "
 				+ className
 				+ ";\n\n"
-				+ "foreach $name (sort keys %"
-				+ className
-				+ "::) {\n"
+                + "@classes = qw(" + className + ");\n"
+                + "push(@classes, @" + className + "::ISA);\n"
+                + "foreach $class (@classes) {\n"
+                + "next if ($class eq 'Exporter');\n"
+                + "%symtab = eval '%'.$class.'::';\n"
+				+ "foreach $name (keys %symtab) {\n"
 				+ " next if($name !~ /[a-z]/ || $name =~ /^_/);\n"
-				+ "   if(defined &{\""
-				+ className
-				+ "::$name\"}) {\n"
-				+ "       print \"$name()\\n\";\n"
+				+ "   if(defined &{$class.'::'.$name}) {\n"
+				+ "       $proposals{$name.'()'} = 1;\n"
 				+ "   }\n"
-				+ "   else {\n"
-				+ "       #print \"$name\\n\";\n"
-				+ "   }\n"
-				+ "}\n";
+				+ "}}\n"
+                + "print join(\"\\n\", sort keys %proposals);";
 
         PerlExecutor executor = new PerlExecutor();
 		try

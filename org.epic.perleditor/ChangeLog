@@ -4,6 +4,12 @@ CVS
 		Debugger:
 
 		Editor:
+
+Version 0.6.31 - 9-Feb-2009
+		Debugger:
+		* Applied Patch [ 2490403 ] cygwin drive prefix processing
+
+		Editor:
 		* Fixed Bug [ 2502358 ] Content assist and "use base"
 
 Version 0.6.30 - 7-Feb-2009

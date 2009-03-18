@@ -98,7 +98,6 @@ public class PerlPresentationReconciler extends PresentationReconciler
 
         public void setRange(IDocument document, int offset, int length)
         {
-//System.err.println("ColoringScanner.setRange " + offset + ":" + length);
             this.offset = offset;
             this.tokenI = -1;
             
@@ -160,16 +159,7 @@ public class PerlPresentationReconciler extends PresentationReconciler
             if (boldPref != null && prefs.getBoolean(boldPref))
                 style = SWT.BOLD;
             
-            Color bgColor =
-                prefs.getBoolean(PreferenceConstants.EDITOR_BACKGROUND_DEFAULT_COLOR)
-                ? null
-                : getColor(p, PreferenceConstants.EDITOR_BACKGROUND_COLOR);
-
-            
-            return new TextAttribute(
-                getColor(p, colorPref),
-                bgColor,
-                style);
+            return new TextAttribute(getColor(p, colorPref), null, style);
         }
         
         private Color getColor(PerlEditorPlugin p, String colorPref)

@@ -2,9 +2,16 @@ Eclipse Perl Integration:
 
 CVS
 		Debugger:
+
+		Editor:
+
+Version 0.6.32 - 18-Mar-2009
+		Debugger:
 		* Fixed Bug [ 2609775 ] CGI debugging: Could not connect to debug port!
 
 		Editor:
+		* Fixed Bug [ 2680597 ] doesn't respect global Eclipse text editor background color
+		* Implemented Feature Request [ 2692844 ] Preference for fold column background color
 
 Version 0.6.31 - 9-Feb-2009
 		Debugger:

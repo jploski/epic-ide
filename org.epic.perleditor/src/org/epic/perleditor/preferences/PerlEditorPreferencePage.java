@@ -16,7 +16,6 @@ import java.io.*;
 import java.util.*;
 
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.preference.*;
 import org.eclipse.jface.resource.JFaceResources;
@@ -35,6 +34,8 @@ import org.eclipse.swt.widgets.*;
 import org.eclipse.swt.widgets.List;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
+import org.eclipse.ui.editors.text.EditorsUI;
+import org.eclipse.ui.texteditor.ChainedPreferenceStore;
 import org.epic.perleditor.PerlEditorPlugin;
 import org.epic.perleditor.editors.*;
 
@@ -48,21 +49,14 @@ public class PerlEditorPreferencePage extends PreferencePage implements IWorkben
 
 	public final OverlayPreferenceStore.OverlayKey[] fKeys= new OverlayPreferenceStore.OverlayKey[] {
 
-        //-------------------------------------
+        // -------------------------------------
 		// Appearance Tab
-        //-------------------------------------
+        // -------------------------------------
 		new OverlayPreferenceStore.OverlayKey(OverlayPreferenceStore.INT, PreferenceConstants.EDITOR_TAB_WIDTH),
 		new OverlayPreferenceStore.OverlayKey(OverlayPreferenceStore.INT, PreferenceConstants.INSERT_TABS_ON_INDENT),
 		new OverlayPreferenceStore.OverlayKey(OverlayPreferenceStore.BOOLEAN, PreferenceConstants.SPACES_INSTEAD_OF_TABS),
-		new OverlayPreferenceStore.OverlayKey(OverlayPreferenceStore.STRING, PreferenceConstants.EDITOR_LINE_NUMBER_RULER_COLOR),
         new OverlayPreferenceStore.OverlayKey(OverlayPreferenceStore.BOOLEAN, PreferenceConstants.EDITOR_LINE_WRAP),
-		new OverlayPreferenceStore.OverlayKey(OverlayPreferenceStore.BOOLEAN, PreferenceConstants.EDITOR_LINE_NUMBER_RULER),
-		new OverlayPreferenceStore.OverlayKey(OverlayPreferenceStore.STRING, PreferenceConstants.EDITOR_LINE_NUMBER_RULER_COLOR),
-		new OverlayPreferenceStore.OverlayKey(OverlayPreferenceStore.STRING, PreferenceConstants.EDITOR_CURRENT_LINE_COLOR),
-		new OverlayPreferenceStore.OverlayKey(OverlayPreferenceStore.BOOLEAN, PreferenceConstants.EDITOR_CURRENT_LINE),
-		new OverlayPreferenceStore.OverlayKey(OverlayPreferenceStore.STRING, PreferenceConstants.EDITOR_PRINT_MARGIN_COLOR),
-		new OverlayPreferenceStore.OverlayKey(OverlayPreferenceStore.INT, PreferenceConstants.EDITOR_PRINT_MARGIN_COLUMN),
-		new OverlayPreferenceStore.OverlayKey(OverlayPreferenceStore.BOOLEAN, PreferenceConstants.EDITOR_PRINT_MARGIN),
+        new OverlayPreferenceStore.OverlayKey(OverlayPreferenceStore.STRING, PreferenceConstants.EDITOR_FOLD_COLUMN_BG_COLOR),
 		new OverlayPreferenceStore.OverlayKey(OverlayPreferenceStore.BOOLEAN, PreferenceConstants.EDITOR_OVERVIEW_RULER),
 		new OverlayPreferenceStore.OverlayKey(OverlayPreferenceStore.BOOLEAN, PreferenceConstants.SOURCE_FOLDING),
 		new OverlayPreferenceStore.OverlayKey(OverlayPreferenceStore.BOOLEAN, PreferenceConstants.AUTO_COMPLETION_QUOTE1),
@@ -73,11 +67,11 @@ public class PerlEditorPreferencePage extends PreferencePage implements IWorkben
 		new OverlayPreferenceStore.OverlayKey(OverlayPreferenceStore.BOOLEAN, PreferenceConstants.AUTO_COMPLETION_BRACKET4),
         new OverlayPreferenceStore.OverlayKey(OverlayPreferenceStore.BOOLEAN, PreferenceConstants.EDITOR_SMART_HOME_END),
         new OverlayPreferenceStore.OverlayKey(OverlayPreferenceStore.BOOLEAN, PreferenceConstants.EDITOR_SUB_WORD_NAVIGATION),
-		//-------------------------------------
+		// -------------------------------------
 
-        //-------------------------------------
+        // -------------------------------------
 		// Syntax Tab
-		//-------------------------------------
+		// -------------------------------------
 		new OverlayPreferenceStore.OverlayKey(OverlayPreferenceStore.STRING, PreferenceConstants.EDITOR_FOREGROUND_COLOR),
 		new OverlayPreferenceStore.OverlayKey(OverlayPreferenceStore.BOOLEAN, PreferenceConstants.EDITOR_FOREGROUND_DEFAULT_COLOR),
 		new OverlayPreferenceStore.OverlayKey(OverlayPreferenceStore.STRING, PreferenceConstants.EDITOR_BACKGROUND_COLOR),
@@ -111,41 +105,6 @@ public class PerlEditorPreferencePage extends PreferencePage implements IWorkben
 		new OverlayPreferenceStore.OverlayKey(OverlayPreferenceStore.BOOLEAN, PreferenceConstants.EDITOR_NUMBER_COLOR_BOLD),
 		new OverlayPreferenceStore.OverlayKey(OverlayPreferenceStore.STRING, PreferenceConstants.EDITOR_INVALID_COLOR),
 		new OverlayPreferenceStore.OverlayKey(OverlayPreferenceStore.BOOLEAN, PreferenceConstants.EDITOR_INVALID_COLOR_BOLD),
-
-
-
-
-
-        //-------------------------------------
-
-        //-------------------------------------
-		// Annotations Tab
-	    //-------------------------------------
-		new OverlayPreferenceStore.OverlayKey(OverlayPreferenceStore.STRING, PreferenceConstants.EDITOR_PROBLEM_INDICATION_COLOR),
-		new OverlayPreferenceStore.OverlayKey(OverlayPreferenceStore.BOOLEAN, PreferenceConstants.EDITOR_PROBLEM_INDICATION),
-		new OverlayPreferenceStore.OverlayKey(OverlayPreferenceStore.BOOLEAN, PreferenceConstants.EDITOR_ERROR_INDICATION_IN_OVERVIEW_RULER),
-
-		new OverlayPreferenceStore.OverlayKey(OverlayPreferenceStore.STRING, PreferenceConstants.EDITOR_WARNING_INDICATION_COLOR),
-		new OverlayPreferenceStore.OverlayKey(OverlayPreferenceStore.BOOLEAN, PreferenceConstants.EDITOR_WARNING_INDICATION),
-		new OverlayPreferenceStore.OverlayKey(OverlayPreferenceStore.BOOLEAN, PreferenceConstants.EDITOR_WARNING_INDICATION_IN_OVERVIEW_RULER),
-
-		new OverlayPreferenceStore.OverlayKey(OverlayPreferenceStore.STRING, PreferenceConstants.EDITOR_TASK_INDICATION_COLOR),
-		new OverlayPreferenceStore.OverlayKey(OverlayPreferenceStore.BOOLEAN, PreferenceConstants.EDITOR_TASK_INDICATION),
-		new OverlayPreferenceStore.OverlayKey(OverlayPreferenceStore.BOOLEAN, PreferenceConstants.EDITOR_TASK_INDICATION_IN_OVERVIEW_RULER),
-
-		new OverlayPreferenceStore.OverlayKey(OverlayPreferenceStore.STRING, PreferenceConstants.EDITOR_BOOKMARK_INDICATION_COLOR),
-		new OverlayPreferenceStore.OverlayKey(OverlayPreferenceStore.BOOLEAN, PreferenceConstants.EDITOR_BOOKMARK_INDICATION),
-		new OverlayPreferenceStore.OverlayKey(OverlayPreferenceStore.BOOLEAN, PreferenceConstants.EDITOR_BOOKMARK_INDICATION_IN_OVERVIEW_RULER),
-
-		new OverlayPreferenceStore.OverlayKey(OverlayPreferenceStore.STRING, PreferenceConstants.EDITOR_SEARCH_RESULT_INDICATION_COLOR),
-		new OverlayPreferenceStore.OverlayKey(OverlayPreferenceStore.BOOLEAN, PreferenceConstants.EDITOR_SEARCH_RESULT_INDICATION),
-		new OverlayPreferenceStore.OverlayKey(OverlayPreferenceStore.BOOLEAN, PreferenceConstants.EDITOR_SEARCH_RESULT_INDICATION_IN_OVERVIEW_RULER),
-
-		new OverlayPreferenceStore.OverlayKey(OverlayPreferenceStore.STRING, PreferenceConstants.EDITOR_UNKNOWN_INDICATION_COLOR),
-		new OverlayPreferenceStore.OverlayKey(OverlayPreferenceStore.BOOLEAN, PreferenceConstants.EDITOR_UNKNOWN_INDICATION),
-		new OverlayPreferenceStore.OverlayKey(OverlayPreferenceStore.BOOLEAN, PreferenceConstants.EDITOR_UNKNOWN_INDICATION_IN_OVERVIEW_RULER),
-        //-------------------------------------
-
 	};
 
 	private final String[][] fSyntaxColorListModel= new String[][] {
@@ -166,20 +125,8 @@ public class PerlEditorPreferencePage extends PreferencePage implements IWorkben
 	};
 
 	private final String[][] fAppearanceColorListModel= new String[][] {
-		{PreferencesMessages.lineNumberForegroundColor, PreferenceConstants.EDITOR_LINE_NUMBER_RULER_COLOR}, //$NON-NLS-1$
-		{PreferencesMessages.currentLineHighlighColor, PreferenceConstants.EDITOR_CURRENT_LINE_COLOR}, //$NON-NLS-1$
-		{PreferencesMessages.printMarginColor2, PreferenceConstants.EDITOR_PRINT_MARGIN_COLOR}, //$NON-NLS-1$
+        {PreferencesMessages.foldColumnBackground, PreferenceConstants.EDITOR_FOLD_COLUMN_BG_COLOR}, //$NON-NLS-1$
 	};
-
-	private final String[][] fAnnotationColorListModel= new String[][] {
-		{PreferencesMessages.errors, PreferenceConstants.EDITOR_PROBLEM_INDICATION_COLOR, PreferenceConstants.EDITOR_PROBLEM_INDICATION, PreferenceConstants.EDITOR_ERROR_INDICATION_IN_OVERVIEW_RULER }, //$NON-NLS-1$
-		{PreferencesMessages.warnings, PreferenceConstants.EDITOR_WARNING_INDICATION_COLOR, PreferenceConstants.EDITOR_WARNING_INDICATION, PreferenceConstants.EDITOR_WARNING_INDICATION_IN_OVERVIEW_RULER }, //$NON-NLS-1$
-		{PreferencesMessages.tasks, PreferenceConstants.EDITOR_TASK_INDICATION_COLOR, PreferenceConstants.EDITOR_TASK_INDICATION, PreferenceConstants.EDITOR_TASK_INDICATION_IN_OVERVIEW_RULER }, //$NON-NLS-1$
-		{PreferencesMessages.searchResults, PreferenceConstants.EDITOR_SEARCH_RESULT_INDICATION_COLOR, PreferenceConstants.EDITOR_SEARCH_RESULT_INDICATION, PreferenceConstants.EDITOR_SEARCH_RESULT_INDICATION_IN_OVERVIEW_RULER }, //$NON-NLS-1$
-		{PreferencesMessages.bookmarks, PreferenceConstants.EDITOR_BOOKMARK_INDICATION_COLOR, PreferenceConstants.EDITOR_BOOKMARK_INDICATION, PreferenceConstants.EDITOR_BOOKMARK_INDICATION_IN_OVERVIEW_RULER }, //$NON-NLS-1$
-		{PreferencesMessages.others, PreferenceConstants.EDITOR_UNKNOWN_INDICATION_COLOR, PreferenceConstants.EDITOR_UNKNOWN_INDICATION, PreferenceConstants.EDITOR_UNKNOWN_INDICATION_IN_OVERVIEW_RULER } //$NON-NLS-1$
-	};
-
 
 	private OverlayPreferenceStore fOverlayStore;
 
@@ -212,21 +159,11 @@ public class PerlEditorPreferencePage extends PreferencePage implements IWorkben
 
 	private List fSyntaxColorList;
 	private List fAppearanceColorList;
-	private List fAnnotationList;
 	private ColorEditor fSyntaxForegroundColorEditor;
 	private ColorEditor fAppearanceColorEditor;
-	private ColorEditor fAnnotationForegroundColorEditor;
-	private ColorEditor fBackgroundColorEditor;
-	private Button fBackgroundDefaultRadioButton;
-    private Button fBackgroundCustomRadioButton;
-	private Button fBackgroundColorButton;
 	private Button fBoldCheckBox;
 	private SourceViewer fPreviewViewer;
 	private Color fBackgroundColor;
-	private Button fShowInTextCheckBox;
-	private Button fShowInOverviewRulerCheckBox;
-	private Button fCompletionInsertsRadioButton;
-	private Button fCompletionOverwritesRadioButton;
 
 	public PerlEditorPreferencePage() {
 		setDescription(PreferencesMessages.description);
@@ -235,14 +172,14 @@ public class PerlEditorPreferencePage extends PreferencePage implements IWorkben
 	}
 
 	/*
-	 * @see IWorkbenchPreferencePage#init()
-	 */
+     * @see IWorkbenchPreferencePage#init()
+     */
 	public void init(IWorkbench workbench) {
 	}
 
 	/*
-	 * @see PreferencePage#createControl(Composite)
-	 */
+     * @see PreferencePage#createControl(Composite)
+     */
 	public void createControl(Composite parent) {
 		super.createControl(parent);
 	}
@@ -262,53 +199,10 @@ public class PerlEditorPreferencePage extends PreferencePage implements IWorkben
 		fAppearanceColorEditor.setColorValue(rgb);
 	}
 
-	private void handleAnnotationListSelection() {
-		int i= fAnnotationList.getSelectionIndex();
-
-		String key= fAnnotationColorListModel[i][1];
-		RGB rgb= PreferenceConverter.getColor(fOverlayStore, key);
-		fAnnotationForegroundColorEditor.setColorValue(rgb);
-
-		key= fAnnotationColorListModel[i][2];
-		fShowInTextCheckBox.setSelection(fOverlayStore.getBoolean(key));
-
-		key= fAnnotationColorListModel[i][3];
-		fShowInOverviewRulerCheckBox.setSelection(fOverlayStore.getBoolean(key));
-	}
-
 	private Control createSyntaxPage(Composite parent) {
 
 		Composite colorComposite= new Composite(parent, SWT.NULL);
 		colorComposite.setLayout(new GridLayout());
-
-		Group backgroundComposite= new Group(colorComposite, SWT.SHADOW_ETCHED_IN);
-		backgroundComposite.setLayout(new RowLayout());
-		backgroundComposite.setText(PreferencesMessages.backgroundColor);
-
-		SelectionListener backgroundSelectionListener= new SelectionListener()
-        {
-			public void widgetSelected(SelectionEvent e)
-            {
-				boolean custom= fBackgroundCustomRadioButton.getSelection();
-				fBackgroundColorButton.setEnabled(custom);
-				fOverlayStore.setValue(PreferenceConstants.EDITOR_BACKGROUND_DEFAULT_COLOR, !custom);
-			}
-			public void widgetDefaultSelected(SelectionEvent e)
-            {
-                // empty impl
-            }
-		};
-
-		fBackgroundDefaultRadioButton= new Button(backgroundComposite, SWT.RADIO | SWT.LEFT);
-		fBackgroundDefaultRadioButton.setText(PreferencesMessages.systemDefault);
-		fBackgroundDefaultRadioButton.addSelectionListener(backgroundSelectionListener);
-
-		fBackgroundCustomRadioButton= new Button(backgroundComposite, SWT.RADIO | SWT.LEFT);
-		fBackgroundCustomRadioButton.setText(PreferencesMessages.custom);
-		fBackgroundCustomRadioButton.addSelectionListener(backgroundSelectionListener);
-
-		fBackgroundColorEditor= new ColorEditor(backgroundComposite);
-		fBackgroundColorButton= fBackgroundColorEditor.getButton();
 
 		Label label= new Label(colorComposite, SWT.LEFT);
 		label.setText(PreferencesMessages.foreground);
@@ -387,15 +281,6 @@ public class PerlEditorPreferencePage extends PreferencePage implements IWorkben
 			}
 		});
 
-		fBackgroundColorButton.addSelectionListener(new SelectionListener() {
-			public void widgetDefaultSelected(SelectionEvent e) {
-				// do nothing
-			}
-			public void widgetSelected(SelectionEvent e) {
-				PreferenceConverter.setValue(fOverlayStore, PreferenceConstants.EDITOR_BACKGROUND_COLOR, fBackgroundColorEditor.getColorValue());
-			}
-		});
-
 		fBoldCheckBox.addSelectionListener(new SelectionListener() {
 			public void widgetDefaultSelected(SelectionEvent e) {
 				// do nothing
@@ -411,12 +296,17 @@ public class PerlEditorPreferencePage extends PreferencePage implements IWorkben
 	}
 
 	private Control createPreviewer(Composite parent) {
+        final IPreferenceStore chainedStore = new ChainedPreferenceStore(new IPreferenceStore[] {
+            EditorsUI.getPreferenceStore(),
+            getPreferenceStore(),
+            });
+        
 		fPreviewViewer= new SourceViewer(parent, null, SWT.V_SCROLL | SWT.H_SCROLL | SWT.BORDER);
-		fPreviewViewer.configure(new PerlSourceViewerConfiguration(fOverlayStore, null));
+		fPreviewViewer.configure(new PerlSourceViewerConfiguration(chainedStore, null));
 		fPreviewViewer.getTextWidget().setFont(JFaceResources.getFontRegistry().get(JFaceResources.TEXT_FONT));
 		fPreviewViewer.setEditable(false);
 
-		initializeViewerColors(fPreviewViewer);
+		initializeViewerColors(fPreviewViewer, chainedStore);
 
 		String content= loadPreviewContentFromFile("ColorSettingPreviewCode.txt");
 
@@ -425,19 +315,22 @@ public class PerlEditorPreferencePage extends PreferencePage implements IWorkben
 
 		fPreviewViewer.setDocument(document);
 
-		fOverlayStore.addPropertyChangeListener(new IPropertyChangeListener() {
+		chainedStore.addPropertyChangeListener(new IPropertyChangeListener() {
 			public void propertyChange(PropertyChangeEvent event) {
+                if (fPreviewViewer == null || fPreviewViewer.getTextWidget() == null)
+                    return;
+                
 				String p= event.getProperty();
 				if (p.equals(PreferenceConstants.EDITOR_BACKGROUND_COLOR) ||
 					p.equals(PreferenceConstants.EDITOR_BACKGROUND_DEFAULT_COLOR))
 				{
-					initializeViewerColors(fPreviewViewer);
+					initializeViewerColors(fPreviewViewer, chainedStore);
 				}
 
 				int topIndex =  fPreviewViewer.getTextWidget().getTopIndex();
 		        int caretOffset = fPreviewViewer.getTextWidget().getCaretOffset();
 				fPreviewViewer.unconfigure();
-                fPreviewViewer.configure(new PerlSourceViewerConfiguration(fOverlayStore, null));
+                fPreviewViewer.configure(new PerlSourceViewerConfiguration(chainedStore, null));
 
 				// Set editor foreground
 				fPreviewViewer.getTextWidget().setForeground(
@@ -455,34 +348,34 @@ public class PerlEditorPreferencePage extends PreferencePage implements IWorkben
 
 
 	/**
-	 * Initializes the given viewer's colors.
-	 *
-	 * @param viewer the viewer to be initialized
-	 */
-	private void initializeViewerColors(ISourceViewer viewer) {
+     * Initializes the given viewer's colors.
+     * 
+     * @param viewer
+     *            the viewer to be initialized
+     * @param store
+     *            the preference store from which to read colors
+     */
+	private void initializeViewerColors(ISourceViewer viewer, IPreferenceStore store) {
 
-		IPreferenceStore store= fOverlayStore;
-		if (store != null) {
+		StyledText styledText= viewer.getTextWidget();
 
-			StyledText styledText= viewer.getTextWidget();
+		// ---------- background color ----------------------
+		Color color= store.getBoolean(PreferenceConstants.EDITOR_BACKGROUND_DEFAULT_COLOR)
+			? null
+			: createColor(store, PreferenceConstants.EDITOR_BACKGROUND_COLOR, styledText.getDisplay());
+		styledText.setBackground(color);
 
-			// ---------- background color ----------------------
-			Color color= store.getBoolean(PreferenceConstants.EDITOR_BACKGROUND_DEFAULT_COLOR)
-				? null
-				: createColor(store, PreferenceConstants.EDITOR_BACKGROUND_COLOR, styledText.getDisplay());
-			styledText.setBackground(color);
+		if (fBackgroundColor != null)
+			fBackgroundColor.dispose();
 
-			if (fBackgroundColor != null)
-				fBackgroundColor.dispose();
-
-			fBackgroundColor= color;
-		}
+		fBackgroundColor= color;
 	}
 
 	/**
-	 * Creates a color from the information stored in the given preference store.
-	 * Returns <code>null</code> if there is no such information available.
-	 */
+     * Creates a color from the information stored in the given preference
+     * store. Returns <code>null</code> if there is no such information
+     * available.
+     */
 	private Color createColor(IPreferenceStore store, String key, Display display) {
 
 		RGB rgb= null;
@@ -513,32 +406,14 @@ public class PerlEditorPreferencePage extends PreferencePage implements IWorkben
 		addTextField(appearanceComposite, PreferencesMessages.insertTabsOnIndent,
                 PreferenceConstants.INSERT_TABS_ON_INDENT, 3, 0, true);
 
-		addTextField(appearanceComposite, PreferencesMessages.printMarginColumn,
-                PreferenceConstants.EDITOR_PRINT_MARGIN_COLUMN, 3, 0, true);
-
 		addCheckBox(appearanceComposite, PreferencesMessages.spacesInsteadOfTabs,
                 PreferenceConstants.SPACES_INSTEAD_OF_TABS, 0);
 
-//		addCheckBox(appearanceComposite, PreferencesMessages.synchronizeOnCursor,
-//              PreferenceConstants.EDITOR_SYNC_OUTLINE_ON_CURSOR_MOVE, 0);
-
 		addCheckBox(appearanceComposite, PreferencesMessages.showOverviewRuler,
                 PreferenceConstants.EDITOR_OVERVIEW_RULER, 0);
-
-        addCheckBox(appearanceComposite, PreferencesMessages.showLineNumbers,
-            PreferenceConstants.EDITOR_LINE_NUMBER_RULER, 0);
         
 		addCheckBox(appearanceComposite, PreferencesMessages.wrapLines,
                 PreferenceConstants.EDITOR_LINE_WRAP, 0);
-
-//		addCheckBox(appearanceComposite, PreferencesMessages.highlightMatchingBrackets,
-//		        PreferenceConstants.EDITOR_MATCHING_BRACKETS, 0);
-
-		addCheckBox(appearanceComposite, PreferencesMessages.highlightCurrentLine,
-                PreferenceConstants.EDITOR_CURRENT_LINE, 0);
-
-		addCheckBox(appearanceComposite, PreferencesMessages.showPrintMargin,
-                PreferenceConstants.EDITOR_PRINT_MARGIN, 0);
 
 		Label l= new Label(appearanceComposite, SWT.LEFT );
 		GridData gd= new GridData(GridData.HORIZONTAL_ALIGN_FILL);
@@ -609,118 +484,6 @@ public class PerlEditorPreferencePage extends PreferencePage implements IWorkben
 		return appearanceComposite;
 	}
 
-
-	private Control createAnnotationsPage(Composite parent) {
-		Composite composite= new Composite(parent, SWT.NULL);
-		GridLayout layout= new GridLayout(); layout.numColumns= 2;
-		composite.setLayout(layout);
-
-		addFiller(composite);
-
-		Label label= new Label(composite, SWT.LEFT);
-		label.setText(PreferencesMessages.presentationOptions);
-		GridData gd= new GridData(GridData.HORIZONTAL_ALIGN_FILL);
-		gd.horizontalSpan= 2;
-		label.setLayoutData(gd);
-
-		Composite editorComposite= new Composite(composite, SWT.NONE);
-		layout= new GridLayout();
-		layout.numColumns= 2;
-		layout.marginHeight= 0;
-		layout.marginWidth= 0;
-		editorComposite.setLayout(layout);
-		gd= new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.FILL_VERTICAL);
-		gd.horizontalSpan= 2;
-		editorComposite.setLayoutData(gd);
-
-		fAnnotationList= new List(editorComposite, SWT.SINGLE | SWT.V_SCROLL | SWT.BORDER);
-		gd= new GridData(GridData.VERTICAL_ALIGN_BEGINNING | GridData.FILL_HORIZONTAL);
-		gd.heightHint= convertHeightInCharsToPixels(8);
-		fAnnotationList.setLayoutData(gd);
-
-		Composite optionsComposite= new Composite(editorComposite, SWT.NONE);
-		layout= new GridLayout();
-		layout.marginHeight= 0;
-		layout.marginWidth= 0;
-		layout.numColumns= 2;
-		optionsComposite.setLayout(layout);
-		optionsComposite.setLayoutData(new GridData(GridData.FILL_BOTH));
-
-		fShowInTextCheckBox= new Button(optionsComposite, SWT.CHECK);
-		fShowInTextCheckBox.setText(PreferencesMessages.showInText);
-		gd= new GridData(GridData.FILL_HORIZONTAL);
-		gd.horizontalAlignment= GridData.BEGINNING;
-		gd.horizontalSpan= 2;
-		fShowInTextCheckBox.setLayoutData(gd);
-
-		fShowInOverviewRulerCheckBox= new Button(optionsComposite, SWT.CHECK);
-		fShowInOverviewRulerCheckBox.setText(PreferencesMessages.showInOverviewRuler);
-		gd= new GridData(GridData.FILL_HORIZONTAL);
-		gd.horizontalAlignment= GridData.BEGINNING;
-		gd.horizontalSpan= 2;
-		fShowInOverviewRulerCheckBox.setLayoutData(gd);
-
-		label= new Label(optionsComposite, SWT.LEFT);
-		label.setText(PreferencesMessages.color);
-		gd= new GridData();
-		gd.horizontalAlignment= GridData.BEGINNING;
-		label.setLayoutData(gd);
-
-		fAnnotationForegroundColorEditor= new ColorEditor(optionsComposite);
-		Button foregroundColorButton= fAnnotationForegroundColorEditor.getButton();
-		gd= new GridData(GridData.FILL_HORIZONTAL);
-		gd.horizontalAlignment= GridData.BEGINNING;
-		foregroundColorButton.setLayoutData(gd);
-
-		fAnnotationList.addSelectionListener(new SelectionListener() {
-			public void widgetDefaultSelected(SelectionEvent e) {
-				// do nothing
-			}
-
-			public void widgetSelected(SelectionEvent e) {
-				handleAnnotationListSelection();
-			}
-		});
-
-		fShowInTextCheckBox.addSelectionListener(new SelectionListener() {
-			public void widgetDefaultSelected(SelectionEvent e) {
-				// do nothing
-			}
-
-			public void widgetSelected(SelectionEvent e) {
-				int i= fAnnotationList.getSelectionIndex();
-				String key= fAnnotationColorListModel[i][2];
-				fOverlayStore.setValue(key, fShowInTextCheckBox.getSelection());
-			}
-		});
-
-		fShowInOverviewRulerCheckBox.addSelectionListener(new SelectionListener() {
-			public void widgetDefaultSelected(SelectionEvent e) {
-				// do nothing
-			}
-
-			public void widgetSelected(SelectionEvent e) {
-				int i= fAnnotationList.getSelectionIndex();
-				String key= fAnnotationColorListModel[i][3];
-				fOverlayStore.setValue(key, fShowInOverviewRulerCheckBox.getSelection());
-			}
-		});
-
-		foregroundColorButton.addSelectionListener(new SelectionListener() {
-			public void widgetDefaultSelected(SelectionEvent e) {
-				// do nothing
-			}
-
-			public void widgetSelected(SelectionEvent e) {
-				int i= fAnnotationList.getSelectionIndex();
-				String key= fAnnotationColorListModel[i][1];
-				PreferenceConverter.setValue(fOverlayStore, key, fAnnotationForegroundColorEditor.getColorValue());
-			}
-		});
-
-		return composite;
-	}
-
 	private Control createTypingPage(Composite parent) {
 
 		Composite typingComposite= new Composite(parent, SWT.NULL);
@@ -766,82 +529,10 @@ public class PerlEditorPreferencePage extends PreferencePage implements IWorkben
 		filler.setLayoutData(gd);
 	}
 
-	private static void indent(Control control) {
-		GridData gridData= new GridData();
-		gridData.horizontalIndent= 20;
-		control.setLayoutData(gridData);
-	}
-
-	private static void createDependency(final Button master, final Control slave) {
-		indent(slave);
-		master.addSelectionListener(new SelectionListener() {
-			public void widgetSelected(SelectionEvent e) {
-				slave.setEnabled(master.getSelection());
-			}
-
-			public void widgetDefaultSelected(SelectionEvent e) {}
-		});
-	}
-
-	private void addCompletionRadioButtons(Composite contentAssistComposite) {
-		Composite completionComposite= new Composite(contentAssistComposite, SWT.NONE);
-		GridData ccgd= new GridData();
-		ccgd.horizontalSpan= 2;
-		completionComposite.setLayoutData(ccgd);
-		GridLayout ccgl= new GridLayout();
-		ccgl.marginWidth= 0;
-		ccgl.numColumns= 2;
-		completionComposite.setLayout(ccgl);
-
-		SelectionListener completionSelectionListener= new SelectionAdapter()
-        {
-			public void widgetSelected(SelectionEvent e)
-            {
-				fCompletionInsertsRadioButton.getSelection();
-			}
-		};
-
-		fCompletionInsertsRadioButton= new Button(completionComposite, SWT.RADIO | SWT.LEFT);
-		fCompletionInsertsRadioButton.setText(PreferencesMessages.completionInserts);
-		fCompletionInsertsRadioButton.setLayoutData(new GridData());
-		fCompletionInsertsRadioButton.addSelectionListener(completionSelectionListener);
-
-		fCompletionOverwritesRadioButton= new Button(completionComposite, SWT.RADIO | SWT.LEFT);
-		fCompletionOverwritesRadioButton.setText(PreferencesMessages.completionOverwrites);
-		fCompletionOverwritesRadioButton.setLayoutData(new GridData());
-		fCompletionOverwritesRadioButton.addSelectionListener(completionSelectionListener);
-	}
-
-	/**
-	 * Computes the state mask for the given modifier string.
-	 *
-	 * @param modifiers	the string with the modifiers, separated by '+', '-', ';', ',' or '.'
-	 * @return the state mask or -1 if the input is invalid
-	 */
-	private int computeStateMask(String modifiers) {
-		if (modifiers == null)
-			return -1;
-
-		if (modifiers.length() == 0)
-			return SWT.NONE;
-
-		int stateMask= 0;
-		StringTokenizer modifierTokenizer= new StringTokenizer(modifiers, ",;.:+-* ");
-		while (modifierTokenizer.hasMoreTokens()) {
-			int modifier= Action.findModifier(modifierTokenizer.nextToken());
-			if (modifier == 0 || (stateMask & modifier) == modifier)
-				return -1;
-			stateMask= stateMask | modifier;
-		}
-		return stateMask;
-	}
-
 	/*
-	 * @see PreferencePage#createContents(Composite)
-	 */
+     * @see PreferencePage#createContents(Composite)
+     */
 	protected Control createContents(Composite parent) {
-
-		initializeDefaultColors();
 
 		fOverlayStore.load();
 		fOverlayStore.start();
@@ -857,11 +548,6 @@ public class PerlEditorPreferencePage extends PreferencePage implements IWorkben
 		item= new TabItem(folder, SWT.NONE);
 		item.setText(PreferencesMessages.colors);
 		item.setControl(createSyntaxPage(folder));
-
-
-		item= new TabItem(folder, SWT.NONE);
-		item.setText(PreferencesMessages.annotationsTabTitle);
-		item.setControl(createAnnotationsPage(folder));
 
 		item= new TabItem(folder, SWT.NONE);
 		item.setText(PreferencesMessages.typingTabTitle);
@@ -898,18 +584,6 @@ public class PerlEditorPreferencePage extends PreferencePage implements IWorkben
 				}
 			}
 		});
-
-		for (int i= 0; i < fAnnotationColorListModel.length; i++)
-			fAnnotationList.add(fAnnotationColorListModel[i][0]);
-		fAnnotationList.getDisplay().asyncExec(new Runnable() {
-			public void run() {
-				if (fAnnotationList != null && !fAnnotationList.isDisposed()) {
-					fAnnotationList.select(0);
-					handleAnnotationListSelection();
-				}
-			}
-		});
-
 	}
 
 	private void initializeFields() {
@@ -935,34 +609,11 @@ public class PerlEditorPreferencePage extends PreferencePage implements IWorkben
 			String key= (String) fTextFields.get(t);
 			t.setText(fOverlayStore.getString(key));
 		}
-
-		RGB rgb= PreferenceConverter.getColor(fOverlayStore, PreferenceConstants.EDITOR_BACKGROUND_COLOR);
-		fBackgroundColorEditor.setColorValue(rgb);
-
-		boolean default_= fOverlayStore.getBoolean(PreferenceConstants.EDITOR_BACKGROUND_DEFAULT_COLOR);
-		fBackgroundDefaultRadioButton.setSelection(default_);
-		fBackgroundCustomRadioButton.setSelection(!default_);
-		fBackgroundColorButton.setEnabled(!default_);
-
-
-	}
-
-	private void initializeDefaultColors() {
-		if (!getPreferenceStore().contains(PreferenceConstants.EDITOR_BACKGROUND_COLOR)) {
-			RGB rgb= getControl().getDisplay().getSystemColor(SWT.COLOR_LIST_BACKGROUND).getRGB();
-			PreferenceConverter.setDefault(fOverlayStore, PreferenceConstants.EDITOR_BACKGROUND_COLOR, rgb);
-			PreferenceConverter.setDefault(getPreferenceStore(), PreferenceConstants.EDITOR_BACKGROUND_COLOR, rgb);
-		}
-		if (!getPreferenceStore().contains(PreferenceConstants.EDITOR_FOREGROUND_COLOR)) {
-			RGB rgb= getControl().getDisplay().getSystemColor(SWT.COLOR_LIST_FOREGROUND).getRGB();
-			PreferenceConverter.setDefault(fOverlayStore, PreferenceConstants.EDITOR_FOREGROUND_COLOR, rgb);
-			PreferenceConverter.setDefault(getPreferenceStore(), PreferenceConstants.EDITOR_FOREGROUND_COLOR, rgb);
-		}
 	}
 
 	/*
-	 * @see PreferencePage#performOk()
-	 */
+     * @see PreferencePage#performOk()
+     */
 	public boolean performOk() {
 		fOverlayStore.propagate();
 		PerlEditorPlugin.getDefault().savePluginPreferences();
@@ -971,8 +622,8 @@ public class PerlEditorPreferencePage extends PreferencePage implements IWorkben
 	}
 
 	/*
-	 * @see PreferencePage#performDefaults()
-	 */
+     * @see PreferencePage#performDefaults()
+     */
 	protected void performDefaults() {
 
 		fOverlayStore.loadDefaults();
@@ -981,7 +632,6 @@ public class PerlEditorPreferencePage extends PreferencePage implements IWorkben
 
 		handleSyntaxColorListSelection();
 		handleAppearanceColorListSelection();
-		handleAnnotationListSelection();
 
 		super.performDefaults();
 
@@ -989,8 +639,8 @@ public class PerlEditorPreferencePage extends PreferencePage implements IWorkben
 	}
 
 	/*
-	 * @see DialogPage#dispose()
-	 */
+     * @see DialogPage#dispose()
+     */
 	public void dispose() {
 
 		if (fOverlayStore != null) {
@@ -1031,11 +681,11 @@ public class PerlEditorPreferencePage extends PreferencePage implements IWorkben
 	}
 
 	/**
-	 * Returns an array of size 2:
-	 *  - first element is of type <code>Label</code>
-	 *  - second element is of type <code>Text</code>
-	 * Use <code>getLabelControl</code> and <code>getTextControl</code> to get the 2 controls.
-	 */
+     * Returns an array of size 2: - first element is of type <code>Label</code> -
+     * second element is of type <code>Text</code> Use
+     * <code>getLabelControl</code> and <code>getTextControl</code> to get
+     * the 2 controls.
+     */
 	private Control[] addLabelledTextField(Composite composite, String label, String key, int textLimit, int indentation, boolean isNumber) {
 		Label labelControl= new Label(composite, SWT.NONE);
 		labelControl.setText(label);
@@ -1071,7 +721,7 @@ public class PerlEditorPreferencePage extends PreferencePage implements IWorkben
 				buffer.append(separator);
 			}
 		} catch (IOException io) {
-			///PerlEditorPlugin.log(io);
+			// /PerlEditorPlugin.log(io);
 		} finally {
 			if (reader != null) {
 				try { reader.close(); } catch (IOException e) {}

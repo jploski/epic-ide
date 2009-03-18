@@ -46,31 +46,7 @@ public class PreferencesMessages extends NLS
 
     public static String invalidColor;
 
-    public static String lineNumberForegroundColor;
-
-    public static String currentLineHighlighColor;
-
-    public static String printMarginColor2;
-
-    public static String errors;
-
-    public static String warnings;
-
-    public static String tasks;
-
-    public static String searchResults;
-
-    public static String bookmarks;
-
-    public static String others;
-
     public static String description;
-
-    public static String backgroundColor;
-
-    public static String systemDefault;
-
-    public static String custom;
 
     public static String foreground;
 
@@ -84,25 +60,11 @@ public class PreferencesMessages extends NLS
 
     public static String spacesInsteadOfTabs;
 
-    public static String showLineNumbers;
-
-    public static String showPrintMargin;
-
-    public static String printMarginColumn;
-
     public static String insertTabsOnIndent;
 
     public static String displayedTabWidth;
 
-    public static String highlightCurrentLine;
-
     public static String appearanceOptions;
-
-    public static String presentationOptions;
-
-    public static String showInText;
-
-    public static String showInOverviewRuler;
 
     public static String autoCompletion;
 
@@ -122,15 +84,9 @@ public class PreferencesMessages extends NLS
 
     public static String subWordNavigation;
 
-    public static String completionInserts;
-
-    public static String completionOverwrites;
-
     public static String general;
 
     public static String colors;
-
-    public static String annotationsTabTitle;
 
     public static String typingTabTitle;
 
@@ -145,4 +101,6 @@ public class PreferencesMessages extends NLS
     public static String initiallyFold;
     
     public static String wrapLines;
+
+    public static String foldColumnBackground;
 }

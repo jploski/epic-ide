@@ -17,8 +17,7 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.*;
-import org.eclipse.ui.editors.text.ILocationProvider;
-import org.eclipse.ui.editors.text.TextEditor;
+import org.eclipse.ui.editors.text.*;
 import org.eclipse.ui.internal.ViewerActionBuilder;
 import org.eclipse.ui.internal.Workbench;
 import org.eclipse.ui.texteditor.*;
@@ -49,7 +48,7 @@ public class PerlEditor extends TextEditor implements IPropertyChangeListener
     private TasksReconciler tasksReconciler;
     private PerlOutlinePage outlinePage;
     private PerlSyntaxValidationThread validationThread;
-    private ISourceViewer sourceViewer;
+    private PerlSourceViewer sourceViewer;
     private IdleTimer idleTimer;
     private ProjectionSupport projectionSupport;
     private SourceFile source;
@@ -593,6 +592,10 @@ public class PerlEditor extends TextEditor implements IPropertyChangeListener
                 if (newValue != oldValue)
                     sourceViewer.getTextWidget().setWordWrap(newValue);
             }
+            else if (event.getProperty().equals(PreferenceConstants.EDITOR_FOLD_COLUMN_BG_COLOR))
+            {
+                sourceViewer.updateFoldColumnBackgroundColor(true);
+            }
             else
             {
                 reconfigureBracketInserter();
@@ -611,8 +614,10 @@ public class PerlEditor extends TextEditor implements IPropertyChangeListener
         // Make general workbench editor preferences (such as QuickDiff)
         // available through our preference store
         setPreferenceStore(new ChainedPreferenceStore(new IPreferenceStore[] {
+            EditorsUI.getPreferenceStore(),
             PerlEditorPlugin.getDefault().getPreferenceStore(),
-            this.getPreferenceStore() }));
+            this.getPreferenceStore()       
+            }));
 
         setSourceViewerConfiguration(new PerlSourceViewerConfiguration(
             PerlEditorPlugin.getDefault().getPreferenceStore(), this));

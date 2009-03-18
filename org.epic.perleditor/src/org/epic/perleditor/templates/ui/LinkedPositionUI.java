@@ -5,49 +5,25 @@
 package org.epic.perleditor.templates.ui;
 
 //import net.sourceforge.phpdt.internal.ui.util.ExceptionHandler;
-import org.epic.perleditor.editors.PartitionTypes;
-import org.epic.perleditor.preferences.PreferenceConstants;
-import org.epic.perleditor.PerlEditorPlugin;
-
-//import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.PreferenceConverter;
-import org.eclipse.jface.text.BadLocationException;
-import org.eclipse.jface.text.BadPositionCategoryException;
-import org.eclipse.jface.text.DefaultPositionUpdater;
-import org.eclipse.jface.text.IDocument;
-import org.eclipse.jface.text.IPositionUpdater;
-import org.eclipse.jface.text.IRegion;
-import org.eclipse.jface.text.ITextInputListener;
-import org.eclipse.jface.text.ITextListener;
-import org.eclipse.jface.text.ITextViewer;
-import org.eclipse.jface.text.ITextViewerExtension;
-import org.eclipse.jface.text.ITextViewerExtension2;
-import org.eclipse.jface.text.ITextViewerExtension5;
-import org.eclipse.jface.text.Position;
+import org.eclipse.jface.text.*;
 import org.eclipse.jface.text.Region;
-import org.eclipse.jface.text.TextEvent;
+import org.eclipse.jface.util.*;
 import org.eclipse.jface.util.Assert;
-import org.eclipse.jface.util.IPropertyChangeListener;
-import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.custom.VerifyKeyListener;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
-import org.eclipse.swt.events.PaintEvent;
-import org.eclipse.swt.events.PaintListener;
-import org.eclipse.swt.events.ShellEvent;
-import org.eclipse.swt.events.ShellListener;
-import org.eclipse.swt.events.VerifyEvent;
-import org.eclipse.swt.events.VerifyListener;
-import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.GC;
-import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.graphics.RGB;
+import org.eclipse.swt.events.*;
+import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.editors.text.EditorsUI;
+import org.eclipse.ui.texteditor.ChainedPreferenceStore;
+import org.epic.perleditor.PerlEditorPlugin;
+import org.epic.perleditor.editors.PartitionTypes;
+import org.epic.perleditor.preferences.PreferenceConstants;
 
 /**
  * A user interface for <code>LinkedPositionManager</code>, using <code>ITextViewer</code>.
@@ -83,7 +59,10 @@ public class LinkedPositionUI implements LinkedPositionListener,
 
 	private static final String CARET_POSITION= "LinkedPositionUI.caret.position"; //$NON-NLS-1$
 	private static final IPositionUpdater fgUpdater= new DefaultPositionUpdater(CARET_POSITION);
-	private static final IPreferenceStore fgStore= PerlEditorPlugin.getDefault().getPreferenceStore();
+	private static final IPreferenceStore fgStore= new ChainedPreferenceStore(new IPreferenceStore[] {
+        EditorsUI.getPreferenceStore(),
+        PerlEditorPlugin.getDefault().getPreferenceStore(),
+    });
 	
 	private final ITextViewer fViewer;
 	private final LinkedPositionManager fManager;	

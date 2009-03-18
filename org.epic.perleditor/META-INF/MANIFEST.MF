@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Perl Editor Plug-in
 Bundle-SymbolicName: org.epic.perleditor; singleton:=true
-Bundle-Version: 0.6.21
+Bundle-Version: 0.6.22
 Bundle-Activator: org.epic.perleditor.PerlEditorPlugin
 Bundle-Vendor: EPIC Project
 Bundle-Localization: plugin

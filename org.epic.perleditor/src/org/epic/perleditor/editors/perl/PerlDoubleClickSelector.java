@@ -125,13 +125,17 @@ public class PerlDoubleClickSelector implements ITextDoubleClickStrategy
         {
             int pos = fPos;
             char c;
+            boolean varPrefix = false;
 
             while (pos >= 0)
             {
                 c = doc.getChar(pos);
-                if (!Character.isJavaIdentifierPart(c) && (c != '@')
-                    && (c != '%'))
-                    break;
+                if (!varPrefix)
+                {
+                    if (c == '@' || c == '%' || c == '$') varPrefix = true;
+                    else if (!Character.isJavaIdentifierPart(c)) break;                    
+                }
+                else if (c != '@' && c != '%' && c != '$') break;
                 --pos;
             }
 

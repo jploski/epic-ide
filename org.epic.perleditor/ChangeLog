@@ -2,6 +2,7 @@ Eclipse Perl Integration:
 
 CVS
 		Debugger:
+		* Fixed Bug [ 2617018 ] Breakpoints view sorting
 
 		Editor:
 		* Fixed Bug [ 2694463 ] Templates don't work anymore in 0.6.32

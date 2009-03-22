@@ -2,7 +2,13 @@ Eclipse Perl Integration:
 
 CVS
 		Debugger:
+
+		Editor:
+
+Version 0.6.33 - 22-Mar-2009
+		Debugger:
 		* Fixed Bug [ 2617018 ] Breakpoints view sorting
+		* Fixed Bug [ 2703403 ] Show options remain disabled in Variables view
 
 		Editor:
 		* Fixed Bug [ 2694463 ] Templates don't work anymore in 0.6.32

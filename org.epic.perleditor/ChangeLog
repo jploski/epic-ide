@@ -4,6 +4,7 @@ CVS
 		Debugger:
 
 		Editor:
+		* Fixed Bug [ 2694463 ] Templates don't work anymore in 0.6.32
 
 Version 0.6.32 - 18-Mar-2009
 		Debugger:

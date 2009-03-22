@@ -356,6 +356,7 @@ public class PreferenceConstants
     private static final Object[] DEFAULT_COLORS = {
         EDITOR_MATCHING_BRACKETS_COLOR, new RGB(192, 192, 192),
         EDITOR_FOLD_COLUMN_BG_COLOR, EDITOR_FOLD_COLUMN_BG_COLOR_DEFAULT,
+        EDITOR_LINKED_POSITION_COLOR, new RGB(0, 200, 100),
         
         EDITOR_STRING_COLOR, new RGB(0, 0, 0),
         EDITOR_KEYWORD1_COLOR, new RGB(160, 32, 240),

@@ -7,6 +7,7 @@ CVS
 		Editor:
 		* Fixed Bug [ 2694463 ] Templates don't work anymore in 0.6.32
 		* Fixed Bug [ 2617016 ] Editor fails highlight. double-click.
+		* Fixed Bug [ 2612813 ] Editor fails highlight. Binary operators.
 
 Version 0.6.32 - 18-Mar-2009
 		Debugger:

@@ -402,8 +402,8 @@ protected OPEN_HEREDOC
 		=> "<<" (WS!)? "'"! ("\\'"  | ~('\'' | '\n' | '\r' | '\uFFFF'))*
 		| ("<<" (WS)? '`')
 		=> "<<" (WS!)? '`'! ("\\`"  | ~('`' | '\n' | '\r' | '\uFFFF'))*
-		| ("<<" (WS)? WORD_CHAR)
-		=> "<<" (WORD_CHAR)+
+		| ("<<" (WS)? ('A'..'Z'|'a'..'z'|'_'))
+		=> "<<" ('A'..'Z'|'a'..'z'|'_')+
 	)
 	(NOT_NEWLINE!)*
 	{ if (LA(1) != EOF_CHAR) getParent().expectHereDocEnd($getText); }

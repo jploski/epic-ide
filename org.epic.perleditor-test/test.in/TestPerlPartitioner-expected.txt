@@ -932,3 +932,17 @@ EOT
 2473:1:__dftl_partition_content_type:{ }
 2474:6:VARIABLE:{@array}
 2480:1:OPERATOR:{;}
+2481:2:__dftl_partition_content_type:{
+
+}
+2483:13:COMMENT:{# bug 2612813}
+2496:1:__dftl_partition_content_type:{
+}
+2497:2:VARIABLE:{$x}
+2499:1:__dftl_partition_content_type:{ }
+2500:1:OPERATOR:{=}
+2501:1:__dftl_partition_content_type:{ }
+2502:2:VARIABLE:{$a}
+2504:2:OPERATOR:{<<}
+2506:2:NUMBER:{24}
+2508:1:OPERATOR:{;}

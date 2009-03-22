@@ -126,3 +126,6 @@ grep /A|B/, 'A', 'B', 'C';
 
 # bug 2537700
 grep !/foo/, @array;
+
+# bug 2612813
+$x = $a<<24;

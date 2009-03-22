@@ -5,7 +5,8 @@ import org.epic.perleditor.preferences.PreferenceConstants;
 
 public class ShowGlobalVariableActionDelegate extends VariablesViewActionDelegate
 {
-    private static String KEY = PreferenceConstants.DEBUG_SHOW_GLOBAL_VARS;
+    public static String ACTION_ID = "org.epic.debug.showGlobalVariablesAction";
+    public static String KEY = PreferenceConstants.DEBUG_SHOW_GLOBAL_VARS;
     private static IAction action;
 
     public void init(IAction action)

@@ -17,6 +17,7 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.epic.core.util.PerlExecutableUtilities;
 import org.epic.core.util.PerlExecutor;
 import org.epic.debug.ui.PerlImageDescriptorRegistry;
+import org.epic.debug.ui.action.VariablesViewActionDelegate;
 import org.epic.debug.util.*;
 import org.epic.perleditor.PerlEditorPlugin;
 import org.epic.perleditor.preferences.PreferenceConstants;
@@ -445,6 +446,12 @@ public class PerlDebugPlugin extends AbstractUIPlugin
                 new File(getStateLocation() + File.separator + ".log"),
                 mLogLevel));
         getLog().addLogListener(new LogWriter(System.err, mScreenLogLevel));
+
+        // The enablement of the "Show xxx variables" actions in the Variables
+        // view depends on our pluginState. Unfortunately, for some reason
+        // they do not become automatically enabled after the plug-in is loaded.
+        // So we enable them here as a workaround...
+        VariablesViewActionDelegate.enableVariablesViewActions();
     }
 
     private static String getPerlDebugEnv(int debugPort)

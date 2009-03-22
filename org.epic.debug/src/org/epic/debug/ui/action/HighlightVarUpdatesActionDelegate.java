@@ -5,7 +5,9 @@ import org.epic.perleditor.preferences.PreferenceConstants;
 
 public class HighlightVarUpdatesActionDelegate extends VariablesViewActionDelegate
 {
-    private static String KEY = PreferenceConstants.DEBUG_HIGHLIGHT_UPDATED_VARS;
+    public static String ACTION_ID = "org.epic.debug.highlightVarUpdatesAction";
+    public static String KEY = PreferenceConstants.DEBUG_HIGHLIGHT_UPDATED_VARS;
+
     private static IAction action;
 
     public void init(IAction action)

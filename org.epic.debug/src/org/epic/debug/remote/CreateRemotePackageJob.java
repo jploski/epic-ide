@@ -153,7 +153,7 @@ public class CreateRemotePackageJob extends Job
             String startDB = "$ENV{PERLDB_OPTS}=\"RemotePort="
                 + launchDelegate.getEpicDebuggerIP(launch) + ":" 
                 + launchDelegate.getEpicDebuggerPort(launch)
-                + " DumpReused ReadLine=0\";\n" + "if( ! -d \""
+                + " DumpReused ReadLine=0 PrintRet=0\";\n" + "if( ! -d \""
                 + launchDelegate.getRemoteProjectDir(launch)
                 + "\" ) {die(\"Target directory does not exist!\")};\n"
                 + "chdir(\"" + launchDelegate.getRemoteProjectDir(launch) + "/"

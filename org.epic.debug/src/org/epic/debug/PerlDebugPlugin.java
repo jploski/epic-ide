@@ -43,7 +43,7 @@ public class PerlDebugPlugin extends AbstractUIPlugin
 
     private final static String mDebugOptionsEnvPrefix = "PERLDB_OPTS=RemotePort=";
 
-    private final static String mDebugOptionsValue = "DumpReused ReadLine=0";
+    private final static String mDebugOptionsValue = "DumpReused ReadLine=0 PrintRet=0";
 
     /**
      * This little piece of magic makes perl5db.pl compatible with

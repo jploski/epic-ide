@@ -5,6 +5,10 @@ CVS
 
 		Editor:
 
+Version 0.6.34 - 27-Apr-2009
+		Debugger:
+		* Fixed Bug [ 2782469 ] Step Return very slow, ends up in overload.pm
+
 Version 0.6.33 - 22-Mar-2009
 		Debugger:
 		* Fixed Bug [ 2617018 ] Breakpoints view sorting

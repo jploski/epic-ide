@@ -64,20 +64,20 @@
 			<param name="os" value="*"/>
 			<param name="feature.base" value="${feature.temp.folder}"/>
 		</antcall>
-		<jar destfile="${feature.destination}/org.epic.feature.main_0.6.33.jar" basedir="${feature.temp.folder}/features/org.epic.feature.main_0.6.33"/>
+		<jar destfile="${feature.destination}/org.epic.feature.main_0.6.34.jar" basedir="${feature.temp.folder}/features/org.epic.feature.main_0.6.34"/>
 		<delete dir="${feature.temp.folder}"/>
 	</target>
 
 	<target name="gather.bin.parts" depends="init" if="feature.base">
-		<mkdir dir="${feature.base}/features/org.epic.feature.main_0.6.33"/>
+		<mkdir dir="${feature.base}/features/org.epic.feature.main_0.6.34"/>
 		<antcall target="children">
 			<param name="destination.temp.folder" value="${feature.base}/plugins"/>
 			<param name="target" value="gather.bin.parts"/>
 		</antcall>
-		<copy todir="${feature.base}/features/org.epic.feature.main_0.6.33" failonerror="true" overwrite="false">
+		<copy todir="${feature.base}/features/org.epic.feature.main_0.6.34" failonerror="true" overwrite="false">
 			<fileset dir="${basedir}" includes="feature.xml,icons/,license.html"			/>
 		</copy>
-		<eclipse.idReplacer featureFilePath="${feature.base}/features/org.epic.feature.main_0.6.33/feature.xml"  selfVersion="0.6.33" featureIds="" pluginIds="org.epic.regexp,0.6.1,org.epic.perleditor,0.6.15,org.epic.doc,0.6.1,org.epic.debug,0.6.16,org.epic.lib,0.6.0,org.epic.source,0.6.22,"/>
+		<eclipse.idReplacer featureFilePath="${feature.base}/features/org.epic.feature.main_0.6.34/feature.xml"  selfVersion="0.6.34" featureIds="" pluginIds="org.epic.regexp,0.6.1,org.epic.perleditor,0.6.15,org.epic.doc,0.6.1,org.epic.debug,0.6.16,org.epic.lib,0.6.0,org.epic.source,0.6.22,"/>
 		<antcall target="rootFiles${os}_${ws}_${arch}"/>
 	</target>
 	<target name="rootFiles*_*_*">
@@ -97,7 +97,7 @@
 			<param name="feature.base" value="${feature.temp.folder}"/>
 			<param name="os" value="*"/>
 		</antcall>
-		<zip destfile="${feature.destination}/org.epic.feature.main_0.6.33.bin.dist.zip" basedir="${feature.temp.folder}" filesonly="false" whenempty="skip" update="false"/>
+		<zip destfile="${feature.destination}/org.epic.feature.main_0.6.34.bin.dist.zip" basedir="${feature.temp.folder}" filesonly="false" whenempty="skip" update="false"/>
 		<delete dir="${feature.temp.folder}"/>
 	</target>
 
@@ -105,11 +105,11 @@
 		<delete dir="${feature.temp.folder}"/>
 		<mkdir dir="${feature.temp.folder}"/>
 		<antcall target="all.children">
-			<param name="destination.temp.folder" value="${feature.temp.folder}/plugins/org.epic.feature.main.source_0.6.33/src"/>
+			<param name="destination.temp.folder" value="${feature.temp.folder}/plugins/org.epic.feature.main.source_0.6.34/src"/>
 			<param name="include.children" value="true"/>
 			<param name="target" value="gather.sources"/>
 		</antcall>
-		<zip destfile="${feature.destination}/org.epic.feature.main_0.6.33.src.zip" basedir="${feature.temp.folder}" filesonly="true" whenempty="skip" update="false"/>
+		<zip destfile="${feature.destination}/org.epic.feature.main_0.6.34.src.zip" basedir="${feature.temp.folder}" filesonly="true" whenempty="skip" update="false"/>
 		<delete dir="${feature.temp.folder}"/>
 	</target>
 
@@ -121,15 +121,15 @@
 			<param name="include.children" value="true"/>
 			<param name="target" value="gather.logs"/>
 		</antcall>
-		<zip destfile="${feature.destination}/org.epic.feature.main_0.6.33.log.zip" basedir="${feature.temp.folder}" filesonly="true" whenempty="skip" update="false"/>
+		<zip destfile="${feature.destination}/org.epic.feature.main_0.6.34.log.zip" basedir="${feature.temp.folder}" filesonly="true" whenempty="skip" update="false"/>
 		<delete dir="${feature.temp.folder}"/>
 	</target>
 
 	<target name="clean" depends="init" description="Clean the feature: org.epic.feature.main of all the zips, jars and logs created.">
-		<delete file="${feature.destination}/org.epic.feature.main_0.6.33.jar"/>
-		<delete file="${feature.destination}/org.epic.feature.main_0.6.33.bin.dist.zip"/>
-		<delete file="${feature.destination}/org.epic.feature.main_0.6.33.log.zip"/>
-		<delete file="${feature.destination}/org.epic.feature.main_0.6.33.src.zip"/>
+		<delete file="${feature.destination}/org.epic.feature.main_0.6.34.jar"/>
+		<delete file="${feature.destination}/org.epic.feature.main_0.6.34.bin.dist.zip"/>
+		<delete file="${feature.destination}/org.epic.feature.main_0.6.34.log.zip"/>
+		<delete file="${feature.destination}/org.epic.feature.main_0.6.34.src.zip"/>
 		<delete dir="${feature.temp.folder}"/>
 		<antcall target="all.children">
 			<param name="target" value="clean"/>
@@ -145,7 +145,7 @@
 	</target>
 	<target name="gather.sources">
 		<antcall target="children">
-			<param name="destination.temp.folder" value="${feature.temp.folder}/plugins/org.epic.feature.main.source_0.6.33/src"/>
+			<param name="destination.temp.folder" value="${feature.temp.folder}/plugins/org.epic.feature.main.source_0.6.34/src"/>
 			<param name="target" value="gather.sources"/>
 		</antcall>
 	</target>

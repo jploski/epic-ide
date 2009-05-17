@@ -75,9 +75,9 @@
 			<param name="target" value="gather.bin.parts"/>
 		</antcall>
 		<copy todir="${feature.base}/features/org.epic.feature.main_0.6.34" failonerror="true" overwrite="false">
-			<fileset dir="${basedir}" includes="feature.xml,icons/,license.html"			/>
+			<fileset dir="${basedir}" includes="feature.xml,icons/,license.html,feature.properties"			/>
 		</copy>
-		<eclipse.idReplacer featureFilePath="${feature.base}/features/org.epic.feature.main_0.6.34/feature.xml"  selfVersion="0.6.34" featureIds="" pluginIds="org.epic.regexp,0.6.1,org.epic.perleditor,0.6.15,org.epic.doc,0.6.1,org.epic.debug,0.6.16,org.epic.lib,0.6.0,org.epic.source,0.6.22,"/>
+		<eclipse.idReplacer featureFilePath="${feature.base}/features/org.epic.feature.main_0.6.34/feature.xml"  selfVersion="0.6.34" featureIds="" pluginIds="org.epic.regexp,0.6.1,org.epic.perleditor,0.6.23,org.epic.doc,0.6.2,org.epic.debug,0.6.27,org.epic.lib,0.6.1,org.epic.source,0.6.34,"/>
 		<antcall target="rootFiles${os}_${ws}_${arch}"/>
 	</target>
 	<target name="rootFiles*_*_*">

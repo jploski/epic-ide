@@ -241,7 +241,7 @@ public class SourceFile
         private void updateBlockLevel()
         {
             if (type == PerlTokenTypes.OPEN_CURLY) blockLevel++;
-            else if (type == PerlTokenTypes.CLOSE_CURLY)
+            else if (type == PerlTokenTypes.CLOSE_CURLY && blockLevel > 0)
             {
                 closeSub();
                 closePackage();

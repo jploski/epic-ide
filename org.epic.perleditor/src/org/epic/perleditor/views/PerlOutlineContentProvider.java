@@ -1,10 +1,9 @@
 package org.epic.perleditor.views;
 
 import java.util.*;
-import java.util.Iterator;
-import java.util.List;
 
 import org.eclipse.jface.viewers.*;
+import org.eclipse.swt.SWTException;
 import org.epic.core.model.*;
 import org.epic.core.model.Package;
 
@@ -175,8 +174,18 @@ public class PerlOutlineContentProvider implements ITreeContentProvider
      */
     private void updateViewer()
     {
-        viewer.refresh();
-        viewer.expandToLevel(3);
+        try
+        {
+            viewer.refresh();
+            viewer.expandToLevel(3);
+        }
+        catch (SWTException e)
+        {
+            // Fault tolerance/workaround for bug 1874581:
+            viewer.getTree().removeAll();
+            viewer.refresh();
+            viewer.expandToLevel(3);
+        }
     }
     
     public static class PackageElem

@@ -74,6 +74,7 @@ public class Perspective implements IPerspectiveFactory {
 
 		layout.addActionSet(IPageLayout.ID_NAVIGATE_ACTION_SET);
 		layout.addActionSet(IDebugUIConstants.LAUNCH_ACTION_SET);
+        layout.addActionSet(IDebugUIConstants.PLUGIN_ID + ".breakpointActionSet");
 	}
 
 	/**

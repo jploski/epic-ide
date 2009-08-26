@@ -189,6 +189,12 @@ See build.properties for more information.
 			<replacetoken><![CDATA[<?xml version="1.0" encoding="utf-8"?>]]></replacetoken>
 			<replacevalue></replacevalue>
 		</replace>
+		<replace dir="temp">
+			<include name="*.php"/>
+			<replacetoken><![CDATA[<head>]]></replacetoken>
+			<replacevalue><![CDATA[<head><meta http-equiv="Content-Type" content="text/html;
+				charset=utf-8" />]]></replacevalue>
+		</replace>
 		<delete dir="../../org.epic.website/htdocs/guide"/>
 		<mkdir dir="../../org.epic.website/htdocs/guide"/>
 		<copy todir="../../org.epic.website/htdocs/guide">

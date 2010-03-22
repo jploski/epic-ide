@@ -91,10 +91,22 @@ public class SourceCritic extends ScriptExecutor
             additionalOptions.add("-profile");
             additionalOptions.add(rc.getRawLocation().toOSString());
         }
+        
+        String severity = PerlCriticPreferencePage.getSeverity();
+        if(!severity.equals("default")) 
+        {
+        	additionalOptions.add("--" + severity);
+        }
 
         additionalOptions.add("-verbose");
         additionalOptions.add("%f~|~%s~|~%l~|~%c~|~%m~|~%e" + getSystemLineSeparator());
-
+        
+        String otherOptions = PerlCriticPreferencePage.getOtherOptions();
+        if(otherOptions.length() > 0)
+        {
+        	additionalOptions.add(otherOptions);
+        }
+        
         return additionalOptions;
     }
 

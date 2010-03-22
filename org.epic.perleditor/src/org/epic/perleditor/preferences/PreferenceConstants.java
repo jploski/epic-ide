@@ -345,6 +345,11 @@ public class PreferenceConstants
 
     public static final String SOURCE_CRITIC_SEVERITY_LEVEL = "sourceCriticLevel"; //$NON-NLS-1$
 
+	public static final String SOURCE_CRITIC_SEVERITY = "sourceCriticSeverity"; //$NON-NLS-1$
+
+	public static final String SOURCE_CRITIC_OTHEROPTIONS = "sourceCriticOtherOptions"; //$NON-NLS-1$
+
+    
     public static final String MODULE_STARTER_ENABLED = "moduleStarterEnabled"; //$NON-NLS-1$
     public static final String MODULE_STARTER_DEFAULT_LOCATION = "moduleStarterDefaultLocation"; //$NON-NLS-1$
     public static final String MODULE_STARTER_LOCATION = "moduleStarterLocation"; //$NON-NLS-1$

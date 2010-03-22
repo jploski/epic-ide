@@ -14,6 +14,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Text;
 
 import org.eclipse.ui.IWorkbench;
@@ -52,6 +53,10 @@ public class PerlCriticPreferencePage extends PreferencePage implements IWorkben
 
     private Button useDefaultButton;
 
+	private Combo severityOptions;
+
+	private Text otherOptions;
+
     //~ Methods
 
     public static int getMarkerSeverity(int severity)
@@ -89,6 +94,17 @@ public class PerlCriticPreferencePage extends PreferencePage implements IWorkben
         return PerlEditorPlugin.getDefault().getPreferenceStore().getBoolean(
             PreferenceConstants.SOURCE_CRITIC_ENABLED);
     }
+    
+    public static String getSeverity()
+    {
+    	 return PerlEditorPlugin.getDefault().getPreferenceStore().getString(
+                 PreferenceConstants.SOURCE_CRITIC_SEVERITY);
+    }
+    
+    public static String getOtherOptions() {
+    	 return PerlEditorPlugin.getDefault().getPreferenceStore().getString(
+                 PreferenceConstants.SOURCE_CRITIC_OTHEROPTIONS);
+    }
 
     /*
      * @see org.eclipse.ui.IWorkbenchPreferencePage#init(org.eclipse.ui.IWorkbench)
@@ -115,6 +131,9 @@ public class PerlCriticPreferencePage extends PreferencePage implements IWorkben
             String prefName = PreferenceConstants.SOURCE_CRITIC_SEVERITY_LEVEL + (i + 1);
             storeString(prefName, comboButtons[i].getText());
         }
+        
+        storeString(PreferenceConstants.SOURCE_CRITIC_SEVERITY, severityOptions.getText());
+        storeString(PreferenceConstants.SOURCE_CRITIC_OTHEROPTIONS, otherOptions.getText());
 
         return super.performOk();
     }
@@ -182,6 +201,18 @@ public class PerlCriticPreferencePage extends PreferencePage implements IWorkben
             comboButtons[i] = new Combo(c, SWT.READ_ONLY);
             comboButtons[i].setItems(LEVELS);
         }
+        
+        Composite runOptionGroup = WidgetUtils.createGroup(composite, GridData.FILL_HORIZONTAL); 
+        ((Group)runOptionGroup).setText("Run Options");
+        
+        Composite runOptionContent = WidgetUtils.createComposite(runOptionGroup, 2);
+        
+        WidgetUtils.createLabel(runOptionContent, "Severity");
+        severityOptions = new Combo(runOptionContent, SWT.READ_ONLY);
+        severityOptions.setItems(new String[] {"default", "gentle", "stern", "harsh", "cruel", "brutal"});
+        
+        WidgetUtils.createLabel(runOptionContent, "Other options");
+        otherOptions = WidgetUtils.createText(runOptionContent, "");
 
         loadPreferences();
         toggleCriticEnabled(enabledButton.getSelection());
@@ -262,6 +293,9 @@ public class PerlCriticPreferencePage extends PreferencePage implements IWorkben
                 loadString(PreferenceConstants.SOURCE_CRITIC_SEVERITY_LEVEL + (i + 1), "Warning");
             comboButtons[i].setText(text);
         }
+        
+        severityOptions.setText(loadString(PreferenceConstants.SOURCE_CRITIC_SEVERITY, "default"));
+        otherOptions.setText(loadString(PreferenceConstants.SOURCE_CRITIC_OTHEROPTIONS, ""));
     }
 
     private String loadString(String name, String backup)
@@ -286,7 +320,9 @@ public class PerlCriticPreferencePage extends PreferencePage implements IWorkben
 
         useDefaultButton.setEnabled(enabled);
         useCustomButton.setEnabled(enabled);
-
+        otherOptions.setEnabled(enabled);
+        severityOptions.setEnabled(enabled);
+        
         customText.setEnabled((enabled && ! useDefaultButton.getSelection()));
 
         for (int i = 0; i < comboButtons.length; i++)

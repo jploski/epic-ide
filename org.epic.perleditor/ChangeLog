@@ -5,6 +5,7 @@ CVS
 
 		Editor:
 		* Fixed Bug [ 2818300 ] Editor toggle breakpoint action not set up
+		* Applied Patch [ 2974383 ] Adds severity and other options for running Perl::Critic
 
 Version 0.6.35 - 21-May-2009
 		Editor:

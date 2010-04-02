@@ -2,6 +2,11 @@ Eclipse Perl Integration:
 
 CVS
 		Debugger:
+
+		Editor:
+
+Version 0.6.36 - 02-Apr-2010
+		Debugger:
         * Added some automatic hints about a workaround for Bug [ 2907155 ]
 
 		Editor:

@@ -3,17 +3,37 @@ package org.epic.debug.local;
 import java.io.File;
 import java.io.IOException;
 import java.text.MessageFormat;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-import org.eclipse.core.resources.*;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.resources.IContainer;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.ILog;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.core.variables.VariablesPlugin;
-import org.eclipse.debug.core.*;
+import org.eclipse.debug.core.DebugPlugin;
+import org.eclipse.debug.core.ILaunch;
+import org.eclipse.debug.core.ILaunchConfiguration;
+import org.eclipse.debug.core.ILaunchManager;
 import org.eclipse.debug.core.model.IProcess;
+import org.eclipse.debug.internal.ui.DebugUIPlugin;
+import org.eclipse.debug.internal.ui.views.console.ProcessConsole;
 import org.eclipse.debug.ui.IDebugUIConstants;
+import org.eclipse.ui.console.IConsole;
 import org.epic.core.PerlCore;
 import org.epic.core.util.PerlExecutableUtilities;
-import org.epic.debug.*;
+import org.epic.debug.DebugTarget;
+import org.epic.debug.LaunchConfigurationDelegate;
+import org.epic.debug.PerlDebugPlugin;
+import org.epic.debug.PerlLaunchConfigurationConstants;
+import org.epic.debug.PerlTarget;
 import org.epic.debug.util.ExecutionArguments;
 import org.epic.debug.util.RemotePort;
 import org.epic.perleditor.PerlEditorPlugin;
@@ -283,8 +303,7 @@ public class LocalLaunchConfigurationDelegate
 
         if (debugPort.waitForConnect(true) != RemotePort.WAIT_OK)
         {
-            PerlDebugPlugin.errorDialog(
-                "Timed out while waiting for Perl debugger connection");
+            PerlDebugPlugin.errorDialog(getTimeoutErrorMessage(process));
             launch.terminate();
             return null;
         }
@@ -295,7 +314,29 @@ public class LocalLaunchConfigurationDelegate
         }
     }
     
-    private IProcess startPerlProcess(
+    /**
+     * Provides some troubleshooting hints in addition to the generic "timed out" message
+     * by examining additional error messages found in the console.
+     */
+    private String getTimeoutErrorMessage(IProcess process)
+    {
+    	IConsole console = DebugUIPlugin.getDefault().getProcessConsoleManager().getConsole(process);
+    	if (console instanceof ProcessConsole)
+    	{
+            String consoleContents = ((ProcessConsole) console).getDocument().get();
+            if (consoleContents.indexOf("Use of uninitialized value in subroutine dereference at (null) line 1.") != -1 &&
+                consoleContents.indexOf("perl5db.pl did not return a true value.") != -1)
+            {
+                return "Timed out while waiting for Perl debugger connection. " +
+                	"The most likely reason is a broken version of PathTools in your Perl installation. " + 
+                	"You can fix this problem manually by editing a single line in Cwd.pm, as suggested " + 
+                	"in EPIC bug report 2907155 at SourceForge.";
+            }
+    	}
+    	return "Timed out while waiting for Perl debugger connection.";
+	}
+
+	private IProcess startPerlProcess(
         ILaunch launch, String processName, int debugPort) throws CoreException
     {        
         String[] cmdParams = createCommandLine(launch);        

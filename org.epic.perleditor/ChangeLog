@@ -2,6 +2,7 @@ Eclipse Perl Integration:
 
 CVS
 		Debugger:
+        * Added some automatic hints about a workaround for Bug [ 2907155 ]
 
 		Editor:
 		* Fixed Bug [ 2818300 ] Editor toggle breakpoint action not set up

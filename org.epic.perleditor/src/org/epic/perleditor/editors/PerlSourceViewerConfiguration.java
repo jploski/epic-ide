@@ -10,6 +10,7 @@ import org.eclipse.jface.text.reconciler.IReconciler;
 import org.eclipse.jface.text.reconciler.MonoReconciler;
 import org.eclipse.jface.text.source.*;
 import org.eclipse.swt.graphics.RGB;
+import org.eclipse.ui.texteditor.AbstractDecoratedTextEditorPreferenceConstants;
 import org.epic.perleditor.PerlEditorPlugin;
 import org.epic.perleditor.editors.perl.*;
 import org.epic.perleditor.editors.util.PreferenceUtil;
@@ -147,5 +148,14 @@ public class PerlSourceViewerConfiguration extends SourceViewerConfiguration
             PreferenceConstants.EDITOR_SYNTAX_VALIDATION_INTERVAL));
 
         return r;
+    }
+
+	public IUndoManager getUndoManager(ISourceViewer sourceViewer)
+	{
+        if (!prefs.contains(AbstractDecoratedTextEditorPreferenceConstants.EDITOR_UNDO_HISTORY_SIZE))
+            return super.getUndoManager(sourceViewer);
+
+        int undoHistorySize = prefs.getInt(AbstractDecoratedTextEditorPreferenceConstants.EDITOR_UNDO_HISTORY_SIZE);
+        return new TextViewerUndoManager(undoHistorySize);
     }
 }

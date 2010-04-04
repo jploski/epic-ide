@@ -619,8 +619,7 @@ public class PerlEditor extends TextEditor implements IPropertyChangeListener
             this.getPreferenceStore()       
             }));
 
-        setSourceViewerConfiguration(new PerlSourceViewerConfiguration(
-            PerlEditorPlugin.getDefault().getPreferenceStore(), this));
+        setSourceViewerConfiguration(new PerlSourceViewerConfiguration(getPreferenceStore(), this));
     }
 
     private void caretMoved()

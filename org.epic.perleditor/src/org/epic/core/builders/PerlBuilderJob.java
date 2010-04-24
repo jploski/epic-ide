@@ -115,6 +115,12 @@ class PerlBuilderJob extends Job
         {
             if (PerlValidator.instance().validate(resource))
             {
+            	// Run Perl::Critic after perl validator has run.
+            	PerlCriticBuilderHelper perlCriticHelper = PerlCriticBuilderHelper.instance();
+            	// check preconditions (perlcritic found and auto-run activated) 
+            	if (perlCriticHelper.isCriticAutoRunPreconditions()) {
+                	perlCriticHelper.buildResource(resource);
+            	}
                 validatedResources.add(resource);
                 markParentFoldersUpdated(resource);
             }

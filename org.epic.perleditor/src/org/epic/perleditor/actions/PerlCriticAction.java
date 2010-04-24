@@ -1,17 +1,15 @@
 package org.epic.perleditor.actions;
 
 import java.io.File;
-import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.core.resources.IResource;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.epic.core.ResourceMessages;
+import org.epic.core.builders.PerlCriticBuilderHelper;
 import org.epic.core.util.MarkerUtilities;
 import org.epic.perleditor.editors.PerlEditor;
 import org.epic.perleditor.editors.PerlEditorActionIds;
-import org.epic.perleditor.editors.util.SourceCritic;
-import org.epic.perleditor.editors.util.SourceCritic.Violation;
 import org.epic.perleditor.preferences.PerlCriticPreferencePage;
 
 
@@ -24,13 +22,14 @@ public class PerlCriticAction extends PerlUserJobAction
 {
     //~ Static fields/initializers
 
-    private static String METRICS_MARKER = "org.epic.perleditor.markers.critic";
+    private PerlCriticBuilderHelper perlCriticBuilderHelper;
 
     //~ Constructors
-
+    
     public PerlCriticAction(PerlEditor editor)
     {
         super(editor);
+        perlCriticBuilderHelper = PerlCriticBuilderHelper.instance();
     }
     
     //~ Methods
@@ -67,25 +66,7 @@ public class PerlCriticAction extends PerlUserJobAction
      */
     protected Map createMarkerAttributes(MarkerUtilities factory, Object violation)
     {
-        Map attributes = new HashMap();
-        Violation v = (Violation) violation;
-
-        /*
-         * XXX: including the violation as part of the message is only temporary
-         *
-         * future enhancements should have the pbp info displayed as part of the marker annotation, or
-         * inside some kind of view that can be spawned to explain the critic warning.
-         *
-         * inclusion of a link to safari would be useful as well, but that depends on missing
-         * Perl::Critic functionality
-         */
-        factory.setMessage(attributes, v.message + " (" + v.pbp + ")");
-        factory.setLineNumber(attributes, v.lineNumber);
-        factory.setSeverity(attributes, getSeverity(v.severity));
-
-        attributes.put("pbp", v.pbp);
-
-        return attributes;
+        return perlCriticBuilderHelper.createMarkerAttributes(factory, violation);
     }
 
     /*
@@ -93,7 +74,7 @@ public class PerlCriticAction extends PerlUserJobAction
      */
     protected Object[] doJob(IResource resource)
     {
-        return SourceCritic.critique(resource, getLog());
+        return perlCriticBuilderHelper.doJob(resource);
     }
 
     /*
@@ -110,7 +91,7 @@ public class PerlCriticAction extends PerlUserJobAction
      */
     protected String getMarker()
     {
-        return METRICS_MARKER;
+        return PerlCriticBuilderHelper.METRICS_MARKER;
     }
 
     /*
@@ -120,10 +101,4 @@ public class PerlCriticAction extends PerlUserJobAction
     {
         return PerlEditorActionIds.PERL_CRITIC;
     }
-
-    private int getSeverity(int severity)
-    {
-        return PerlCriticPreferencePage.getMarkerSeverity(severity);
-    }
-
 }

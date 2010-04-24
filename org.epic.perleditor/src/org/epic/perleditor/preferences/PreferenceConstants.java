@@ -339,6 +339,8 @@ public class PreferenceConstants
 
     public static final String SOURCE_CRITIC_ENABLED = "sourceCriticEnabled"; //$NON-NLS-1$
 
+    public static final String SOURCE_CRITIC_JOB_ENABLED = "sourceCriticJobEnabled"; //$NON-NLS-1$
+
     public static final String SOURCE_CRITIC_DEFAULT_LOCATION = "sourceCriticDefaultLocation"; //$NON-NLS-1$
 
     public static final String SOURCE_CRITIC_LOCATION = "sourceCriticLocation"; //$NON-NLS-1$
@@ -416,6 +418,7 @@ public class PreferenceConstants
         store.setDefault(PERLDOC_FOLDING, false);
         store.setDefault(SUBROUTINE_FOLDING, false);
         store.setDefault(SOURCE_CRITIC_ENABLED, false);
+        store.setDefault(SOURCE_CRITIC_JOB_ENABLED, false);
         store.setDefault(SOURCE_CRITIC_DEFAULT_LOCATION, true);
         store.setDefault(SOURCE_CRITIC_LOCATION, "");
         store.setDefault(AUTO_COMPLETION_QUOTE1, true);

@@ -1,6 +1,7 @@
 package org.epic.perleditor.preferences;
 
 import org.eclipse.core.resources.IMarker;
+import org.eclipse.core.runtime.Assert;
 
 import org.eclipse.jface.preference.PreferencePage;
 
@@ -48,6 +49,8 @@ public class PerlCriticPreferencePage extends PreferencePage implements IWorkben
 
     private Button enabledButton;
 
+    private Button jobEnabledButton;
+
     private List errors = new ArrayList(5);
     private Button useCustomButton;
 
@@ -61,7 +64,7 @@ public class PerlCriticPreferencePage extends PreferencePage implements IWorkben
 
     public static int getMarkerSeverity(int severity)
     {
-        assert (severity > 0) && (severity <= 5) : "unknown severity " + severity;
+        Assert.isTrue((severity > 0) && (severity <= 5));
 
         String prefName = PreferenceConstants.SOURCE_CRITIC_SEVERITY_LEVEL + severity;
         String level = PerlEditorPlugin.getDefault().getPreferenceStore().getString(prefName);
@@ -95,6 +98,12 @@ public class PerlCriticPreferencePage extends PreferencePage implements IWorkben
             PreferenceConstants.SOURCE_CRITIC_ENABLED);
     }
     
+    public static boolean isPerlCriticJobEnabled()
+    {
+        return PerlEditorPlugin.getDefault().getPreferenceStore().getBoolean(
+            PreferenceConstants.SOURCE_CRITIC_JOB_ENABLED);
+    }
+    
     public static String getSeverity()
     {
     	 return PerlEditorPlugin.getDefault().getPreferenceStore().getString(
@@ -120,6 +129,7 @@ public class PerlCriticPreferencePage extends PreferencePage implements IWorkben
     public boolean performOk()
     {
         storeBoolean(PreferenceConstants.SOURCE_CRITIC_ENABLED, enabledButton.getSelection());
+        storeBoolean(PreferenceConstants.SOURCE_CRITIC_JOB_ENABLED, jobEnabledButton.getSelection());
         storeBoolean(PreferenceConstants.SOURCE_CRITIC_DEFAULT_LOCATION,
             useDefaultButton.getSelection());
 
@@ -152,6 +162,15 @@ public class PerlCriticPreferencePage extends PreferencePage implements IWorkben
                 }
             });
 
+        jobEnabledButton = WidgetUtils.createButton(composite, "Run Critic automatically", SWT.CHECK | SWT.LEFT);
+        jobEnabledButton.addSelectionListener(new SelectionAdapter()
+            {
+                public void widgetSelected(SelectionEvent event)
+                {
+                    toggleCriticJobEnabled(jobEnabledButton.getSelection());
+                }
+            });
+        
         Composite locations = WidgetUtils.createGroup(composite, GridData.FILL_HORIZONTAL);
 
         useDefaultButton =
@@ -226,6 +245,7 @@ public class PerlCriticPreferencePage extends PreferencePage implements IWorkben
     protected void performDefaults()
     {
         enabledButton.setSelection(false);
+        jobEnabledButton.setSelection(false);
         useDefaultButton.setSelection(true);
         useCustomButton.setSelection(false);
 
@@ -279,6 +299,7 @@ public class PerlCriticPreferencePage extends PreferencePage implements IWorkben
     private void loadPreferences()
     {
         enabledButton.setSelection(loadBoolean(PreferenceConstants.SOURCE_CRITIC_ENABLED));
+        jobEnabledButton.setSelection(loadBoolean(PreferenceConstants.SOURCE_CRITIC_JOB_ENABLED));
 
         boolean useDefault = loadBoolean(PreferenceConstants.SOURCE_CRITIC_DEFAULT_LOCATION);
         useDefaultButton.setSelection(useDefault);
@@ -322,6 +343,7 @@ public class PerlCriticPreferencePage extends PreferencePage implements IWorkben
         useCustomButton.setEnabled(enabled);
         otherOptions.setEnabled(enabled);
         severityOptions.setEnabled(enabled);
+        jobEnabledButton.setEnabled(enabled);
         
         customText.setEnabled((enabled && ! useDefaultButton.getSelection()));
 
@@ -329,6 +351,11 @@ public class PerlCriticPreferencePage extends PreferencePage implements IWorkben
         {
             comboButtons[i].setEnabled(enabled);
         }
+    }
+
+    private void toggleCriticJobEnabled(boolean enabled)
+    {
+        System.setProperty(PreferenceConstants.SOURCE_CRITIC_JOB_ENABLED, Boolean.toString(enabled));
     }
 
     private void validateEnabled()

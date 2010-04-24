@@ -1,5 +1,6 @@
 package org.epic.perleditor.editors.util;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -78,15 +79,8 @@ public class SourceCritic extends ScriptExecutor
 
         // project specific critic config files
         IFile rc = resource.getProject().getFile(".perlcriticrc");
-        try
-        {
-            rc.refreshLocal(IResource.DEPTH_ZERO, null);
-        }
-        catch (CoreException e)
-        {
-            log(e.getStatus());
-        }
-        if (rc.exists())
+        File rcFile = new File(rc.getRawLocation().toOSString());
+        if (rcFile.exists())
         {
             additionalOptions.add("-profile");
             additionalOptions.add(rc.getRawLocation().toOSString());

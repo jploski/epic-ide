@@ -117,13 +117,13 @@ class PerlBuilderJob extends Job
             {
                 validatedResources.add(resource);
                 markParentFoldersUpdated(resource);
-            }
 
-            // Run Perl::Critic after perl validator has run.
-            PerlCriticBuilderHelper perlCriticHelper = PerlCriticBuilderHelper.instance();
-            // check preconditions (perlcritic found and auto-run activated) 
-            if (perlCriticHelper.isCriticAutoRunPreconditions())
-                perlCriticHelper.buildResource(resource);
+                // Run Perl::Critic after perl validator has run.
+                PerlCriticBuilderHelper perlCriticHelper = PerlCriticBuilderHelper.instance();
+                // check preconditions (perlcritic found and auto-run activated) 
+                if (perlCriticHelper.isCriticAutoRunPreconditions())
+                    perlCriticHelper.buildResource(resource);
+            }
         }
         catch (CoreException e)
         {

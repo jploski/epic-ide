@@ -8,11 +8,8 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.ILog;
-import org.eclipse.ui.IEditorDescriptor;
-import org.epic.core.Constants;
 import org.epic.core.util.ScriptExecutor;
 import org.epic.core.util.StatusFactory;
-import org.epic.perleditor.PerlEditorPlugin;
 import org.epic.perleditor.preferences.PerlCriticPreferencePage;
 
 
@@ -41,18 +38,6 @@ public class SourceCritic extends ScriptExecutor
     public static Violation[] critique(IResource resource, ILog log)
     {
         IFile file = (IFile) resource;
-        IEditorDescriptor defaultEditorDescriptor =
-			PerlEditorPlugin
-				.getDefault()
-				.getWorkbench()
-				.getEditorRegistry()
-				.getDefaultEditor(resource.getFullPath().toString());
-
-		if (defaultEditorDescriptor == null) return new Violation[0];
-
-		if (!defaultEditorDescriptor.getId().equals(Constants.PERL_EDITOR_ID)) {
-        	return new Violation[0];
-        }
         /*
          * it seems that Perl::Critic does not like receiving the editor input when invoked via the
          * perl executor (although it works fine from the command line outside of java land).

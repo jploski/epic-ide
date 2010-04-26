@@ -21,6 +21,7 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 
+import org.epic.core.builders.PerlCriticBuilderHelper;
 import org.epic.core.util.WidgetUtils;
 
 import org.epic.perleditor.PerlEditorPlugin;
@@ -145,6 +146,9 @@ public class PerlCriticPreferencePage extends PreferencePage implements IWorkben
         storeString(PreferenceConstants.SOURCE_CRITIC_SEVERITY, severityOptions.getText());
         storeString(PreferenceConstants.SOURCE_CRITIC_OTHEROPTIONS, otherOptions.getText());
 
+        // invalidate PerlCriticBuilderHelper to force update of settings
+        PerlCriticBuilderHelper.destroy();
+        
         return super.performOk();
     }
 

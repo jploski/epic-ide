@@ -27,7 +27,7 @@ public class PerlCriticBuilderHelper {
 	}
 	
 	private boolean checkCriticAutoRunPreconditions() {
-		return (isCriticResourcePreconditions() & PerlCriticPreferencePage.isPerlCriticJobEnabled());
+		return (isCriticResourcePreconditions() && PerlCriticPreferencePage.isPerlCriticJobEnabled());
 	}
 
 	private boolean checkCriticResourcePreconditions() {
@@ -51,6 +51,14 @@ public class PerlCriticBuilderHelper {
         if (instance == null) instance = new PerlCriticBuilderHelper();
         return instance;
     }
+
+    /**
+     * invalidates the PerlCricitBuilderHelper singleton
+     */
+    public synchronized static void destroy()
+    {
+        instance = null;
+    }
     
     /**
      * Attempts to validate a single Perl file, schedules label update
@@ -59,14 +67,10 @@ public class PerlCriticBuilderHelper {
     public void buildResource(IResource resource)
     {
     	
-    	final MarkerUtilities factory = new MarkerUtilities(PerlEditorPlugin.getDefault().getLog(), PerlEditorPlugin.getPluginId());
-        factory.deleteMarkers(resource, METRICS_MARKER);
-
-        /*
-         * this should be able to support multiple resources as well in the future - the
-         * loop would just need to include a check against the monitor for cancellation
-         */
         Object[] violations = doJob(resource);
+
+        final MarkerUtilities factory = new MarkerUtilities(PerlEditorPlugin.getDefault().getLog(), PerlEditorPlugin.getPluginId());
+        factory.deleteMarkers(resource, METRICS_MARKER);
 
         for (int i = 0; i < violations.length; i++)
         {

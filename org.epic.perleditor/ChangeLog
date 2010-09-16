@@ -5,6 +5,7 @@ CVS
 
 		Editor:
 		* Fixed Bug [ 2972523 ] Undo history size fixed at 25
+		* Fixed Bug [ 2931385 ] weird bracket autocompletion (Patch [ 3062529 ])
 
 Version 0.6.36 - 02-Apr-2010
 		Debugger:

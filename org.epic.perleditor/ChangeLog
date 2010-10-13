@@ -4,6 +4,11 @@ CVS
 		Debugger:
 
 		Editor:
+
+Version 0.6.37 - 13-Oct-2010
+		Debugger:
+
+		Editor:
 		* Fixed Bug [ 2972523 ] Undo history size fixed at 25
 		* Fixed Bug [ 2931385 ] weird bracket autocompletion (Patch [ 3062529 ])
 

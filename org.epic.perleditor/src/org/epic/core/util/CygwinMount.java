@@ -44,7 +44,7 @@ class CygwinMount
 
             // Select the user version if available -- otherwise system default
         	Pattern p = Pattern.compile("^([^ \t]+).*user|system", Pattern.MULTILINE);
-            Matcher m = p.matcher(executor.execute(cmd, "", wrkDir ).stdout);
+            Matcher m = p.matcher(executor.execute(cmd, "", wrkDir, null).stdout);
             
             if (m.find())
             {	// user setting provided

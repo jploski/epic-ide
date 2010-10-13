@@ -62,16 +62,17 @@ public class ProcessExecutor
     }
     
     /**
-     * Same as {@link #execute(String[], String, File)}, except the command-line
+     * Same as {@link #execute(String[], String, File, String)}, except the command-line
      * is provided as a List of Strings rather than an array. 
      */
-    public ProcessOutput execute(List commandLine, String input, File workingDir)
+    public ProcessOutput execute(List commandLine, String input, File workingDir, String charset)
         throws InterruptedException, IOException
     {
         return execute(
             (String[]) commandLine.toArray(new String[commandLine.size()]),
             input,
-            workingDir);
+            workingDir,
+            charset);
     }
     
     /**
@@ -83,6 +84,8 @@ public class ProcessExecutor
      * @param commandLine  path to the process and command line parameters
      * @param input        input to be passed to the process via stdin
      * @param workingDir   working directory in which to execute the process
+     * @param inputCharset name of the charset in which input should be encoded,
+     *                     overrides the charset configured through constructor
      * @return output provided by the process through stdour or stderr,
      *         depending on this ProcessExecutor's configuration
      * @exception java.lang.InterruptedException
@@ -91,7 +94,7 @@ public class ProcessExecutor
      *            if the process could not be started or communication problems
      *            were encountered 
      */
-    public ProcessOutput execute(String[] commandLine, String input, File workingDir)
+    public ProcessOutput execute(String[] commandLine, String input, File workingDir, String inputCharset)
         throws InterruptedException, IOException
     {
         if (disposed) throw new IllegalStateException("ProcessExecutor disposed");
@@ -121,7 +124,13 @@ public class ProcessExecutor
             Reader stdoutReader;
             Writer inputWriter;
             
-            if (charsetName != null)
+            if (inputCharset != null)
+            {
+                stderrReader = new InputStreamReader(procStderr, inputCharset);
+                stdoutReader = new InputStreamReader(procStdout, inputCharset);
+                inputWriter = new OutputStreamWriter(procStdin, inputCharset);
+            }
+            else if (charsetName != null)
             {
                 stderrReader = new InputStreamReader(procStderr, charsetName);
                 stdoutReader = new InputStreamReader(procStdout, charsetName);

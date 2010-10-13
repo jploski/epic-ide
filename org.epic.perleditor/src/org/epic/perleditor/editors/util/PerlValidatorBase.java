@@ -5,8 +5,7 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.eclipse.core.resources.IMarker;
-import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.*;
 import org.eclipse.core.runtime.*;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.Document;
@@ -181,7 +180,7 @@ abstract class PerlValidatorBase
      * @param path  file that should be read
      * @return text contents
      */
-    protected String readSourceFile(String path) throws IOException
+    protected String readSourceFile(String path, String charset) throws IOException
     {
         BufferedReader in = null;
         
@@ -190,12 +189,20 @@ abstract class PerlValidatorBase
             StringWriter sourceCode = new StringWriter();
 
             char[] buf = new char[BUF_SIZE];
-            in = new BufferedReader(new FileReader(path));
+            try
+            {
+                in = new BufferedReader(charset != null
+                    ? new InputStreamReader(new FileInputStream(path), charset)
+                    : new InputStreamReader(new FileInputStream(path)));
+            }
+            catch (UnsupportedEncodingException e)
+            {
+                in = new BufferedReader(new InputStreamReader(new FileInputStream(path)));
+            }
 
             int read = 0;
-            while ((read = in.read(buf)) > 0) {
-                sourceCode.write(buf, 0, read);
-            }
+            while ((read = in.read(buf)) > 0) sourceCode.write(buf, 0, read);
+
             return sourceCode.toString();
         }
         finally
@@ -213,7 +220,12 @@ abstract class PerlValidatorBase
      */
     protected String readSourceFile(IResource resource) throws IOException
     {
-        return readSourceFile(resource.getLocation().makeAbsolute().toString());
+        String charset;
+        
+        try { charset = ((IFile) resource).getCharset(); }
+        catch (CoreException e) { charset = null; }
+        
+        return readSourceFile(resource.getLocation().makeAbsolute().toString(), charset);
     }
     
     protected abstract void removeUnusedMarkers(IResource resource);

@@ -4,6 +4,7 @@ CVS
 		Debugger:
 
 		Editor:
+		* Fixed Bug [ 3065307 ] Compilation fails on file with UTF-8 encoding
 
 Version 0.6.37 - 13-Oct-2010
 		Debugger:

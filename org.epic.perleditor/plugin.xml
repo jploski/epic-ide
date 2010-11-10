@@ -698,6 +698,7 @@
         id="markers.podChecker"
         name="Pod Checker">
         <super type="org.epic.perleditor.markers.epic" />
+        <persistent value="true" />
     </extension>
 
     <extension
@@ -705,6 +706,7 @@
         id="markers.critic"
         name="Perl Critic">
         <super type="org.epic.perleditor.markers.epic" />
+		<persistent value="true" />
     </extension>
 
     <extension point="org.eclipse.ui.editors.annotationTypes">

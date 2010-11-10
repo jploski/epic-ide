@@ -5,6 +5,7 @@ CVS
 
 		Editor:
 		* Fixed Bug [ 3065307 ] Compilation fails on file with UTF-8 encoding
+		* Fixed Bug [ 3106556 ] Perl::Critic markers are not saved on exit
 
 Version 0.6.37 - 13-Oct-2010
 		Debugger:

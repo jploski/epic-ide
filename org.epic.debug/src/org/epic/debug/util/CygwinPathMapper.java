@@ -22,7 +22,7 @@ public class CygwinPathMapper extends AbstractPathMapper
         {        
             ProcessExecutor executor = new ProcessExecutor();
             ProcessOutput output = 
-                executor.execute(new String[] { "mount" }, "", new File("."));
+                executor.execute(new String[] { "mount" }, "", new File("."), null);
             
             initMappings(output.stdout.replaceAll("\n", "\r\n"));
         }

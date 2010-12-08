@@ -29,7 +29,7 @@ public class TestPerlValidator extends BaseTestCase
         {         
             validator.validate(
                 mockResource,
-                validator.readSourceFile(getFile("test.in/Tool.pm").getAbsolutePath()));
+                validator.readSourceFile(getFile("test.in/Tool.pm").getAbsolutePath(), null));
         
             assertTrue(PerlValidatorStub.gotBrokenPipe);
         }

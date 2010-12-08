@@ -92,7 +92,7 @@ public class SourceCritic extends ScriptExecutor
         }
 
         additionalOptions.add("-verbose");
-        additionalOptions.add("%f~|~%s~|~%l~|~%c~|~%m~|~%e" + getSystemLineSeparator());
+        additionalOptions.add("%f~|~%s~|~%l~|~%c~|~%m~|~%e~|~%p" + getSystemLineSeparator());
         
         String otherOptions = PerlCriticPreferencePage.getOtherOptions();
         if(otherOptions.length() > 0)
@@ -123,8 +123,8 @@ public class SourceCritic extends ScriptExecutor
     {
         String[] tmp = toParse.split("~\\|~");
 
-        // handle cases where a line returned from critic doesn't have all 6 expected fields
-        if (tmp.length != 6)
+        // handle cases where a line returned from critic doesn't have all 7 expected fields
+        if (tmp.length != 7)
         {
             return null;
         }
@@ -137,6 +137,7 @@ public class SourceCritic extends ScriptExecutor
         violation.column = parseInt(tmp[3]);
         violation.message = tmp[4];
         violation.pbp = tmp[5];
+        violation.policy = tmp[6];
 
         return violation;
     }
@@ -180,6 +181,7 @@ public class SourceCritic extends ScriptExecutor
         public String message;
         public String pbp;
         public int severity;
+        public String policy;
     }
 
 }

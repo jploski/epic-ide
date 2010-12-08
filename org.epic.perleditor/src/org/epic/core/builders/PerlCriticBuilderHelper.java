@@ -104,7 +104,7 @@ public class PerlCriticBuilderHelper {
          * inclusion of a link to safari would be useful as well, but that depends on missing
          * Perl::Critic functionality
          */
-        factory.setMessage(attributes, v.message + " (" + v.pbp + ")");
+        factory.setMessage(attributes, v.message + " (" + v.pbp + ") [" + v.policy + "]");
         factory.setLineNumber(attributes, v.lineNumber);
         factory.setSeverity(attributes, getSeverity(v.severity));
 

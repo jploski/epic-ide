@@ -5,6 +5,11 @@ CVS
 
 		Editor:
 
+Version 0.6.39 - 16-Jan-2010
+		Debugger:
+		* Fixed Bug [ 3155635 ] updating to 6.38 causes Bug #3143553
+		* Fixed Bug [ 3143553 ] Error in Core prohibit start of debugger or script
+
 Version 0.6.38 - 08-Dec-2010
 		* Applied Patch [ 3087284 ] show perlcritic policy name in problems view
 		* Fixed Bug [ 3065307 ] Compilation fails on file with UTF-8 encoding

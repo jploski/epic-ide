@@ -1,15 +1,13 @@
 package org.epic.perleditor.editors.util;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.ILog;
-import org.epic.core.util.ScriptExecutor;
-import org.epic.core.util.StatusFactory;
+import org.epic.core.util.*;
 import org.epic.perleditor.preferences.PerlCriticPreferencePage;
 
 
@@ -97,7 +95,7 @@ public class SourceCritic extends ScriptExecutor
         String otherOptions = PerlCriticPreferencePage.getOtherOptions();
         if(otherOptions.length() > 0)
         {
-        	additionalOptions.add(otherOptions);
+        	additionalOptions.addAll(CommandLineTokenizer.tokenize(otherOptions));
         }
         
         return additionalOptions;

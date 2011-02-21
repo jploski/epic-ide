@@ -4,6 +4,7 @@ CVS
 		Debugger:
 
 		Editor:
+		* Fixed Bug [ 3134433 ] Fix for adding multiple critic command line options
 
 Version 0.6.39 - 16-Jan-2010
 		Debugger:

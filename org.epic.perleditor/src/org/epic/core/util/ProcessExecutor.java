@@ -162,7 +162,7 @@ public class ProcessExecutor
                 // to support our client PerlValidator:
 				// The first character is written to check that the output stream
                 // is ready and not throwing exceptions...
-				inputWriter.write(input.substring(bomOffset,1));
+				inputWriter.write(input.substring(bomOffset,bomOffset+1));
                 inputWriter.flush();
                 
                 // The remaining write operation will often result in

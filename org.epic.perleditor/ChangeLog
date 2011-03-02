@@ -5,6 +5,7 @@ CVS
 
 		Editor:
 		* Fixed Bug [ 3134433 ] Fix for adding multiple critic command line options
+		* Fixed Bug [ 2824215 ] UTF-8 file with BOM produces error message
 
 Version 0.6.39 - 16-Jan-2010
 		Debugger:

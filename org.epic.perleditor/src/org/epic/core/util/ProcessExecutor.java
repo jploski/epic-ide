@@ -148,12 +148,21 @@ public class ProcessExecutor
             
             if (input.length() > 0)
             {
+
+            	// because pushing a character stream into perl throws an error
+            	// on files with BOM, we detect BOM and skip this char. 
+                int bomOffset = 0;
+                try {
+					bomOffset = getBOMOffset(input.substring(0,1));
+				} catch (UnsupportedEncodingException e) {
+					// let's ignore it for the time being...
+				}
+
                 // We split delivery of the process input into two steps
                 // to support our client PerlValidator:
-                
-                // The first character is written to check that the output stream
+				// The first character is written to check that the output stream
                 // is ready and not throwing exceptions...
-                inputWriter.write(input.charAt(0));
+				inputWriter.write(input.substring(bomOffset,1));
                 inputWriter.flush();
                 
                 // The remaining write operation will often result in
@@ -165,7 +174,7 @@ public class ProcessExecutor
                 // and the error message carried by the exception is localized.
                 try 
                 {
-                    inputWriter.write(input.substring(1));
+                    inputWriter.write(input.substring(bomOffset+1));
                     inputWriter.flush();
                 }
                 catch (IOException e)
@@ -224,5 +233,40 @@ public class ProcessExecutor
     protected void brokenPipe(IOException e) throws IOException
     {
         if (!ignoreBrokenPipe) throw e; // just rethrow by default
+    }
+    
+    private int getBOMOffset(String bomChar) throws UnsupportedEncodingException {
+    	byte[] bom = new byte[4];
+    	//inputCharset = "UTF-32BE";
+    	bom = bomChar.getBytes("UTF-32BE");
+        if ( (bom[0] == (byte)0x00) && (bom[1] == (byte)0x00) &&
+                    (bom[2] == (byte)0xFE) && (bom[3] == (byte)0xFF) ) {
+           return 1;
+        }
+    	//inputCharset = "UTF-32LE";
+        bom = bomChar.getBytes("UTF-32LE");
+        if ( (bom[0] == (byte)0xFF) && (bom[1] == (byte)0xFE) &&
+                    (bom[2] == (byte)0x00) && (bom[3] == (byte)0x00) ) {
+           return 1;
+        }
+        //encoding = "UTF-8";
+        bom = bomChar.getBytes("UTF-8");
+        if (  (bom[0] == (byte)0xEF) && (bom[1] == (byte)0xBB) &&
+              (bom[2] == (byte)0xBF) ) {
+           return 1;
+        }
+        //encoding = "UTF-16BE";
+        bom = bomChar.getBytes("UTF-16BE");
+        if ( (bom[0] == (byte)0xFE) && (bom[1] == (byte)0xFF) ) {
+           return 1;
+        }
+        //encoding = "UTF-16LE";
+        bom = bomChar.getBytes("UTF-16LE");
+        if ( (bom[0] == (byte)0xFF) && (bom[1] == (byte)0xFE) ) {
+           return 1;
+        } else {
+           // Unicode BOM mark not found
+           return 0;
+        }    
     }
 }

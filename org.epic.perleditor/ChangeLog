@@ -4,6 +4,10 @@ CVS
 		Debugger:
 
 		Editor:
+
+Version 0.6.40 - 22-Apr-2011
+		Editor:
+		* Implemented Feature Request [ 3291142 ] Support for E4
 		* Fixed Bug [ 3134433 ] Fix for adding multiple critic command line options
 		* Fixed Bug [ 2824215 ] UTF-8 file with BOM produces error message
 

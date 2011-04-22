@@ -281,10 +281,16 @@ The included JDOM software is distributed under the following license:
    <url>
       <update label="EPIC Updates" url="http://e-p-i-c.sourceforge.net/updates/testing"/>
    </url>
-
+   
+<!-- Unfortunately, if we leave the platform dependency declared below,
+     then EPIC becomes uninstallable in 4.1 M6 due to a snippet with
+     name='org.eclipse.platform.feature.group' range='[3.2.0,4.0.0)'
+     being present in the generated content.jar. -->
+<!--
    <requires>
       <import feature="org.eclipse.platform" version="3.2.0" match="compatible"/>
    </requires>
+-->
 
    <plugin
          id="org.epic.regexp"

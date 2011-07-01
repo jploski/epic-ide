@@ -311,7 +311,7 @@ public class DebuggerInterface
     private int hasCommandTerminated(String output)
     {
         // TODO: this way of finding out whether a command has terminated
-        // is not fool-proof. The debugge output may contain a fake
+        // is not fool-proof. The debugger output may contain a fake
         // command termination token, so there's a bug waiting to be
         // uncovered here...
         
@@ -366,7 +366,7 @@ public class DebuggerInterface
                 count = in.read(buf);
                 //System.err.println("<-D: {" + String.valueOf(buf, 0, count) + "}");
                 if (count > 0) output.append(buf, 0, count);
-                try { if (in.ready()) continue; } catch (IOException e) { }
+                try { if (in.ready() && count != -1) continue; } catch (IOException e) { }
             }
             catch (IOException e)
             {

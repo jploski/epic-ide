@@ -34,7 +34,11 @@ public class RemotePathMapper extends AbstractPathMapper
         epicInc = convertFilesToPaths(
             PerlCore.create(project).getEffectiveIncPath());
         
-        addMapping(project.getLocation(), new Path(remoteProjectDir));
+        IPath projectPath = project.getLocation();
+        try { projectPath = Path.fromOSString(projectPath.toFile().getCanonicalPath()); }
+        catch (IOException e) { }
+        
+        addMapping(projectPath, new Path(remoteProjectDir));
     }
     
     public IPath getDebuggerPath(IPath epicPath, DebuggerInterface db)
@@ -78,7 +82,8 @@ public class RemotePathMapper extends AbstractPathMapper
         for (Iterator i = files.iterator(); i.hasNext();)
         {
             File file = (File) i.next();
-            paths.add(Path.fromOSString(file.getAbsolutePath()));
+            try { paths.add(Path.fromOSString(file.getCanonicalPath())); }
+            catch (IOException e) { paths.add(Path.fromOSString(file.getAbsolutePath())); }
         }
         return paths;
     }

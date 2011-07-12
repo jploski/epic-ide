@@ -4,6 +4,7 @@ CVS
 		Debugger:
 
 		Editor:
+		* Implemented Feature Request [ 3364563 ] Syntax Coloring: Italic Type Support
 
 Version 0.6.40 - 22-Apr-2011
 		Editor:

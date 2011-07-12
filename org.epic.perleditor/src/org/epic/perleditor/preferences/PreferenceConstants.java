@@ -266,10 +266,13 @@ public class PreferenceConstants
 
     /**
      * Preference key suffix for bold text style preference keys.
-     * 
-     * @since 2.1
      */
     public static final String EDITOR_BOLD_SUFFIX = "Bold";
+
+    /**
+     * Preference key suffix for italic text style preference keys.
+     */
+    public static final String EDITOR_ITALIC_SUFFIX = "Italic";
 
     public static final String EDITOR_STRING_COLOR = IPerlColorConstants.STRING_COLOR;
     public static final String EDITOR_KEYWORD1_COLOR = IPerlColorConstants.KEYWORD1_COLOR;
@@ -314,6 +317,35 @@ public class PreferenceConstants
         + EDITOR_BOLD_SUFFIX;
     public static final String EDITOR_INVALID_COLOR_BOLD = IPerlColorConstants.INVALID_COLOR
         + EDITOR_BOLD_SUFFIX;
+
+    public static final String EDITOR_STRING_COLOR_ITALIC = IPerlColorConstants.STRING_COLOR
+        + EDITOR_ITALIC_SUFFIX;
+    public static final String EDITOR_KEYWORD1_COLOR_ITALIC = IPerlColorConstants.KEYWORD1_COLOR
+        + EDITOR_ITALIC_SUFFIX;
+    public static final String EDITOR_KEYWORD2_COLOR_ITALIC = IPerlColorConstants.KEYWORD2_COLOR
+        + EDITOR_ITALIC_SUFFIX;
+    public static final String EDITOR_VARIABLE_COLOR_ITALIC = IPerlColorConstants.VARIABLE_COLOR
+        + EDITOR_ITALIC_SUFFIX;
+    public static final String EDITOR_COMMENT1_COLOR_ITALIC = IPerlColorConstants.COMMENT1_COLOR
+        + EDITOR_ITALIC_SUFFIX;
+    public static final String EDITOR_COMMENT2_COLOR_ITALIC = IPerlColorConstants.COMMENT2_COLOR
+        + EDITOR_ITALIC_SUFFIX;
+    public static final String EDITOR_LITERAL1_COLOR_ITALIC = IPerlColorConstants.LITERAL1_COLOR
+        + EDITOR_ITALIC_SUFFIX;
+    public static final String EDITOR_LITERAL2_COLOR_ITALIC = IPerlColorConstants.LITERAL2_COLOR
+        + EDITOR_ITALIC_SUFFIX;
+    public static final String EDITOR_LABEL_COLOR_ITALIC = IPerlColorConstants.LABEL_COLOR
+        + EDITOR_ITALIC_SUFFIX;
+    public static final String EDITOR_FUNCTION_COLOR_ITALIC = IPerlColorConstants.FUNCTION_COLOR
+        + EDITOR_ITALIC_SUFFIX;
+    public static final String EDITOR_MARKUP_COLOR_ITALIC = IPerlColorConstants.MARKUP_COLOR
+        + EDITOR_ITALIC_SUFFIX;
+    public static final String EDITOR_OPERATOR_COLOR_ITALIC = IPerlColorConstants.OPERATOR_COLOR
+        + EDITOR_ITALIC_SUFFIX;
+    public static final String EDITOR_NUMBER_COLOR_ITALIC = IPerlColorConstants.NUMBER_COLOR
+        + EDITOR_ITALIC_SUFFIX;
+    public static final String EDITOR_INVALID_COLOR_ITALIC = IPerlColorConstants.INVALID_COLOR
+        + EDITOR_ITALIC_SUFFIX;
 
     /**
      * A named preference that controls whether bracket matching highlighting is

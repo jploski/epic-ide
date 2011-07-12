@@ -54,6 +54,8 @@ public class PreferencesMessages extends NLS
 
     public static String bold;
 
+    public static String italic;
+
     public static String preview;
 
     public static String showOverviewRuler;

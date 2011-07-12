@@ -44,7 +44,8 @@ import org.epic.perleditor.editors.*;
  */
 public class PerlEditorPreferencePage extends PreferencePage implements IWorkbenchPreferencePage {
 
-	private static final String BOLD= PreferenceConstants.EDITOR_BOLD_SUFFIX;
+	private static final String BOLD = PreferenceConstants.EDITOR_BOLD_SUFFIX;
+	private static final String ITALIC = PreferenceConstants.EDITOR_ITALIC_SUFFIX;
 
 
 	public final OverlayPreferenceStore.OverlayKey[] fKeys= new OverlayPreferenceStore.OverlayKey[] {
@@ -79,32 +80,46 @@ public class PerlEditorPreferencePage extends PreferencePage implements IWorkben
 
 		new OverlayPreferenceStore.OverlayKey(OverlayPreferenceStore.STRING, PreferenceConstants.EDITOR_STRING_COLOR),
 		new OverlayPreferenceStore.OverlayKey(OverlayPreferenceStore.BOOLEAN, PreferenceConstants.EDITOR_STRING_COLOR_BOLD),
+		new OverlayPreferenceStore.OverlayKey(OverlayPreferenceStore.BOOLEAN, PreferenceConstants.EDITOR_STRING_COLOR_ITALIC),
 		new OverlayPreferenceStore.OverlayKey(OverlayPreferenceStore.STRING, PreferenceConstants.EDITOR_KEYWORD1_COLOR),
 		new OverlayPreferenceStore.OverlayKey(OverlayPreferenceStore.BOOLEAN, PreferenceConstants.EDITOR_KEYWORD1_COLOR_BOLD),
+		new OverlayPreferenceStore.OverlayKey(OverlayPreferenceStore.BOOLEAN, PreferenceConstants.EDITOR_KEYWORD1_COLOR_ITALIC),
 		new OverlayPreferenceStore.OverlayKey(OverlayPreferenceStore.STRING, PreferenceConstants.EDITOR_KEYWORD2_COLOR),
 		new OverlayPreferenceStore.OverlayKey(OverlayPreferenceStore.BOOLEAN, PreferenceConstants.EDITOR_KEYWORD2_COLOR_BOLD),
+		new OverlayPreferenceStore.OverlayKey(OverlayPreferenceStore.BOOLEAN, PreferenceConstants.EDITOR_KEYWORD2_COLOR_ITALIC),
 		new OverlayPreferenceStore.OverlayKey(OverlayPreferenceStore.STRING, PreferenceConstants.EDITOR_VARIABLE_COLOR),
 	    new OverlayPreferenceStore.OverlayKey(OverlayPreferenceStore.BOOLEAN, PreferenceConstants.EDITOR_VARIABLE_COLOR_BOLD),
+	    new OverlayPreferenceStore.OverlayKey(OverlayPreferenceStore.BOOLEAN, PreferenceConstants.EDITOR_VARIABLE_COLOR_ITALIC),
 		new OverlayPreferenceStore.OverlayKey(OverlayPreferenceStore.STRING, PreferenceConstants.EDITOR_COMMENT1_COLOR),
 		new OverlayPreferenceStore.OverlayKey(OverlayPreferenceStore.BOOLEAN, PreferenceConstants.EDITOR_COMMENT1_COLOR_BOLD),
+		new OverlayPreferenceStore.OverlayKey(OverlayPreferenceStore.BOOLEAN, PreferenceConstants.EDITOR_COMMENT1_COLOR_ITALIC),
 		new OverlayPreferenceStore.OverlayKey(OverlayPreferenceStore.STRING, PreferenceConstants.EDITOR_COMMENT2_COLOR),
 		new OverlayPreferenceStore.OverlayKey(OverlayPreferenceStore.BOOLEAN, PreferenceConstants.EDITOR_COMMENT2_COLOR_BOLD),
+		new OverlayPreferenceStore.OverlayKey(OverlayPreferenceStore.BOOLEAN, PreferenceConstants.EDITOR_COMMENT2_COLOR_ITALIC),
 		new OverlayPreferenceStore.OverlayKey(OverlayPreferenceStore.STRING, PreferenceConstants.EDITOR_LITERAL1_COLOR),
 		new OverlayPreferenceStore.OverlayKey(OverlayPreferenceStore.BOOLEAN, PreferenceConstants.EDITOR_LITERAL1_COLOR_BOLD),
+		new OverlayPreferenceStore.OverlayKey(OverlayPreferenceStore.BOOLEAN, PreferenceConstants.EDITOR_LITERAL1_COLOR_ITALIC),
 		new OverlayPreferenceStore.OverlayKey(OverlayPreferenceStore.STRING, PreferenceConstants.EDITOR_LITERAL2_COLOR),
 		new OverlayPreferenceStore.OverlayKey(OverlayPreferenceStore.BOOLEAN, PreferenceConstants.EDITOR_LITERAL2_COLOR_BOLD),
+		new OverlayPreferenceStore.OverlayKey(OverlayPreferenceStore.BOOLEAN, PreferenceConstants.EDITOR_LITERAL2_COLOR_ITALIC),
 		new OverlayPreferenceStore.OverlayKey(OverlayPreferenceStore.STRING, PreferenceConstants.EDITOR_LABEL_COLOR),
 		new OverlayPreferenceStore.OverlayKey(OverlayPreferenceStore.BOOLEAN, PreferenceConstants.EDITOR_LABEL_COLOR_BOLD),
+		new OverlayPreferenceStore.OverlayKey(OverlayPreferenceStore.BOOLEAN, PreferenceConstants.EDITOR_LABEL_COLOR_ITALIC),
 		new OverlayPreferenceStore.OverlayKey(OverlayPreferenceStore.STRING, PreferenceConstants.EDITOR_FUNCTION_COLOR),
 		new OverlayPreferenceStore.OverlayKey(OverlayPreferenceStore.BOOLEAN, PreferenceConstants.EDITOR_FUNCTION_COLOR_BOLD),
+		new OverlayPreferenceStore.OverlayKey(OverlayPreferenceStore.BOOLEAN, PreferenceConstants.EDITOR_FUNCTION_COLOR_ITALIC),
 		new OverlayPreferenceStore.OverlayKey(OverlayPreferenceStore.STRING, PreferenceConstants.EDITOR_MARKUP_COLOR),
 		new OverlayPreferenceStore.OverlayKey(OverlayPreferenceStore.BOOLEAN, PreferenceConstants.EDITOR_MARKUP_COLOR_BOLD),
+		new OverlayPreferenceStore.OverlayKey(OverlayPreferenceStore.BOOLEAN, PreferenceConstants.EDITOR_MARKUP_COLOR_ITALIC),
 		new OverlayPreferenceStore.OverlayKey(OverlayPreferenceStore.STRING, PreferenceConstants.EDITOR_OPERATOR_COLOR),
 		new OverlayPreferenceStore.OverlayKey(OverlayPreferenceStore.BOOLEAN, PreferenceConstants.EDITOR_OPERATOR_COLOR_BOLD),
+		new OverlayPreferenceStore.OverlayKey(OverlayPreferenceStore.BOOLEAN, PreferenceConstants.EDITOR_OPERATOR_COLOR_ITALIC),
 		new OverlayPreferenceStore.OverlayKey(OverlayPreferenceStore.STRING, PreferenceConstants.EDITOR_NUMBER_COLOR),
 		new OverlayPreferenceStore.OverlayKey(OverlayPreferenceStore.BOOLEAN, PreferenceConstants.EDITOR_NUMBER_COLOR_BOLD),
+		new OverlayPreferenceStore.OverlayKey(OverlayPreferenceStore.BOOLEAN, PreferenceConstants.EDITOR_NUMBER_COLOR_ITALIC),
 		new OverlayPreferenceStore.OverlayKey(OverlayPreferenceStore.STRING, PreferenceConstants.EDITOR_INVALID_COLOR),
 		new OverlayPreferenceStore.OverlayKey(OverlayPreferenceStore.BOOLEAN, PreferenceConstants.EDITOR_INVALID_COLOR_BOLD),
+		new OverlayPreferenceStore.OverlayKey(OverlayPreferenceStore.BOOLEAN, PreferenceConstants.EDITOR_INVALID_COLOR_ITALIC),
 	};
 
 	private final String[][] fSyntaxColorListModel= new String[][] {
@@ -162,6 +177,7 @@ public class PerlEditorPreferencePage extends PreferencePage implements IWorkben
 	private ColorEditor fSyntaxForegroundColorEditor;
 	private ColorEditor fAppearanceColorEditor;
 	private Button fBoldCheckBox;
+	private Button fItalicCheckBox;
 	private SourceViewer fPreviewViewer;
 	private Color fBackgroundColor;
 
@@ -190,6 +206,7 @@ public class PerlEditorPreferencePage extends PreferencePage implements IWorkben
 		RGB rgb= PreferenceConverter.getColor(fOverlayStore, key);
 		fSyntaxForegroundColorEditor.setColorValue(rgb);
 		fBoldCheckBox.setSelection(fOverlayStore.getBoolean(key + BOLD));
+		fItalicCheckBox.setSelection(fOverlayStore.getBoolean(key + ITALIC));
 	}
 
 	private void handleAppearanceColorListSelection() {
@@ -249,6 +266,13 @@ public class PerlEditorPreferencePage extends PreferencePage implements IWorkben
 		gd.horizontalSpan= 2;
 		fBoldCheckBox.setLayoutData(gd);
 
+		fItalicCheckBox= new Button(stylesComposite, SWT.CHECK);
+        fItalicCheckBox.setText(PreferencesMessages.italic);
+        gd= new GridData(GridData.FILL_HORIZONTAL);
+        gd.horizontalAlignment= GridData.BEGINNING;
+        gd.horizontalSpan= 2;
+        fItalicCheckBox.setLayoutData(gd);
+
 		label= new Label(colorComposite, SWT.LEFT);
 		label.setText(PreferencesMessages.preview);
 		label.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
@@ -290,6 +314,17 @@ public class PerlEditorPreferencePage extends PreferencePage implements IWorkben
 				String key= fSyntaxColorListModel[i][1];
 				fOverlayStore.setValue(key + BOLD, fBoldCheckBox.getSelection());
 			}
+		});
+
+		fItalicCheckBox.addSelectionListener(new SelectionListener() {
+		    public void widgetDefaultSelected(SelectionEvent e) {
+		        // do nothing
+		    }
+	        public void widgetSelected(SelectionEvent e) {
+	            int i= fSyntaxColorList.getSelectionIndex();
+	            String key= fSyntaxColorListModel[i][1];
+	            fOverlayStore.setValue(key + ITALIC, fItalicCheckBox.getSelection());
+	        }
 		});
 
 		return colorComposite;

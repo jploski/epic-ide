@@ -163,10 +163,14 @@ public class PerlDebugPlugin extends AbstractUIPlugin
             mapper = new NullPathMapper();
         
         File perl5DbFile = null;
+        StringBuffer searchPath = new StringBuffer();
         for (Iterator i = inc.iterator(); i.hasNext();)
         {
             File dir = mapper.getEpicPath(
                 new Path((String) i.next())).toFile();
+
+            if (searchPath.length() > 0) searchPath.append(File.pathSeparatorChar);
+            searchPath.append(dir.getAbsolutePath());
 
             File f = new File(dir, "perl5db.pl");
             if (f.exists()) { perl5DbFile = f; break; }
@@ -177,7 +181,7 @@ public class PerlDebugPlugin extends AbstractUIPlugin
                 IStatus.ERROR,
                 PerlDebugPlugin.getUniqueIdentifier(),
                 IStatus.OK,
-                "Fatal: failed to find source perl5db.pl for epic_breakpoints.pm",
+                "Fatal: failed to find source perl5db.pl for epic_breakpoints.pm (searched in " + searchPath + ")",
                 null));
 
         // Note: we do not use String.replaceAll because of bug 1734045

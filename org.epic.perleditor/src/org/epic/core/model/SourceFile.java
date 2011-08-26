@@ -168,6 +168,7 @@ public class SourceFile
         private PerlToken useKeyword;
         private PerlToken subName;
         private boolean inSubProto;
+        private PerlToken baseKeyword;
         
         public ParsingState(List tokens)
         {
@@ -339,17 +340,30 @@ public class SourceFile
             }
             else
             {
-                if (type == PerlTokenTypes.WORD)
+                String text = t.getText().trim();
+                if (type == PerlTokenTypes.WORD || type == PerlTokenTypes.STRING_BODY)
                 {
-                    String text = t.getText();
+                    if ("base".equals(text) || "parent".equals(text))
+                    {
+                        baseKeyword = t;
+                        return;
+                    }
                     if (!"constant".equals(text) &&
-                        !"warnings".equals(text) &&
-                        !"strict".equals(text) &&
-                        !"vars".equals(text))
+                        !"vars".equals(text) &&
+                        !"feature".equals(text) &&
+                        !"qw".equals(text))
                     {
                         getCurrentPackage().addUse(useKeyword, t);
+                        if (baseKeyword != null) getCurrentPackage().addParent(useKeyword, t);
                     }
+                    if (baseKeyword == null) useKeyword = null;
+                }
+
+                // end of command..
+                if (";".equals(text))
+                {
                     useKeyword = null;
+                    baseKeyword = null;
                 }
             }
         }

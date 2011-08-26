@@ -37,6 +37,7 @@ public class Package implements IMultilineElement
     private final PerlToken name;
     private final List subs;
     private final List uses;
+    private final List parents;
     private PerlToken lastToken;
     
     /**
@@ -50,6 +51,7 @@ public class Package implements IMultilineElement
         this.name = null;
         this.subs = new ArrayList();
         this.uses = new ArrayList();
+        this.parents = new ArrayList();
     }
     
     /**
@@ -67,6 +69,7 @@ public class Package implements IMultilineElement
         this.name = name;
         this.subs = new ArrayList();
         this.uses = new ArrayList();
+        this.parents = new ArrayList();
     }
     
     public Subroutine addSub(
@@ -87,7 +90,15 @@ public class Package implements IMultilineElement
         uses.add(ret);
         return ret;
     }
-    
+
+    public ModuleUse addParent(PerlToken keyword, PerlToken name)
+        throws BadLocationException
+    {
+        ModuleUse ret = new ModuleUse(this, uses.size(), keyword, name);
+        parents.add(ret);
+        return ret;
+    }
+
     public boolean equals(Object obj)
     {
         return obj instanceof Package &&
@@ -138,7 +149,12 @@ public class Package implements IMultilineElement
     {
         return Collections.unmodifiableList(uses);
     }
-    
+
+    public List getParents()
+    {
+        return Collections.unmodifiableList(parents);
+    }
+
     public int hashCode()
     {
         return index;

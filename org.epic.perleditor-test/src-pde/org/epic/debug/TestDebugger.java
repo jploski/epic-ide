@@ -246,12 +246,13 @@ public class TestDebugger extends BasePDETestCase
             // not sure why the delay at this point is necessary,
             // but without it testVariables fails with EOF from
             // debugger :(
-            spinEventLoop(3000);
+            try { spinEventLoop(3000); } catch (InterruptedException e) { }
         }
     }
 
     private void resume(final IThread thread)
     {
+        interruptSpinEventLoop();
         Display.getDefault().asyncExec(new Runnable() {
             public void run() {
                 try { spinEventLoop(0); } catch (Exception e) { }
@@ -367,6 +368,7 @@ public class TestDebugger extends BasePDETestCase
                     {
                         synchronized (this) { tEnd = System.currentTimeMillis(); }
                         mainThread.interrupt();
+                        interruptSpinEventLoop();
                     }
                 }
                 else if (events[i].getSource() instanceof IDebugTarget)
@@ -375,6 +377,7 @@ public class TestDebugger extends BasePDETestCase
                     {
                         synchronized (this) { if (tEnd == 0L) tEnd = System.currentTimeMillis(); }
                         mainThread.interrupt();
+                        interruptSpinEventLoop();
                     }
                 }
             }

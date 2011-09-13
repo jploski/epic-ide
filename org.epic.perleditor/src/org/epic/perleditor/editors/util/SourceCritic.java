@@ -35,25 +35,13 @@ public class SourceCritic extends ScriptExecutor
 
     public static Violation[] critique(IResource resource, ILog log)
     {
-        IFile file = (IFile) resource;
-        /*
-         * it seems that Perl::Critic does not like receiving the editor input when invoked via the
-         * perl executor (although it works fine from the command line outside of java land).
-         *
-         * this work around is ok for now b/c metrics are only run against a single file, but this
-         * won't work for entire directories at a time - perhaps a background job that processes
-         * each one?
-         */
-        ArrayList args = new ArrayList(1);
-        args.add(file.getRawLocation().toOSString());
-
         try
         {
             SourceCritic critic = new SourceCritic(log);
             // meh - not sure if i'm happy w/ this, but it's needed in getCommandLineOpts
             critic.resource = resource;
 
-            String output = critic.run(args).stdout;
+            String output = critic.run(new ArrayList(4)).stdout;
             return critic.parseViolations(output);
         }
         catch (CoreException e)
@@ -89,14 +77,25 @@ public class SourceCritic extends ScriptExecutor
         	additionalOptions.add("--" + severity);
         }
 
-        additionalOptions.add("-verbose");
-        additionalOptions.add("%f~|~%s~|~%l~|~%c~|~%m~|~%e~|~%p" + getSystemLineSeparator());
+        additionalOptions.add("--verbose");
+        additionalOptions.add("%f~|~%s~|~%l~|~%c~|~%m~|~%e~|~%p%n");
         
         String otherOptions = PerlCriticPreferencePage.getOtherOptions();
         if(otherOptions.length() > 0)
         {
         	additionalOptions.addAll(CommandLineTokenizer.tokenize(otherOptions));
         }
+
+        IFile file = (IFile) resource;
+        /*
+         * it seems that Perl::Critic does not like receiving the editor input when invoked via the
+         * perl executor (although it works fine from the command line outside of java land).
+         *
+         * this work around is ok for now b/c metrics are only run against a single file, but this
+         * won't work for entire directories at a time - perhaps a background job that processes
+         * each one?
+         */
+        additionalOptions.add(file.getRawLocation().toOSString());
         
         return additionalOptions;
     }
@@ -115,6 +114,14 @@ public class SourceCritic extends ScriptExecutor
     protected String getScriptDir()
     {
         return "";
+    }
+
+    protected File getWorkingDir() throws CoreException
+    {
+        // Run perlcritic from project folder, not from the the one which
+        // contains the script to be checked, in hope that some violations
+        // of the sort "this file is in wrong directory" can be avoided that way.
+        return new File(resource.getProject().getLocation().toOSString());
     }
 
     private final Violation parseLine(String toParse)

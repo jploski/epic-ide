@@ -6,6 +6,7 @@ CVS
 		Editor:
 		* Implemented Feature Request [ 3364563 ] Syntax Coloring: Italic Type Support
 		* Applied Patch [ 3396613 ] add use base / use parent handling (with slight corrections)
+		* Applied Patch [ 3408462 ] Minor corrections to Perl::Critic integration
 
 Version 0.6.40 - 22-Apr-2011
 		Editor:

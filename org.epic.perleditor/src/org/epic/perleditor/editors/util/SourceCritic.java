@@ -78,7 +78,7 @@ public class SourceCritic extends ScriptExecutor
         }
 
         additionalOptions.add("--verbose");
-        additionalOptions.add("%f~|~%s~|~%l~|~%c~|~%m~|~%e~|~%p%n");
+        additionalOptions.add("%f~|~%s~|~%l~|~%c~|~%m~|~%e~|~%p~||~%n");
         
         String otherOptions = PerlCriticPreferencePage.getOtherOptions();
         if(otherOptions.length() > 0)
@@ -156,8 +156,8 @@ public class SourceCritic extends ScriptExecutor
             return EMPTY_ARRAY;
         }
 
-        String[] lines = toParse.split(separator);
-        ArrayList violations = new ArrayList();;
+        String[] lines = toParse.split("~\\|\\|~" + separator);
+        ArrayList violations = new ArrayList();
         for (int i = 0; i < lines.length; i++)
         {
             System.out.println("critic: " + lines[i]);

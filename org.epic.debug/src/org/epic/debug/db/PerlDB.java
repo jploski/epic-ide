@@ -400,7 +400,8 @@ public class PerlDB implements IDebugElement
             currentCommand = null;
             if (isTerminated()) return;
     
-            IPPosition endIP = maybeSkipStringEval(cmd);            
+            IPPosition endIP = maybeSkipStringEval(cmd);
+            if (endIP == null) return; // terminated while skipping
             
             updateStackFrames();
             
@@ -568,9 +569,9 @@ public class PerlDB implements IDebugElement
         IPPosition endIP = db.getCurrentIP();            
         if (cmd.isStepCommand())
         {
-            while (!isTerminated() && endIP.equals(startIP))
+            while (!isTerminated() && endIP != null && endIP.equals(startIP))
             {
-                db.stepOver();
+                db.stepInto();
                 endIP = db.getCurrentIP();
             }
         }

@@ -25,7 +25,10 @@ public class PerlBreakpointManager implements IBreakpointListener
     
     public void addDebugger(PerlDB db)
     {
-        debuggers.add(db);
+        synchronized (debuggers)
+        {
+            debuggers.add(db);
+        }
 
         IBreakpoint[] bps = DebugPlugin.getDefault().getBreakpointManager()
             .getBreakpoints(PerlDebugPlugin.getUniqueIdentifier());
@@ -49,7 +52,7 @@ public class PerlBreakpointManager implements IBreakpointListener
         }
     }
 
-    public void breakpointAdded(IBreakpoint fBreakpoint)
+    public synchronized void breakpointAdded(IBreakpoint fBreakpoint)
     {
         if (!(fBreakpoint instanceof PerlBreakpoint)) return;
 
@@ -65,17 +68,20 @@ public class PerlBreakpointManager implements IBreakpointListener
             return;
         }
 
-        for (Iterator i = debuggers.iterator(); i.hasNext();)
-        {
-            PerlDB db = (PerlDB) i.next();
-            try
+        synchronized (debuggers)
+        {        
+            for (Iterator i = debuggers.iterator(); i.hasNext();)
             {
-                db.addBreakpoint(bp);
-                bp.addDebugger(db);
-            }
-            catch (CoreException e)
-            {
-                PerlDebugPlugin.log(e);
+                PerlDB db = (PerlDB) i.next();
+                try
+                {
+                    db.addBreakpoint(bp);
+                    bp.addDebugger(db);
+                }
+                catch (CoreException e)
+                {
+                    PerlDebugPlugin.log(e);
+                }
             }
         }
     }
@@ -139,7 +145,10 @@ public class PerlBreakpointManager implements IBreakpointListener
 
     public void removeDebugger(PerlDB db)
     {
-        debuggers.remove(db);
+        synchronized (debuggers)
+        {
+            debuggers.remove(db);
+        }
 
         IBreakpoint[] bps = DebugPlugin.getDefault().getBreakpointManager()
             .getBreakpoints(PerlDebugPlugin.getUniqueIdentifier());

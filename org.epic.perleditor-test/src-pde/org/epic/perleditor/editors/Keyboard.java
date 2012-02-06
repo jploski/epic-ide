@@ -77,8 +77,6 @@ public class Keyboard
      */
     public static void typeString(String string)
     {
-        Display display = Display.getDefault();
-        
         for (int i = 0; i < string.length(); i++)
         {
             char c = string.charAt(i);
@@ -90,12 +88,12 @@ public class Keyboard
                 e = new Event();
                 e.type = SWT.KeyDown;
                 e.keyCode = 13;
-                display.post(e);
+                postEvent(e);
                 
                 e = new Event();
                 e.type = SWT.KeyUp;
                 e.keyCode = 13;
-                display.post(e);
+                postEvent(e);
             }
             else
             {
@@ -118,53 +116,54 @@ public class Keyboard
                     e = new Event();
                     e.type = SWT.KeyDown;
                     e.keyCode = SWT.SHIFT;
-                    display.post(e);
+                    postEvent(e);
                 }
                 
                 e = new Event();
                 e.type = SWT.KeyDown;
                 e.character = c;
                 if (uppercase) e.stateMask = SWT.SHIFT;
-                display.post(e);
-        
+                postEvent(e);
+                
                 e = new Event();
                 e.type = SWT.KeyUp;
                 e.character = c;
                 if (uppercase) e.stateMask = SWT.SHIFT;
-                display.post(e);
+                postEvent(e);
                 
                 if (uppercase)
                 {
                     e = new Event();
                     e.type = SWT.KeyUp;
                     e.keyCode = SWT.SHIFT;
-                    display.post(e);
+                    postEvent(e);
                 }
             }
-            
-            while (display.readAndDispatch());
-            try { Thread.sleep(2); } catch (InterruptedException _) { }
         }
     }
 
     private static void keystroke(char c, int keyCode)
     {
-        Display display = Display.getDefault();
         Event e;
 
         e = new Event();
         e.type = SWT.KeyDown;
         if (keyCode == -1 ) e.character = c;
         else e.keyCode = keyCode;
-        display.post(e);
-
+        postEvent(e);
+        
         e = new Event();
         e.type = SWT.KeyUp;
         if (keyCode == -1 ) e.character = c;
         else e.keyCode = keyCode;
+        postEvent(e);
+    }
+    
+    private static void postEvent(Event e)
+    {
+        Display display = Display.getDefault();
         display.post(e);
-        
         while (display.readAndDispatch());
-        try { Thread.sleep(20); } catch (InterruptedException _) { }
+        try { Thread.sleep(2); } catch (InterruptedException _) { }
     }
 }

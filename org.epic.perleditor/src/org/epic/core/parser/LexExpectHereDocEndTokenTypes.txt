@@ -1,0 +1,7 @@
+// $ANTLR : expectHereDocEnd.g -> LexExpectHereDocEndTokenTypes.txt$
+LexExpectHereDocEnd    // output token vocab name
+CLOSE_HEREDOC=4
+HEREDOC_LINE=5
+HEREDOC_LINE_CHARS=6
+NEWLINE=7
+NOTNEWLINE=8

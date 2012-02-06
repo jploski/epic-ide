@@ -1,3 +1,0 @@
- @perfNumber = (
-       empty array
-  ) 

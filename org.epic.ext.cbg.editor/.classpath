@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<classpath>
-	<classpathentry excluding="cbg/editor/test/" kind="src" path="src"/>
-	<classpathentry exported="true" kind="lib" path="libs/dom4j-mini.jar"/>
-	<classpathentry exported="true" kind="lib" path="libs/regexp-1.2-mini.jar"/>
-	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="output" path="bin"/>
-</classpath>

@@ -189,9 +189,7 @@ class PerlThreadBreakpoints
         try
         {
             // ensure that activeBreakpoints are up-to-date:
-            installPendingBreakpoints();
-            
-            IPPosition pos = db.getCurrentIP();
+            IPPosition pos = installPendingBreakpoints();
             if (pos == null) return null;
             
             IPath epicPath = thread.getEpicPath(pos.getPath());
@@ -205,19 +203,21 @@ class PerlThreadBreakpoints
             return (PerlLineBreakpoint)
                 activeBreakpoints.getBreakpoint(epicPath, pos.getLine());
         }
-        catch (DebuggerInterface.SessionTerminatedException e)
+        catch (CoreException e)
         {
-            return null;
-        }
-        catch (IOException e)
-        {
-            thread.throwDebugException(e);
-            return null;
+            if (e.getCause() instanceof DebuggerInterface.SessionTerminatedException)
+            {            
+                return null;
+            }
+            else
+            {
+                throw e;
+            }
         }
         // TODO: reimplement debugging reg-exps here see ToggleBreakpointAdapter)
     }
     
-    public boolean installPendingBreakpoints() throws CoreException
+    public IPPosition installPendingBreakpoints() throws CoreException
     {
         try
         {
@@ -226,11 +226,11 @@ class PerlThreadBreakpoints
             if (epicPath == null)
             {
                 thread.unresolvedDebuggerPath(pos.getPath());
-                return false;
+                return pos;
             }
             
             Set bps = pendingBreakpoints.getBreakpoints(epicPath);
-            if (bps.isEmpty()) return false;
+            if (bps.isEmpty()) return pos;
         
             for (Iterator i = bps.iterator(); i.hasNext();)
             {
@@ -239,12 +239,12 @@ class PerlThreadBreakpoints
                 else removeBreakpoint(bp);
             }
             //bps.clear();
-            return true;
+            return pos;
         }
         catch (IOException e)
         {
             thread.throwDebugException(e);
-            return false;
+            return null;
         }
     }
     

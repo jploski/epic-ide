@@ -3,6 +3,7 @@ package org.epic.perleditor.editors.util;
 import org.easymock.MockControl;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.Path;
 import org.epic.perl.editor.test.BaseTestCase;
 import org.epic.perl.editor.test.Log;
 
@@ -12,10 +13,14 @@ public class TestPerlValidator extends BaseTestCase
     {
         MockControl cMockProject = MockControl.createControl(IProject.class);
         IProject mockProject = (IProject) cMockProject.getMock();
+        mockProject.getLocation();
+        cMockProject.setReturnValue(new Path("."));
         cMockProject.replay();
         
         MockControl cMockResource = MockControl.createControl(IResource.class);
         IResource mockResource = (IResource) cMockResource.getMock();
+        mockResource.getProject();
+        cMockResource.setReturnValue(mockProject);
         mockResource.getProject();
         cMockResource.setReturnValue(mockProject);
         cMockResource.replay();

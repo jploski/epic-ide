@@ -59,6 +59,12 @@ public class TestDebugger extends BasePDETestCase
                 if (events[i].getSource() instanceof IStackFrame)
                 {
                     IStackFrame frame = (IStackFrame) events[i].getSource();
+                    
+                    // Note: we only get the event if the current stack frame is
+                    // selected in the Debug view on suspend. Unfortunately, this
+                    // sometimes doesn't happen and the test gets stuck, becomes
+                    // unstuck when you clicking on the frame manually. :-(
+                    
                     if (events[i].getKind() == DebugEvent.CHANGE &&
                         events[i].getDetail() == DebugEvent.CONTENT)
                     {

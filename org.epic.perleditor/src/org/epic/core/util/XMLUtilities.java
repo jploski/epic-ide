@@ -1,9 +1,3 @@
-/*
- * Created on Apr 22, 2003
- *
- * To change the template for this generated file go to
- * Window>Preferences>Java>Code Generation>Code and Comments
- */
 package org.epic.core.util;
 
 import org.eclipse.core.resources.IProject;
@@ -18,117 +12,196 @@ import org.jdom.*;
 import org.jdom.input.*;
 import org.jdom.output.*;
 
-/**
- * @author luelljoc
- *
- * To change the template for this generated type comment go to
- * Window>Preferences>Java>Code Generation>Code and Comments
- */
-public class XMLUtilities {
+public class XMLUtilities
+{
+    private static final String INCLUDE_FILE_NAME = ".includepath";
+    private static final String IGNORE_FILE_NAME = ".ignorepath";
+    private static final String CHARSET = "UTF-8";
 
-	private static final String INCLUDE_FILE_NAME = ".includepath";
-    private static final String CHARSET = "UTF-8";    
+    public XMLUtilities()
+    {
+    }
+    
+    public String[] getIgnoredEntries(IProject project)
+    {
+        List ignores = new ArrayList();
+        try
+        {
+            String fileName = project.getLocation().toString() + File.separator + IGNORE_FILE_NAME;
+            File file = new File(fileName);
 
-	/**
-	 * 
-	 */
-	public XMLUtilities() {
-		super();
-	}
+            if (file.exists())
+            {
+                SAXBuilder builder = new SAXBuilder(false);
+                Document doc = builder.build(file);
 
-	public String[] getIncludeEntries(IProject project) {
-		return getIncludeEntries(project, false);
-	}
-	public String[] getIncludeEntries(IProject project, boolean replaceVariables) {
-		List includes = new ArrayList();
-		try {
+                Element root = doc.getRootElement();
+                List entries = root.getChildren("ignoredpathentry");
+                Iterator iter = entries.iterator();
 
-			String fileName =
-				project.getLocation().toString()
-					+ File.separator
-					+ INCLUDE_FILE_NAME;
+                while (iter.hasNext())
+                {
+                    Element element = (Element) iter.next();
+                    ignores.add(element.getAttributeValue("path"));
+                }
+            }
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
 
-			File file = new File(fileName);
+        return (String[]) ignores.toArray(new String[ignores.size()]);
+    }
 
-			if (file.exists()) {
+    public String[] getIncludeEntries(IProject project)
+    {
+        return getIncludeEntries(project, false);
+    }
 
-				// No validation
-				SAXBuilder builder = new SAXBuilder(false);
-				Document doc = builder.build(file);
+    public String[] getIncludeEntries(IProject project, boolean replaceVariables)
+    {
+        List includes = new ArrayList();
+        try
+        {
+            String fileName = project.getLocation().toString() + File.separator
+                + INCLUDE_FILE_NAME;
 
-				// Get the variable manager for substitution
-				IStringVariableManager varMgr = VariablesPlugin.getDefault().getStringVariableManager();
+            File file = new File(fileName);
 
-				// Get root element
-				Element root = doc.getRootElement();
+            if (file.exists())
+            {
 
-				List entries = root.getChildren("includepathentry");
+                // No validation
+                SAXBuilder builder = new SAXBuilder(false);
+                Document doc = builder.build(file);
 
-				Iterator iter = entries.iterator();
+                // Get the variable manager for substitution
+                IStringVariableManager varMgr = VariablesPlugin.getDefault()
+                    .getStringVariableManager();
 
-				while (iter.hasNext()) {
-					Element element = (Element) iter.next();
-					String path = element.getAttributeValue("path");
-					
-					if (replaceVariables) {
-						try {
-                            // TODO: variable substitution is buggy/unsuitable for
-                            // our purposes, as it only works in context of a selected
-                            // resource (see ResourceResolver.java:40); however,
-                            // we don't guarantee that there is any resource selected,
-                            // leading to exceptions (or the selected resource may
-                            // be something accidental, leading to erratic behaviour)
-							String expandedPath = varMgr.performStringSubstitution(path);
-							path = expandedPath;
-						} catch (CoreException e) {
-							path = null;
-							e.printStackTrace();
-						}
-					}
+                // Get root element
+                Element root = doc.getRootElement();
 
-					if (path != null) {
-						includes.add(path);
-					}
-				}
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+                List entries = root.getChildren("includepathentry");
 
-		return (String[]) includes.toArray(new String[includes.size()]);
-	}
+                Iterator iter = entries.iterator();
 
-	public void writeIncludeEntries(IProject project, String[] items) throws IOException {
-		//Build XML document
-		Element root = new Element("includepath");
+                while (iter.hasNext())
+                {
+                    Element element = (Element) iter.next();
+                    String path = element.getAttributeValue("path");
 
-		for (int i = 0; i < items.length; i++) {
-			Element entry = new Element("includepathentry");
-			entry.setAttribute(new Attribute("path", items[i]));
-			root.addContent(entry);
-		}
+                    if (replaceVariables)
+                    {
+                        try
+                        {
+                            // TODO: variable substitution is buggy/unsuitable
+                            // for our purposes, as it only works in context of
+                            // a selected resource (see ResourceResolver.java:40);
+                            // however, we don't guarantee that there is any resource
+                            // selected, leading to exceptions (or the selected resource
+                            // may be something accidental, leading to erratic behavior)
+                            String expandedPath = varMgr
+                                .performStringSubstitution(path);
+                            path = expandedPath;
+                        }
+                        catch (CoreException e)
+                        {
+                            path = null;
+                            e.printStackTrace();
+                        }
+                    }
 
-		// Prepare output
-		Document doc = new Document(root);
-        String file = project.getLocation().toString()+File.separator+INCLUDE_FILE_NAME;
-        
+                    if (path != null)
+                    {
+                        includes.add(path);
+                    }
+                }
+            }
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+
+        return (String[]) includes.toArray(new String[includes.size()]);
+    }
+
+    public void writeIgnoredEntries(IProject project, String[] items)
+        throws IOException
+    {
+        String file = project.getLocation().toString() + File.separator + IGNORE_FILE_NAME;
+
+        if (items.length == 0)
+        {
+            File ignoredPathsFile = new File(file);
+            if (ignoredPathsFile.exists()) ignoredPathsFile.delete();
+            return;
+        }
+
+        Element root = new Element("ignoredpath");
+
+        for (int i = 0; i < items.length; i++)
+        {
+            Element entry = new Element("ignoredpathentry");
+            entry.setAttribute(new Attribute("path", items[i]));
+            root.addContent(entry);
+        }
+
+        Document doc = new Document(root);
+
         OutputStream out = null;
-		try {
-			out = new FileOutputStream(file);
-            this.writeOutput(doc, out);
-		} finally {
+        try
+        {
+            out = new FileOutputStream(file);
+            writeOutput(doc, out);
+        }
+        finally
+        {
             SafeClose.close(out);
-		}
-	}
+        }
+    }
 
-	private void writeOutput(Document doc, OutputStream out) throws IOException {
-		Format xmlFormat = Format.getPrettyFormat();
-		xmlFormat.setLineSeparator(System.getProperty("line.separator"));
-		//xmlFormat.setTextMode(Format.TextMode.NORMALIZE);
-		xmlFormat.setEncoding(CHARSET);
+    public void writeIncludeEntries(IProject project, String[] items)
+        throws IOException
+    {
+        // Build XML document
+        Element root = new Element("includepath");
 
-		XMLOutputter xmlout = new XMLOutputter(xmlFormat);
+        for (int i = 0; i < items.length; i++)
+        {
+            Element entry = new Element("includepathentry");
+            entry.setAttribute(new Attribute("path", items[i]));
+            root.addContent(entry);
+        }
+
+        // Prepare output
+        Document doc = new Document(root);
+        String file = project.getLocation().toString() + File.separator
+            + INCLUDE_FILE_NAME;
+
+        OutputStream out = null;
+        try
+        {
+            out = new FileOutputStream(file);
+            this.writeOutput(doc, out);
+        }
+        finally
+        {
+            SafeClose.close(out);
+        }
+    }
+
+    private void writeOutput(Document doc, OutputStream out) throws IOException
+    {
+        Format xmlFormat = Format.getPrettyFormat();
+        xmlFormat.setLineSeparator(System.getProperty("line.separator"));
+        // xmlFormat.setTextMode(Format.TextMode.NORMALIZE);
+        xmlFormat.setEncoding(CHARSET);
+
+        XMLOutputter xmlout = new XMLOutputter(xmlFormat);
         xmlout.output(doc, out);
-	}
+    }
 
 }

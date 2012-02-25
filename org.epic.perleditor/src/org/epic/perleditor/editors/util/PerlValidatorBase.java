@@ -10,6 +10,7 @@ import org.eclipse.core.runtime.*;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.Document;
 import org.epic.core.Constants;
+import org.epic.core.PerlCore;
 import org.epic.core.util.PerlExecutor;
 import org.epic.perleditor.PerlEditorPlugin;
 
@@ -47,10 +48,6 @@ abstract class PerlValidatorBase
 	public synchronized void validate(IResource resource, String sourceCode)
         throws CoreException
     {
-        String perlOutput = runPerl(resource, sourceCode);
-
-        if (DEBUG) printPerlOutput(perlOutput);
-
 		//TODO check if perlOutput is empty (indicates error)           
 
 		// Mark problem markers as unused
@@ -66,7 +63,13 @@ abstract class PerlValidatorBase
         // "Compilation failed in require" in the trigger).
         //
         clearAllUsedMarkers(resource);
+        
+        if (isIgnoredPath(resource)) return;
 
+        String perlOutput = runPerl(resource, sourceCode);
+
+        if (DEBUG) printPerlOutput(perlOutput);
+        
         List lines = makeLinesList(perlOutput);
         boolean continued = false;
 
@@ -252,6 +255,30 @@ abstract class PerlValidatorBase
         return lines;
     }
 
+    /**
+     * @return true if path of resource matches one of the "ignored path" patterns
+     *         configured in project properties that should be excluded from validation;
+     *         false otherwise
+     */
+    private boolean isIgnoredPath(IResource resource)
+    {
+        List ignoredPaths = PerlCore.create(resource.getProject()).getIgnoredPaths();
+        if (!ignoredPaths.isEmpty())
+        {
+            for (Iterator i = ignoredPaths.iterator(); i.hasNext();)
+            {
+                Pattern p = (Pattern) i.next();
+                String path = resource.getProjectRelativePath().toString();               
+                if (p.matcher(path).matches())
+                {
+                    removeUnusedMarkers(resource);
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+    
     private void printPerlOutput(String perlOutput)
     {
         if (perlOutput.indexOf("syntax OK") == -1)

@@ -73,8 +73,8 @@ sub _abs_path
     my $cached = $abs_path_cache{$path};
     return $cached if $cached;
     
-    $cached = $abs_path_cache{$path} = abs_path($path);
-    return $cached;
+    eval { $cached = $abs_path_cache{$path} = abs_path($path); };
+    return defined($cached) ? $cached : $path;
 }
 
 sub _add_breakpoint
@@ -92,7 +92,7 @@ sub _add_breakpoint
         foreach my $key(keys %INC)
         {
             next if (!$key || _abs_path($INC{$key}) ne $source_path);
-            eval { DB::break_on_filename_line($INC{$key}, $line, $cond); };            
+            eval { DB::break_on_filename_line($INC{$key}, $line, $cond); };
         }
     }
 

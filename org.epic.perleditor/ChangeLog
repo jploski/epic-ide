@@ -5,6 +5,10 @@ CVS
 
 		Editor:
 
+Version 0.6.42 - 25-Feb-2012
+		Editor:
+		* Implemented Feature Request [ 1789544 ] Ignore directories when compiling
+
 Version 0.6.41 - 15-Sep-2011
 		* Implemented Feature Request [ 3364563 ] Syntax Coloring: Italic Type Support
 		* Applied Patch [ 3396613 ] add use base / use parent handling (with slight corrections)

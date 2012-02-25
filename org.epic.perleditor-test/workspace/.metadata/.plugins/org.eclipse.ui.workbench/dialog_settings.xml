@@ -1,14 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section name="Workbench">
-	<section name="WorkbenchPreferenceDialogSettings">
-		<item key="DIALOG_X_ORIGIN" value="255"/>
-		<item key="DIALOG_Y_ORIGIN" value="74"/>
-	</section>
 	<section name="ShowViewDialog">
-		<item key="ShowViewDialog.STORE_SELECTED_VIEW_ID" value="org.eclipse.pde.runtime.LogView"/>
+		<item key="DIALOG_X_ORIGIN" value="343"/>
+		<item key="DIALOG_FONT_NAME" value="1|Verdana|12.0|0|GTK|1|"/>
+		<item key="DIALOG_HEIGHT" value="439"/>
+		<item key="DIALOG_Y_ORIGIN" value="144"/>
+		<item key="DIALOG_WIDTH" value="379"/>
+		<item key="ShowViewDialog.STORE_SELECTED_VIEW_ID" value="org.eclipse.ui.views.ProblemView"/>
 		<list key="ShowViewDialog.STORE_EXPANDED_CATEGORIES_ID">
-			<item value="org.eclipse.pde.runtime"/>
+			<item value="org.eclipse.ui"/>
 		</list>
+	</section>
+	<section name="WorkbenchPreferenceDialogSettings">
+		<item key="DIALOG_X_ORIGIN" value="239"/>
+		<item key="DIALOG_Y_ORIGIN" value="74"/>
 	</section>
 	<section name="EditorSelectionDialog">
 		<item key="EditorSelectionDialog.STORE_ID_INTERNAL_EXTERNAL" value="false"/>

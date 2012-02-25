@@ -1,12 +1,13 @@
-#Sun Sep 09 16:33:53 CEST 2007
+#Sat Feb 25 15:59:20 CET 2012
 PERL_EXECUTABLE="/usr/bin/perl"
 SHOW_WARNINGS=0
 autoCompletionBracket4=false
 autoCompletionBracket3=false
-SUSPEND_AT_FIRST_CONSOLE=0
+SUSPEND_AT_FIRST_CONSOLE=false
 autoCompletionBracket2=false
 autoCompletionBracket1=false
 SYNTAX_VALIDATION_PREFERENCE=0
+showGlobalVars=true
 ENABLE_DEBUG_CONSOLE=0
 SYNTAX_VALIDATION_IDLE_INTERVAL=2000
 eclipse.preferences.version=1

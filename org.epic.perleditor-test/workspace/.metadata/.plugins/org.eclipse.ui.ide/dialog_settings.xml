@@ -1,16 +1,51 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section name="Workbench">
 	<list key="installedFeatures">
-		<item value="org.eclipse.sdk:3.2.1.r321_v20060801-tQ1w49KnTArT0FZ"/>
+		<item value="com.something.eclipse.shelled:1.0.3"/>
+		<item value="org.eclipse.cdt:5.0.1.200809120802"/>
+		<item value="org.eclipse.cvs:1.1.1.r34x_20080902-7C79E8N9nJD4oAW9V1938"/>
+		<item value="org.eclipse.dltk.core:0.95.1.v20080626-2043-0EEJ6E9IgKLhLZW8AKz0uq5"/>
+		<item value="org.eclipse.draw2d:3.4.2.v20090218-1145-3317w311_122502441"/>
+		<item value="org.eclipse.ecf.core:2.0.1.v20080916-1301"/>
+		<item value="org.eclipse.ecf.examples:2.0.1.v20080916-1301"/>
+		<item value="org.eclipse.gef:3.4.2.v20090218-1145-67728084A56B4I233613552"/>
+		<item value="org.eclipse.help.source:1.0.1.R34x_v20080827-7r7xEIxEI6Zu5nEqN7M3UBpglaat"/>
+		<item value="org.eclipse.help:1.0.1.R34x_v20080827-7r7xEIxEI6Zu5nEqN7M3UBpglaat"/>
+		<item value="org.eclipse.jdt:3.4.1.r341_v20080709-0800-7o7tEAfEF_U5qyUgrb2HAp539P97"/>
+		<item value="org.eclipse.pde.source:3.4.1.r341_v20080731-7T7U0E9mlRIuGUYviF_VP"/>
+		<item value="org.eclipse.pde:3.4.1.r341_v20080731-7T7U0E9mlRIuGUYviF_VP"/>
+		<item value="org.eclipse.platform.source:3.4.1.r341_v20080731-9I96EiDElYevwz-p1bP5z-NlAaP7vtX6Utotqsu"/>
+		<item value="org.eclipse.platform:3.4.1.r341_v20080731-9I96EiDElYevwz-p1bP5z-NlAaP7vtX6Utotqsu"/>
+		<item value="org.eclipse.rcp:3.4.100.r341_v20080814-989JESIEdAciFYfkZZsBfSwQ2341"/>
+		<item value="org.eclipse.rse.core:3.0.1.v200809171600-7Z379EB7sQS9S4YPJaHC"/>
+		<item value="org.eclipse.rse.dstore:3.0.1.v200809181500-7J32DUUEFDF8Hu9FH7"/>
+		<item value="org.eclipse.rse.ftp:3.0.1.v200809171630-78479_kE77c7Q8b8T_F"/>
+		<item value="org.eclipse.rse.local:2.1.1.v20080710-7_40AgI99m9d_O"/>
+		<item value="org.eclipse.rse.ssh:2.1.1.v20080714-7830_kE77c7V8M"/>
+		<item value="org.eclipse.rse.telnet:2.1.1.v200809181500-6678AgI99m9W9X5J79"/>
+		<item value="org.eclipse.rse.terminals:0.1.1.v200809041200-2229sB7EO_T_T5C6B3457"/>
+		<item value="org.eclipse.rse.useractions:1.1.1.v200809041200-2118s733I3K484673"/>
+		<item value="org.eclipse.rse:3.0.1.v200809181500-7H368qfenEMeUOENNFdiKV_gK8"/>
+		<item value="org.eclipse.sdk:3.4.1.R34x_v20080827-7O7S78C2J40sK2o_ALcK8tLN_yZSJeg0P-3EtL4Ra90kv"/>
+		<item value="org.eclipse.tm.terminal.serial:2.0.1.v20080715-2-07w31191826"/>
+		<item value="org.eclipse.tm.terminal.ssh:2.0.1.v200807281235-2-07w311918392346"/>
+		<item value="org.eclipse.tm.terminal.telnet:2.0.1.v20080715-2-07w31191826"/>
+		<item value="org.eclipse.tm.terminal.view:2.0.1.v20080715-2-07w31191826"/>
+		<item value="org.eclipse.tm.terminal:2.0.1.v200807281235-2-07w311918392346"/>
+		<item value="org.eclipse.wst:3.0.4.v200811190840-7A-8l8Qqcz0HyVgjXUE-iuOYZ9ai"/>
+		<item value="org.epic.feature.main:0.6.39"/>
 	</list>
+	<section name="org.eclipse.ui.internal.views.markers.FiltersConfigurationDialog">
+		<item key="SELECTED_FILTER_GROUP" value="Warnings on Selection"/>
+	</section>
 	<section name="org.eclipse.ui.views.task">
 	</section>
 	<section name="CleanDialogSettings">
 		<item key="DIALOG_X_ORIGIN" value="296"/>
 		<item key="DIALOG_HEIGHT" value="408"/>
 		<item key="DIALOG_Y_ORIGIN" value="171"/>
-		<item key="TOGGLE_SELECTED" value="false"/>
-		<item key="DIALOG_WIDTH" value="532"/>
+		<item key="TOGGLE_SELECTED" value="true"/>
+		<item key="DIALOG_WIDTH" value="563"/>
 	</section>
 	<section name="NewWizardAction">
 	</section>

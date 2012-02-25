@@ -175,6 +175,18 @@
             </filter>
         </page>
     </extension>
+    <extension point="org.eclipse.ui.propertyPages">
+        <page
+            objectClass="org.eclipse.core.resources.IProject"
+            name="Perl Ignored Paths"
+            class="org.epic.core.properties.IgnoredPathsPropertyPage"
+            id="org.epic.core.properties.IgnoredPathsPropertyPage">
+            <filter
+                name="nature"
+                value="org.epic.perleditor.perlnature">
+            </filter>
+        </page>
+    </extension>
 
     <!-- Remember to update class PerlEditorCommandIds when adding new commands! -->
     <extension point="org.eclipse.ui.commands">

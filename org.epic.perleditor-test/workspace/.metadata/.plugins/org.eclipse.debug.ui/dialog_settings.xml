@@ -11,11 +11,11 @@
 		<item key="DIALOG_X_ORIGIN" value="267"/>
 		<item key="org.eclipse.debug.ui.DIALOG_SASH_WEIGHTS_1" value="271"/>
 		<item key="org.eclipse.debug.ui.DIALOG_HEIGHT" value="668"/>
-		<item key="DIALOG_FONT_NAME" value="1|Verdana|8|0|GTK|1|"/>
-		<item key="DIALOG_HEIGHT" value="640"/>
+		<item key="DIALOG_FONT_NAME" value="1|Verdana|12.0|0|GTK|1|"/>
+		<item key="DIALOG_HEIGHT" value="731"/>
 		<item key="org.eclipse.debug.ui.EXPANDED_NODES" value=", org.epic.debug.launchConfigurationPerl, org.epic.debug.launchConfigurationPerlCGI, org.epic.debug.launchConfigurationPerlRemote, "/>
-		<item key="DIALOG_Y_ORIGIN" value="55"/>
-		<item key="DIALOG_WIDTH" value="960"/>
+		<item key="DIALOG_Y_ORIGIN" value="-115"/>
+		<item key="DIALOG_WIDTH" value="826"/>
 		<item key="org.eclipse.debug.ui.DIALOG_WIDTH" value="1039"/>
 		<item key="org.eclipse.debug.ui.DIALOG_ORIGIN_Y" value="93"/>
 		<item key="org.eclipse.debug.ui.DIALOG_SASH_WEIGHTS_2" value="728"/>

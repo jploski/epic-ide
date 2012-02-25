@@ -98,12 +98,12 @@ sub dump_package_vars
     my ($dollar_comma, $dollar_backslash) = ($,, $\);
     ($,, $\) = undef;
 
-    my %stab = %{main::};
-    while ($package =~ /(\w+?::)/g) { %stab = $stab{$1}; }
+    my $stab = \%{main::};
+    while ($package =~ /(\w+?::)/g) { $stab = $stab->{$1}; }
 
-    foreach my $key (sort keys %stab)
+    foreach my $key (sort keys %{$stab})
     {
-        my $val = $stab{$key};
+        my $val = $stab->{$key};
         return if $DB::signal;
         _dump_package_var($key, $val);
     }

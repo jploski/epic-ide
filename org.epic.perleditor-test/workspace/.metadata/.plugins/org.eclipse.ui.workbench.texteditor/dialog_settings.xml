@@ -4,16 +4,24 @@
 		<item key="DIALOG_X_ORIGIN" value="305"/>
 		<item key="DIALOG_Y_ORIGIN" value="313"/>
 	</section>
+	<section name="org.eclipse.ui.texteditor.FindReplaceDialog_dialogBounds">
+		<item key="DIALOG_X_ORIGIN" value="413"/>
+		<item key="DIALOG_FONT_NAME" value="1|Verdana|12.0|0|GTK|1|"/>
+		<item key="DIALOG_HEIGHT" value="422"/>
+		<item key="DIALOG_Y_ORIGIN" value="164"/>
+		<item key="DIALOG_WIDTH" value="310"/>
+	</section>
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog">
 		<item key="wholeword" value="false"/>
 		<item key="incremental" value="false"/>
 		<item key="isRegEx" value="true"/>
 		<item key="y" value="473"/>
-		<item key="selection" value="&#x0A;="/>
+		<item key="selection" value=""/>
 		<item key="wrap" value="true"/>
-		<item key="casesensitive" value="false"/>
 		<item key="x" value="503"/>
+		<item key="casesensitive" value="false"/>
 		<list key="findhistory">
+			<item value="test123"/>
 			<item value="\n="/>
 			<item value="next_sibling"/>
 			<item value="foo"/>
@@ -21,7 +29,6 @@
 			<item value="funky"/>
 			<item value="parseurl"/>
 			<item value="sub cmp"/>
-			<item value="parse_url"/>
 		</list>
 		<list key="replacehistory">
 			<item value="bar"/>

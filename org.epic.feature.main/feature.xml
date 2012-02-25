@@ -2,7 +2,7 @@
 <feature
       id="org.epic.feature.main"
       label="EPIC"
-      version="0.6.41"
+      version="0.6.42"
       provider-name="Epic Project"
       plugin="org.epic.perleditor"
       image="icons/epic_install.jpg">
@@ -297,7 +297,7 @@ The included JDOM software is distributed under the following license:
          id="org.epic.perleditor"
          download-size="0"
          install-size="0"
-         version="0.6.29"
+         version="0.6.30"
          unpack="false"/>
 
    <plugin
@@ -310,7 +310,7 @@ The included JDOM software is distributed under the following license:
          id="org.epic.debug"
          download-size="0"
          install-size="0"
-         version="0.6.30"
+         version="0.6.31"
          unpack="false"/>
 
    <plugin
@@ -323,6 +323,6 @@ The included JDOM software is distributed under the following license:
          id="org.epic.source"
          download-size="0"
          install-size="0"
-         version="0.6.41"/>
+         version="0.6.42"/>
 
 </feature>

@@ -36,7 +36,7 @@ public class PerlSyntaxValidationThread
      */
     public void dispose() throws InterruptedException
     {
-        srt.dispose();
+        try { srt.dispose(); } catch(InterruptedException e) { }
         interrupt();
         join(waitForTermination);
     }

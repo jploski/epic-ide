@@ -82,6 +82,7 @@ public class PerlContextType extends CompilationUnitContextType {
 		addVariable(new GlobalVariables.Time());
 		addVariable(new GlobalVariables.User());
 		addVariable(new GlobalVariables.Filename());
+		addVariable(new GlobalVariables.PerlPackage());
 		addVariable(new GlobalVariables.PerlInterpreter());
 		
 	}

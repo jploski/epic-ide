@@ -97,8 +97,10 @@ public class Perspective implements IPerspectiveFactory {
 		bottomLeft.addView(IPageLayout.ID_OUTLINE);
 
 		// Bottom right.
-		layout.addView(IPageLayout.ID_TASK_LIST, IPageLayout.BOTTOM,
-				(float) 0.66, editorArea);
+		IFolderLayout bottomRight = layout.createFolder(
+				"bottomRight", IPageLayout.BOTTOM, (float) 0.66, editorArea);
+		bottomRight.addView(IPageLayout.ID_PROBLEM_VIEW);
+		bottomRight.addView(IPageLayout.ID_TASK_LIST);
 	}
 
 	/**

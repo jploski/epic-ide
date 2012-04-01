@@ -102,6 +102,10 @@ public class PreferencesMessages extends NLS
 
     public static String initiallyFold;
     
+    public static String outlineModuleFolding;
+    
+    public static String outlineSorting;
+    
     public static String wrapLines;
 
     public static String foldColumnBackground;

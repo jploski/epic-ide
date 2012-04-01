@@ -7,8 +7,13 @@ package org.epic.perleditor.templates.perl;
 import java.text.DateFormat;
 import java.util.Calendar;
 
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PlatformUI;
 import org.epic.core.util.PerlExecutableUtilities;
+import org.epic.core.util.XMLUtilities;
 import org.epic.perleditor.templates.SimpleTemplateVariable;
 import org.epic.perleditor.templates.TemplateContext;
 
@@ -105,6 +110,33 @@ public class GlobalVariables {
 				.getActivePage()
 				.getActiveEditor()
 				.getTitle();
+		}
+	}
+	
+	/**
+	 * The name of the perl package
+	 */
+	static class PerlPackage extends SimpleTemplateVariable{
+		public PerlPackage() {
+			super(PerlTemplateMessages.getString("GlobalVariables.variable.name.packagename"), PerlTemplateMessages.getString("GlobalVariables.variable.description.packagename")); //$NON-NLS-1$ //$NON-NLS-2$
+			setResolved(true);
+		}
+		public String evaluate(TemplateContext context) {
+			IEditorPart activeEditor = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
+			IEditorInput input = activeEditor.getEditorInput();
+	        IResource resource = (IResource) ((IAdaptable) input).getAdapter(IResource.class);
+	        if (resource.getFileExtension().endsWith("pm")){
+		        XMLUtilities xmlUtil = new XMLUtilities();
+				String[] listEntries = xmlUtil.getIncludeEntries(resource.getProject());
+				String packagePath = resource.getProjectRelativePath().removeFileExtension().toString();
+				for (int i = 0; i < listEntries.length; i++) {
+					listEntries[i] = listEntries[i].replace(resource.getProject().getLocation().toString() + "/", "");
+					packagePath = packagePath.replace(listEntries[i] + "/", "");	
+				}
+				return packagePath.replaceAll("/", "::");
+	        }else{
+	        	return "main";
+	        }
 		}
 	}
 

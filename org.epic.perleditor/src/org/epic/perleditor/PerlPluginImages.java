@@ -58,6 +58,12 @@ public class PerlPluginImages
         + "info_obj.gif"; //$NON-NLS-1$
     public static final String IMG_OBJS_TEMPLATE = NAME_PREFIX
         + "template_obj.gif"; //$NON-NLS-1$
+    public static final String IMG_ICON_OUTLINE_SORT = NAME_PREFIX
+        + "alphab_sort_co.gif"; //$NON-NLS-1$
+	public static final String IMG_ICON_OUTLINE_COLLAPSE = NAME_PREFIX
+        + "collapseall.gif"; //$NON-NLS-1$
+	public static final String IMG_ICON_OUTLINE_REFRESH = NAME_PREFIX
+        + "refresh.gif"; //$NON-NLS-1$
 
     static
     {
@@ -76,6 +82,9 @@ public class PerlPluginImages
         createManaged("", IMG_OBJS_WARNING);
         createManaged("", IMG_OBJS_INFO);
         createManaged("", IMG_OBJS_TEMPLATE);
+        createManaged("", IMG_ICON_OUTLINE_SORT);
+        createManaged("", IMG_ICON_OUTLINE_COLLAPSE);
+        createManaged("", IMG_ICON_OUTLINE_REFRESH);
     }
 
     /**

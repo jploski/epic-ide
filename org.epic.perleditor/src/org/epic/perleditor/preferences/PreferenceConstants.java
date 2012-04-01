@@ -163,6 +163,38 @@ public class PreferenceConstants
     public static final String PERLDOC_FOLDING = "sourceFolding.perldoc"; //$NON-NLS-1$
 
     public static final String SUBROUTINE_FOLDING = "sourceFolding.subroutine"; //$NON-NLS-1$
+    
+    /**
+     * A named preference that controls outline view initial module collapse behavior
+     * <p>
+     * Value is of type <code>Boolean</code>.
+     * </p>
+     */
+    public static final String OUTLINE_MODULE_FOLDING = "Outline.moduleFolding"; // $NON-NLS-1$
+    
+    /**
+     * A named preference that controls outline views subroutine collapse behavior
+     * <p>
+     * Value is of type <code>Boolean</code>.
+     * </p>
+     */
+	public static final String OUTLINE_SUBROUTINE_FOLDING = "Outline.SubFolding"; // $NON-NLS-1$;
+    
+    /**
+     * A named preference that controls outline view sort order
+     * <p>
+     * Value is of type <code>Boolean</code>.
+     * </p>
+     */
+    public static final String OUTLINE_SORT = "outline.sort"; // $NON-NLS-1$
+    
+    /**
+     * A named preference that controls outline view collapse behaviour
+     * <p>
+     * Value is of type <code>Boolean</code>.
+     * </p>
+     */
+    public static final String OUTLINE_COLLAPSE_ALL = "PerlOutlinePage.CollapseAllAction"; // $NON-NLS-1$
 
     /**
      * A named preference that controls whether auto completion of quotes etc.
@@ -449,6 +481,10 @@ public class PreferenceConstants
         store.setDefault(SOURCE_FOLDING, true);
         store.setDefault(PERLDOC_FOLDING, false);
         store.setDefault(SUBROUTINE_FOLDING, false);
+        store.setDefault(OUTLINE_MODULE_FOLDING, true);
+        store.setDefault(OUTLINE_SUBROUTINE_FOLDING, false);
+        store.setDefault(OUTLINE_SORT, false);
+        store.setDefault(OUTLINE_COLLAPSE_ALL, false);
         store.setDefault(SOURCE_CRITIC_ENABLED, false);
         store.setDefault(SOURCE_CRITIC_JOB_ENABLED, false);
         store.setDefault(SOURCE_CRITIC_DEFAULT_LOCATION, true);

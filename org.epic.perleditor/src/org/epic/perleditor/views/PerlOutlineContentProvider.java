@@ -4,8 +4,11 @@ import java.util.*;
 
 import org.eclipse.jface.viewers.*;
 import org.eclipse.swt.SWTException;
+import org.eclipse.swt.widgets.TreeItem;
 import org.epic.core.model.*;
 import org.epic.core.model.Package;
+import org.epic.perleditor.PerlEditorPlugin;
+import org.epic.perleditor.preferences.PreferenceConstants;
 
 public class PerlOutlineContentProvider implements ITreeContentProvider
 {
@@ -177,14 +180,41 @@ public class PerlOutlineContentProvider implements ITreeContentProvider
         try
         {
             viewer.refresh();
-            viewer.expandToLevel(3);
         }
         catch (SWTException e)
         {
             // Fault tolerance/workaround for bug 1874581:
             viewer.getTree().removeAll();
             viewer.refresh();
-            viewer.expandToLevel(3);
+        }
+        correctViewerExpansion();
+    }
+    public void correctViewerExpansion(){
+    	if(PerlEditorPlugin.getDefault().getPreferenceStore().getBoolean(PreferenceConstants.OUTLINE_COLLAPSE_ALL)){
+    		viewer.collapseAll();
+    	}else{
+    		viewer.expandAll();
+	        try{
+	        	TreeItem[] topLevelItems = viewer.getTree().getItems();
+	        	for(int topIndex=0; topIndex < topLevelItems.length; topIndex++){
+	        		TreeItem[] items = topLevelItems[topIndex].getItems();
+	        		for(int itemsIndex=0; itemsIndex<items.length; itemsIndex++){
+	        			if(items[itemsIndex].getText().equals(PerlOutlineContentProvider.MODULES) &&
+	        					PerlEditorPlugin.getDefault().getPreferenceStore().getBoolean(PreferenceConstants.OUTLINE_MODULE_FOLDING)){
+	        				items[itemsIndex].setExpanded(false);
+	        			}else if(items[itemsIndex].getText().equals(PerlOutlineContentProvider.SUBROUTINES) &&
+	        					PerlEditorPlugin.getDefault().getPreferenceStore().getBoolean(PreferenceConstants.OUTLINE_SUBROUTINE_FOLDING)){
+	        				items[itemsIndex].setExpanded(false);
+	        			}
+	        			else{
+	        				items[itemsIndex].setExpanded(true);
+	        			}
+	        		}
+	        	}
+	        }
+	        catch(IllegalArgumentException e){
+	        	// Tree View is not available yet
+	        }
         }
     }
     

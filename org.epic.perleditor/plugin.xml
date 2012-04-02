@@ -314,6 +314,18 @@
                 class="org.epic.core.popupmenus.TogglePerlNatureActionDelegate"
                 id="org.epic.core.togglePerlNature.action" />
         </objectContribution>
+        
+        <objectContribution
+              objectClass="org.eclipse.core.resources.IFolder"
+              id="org.epic.core.toggleLibPath">
+              <action
+                    class="org.epic.core.popupmenus.ToggleLibPathActionDelegate"
+                    icon="icons/epic_project.gif"
+                    id="org.epic.core.toggleLibPath.action"
+                    label="Add to INC"
+                    tooltip="Add to INC Path">
+              </action>
+        </objectContribution>
 
         <viewerContribution
             targetID="#PerlRulerContext"
@@ -762,5 +774,13 @@
         	<showInPart id="org.eclipse.ui.views.ResourceNavigator"/>
         </perspectiveExtension>
 	</extension>
+	
+    <extension point="org.eclipse.ui.ide.resourceFilters">
+        <filter pattern=".project" selected="true"/>
+    </extension>
+    <extension point="org.eclipse.ui.ide.resourceFilters">
+        <filter pattern="epic_links" selected="true"/>
+    </extension>
+ 
 </plugin>   
 

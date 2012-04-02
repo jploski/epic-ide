@@ -8,9 +8,9 @@ import org.eclipse.jface.preference.IPreferenceStore;
 import org.epic.perleditor.editors.util.IPerlColorConstants;
 
 /**
- * Constants used as keys for preferences in org.epic.perleditor
- * plugin's preference store. This class is also responsible for
- * setting the "factory defaults" for all preferences.
+ * Constants used as keys for preferences in org.epic.perleditor plugin's
+ * preference store. This class is also responsible for setting the
+ * "factory defaults" for all preferences.
  */
 public class PreferenceConstants
 {
@@ -22,18 +22,18 @@ public class PreferenceConstants
      * Initial URL displayed in the Browser view
      */
     public static final String BROWSER_START_URL = "WEB_BROWSER";
-    
+
     /**
-     * Whether or not the experimental debug console should be enabled
-     * when running Perl scripts
+     * Whether or not the experimental debug console should be enabled when
+     * running Perl scripts
      */
     public static final String DEBUG_DEBUG_CONSOLE = "ENABLE_DEBUG_CONSOLE";
-    
+
     /**
      * Perl interpreter type (Cygwin or standard)
      */
     public static final String DEBUG_INTERPRETER_TYPE = "INTERPRETER_TYPE";
-    
+
     /**
      * One of the allowed values for DEBUG_INTERPRETER_TYPE
      */
@@ -43,66 +43,67 @@ public class PreferenceConstants
      * One of the allowed values for DEBUG_INTERPRETER_TYPE
      */
     public static final String DEBUG_INTERPRETER_TYPE_CYGWIN = "Cygwin";
-    
+
     /**
      * Path to the Perl interpreter
      */
     public static final String DEBUG_PERL_EXECUTABLE = "PERL_EXECUTABLE";
 
     /**
-     * Whether or not the -w option should be passed to Perl during
-     * syntax validation and script execution
+     * Whether or not the -w option should be passed to Perl during syntax
+     * validation and script execution
      */
     public static final String DEBUG_SHOW_WARNINGS = "SHOW_WARNINGS";
 
     /**
-     * Whether or not the debugger should suspend at the first
-     * executable statement 
+     * Whether or not the debugger should suspend at the first executable
+     * statement
      */
     public static final String DEBUG_SUSPEND_AT_FIRST = "SUSPEND_AT_FIRST_CONSOLE";
-    
+
     /**
-     * Whether or not the -T option should be passed to Perl during
-     * syntax checking and script execution
+     * Whether or not the -T option should be passed to Perl during syntax
+     * checking and script execution
      */
     public static final String DEBUG_TAINT_MODE = "USE_TAINT_MODE";
 
     /**
-     * Whether or not updated variables should be highlighted in the
-     * Variables debug view
+     * Whether or not updated variables should be highlighted in the Variables
+     * debug view
      */
-    public static final String DEBUG_HIGHLIGHT_UPDATED_VARS = "highlightUpdatedVars";    
+    public static final String DEBUG_HIGHLIGHT_UPDATED_VARS = "highlightUpdatedVars";
 
     /**
-     * Whether or not "global" (package) variables should be displayed
-     * in the Variables debug view
+     * Whether or not "global" (package) variables should be displayed in the
+     * Variables debug view
      */
     public static final String DEBUG_SHOW_GLOBAL_VARS = "showGlobalVars";
 
     /**
-     * Whether or not Perl internal (built-in) variables should be
-     * displayed in the Variables debug view
+     * Whether or not Perl internal (built-in) variables should be displayed in
+     * the Variables debug view
      */
     public static final String DEBUG_SHOW_INTERNAL_VARS = "showInternalVars";
 
     /**
-     * Whether or not "local" (lexical) variables should be
-     * displayed in the Variables debug view
+     * Whether or not "local" (lexical) variables should be displayed in the
+     * Variables debug view
      */
     public static final String DEBUG_SHOW_LOCAL_VARS = "showLocalVars";
 
     /**
-     * Whether or not memory addresses of variables should be
-     * displayed in the Variables debug view
+     * Whether or not memory addresses of variables should be displayed in the
+     * Variables debug view
      */
     public static final String DEBUG_SHOW_VARS_ADDRESS = "showVarsAddress";
 
     /**
-     * A named preference that holds the background color of the vertical
-     * ruler in which fold icons are displayed.
+     * A named preference that holds the background color of the vertical ruler
+     * in which fold icons are displayed.
      */
     public final static String EDITOR_FOLD_COLUMN_BG_COLOR = "foldColumnBackground"; //$NON-NLS-1$
-    public final static RGB EDITOR_FOLD_COLUMN_BG_COLOR_DEFAULT = new RGB(255, 255, 255);
+    public final static RGB EDITOR_FOLD_COLUMN_BG_COLOR_DEFAULT = new RGB(255,
+        255, 255);
 
     /**
      * A named preference that controls whether the outline view selection
@@ -135,13 +136,13 @@ public class PreferenceConstants
      * Whether or not syntax validation should be performed in the editor
      */
     public static final String EDITOR_SYNTAX_VALIDATION = "SYNTAX_VALIDATION_PREFERENCE"; //$NON-NLS-1$
-    
+
     /**
-     * Inactivity duration (in milliseconds) after which syntax validation
-     * is triggered in the editor (if it is enabled)
+     * Inactivity duration (in milliseconds) after which syntax validation is
+     * triggered in the editor (if it is enabled)
      */
     public static final String EDITOR_SYNTAX_VALIDATION_INTERVAL = "SYNTAX_VALIDATION_IDLE_INTERVAL"; //$NON-NLS-1$
-    
+
     /**
      * A named preference that controls whether the 'line wrap' feature is
      * enabled.
@@ -163,6 +164,40 @@ public class PreferenceConstants
     public static final String PERLDOC_FOLDING = "sourceFolding.perldoc"; //$NON-NLS-1$
 
     public static final String SUBROUTINE_FOLDING = "sourceFolding.subroutine"; //$NON-NLS-1$
+
+    /**
+     * A named preference that controls outline view initial module collapse
+     * behavior
+     * <p>
+     * Value is of type <code>Boolean</code>.
+     * </p>
+     */
+    public static final String OUTLINE_MODULE_FOLDING = "Outline.moduleFolding"; // $NON-NLS-1$
+
+    /**
+     * A named preference that controls outline views subroutine collapse
+     * behavior
+     * <p>
+     * Value is of type <code>Boolean</code>.
+     * </p>
+     */
+    public static final String OUTLINE_SUBROUTINE_FOLDING = "Outline.SubFolding"; // $NON-NLS-1$;
+
+    /**
+     * A named preference that controls outline view sort order
+     * <p>
+     * Value is of type <code>Boolean</code>.
+     * </p>
+     */
+    public static final String OUTLINE_SORT = "outline.sort"; // $NON-NLS-1$
+
+    /**
+     * A named preference that controls outline view collapse behaviour
+     * <p>
+     * Value is of type <code>Boolean</code>.
+     * </p>
+     */
+    public static final String OUTLINE_COLLAPSE_ALL = "PerlOutlinePage.CollapseAllAction"; // $NON-NLS-1$
 
     /**
      * A named preference that controls whether auto completion of quotes etc.
@@ -262,7 +297,6 @@ public class PreferenceConstants
      * </p>
      */
     public final static String EDITOR_BACKGROUND_DEFAULT_COLOR = AbstractTextEditor.PREFERENCE_COLOR_BACKGROUND_SYSTEM_DEFAULT;
-
 
     /**
      * Preference key suffix for bold text style preference keys.
@@ -379,11 +413,10 @@ public class PreferenceConstants
 
     public static final String SOURCE_CRITIC_SEVERITY_LEVEL = "sourceCriticLevel"; //$NON-NLS-1$
 
-	public static final String SOURCE_CRITIC_SEVERITY = "sourceCriticSeverity"; //$NON-NLS-1$
+    public static final String SOURCE_CRITIC_SEVERITY = "sourceCriticSeverity"; //$NON-NLS-1$
 
-	public static final String SOURCE_CRITIC_OTHEROPTIONS = "sourceCriticOtherOptions"; //$NON-NLS-1$
+    public static final String SOURCE_CRITIC_OTHEROPTIONS = "sourceCriticOtherOptions"; //$NON-NLS-1$
 
-    
     public static final String MODULE_STARTER_ENABLED = "moduleStarterEnabled"; //$NON-NLS-1$
     public static final String MODULE_STARTER_DEFAULT_LOCATION = "moduleStarterDefaultLocation"; //$NON-NLS-1$
     public static final String MODULE_STARTER_LOCATION = "moduleStarterLocation"; //$NON-NLS-1$
@@ -396,33 +429,30 @@ public class PreferenceConstants
         EDITOR_MATCHING_BRACKETS_COLOR, new RGB(192, 192, 192),
         EDITOR_FOLD_COLUMN_BG_COLOR, EDITOR_FOLD_COLUMN_BG_COLOR_DEFAULT,
         EDITOR_LINKED_POSITION_COLOR, new RGB(0, 200, 100),
-        
-        EDITOR_STRING_COLOR, new RGB(0, 0, 0),
-        EDITOR_KEYWORD1_COLOR, new RGB(160, 32, 240),
-        EDITOR_KEYWORD2_COLOR, new RGB(160, 0, 240),
-        EDITOR_VARIABLE_COLOR, new RGB(160, 0, 240),
-        EDITOR_COMMENT1_COLOR, new RGB(178, 0, 34),
-        EDITOR_COMMENT2_COLOR, new RGB(178, 34, 0),
-        EDITOR_LITERAL1_COLOR, new RGB(0, 0, 255),
-        EDITOR_LITERAL2_COLOR, new RGB(160, 32, 240),
-        EDITOR_LABEL_COLOR, new RGB(160, 0, 240),
-        EDITOR_FUNCTION_COLOR, new RGB(160, 32, 0),
-        EDITOR_MARKUP_COLOR, new RGB(178, 0, 34),
-        EDITOR_OPERATOR_COLOR, new RGB(178, 34, 0),
-        EDITOR_NUMBER_COLOR, new RGB(160, 32, 0),
-        EDITOR_INVALID_COLOR, new RGB(178, 0, 34),
-        };
+
+        EDITOR_STRING_COLOR, new RGB(0, 0, 0), EDITOR_KEYWORD1_COLOR,
+        new RGB(160, 32, 240), EDITOR_KEYWORD2_COLOR, new RGB(160, 0, 240),
+        EDITOR_VARIABLE_COLOR, new RGB(160, 0, 240), EDITOR_COMMENT1_COLOR,
+        new RGB(178, 0, 34), EDITOR_COMMENT2_COLOR, new RGB(178, 34, 0),
+        EDITOR_LITERAL1_COLOR, new RGB(0, 0, 255), EDITOR_LITERAL2_COLOR,
+        new RGB(160, 32, 240), EDITOR_LABEL_COLOR, new RGB(160, 0, 240),
+        EDITOR_FUNCTION_COLOR, new RGB(160, 32, 0), EDITOR_MARKUP_COLOR,
+        new RGB(178, 0, 34), EDITOR_OPERATOR_COLOR, new RGB(178, 34, 0),
+        EDITOR_NUMBER_COLOR, new RGB(160, 32, 0), EDITOR_INVALID_COLOR,
+        new RGB(178, 0, 34), };
 
     /**
      * Initializes the given preference store with the default values.
      * 
-     * @param store  the preference store to be initialized
+     * @param store
+     *            the preference store to be initialized
      */
     public static void initializeDefaultValues(IPreferenceStore store)
     {
         store.setDefault(BROWSER_START_URL, "http://"); //$NON-NLS-1$
-        
-        store.setDefault(DEBUG_INTERPRETER_TYPE, DEBUG_INTERPRETER_TYPE_STANDARD);
+
+        store.setDefault(DEBUG_INTERPRETER_TYPE,
+            DEBUG_INTERPRETER_TYPE_STANDARD);
         store.setDefault(DEBUG_PERL_EXECUTABLE, "perl"); //$NON-NLS-1$
         store.setDefault(DEBUG_SHOW_WARNINGS, true);
         store.setDefault(DEBUG_TAINT_MODE, false);
@@ -434,8 +464,8 @@ public class PreferenceConstants
         store.setDefault(DEBUG_SHOW_GLOBAL_VARS, false);
         store.setDefault(DEBUG_SHOW_INTERNAL_VARS, false);
         store.setDefault(DEBUG_SHOW_LOCAL_VARS, true);
-        store.setDefault(DEBUG_SHOW_VARS_ADDRESS, false);        
-        
+        store.setDefault(DEBUG_SHOW_VARS_ADDRESS, false);
+
         store.setDefault(EDITOR_SYNC_OUTLINE_ON_CURSOR_MOVE, true);
         store.setDefault(EDITOR_SYNTAX_VALIDATION, true);
         store.setDefault(EDITOR_SYNTAX_VALIDATION_INTERVAL, 400);
@@ -449,6 +479,10 @@ public class PreferenceConstants
         store.setDefault(SOURCE_FOLDING, true);
         store.setDefault(PERLDOC_FOLDING, false);
         store.setDefault(SUBROUTINE_FOLDING, false);
+        store.setDefault(OUTLINE_MODULE_FOLDING, true);
+        store.setDefault(OUTLINE_SUBROUTINE_FOLDING, false);
+        store.setDefault(OUTLINE_SORT, false);
+        store.setDefault(OUTLINE_COLLAPSE_ALL, false);
         store.setDefault(SOURCE_CRITIC_ENABLED, false);
         store.setDefault(SOURCE_CRITIC_JOB_ENABLED, false);
         store.setDefault(SOURCE_CRITIC_DEFAULT_LOCATION, true);
@@ -463,12 +497,10 @@ public class PreferenceConstants
 
         for (int i = 0; i < DEFAULT_COLORS.length; i += 2)
         {
-            PreferenceConverter.setDefault(
-                store,
-                (String) DEFAULT_COLORS[i],
-                (RGB) DEFAULT_COLORS[i+1]);
+            PreferenceConverter.setDefault(store, (String) DEFAULT_COLORS[i],
+                (RGB) DEFAULT_COLORS[i + 1]);
         }
-        
+
         store.setDefault(EDITOR_STRING_COLOR_BOLD, false);
         store.setDefault(EDITOR_KEYWORD1_COLOR_BOLD, false);
         store.setDefault(EDITOR_KEYWORD2_COLOR_BOLD, false);
@@ -483,13 +515,14 @@ public class PreferenceConstants
         store.setDefault(EDITOR_OPERATOR_COLOR_BOLD, false);
         store.setDefault(EDITOR_NUMBER_COLOR_BOLD, false);
         store.setDefault(EDITOR_INVALID_COLOR_BOLD, false);
-        
+
         store.setDefault(MODULE_STARTER_ENABLED, false);
         store.setDefault(MODULE_STARTER_DEFAULT_LOCATION, true);
         store.setDefault(MODULE_STARTER_LOCATION, ""); //$NON-NLS-1$
         store.setDefault(MODULE_STARTER_OVERRIDE_CONFIG, true);
         store.setDefault(MODULE_STARTER_EMAIL, ""); //$NON-NLS-1$
-        store.setDefault(MODULE_STARTER_AUTHOR, System.getProperty("user.name")); //$NON-NLS-1$
+        store
+            .setDefault(MODULE_STARTER_AUTHOR, System.getProperty("user.name")); //$NON-NLS-1$
         store.setDefault(MODULE_STARTER_ADDN_OPTS, ""); //$NON-NLS-1$
     }
 }

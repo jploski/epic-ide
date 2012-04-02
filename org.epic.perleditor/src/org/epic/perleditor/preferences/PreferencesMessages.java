@@ -2,13 +2,12 @@ package org.epic.perleditor.preferences;
 
 import org.eclipse.osgi.util.NLS;
 
-
 /**
  * Preferences messages
  */
 public class PreferencesMessages extends NLS
 {
-    //~ Static fields/initializers
+    // ~ Static fields/initializers
 
     static
     {
@@ -101,11 +100,11 @@ public class PreferencesMessages extends NLS
     public static String subroutineFolding;
 
     public static String initiallyFold;
-    
+
     public static String outlineModuleFolding;
-    
+
     public static String outlineSorting;
-    
+
     public static String wrapLines;
 
     public static String foldColumnBackground;

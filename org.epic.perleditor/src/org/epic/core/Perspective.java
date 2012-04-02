@@ -19,126 +19,138 @@ import org.epic.perleditor.PerlEditorPlugin;
 
 /**
  */
-public class Perspective implements IPerspectiveFactory {
-	/**
-	 * Constructs a new Default layout engine.
-	 */
-	public Perspective() {
-		super();
-	}
+public class Perspective implements IPerspectiveFactory
+{
+    /**
+     * Constructs a new Default layout engine.
+     */
+    public Perspective()
+    {
+        super();
+    }
 
-	/**
-	 * Defines the initial layout for a perspective.
-	 * 
-	 * Implementors of this method may add additional views to a perspective.
-	 * The perspective already contains an editor folder with
-	 * <code>ID = ILayoutFactory.ID_EDITORS</code>. Add additional views to
-	 * the perspective in reference to the editor folder.
-	 * 
-	 * This method is only called when a new perspective is created. If an old
-	 * perspective is restored from a persistence file then this method is not
-	 * called.
-	 * 
-	 * @param factory
-	 *            the factory used to add views to the perspective
-	 */
-	public void createInitialLayout(IPageLayout layout) {
-		defineActions(layout);
-		defineLayout(layout);
-	}
+    /**
+     * Defines the initial layout for a perspective.
+     * 
+     * Implementors of this method may add additional views to a perspective.
+     * The perspective already contains an editor folder with
+     * <code>ID = ILayoutFactory.ID_EDITORS</code>. Add additional views to the
+     * perspective in reference to the editor folder.
+     * 
+     * This method is only called when a new perspective is created. If an old
+     * perspective is restored from a persistence file then this method is not
+     * called.
+     * 
+     * @param factory
+     *            the factory used to add views to the perspective
+     */
+    public void createInitialLayout(IPageLayout layout)
+    {
+        defineActions(layout);
+        defineLayout(layout);
+    }
 
-	/**
-	 * Defines the initial actions for a page.
-	 */
-	public void defineActions(IPageLayout layout) {
-		// Add "new wizards".
-		layout.addNewWizardShortcut("org.epic.newproject.wizard");//$NON-NLS-1$
-		layout.addNewWizardShortcut("org.epic.newfile.wizard");//$NON-NLS-1$
-		layout.addNewWizardShortcut("org.eclipse.ui.wizards.new.folder");//$NON-NLS-1$
-		layout.addNewWizardShortcut("org.eclipse.ui.wizards.new.file");//$NON-NLS-1$
+    /**
+     * Defines the initial actions for a page.
+     */
+    public void defineActions(IPageLayout layout)
+    {
+        // Add "new wizards".
+        layout.addNewWizardShortcut("org.epic.newproject.wizard");//$NON-NLS-1$
+        layout.addNewWizardShortcut("org.epic.newfile.wizard");//$NON-NLS-1$
+        layout.addNewWizardShortcut("org.eclipse.ui.wizards.new.folder");//$NON-NLS-1$
+        layout.addNewWizardShortcut("org.eclipse.ui.wizards.new.file");//$NON-NLS-1$
 
-		// Add "show views".
-		layout.addShowViewShortcut(IPageLayout.ID_RES_NAV);
-		layout.addShowViewShortcut(IPageLayout.ID_BOOKMARKS);
-		layout.addShowViewShortcut(IPageLayout.ID_OUTLINE);
-		layout.addShowViewShortcut(IPageLayout.ID_PROP_SHEET);
-		layout.addShowViewShortcut(IPageLayout.ID_TASK_LIST);
+        // Add "show views".
+        layout.addShowViewShortcut(IPageLayout.ID_RES_NAV);
+        layout.addShowViewShortcut(IPageLayout.ID_BOOKMARKS);
+        layout.addShowViewShortcut(IPageLayout.ID_OUTLINE);
+        layout.addShowViewShortcut(IPageLayout.ID_PROP_SHEET);
+        layout.addShowViewShortcut(IPageLayout.ID_TASK_LIST);
 
-		layout.addShowViewShortcut("org.epic.perleditor.views.ExplainErrorsView");//$NON-NLS-1$
-		layout.addShowViewShortcut("org.epic.perleditor.views.PerlDocView");//$NON-NLS-1$
-		layout.addShowViewShortcut("org.epic.core.views.browser.BrowserView");//$NON-NLS-1$
-		
-		// add perspective shortcuts
-		layout.addPerspectiveShortcut("org.eclipse.ui.resourcePerspective");//$NON-NLS-1$
-		layout.addPerspectiveShortcut("org.eclipse.debug.ui.DebugPerspective");//$NON-NLS-1$
+        layout
+            .addShowViewShortcut("org.epic.perleditor.views.ExplainErrorsView");//$NON-NLS-1$
+        layout.addShowViewShortcut("org.epic.perleditor.views.PerlDocView");//$NON-NLS-1$
+        layout.addShowViewShortcut("org.epic.core.views.browser.BrowserView");//$NON-NLS-1$
 
-		layout.addActionSet(IPageLayout.ID_NAVIGATE_ACTION_SET);
-		layout.addActionSet(IDebugUIConstants.LAUNCH_ACTION_SET);
-        layout.addActionSet(IDebugUIConstants.PLUGIN_ID + ".breakpointActionSet");
-	}
+        // add perspective shortcuts
+        layout.addPerspectiveShortcut("org.eclipse.ui.resourcePerspective");//$NON-NLS-1$
+        layout.addPerspectiveShortcut("org.eclipse.debug.ui.DebugPerspective");//$NON-NLS-1$
 
-	/**
-	 * Defines the initial layout for a page.
-	 */
-	public void defineLayout(IPageLayout layout) {
-		// Editors are placed for free.
-		String editorArea = layout.getEditorArea();
+        layout.addActionSet(IPageLayout.ID_NAVIGATE_ACTION_SET);
+        layout.addActionSet(IDebugUIConstants.LAUNCH_ACTION_SET);
+        layout.addActionSet(IDebugUIConstants.PLUGIN_ID
+            + ".breakpointActionSet");
+    }
 
-		// Top left.
-		IFolderLayout topLeft = layout.createFolder(
-				"topLeft", IPageLayout.LEFT, (float) 0.26, editorArea);//$NON-NLS-1$
-		topLeft.addView(IPageLayout.ID_RES_NAV);
-		topLeft.addPlaceholder(IPageLayout.ID_BOOKMARKS);
+    /**
+     * Defines the initial layout for a page.
+     */
+    public void defineLayout(IPageLayout layout)
+    {
+        // Editors are placed for free.
+        String editorArea = layout.getEditorArea();
 
-		// Bottom left.
-		IFolderLayout bottomLeft = layout.createFolder(
-				"bottomLeft", IPageLayout.BOTTOM, (float) 0.50,//$NON-NLS-1$
-				"topLeft");//$NON-NLS-1$
-		bottomLeft.addView(IPageLayout.ID_OUTLINE);
+        // Top left.
+        IFolderLayout topLeft = layout.createFolder(
+            "topLeft", IPageLayout.LEFT, (float) 0.26, editorArea);//$NON-NLS-1$
+        topLeft.addView(IPageLayout.ID_RES_NAV);
+        topLeft.addPlaceholder(IPageLayout.ID_BOOKMARKS);
 
-		// Bottom right.
-		IFolderLayout bottomRight = layout.createFolder(
-				"bottomRight", IPageLayout.BOTTOM, (float) 0.66, editorArea);
-		bottomRight.addView(IPageLayout.ID_PROBLEM_VIEW);
-		bottomRight.addView(IPageLayout.ID_TASK_LIST);
-	}
+        // Bottom left.
+        IFolderLayout bottomLeft = layout.createFolder(
+            "bottomLeft", IPageLayout.BOTTOM, (float) 0.50,//$NON-NLS-1$
+            "topLeft");//$NON-NLS-1$
+        bottomLeft.addView(IPageLayout.ID_OUTLINE);
 
-	/**
-	 * Switches to specified perspective
-	 * 
-	 * @param perspectiveId
-	 *            ID of perspective
-	 * @return <code>true</code> on succss otherwise <code>false</code>
-	 */
-	public static void switchPerspective(final String perspectiveId) {
+        // Bottom right.
+        IFolderLayout bottomRight = layout.createFolder("bottomRight",
+            IPageLayout.BOTTOM, (float) 0.66, editorArea);
+        bottomRight.addView(IPageLayout.ID_PROBLEM_VIEW);
+        bottomRight.addView(IPageLayout.ID_TASK_LIST);
+    }
 
-		final IWorkbench workBench = PerlEditorPlugin.getDefault()
-				.getWorkbench();
+    /**
+     * Switches to specified perspective
+     * 
+     * @param perspectiveId
+     *            ID of perspective
+     * @return <code>true</code> on succss otherwise <code>false</code>
+     */
+    public static void switchPerspective(final String perspectiveId)
+    {
 
-		Display display = workBench.getDisplay();
+        final IWorkbench workBench = PerlEditorPlugin.getDefault()
+            .getWorkbench();
 
-		display.asyncExec(new Runnable() {
-			public void run() {
+        Display display = workBench.getDisplay();
 
-				IWorkbenchWindow window = workBench.getActiveWorkbenchWindow();
+        display.asyncExec(new Runnable()
+        {
+            public void run()
+            {
 
-				// Make sure to get a window
-				if (window == null) {
-					window = workBench.getWorkbenchWindows()[0];
-				}
+                IWorkbenchWindow window = workBench.getActiveWorkbenchWindow();
 
-				IPerspectiveRegistry reg = WorkbenchPlugin.getDefault()
-						.getPerspectiveRegistry();
-				PerspectiveDescriptor rtPerspectiveDesc = (PerspectiveDescriptor) reg
-						.findPerspectiveWithId(perspectiveId);
+                // Make sure to get a window
+                if (window == null)
+                {
+                    window = workBench.getWorkbenchWindows()[0];
+                }
 
-				if (window != null && rtPerspectiveDesc != null) {
-					IWorkbenchPage page = window.getActivePage();
-					page.setPerspective(rtPerspectiveDesc);
-				}
-			}
-		});
+                IPerspectiveRegistry reg = WorkbenchPlugin.getDefault()
+                    .getPerspectiveRegistry();
+                PerspectiveDescriptor rtPerspectiveDesc = (PerspectiveDescriptor) reg
+                    .findPerspectiveWithId(perspectiveId);
 
-	}
+                if (window != null && rtPerspectiveDesc != null)
+                {
+                    IWorkbenchPage page = window.getActivePage();
+                    page.setPerspective(rtPerspectiveDesc);
+                }
+            }
+        });
+
+    }
 
 }

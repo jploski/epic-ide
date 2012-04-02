@@ -28,41 +28,34 @@ public class PerlPluginImages
     /*
      * Available cached Images in the Perl plug-in image registry.
      */
-    public static final String IMG_ICON_EDITOR = NAME_PREFIX
-        + "epic.gif"; //$NON-NLS-1$
+    public static final String IMG_ICON_EDITOR = NAME_PREFIX + "epic.gif"; //$NON-NLS-1$
     public static final String IMG_ICON_SUBROUTINE = NAME_PREFIX
         + "subroutine.gif"; //$NON-NLS-1$
     public static final String IMG_ICON_SUBROUTINE_NODE = NAME_PREFIX
         + "subroutine_node.gif"; //$NON-NLS-1$
     public static final String IMG_ICON_PACKAGE_NODE = NAME_PREFIX
         + "package_node.gif"; //$NON-NLS-1$
-    public static final String IMG_ICON_USE = NAME_PREFIX
-        + "use.gif"; //$NON-NLS-1$
-    public static final String IMG_ICON_USE_NODE = NAME_PREFIX
-        + "use_node.gif"; //$NON-NLS-1$
-    public static final String IMG_ICON_VARIABLE = NAME_PREFIX
-        + "variable.gif"; //$NON-NLS-1$
+    public static final String IMG_ICON_USE = NAME_PREFIX + "use.gif"; //$NON-NLS-1$
+    public static final String IMG_ICON_USE_NODE = NAME_PREFIX + "use_node.gif"; //$NON-NLS-1$
+    public static final String IMG_ICON_VARIABLE = NAME_PREFIX + "variable.gif"; //$NON-NLS-1$
     public static final String IMG_ICON_CONSTRUCTOR = NAME_PREFIX
         + "constructor.gif"; //$NON-NLS-1$
-    public static final String IMG_ICON_SEARCH = NAME_PREFIX
-        + "search.gif"; //$NON-NLS-1$
+    public static final String IMG_ICON_SEARCH = NAME_PREFIX + "search.gif"; //$NON-NLS-1$
     public static final String IMG_ICON_MARK_OCCURRENCES = NAME_PREFIX
         + "mark_occurrences.gif"; //$NON-NLS-1$
     public static final String IMG_NEW_PROJECT_WIZARD = NAME_PREFIX
         + "new_wizard.gif"; //$NON-NLS-1$
-    public static final String IMG_OBJS_ERROR = NAME_PREFIX
-        + "error_obj.gif"; //$NON-NLS-1$
+    public static final String IMG_OBJS_ERROR = NAME_PREFIX + "error_obj.gif"; //$NON-NLS-1$
     public static final String IMG_OBJS_WARNING = NAME_PREFIX
         + "warning_obj.gif"; //$NON-NLS-1$
-    public static final String IMG_OBJS_INFO = NAME_PREFIX
-        + "info_obj.gif"; //$NON-NLS-1$
+    public static final String IMG_OBJS_INFO = NAME_PREFIX + "info_obj.gif"; //$NON-NLS-1$
     public static final String IMG_OBJS_TEMPLATE = NAME_PREFIX
         + "template_obj.gif"; //$NON-NLS-1$
     public static final String IMG_ICON_OUTLINE_SORT = NAME_PREFIX
         + "alphab_sort_co.gif"; //$NON-NLS-1$
-	public static final String IMG_ICON_OUTLINE_COLLAPSE = NAME_PREFIX
+    public static final String IMG_ICON_OUTLINE_COLLAPSE = NAME_PREFIX
         + "collapseall.gif"; //$NON-NLS-1$
-	public static final String IMG_ICON_OUTLINE_REFRESH = NAME_PREFIX
+    public static final String IMG_ICON_OUTLINE_REFRESH = NAME_PREFIX
         + "refresh.gif"; //$NON-NLS-1$
 
     static
@@ -100,10 +93,11 @@ public class PerlPluginImages
     }
 
     /**
-     * Returns the image descriptor for the given key in this registry.
-     * Might be called in a non-UI thread.
+     * Returns the image descriptor for the given key in this registry. Might be
+     * called in a non-UI thread.
      * 
-     * @param key the image's key
+     * @param key
+     *            the image's key
      * @return the image descriptor for the given key
      */
     public static ImageDescriptor getDescriptor(String key)
@@ -115,20 +109,20 @@ public class PerlPluginImages
     }
 
     /**
-     * Helper method to access the image registry from the
-     * PerlEditorPlugin class.
+     * Helper method to access the image registry from the PerlEditorPlugin
+     * class.
      */
     static ImageRegistry getImageRegistry()
     {
         if (fgImageRegistry == null)
         {
             fgImageRegistry = new ImageRegistry();
-            for (Iterator iter = fgAvoidSWTErrorMap.keySet().iterator();
-                 iter.hasNext();)
+            for (Iterator iter = fgAvoidSWTErrorMap.keySet().iterator(); iter
+                .hasNext();)
             {
                 String key = (String) iter.next();
-                fgImageRegistry.put(
-                    key, (ImageDescriptor) fgAvoidSWTErrorMap.get(key));
+                fgImageRegistry.put(key,
+                    (ImageDescriptor) fgAvoidSWTErrorMap.get(key));
             }
             fgAvoidSWTErrorMap = null;
         }
@@ -140,14 +134,13 @@ public class PerlPluginImages
         return createManaged(prefix, name, name);
     }
 
-    private static ImageDescriptor createManaged(
-        String prefix, String name, String key)
+    private static ImageDescriptor createManaged(String prefix, String name,
+        String key)
     {
-        ImageDescriptor result = create(
-            prefix, name.substring(NAME_PREFIX_LENGTH), true);
+        ImageDescriptor result = create(prefix,
+            name.substring(NAME_PREFIX_LENGTH), true);
 
-        if (fgAvoidSWTErrorMap == null)
-            fgAvoidSWTErrorMap = new HashMap();
+        if (fgAvoidSWTErrorMap == null) fgAvoidSWTErrorMap = new HashMap();
 
         fgAvoidSWTErrorMap.put(key, result);
         return result;
@@ -155,36 +148,30 @@ public class PerlPluginImages
 
     /**
      * Creates an image descriptor for the given prefix and name in the Perl
-     * plug-in bundle. The path can contain variables like $NL$. If no image could be
-     * found, <code>useMissingImageDescriptor</code> decides if either the
-     * 'missing image descriptor' is returned or <code>null</code>.
+     * plug-in bundle. The path can contain variables like $NL$. If no image
+     * could be found, <code>useMissingImageDescriptor</code> decides if either
+     * the 'missing image descriptor' is returned or <code>null</code>.
      */
-    private static ImageDescriptor create(
-        String prefix,
-        String name,
+    private static ImageDescriptor create(String prefix, String name,
         boolean useMissingImageDescriptor)
     {
         IPath path = ICONS_PATH.append(prefix).append(name);
-        return createImageDescriptor(
-            PerlEditorPlugin.getDefault().getBundle(),
-            path,
-            useMissingImageDescriptor);
+        return createImageDescriptor(PerlEditorPlugin.getDefault().getBundle(),
+            path, useMissingImageDescriptor);
     }
 
     /**
      * Creates an image descriptor for the given path in a bundle. The path can
-     * contain variables like $NL$. If no image could be found, <code>useMissingImageDescriptor</code>
-     * decides if either the 'missing image descriptor' is returned or <code>null</code>.
+     * contain variables like $NL$. If no image could be found,
+     * <code>useMissingImageDescriptor</code> decides if either the 'missing
+     * image descriptor' is returned or <code>null</code>.
      */
-    private static ImageDescriptor createImageDescriptor(
-        Bundle bundle,
-        IPath path,
-        boolean useMissingImageDescriptor)
+    private static ImageDescriptor createImageDescriptor(Bundle bundle,
+        IPath path, boolean useMissingImageDescriptor)
     {
         URL url = Platform.find(bundle, path);
         if (url != null) return ImageDescriptor.createFromURL(url);
-        else return useMissingImageDescriptor
-            ? ImageDescriptor.getMissingImageDescriptor()
-            : null;
+        else return useMissingImageDescriptor ? ImageDescriptor
+            .getMissingImageDescriptor() : null;
     }
 }

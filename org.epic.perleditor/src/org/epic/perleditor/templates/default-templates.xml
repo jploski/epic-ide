@@ -1,4 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <templates>
+<template context="perl" name="perl" description="Perl Script Starter" autoinsert="true" deleted="true" enabled="true">
+#!${interpreter}
+use strict;
+use warnings;
 
+${cursor}
+</template>
+<template context="perl" name="package" description="Perl Package Starter" autoinsert="true" deleted="true" enabled="true">
+package ${packagename};
+
+${cursor}
+</template>
 </templates>

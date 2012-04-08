@@ -4,6 +4,10 @@ Git
 		Debugger:
 
 		Editor:
+
+
+Version 0.6.43 - 08-Apr-2012
+		Editor:
 		* Merged https://github.com/jploski/epic-ide/pull/1 from abhishekisnot/testing:
 		  Implemented Feature Request [ 3403267 ] Modules node collapsed by default in the Outline view
 		  Outline View: icons to perform various actions

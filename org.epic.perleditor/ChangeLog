@@ -1,9 +1,20 @@
 Eclipse Perl Integration:
 
-CVS
+Git
 		Debugger:
 
 		Editor:
+
+
+Version 0.6.43 - 08-Apr-2012
+		Editor:
+		* Merged https://github.com/jploski/epic-ide/pull/1 from abhishekisnot/testing:
+		  Implemented Feature Request [ 3403267 ] Modules node collapsed by default in the Outline view
+		  Outline View: icons to perform various actions
+		  Navigator View: add folder to Perl Include Path
+		  Navigator View: filter out .project and epic_links
+		  Perl Perspective: added Problems view to bottom panel
+		  Templates: additional default templates and template variables
 
 Version 0.6.42 - 25-Feb-2012
 		Editor:

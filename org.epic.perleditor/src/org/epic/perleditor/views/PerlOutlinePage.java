@@ -21,6 +21,7 @@ import org.epic.perleditor.preferences.PreferenceConstants;
 public class PerlOutlinePage extends ContentOutlinePage
 {
     private SourceFile source;
+    private PerlOutlineContentProvider contentProvider;
 
     /**
      * Subroutine in which the caret was during last call to updateSelection We
@@ -32,6 +33,7 @@ public class PerlOutlinePage extends ContentOutlinePage
     public PerlOutlinePage(SourceFile source)
     {
         this.source = source;
+        this.contentProvider = new PerlOutlineContentProvider();
     }
 
     public void createControl(Composite parent)
@@ -39,7 +41,7 @@ public class PerlOutlinePage extends ContentOutlinePage
         super.createControl(parent);
 
         TreeViewer viewer = getTreeViewer();
-        viewer.setContentProvider(new PerlOutlineContentProvider());
+        viewer.setContentProvider(contentProvider);
         viewer.setLabelProvider(new PerlOutlineLabelProvider());
         if (PerlEditorPlugin.getDefault().getPreferenceStore()
             .getBoolean(PreferenceConstants.OUTLINE_SORT))
@@ -47,7 +49,7 @@ public class PerlOutlinePage extends ContentOutlinePage
             viewer.setSorter(new ViewerSorter());
         }
         viewer.setInput(source);
-        correctViewerExpansion();
+        contentProvider.correctViewerExpansion();
 
         IMenuManager menuMan = getSite().getActionBars().getMenuManager();
         menuMan.add(new RefreshAction());
@@ -62,7 +64,7 @@ public class PerlOutlinePage extends ContentOutlinePage
             SourceFile sameSource = source;
             source = null;
             updateContent(sameSource);
-            correctViewerExpansion();
+            contentProvider.correctViewerExpansion();
         }
     }
 
@@ -97,58 +99,6 @@ public class PerlOutlinePage extends ContentOutlinePage
         if (lastCaretSub != null) setSelection(new StructuredSelection(
             lastCaretSub));
         else setSelection(StructuredSelection.EMPTY);
-    }
-
-    public void correctViewerExpansion()
-    {
-        if (PerlEditorPlugin.getDefault().getPreferenceStore()
-            .getBoolean(PreferenceConstants.OUTLINE_COLLAPSE_ALL))
-        {
-            getTreeViewer().collapseAll();
-        }
-        else
-        {
-            getTreeViewer().expandAll();
-            try
-            {
-                TreeItem[] topLevelItems = getTreeViewer().getTree().getItems();
-                for (int topIndex = 0; topIndex < topLevelItems.length; topIndex++)
-                {
-                    TreeItem[] items = topLevelItems[topIndex].getItems();
-                    for (int itemsIndex = 0; itemsIndex < items.length; itemsIndex++)
-                    {
-                        if (items[itemsIndex].getText().equals(
-                            PerlOutlineContentProvider.MODULES)
-                            && PerlEditorPlugin
-                                .getDefault()
-                                .getPreferenceStore()
-                                .getBoolean(
-                                    PreferenceConstants.OUTLINE_MODULE_FOLDING))
-                        {
-                            items[itemsIndex].setExpanded(false);
-                        }
-                        else if (items[itemsIndex].getText().equals(
-                            PerlOutlineContentProvider.SUBROUTINES)
-                            && PerlEditorPlugin
-                                .getDefault()
-                                .getPreferenceStore()
-                                .getBoolean(
-                                    PreferenceConstants.OUTLINE_SUBROUTINE_FOLDING))
-                        {
-                            items[itemsIndex].setExpanded(false);
-                        }
-                        else
-                        {
-                            items[itemsIndex].setExpanded(true);
-                        }
-                    }
-                }
-            }
-            catch (IllegalArgumentException e)
-            {
-                // Tree View is not available yet
-            }
-        }
     }
 
     /**
@@ -265,7 +215,7 @@ public class PerlOutlinePage extends ContentOutlinePage
                     .setValue(PreferenceConstants.OUTLINE_COLLAPSE_ALL, true);
                 setChecked(true);
             }
-            correctViewerExpansion();
+            contentProvider.correctViewerExpansion();
 
         }
     }
@@ -311,7 +261,7 @@ public class PerlOutlinePage extends ContentOutlinePage
                     .setValue(PreferenceConstants.OUTLINE_MODULE_FOLDING, true);
                 setChecked(true);
             }
-            correctViewerExpansion();
+            contentProvider.correctViewerExpansion();
         }
     }
 
@@ -360,7 +310,7 @@ public class PerlOutlinePage extends ContentOutlinePage
                         true);
                 setChecked(true);
             }
-            correctViewerExpansion();
+            contentProvider.correctViewerExpansion();
         }
     }
 

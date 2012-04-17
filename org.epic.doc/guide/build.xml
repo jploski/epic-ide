@@ -59,6 +59,8 @@ See build.properties for more information.
 			<arg value="--texstyle=guide.sty" />
 			<arg value="-P" />
 			<arg value="doc.collab.show=0" />
+			<arg value="-P" />
+			<arg value="latex.class.options=12pt" />
 			<arg value="guide.xml" />
 			<arg value="-o" />
 			<arg value="../dist/EPIC_User's_Guide.pdf" />

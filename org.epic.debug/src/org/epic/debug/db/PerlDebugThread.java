@@ -269,7 +269,7 @@ public class PerlDebugThread extends DebugElement implements IThread
             }
             else
             {
-                terminated();
+                getDebugTarget().getProcess().terminate();
             }
         }
     }

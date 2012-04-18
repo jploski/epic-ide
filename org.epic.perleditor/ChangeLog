@@ -6,6 +6,10 @@ Git
 		Editor:
 
 
+Version 0.6.44 - 18-Apr-2012
+		Debugger:
+		* Fixed Bug [ 1848119 ] Terminate Icon sporadically unusable in debugger
+
 Version 0.6.43 - 08-Apr-2012
 		Editor:
 		* Merged https://github.com/jploski/epic-ide/pull/1 from abhishekisnot/testing:

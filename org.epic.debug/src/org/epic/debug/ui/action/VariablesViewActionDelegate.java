@@ -41,7 +41,7 @@ public abstract class VariablesViewActionDelegate
         for (int i = 0; i < window.length; i++)
         {
             IWorkbenchPage page = window[i].getActivePage();
-            final IViewPart variablesView = page.findView("org.eclipse.debug.ui.VariableView");
+            final IViewPart variablesView = page != null ? page.findView("org.eclipse.debug.ui.VariableView") : null;
             if (variablesView != null) Display.getDefault().asyncExec(
                 new EnableVariablesViewActions(variablesView));
         }

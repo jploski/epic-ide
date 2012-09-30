@@ -29,7 +29,7 @@ public class CodeAssistPreferencePage
 	 * @see org.eclipse.ui.IWorkbenchPreferencePage#init(org.eclipse.ui.IWorkbench)
 	 */
 	public void init(IWorkbench workbench) {
-		setDescription("All changes will take effect on next code assist action.\n");
+		setDescription("Changes will take effect in new editors.\n");
 	}
 
 	
@@ -64,14 +64,15 @@ public class CodeAssistPreferencePage
 						CodeAssistPreferences.AUTO_ACTIVATION_CHARS,
 						"Auto activation characters",
 						composite));
-						
-		addField(
-					new BooleanFieldEditor(
+
+        addField(new IntegerFieldEditor(
+                        CodeAssistPreferences.AUTO_ACTIVATION_DELAY,
+                        "Auto activation delay [ms]",
+                        composite));
+		
+		addField(new BooleanFieldEditor(
 						CodeAssistPreferences.INSPECT_VARIABLES,
 						"Inspect variables",
 						composite));
-		
-
 	}
-
 }

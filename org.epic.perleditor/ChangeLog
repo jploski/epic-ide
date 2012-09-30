@@ -5,6 +5,9 @@ Git
 
 		Editor:
 
+Version 0.6.45 - 30-Sep-2012
+		Editor:
+		* Implemented Feature Request [ 3573183 ] Configurable activation delay for autocompletion
 
 Version 0.6.44 - 18-Apr-2012
 		Debugger:

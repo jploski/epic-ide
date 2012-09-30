@@ -14,6 +14,7 @@ import org.eclipse.ui.texteditor.AbstractDecoratedTextEditorPreferenceConstants;
 import org.epic.perleditor.PerlEditorPlugin;
 import org.epic.perleditor.editors.perl.*;
 import org.epic.perleditor.editors.util.PreferenceUtil;
+import org.epic.perleditor.preferences.CodeAssistPreferences;
 import org.epic.perleditor.preferences.PreferenceConstants;
 
 /**
@@ -71,7 +72,7 @@ public class PerlSourceViewerConfiguration extends SourceViewerConfiguration
 
         assistant.enableAutoActivation(true);
         assistant.enableAutoInsert(true);
-        assistant.setAutoActivationDelay(500);
+        assistant.setAutoActivationDelay(prefs.getInt(CodeAssistPreferences.AUTO_ACTIVATION_DELAY));
         assistant.setProposalPopupOrientation(ContentAssistant.PROPOSAL_OVERLAY);
         assistant.setContextInformationPopupOrientation(ContentAssistant.CONTEXT_INFO_ABOVE);
         assistant.setContextInformationPopupBackground(

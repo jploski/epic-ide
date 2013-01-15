@@ -5,6 +5,10 @@ Git
 
 		Editor:
 
+Version 0.6.46 - 15-Jan-2013
+		Debugger:
+		* Fixed Bug [ 3601003 ] NPE when launching script in debug mode
+
 Version 0.6.45 - 30-Sep-2012
 		Editor:
 		* Implemented Feature Request [ 3573183 ] Configurable activation delay for autocompletion

@@ -5,6 +5,10 @@ Git
 
 		Editor:
 
+Version 0.6.47 - 12-Feb-2013
+		Debugger:
+		* Fixed Bug [ 3604263 ] Variables view empty (related to Class::Accessor)
+
 Version 0.6.46 - 15-Jan-2013
 		Debugger:
 		* Fixed Bug [ 3601003 ] NPE when launching script in debug mode

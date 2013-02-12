@@ -4,6 +4,7 @@ use Data::Dumper;
 
 use lib 'noinc';
 use TestDebugger3;
+use TestAccessor;
 
 my $arr = [ { key => 1 }, { key => 2 } ];
 my @list = ( { key => 1 }, { key => 2 } );
@@ -20,5 +21,6 @@ $ref2 = \$h2;
 my $foo2 = \@foo;
 
 TestDebugger3::foo(123, 'abc');
+TestAccessor::test();
 
 print "ok\n";

@@ -2,6 +2,7 @@ Eclipse Perl Integration:
 
 Git
 		Debugger:
+		* Implemented Feature Request [ 3611304 ] Show preview of array/hash content in Variables view
 
 		Editor:
 

@@ -173,7 +173,7 @@ public class EpicCgiHandler implements Handler
             pathInfoStartI = ((Integer) ret[1]).intValue();
         }
 
-		String[] command = createCommandLine(request, cgiFile);
+		String[] command = createCommandLine(request, root, cgiFile);
         String[] env = createEnvironment(
             request, cgiFile, root, url, pathInfoStartI);
 
@@ -223,7 +223,7 @@ public class EpicCgiHandler implements Handler
     /**
      * @return the command line used to execute the CGI script
      */
-    private String[] createCommandLine(Request request, File cgiFile)
+    private String[] createCommandLine(Request request, String root, File cgiFile)
     {
         //Get Perl executable and generate comand array
         ArrayList commandList = new ArrayList();
@@ -254,8 +254,17 @@ public class EpicCgiHandler implements Handler
             commandList.addAll(exArgs.getProgramArgumentsL());
         }
 
-        try { commandList.add(cgiFile.getCanonicalPath()); }
-        catch (IOException e) { commandList.add(cgiFile.getAbsolutePath()); }
+        String cgiFilePath;
+        try { cgiFilePath = cgiFile.getCanonicalPath(); }
+        catch (IOException e) { cgiFilePath = cgiFile.getAbsolutePath(); }
+        
+        // If the user-entered root directory contains slashes, but the canonicalized
+        // CGI file path contains backslashes, then normalize backslashes into slashes.
+        // This is supposed to avoid skipped breakpoints on Windows due to perl -d source
+        // paths being reported with backslashes and expected with slashes by EPIC:
+        if (root.indexOf('/') != -1 && cgiFilePath.indexOf("\\") != -1) cgiFilePath.replace('\\', '/');
+        
+        commandList.add(cgiFilePath);
 
         // Look at the query and check for an =
         // If no '=', then use '+' as an argument delimiter

@@ -1,14 +1,14 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <launchConfiguration type="org.epic.debug.launchConfigurationPerlCGI">
-<listAttribute key="ATTR_CGI_ENV"/>
-<stringAttribute key="ATTR_DEBUG_PORT" value="4444"/>
-<stringAttribute key="ATTR_HTML_ROOT_DIR" value="/home/jpl/eclipse-workspaces/workspace-3.1/org.epic.perleditor-test/workspace/EPICTest"/>
 <stringAttribute key="ATTR_BROWSER_ID" value="org.eclipse.help.base.mozilla"/>
-<stringAttribute key="ATTR_HTML_ROOT_FILE" value="/home/jpl/eclipse-workspaces/workspace-3.1/org.epic.perleditor-test/workspace/EPICTest/x.pl"/>
-<stringAttribute key="ATTR_CGI_ROOT_DIR" value="/home/jpl/eclipse-workspaces/workspace-3.1/org.epic.perleditor-test/workspace/EPICTest"/>
-<stringAttribute key="ATTR_CUSTOM_BROWSER_PATH" value=""/>
+<listAttribute key="ATTR_CGI_ENV"/>
 <stringAttribute key="ATTR_CGI_FILE_EXTENSION" value=".cgi,.pl"/>
+<stringAttribute key="ATTR_CGI_ROOT_DIR" value="/home/jpl/eclipse-workspaces/workspace-epic-testing-new/org.epic.perleditor-test/workspace/EPICTest"/>
+<stringAttribute key="ATTR_CUSTOM_BROWSER_PATH" value=""/>
 <stringAttribute key="ATTR_DEBUG_CGI" value="OK"/>
-<stringAttribute key="org.eclipse.debug.core.ATTR_PROCESS_TYPE" value="EpicCGIProxy"/>
+<stringAttribute key="ATTR_DEBUG_PORT" value="4444"/>
+<stringAttribute key="ATTR_HTML_ROOT_DIR" value="/home/jpl/eclipse-workspaces/workspace-epic-testing-new/org.epic.perleditor-test/workspace/EPICTest"/>
+<stringAttribute key="ATTR_HTML_ROOT_FILE" value="/home/jpl/eclipse-workspaces/workspace-epic-testing-new/org.epic.perleditor-test/workspace/EPICTest/x.pl"/>
 <stringAttribute key="ATTR_PROJECT_NAME" value="EPICTest"/>
+<stringAttribute key="org.eclipse.debug.core.ATTR_PROCESS_TYPE" value="EpicCGIProxy"/>
 </launchConfiguration>

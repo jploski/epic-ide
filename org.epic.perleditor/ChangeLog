@@ -2,9 +2,13 @@ Eclipse Perl Integration:
 
 Git
 		Debugger:
-		* Implemented Feature Request [ 3611304 ] Show preview of array/hash content in Variables view
 
 		Editor:
+
+Version 0.6.48 - 04-May-2013
+		Debugger:
+		* Implemented Feature Request [ 3611304 ] Show preview of array/hash content in Variables view
+		* Fixed Bug [ 3612632 ] Breakpoints skipped in Windows CGI environment
 
 Version 0.6.47 - 12-Feb-2013
 		Debugger:

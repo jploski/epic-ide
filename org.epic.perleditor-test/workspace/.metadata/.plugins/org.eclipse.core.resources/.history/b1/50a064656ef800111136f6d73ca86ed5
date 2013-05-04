@@ -1,0 +1,3 @@
+use SomeModule;
+
+SomeModule::hello();

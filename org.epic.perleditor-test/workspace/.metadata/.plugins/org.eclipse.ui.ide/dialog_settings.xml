@@ -2,12 +2,18 @@
 <section name="Workbench">
 	<list key="installedFeatures">
 		<item value="com.something.eclipse.shelled:1.0.3"/>
+		<item value="net.sourceforge.sqlexplorer:3.5.0.v20080924_RC6"/>
 		<item value="org.eclipse.cdt:5.0.1.200809120802"/>
 		<item value="org.eclipse.cvs:1.1.1.r34x_20080902-7C79E8N9nJD4oAW9V1938"/>
 		<item value="org.eclipse.dltk.core:0.95.1.v20080626-2043-0EEJ6E9IgKLhLZW8AKz0uq5"/>
 		<item value="org.eclipse.draw2d:3.4.2.v20090218-1145-3317w311_122502441"/>
 		<item value="org.eclipse.ecf.core:2.0.1.v20080916-1301"/>
 		<item value="org.eclipse.ecf.examples:2.0.1.v20080916-1301"/>
+		<item value="org.eclipse.emf.common:2.4.0.v200902171115"/>
+		<item value="org.eclipse.emf.ecore.edit:2.4.1.v200902171115"/>
+		<item value="org.eclipse.emf.ecore:2.4.2.v200902171115"/>
+		<item value="org.eclipse.emf.edit.ui:2.4.2.v200902171115"/>
+		<item value="org.eclipse.emf.edit:2.4.2.v200902171115"/>
 		<item value="org.eclipse.gef:3.4.2.v20090218-1145-67728084A56B4I233613552"/>
 		<item value="org.eclipse.help.source:1.0.1.R34x_v20080827-7r7xEIxEI6Zu5nEqN7M3UBpglaat"/>
 		<item value="org.eclipse.help:1.0.1.R34x_v20080827-7r7xEIxEI6Zu5nEqN7M3UBpglaat"/>
@@ -21,6 +27,7 @@
 		<item value="org.eclipse.rse.dstore:3.0.1.v200809181500-7J32DUUEFDF8Hu9FH7"/>
 		<item value="org.eclipse.rse.ftp:3.0.1.v200809171630-78479_kE77c7Q8b8T_F"/>
 		<item value="org.eclipse.rse.local:2.1.1.v20080710-7_40AgI99m9d_O"/>
+		<item value="org.eclipse.rse.remotecdt:2.1.1.v200809041200-4118s733I3J4F5C48"/>
 		<item value="org.eclipse.rse.ssh:2.1.1.v20080714-7830_kE77c7V8M"/>
 		<item value="org.eclipse.rse.telnet:2.1.1.v200809181500-6678AgI99m9W9X5J79"/>
 		<item value="org.eclipse.rse.terminals:0.1.1.v200809041200-2229sB7EO_T_T5C6B3457"/>
@@ -33,24 +40,26 @@
 		<item value="org.eclipse.tm.terminal.view:2.0.1.v20080715-2-07w31191826"/>
 		<item value="org.eclipse.tm.terminal:2.0.1.v200807281235-2-07w311918392346"/>
 		<item value="org.eclipse.wst:3.0.4.v200811190840-7A-8l8Qqcz0HyVgjXUE-iuOYZ9ai"/>
+		<item value="org.eclipse.xsd.edit:2.4.0.v200902171115"/>
+		<item value="org.eclipse.xsd:2.4.2.v200902171115"/>
 		<item value="org.epic.feature.main:0.6.39"/>
 	</list>
-	<section name="org.eclipse.ui.internal.views.markers.FiltersConfigurationDialog">
-		<item key="SELECTED_FILTER_GROUP" value="Warnings on Selection"/>
+	<section name="ResourceNavigator">
+		<item value="Aggregate for window 1180790581835" key="ResourceWorkingSetFilter.STORE_WORKING_SET"/>
+		<item value="1" key="ResourceViewer.STORE_SORT_TYPE"/>
 	</section>
 	<section name="org.eclipse.ui.views.task">
 	</section>
-	<section name="CleanDialogSettings">
-		<item key="DIALOG_X_ORIGIN" value="296"/>
-		<item key="DIALOG_HEIGHT" value="408"/>
-		<item key="DIALOG_Y_ORIGIN" value="171"/>
-		<item key="TOGGLE_SELECTED" value="true"/>
-		<item key="DIALOG_WIDTH" value="563"/>
-	</section>
 	<section name="NewWizardAction">
 	</section>
-	<section name="ResourceNavigator">
-		<item key="ResourceWorkingSetFilter.STORE_WORKING_SET" value="Aggregate for window 1180790581835"/>
-		<item key="ResourceViewer.STORE_SORT_TYPE" value="1"/>
+	<section name="CleanDialogSettings">
+		<item value="563" key="DIALOG_WIDTH"/>
+		<item value="171" key="DIALOG_Y_ORIGIN"/>
+		<item value="408" key="DIALOG_HEIGHT"/>
+		<item value="296" key="DIALOG_X_ORIGIN"/>
+		<item value="true" key="TOGGLE_SELECTED"/>
+	</section>
+	<section name="org.eclipse.ui.internal.views.markers.FiltersConfigurationDialog">
+		<item value="Warnings on Selection" key="SELECTED_FILTER_GROUP"/>
 	</section>
 </section>

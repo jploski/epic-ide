@@ -262,7 +262,7 @@ public class EpicCgiHandler implements Handler
         // CGI file path contains backslashes, then normalize backslashes into slashes.
         // This is supposed to avoid skipped breakpoints on Windows due to perl -d source
         // paths being reported with backslashes and expected with slashes by EPIC:
-        if (root.indexOf('/') != -1 && cgiFilePath.indexOf("\\") != -1) cgiFilePath.replace('\\', '/');
+        if (root.indexOf('/') != -1 && cgiFilePath.indexOf("\\") != -1) cgiFilePath = cgiFilePath.replace('\\', '/');
         
         commandList.add(cgiFilePath);
 

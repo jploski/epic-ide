@@ -20,6 +20,7 @@ import org.eclipse.ui.*;
 import org.eclipse.ui.editors.text.*;
 import org.eclipse.ui.internal.ViewerActionBuilder;
 import org.eclipse.ui.internal.Workbench;
+import org.eclipse.ui.keys.IBindingService;
 import org.eclipse.ui.texteditor.*;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 import org.epic.core.model.*;
@@ -526,6 +527,19 @@ public class PerlEditor extends TextEditor implements IPropertyChangeListener
         action.setActionDefinitionId(ITextEditorActionDefinitionIds.DELETE_PREVIOUS_WORD);
         setAction(ITextEditorActionDefinitionIds.DELETE_PREVIOUS_WORD, action);
         textWidget.setKeyBinding(SWT.MOD1 | SWT.BS, SWT.NULL);
+        
+        // Only unbind default backspace action from textWidget if there is a key binding
+        // for "Delete Previous" registered through Preferences > Keys. Otherwise we'd lose
+        // backspace functionality:
+
+        IBindingService service = (IBindingService) getSite().getService(IBindingService.class);
+        if (service.getActiveBindingsFor(ITextEditorActionDefinitionIds.DELETE_PREVIOUS).length > 0)
+        {
+            action = new BackspaceAction(ST.DELETE_PREVIOUS);
+            action.setActionDefinitionId(ITextEditorActionDefinitionIds.DELETE_PREVIOUS);
+            setAction(ITextEditorActionDefinitionIds.DELETE_PREVIOUS, action);
+            textWidget.setKeyBinding(SWT.BS, SWT.NULL);
+        }
     }
 
     /* Create SourceViewer so we can use the PerlSourceViewer class */
@@ -939,6 +953,112 @@ public class PerlEditor extends TextEditor implements IPropertyChangeListener
             ISourceElement elem = (ISourceElement) sel.getFirstElement();
             syncFromOutline = true;
             selectAndReveal(elem.getOffset(), elem.getName().length());
+        }
+    }
+    
+    /**
+     * Simulate vim-like backspacing over indents (delete whole indent rather than one character).
+     * This feature is only enabled when:
+     * 1. The preference "insert spaces instead of tabs" is enabled and
+     * 2. There is a (user-entered) key binding for "Delete Previous" action in Preferences > Keys.
+     * 
+     * NOTE: in all other cases BackspaceAction is not even installed,
+     * and we stay backwards-compatible with standard Eclipse (which leaves all
+     * the handling of backspace to SWT's StyledText).
+     */
+    private class BackspaceAction extends TextNavigationAction
+    {
+        public BackspaceAction(int code)
+        {
+            super(getSourceViewer().getTextWidget(), code);
+        }
+        
+        public void run()
+        {
+            final IPreferenceStore store = getPreferenceStore();
+            if (!store.getBoolean(PreferenceConstants.SPACES_INSTEAD_OF_TABS))
+            {
+                super.run();
+                return;
+            }
+            
+            ISourceViewer viewer = getSourceViewer();
+            StyledText text = viewer.getTextWidget();
+            int caretOffset = text.getCaretOffset();
+            if (caretOffset == 0) // start of document, nothing to delete
+            {
+                super.run();
+                return;
+            }
+            
+            String charBeforeCaret = text.getText(caretOffset-1, caretOffset-1);
+            if (charBeforeCaret.charAt(0) != ' ') // not after indent
+            {
+                super.run();
+                return;
+            }
+            
+            Point selection = text.getSelection();
+            if (selection.x != selection.y) // some text is selected
+            {
+                super.run();
+                return;
+            }
+            
+            IDocument document = viewer.getDocument();
+            int position = widgetOffset2ModelOffset(viewer, caretOffset);
+            if (position == -1) // ?
+            {
+                super.run();
+                return;
+            }
+            
+            try
+            {
+                int line = document.getLineOfOffset(position);
+                int lineOffset = document.getLineOffset(line);
+                
+                String prefix = viewer.getDocument().get(lineOffset, position-lineOffset);
+                if (prefix.length() > 0)
+                {
+                    for (int i = 0; i < prefix.length(); i++)
+                    {
+                        if (prefix.charAt(i) != ' ')
+                        {
+                            super.run();
+                            return;
+                        }
+                    }
+                    
+                    int tabWidth = store.getInt(PreferenceConstants.INSERT_TABS_ON_INDENT);
+                    if (prefix.length() % tabWidth == 0)
+                    {
+                        viewer.getDocument().replace(position-tabWidth, tabWidth, ""); //$NON-NLS-1$
+                    }
+                    else
+                    {
+                        super.run();
+                        return;
+                    }
+                }
+                else
+                {
+                    super.run();
+                    return;
+                }
+            }
+            catch (BadLocationException e) // should never occur
+            {
+                PerlEditorPlugin.getDefault().getLog().log(
+                    new Status(
+                        IStatus.ERROR,
+                        PerlEditorPlugin.getPluginId(),
+                        IStatus.OK,
+                        "An unexpected exception occurred in BackspaceAction",
+                        e));
+
+                super.run(); // fall back on default behavior
+            }
         }
     }
 

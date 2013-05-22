@@ -5,6 +5,9 @@ Git
 
 		Editor:
 
+Version 0.6.50 - 22-May-2013
+		* Implemented Feature Request #151 Backspace and indentation
+
 Version 0.6.49 - 06-May-2013
 		* Fixed Bug [ 3612632 ] Breakpoints skipped in Windows CGI environment
 

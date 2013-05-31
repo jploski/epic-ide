@@ -134,14 +134,13 @@ public class ProjectAndFileBlock extends ProjectBlock
 			setErrorMessage("Startup File is not specified");
 			return false;
 		}
-		String[] files = getPerlFiles();
-		for (int i = 0; i < files.length; i++) {
-			if (files[i].equals(name)) {
-				return true;
-			}
+
+		if (! existsFile(name)) {
+			setErrorMessage("File does not exist or match to the project");
+			return false;
 		}
-		setErrorMessage("File does not exist or match to the project");
-		return false;
+
+		return true;
 	}
     
     private void createScriptFileEditor(Composite parent) {
@@ -190,6 +189,18 @@ public class ProjectAndFileBlock extends ProjectBlock
 			e.printStackTrace();
 		}
 		return ((PerlProjectVisitor) visitor).getList();
+	}
+
+	private boolean existsFile(String filename) {
+		String projectName = getSelectedProject();
+
+		if (projectName == null || projectName.length() == 0) {
+			return false;
+		}
+
+		IWorkspaceRoot workspaceRoot = PerlDebugPlugin.getWorkspace().getRoot();
+		IProject project = workspaceRoot.getProject(projectName);
+		return project.getFile(filename).exists();
 	}
     
     protected void newProjectSelected()

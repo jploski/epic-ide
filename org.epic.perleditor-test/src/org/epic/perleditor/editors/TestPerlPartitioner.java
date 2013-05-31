@@ -6,9 +6,10 @@ import org.epic.perl.editor.test.Log;
 
 public class TestPerlPartitioner extends BaseTestCase
 {
+    // this test expects unix newlines
     public void testSyntax() throws Exception
     {
-        Document doc = new Document(readFile("workspace/EPICTest/syntax.pl"));
+        Document doc = new Document(readFile("workspace/EPICTest/syntax.pl").replace("\r",""));
         PerlPartitioner partitioner = new PerlPartitioner(new Log(), doc);
 
         ITypedRegion[] partitioning =
@@ -30,7 +31,7 @@ public class TestPerlPartitioner extends BaseTestCase
             buf.append('\n');
         }
         
-        String expected = readFile("test.in/TestPerlPartitioner-expected.txt");
+        String expected = readFile("test.in/TestPerlPartitioner-expected.txt").replace("\r","");
         assertEquals(expected, buf.toString());
         //System.err.println(buf);
     }

@@ -32,7 +32,7 @@ public class PerlValidatorStub extends PerlValidatorBase
                 throws IOException
             {
                 if (e.getMessage().indexOf("Broken pipe") == 0 ||
-                    e.getMessage().indexOf("Die Pipe wurde beendet") == 0)
+                    e.getMessage().indexOf("Die Pipe ") == 0)
                 {
                     PerlValidatorStub.gotBrokenPipe = true;
                 }

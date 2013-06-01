@@ -5,6 +5,10 @@ Git
 
 		Editor:
 
+Version 0.6.51 - 02-June-2013
+		Debugger:
+		* Fixed Bug #660 Editing of Perl run configurations very slow in big projects		
+		
 Version 0.6.50 - 22-May-2013
 		* Implemented Feature Request #151 Backspace and indentation
 

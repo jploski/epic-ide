@@ -5,6 +5,10 @@ Git
 
 		Editor:
 
+Version 0.6.52 - 08-June-2013
+		Editor:
+		* Fixed Bug #661 Avoid blocking UI when ModuleCompletionHelper is running
+
 Version 0.6.51 - 02-June-2013
 		Debugger:
 		* Fixed Bug #660 Editing of Perl run configurations very slow in big projects		

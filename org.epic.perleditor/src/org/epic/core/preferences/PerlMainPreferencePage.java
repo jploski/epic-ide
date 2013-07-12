@@ -22,6 +22,7 @@ public class PerlMainPreferencePage
 
 	private Text executableText;
 	private Text browserLabelText;
+	private Text debugPreviewKeysText;
 	private Button warningsCheckBox;
 	private Button taintCheckBox;
     private Button debugConsoleCheckBox;
@@ -173,6 +174,25 @@ public class PerlMainPreferencePage
 			PerlEditorPlugin.getDefault().getPreferenceStore().getString(
                 PreferenceConstants.BROWSER_START_URL));
 
+	    // "Object identifying" hash keys for previewing hashes in debugger
+        Composite idKeysComposite = new Composite(top, SWT.NULL);
+        GridLayout idKeysLayout = new GridLayout();
+        idKeysLayout.numColumns = 2;
+        idKeysComposite.setLayout(idKeysLayout);
+        data = new GridData(GridData.FILL_BOTH | GridData.VERTICAL_ALIGN_BEGINNING);
+        idKeysComposite.setLayoutData(data);
+        
+        Label debugPreviewKeysLabel = new Label(browserComposite, SWT.NONE);
+        debugPreviewKeysLabel.setText("Debugger preview keys:");
+        
+        data = new GridData(GridData.FILL_HORIZONTAL);
+        data.grabExcessHorizontalSpace = true;
+        debugPreviewKeysText = new Text(browserComposite, SWT.BORDER);
+        debugPreviewKeysText.setLayoutData(data);
+        debugPreviewKeysText.setText(
+            PerlEditorPlugin.getDefault().getPreferenceStore().getString(
+                PreferenceConstants.DEBUG_PREVIEW_KEYS));
+		
 		Composite syntaxIntervalComposite = new Composite(top, SWT.NULL);
 
 		GridLayout syncIntervalLayout = new GridLayout();
@@ -240,6 +260,8 @@ public class PerlMainPreferencePage
             prefs.getDefaultString(PreferenceConstants.DEBUG_INTERPRETER_TYPE));
 		browserLabelText.setText(
 			prefs.getDefaultString(PreferenceConstants.BROWSER_START_URL));
+        debugPreviewKeysText.setText(
+            prefs.getDefaultString(PreferenceConstants.DEBUG_PREVIEW_KEYS));
 		validateCheckBox.setSelection(
 		    prefs.getDefaultBoolean(PreferenceConstants.EDITOR_SYNTAX_VALIDATION));
         int defaultInterval = prefs.getDefaultInt(
@@ -279,7 +301,10 @@ public class PerlMainPreferencePage
 		prefs.setValue(
             PreferenceConstants.BROWSER_START_URL,
             browserLabelText.getText());
-			
+        prefs.setValue(
+            PreferenceConstants.DEBUG_PREVIEW_KEYS,
+            debugPreviewKeysText.getText());
+		
 		return super.performOk();
 	}
     

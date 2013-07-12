@@ -7,8 +7,7 @@ import org.eclipse.core.resources.IMarkerDelta;
 import org.eclipse.core.runtime.*;
 import org.eclipse.debug.core.*;
 import org.eclipse.debug.core.model.*;
-import org.epic.debug.db.DebuggerInterface;
-import org.epic.debug.db.PerlDebugThread;
+import org.epic.debug.db.*;
 import org.epic.debug.db.DebuggerInterface.SessionTerminatedException;
 import org.epic.debug.ui.action.ShowGlobalVariableActionDelegate;
 import org.epic.debug.ui.action.ShowLocalVariableActionDelegate;
@@ -66,6 +65,8 @@ public class DebugTarget extends PerlTarget
                 this.debugPort = debugPort;
                 this.pathMapper = pathMapper;
                 this.db = createDebuggerInterface();
+                
+                HashKeySorter.init();
                 
                 checkPadWalker();
                 this.thread = new PerlDebugThread(this, db);

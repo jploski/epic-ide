@@ -22,6 +22,13 @@ public class PreferenceConstants
      * Initial URL displayed in the Browser view
      */
     public static final String BROWSER_START_URL = "WEB_BROWSER";
+    
+    /**
+     * Comma-separated list of hash keys to include first in the content
+     * preview of Variables view, useful for ensuring that keys such as
+     * "id", "name" etc. are visible at a glance.
+     */
+    public static final String DEBUG_PREVIEW_KEYS = "PREVIEW_KEYS";
 
     /**
      * Whether or not the experimental debug console should be enabled when

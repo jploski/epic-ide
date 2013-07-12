@@ -5,6 +5,10 @@ Git
 
 		Editor:
 
+Version 0.6.53 - 12-July-2013
+		Editor:
+		* Implemented Feature Request #153 Configurable display order for hash keys in debugger
+
 Version 0.6.52 - 08-June-2013
 		Editor:
 		* Fixed Bug #661 Avoid blocking UI when ModuleCompletionHelper is running

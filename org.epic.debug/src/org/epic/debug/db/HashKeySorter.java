@@ -34,7 +34,7 @@ public class HashKeySorter
             int i = 0;
             while(st.hasMoreTokens())
             {
-                weights.put(st.nextToken().trim(), i++);
+                weights.put(st.nextToken().trim(), new Integer(i++));
             }
         }
     }

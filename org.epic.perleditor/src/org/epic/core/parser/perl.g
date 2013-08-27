@@ -85,7 +85,7 @@ protected SPECIAL_VAR
 	| "$\"" | "$\\"
 
 	| "@+" | "@-" | "@_" | "@$"
-	
+
 	| "%!" | "%@" | "%^H"
 	);
 
@@ -187,7 +187,7 @@ protected SUBST_EXPR
 	{
 		getParent().expectSubstExpr();
 		slashRegexp = qmarkRegexp = false;
-	}; 
+	};
 
 protected MATCH_EXPR
 	: ("qq" | "qx" | "qw" | "qr" | 'm' | 'q')
@@ -384,7 +384,7 @@ OPER_LSHIFT_OR_HEREDOC
 	   { $setType(PerlTokenTypes.OPEN_HEREDOC); }
 	| ("<<=")
 	=> OPER_LSHIFTEQ
-	   { $setToken(createOperatorToken(PerlTokenTypes.OPER_LSHIFTEQ, "<<=")); }	
+	   { $setToken(createOperatorToken(PerlTokenTypes.OPER_LSHIFTEQ, "<<=")); }
 	| ("<<" (WS)? ~('"' | '\'' | '`' | 'A'..'Z'))
 	=> OPER_LSHIFT
 	   { $setToken(createOperatorToken(PerlTokenTypes.OPER_LSHIFT, "<<")); }
@@ -469,9 +469,13 @@ protected WORD
 	: ID
 	{
 		String str = $getText;
-		
+
 		if ("use".equals(str)) $setType(PerlTokenTypes.KEYWORD_USE);
 		else if ("sub".equals(str)) { afterSub = true; $setType(PerlTokenTypes.KEYWORD_SUB); }
+		else if ("func".equals(str) || "method".equals(str))
+		{
+			if (LexerOptions.useMethodSignatures()) { afterSub = true; _ttype = PerlTokenTypes.KEYWORD_SUB; }
+		}
 		else if ("package".equals(str)) { $setType(PerlTokenTypes.KEYWORD_PACKAGE); }
 		else if ("format".equals(str) && !afterSub) { format = true; $setType(PerlTokenTypes.KEYWORD_FORMAT); }
 		else if ("__END__".equals(str)) { $setType(Token.EOF_TYPE); }
@@ -496,7 +500,7 @@ protected WORD
     		}
 		}
 		else glob = false;
-		
+
 		slashRegexp = !(afterArrow || slashRegexp);
 		qmarkRegexp = afterArrow = notOper = false;
 	}
@@ -508,7 +512,7 @@ protected ID
 	{
 		// keep going if we have "::", break on ":"
 		// there must be a better way to implement it X-(
-		if (LA(1) == ':') 
+		if (LA(1) == ':')
 		{
 			if (!afterColon && LA(2) != ':') break;
 			else afterColon = true;

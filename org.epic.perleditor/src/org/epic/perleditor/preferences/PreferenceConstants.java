@@ -22,7 +22,7 @@ public class PreferenceConstants
      * Initial URL displayed in the Browser view
      */
     public static final String BROWSER_START_URL = "WEB_BROWSER";
-
+    
     /**
      * Comma-separated list of hash keys to include first in the content
      * preview of Variables view, useful for ensuring that keys such as
@@ -260,7 +260,7 @@ public class PreferenceConstants
      * Value is of type <code>String</code>. A RGB color value encoded as a
      * string using class <code>PreferenceConverter</code>
      * </p>
-     *
+     * 
      * @see org.eclipse.jface.resource.StringConverter
      * @see org.eclipse.jface.preference.PreferenceConverter
      */
@@ -273,7 +273,7 @@ public class PreferenceConstants
      * Value is of type <code>String</code>. A RGB color value encoded as a
      * string using class <code>PreferenceConverter</code>
      * </p>
-     *
+     * 
      * @see org.eclipse.jface.resource.StringConverter
      * @see org.eclipse.jface.preference.PreferenceConverter
      */
@@ -295,7 +295,7 @@ public class PreferenceConstants
      * Value is of type <code>String</code>. A RGB color value encoded as a
      * string using class <code>PreferenceConverter</code>
      * </p>
-     *
+     * 
      * @see org.eclipse.jface.resource.StringConverter
      * @see org.eclipse.jface.preference.PreferenceConverter
      */
@@ -409,7 +409,7 @@ public class PreferenceConstants
      * Value is of type <code>String</code>. A RGB color value encoded as a
      * string using class <code>PreferenceConverter</code>
      * </p>
-     *
+     * 
      * @see org.eclipse.jface.resource.StringConverter
      * @see org.eclipse.jface.preference.PreferenceConverter
      */
@@ -455,7 +455,7 @@ public class PreferenceConstants
 
     /**
      * Initializes the given preference store with the default values.
-     *
+     * 
      * @param store
      *            the preference store to be initialized
      */

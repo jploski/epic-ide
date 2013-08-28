@@ -4,9 +4,7 @@ import org.epic.perleditor.PerlEditorPlugin;
 import org.epic.perleditor.preferences.PreferenceConstants;
 
 /**
- * Constants used as keys for preferences in org.epic.perleditor plugin's
- * preference store. This class is also responsible for setting the
- * "factory defaults" for all preferences.
+ * A utility class which allows the lexer to refer to options from the editor's preferences page
  */
 public class LexerOptions
 {

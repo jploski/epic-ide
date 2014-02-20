@@ -5,6 +5,11 @@ Git
 
 		Editor:
 
+Version 0.6.54 - 20-February-2014
+		Debugger:
+		* Added $[ to Perl internal variables list to prevent it from appearing in Variables view
+		* Fixed ignored breakpoints in 'require'd files issue discovered during tests with Perl 5.18.2
+
 Version 0.6.53 - 12-July-2013
 		Editor:
 		* Implemented Feature Request #153 Configurable display order for hash keys in debugger

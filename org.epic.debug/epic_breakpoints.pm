@@ -141,6 +141,8 @@ sub _postponed
         {
             $breaks_to_add{$break->{line}} = $break->{cond};
 
+            eval { DB::_set_breakpoint_enabled_status($filename, $break->{line}, 1); };
+
             # force break now if we just entered the file on a line
             # which had a pending breakpoint:            
             $ret = 1 if ($break->{line} == $line);  

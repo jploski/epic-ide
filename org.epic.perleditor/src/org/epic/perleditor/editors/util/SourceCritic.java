@@ -138,8 +138,10 @@ public class SourceCritic extends ScriptExecutor
 
         violation.file = tmp[0];
         violation.severity = parseInt(tmp[1]);
-        violation.lineNumber = parseInt(tmp[2]);
-        violation.column = parseInt(tmp[3]);
+        // Line number and column are sometimes omitted.
+        // Avoid logging this as an error.
+        violation.lineNumber = "".equals(tmp[2])?-1:parseInt(tmp[2]);
+        violation.column = "".equals(tmp[2])?-1:parseInt(tmp[3]);
         violation.message = tmp[4];
         violation.pbp = tmp[5];
         violation.policy = tmp[6];

@@ -63,6 +63,11 @@ public class PreferenceConstants
     public static final String DEBUG_SHOW_WARNINGS = "SHOW_WARNINGS";
 
     /**
+     * Whether or not the lexer should parse 'func' and 'method' as subroutine keywords (from Method::Signatures and the like)
+     */
+    public static final String DEBUG_METHOD_SIGNATURES = "METHOD_SIGNATURES";
+
+    /**
      * Whether or not the debugger should suspend at the first executable
      * statement
      */
@@ -462,6 +467,7 @@ public class PreferenceConstants
             DEBUG_INTERPRETER_TYPE_STANDARD);
         store.setDefault(DEBUG_PERL_EXECUTABLE, "perl"); //$NON-NLS-1$
         store.setDefault(DEBUG_SHOW_WARNINGS, true);
+        store.setDefault(DEBUG_METHOD_SIGNATURES, false);
         store.setDefault(DEBUG_TAINT_MODE, false);
         store.setDefault(DEBUG_DEBUG_CONSOLE, false);
         store.setDefault(DEBUG_SUSPEND_AT_FIRST, true);

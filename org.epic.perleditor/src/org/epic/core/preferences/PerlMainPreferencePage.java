@@ -24,6 +24,7 @@ public class PerlMainPreferencePage
 	private Text browserLabelText;
 	private Text debugPreviewKeysText;
 	private Button warningsCheckBox;
+	private Button methodsCheckBox;
 	private Button taintCheckBox;
     private Button debugConsoleCheckBox;
     private Button suspendAtFirstCheckBox;
@@ -125,6 +126,16 @@ public class PerlMainPreferencePage
                 PreferenceConstants.DEBUG_SHOW_WARNINGS));
 		warningsCheckBox.setLayoutData(data);
 		
+		// Warning preference
+		data = new GridData(GridData.FILL_HORIZONTAL);
+		data.grabExcessHorizontalSpace = true;
+		methodsCheckBox = new Button(top, SWT.CHECK);
+		methodsCheckBox.setText("Enable Method::Signature keywords");
+		methodsCheckBox.setSelection(
+			PerlEditorPlugin.getDefault().getBooleanPreference(
+                PreferenceConstants.DEBUG_METHOD_SIGNATURES));
+		methodsCheckBox.setLayoutData(data);
+
 		// Taint check preference
 		data = new GridData(GridData.FILL_HORIZONTAL);
 		data.grabExcessHorizontalSpace = true;
@@ -250,6 +261,8 @@ public class PerlMainPreferencePage
 			prefs.getDefaultString(PreferenceConstants.DEBUG_PERL_EXECUTABLE));
 		warningsCheckBox.setSelection(
 			prefs.getDefaultBoolean(PreferenceConstants.DEBUG_SHOW_WARNINGS));
+		methodsCheckBox.setSelection(
+			prefs.getDefaultBoolean(PreferenceConstants.DEBUG_METHOD_SIGNATURES));
 		taintCheckBox.setSelection(
             prefs.getDefaultBoolean(PreferenceConstants.DEBUG_TAINT_MODE));
         debugConsoleCheckBox.setSelection(
@@ -280,6 +293,9 @@ public class PerlMainPreferencePage
         prefs.setValue(
             PreferenceConstants.DEBUG_SHOW_WARNINGS,
             warningsCheckBox.getSelection());
+        prefs.setValue(
+            PreferenceConstants.DEBUG_METHOD_SIGNATURES,
+            methodsCheckBox.getSelection());
 		prefs.setValue(
             PreferenceConstants.DEBUG_TAINT_MODE,
 			taintCheckBox.getSelection());

@@ -472,6 +472,10 @@ protected WORD
 		
 		if ("use".equals(str)) $setType(PerlTokenTypes.KEYWORD_USE);
 		else if ("sub".equals(str)) { afterSub = true; $setType(PerlTokenTypes.KEYWORD_SUB); }
+		else if ("func".equals(str) || "method".equals(str))
+		{
+			if (LexerOptions.useMethodSignatures()) { afterSub = true; _ttype = PerlTokenTypes.KEYWORD_SUB; }
+		}
 		else if ("package".equals(str)) { $setType(PerlTokenTypes.KEYWORD_PACKAGE); }
 		else if ("format".equals(str) && !afterSub) { format = true; $setType(PerlTokenTypes.KEYWORD_FORMAT); }
 		else if ("__END__".equals(str)) { $setType(Token.EOF_TYPE); }

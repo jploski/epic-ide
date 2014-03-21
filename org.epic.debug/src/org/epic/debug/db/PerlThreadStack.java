@@ -52,8 +52,17 @@ class PerlThreadStack
                 previousFrames.length > 0
                 ? (StackFrame) previousFrames[0]
                 : null;
-            
-            StackFrame[] frames = new StackFrame[matches.length + 1];
+
+            int skipFirst = 0;
+            if (matches.length > 0) {
+                int firstLineNumber = Integer.parseInt(matches[0].toString(4));
+                if (matches[0].toString(2).startsWith("DB::DB ")
+                        && firstLineNumber == currentIP.getLine()) {
+                    // This is a duplicate, skip.
+                    skipFirst = 1;
+                }
+            }
+            StackFrame[] frames = new StackFrame[matches.length + 1 - skipFirst];
             frames[0] = new StackFrame(
                 thread,
                 currentIP.getPath(),
@@ -63,11 +72,11 @@ class PerlThreadStack
                 previousTopFrame,
                 0);
     
-            for (int pos = 0; pos < matches.length; ++pos)
+            for (int pos = skipFirst; pos < matches.length; ++pos)
             {
                 IPath dbPath = new Path(matches[pos].toString(3));
 
-                frames[pos + 1] = new StackFrame(
+                frames[pos + 1 - skipFirst] = new StackFrame(
                     thread,
                     dbPath,
                     Integer.parseInt(matches[pos].toString(4)),

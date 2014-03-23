@@ -5,6 +5,13 @@ Git
 
 		Editor:
 
+Version 0.6.55 - 23-March-2014
+		Debugger:
+		* Fixed Bug #668 Call stack only shows current context - ActivePerl 5.6.13
+
+		Editor:
+		* Implemented Feature Request #134 "method" keyword should be treated the same as "sub"
+
 Version 0.6.54 - 20-February-2014
 		Debugger:
 		* Added $[ to Perl internal variables list to prevent it from appearing in Variables view

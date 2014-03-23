@@ -35,7 +35,7 @@ class RE
         ENTER_FRAME = newRE("^\\s*entering", false);
         EXIT_FRAME = newRE("^\\s*exited", false);
         STACK_TRACE = newRE(
-            "(.)\\s+=\\s+(.*)called from .* \\`([^\\']+)\\'\\s*line (\\d+)\\s*",
+            "(.)\\s+=\\s+(.*)called from .* [\\`']([^\\']+)\\'\\s*line (\\d+)\\s*",
             false);
     }
 

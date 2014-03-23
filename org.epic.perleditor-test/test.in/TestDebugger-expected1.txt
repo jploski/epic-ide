@@ -65,4 +65,3 @@ key2=REF(3)->ARRAY(3)=[ HASH(3), HASH(3) ], with {[0]=HASH(4)={ key => '1' }, wi
 [2]='3'
 }
 $varname='test123'
-@ISA=[]

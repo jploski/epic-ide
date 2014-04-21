@@ -35,15 +35,13 @@ public abstract class VariablesViewActionDelegate
     public synchronized static void enableVariablesViewActions()
     {
         initActionIdToPreferenceKey();
-        
+            
         IWorkbench workbench = PlatformUI.getWorkbench();
         IWorkbenchWindow[] window = workbench.getWorkbenchWindows();
         for (int i = 0; i < window.length; i++)
         {
-            IWorkbenchPage page = window[i].getActivePage();
-            final IViewPart variablesView = page != null ? page.findView("org.eclipse.debug.ui.VariableView") : null;
-            if (variablesView != null) Display.getDefault().asyncExec(
-                new EnableVariablesViewActions(variablesView));
+            final IWorkbenchPage page = window[i].getActivePage();
+            if (page != null) Display.getDefault().asyncExec(new EnableVariablesViewActions(page));
         }
     }
 
@@ -150,15 +148,18 @@ public abstract class VariablesViewActionDelegate
     
     private static class EnableVariablesViewActions implements Runnable
     {
-        private final IViewPart variablesView;
+        private final IWorkbenchPage page;
     
-        public EnableVariablesViewActions(IViewPart variablesView)
+        public EnableVariablesViewActions(IWorkbenchPage page)
         {
-            this.variablesView = variablesView;
+            this.page = page;
         }
 
         public void run()
         {
+            IViewPart variablesView = page.findView("org.eclipse.debug.ui.VariableView");
+            if (variablesView == null) return;
+            
             IContributionItem[] item = variablesView.getViewSite().getActionBars().getMenuManager().getItems();
             for (int i = 0; i < item.length; i++)
             {

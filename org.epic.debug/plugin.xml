@@ -30,7 +30,7 @@
          point="org.eclipse.ui.console.consolePatternMatchListeners">
       <consolePatternMatchListener
             class="org.epic.debug.ui.PerlConsoleTracker"
-            regex=".*? at (\S+ line \d+)\."
+            regex=".*? at (\S+ line \d+)\.?"
             qualifier="line \d"
             id="org.epic.debug.ui.PerlConsoleTracker">
          <enablement>

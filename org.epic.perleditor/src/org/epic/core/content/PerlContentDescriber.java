@@ -23,7 +23,7 @@ public class PerlContentDescriber implements ITextContentDescriber
         return
             line == null ||
             !line.startsWith("#!") ||
-            !(line.indexOf("perl") != -1) ? INVALID : VALID;
+            !(line.indexOf("perl") != -1) ? INDETERMINATE : VALID;
     }
 
     public int describe(InputStream contents, IContentDescription description) throws IOException

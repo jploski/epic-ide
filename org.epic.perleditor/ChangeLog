@@ -4,6 +4,8 @@ Git
 		Debugger:
 
 		Editor:
+		
+Version 0.6.56 - 29-October-2014		
 		* Fixed Bug #676 Template insertion does not honor the project's new text file delimiter
 
 Version 0.6.55 - 23-March-2014

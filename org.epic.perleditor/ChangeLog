@@ -2,9 +2,11 @@ Eclipse Perl Integration:
 
 Git
 		Debugger:
-
-		Editor:
+		* Implemented Feature Request #156 Change Perl CGI file lookup or settings to load the right file
 		
+		Editor:
+
+
 Version 0.6.56 - 29-October-2014		
 		* Fixed Bug #676 Template insertion does not honor the project's new text file delimiter
 

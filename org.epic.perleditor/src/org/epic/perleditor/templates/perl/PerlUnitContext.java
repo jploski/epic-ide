@@ -7,6 +7,7 @@ package org.epic.perleditor.templates.perl;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.text.TextUtilities;
 import org.epic.perleditor.templates.*;
 
 /**
@@ -70,8 +71,12 @@ public class PerlUnitContext extends DocumentTemplateContext
     {
         if (!canEvaluate(template)) return null;
 
+		// make sure line delimiters match to what's supposed to be used in the document.
+        String pattern = template.getPattern();
+		pattern = pattern.replaceAll("\\r\\n|\\r|\\n", TextUtilities.getDefaultLineDelimiter(this.getDocument()));
+
         TemplateTranslator translator = new TemplateTranslator();
-        TemplateBuffer buffer = translator.translate(template.getPattern());
+		TemplateBuffer buffer = translator.translate(pattern);
 
         getContextType().edit(buffer, this);
 

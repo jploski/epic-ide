@@ -64,10 +64,7 @@ public class TemplateProposal implements IPerlCompletionProposal
 			
 			// insert template string
             templateBuffer.indent(getLineIndent(document, region.getOffset())); 
-			String templateString = templateBuffer.getString();
-			// make sure line delimiters match to what's supposed to be used in the document.
-			templateString = templateString.replaceAll("\\r\\n|\\r|\\n", TextUtilities.getDefaultLineDelimiter(document));
-			document.replace(start, end - start, templateString);	
+			document.replace(start, end - start, templateBuffer.getString());	
 
 			// translate positions
 			LinkedPositionManager manager = new LinkedPositionManager(document);

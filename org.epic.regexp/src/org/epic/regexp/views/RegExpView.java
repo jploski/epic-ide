@@ -36,6 +36,7 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.part.ViewPart;
+import org.epic.regexp.views.RegExpView.SubexpressionPos;
 
 public class RegExpView extends ViewPart {
 
@@ -50,11 +51,11 @@ public class RegExpView extends ViewPart {
 
 	class DebugInfo {
 
-		private List subexpressions = new ArrayList();
+		private List<SubexpressionPos> subexpressions = new ArrayList<SubexpressionPos>();
 
-		private List bracketsInRegexp = new ArrayList();
+		private List<SubexpressionPos> bracketsInRegexp = new ArrayList<SubexpressionPos>();
 
-		private List allMatches = new ArrayList();
+		private List<REMatch> allMatches = new ArrayList<REMatch>();
 
 		private String input;
 
@@ -196,7 +197,7 @@ public class RegExpView extends ViewPart {
 
 	private Composite panel;
 
-	private List colorTable = new ArrayList();
+	private List<Color> colorTable = new ArrayList<Color>();
 
 	private Action validateAction, cutAction, copyAction, pasteAction;
 

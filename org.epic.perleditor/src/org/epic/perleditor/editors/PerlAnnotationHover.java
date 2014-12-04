@@ -36,11 +36,11 @@ public class PerlAnnotationHover implements IAnnotationHover {
 		
 		IResource resource = (IResource) ((IAdaptable) fTextEditor.getEditorInput()).getAdapter(IResource.class);
 		
-		List markers = MarkerUtil.getMarkersForLine(resource, line+1);
+		List<IMarker> markers = MarkerUtil.getMarkersForLine(resource, line+1);
 		if (markers != null) {
 			info = "";
 			for (int i =  0; i < markers.size(); i++) {
-				IMarker marker = (IMarker) markers.get(i);
+				IMarker marker = markers.get(i);
 				String message =
 					marker.getAttribute(IMarker.MESSAGE, (String) null);
 				if (message != null && message.trim().length() > 0) {

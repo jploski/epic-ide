@@ -110,7 +110,7 @@ public class CustomBrowser implements IBrowser
 	 */
 	private String[] prepareCommand(String path, String url)
 	{
-		ArrayList tokenList = new ArrayList();
+		ArrayList<String> tokenList = new ArrayList<String>();
 		//Divide along quotation marks
 		StringTokenizer qTokenizer =
 			new StringTokenizer(path.trim(), "\"", true);
@@ -150,7 +150,7 @@ public class CustomBrowser implements IBrowser
 		boolean substituted = false;
 		for (int i = 0; i < tokenList.size(); i++)
 		{
-			String token = (String) tokenList.get(i);
+			String token = tokenList.get(i);
 			if ("%1".equals(token))
 			{
 				tokenList.set(i, url);

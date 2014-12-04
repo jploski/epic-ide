@@ -84,9 +84,9 @@ public class ModuleCompletionHelper  {
         PerlExecutor executor = new PerlExecutor();
         try
         {
-            List names =
+            List<String> names =
                 executor.execute(textEditor, null, perlCode).getStdoutLines();
-            moduleNames = (String[]) names.toArray(new String[names.size()]);
+            moduleNames = names.toArray(new String[names.size()]);
         }
         finally {
             executor.dispose(); 
@@ -98,7 +98,7 @@ public class ModuleCompletionHelper  {
 			String moduleNameFragment, int documentOffset,
 			ITextViewer viewer
 	) {
-		ArrayList al = new ArrayList();
+		ArrayList<ModuleProposal> al = new ArrayList<ModuleProposal>();
 
 		for (int loop = 0; loop < moduleNames.length; loop++) {
 			String moduleName = moduleNames[loop];
@@ -112,7 +112,7 @@ public class ModuleCompletionHelper  {
 			}
 		}
 
-		return (ICompletionProposal[]) al.toArray(new ICompletionProposal[0]);
+		return al.toArray(new ICompletionProposal[0]);
 	}
 	
 	class ModuleProposal implements ICompletionProposal {

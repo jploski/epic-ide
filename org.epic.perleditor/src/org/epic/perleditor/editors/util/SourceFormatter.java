@@ -39,7 +39,7 @@ public class SourceFormatter extends ScriptExecutor
     public static String format(String toFormat, ILog log)
         throws CoreException
     {
-        return format(toFormat, Collections.EMPTY_LIST, log);
+        return format(toFormat, Collections.emptyList(), log);
     }
 
     /**
@@ -52,7 +52,7 @@ public class SourceFormatter extends ScriptExecutor
      * @return newly formatted source code, or the original source code if the source could not be
      *         formatted
      */
-    public static String format(String toFormat, List additionalArgs, ILog log)
+    public static String format(String toFormat, List<String> additionalArgs, ILog log)
         throws CoreException
     {
         ProcessOutput out = new SourceFormatter(log).run(toFormat, additionalArgs);
@@ -94,7 +94,7 @@ public class SourceFormatter extends ScriptExecutor
     /*
      * @see org.epic.core.util.ScriptExecutor#getCommandLineOpts(java.util.List)
      */
-    protected List getCommandLineOpts(List additionalOptions)
+    protected List<String> getCommandLineOpts(List<String> additionalOptions)
     {
         IPreferenceStore store = new ChainedPreferenceStore(new IPreferenceStore[] {
             EditorsUI.getPreferenceStore(),
@@ -119,7 +119,7 @@ public class SourceFormatter extends ScriptExecutor
         // int containerTightnessSquareBrackets =
         // store.getInt(SourceFormatterPreferences.CONTAINER_TIGHTNESS_SQUARE_BRACKETS);
 
-        List args = new ArrayList();
+        List<String> args = new ArrayList<String>();
 
         // args.add("perltidy");
         args.add("-q");

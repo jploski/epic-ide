@@ -43,7 +43,7 @@ public class PerlRegExpBreakpoint extends PerlLineBreakpoint {
 	}
 
 	public PerlRegExpBreakpoint(IResource resource, int lineNumber,
-			int charStart, int charEnd, boolean add, Map attributes)
+			int charStart, int charEnd, boolean add, Map<?, ?> attributes)
 			throws DebugException, CoreException {
 		//super(resource, lineNumber, charStart, charEnd, add, attributes);
 		//	mResource = resource;

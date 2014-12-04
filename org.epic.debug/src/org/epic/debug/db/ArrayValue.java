@@ -38,8 +38,8 @@ class ArrayValue extends PerlValue
     private IVariable[] parseArrayContent(String content) throws DebugException
     {
         DumpedEntityReader r = new DumpedEntityReader(content);
-        List slices = null;
-        List vars = new ArrayList();
+        List<ArraySlice> slices = null;
+        List<ArrayElement> vars = new ArrayList<ArrayElement>();
         
         try
         {
@@ -55,21 +55,21 @@ class ArrayValue extends PerlValue
                 
                 if (vars.size() == 1000)
                 {
-                	if (slices == null) slices = new ArrayList();
+                	if (slices == null) slices = new ArrayList<ArraySlice>();
                 	slices.add(new ArraySlice(getHolder(), vars, sliceStartI));
                 	sliceStartI = i;
-                	vars = new ArrayList();
+                	vars = new ArrayList<ArrayElement>();
                 }
             }
             if (slices != null)
             {
             	if (!vars.isEmpty())
             		slices.add(new ArraySlice(getHolder(), vars, sliceStartI));
-            	return (IVariable[]) slices.toArray(new IVariable[slices.size()]);
+            	return slices.toArray(new IVariable[slices.size()]);
             }
             else
             {
-            	return (IVariable[]) vars.toArray(new IVariable[vars.size()]);
+            	return vars.toArray(new IVariable[vars.size()]);
             }
         }
         catch (Exception e)

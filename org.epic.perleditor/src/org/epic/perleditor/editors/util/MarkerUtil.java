@@ -6,6 +6,7 @@
  */
 package org.epic.perleditor.editors.util;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -156,7 +157,7 @@ public class MarkerUtil {
 	 * @param attributes	Marker attributes
 	 * @param markerType Marker type
 	 */
-	public void addMarker(Map attributes, String markerType) {
+	public void addMarker(Map<String, Serializable> attributes, String markerType) {
 		attributes.put(EPIC_MARKER_USED_FLAG, Boolean.TRUE);
 		AddEditorMarker ed = new AddEditorMarker();
 		ed.addMarker(fResource, attributes, markerType);
@@ -184,7 +185,7 @@ public class MarkerUtil {
 	public boolean isMarkerPresent(String makerType, int line, String text, String additionalAttribute, boolean setUsedFlag) {
 		boolean found = false;
 
-		List markers = getMarkersForLine(fResource, line);
+		List<IMarker> markers = getMarkersForLine(fResource, line);
 	   for(int i = 0; i < markers.size(); i++) {
 	   		Marker marker = (Marker) markers.get(i);
 	   		String markerText = marker.getAttribute(IMarker.MESSAGE, (String) null);
@@ -229,8 +230,8 @@ public class MarkerUtil {
 	 * @param aLine The line number
 	 * @return List of all makers for given line
 	 */
-	public static List getMarkersForLine(IResource resource, int aLine) {
-		List markers = new ArrayList();
+	public static List<IMarker> getMarkersForLine(IResource resource, int aLine) {
+		List<IMarker> markers = new ArrayList<IMarker>();
 		try {
 			IMarker[] allMarkers = resource.findMarkers(null, true, IResource.DEPTH_ONE);
 			for(int i = 0; i < allMarkers.length; i++) {

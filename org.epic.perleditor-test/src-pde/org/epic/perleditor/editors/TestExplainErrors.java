@@ -4,6 +4,7 @@ import java.util.Iterator;
 
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jface.text.source.Annotation;
 import org.eclipse.jface.text.source.IAnnotationModel;
 import org.eclipse.jface.text.source.IVerticalRuler;
 import org.eclipse.swt.graphics.Point;
@@ -52,7 +53,8 @@ public class TestExplainErrors extends BasePDETestCase
     
     private IMarker getErrorMarker(IAnnotationModel model)
     {
-        for (Iterator i = model.getAnnotationIterator(); i.hasNext();)
+        for (@SuppressWarnings("unchecked")
+		Iterator<Annotation> i = model.getAnnotationIterator(); i.hasNext();)
         {
             Object obj = i.next();
             if (obj instanceof MarkerAnnotation)

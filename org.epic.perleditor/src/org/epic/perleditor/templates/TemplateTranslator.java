@@ -38,9 +38,9 @@ public class TemplateTranslator {
 	/** a buffer for the translation result string */
     private final StringBuffer fBuffer= new StringBuffer();    
     /** position offsets of variables */
-    private final Vector fOffsets= new Vector();
+    private final Vector<Integer> fOffsets= new Vector<Integer>();
     /** position lengths of variables */
-    private final Vector fLengths= new Vector();
+    private final Vector<Integer> fLengths= new Vector<Integer>();
 
 	/** the current parsing state */
     private int fState;    
@@ -97,8 +97,8 @@ public class TemplateTranslator {
 		int[] lengths= new int[fLengths.size()];
 		
 		for (int i= 0; i < fOffsets.size(); i++) {
-			offsets[i]= ((Integer) fOffsets.get(i)).intValue();
-			lengths[i]= ((Integer) fLengths.get(i)).intValue();
+			offsets[i]= fOffsets.get(i).intValue();
+			lengths[i]= fLengths.get(i).intValue();
 		}
 
 		String translatedString= fBuffer.toString();
@@ -109,16 +109,16 @@ public class TemplateTranslator {
 	
 	private static TemplatePosition[] findVariables(String string, int[] offsets, int[] lengths) {
 
-		Map map= new HashMap();
+		Map<String, Vector<Integer>> map= new HashMap<String, Vector<Integer>>();
 		
 		for (int i= 0; i != offsets.length; i++) {
 		    int offset= offsets[i];
 		    int length= lengths[i];
 		    
 		    String content= string.substring(offset, offset + length);
-		    Vector vector= (Vector) map.get(content);
+		    Vector<Integer> vector= map.get(content);
 		    if (vector == null) {
-		    	vector= new Vector();
+		    	vector= new Vector<Integer>();
 		    	map.put(content, vector);
 		    }		    
 		    vector.add(new Integer(offset));
@@ -127,14 +127,14 @@ public class TemplateTranslator {
 		TemplatePosition[] variables= new TemplatePosition[map.size()];
 		int k= 0;
 		
-		Set keys= map.keySet();
-		for (Iterator i= keys.iterator(); i.hasNext(); ) {
-			String name= (String) i.next();			
-			Vector vector= (Vector) map.get(name);
+		Set<String> keys= map.keySet();
+		for (Iterator<String> i= keys.iterator(); i.hasNext(); ) {
+			String name= i.next();			
+			Vector<Integer> vector= map.get(name);
 			
 			int[] offsets_= new int[vector.size()];
 			for (int j= 0; j != offsets_.length; j++)
-				offsets_[j]= ((Integer) vector.get(j)).intValue();
+				offsets_[j]= vector.get(j).intValue();
 				
 			variables[k]= new TemplatePosition(name, name, offsets_, name.length());
 			k++;
@@ -187,7 +187,7 @@ public class TemplateTranslator {
 			case IDENTIFIER:
 				switch (ch) {
 				case IDENTIFIER_END:
-					int offset = ((Integer) fOffsets.get(fOffsets.size() - 1)).intValue();
+					int offset = fOffsets.get(fOffsets.size() - 1).intValue();
 					fLengths.add(new Integer(fBuffer.length() - offset));
 					fState= TEXT;
 					break;

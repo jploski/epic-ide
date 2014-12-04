@@ -310,12 +310,12 @@ public class DebugTarget extends PerlTarget
         }
     }
     
-    private List getEffectiveIncPath(DebuggerInterface db)
+    private List<IPath> getEffectiveIncPath(DebuggerInterface db)
         throws DebugException
     {
         try
         {
-            List ret = new ArrayList();
+            List<IPath> ret = new ArrayList<IPath>();
             String output = db.eval(
                 ";{foreach $t(@INC) {print $DB::OUT $t.\"\\n\";}}");
         

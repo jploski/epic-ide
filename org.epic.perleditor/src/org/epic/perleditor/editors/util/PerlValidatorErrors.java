@@ -15,7 +15,7 @@ import org.epic.core.ResourceMessages;
  */ 
 public class PerlValidatorErrors
 {
-    private final Set errorMessages;
+    private final Set<ErrorMessage> errorMessages;
     private final ErrorMessage unknownErrorMessage;
     
     public PerlValidatorErrors()
@@ -25,7 +25,7 @@ public class PerlValidatorErrors
             ResourceMessages.getString("PerlValidatorErrors.unknownErrorMessage.descr"),
             true);
         
-        errorMessages = new HashSet();
+        errorMessages = new HashSet<ErrorMessage>();
         
         ResourceBundle errorBundle = ResourceBundle.getBundle(
             "org.epic.perleditor.editors.errorsAndWarnings");
@@ -37,9 +37,9 @@ public class PerlValidatorErrors
         re3 = Pattern.compile("%\\.[0-9]s");
 
         // Populate the error messages hash
-        for (Enumeration e = errorBundle.getKeys(); e.hasMoreElements();)
+        for (Enumeration<String> e = errorBundle.getKeys(); e.hasMoreElements();)
         {
-            String key = (String) e.nextElement();
+            String key = e.nextElement();
             String value = errorBundle.getString(key);
             
             int tabIndex = value.indexOf("\t");
@@ -66,9 +66,9 @@ public class PerlValidatorErrors
      */
     public ErrorMessage getErrorMessage(String line)
     {
-        for (Iterator i = errorMessages.iterator(); i.hasNext();)
+        for (Iterator<ErrorMessage> i = errorMessages.iterator(); i.hasNext();)
         {
-            ErrorMessage errorMessage = (ErrorMessage) i.next();
+            ErrorMessage errorMessage = i.next();
             if (errorMessage.matches(line)) return errorMessage;
         }
         return unknownErrorMessage;

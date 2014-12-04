@@ -98,7 +98,7 @@ public class PerlNewProjectCreationPage extends WizardNewProjectCreationPage
 			public void widgetSelected(SelectionEvent event)
 			{
 				String moduleStarterID = ModuleStarterPreferencePage.MODULE_STARTER_PREF_ID;
-				Map data = new HashMap();
+				Map<String, Boolean> data = new HashMap<String, Boolean>();
 				data.put("PropertyAndPreferencePage.nolink", Boolean.TRUE); //$NON-NLS-1$
 				PreferencesUtil.createPreferenceDialogOn(getShell(),
 				    moduleStarterID, new String[] { moduleStarterID }, data)

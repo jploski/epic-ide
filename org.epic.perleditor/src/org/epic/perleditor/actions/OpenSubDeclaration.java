@@ -29,9 +29,9 @@ class OpenSubDeclaration extends AbstractOpenDeclaration
     
     protected IRegion findDeclaration(SourceFile sourceFile, String subName)
     {
-        for (Iterator i = sourceFile.getSubs(); i.hasNext();)
+        for (Iterator<Subroutine> i = sourceFile.getSubs(); i.hasNext();)
         {
-            Subroutine sub = (Subroutine) i.next();
+            Subroutine sub = i.next();
             if (sub.getName().equals(subName))
                 return new Region(sub.getOffset(), sub.getLength());
         }

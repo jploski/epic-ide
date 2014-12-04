@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+
 //import net.sourceforge.phpdt.internal.corext.textmanipulation.TextEditNode.RootNode;
 import org.epic.perleditor.templates.textmanipulation.TextEditNode.RootNode;
 import org.eclipse.core.runtime.CoreException;
@@ -34,7 +35,7 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 public class TextBufferEditor {
 		
 	private TextBuffer fBuffer;
-	private List fEdits;
+	private List<TextEdit> fEdits;
 	private RootNode fRootNode;
 	private int fNumberOfNodes;
 	private int fConnectCount;
@@ -53,7 +54,7 @@ public class TextBufferEditor {
 	public TextBufferEditor(TextBuffer buffer) {
 		fBuffer= buffer;
 	//	Assert.isNotNull(fBuffer);
-		fEdits= new ArrayList();
+		fEdits= new ArrayList<TextEdit>();
 	}
 	
 	/**
@@ -109,10 +110,10 @@ public class TextBufferEditor {
 	 */
 	public void add(UndoMemento undo) throws CoreException {
 	//	Assert.isTrue(fMode == UNDEFINED);
-		List list= undo.fEdits;
+		List<TextEdit> list= undo.fEdits;
 		// Add them reverse since we are adding undos.
 		for (int i= list.size() - 1; i >= 0; i--) {
-			internalAdd((TextEdit)list.get(i));			
+			internalAdd(list.get(i));			
 		}
 		fMode= undo.fMode;
 	}
@@ -192,7 +193,7 @@ public class TextBufferEditor {
 	private RootNode buildTree() {
 		TextEditNode[] nodes= new TextEditNode[fEdits.size()];
 		for (int i= fEdits.size() - 1; i >= 0; i--) {
-			nodes[i]= TextEditNode.create((TextEdit)fEdits.get(i));
+			nodes[i]= TextEditNode.create(fEdits.get(i));
 		}
 		fNumberOfNodes= nodes.length;
 		Arrays.sort(nodes, new TextEditNodeComparator());

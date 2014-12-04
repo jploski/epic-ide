@@ -13,23 +13,23 @@ import org.eclipse.core.runtime.CoreException;
 
 public class MultiTextEdit {
 
-	private List fChildren;
+	private List<Object> fChildren;
 
 	/**
 	 * Creates a new composite text edit.
 	 */
 	public MultiTextEdit() {
-		fChildren= new ArrayList(3);
+		fChildren= new ArrayList<Object>(3);
 	}
 
-	protected MultiTextEdit(List children) throws CoreException {
-		fChildren= new ArrayList(children.size());
-		for (Iterator iter= children.iterator(); iter.hasNext();) {
+	protected MultiTextEdit(List<Object> children) throws CoreException {
+		fChildren= new ArrayList<Object>(children.size());
+		for (Iterator<Object> iter= children.iterator(); iter.hasNext();) {
 			fChildren.add(((TextEdit)iter.next()).copy());
 		}
 	}
 	
-	protected List getChildren() {
+	protected List<Object> getChildren() {
 		return fChildren;
 	}
 	
@@ -58,7 +58,7 @@ public class MultiTextEdit {
 	 * 
 	 * @return the children of this composite text edit
 	 */
-	public Iterator iterator() {
+	public Iterator<Object> iterator() {
 		return fChildren.iterator();
 	}
 
@@ -73,7 +73,7 @@ public class MultiTextEdit {
 	 * @param editor the text buffer editor this text edit has been added to
 	 */
 	public void connect(TextBufferEditor editor) throws CoreException {
-		for (Iterator iter= fChildren.iterator(); iter.hasNext();) {
+		for (Iterator<Object> iter= fChildren.iterator(); iter.hasNext();) {
 			Object element= iter.next();
 			if (element instanceof TextEdit)
 				editor.add((TextEdit)element);

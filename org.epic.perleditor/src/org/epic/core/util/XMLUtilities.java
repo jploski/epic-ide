@@ -24,7 +24,7 @@ public class XMLUtilities
     
     public String[] getIgnoredEntries(IProject project)
     {
-        List ignores = new ArrayList();
+        List<String> ignores = new ArrayList<String>();
         try
         {
             String fileName = project.getLocation().toString() + File.separator + IGNORE_FILE_NAME;
@@ -51,7 +51,7 @@ public class XMLUtilities
             e.printStackTrace();
         }
 
-        return (String[]) ignores.toArray(new String[ignores.size()]);
+        return ignores.toArray(new String[ignores.size()]);
     }
 
     public String[] getIncludeEntries(IProject project)
@@ -61,7 +61,7 @@ public class XMLUtilities
 
     public String[] getIncludeEntries(IProject project, boolean replaceVariables)
     {
-        List includes = new ArrayList();
+        List<String> includes = new ArrayList<String>();
         try
         {
             String fileName = project.getLocation().toString() + File.separator
@@ -125,7 +125,7 @@ public class XMLUtilities
             e.printStackTrace();
         }
 
-        return (String[]) includes.toArray(new String[includes.size()]);
+        return includes.toArray(new String[includes.size()]);
     }
 
     public void writeIgnoredEntries(IProject project, String[] items)

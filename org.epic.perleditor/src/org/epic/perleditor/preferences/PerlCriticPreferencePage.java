@@ -2,9 +2,7 @@ package org.epic.perleditor.preferences;
 
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.runtime.Assert;
-
 import org.eclipse.jface.preference.PreferencePage;
-
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
@@ -17,17 +15,13 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Text;
-
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
-
 import org.epic.core.builders.PerlCriticBuilderHelper;
 import org.epic.core.util.WidgetUtils;
-
 import org.epic.perleditor.PerlEditorPlugin;
 
 import java.io.File;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -52,7 +46,7 @@ public class PerlCriticPreferencePage extends PreferencePage implements IWorkben
 
     private Button jobEnabledButton;
 
-    private List errors = new ArrayList(5);
+    private List<String> errors = new ArrayList<String>(5);
     private Button useCustomButton;
 
     private Button useDefaultButton;
@@ -277,7 +271,7 @@ public class PerlCriticPreferencePage extends PreferencePage implements IWorkben
         }
         else
         {
-            addErrorMessage((String) errors.get(errors.size() - 1));
+            addErrorMessage(errors.get(errors.size() - 1));
         }
     }
 

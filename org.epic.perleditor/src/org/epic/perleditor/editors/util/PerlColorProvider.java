@@ -8,19 +8,19 @@ import org.eclipse.swt.widgets.Display;
 
 public class PerlColorProvider
 {
-    private final Map colors;
+    private final Map<RGB, Color> colors;
     
     public PerlColorProvider()
     {
-        colors = new HashMap();
+        colors = new HashMap<RGB, Color>();
     }
     
     public synchronized void dispose()
     {
-        for (Iterator i = colors.keySet().iterator(); i.hasNext();)
+        for (Iterator<RGB> i = colors.keySet().iterator(); i.hasNext();)
         {
             Object key = i.next();
-            ((Color) colors.get(key)).dispose();
+            colors.get(key).dispose();
             i.remove();
         }
     }
@@ -30,7 +30,7 @@ public class PerlColorProvider
 	 */
 	public synchronized Color getColor(RGB rgb)
     {
-        Color c = (Color) colors.get(rgb);
+        Color c = colors.get(rgb);
         if (c == null)
         {
             c = new Color(Display.getCurrent(), rgb);

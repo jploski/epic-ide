@@ -40,10 +40,10 @@ public class TestCommandLineTokenizer extends BaseTestCase
     
     private void _test(String in, String out)
     {        
-        List ret = CommandLineTokenizer.tokenize(in);
+        List<String> ret = CommandLineTokenizer.tokenize(in);
         StringBuffer buf = new StringBuffer();
 
-        for (Iterator i = ret.iterator(); i.hasNext();)
+        for (Iterator<String> i = ret.iterator(); i.hasNext();)
         {
             buf.append(i.next());
             if (i.hasNext()) buf.append(',');

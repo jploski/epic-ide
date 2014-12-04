@@ -85,9 +85,9 @@ public class PerlOutlinePage extends ContentOutlinePage
             || caretLine > lastCaretSub.getEndLine())
         {
             lastCaretSub = null;
-            for (Iterator i = source.getSubs(); i.hasNext();)
+            for (Iterator<Subroutine> i = source.getSubs(); i.hasNext();)
             {
-                Subroutine sub = (Subroutine) i.next();
+                Subroutine sub = i.next();
                 if (caretLine >= sub.getStartLine()
                     && caretLine <= sub.getEndLine())
                 {

@@ -3,12 +3,14 @@ package org.epic.perleditor.editors;
 import java.util.ListIterator;
 import java.util.NoSuchElementException;
 
+import org.epic.core.parser.PerlToken;
+
 /**
  * An implementation of ListIterator to traverse a {@link TokensList}.
  * 
  * @author jploski
  */
-class TokensListIterator implements ListIterator
+class TokensListIterator implements ListIterator<PerlToken>
 {
     private TokensList list;
     private int index;
@@ -49,24 +51,24 @@ class TokensListIterator implements ListIterator
         return index-1 >= 0;
     }
 
-    public Object next()
+    public PerlToken next()
     {
         if (!hasNext()) throw new NoSuchElementException();
         return list.get(++index);
     }
 
-    public Object previous()
+    public PerlToken previous()
     {
         if (!hasPrevious()) throw new NoSuchElementException();
         return list.get(--index);
     }
 
-    public void add(Object o)
+    public void add(PerlToken o)
     {
         throw new UnsupportedOperationException();            
     }
 
-    public void set(Object o)
+    public void set(PerlToken o)
     {
         throw new UnsupportedOperationException();
     }        

@@ -29,7 +29,7 @@ public class IdleTimer extends Thread
 {
 	private final ISourceViewer sourceViewer;
     private final Display display;
-    private final List listeners = new ArrayList();
+    private final List<IdleTimerListener> listeners = new ArrayList<IdleTimerListener>();
 
     private long lastChange = -1L;
 	private int waitForTermination = 1000; // millis

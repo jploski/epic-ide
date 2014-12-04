@@ -15,7 +15,7 @@ import org.eclipse.jface.text.source.IAnnotationModelListener;
  */
 public class MockAnnotationModel implements IAnnotationModel
 {
-    private Map map = new HashMap();
+    private Map<Annotation, Position> map = new HashMap<Annotation, Position>();
 
     /** @returns the number of annotations held in the model */
     public int size()
@@ -58,7 +58,7 @@ public class MockAnnotationModel implements IAnnotationModel
     /*
      * @see org.eclipse.jface.text.source.IAnnotationModel#getAnnotationIterator()
      */
-    public Iterator getAnnotationIterator()
+    public Iterator<Annotation> getAnnotationIterator()
     {
         throw new RuntimeException("unimplemented");
     }
@@ -68,7 +68,7 @@ public class MockAnnotationModel implements IAnnotationModel
      */
     public Position getPosition(Annotation annotation)
     {
-        return (Position) map.get(annotation);
+        return map.get(annotation);
     }
 
     /*

@@ -30,9 +30,9 @@ class OpenPackageDeclaration extends AbstractOpenDeclaration
     
     protected IRegion findDeclaration(SourceFile sourceFile, String moduleName)
     {
-        for (Iterator i = sourceFile.getPackages().iterator(); i.hasNext();)
+        for (Iterator<Package> i = sourceFile.getPackages().iterator(); i.hasNext();)
         {
-            Package pkg = (Package) i.next();           
+            Package pkg = i.next();           
             if (pkg.getName().equals(moduleName))
                 return new Region(pkg.getOffset(), pkg.getLength());
         }

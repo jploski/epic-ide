@@ -303,14 +303,14 @@ public class ListEditor extends FieldEditor
 			list.removeAll();
 			count = 0;
 
-			ArrayList envs = null;
+			java.util.List<String> envs = null;
 
 			try
 			{
 				envs =
-					(ArrayList) fLaunch.getAttribute(
+					fLaunch.getAttribute(
 						PerlLaunchConfigurationConstants.ATTR_CGI_ENV,
-						(ArrayList) null);
+						(ArrayList<String>) null);
 			} catch (CoreException e1)
 			{
 				// TODO Auto-generated catch block
@@ -345,7 +345,7 @@ public class ListEditor extends FieldEditor
 		{
 
 			String[] vars = list.getItems();
-			ArrayList al = new ArrayList();
+			ArrayList<String> al = new ArrayList<String>();
 
 			for (int i = 0; i < vars.length; i++)
 			{

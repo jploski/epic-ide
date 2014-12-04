@@ -20,6 +20,7 @@ import org.epic.core.model.Package;
 import org.epic.core.util.FileUtilities;
 import org.epic.perleditor.PerlEditorPlugin;
 import org.epic.perleditor.editors.*;
+import org.epic.perleditor.editors.perl.SourceElement;
 import org.epic.perleditor.editors.perl.SourceParser;
 
 /**
@@ -197,7 +198,7 @@ abstract class AbstractOpenDeclaration
                 searchString,
                 getCurrentDir(),
                 getEditor().getSourceFile().getDocument(),
-                new HashSet());
+                new HashSet<File>());
             if (res.isFound()) return res;
         }
         return Result.notFound(searchString);
@@ -257,11 +258,11 @@ abstract class AbstractOpenDeclaration
         
         String fileSep = File.separatorChar == '\\' ? "\\\\" : File.separator;
         String modulePath = moduleName.replaceAll("::", fileSep) + ".pm";
-        List dirs = getProject().getEffectiveIncPath();
+        List<File> dirs = getProject().getEffectiveIncPath();
         
-        for (Iterator i = dirs.iterator(); i.hasNext();)
+        for (Iterator<File> i = dirs.iterator(); i.hasNext();)
         {
-            File dir = (File) i.next();
+            File dir = i.next();
             if (".".equals(dir.getName())) dir = getCurrentDir();
             File f = new File(dir, modulePath);
             if (f.exists() && f.isFile()) return f;
@@ -280,13 +281,13 @@ abstract class AbstractOpenDeclaration
     private File[] findRequiredFiles(File fromDir, IDocument source) throws CoreException
     {        
         String text = source.get();
-        List elems =
+        List<SourceElement> elems =
             SourceParser.getElements(text, REQUIRE_REG_EXPR, "", "", true);
-        List requiredFiles = new ArrayList();
+        List<File> requiredFiles = new ArrayList<File>();
         
-        for (Iterator i = elems.iterator(); i.hasNext();)
+        for (Iterator<SourceElement> i = elems.iterator(); i.hasNext();)
         {
-            ISourceElement elem = (ISourceElement) i.next();
+            SourceElement elem = i.next();
             String elemText = elem.getName();
             
             if (elemText.indexOf("\"") != -1 ||
@@ -313,7 +314,7 @@ abstract class AbstractOpenDeclaration
                 }
             }                
         }
-        return (File[]) requiredFiles.toArray(new File[requiredFiles.size()]);
+        return requiredFiles.toArray(new File[requiredFiles.size()]);
     }
     
     /**
@@ -322,14 +323,14 @@ abstract class AbstractOpenDeclaration
      */
     private String[] findUsedModules(SourceFile sourceFile) throws CoreException
     {
-        List names = new ArrayList();
-        for (Iterator j = sourceFile.getPackages().iterator(); j.hasNext();)
+        List<String> names = new ArrayList<String>();
+        for (Iterator<?> j = sourceFile.getPackages().iterator(); j.hasNext();)
         {
             Package pkg = (Package) j.next();
-            for (Iterator i = pkg.getUses().iterator(); i.hasNext();)
-                names.add(((ISourceElement) i.next()).getName());
+            for (Iterator<ModuleUse> i = pkg.getUses().iterator(); i.hasNext();)
+                names.add(i.next().getName());
         }
-        return (String[]) names.toArray(new String[names.size()]);
+        return names.toArray(new String[names.size()]);
     }
 
     /**
@@ -358,16 +359,16 @@ abstract class AbstractOpenDeclaration
      */
     private String[] findParents(SourceFile sourceFile) throws CoreException
     {
-        List names = new ArrayList();
-        for (Iterator j = sourceFile.getPackages().iterator(); j.hasNext();)
+        List<String> names = new ArrayList<String>();
+        for (Iterator<Package> j = sourceFile.getPackages().iterator(); j.hasNext();)
         {
-            Package pkg = (Package) j.next();
-            for (Iterator i = pkg.getParents().iterator(); i.hasNext();) {
-                String parentName = ((ISourceElement) i.next()).getName();
+            Package pkg = j.next();
+            for (Iterator<ModuleUse> i = pkg.getParents().iterator(); i.hasNext();) {
+                String parentName = i.next().getName();
                 names.add(parentName);
             }
         }
-        return (String[]) names.toArray(new String[names.size()]);
+        return names.toArray(new String[names.size()]);
     }
 
     /**
@@ -524,7 +525,7 @@ abstract class AbstractOpenDeclaration
         String searchString,
         File fromDir,
         IDocument source,
-        Set visitedFiles) throws CoreException
+        Set<File> visitedFiles) throws CoreException
     {
         File[] requiredFiles = findRequiredFiles(fromDir, source);
 

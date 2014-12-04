@@ -209,7 +209,7 @@ public class LaunchConfigurationCGIWebServerTab
 			"OK");
 		config.setAttribute(
 			PerlLaunchConfigurationConstants.ATTR_CGI_ENV,
-			(Map) null);
+			(Map<String, String>) null);
 		config.setAttribute(
             PerlLaunchConfigurationConstants.ATTR_CGI_FILE_EXTENSION,
 			".cgi,.pl");

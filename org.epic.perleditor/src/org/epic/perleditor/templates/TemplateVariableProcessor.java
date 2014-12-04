@@ -9,6 +9,8 @@ import java.util.List;
 //import net.sourceforge.phpdt.internal.corext.template.ContextType;
 //import net.sourceforge.phpdt.internal.corext.template.TemplateVariable;
 
+
+
 import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.eclipse.jface.text.contentassist.IContentAssistProcessor;
@@ -17,7 +19,7 @@ import org.eclipse.jface.text.contentassist.IContextInformationValidator;
 
 public class TemplateVariableProcessor implements IContentAssistProcessor {	
 
-	private static Comparator fgTemplateVariableProposalComparator= new Comparator() {
+	private static Comparator<Object> fgTemplateVariableProposalComparator= new Comparator<Object>() {
 		public int compare(Object arg0, Object arg1) {
 			TemplateVariableProposal proposal0= (TemplateVariableProposal) arg0;
 			TemplateVariableProposal proposal1= (TemplateVariableProposal) arg1;
@@ -49,7 +51,7 @@ public class TemplateVariableProcessor implements IContentAssistProcessor {
 		if (fContextType == null)
 			return null;
 
-		List proposals= new ArrayList();		
+		List<TemplateVariableProposal> proposals= new ArrayList<TemplateVariableProposal>();		
 		
 		String text= viewer.getDocument().get();
 		int start= getStart(text, documentOffset);
@@ -63,15 +65,15 @@ public class TemplateVariableProcessor implements IContentAssistProcessor {
 		int offset= start;
 		int length= end - start;
 
-		for (Iterator iterator= fContextType.variableIterator(); iterator.hasNext(); ) {
-			TemplateVariable variable= (TemplateVariable) iterator.next();
+		for (Iterator<TemplateVariable> iterator= fContextType.variableIterator(); iterator.hasNext(); ) {
+			TemplateVariable variable= iterator.next();
 
 			if (prefix == null || variable.getName().startsWith(prefix))
 				proposals.add(new TemplateVariableProposal(variable, offset, length, viewer));
 		}
 
 		Collections.sort(proposals, fgTemplateVariableProposalComparator);
-		return (ICompletionProposal[]) proposals.toArray(new ICompletionProposal[proposals.size()]);
+		return proposals.toArray(new ICompletionProposal[proposals.size()]);
 	}
 
 	/* Guesses the start position of the completion */

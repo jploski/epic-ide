@@ -217,7 +217,7 @@ public class ProjectAndFileBlock extends ProjectBlock
 
 		private static final String EMB_PERL_FILE_EXTENSION = "epl";
 
-		private List fileList = new ArrayList();
+		private List<String> fileList = new ArrayList<String>();
 
 		public boolean visit(IResource resource) throws CoreException {
 			IEditorDescriptor defaultEditorDescriptor = PerlDebugPlugin
@@ -238,7 +238,7 @@ public class ProjectAndFileBlock extends ProjectBlock
 		}
 
 		public String[] getList() {
-			return (String[]) fileList.toArray(new String[fileList.size()]);
+			return fileList.toArray(new String[fileList.size()]);
 		}
 	}
 

@@ -1,18 +1,16 @@
 package org.epic.perleditor.actions;
 
+import java.io.Serializable;
+import java.util.Collections;
+import java.util.Map;
+
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
-
 import org.epic.core.util.MarkerUtilities;
-
 import org.epic.perleditor.editors.PerlEditor;
-import org.epic.perleditor.preferences.PerlCriticPreferencePage;
-
-import java.util.Collections;
-import java.util.Map;
 
 
 /**
@@ -79,9 +77,9 @@ public abstract class PerlUserJobAction extends PerlEditorAction
      *
      * @return marker attribute map
      */
-    protected Map createMarkerAttributes(MarkerUtilities factory, Object violation)
+    protected Map<String, Serializable> createMarkerAttributes(MarkerUtilities factory, Object violation)
     {
-        return Collections.EMPTY_MAP;
+        return Collections.emptyMap();
     }
 
     /*
@@ -118,7 +116,7 @@ public abstract class PerlUserJobAction extends PerlEditorAction
 
                 for (int i = 0; i < violations.length; i++)
                 {
-                    Map attributes = createMarkerAttributes(factory, violations[i]);
+                    Map<String, Serializable> attributes = createMarkerAttributes(factory, violations[i]);
                     factory.createMarker(resource, marker, attributes);
                 }
 

@@ -87,12 +87,12 @@ public class PerlExecutor
      * @param args          command-line arguments (Strings)
      * @param input         input passed to the interpreter via stdin
      */
-    public ProcessOutput execute(File workingDir, List args, String input)
+    public ProcessOutput execute(File workingDir, List<String> args, String input)
         throws CoreException
     {
         if (disposed) throw new IllegalStateException("PerlExecutor disposed");
         
-        List commandLine = PerlExecutableUtilities.getPerlCommandLine();
+        List<String> commandLine = PerlExecutableUtilities.getPerlCommandLine();
         if (args != null) commandLine.addAll(args);
         
         try
@@ -112,7 +112,7 @@ public class PerlExecutor
      *                    or null if none
      * @param sourceCode  source code of the script
      */
-    public ProcessOutput execute(PerlProject project, List args, String sourceCode)
+    public ProcessOutput execute(PerlProject project, List<String> args, String sourceCode)
         throws CoreException
     {
         return execute(project.getProject(), args, sourceCode);
@@ -128,14 +128,14 @@ public class PerlExecutor
      *                    or null if none
      * @param sourceCode  source code of the script
      */
-    public ProcessOutput execute(IResource resource, List args, String sourceCode)
+    public ProcessOutput execute(IResource resource, List<String> args, String sourceCode)
         throws CoreException
     {
         if (disposed) throw new IllegalStateException("PerlExecutor disposed");       
         if (sourceCode.length() < 1) return new ProcessOutput("", "");
         
         PerlProject project = PerlCore.create(resource.getProject());
-        List commandLine = getPerlCommandLine(project);
+        List<String> commandLine = getPerlCommandLine(project);
         if (args != null) commandLine.addAll(args);
 
         try
@@ -164,7 +164,7 @@ public class PerlExecutor
      *                    or null if none
      * @param sourceCode  source code of the script
      */
-    public ProcessOutput execute(ITextEditor editor, List args, String sourceCode)
+    public ProcessOutput execute(ITextEditor editor, List<String> args, String sourceCode)
         throws CoreException
     {
         return execute(
@@ -173,7 +173,7 @@ public class PerlExecutor
             sourceCode);
     }
 
-    protected List getPerlCommandLine(PerlProject project)
+    protected List<String> getPerlCommandLine(PerlProject project)
     {
         return PerlExecutableUtilities.getPerlCommandLine(project);
     }
@@ -209,7 +209,7 @@ public class PerlExecutor
         throw new CoreException(status);
     }
     
-    private void throwCoreException(IOException e, List commandLine)
+    private void throwCoreException(IOException e, List<String> commandLine)
         throws CoreException
     {
         // An IOException during execute means that the Perl process could
@@ -226,14 +226,14 @@ public class PerlExecutor
         throw new CoreException(status);
     }
     
-    private String getCommandLineString(List commandLine)
+    private String getCommandLineString(List<String> commandLine)
     {
         StringBuffer buf = new StringBuffer();
         
-        for (Iterator i = commandLine.iterator(); i.hasNext();)
+        for (Iterator<String> i = commandLine.iterator(); i.hasNext();)
         {
             if (buf.length() > 0) buf.append(' ');            
-            String str = (String) i.next();
+            String str = i.next();
             str = '"' + str.replaceAll("\"", "\\\"") + '"';
             buf.append(str);
         }

@@ -36,9 +36,9 @@ public class TestSourceFile extends BaseTestCase
         src.parse();
         
         StringBuffer buf = new StringBuffer();
-        for (Iterator i = src.getPackages().iterator(); i.hasNext();)
+        for (Iterator<Package> i = src.getPackages().iterator(); i.hasNext();)
         {
-            Package pkg = (Package) i.next();
+            Package pkg = i.next();
             buf.append(pkg.getName());
             buf.append(':');
             buf.append(pkg.getStartLine());
@@ -48,9 +48,9 @@ public class TestSourceFile extends BaseTestCase
             buf.append(pkg.getSubs().size());
             buf.append(':');
             buf.append('{');
-            for (Iterator j = pkg.getSubs().iterator(); j.hasNext();)
+            for (Iterator<Subroutine> j = pkg.getSubs().iterator(); j.hasNext();)
             {
-                Subroutine sub = (Subroutine) j.next();
+                Subroutine sub = j.next();
                 buf.append(sub.getName());
                 buf.append(':');
                 buf.append(sub.getBlockLevel());

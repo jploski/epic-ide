@@ -1,6 +1,7 @@
 package org.epic.core.builders;
 
 import java.io.File;
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -74,7 +75,7 @@ public class PerlCriticBuilderHelper {
 
         for (int i = 0; i < violations.length; i++)
         {
-            Map attributes = createMarkerAttributes(factory, violations[i]);
+            Map<String, Serializable> attributes = createMarkerAttributes(factory, violations[i]);
             factory.createMarker(resource, METRICS_MARKER, attributes);
         }
     }
@@ -90,9 +91,9 @@ public class PerlCriticBuilderHelper {
     /*
      * @see org.epic.perleditor.actions.PerlJobAction#createMarkerAttributes(org.epic.core.util.MarkerUtilities, java.lang.Object)
      */
-    public Map createMarkerAttributes(MarkerUtilities factory, Object violation)
+    public Map<String, Serializable> createMarkerAttributes(MarkerUtilities factory, Object violation)
     {
-        Map attributes = new HashMap();
+        Map<String, Serializable> attributes = new HashMap<String, Serializable>();
         Violation v = (Violation) violation;
 
         /*

@@ -77,7 +77,7 @@ public class EpicCgiHandler implements Handler
     private static final String ENV = "ENV";
 
     private static String software = "Mini Java CgiHandler 0.2";
-    private static Hashtable envMap; // environ maps
+    private static Hashtable<String, String> envMap; // environ maps
     
     private CGIConfig config;
 
@@ -95,7 +95,7 @@ public class EpicCgiHandler implements Handler
 	 */
 	static
     {
-		envMap = new Hashtable(2);
+		envMap = new Hashtable<String, String>(2);
 		envMap.put("content-length", "CONTENT_LENGTH");
 		envMap.put("content-type", "CONTENT_TYPE");
 	}
@@ -226,7 +226,7 @@ public class EpicCgiHandler implements Handler
     private String[] createCommandLine(Request request, String root, File cgiFile)
     {
         //Get Perl executable and generate comand array
-        ArrayList commandList = new ArrayList();
+        ArrayList<String> commandList = new ArrayList<String>();
         commandList.add(config.getPerlExecutable());
         
         // Add absolute path to local working directory to make
@@ -273,7 +273,7 @@ public class EpicCgiHandler implements Handler
             commandList.add(request.query);
 
         String[] command =
-            (String[]) commandList.toArray(new String[commandList.size()]);
+            commandList.toArray(new String[commandList.size()]);
 
         /*
         for (int i = 0; i < command.length; i++)
@@ -294,7 +294,7 @@ public class EpicCgiHandler implements Handler
         String url,
         int pathInfoStartI)
     {
-        List env = new ArrayList();
+        List<String> env = new ArrayList<String>();
 
         /*
          * Build the environment array. First, get all the http headers most
@@ -306,7 +306,7 @@ public class EpicCgiHandler implements Handler
         while (keys.hasMoreElements())
         {
             String key = (String) keys.nextElement();
-            String special = (String) envMap.get(key.toLowerCase());
+            String special = envMap.get(key.toLowerCase());
             if (special != null)
                 env.add(special + "=" + request.headers.get(key));
             else env.add(
@@ -348,10 +348,10 @@ public class EpicCgiHandler implements Handler
 
         if (!config.getRequestProperty(request, CUSTOM, "").equals(""))
         {
-            Map props = config.getProperties("");            
-            for (Iterator i = props.keySet().iterator(); i.hasNext();)
+            Map<String, String> props = config.getProperties("");            
+            for (Iterator<String> i = props.keySet().iterator(); i.hasNext();)
             {
-                String key = (String) i.next();
+                String key = i.next();
                 env.add("CONFIG_" + key + "=" + props.get(key)); 
             }            
             env.add("CONFIG_PREFIX=" + config.getPropsPrefix());
@@ -361,14 +361,14 @@ public class EpicCgiHandler implements Handler
         // (configurable with the CGI Environment tab; if nothing
         // is configured, the environment of the workbench is used)
         
-        Map userEnv = config.getProperties(ENV + "_");
-        for (Iterator i = userEnv.keySet().iterator(); i.hasNext();)
+        Map<String, String> userEnv = config.getProperties(ENV + "_");
+        for (Iterator<String> i = userEnv.keySet().iterator(); i.hasNext();)
         {
-            String key = (String) i.next();
+            String key = i.next();
             env.add(key + "=" + userEnv.get(key)); 
         }
 
-        String[] environ = (String[]) env.toArray(new String[env.size()]);
+        String[] environ = env.toArray(new String[env.size()]);
 
         return environ;
     }

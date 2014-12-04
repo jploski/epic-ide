@@ -23,7 +23,7 @@ public class PerlPluginImages
     private static final int NAME_PREFIX_LENGTH = NAME_PREFIX.length();
 
     private static ImageRegistry fgImageRegistry = null;
-    private static HashMap fgAvoidSWTErrorMap = null;
+    private static HashMap<String, ImageDescriptor> fgAvoidSWTErrorMap = null;
 
     /*
      * Available cached Images in the Perl plug-in image registry.
@@ -103,7 +103,7 @@ public class PerlPluginImages
     public static ImageDescriptor getDescriptor(String key)
     {
         if (fgImageRegistry == null)
-            return (ImageDescriptor) fgAvoidSWTErrorMap.get(key);
+            return fgAvoidSWTErrorMap.get(key);
 
         return getImageRegistry().getDescriptor(key);
     }
@@ -117,12 +117,12 @@ public class PerlPluginImages
         if (fgImageRegistry == null)
         {
             fgImageRegistry = new ImageRegistry();
-            for (Iterator iter = fgAvoidSWTErrorMap.keySet().iterator(); iter
+            for (Iterator<String> iter = fgAvoidSWTErrorMap.keySet().iterator(); iter
                 .hasNext();)
             {
-                String key = (String) iter.next();
+                String key = iter.next();
                 fgImageRegistry.put(key,
-                    (ImageDescriptor) fgAvoidSWTErrorMap.get(key));
+                    fgAvoidSWTErrorMap.get(key));
             }
             fgAvoidSWTErrorMap = null;
         }
@@ -140,7 +140,7 @@ public class PerlPluginImages
         ImageDescriptor result = create(prefix,
             name.substring(NAME_PREFIX_LENGTH), true);
 
-        if (fgAvoidSWTErrorMap == null) fgAvoidSWTErrorMap = new HashMap();
+        if (fgAvoidSWTErrorMap == null) fgAvoidSWTErrorMap = new HashMap<String, ImageDescriptor>();
 
         fgAvoidSWTErrorMap.put(key, result);
         return result;

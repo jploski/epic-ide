@@ -86,21 +86,18 @@ public class LinkedPositionManager implements IDocumentListener, IPositionUpdate
 		}
 	}
 	
-	private static class PositionComparator implements Comparator {
+	private static class PositionComparator implements Comparator<Position> {
 		/*
 		 * @see Comparator#compare(Object, Object)
 		 */
-		public int compare(Object object0, Object object1) {
-			Position position0= (Position) object0;
-			Position position1= (Position) object1;
-			
+		public int compare(Position position0, Position position1) {
 			return position0.getOffset() - position1.getOffset();
 		}
 	}
 
 	private static final String LINKED_POSITION= "LinkedPositionManager.linked.position"; //$NON-NLS-1$
-	private static final Comparator fgPositionComparator= new PositionComparator();
-	private static final Map fgActiveManagers= new HashMap();
+	private static final Comparator<Position> fgPositionComparator= new PositionComparator();
+	private static final Map<IDocument, LinkedPositionManager> fgActiveManagers= new HashMap<IDocument, LinkedPositionManager>();
 		
 	private IDocument fDocument;
 	
@@ -170,7 +167,7 @@ public class LinkedPositionManager implements IDocumentListener, IPositionUpdate
 	}
 
 	private void install() {
-		LinkedPositionManager manager= (LinkedPositionManager) fgActiveManagers.get(fDocument);
+		LinkedPositionManager manager= fgActiveManagers.get(fDocument);
 		if (manager != null)
 			manager.leave(true);		
 

@@ -113,7 +113,7 @@ public class PerlCompletionProcessor implements IContentAssistProcessor
     private ICompletionProposal[] computeMethodProposals(
         ITextViewer viewer, int documentOffset, String className)
     {
-        List proposals = getProposalsForClassname(className);
+        List<String> proposals = getProposalsForClassname(className);
         ContextType contextType = getContextType();
         if (contextType != null)
         {
@@ -121,7 +121,7 @@ public class PerlCompletionProcessor implements IContentAssistProcessor
             subroutineEngine.complete(
                 viewer,
                 documentOffset,
-                (String[]) proposals.toArray(new String[proposals.size()]));
+                proposals.toArray(new String[proposals.size()]));
             return subroutineEngine.getResults();
         }
         else return new IPerlCompletionProposal[0];
@@ -150,14 +150,14 @@ public class PerlCompletionProcessor implements IContentAssistProcessor
         ContextType contextType = getContextType();
         if (contextType == null) return NO_PROPOSALS;
 
-    	Set variables = getCompletionVariables(viewer, documentOffset);
+    	Set<String> variables = getCompletionVariables(viewer, documentOffset);
 
     	VariableEngine varsEngine = new VariableEngine(contextType);
 
 		varsEngine.complete(
 			viewer,
 			documentOffset,
-			(String[]) variables.toArray(new String[variables.size()]));
+			variables.toArray(new String[variables.size()]));
 
         return varsEngine.getResults();
     }
@@ -165,11 +165,11 @@ public class PerlCompletionProcessor implements IContentAssistProcessor
 	/**
 	 * Gets variable/filedescriptor info from source file
 	 */
-	private Set getCompletionVariables(
+	private Set<String> getCompletionVariables(
 		ITextViewer viewer, int documentOffset)
     {
-		List variablesModel = new ArrayList();
-		Set variables = new HashSet();
+		List<SourceElement> variablesModel = new ArrayList<SourceElement>();
+		Set<String> variables = new HashSet<String>();
 
 		String variableChars = "%$@";
 		String filehandleChars = "<";
@@ -200,9 +200,9 @@ public class PerlCompletionProcessor implements IContentAssistProcessor
     			}
             }
 
-			for (Iterator i = variablesModel.iterator(); i.hasNext();)
+			for (Iterator<SourceElement> i = variablesModel.iterator(); i.hasNext();)
             {
-				ISourceElement elem = (ISourceElement) i.next();
+				ISourceElement elem = i.next();
 				String name = elem.getName();
 
 				// Only insert variables once
@@ -224,7 +224,7 @@ public class PerlCompletionProcessor implements IContentAssistProcessor
 		return variables;
 	}
     
-    private List getVariableElements(ITextViewer viewer, int documentOffset)
+    private List<SourceElement> getVariableElements(ITextViewer viewer, int documentOffset)
         throws BadLocationException
     {
         IDocument doc = viewer.getDocument();
@@ -232,13 +232,13 @@ public class PerlCompletionProcessor implements IContentAssistProcessor
             ((IDocumentExtension3) doc).getDocumentPartitioner(
                 PartitionTypes.PERL_PARTITIONING);
         
-        if (!(p instanceof PerlPartitioner)) return Collections.EMPTY_LIST;
+        if (!(p instanceof PerlPartitioner)) return Collections.emptyList();
 
         ITypedRegion[] regions =
             ((PerlPartitioner) p)
             .computePartitioning(0, documentOffset);
         
-        List elements = new ArrayList();
+        List<SourceElement> elements = new ArrayList<SourceElement>();
 
         for (int i = 0; i < regions.length; i++)
         {
@@ -342,7 +342,7 @@ public class PerlCompletionProcessor implements IContentAssistProcessor
         return className;
     }
 	
-    private List getProposalsForClassname(String className)
+    private List<String> getProposalsForClassname(String className)
     {
 		String perlCode =
 			"use "
@@ -369,7 +369,7 @@ public class PerlCompletionProcessor implements IContentAssistProcessor
         catch (CoreException e)
         {
             PerlEditorPlugin.getDefault().getLog().log(e.getStatus());
-            return new ArrayList();
+            return new ArrayList<String>();
         }
         finally
         {

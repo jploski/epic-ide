@@ -184,7 +184,7 @@ public class CreateRemotePackageJob extends Job
         buf.append(launchDelegate.getRemoteProjectDir(launch));
         buf.append("\\\"");
         
-        for (Iterator i = getPerlProject().getRawIncPath().iterator(); i.hasNext();)
+        for (Iterator<String> i = getPerlProject().getRawIncPath().iterator(); i.hasNext();)
         {
             String path = new Path((String) i.next()).toString();
 

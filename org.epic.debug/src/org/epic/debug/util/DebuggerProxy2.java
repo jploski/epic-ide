@@ -159,7 +159,7 @@ public class DebuggerProxy2 extends PlatformObject
                 DebugOutProxy.this.removeListener(listener); 
             } };
 
-        private Set listeners;
+        private Set<IStreamListener> listeners;
         private final PrintWriter w;
         private final StringWriter buf;
         private final PrintWriter bw;
@@ -168,7 +168,7 @@ public class DebuggerProxy2 extends PlatformObject
         {
             super(w, true);
             this.w = w;
-            listeners = new HashSet();
+            listeners = new HashSet<IStreamListener>();
             buf = new StringWriter();
             bw = new PrintWriter(buf);
         }
@@ -318,9 +318,9 @@ public class DebuggerProxy2 extends PlatformObject
         {
             synchronized(listeners)
             {
-                for (Iterator i = listeners.iterator(); i.hasNext();)
+                for (Iterator<IStreamListener> i = listeners.iterator(); i.hasNext();)
                 {
-                    final IStreamListener listener = (IStreamListener) i.next();
+                    final IStreamListener listener = i.next();
                     listener.streamAppended(text, monitor);
                 }
             }
@@ -331,14 +331,14 @@ public class DebuggerProxy2 extends PlatformObject
     {
         private static final String NL = System.getProperty("line.separator");
         
-        private Set listeners;
+        private Set<IStreamListener> listeners;
         private StringBuffer buf;
         
         public DebugInProxy(Reader in)
         {
             super(in);
             buf = new StringBuffer();
-            listeners = new HashSet();
+            listeners = new HashSet<IStreamListener>();
         }
         
         public int read()
@@ -416,9 +416,9 @@ public class DebuggerProxy2 extends PlatformObject
         {
             synchronized (listeners)
             {
-                for (Iterator i = listeners.iterator(); i.hasNext();)
+                for (Iterator<IStreamListener> i = listeners.iterator(); i.hasNext();)
                 {
-                    final IStreamListener listener = (IStreamListener) i.next();
+                    final IStreamListener listener = i.next();
                     listener.streamAppended(text, this);
                 }
             }

@@ -30,14 +30,14 @@ class PerlBuilderJob extends Job
      * A list of IResources representing Perl files that still need
      * to be validated during this job's run.
      */
-    private final List dirtyResources;
+    private final List<IResource> dirtyResources;
     
     /**
      * A set of IResources representing Perl files that have been
      * validated during this job's run as well as their parent folders
      * (and their ancestors).
      */
-    private final Set validatedResources;
+    private final Set<IResource> validatedResources;
 
     /**
      * @param dirtyResources
@@ -50,7 +50,7 @@ class PerlBuilderJob extends Job
      *        further resources are added to this set during
      *        job's execution
      */
-    public PerlBuilderJob(List dirtyResources, Set successResources)
+    public PerlBuilderJob(List<IResource> dirtyResources, Set<IResource> successResources)
     {
         super(ResourceMessages.getString("PerlBuilderJob.name"));
         
@@ -66,7 +66,7 @@ class PerlBuilderJob extends Job
     /**
      * @return the remaining Perl files that still need to be validated
      */
-    public Collection getDirtyResources()
+    public Collection<IResource> getDirtyResources()
     {
         return Collections.unmodifiableList(dirtyResources);
     }
@@ -74,7 +74,7 @@ class PerlBuilderJob extends Job
     /**
      * See constructor's documentation.
      */
-    public Collection getValidatedResources()
+    public Collection<IResource> getValidatedResources()
     {
         return Collections.unmodifiableSet(validatedResources);
     }
@@ -82,10 +82,10 @@ class PerlBuilderJob extends Job
     protected IStatus run(IProgressMonitor monitor)
     {        
         monitor.beginTask("", dirtyResources.size());
-        for (Iterator i = dirtyResources.iterator(); i.hasNext();)
+        for (Iterator<IResource> i = dirtyResources.iterator(); i.hasNext();)
         {
             if (monitor.isCanceled()) break;
-            IResource resource = (IResource) i.next();
+            IResource resource = i.next();
             monitor.subTask(resource.getProjectRelativePath().toString());
             buildResource(resource);
             i.remove();

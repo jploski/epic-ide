@@ -58,7 +58,7 @@ public class PerlPartitioner implements
         // see https://bugs.eclipse.org/bugs/show_bug.cgi?id=49264
         // for explanation of includeZeroLengthPartitions
         
-        List typedRegions = new ArrayList();
+        List<TypedRegion> typedRegions = new ArrayList<TypedRegion>();
         if (!initialized) initialize();
         
         if (tokens.isEmpty())
@@ -125,7 +125,7 @@ public class PerlPartitioner implements
                 PartitionTypes.DEFAULT));
         }
         
-        ITypedRegion[] ret = (ITypedRegion[]) typedRegions.toArray(
+        ITypedRegion[] ret = typedRegions.toArray(
             new ITypedRegion[typedRegions.size()]);
         
         //dumpPartitioning(offset, length, includeZeroLengthPartitions, ret);        
@@ -218,7 +218,7 @@ public class PerlPartitioner implements
         return ret;
     }
     
-    public List getTokens()
+    public List<PerlToken> getTokens()
     {
         return Collections.unmodifiableList(tokens);
     }

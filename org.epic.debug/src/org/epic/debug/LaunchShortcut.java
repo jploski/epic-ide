@@ -137,11 +137,11 @@ public class LaunchShortcut implements ILaunchShortcut {
 	private ILaunchConfiguration findLaunchConfiguration(IFile bin,
 			String mode) {
 		ILaunchConfiguration configuration = null;
-		List candidateConfigs = Collections.EMPTY_LIST;
+		List<ILaunchConfiguration> candidateConfigs = Collections.emptyList();
 		try {
 			ILaunchConfiguration[] configs = DebugPlugin.getDefault()
 					.getLaunchManager().getLaunchConfigurations();
-			candidateConfigs = new ArrayList(configs.length);
+			candidateConfigs = new ArrayList<ILaunchConfiguration>(configs.length);
 			for (int i = 0; i < configs.length; i++) {
 				ILaunchConfiguration config = configs[i];
 				String projectName = config.getAttribute(
@@ -170,7 +170,7 @@ public class LaunchShortcut implements ILaunchShortcut {
 		if (candidateCount < 1) {
 			configuration = createConfiguration(bin);
 		} else {
-			configuration = (ILaunchConfiguration) candidateConfigs.get(0);
+			configuration = candidateConfigs.get(0);
 		}
 		return configuration;
 	}

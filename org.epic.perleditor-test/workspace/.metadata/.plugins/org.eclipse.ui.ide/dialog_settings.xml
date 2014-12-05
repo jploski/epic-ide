@@ -50,14 +50,14 @@
 	</section>
 	<section name="org.eclipse.ui.views.task">
 	</section>
-	<section name="NewWizardAction">
-	</section>
 	<section name="CleanDialogSettings">
 		<item value="563" key="DIALOG_WIDTH"/>
 		<item value="171" key="DIALOG_Y_ORIGIN"/>
-		<item value="408" key="DIALOG_HEIGHT"/>
 		<item value="296" key="DIALOG_X_ORIGIN"/>
+		<item value="408" key="DIALOG_HEIGHT"/>
 		<item value="true" key="TOGGLE_SELECTED"/>
+	</section>
+	<section name="NewWizardAction">
 	</section>
 	<section name="org.eclipse.ui.internal.views.markers.FiltersConfigurationDialog">
 		<item value="Warnings on Selection" key="SELECTED_FILTER_GROUP"/>

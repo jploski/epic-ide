@@ -48,7 +48,7 @@ public class PerlProject extends PlatformObject
             final String perlCode = "foreach $i(@INC) { print \"$i\n\"; }\n";
             List<String> lines = executor.execute(
                 this,
-                Collections.emptyList(),
+                Collections.<String>emptyList(),
                 perlCode).getStdoutLines();
             
             return makeAbsIncPath(

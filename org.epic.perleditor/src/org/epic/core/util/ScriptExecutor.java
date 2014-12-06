@@ -134,7 +134,7 @@ public abstract class ScriptExecutor
      */
     protected List<String> getCommandLineOpts(List<String> additionalOptions)
     {
-        return (additionalOptions != null) ? additionalOptions : Collections.emptyList();
+        return (additionalOptions != null) ? additionalOptions : Collections.<String>emptyList();
     }
 
     /**

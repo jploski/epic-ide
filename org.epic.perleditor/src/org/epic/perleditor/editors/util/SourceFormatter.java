@@ -39,7 +39,7 @@ public class SourceFormatter extends ScriptExecutor
     public static String format(String toFormat, ILog log)
         throws CoreException
     {
-        return format(toFormat, Collections.emptyList(), log);
+        return format(toFormat, Collections.<String>emptyList(), log);
     }
 
     /**

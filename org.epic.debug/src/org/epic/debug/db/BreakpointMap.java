@@ -59,7 +59,7 @@ class BreakpointMap
         if (canonPath == null) return Collections.emptySet();
         
         Set<PerlBreakpoint> set = breakpoints.get(canonPath);
-        return set != null ? new HashSet<PerlBreakpoint>(set) : Collections.emptySet();
+        return set != null ? new HashSet<PerlBreakpoint>(set) : Collections.<PerlBreakpoint>emptySet();
     }
 
     public synchronized PerlBreakpoint getBreakpoint(IPath path, int line)

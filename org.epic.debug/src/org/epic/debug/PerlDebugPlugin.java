@@ -592,7 +592,7 @@ public class PerlDebugPlugin extends AbstractUIPlugin
 
     private static List<String> runHelperScript(String scriptName) throws CoreException
     {
-        return runHelperScript(scriptName, Collections.emptyList());
+        return runHelperScript(scriptName, Collections.<String>emptyList());
     }
 
     private static List<String> runHelperScript(String scriptName, List<String> scriptArgs)

@@ -126,7 +126,7 @@ class TokensList implements List<PerlToken>, RandomAccess
         throw new UnsupportedOperationException();
     }
 
-    public boolean removeAll(Collection c)
+    public boolean removeAll(Collection<?> c)
     {
         throw new UnsupportedOperationException();
     }
@@ -157,9 +157,9 @@ class TokensList implements List<PerlToken>, RandomAccess
         return indexOf(o) != -1;
     }
 
-    public boolean containsAll(Collection c)
+    public boolean containsAll(Collection<?> c)
     {
-        for (Iterator i = c.iterator(); i.hasNext();)
+        for (Iterator<?> i = c.iterator(); i.hasNext();)
             if (!contains(i.next())) return false;
         return true;
     }
@@ -254,7 +254,7 @@ class TokensList implements List<PerlToken>, RandomAccess
 	}
 
 	@Override
-	public boolean retainAll(Collection c) {
+	public boolean retainAll(Collection<?> c) {
         throw new UnsupportedOperationException();
 	}
 }

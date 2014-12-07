@@ -11,10 +11,12 @@ import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Text;
 
@@ -152,7 +154,7 @@ public class PerlCriticPreferencePage extends PreferencePage implements IWorkben
         return super.performOk();
     }
 
-    protected Control createContents(Composite parent)
+    protected Control createContents(final Composite parent)
     {
         Composite composite = createComposite(parent, 1);
 
@@ -202,8 +204,13 @@ public class PerlCriticPreferencePage extends PreferencePage implements IWorkben
                 }
             });
 
+        Composite buttonComposite = new Composite(locations, SWT.NULL);
+
+        GridLayout buttonLayout = new GridLayout(2, false);
+        buttonComposite.setLayout(buttonLayout);
+
         // TODO: validation job to ensure this is correct?
-        customText = WidgetUtils.createText(locations, "Path to perlcritic");
+        customText = WidgetUtils.createText(buttonComposite, "Path to perlcritic");
         customText.addModifyListener(new ModifyListener()
             {
                 public void modifyText(ModifyEvent e)
@@ -211,6 +218,19 @@ public class PerlCriticPreferencePage extends PreferencePage implements IWorkben
                     validateLocation(customText.getText());
                 }
             });
+
+        Button browseButton = new Button(buttonComposite, SWT.PUSH | SWT.CENTER);
+
+        browseButton.setText("..."); //$NON-NLS-1$
+        browseButton.addSelectionListener(new SelectionAdapter() {
+            public void widgetSelected(SelectionEvent event) {
+                FileDialog fileBrowser = new FileDialog(parent.getShell());
+                String dir = fileBrowser.open();
+                if (dir != null) {
+                    customText.setText(dir);
+                }
+            }
+       });
 
         WidgetUtils.createLabel(composite, "Severity Marker Settings");
 

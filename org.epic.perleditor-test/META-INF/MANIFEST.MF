@@ -15,6 +15,8 @@ Require-Bundle: org.junit,
  org.epic.perleditor,
  org.epic.lib,
  org.epic.debug,
- org.eclipse.debug.core
+ org.eclipse.debug.core,
+ org.eclipse.debug.ui
 Bundle-ClassPath: cglib-full-2.0.2.jar,
- easymock.jar
+ easymock.jar,
+ bin/

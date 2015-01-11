@@ -11,19 +11,18 @@
 
 package org.epic.core;
 
+import java.io.File;
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.StringTokenizer;
+import java.util.*;
 
 import org.eclipse.core.resources.*;
 import org.eclipse.core.runtime.*;
 import org.eclipse.jface.dialogs.*;
 //import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.jface.resource.ImageDescriptor;
+//import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.*;
 import org.eclipse.ui.actions.WorkspaceModifyOperation;
-import org.eclipse.ui.dialogs.WizardNewProjectCreationPage;
 import org.eclipse.ui.dialogs.WizardNewProjectReferencePage;
 //import org.eclipse.ui.internal.IPreferenceConstants;
 import org.eclipse.ui.internal.WorkbenchPlugin;
@@ -32,8 +31,9 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
 
 import org.eclipse.ui.wizards.newresource.BasicNewResourceWizard;
 
-import org.epic.core.util.NatureUtilities;
+import org.epic.core.util.*;
 import org.epic.perleditor.PerlPluginImages;
+import org.epic.perleditor.preferences.ModuleStarterPreferencePage;
 
 /**
  * Standard workbench wizard that creates a new project resource in
@@ -58,7 +58,9 @@ import org.epic.perleditor.PerlPluginImages;
 public class PerlProjectResourceWizard
 	extends BasicNewResourceWizard
 	implements IExecutableExtension {
-	private WizardNewProjectCreationPage mainPage;
+	// JAG - sub class Project creation page to add functionality for
+	// Module::Starter
+	private PerlNewProjectCreationPage mainPage;
 	private WizardNewProjectReferencePage referencePage;
 
 	// cache of newly-created project
@@ -99,7 +101,7 @@ public class PerlProjectResourceWizard
 	public void addPages() {
 		super.addPages();
 
-		mainPage = new WizardNewProjectCreationPage("basicNewProjectPage"); //$NON-NLS-1$
+		mainPage = new PerlNewProjectCreationPage("basicNewProjectPage"); //$NON-NLS-1$
 		mainPage.setTitle(ResourceMessages.getString("NewProject.title")); //$NON-NLS-1$
 		mainPage.setDescription(ResourceMessages.getString("NewProject.description")); //$NON-NLS-1$
 		this.addPage(mainPage);
@@ -151,6 +153,56 @@ public class PerlProjectResourceWizard
 			IProject[] refProjects = referencePage.getReferencedProjects();
 			if (refProjects.length > 0)
 				description.setReferencedProjects(refProjects);
+		}
+
+		// Run Module-starter first as it clobbers the directory
+		if (mainPage.getUseModule()) {
+			List cmdArgs = new ArrayList(1);
+			cmdArgs.add(ModuleStarterPreferencePage.getModuleStarter());
+			cmdArgs.add("--module=" + mainPage.getModuleName());
+
+			// Use the Preference page if override, otherwise will pick up from
+			// .module-starter configuration file
+			if (ModuleStarterPreferencePage.isOverrideConfig()) {
+				cmdArgs.add("--author");
+				cmdArgs.add("\"" + ModuleStarterPreferencePage.getModuleStarterAuthor() + "\"");
+				cmdArgs.add("--email");
+				cmdArgs.add("\"" + ModuleStarterPreferencePage.getModuleStarterEmail() + "\"");
+				String addnOpts = ModuleStarterPreferencePage.getModuleStarterAdditionalOpts();
+				if (addnOpts != null && addnOpts.length() != 0) {
+					cmdArgs.add(addnOpts);
+				}
+			}
+			PerlExecutor executor = new PerlExecutor();
+			try {
+				// find the directory for the project and move one up to run
+				// module-starter
+				File moduleStarterRoot = new File(mainPage.getLocationPath().toOSString());
+				ProcessOutput output = executor.execute(moduleStarterRoot, cmdArgs, "");
+
+				// warn if module::starter fails
+				if ((output.stderr != null) && !output.stderr.equals("")) {
+					// TODO - add stderr to Messagebox
+					Platform.getPlugin(PlatformUI.PLUGIN_ID).getLog().log(
+					    new Status(Status.ERROR, PlatformUI.PLUGIN_ID, 0, "Module::Starter did not run: " + output.stderr, //$NON-NLS-1$
+					        null));
+					MessageDialog.openError(getShell(), ResourceMessages.getString("NewProject.errorMessage"), //$NON-NLS-1$
+					    ResourceMessages.format("NewProject.internalError", new Object[] { "Module::Starter did not run: " + output.stderr })); //$NON-NLS-1$
+				}
+
+				// add items to the project
+				newProjectHandle.refreshLocal(IResource.DEPTH_INFINITE, null);
+
+			}
+			catch (CoreException e) {
+				// TODO Auto-generated catch block
+				Platform.getPlugin(PlatformUI.PLUGIN_ID).getLog().log(new Status(Status.ERROR, PlatformUI.PLUGIN_ID, 0, e.toString(), e));
+				MessageDialog.openError(getShell(), ResourceMessages.getString("NewProject.errorMessage"), //$NON-NLS-1$
+				    ResourceMessages.format("NewProject.internalError", new Object[] { e.getMessage() })); //$NON-NLS-1$
+			}
+			finally {
+				executor.dispose();
+			}
 		}
 
 		// create the new project operation
@@ -480,5 +532,5 @@ public class PerlProjectResourceWizard
 		return false;
 	}
 
-	
+
 }

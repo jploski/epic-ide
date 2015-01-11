@@ -219,9 +219,9 @@ class PerlBracketInserter implements VerifyKeyListener
                 }
                 else
                 {
-                    // Auto-insert the closing char just after it...
-                    char[] pair = new char[] { keystrokeChar, closingChar };
-                    doc.replace(offset, 0, String.valueOf(pair));
+                    // Auto-insert opening char before and closing char after selection...
+                    doc.replace(offset, 0, String.valueOf(new char[] { keystrokeChar }));
+                    doc.replace(offset + length + 1, 0, String.valueOf(new char[] { closingChar }));
                     // ...and position the caret after the entered char
                     skipChar();
                     return false;

@@ -54,10 +54,10 @@ public class TestSourceFile extends BaseTestCase
                 buf.append(sub.getName());
                 buf.append(':');
                 buf.append(sub.getBlockLevel());
-                buf.append('\n');
+                buf.append(String.format("%n"));
             }
             buf.append('}');
-            buf.append('\n');
+            buf.append(String.format("%n"));
         }
         
         /*

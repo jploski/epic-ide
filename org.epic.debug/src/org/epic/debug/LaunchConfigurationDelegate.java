@@ -4,9 +4,11 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.debug.core.*;
-import org.epic.core.*;
+import org.epic.core.Constants;
+import org.epic.core.Perspective;
 import org.epic.debug.util.*;
 import org.epic.perleditor.PerlEditorPlugin;
+import org.epic.perleditor.preferences.PreferenceConstants;
 
 /**
  * Abstract base class for Perl launch configuration delegates.
@@ -83,9 +85,10 @@ public abstract class LaunchConfigurationDelegate
     {
         String interpreterType = PerlEditorPlugin.getDefault()
             .getPreferenceStore().getString(
-                PerlEditorPlugin.INTERPRETER_TYPE_PREFERENCE);
+                PreferenceConstants.DEBUG_INTERPRETER_TYPE);
 
-        return PerlEditorPlugin.INTERPRETER_TYPE_CYGWIN.equals(interpreterType);
+        return PreferenceConstants.DEBUG_INTERPRETER_TYPE_CYGWIN.equals(
+            interpreterType);
     }
     
     protected final boolean isDebugMode(ILaunch launch)

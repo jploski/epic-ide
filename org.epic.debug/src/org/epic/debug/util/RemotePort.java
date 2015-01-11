@@ -97,7 +97,7 @@ public class RemotePort
         {
             try
             {
-                mOutStream = mClient.getOutputStream();
+                mOutStream = new BufferedOutputStream(mClient.getOutputStream());
             }
             catch (IOException e)
             {
@@ -125,7 +125,7 @@ public class RemotePort
         if (!isConnected()) return null;
 
         if (mWriter == null)
-            mWriter = new PrintWriter(getOutStream(), true);
+            mWriter = new PrintWriter(getOutStream(), false);
 
         return mWriter;
     }

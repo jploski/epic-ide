@@ -134,14 +134,13 @@ public class ProjectAndFileBlock extends ProjectBlock
 			setErrorMessage("Startup File is not specified");
 			return false;
 		}
-		String[] files = getPerlFiles();
-		for (int i = 0; i < files.length; i++) {
-			if (files[i].equals(name)) {
-				return true;
-			}
+
+		if (! existsFile(name)) {
+			setErrorMessage("File does not exist or match to the project");
+			return false;
 		}
-		setErrorMessage("File does not exist or match to the project");
-		return false;
+
+		return true;
 	}
     
     private void createScriptFileEditor(Composite parent) {
@@ -191,6 +190,18 @@ public class ProjectAndFileBlock extends ProjectBlock
 		}
 		return ((PerlProjectVisitor) visitor).getList();
 	}
+
+	private boolean existsFile(String filename) {
+		String projectName = getSelectedProject();
+
+		if (projectName == null || projectName.length() == 0) {
+			return false;
+		}
+
+		IWorkspaceRoot workspaceRoot = PerlDebugPlugin.getWorkspace().getRoot();
+		IProject project = workspaceRoot.getProject(projectName);
+		return project.getFile(filename).exists();
+	}
     
     protected void newProjectSelected()
     {
@@ -211,15 +222,15 @@ public class ProjectAndFileBlock extends ProjectBlock
 		public boolean visit(IResource resource) throws CoreException {
 			IEditorDescriptor defaultEditorDescriptor = PerlDebugPlugin
 					.getDefault().getWorkbench().getEditorRegistry()
-					.getDefaultEditor(resource.getFullPath().toString());
+					.getDefaultEditor(resource.getName());
 
 			if (defaultEditorDescriptor == null) {
 				return true;
 			}
 
-			if (defaultEditorDescriptor.getId().equals(PERL_EDITOR_ID)
-					&& !resource.getFileExtension().equals(
-							EMB_PERL_FILE_EXTENSION)) {
+			if (defaultEditorDescriptor.getId().equals(PERL_EDITOR_ID) &&
+				!EMB_PERL_FILE_EXTENSION.equals(resource.getFileExtension()) &&
+				resource.getType() == IResource.FILE) {
 				fileList.add(resource.getFullPath().removeFirstSegments(1)
 						.toString());
 			}

@@ -173,6 +173,6 @@ public class CustomBrowser implements IBrowser
 
 	 public static boolean isCustomBrowserID(String fID)
 	{
-		return fID.equals((HelpPlugin.PLUGIN_ID + ".base.custombrowser"));
+		return (HelpPlugin.PLUGIN_ID + ".base.custombrowser").equals(fID);
 	}
 }

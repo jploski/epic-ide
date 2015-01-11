@@ -108,8 +108,8 @@ public class MarkerUtil {
 
         try
         {
-            IMarker[] markers = fResource.findMarkers(
-                IMarker.PROBLEM, true, IResource.DEPTH_ONE);
+            IMarker[] markers = fResource.exists() ? fResource.findMarkers(
+                IMarker.PROBLEM, true, IResource.DEPTH_ONE) : new IMarker[0];
 
             for(int i = 0; i < markers.length; i++)
             {
@@ -128,11 +128,11 @@ public class MarkerUtil {
 	 * Deletes all unused markers of given type
 	 *
 	 * @param markerType Marker Type
-	 * @param additionalAttribute Additional attribut to check for
+	 * @param additionalAttribute Additional attribute to check for
 	 */
 	public void removeUnusedMarkers(String markerType, String additionalAttribute) {
 		try {
-			IMarker[] markers = fResource.findMarkers(markerType, true, IResource.DEPTH_ONE);
+			IMarker[] markers = fResource.exists() ? fResource.findMarkers(markerType, true, IResource.DEPTH_ONE) : new IMarker[0];
 			for(int i = 0; i < markers.length; i++) {
 				if(additionalAttribute != null) {
 	   				// If additional attribute is not present check next marker

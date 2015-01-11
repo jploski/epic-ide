@@ -1,19 +1,15 @@
 package org.epic.perleditor.editors.util;
 
+import java.util.*;
+
 import org.eclipse.core.runtime.*;
-
 import org.eclipse.jface.preference.IPreferenceStore;
-
+import org.eclipse.ui.editors.text.EditorsUI;
+import org.eclipse.ui.texteditor.ChainedPreferenceStore;
 import org.epic.core.util.*;
-
 import org.epic.perleditor.PerlEditorPlugin;
 import org.epic.perleditor.preferences.PreferenceConstants;
 import org.epic.perleditor.preferences.SourceFormatterPreferences;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 
 /**
  * Formats perl source code using PerlTidy
@@ -89,7 +85,7 @@ public class SourceFormatter extends ScriptExecutor
         }
         else return out.stdout;
     }
-
+    
     protected String getCharsetName()
     {
         return "utf8";
@@ -100,7 +96,9 @@ public class SourceFormatter extends ScriptExecutor
      */
     protected List getCommandLineOpts(List additionalOptions)
     {
-        IPreferenceStore store = PerlEditorPlugin.getDefault().getPreferenceStore();
+        IPreferenceStore store = new ChainedPreferenceStore(new IPreferenceStore[] {
+            EditorsUI.getPreferenceStore(),
+            PerlEditorPlugin.getDefault().getPreferenceStore() });
 
         int numSpaces = store.getInt(PreferenceConstants.INSERT_TABS_ON_INDENT);
         boolean useSpaces = store.getBoolean(PreferenceConstants.SPACES_INSTEAD_OF_TABS);
@@ -184,12 +182,12 @@ public class SourceFormatter extends ScriptExecutor
     {
         return "perlutils/perltidy";
     }
-
+    
     private static String truncateString(String str, int maxLen)
     {
         if (maxLen < str.length())
             return str.substring(0, Math.min(str.length(), maxLen)) + "...";
         else
             return str;
-}
+    } 
 }

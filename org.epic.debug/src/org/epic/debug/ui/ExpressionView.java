@@ -21,8 +21,7 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.part.ViewPart;
 import org.epic.debug.*;
-import org.epic.debug.db.PerlDB;
-import org.epic.debug.db.StackFrame;
+import org.epic.debug.db.*;
 
  
 		
@@ -101,46 +100,51 @@ public class ExpressionView extends ViewPart {
 	/**
 	 * Action called, when Evaluate expression button is pressed
 	 */
-	private void evaluateExpression() {
-		
+	private void evaluateExpression()
+	{
 		IAdaptable a = DebugUITools.getDebugContext();
-		StackFrame stackFrame = (StackFrame) a.getAdapter(StackFrame.class);
-		if( stackFrame != null )
+		StackFrame stackFrame = a != null ? (StackFrame) a.getAdapter(StackFrame.class) : null;
+		if (stackFrame != null)
 		{
-			try{
-			
-			PerlDebugThread thread =stackFrame.getPerlThread();
-			PerlDB db =thread.getPerlDB();
-						
-			String res = db.evaluateStatement(expressionInput.getText()); 
-			boolean isMatch = false;
-			if( res != null)
-			{
-				isMatch = mReIsWhitespace.isMatch(res) || 
-			   				mReIsWhitespace.getAllMatches(res).length > 0;
+			try
+            {
+    			PerlDebugThread thread = stackFrame.getPerlThread();
+                // TODO: this really should not run on the GUI thread
+    			String res = thread.evaluateStatement(expressionInput.getText()); 
+    			boolean isMatch = false;
+    			if( res != null)
+    			{
+    				isMatch = mReIsWhitespace.isMatch(res) || 
+    			   				mReIsWhitespace.getAllMatches(res).length > 0;
+    			}
+    						   				
+    			if( res == null || res.length() == 0 || isMatch == true)			
+    			{
+    				res =  "\n<Command("+mCommandCount+") finished>\n";
+    				
+    			}
+    			else
+    			{
+    				res = res + "\n<Command("+mCommandCount+") finished>\n";
+    			}
+    			  
+    			setExpressionOutput(res);
+    			mCommandCount++;
 			}
-						   				
-			if( res == null || res.length() == 0 || isMatch == true)			
-			{
-				res =  "\n<Command("+mCommandCount+") finished>\n";
-				
-			}
-			else
-			{
-				res = res + "\n<Command("+mCommandCount+") finished>\n";
-			}
-			  
-			setExpressionOutput(res);
-			mCommandCount++;
-			
-			}catch( Exception e) {System.out.println( e +"\n")	;}		
-			
+            catch( Exception e)
+            {
+                PerlDebugPlugin.log(e);
+            }
 		}
 		else
+        {
 			MessageDialog.openInformation(
-						this.getViewSite().getShell(),
-						"Error",
-						"Choose Context/Stack Frame for executing Statement\n" + this.expressionInput.getText());
+                this.getViewSite().getShell(),
+				"No stack frame selected",
+				"Before evaluating a Perl expression, first select a stack frame\n" +
+                "from a suspended debugger session in the Debug view to indicate\n" +
+                "the evaluation context.\n\n");
+        }
 	}
 	
 	private void setExpressionOutput(String text) {

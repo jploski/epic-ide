@@ -99,8 +99,7 @@ public class PerlDecorator extends LabelProvider
 
 		if (!isPerlProject && defaultEditorDescriptor != null) {
 			if (!defaultEditorDescriptor.getId().equals(PERL_EDITOR_ID)
-					|| resource.getFileExtension().equals(
-							EMB_PERL_FILE_EXTENSION)) {
+					|| EMB_PERL_FILE_EXTENSION.equals(resource.getFileExtension())) {
 				return;
 			} else {
 				isPerlFile = true;

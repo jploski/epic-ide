@@ -1,6 +1,7 @@
 package org.epic.perleditor.preferences;
 
 import org.eclipse.core.resources.IMarker;
+import org.eclipse.core.runtime.Assert;
 
 import org.eclipse.jface.preference.PreferencePage;
 
@@ -14,11 +15,13 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Text;
 
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 
+import org.epic.core.builders.PerlCriticBuilderHelper;
 import org.epic.core.util.WidgetUtils;
 
 import org.epic.perleditor.PerlEditorPlugin;
@@ -47,16 +50,22 @@ public class PerlCriticPreferencePage extends PreferencePage implements IWorkben
 
     private Button enabledButton;
 
+    private Button jobEnabledButton;
+
     private List errors = new ArrayList(5);
     private Button useCustomButton;
 
     private Button useDefaultButton;
 
+	private Combo severityOptions;
+
+	private Text otherOptions;
+
     //~ Methods
 
     public static int getMarkerSeverity(int severity)
     {
-        assert (severity > 0) && (severity <= 5) : "unknown severity " + severity;
+        Assert.isTrue((severity > 0) && (severity <= 5));
 
         String prefName = PreferenceConstants.SOURCE_CRITIC_SEVERITY_LEVEL + severity;
         String level = PerlEditorPlugin.getDefault().getPreferenceStore().getString(prefName);
@@ -83,6 +92,29 @@ public class PerlCriticPreferencePage extends PreferencePage implements IWorkben
         return PerlEditorPlugin.getDefault().getPreferenceStore().getString(
                 PreferenceConstants.SOURCE_CRITIC_LOCATION);
     }
+    
+    public static boolean isPerlCriticEnabled()
+    {
+        return PerlEditorPlugin.getDefault().getPreferenceStore().getBoolean(
+            PreferenceConstants.SOURCE_CRITIC_ENABLED);
+    }
+    
+    public static boolean isPerlCriticJobEnabled()
+    {
+        return PerlEditorPlugin.getDefault().getPreferenceStore().getBoolean(
+            PreferenceConstants.SOURCE_CRITIC_JOB_ENABLED);
+    }
+    
+    public static String getSeverity()
+    {
+    	 return PerlEditorPlugin.getDefault().getPreferenceStore().getString(
+                 PreferenceConstants.SOURCE_CRITIC_SEVERITY);
+    }
+    
+    public static String getOtherOptions() {
+    	 return PerlEditorPlugin.getDefault().getPreferenceStore().getString(
+                 PreferenceConstants.SOURCE_CRITIC_OTHEROPTIONS);
+    }
 
     /*
      * @see org.eclipse.ui.IWorkbenchPreferencePage#init(org.eclipse.ui.IWorkbench)
@@ -98,6 +130,7 @@ public class PerlCriticPreferencePage extends PreferencePage implements IWorkben
     public boolean performOk()
     {
         storeBoolean(PreferenceConstants.SOURCE_CRITIC_ENABLED, enabledButton.getSelection());
+        storeBoolean(PreferenceConstants.SOURCE_CRITIC_JOB_ENABLED, jobEnabledButton.getSelection());
         storeBoolean(PreferenceConstants.SOURCE_CRITIC_DEFAULT_LOCATION,
             useDefaultButton.getSelection());
 
@@ -109,7 +142,13 @@ public class PerlCriticPreferencePage extends PreferencePage implements IWorkben
             String prefName = PreferenceConstants.SOURCE_CRITIC_SEVERITY_LEVEL + (i + 1);
             storeString(prefName, comboButtons[i].getText());
         }
+        
+        storeString(PreferenceConstants.SOURCE_CRITIC_SEVERITY, severityOptions.getText());
+        storeString(PreferenceConstants.SOURCE_CRITIC_OTHEROPTIONS, otherOptions.getText());
 
+        // invalidate PerlCriticBuilderHelper to force update of settings
+        PerlCriticBuilderHelper.destroy();
+        
         return super.performOk();
     }
 
@@ -127,6 +166,15 @@ public class PerlCriticPreferencePage extends PreferencePage implements IWorkben
                 }
             });
 
+        jobEnabledButton = WidgetUtils.createButton(composite, "Run Critic automatically", SWT.CHECK | SWT.LEFT);
+        jobEnabledButton.addSelectionListener(new SelectionAdapter()
+            {
+                public void widgetSelected(SelectionEvent event)
+                {
+                    toggleCriticJobEnabled(jobEnabledButton.getSelection());
+                }
+            });
+        
         Composite locations = WidgetUtils.createGroup(composite, GridData.FILL_HORIZONTAL);
 
         useDefaultButton =
@@ -176,6 +224,18 @@ public class PerlCriticPreferencePage extends PreferencePage implements IWorkben
             comboButtons[i] = new Combo(c, SWT.READ_ONLY);
             comboButtons[i].setItems(LEVELS);
         }
+        
+        Composite runOptionGroup = WidgetUtils.createGroup(composite, GridData.FILL_HORIZONTAL); 
+        ((Group)runOptionGroup).setText("Run Options");
+        
+        Composite runOptionContent = WidgetUtils.createComposite(runOptionGroup, 2);
+        
+        WidgetUtils.createLabel(runOptionContent, "Severity");
+        severityOptions = new Combo(runOptionContent, SWT.READ_ONLY);
+        severityOptions.setItems(new String[] {"default", "gentle", "stern", "harsh", "cruel", "brutal"});
+        
+        WidgetUtils.createLabel(runOptionContent, "Other options");
+        otherOptions = WidgetUtils.createText(runOptionContent, "");
 
         loadPreferences();
         toggleCriticEnabled(enabledButton.getSelection());
@@ -189,6 +249,7 @@ public class PerlCriticPreferencePage extends PreferencePage implements IWorkben
     protected void performDefaults()
     {
         enabledButton.setSelection(false);
+        jobEnabledButton.setSelection(false);
         useDefaultButton.setSelection(true);
         useCustomButton.setSelection(false);
 
@@ -242,6 +303,7 @@ public class PerlCriticPreferencePage extends PreferencePage implements IWorkben
     private void loadPreferences()
     {
         enabledButton.setSelection(loadBoolean(PreferenceConstants.SOURCE_CRITIC_ENABLED));
+        jobEnabledButton.setSelection(loadBoolean(PreferenceConstants.SOURCE_CRITIC_JOB_ENABLED));
 
         boolean useDefault = loadBoolean(PreferenceConstants.SOURCE_CRITIC_DEFAULT_LOCATION);
         useDefaultButton.setSelection(useDefault);
@@ -256,6 +318,9 @@ public class PerlCriticPreferencePage extends PreferencePage implements IWorkben
                 loadString(PreferenceConstants.SOURCE_CRITIC_SEVERITY_LEVEL + (i + 1), "Warning");
             comboButtons[i].setText(text);
         }
+        
+        severityOptions.setText(loadString(PreferenceConstants.SOURCE_CRITIC_SEVERITY, "default"));
+        otherOptions.setText(loadString(PreferenceConstants.SOURCE_CRITIC_OTHEROPTIONS, ""));
     }
 
     private String loadString(String name, String backup)
@@ -280,13 +345,21 @@ public class PerlCriticPreferencePage extends PreferencePage implements IWorkben
 
         useDefaultButton.setEnabled(enabled);
         useCustomButton.setEnabled(enabled);
-
+        otherOptions.setEnabled(enabled);
+        severityOptions.setEnabled(enabled);
+        jobEnabledButton.setEnabled(enabled);
+        
         customText.setEnabled((enabled && ! useDefaultButton.getSelection()));
 
         for (int i = 0; i < comboButtons.length; i++)
         {
             comboButtons[i].setEnabled(enabled);
         }
+    }
+
+    private void toggleCriticJobEnabled(boolean enabled)
+    {
+        System.setProperty(PreferenceConstants.SOURCE_CRITIC_JOB_ENABLED, Boolean.toString(enabled));
     }
 
     private void validateEnabled()

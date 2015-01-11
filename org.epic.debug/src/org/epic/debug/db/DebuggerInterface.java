@@ -5,33 +5,30 @@ import gnu.regexp.REMatch;
 import java.io.*;
 
 import org.eclipse.core.runtime.*;
-import org.eclipse.swt.widgets.Display;
 
 /**
  * A low-level interface to the "perl -d" debugger process.
- * This class supports the execution of commands which would normally
- * be entered manually through the debugger's console. The actual
- * communication with the debugger happens on a dedicated thread.
- * Asynchronous (non-blocking) methods are provided for the long-running
- * commands (such as "resume"). When these commands finish, they notify
- * the registered listener using the event dispatch (Main) thread.
+ * This class supports the (synchronous) execution of commands
+ * which would normally be entered manually through the debugger's
+ * console. DebuggerInterface does not support concurrent use by
+ * multiple threads.
+ * 
+ * Note that every debugger command can throw SessionTerminatedException.
+ * If you wish to distinguish between IOExceptions and the event of
+ * debugger termination, you should catch this exception type explicitly.
  * 
  * @author jploski
  */
 public class DebuggerInterface
 {
-    private final CommandSlot slot = new CommandSlot();
     private final RE re = new RE();
     private final char[] buf = new char[1024];
 
-    private final BufferedReader in;
-    private final PrintWriter out;
-    private final IListener listener;
-    
-    private final Thread thread;
-    private final String perlVersion;
+    private BufferedReader in;
+    private PrintWriter out;
 
-    private boolean disposed;
+    private final String perlVersion;
+    private Boolean hasPadWalker;
 
     public static final int CMD_NONE = 0;
     public static final int CMD_STEP_INTO = 1;
@@ -46,45 +43,33 @@ public class DebuggerInterface
     public static final int CMD_MODIFIER_RANGE_START = 1024;
     public static final int CMD_MODIFIER_SKIP_EVAL_CMD_RESULT = CMD_MODIFIER_RANGE_START;
     
-    public DebuggerInterface(
-        BufferedReader in,
-        PrintWriter out,
-        IListener listener) throws IOException
-    {        
+    public DebuggerInterface(BufferedReader in, PrintWriter out)
+        throws IOException
+    {
+        assert in != null;
+        assert out != null;
+        
         this.in = in;
         this.out = out;
-        this.listener = listener;
-        
-        thread = new Thread(new Runnable() {
-            public void run() { commandLoop(); } },
-            "EPIC:DebuggerInterface");
-        thread.start();
         
         runSyncCommand(CMD_CLEAR_OUTPUT, null);
         perlVersion = getPerlVersion();
     }
     
-    public void dispose()
+    public synchronized void dispose()
     {
-        if (!disposed)
-        {                        
-            try { runSyncCommand(CMD_EXEC, "q"); }
-            catch (IOException e) { }
-        
-            synchronized (slot)
-            {
-                disposed = true;
-                slot.notifyAll();
-            }
+        if (in != null)
+        {
+            try { quit(); } catch (IOException e) { }
+            try { in.close(); } catch (IOException e) { }
+            out.close();
+            
+            in = null;
+            out = null;
         }
     }
     
-    public Command asyncEval(String code)
-    {
-        return runAsyncCommand(CMD_EXEC, code, true);
-    }
-    
-    public String eval(String code) throws IOException
+    public synchronized String eval(String code) throws IOException
     {
         return runSyncCommand(CMD_EXEC, code);
     }
@@ -93,27 +78,17 @@ public class DebuggerInterface
      * @return true if the given path corresponds to a file in
      *         the debugger's file system; false otherwise
      */
-    public boolean fileExists(IPath path) throws IOException
+    public synchronized boolean fileExists(IPath path)
+        throws IOException
     {
         // Get an OS-specific path with escaped backslashes
         String osPath = getOSPath(path).replaceAll("\\\\", "\\\\\\\\");
         return "1".equals(eval("print $DB::OUT -f '" + osPath + "'"));
     }
     
-    public boolean isDisposed()
-    {
-        return disposed;
-    }
-    
-    public boolean isSuspended()
-    {
-        return slot.isEmpty();
-    }
-    
-    public IPPosition getCurrentIP() throws IOException
+    public synchronized IPPosition getCurrentIP() throws IOException
     {
         String output = runSyncCommand(CMD_EXEC, ".");
-        if (output == null) return null;
 
         // mRe_IP_Pos_CODE handles locations like
         //     main::CODE(0x814f960)(/some/path/trycatch.pl:7):
@@ -126,7 +101,8 @@ public class DebuggerInterface
         if (result == null)
         {
             result = re.IP_POS.getMatch(output);
-            if (result == null) return null;
+            if (result == null)
+                throw new IOException("could not match re.IP_POS in {" + output + "}");
             String filename = result.toString(1);
             REMatch temp = re.IP_POS_EVAL.getMatch(filename);
             if (temp != null) result = temp;
@@ -137,22 +113,44 @@ public class DebuggerInterface
             Integer.parseInt(result.toString(2)));
     }
 
-    public String getOS() throws IOException
+    public synchronized String getOS() throws IOException
     {
         return runSyncCommand(CMD_EXEC, "print $DB::OUT $^O;").trim();
     }
     
-    public String getPerlVersion() throws IOException
-    {
+    public synchronized String getPerlVersion() throws IOException
+    {        
         return runSyncCommand(CMD_EXEC, "printf $DB::OUT \"%vd\", $^V;").trim();
     }
     
-    public String getStackTrace() throws IOException
+    public synchronized String getStackTrace() throws IOException
     {
         return runSyncCommand(CMD_EXEC, "T");
     }
     
-    public void redirectError(String host, int port) throws IOException
+    /**
+     * @return true if we have an installed version of PadWalker required
+     *         for dumping lexical variables; false otherwise
+     */
+    public synchronized boolean hasPadWalker() throws IOException
+    {
+        if (hasPadWalker == null)
+        {
+            String result = runSyncCommand(
+                CMD_EXEC,
+                "print $DB::OUT eval { require PadWalker; PadWalker->VERSION(0.08) }");
+            hasPadWalker = new Boolean(result.length() > 0);
+        }
+
+        return hasPadWalker.booleanValue();
+    }
+    
+    public synchronized String quit() throws IOException
+    {
+        return runSyncCommand(CMD_TERMINATE, null);
+    }
+    
+    public synchronized String redirectError(String host, int port) throws IOException
     {
         String command = "require IO::Socket; {my $OUT;"
             + "$OUT = new IO::Socket::INET("
@@ -160,10 +158,10 @@ public class DebuggerInterface
             + "PeerAddr => \'" + host + ":" + port + "\',"
             + "Proto    => 'tcp',);" + "STDERR->fdopen($OUT,\"w\");}";
 
-        runSyncCommand(CMD_EXEC, command);
+        return runSyncCommand(CMD_EXEC, command);
     }
     
-    public void redirectIO(String host, int port) throws IOException
+    public synchronized String redirectIO(String host, int port) throws IOException
     {
         String command = "require IO::Socket; {my $OUT;"
             + "$OUT = new IO::Socket::INET("
@@ -172,38 +170,33 @@ public class DebuggerInterface
             + "Proto    => 'tcp',);" + "STDOUT->fdopen($OUT,\"w\");"
             + "STDIN->fdopen($OUT,\"r\");}";
 
-        runSyncCommand(CMD_EXEC, command);
+        return runSyncCommand(CMD_EXEC, command);
     }
     
-    public Command asyncResume()
+    public synchronized String resume() throws IOException
     {
-        return runAsyncCommand(CMD_RESUME, null, true);
+        return runSyncCommand(CMD_RESUME, null);
     }
     
-    public void resume() throws IOException
-    {
-        runSyncCommand(CMD_RESUME, null);
-    }
-    
-    public void setFrame(int count) throws IOException
+    public synchronized String setFrame(int count) throws IOException
     {
         String cmd = perlVersion.startsWith("5.6")
             ? "O frame=" + count
             : "o frame=" + count;
         
-        runSyncCommand(CMD_EXEC, cmd);
+        return runSyncCommand(CMD_EXEC, cmd);
     }
     
-    public void removeLineBreakpoint(int line) throws IOException
+    public synchronized String removeLineBreakpoint(int line) throws IOException
     {
         String command = perlVersion.startsWith("5.6")
             ? "d " + line
             : "B " + line;
 
-        runSyncCommand(CMD_EXEC, command);
+        return runSyncCommand(CMD_EXEC, command);
     }
     
-    public boolean setLineBreakpoint(int line, String condition)
+    public synchronized boolean setLineBreakpoint(int line, String condition)
         throws IOException
     {
         String output = runSyncCommand(
@@ -220,39 +213,24 @@ public class DebuggerInterface
      *        path to the source file, specific to the debugger's
      *        environment
      */
-    public void setLoadBreakpoint(IPath path) throws IOException
+    public synchronized String setLoadBreakpoint(IPath path) throws IOException
     {
-        runSyncCommand(CMD_EXEC, "b load " + getOSPath(path));
+        return runSyncCommand(CMD_EXEC, "b load " + getOSPath(path));
     }
     
-    public Command asyncStepInto()
+    public synchronized String stepInto() throws IOException
     {
-        return runAsyncCommand(CMD_STEP_INTO, null, true);
+        return runSyncCommand(CMD_STEP_INTO, null);
     }
     
-    public void stepInto() throws IOException
+    public synchronized String stepOver() throws IOException
     {
-        runSyncCommand(CMD_STEP_INTO, null);
-    }
-
-    public Command asyncStepOver()
-    {
-        return runAsyncCommand(CMD_STEP_OVER, null, true);
+        return runSyncCommand(CMD_STEP_OVER, null);
     }
     
-    public void stepOver() throws IOException
+    public synchronized String stepReturn() throws IOException
     {
-        runSyncCommand(CMD_STEP_OVER, null);
-    }
-
-    public Command asyncStepReturn()
-    {
-        return runAsyncCommand(CMD_STEP_RETURN, null, true);
-    }
-    
-    public void stepReturn() throws IOException
-    {
-        runSyncCommand(CMD_STEP_RETURN, null);
+        return runSyncCommand(CMD_STEP_RETURN, null);
     }
     
     /**
@@ -265,56 +243,29 @@ public class DebuggerInterface
      * @return true if the operation succeeded,
      *         false if the source file has not been loaded yet
      */
-    public boolean switchToFile(IPath path) throws IOException
+    public synchronized boolean switchToFile(IPath path) throws IOException
     {
         String output = runSyncCommand(CMD_EXEC, "f " + getOSPath(path));
 
         return re.SWITCH_FILE_FAIL.getAllMatches(output).length == 0;
     }
-    
-    private void commandLoop()
-    {
-        while (!disposed)
-        {   
-            final Command cmd = slot.get();
-            if (disposed) break;
 
-            cmd.run();
-            slot.remove();
-
-            if (cmd.isNotifyOnFinish() && listener != null)
-            {
-                Display.getDefault().asyncExec(new Runnable() {
-                    public void run() { 
-                        listener.commandFinished(cmd);
-                    } });
-            }
-        }
-    }
     private String getOSPath(IPath path) throws IOException
     {
         return path.toString();
     }
-    
-    private Command runAsyncCommand(int command, String code, boolean notifyOnFinish)
+
+    private String runSyncCommand(int command, String code) throws IOException
     {
-        Command cmd = new Command(command, code, notifyOnFinish);
-        slot.put(cmd);
-        return cmd;
-    }
-    
-    private String runSyncCommand(int command, String code)
-        throws IOException
-    {
-        Command cmd = new Command(command, code, false);
-        slot.putAndWait(cmd);
-        return cmd.getResult();
+        assert Thread.currentThread().getName().indexOf("Main") == -1
+            : "forbidden DebuggerInterface use from display thread";
+
+        Command cmd = new Command(command, code);
+        return cmd.run();
     }
     
     private String runCommand(int command, String code) throws IOException
     {
-        assert Thread.currentThread() == thread;
-        
         command = maskCommandModifiers(command);
 
         switch (command)
@@ -331,8 +282,10 @@ public class DebuggerInterface
         case CMD_RESUME:
             outputLine("c");
             break;
-        case CMD_SUSPEND:
         case CMD_TERMINATE:
+            outputLine("q");
+            break;
+        case CMD_SUSPEND:
         case CMD_CLEAR_OUTPUT:
             break;
         case CMD_EXEC:
@@ -342,7 +295,11 @@ public class DebuggerInterface
         default:
             throw new RuntimeException("unrecognized command " + command);
         }
-
+        
+        synchronized (this)
+        {
+            if (out == null) throw new SessionTerminatedException("disposed");
+        }
         return readCommandOutput();
     }
     
@@ -351,18 +308,24 @@ public class DebuggerInterface
         return command & (CMD_MODIFIER_RANGE_START - 1);
     }
 
-    private boolean hasCommandTerminated(String fOutput)
+    private int hasCommandTerminated(String output)
     {
-        boolean erg;
-        int count;
+        // TODO: this way of finding out whether a command has terminated
+        // is not fool-proof. The debugger output may contain a fake
+        // command termination token, so there's a bug waiting to be
+        // uncovered here...
+        
+        REMatch[] matches;
 
-        erg = re.CMD_FINISHED1.isMatch(fOutput);
-        count = re.CMD_FINISHED1.getAllMatches(fOutput).length;
-        if (erg || (count > 0)) return (true);
+        matches = re.CMD_FINISHED1.getAllMatches(output);
+        if (matches != null && matches.length > 0)
+            return matches[matches.length-1].getStartIndex();
 
-        erg = re.CMD_FINISHED2.isMatch(fOutput);
-        count = re.CMD_FINISHED2.getAllMatches(fOutput).length;
-        return erg || (count > 0);
+        matches = re.CMD_FINISHED2.getAllMatches(output);
+        if (matches != null && matches.length > 0)
+            return matches[matches.length-1].getStartIndex();
+
+        return -1;
     }
 
     private boolean hasSessionTerminated(String fOutput)
@@ -381,13 +344,18 @@ public class DebuggerInterface
         return false;
     }
     
-    private void outputLine(String line)
+    private synchronized void outputLine(String line)
     {
         //System.err.println("->D: {" + line + "}");
-        out.println(line);
+        if (out != null)
+        {
+            out.println(line);
+            out.flush();
+        }
     }
     
-    private String readCommandOutput() throws IOException
+    private String readCommandOutput()
+        throws IOException, SessionTerminatedException
     {
         StringBuffer output = new StringBuffer();
         while (true)
@@ -398,12 +366,12 @@ public class DebuggerInterface
                 count = in.read(buf);
                 //System.err.println("<-D: {" + String.valueOf(buf, 0, count) + "}");
                 if (count > 0) output.append(buf, 0, count);
-                try { if (in.ready()) continue; } catch (IOException e) { }
+                try { if (in.ready() && count != -1) continue; } catch (IOException e) { }
             }
             catch (IOException e)
             {
-                fireSessionTerminated();
-                throw e;
+                throw new SessionTerminatedException(
+                    "IOException while reading debugger's response");
             }
             
             // Note that we apply the regular expressions used to find out
@@ -411,85 +379,49 @@ public class DebuggerInterface
             // characters of the output; applying them to the whole output
             // (which can become *very* long) causes major performance problems
 
-            int inspectLen = Math.min(output.length(), 350);
+            int inspectLen = Math.min(output.length(), 350);            
             String currentOutput = output.substring(
                 output.length() - inspectLen,
                 output.length());
+            
+            int endIndex = hasCommandTerminated(currentOutput);
 
-            if (count < 0 || hasSessionTerminated(currentOutput))
+            if (count < 0)
             {
-                fireSessionTerminated();
-                return null;
+                throw new SessionTerminatedException("EOF from debugger");
             }
-            else if (hasCommandTerminated(currentOutput))
+            else if (hasSessionTerminated(currentOutput))
+            {
+                throw new SessionTerminatedException(
+                    "Debugger session terminated normally");
+            }
+            else if (endIndex != -1)
             {
                 // Return command output without the trailing
                 // DB<nn> prompt
-
-                int lfIndex = output.lastIndexOf("\n");
-                int crIndex = output.lastIndexOf("\r");
-                
-                if (lfIndex < 0) lfIndex = Integer.MAX_VALUE;
-                if (crIndex < 0) crIndex = Integer.MAX_VALUE;
-                
-                int nlIndex = Math.min(crIndex, lfIndex);
-                if (nlIndex != Integer.MAX_VALUE)
-                {
-                    return output.substring(0, nlIndex);
-                }
-                else return output.toString();
+                String ret = output.substring(
+                    0, output.length() - inspectLen + endIndex);
+                return ret;
             }
         }
-    }
-    
-    private void fireSessionTerminated()
-    {
-        if (!disposed && listener != null)
-        {
-            Display.getDefault().asyncExec(new Runnable() {
-                public void run() { listener.sessionTerminated(); } });
-        }
-    }
-    
-    public static interface IListener
-    {
-        public void commandFinished(Command cmd);
-        
-        public void sessionTerminated();
     }
     
     public class Command
     {
         private final int type;
         private final String code;
-        private final boolean notifyOnFinish;
-
-        private String result;
-        private IOException error;
         
-        public Command(int type, String code, boolean notifyOnFinish)
+        public Command(int type, String code)
         {
             this.type = type;
             this.code = code;
-            this.notifyOnFinish = notifyOnFinish;
         }
 
-        public String getResult() throws IOException
-        {
-            if (error != null) throw error;
-            return result;
-        }
-        
         public String getCode()
         {
             return code;
         }
-        
-        public boolean isNotifyOnFinish()
-        {
-            return notifyOnFinish;
-        }
-        
+
         public boolean isStepCommand()
         {
             return
@@ -503,62 +435,31 @@ public class DebuggerInterface
             return type;
         }
                 
-        void run()
+        public String run() throws IOException, SessionTerminatedException
         {
-            try { result = runCommand(type, code); }
-            catch (IOException e) { error = e; }
+            return runCommand(type, code);           
         }
         
         public String toString()
         {
-            return "Command #" + type + " {" + code + "}" + ", notify=" + notifyOnFinish;
+            return "Command #" + type + " {" + code + "}";
         }  
     }
     
-    private class CommandSlot
+    /**
+     * Thrown when an executed debugger command does not terminate
+     * normally because the debugging session has finished.
+     * For convenience of clients who consider abnormal command
+     * termination as bad regardless of its reason, this is a subtype
+     * of IOException.
+     */
+    public static class SessionTerminatedException extends IOException
     {
-        private Command cmd;
-        
-        public synchronized Command get()
+        private static final long serialVersionUID = 1L;
+
+        public SessionTerminatedException(final String msg)
         {
-            waitUntilFull();
-            return cmd;
-        }
-        
-        public synchronized boolean isEmpty()
-        {
-            return cmd == null;
-        }
-        
-        public synchronized void put(Command cmd)
-        {
-            waitUntilEmpty();
-            this.cmd = cmd;
-            notifyAll();
-        }
-        
-        public synchronized void putAndWait(Command cmd)
-        {
-            put(cmd);
-            waitUntilEmpty();
-        }
-        
-        public synchronized void remove()
-        {
-            this.cmd = null;
-            notifyAll();
-        }
-        
-        public synchronized void waitUntilEmpty()
-        {
-            while (cmd != null && !disposed)
-                try { wait(); } catch (InterruptedException e) { }
-        }
-        
-        public synchronized void waitUntilFull()
-        {
-            while (cmd == null && !disposed)
-                try { wait(); } catch (InterruptedException e) { }
+            super(msg);
         }
     }
 }

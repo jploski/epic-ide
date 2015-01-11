@@ -60,10 +60,10 @@ public class CommandLineTokenizer
         StringBuffer buf = new StringBuffer();
         boolean escape = false, inQuote = false;
 
+        // find the next whitespace or end-of-line, don't care about quotes
         while (pos < line.length())                
         {
             char c = line.charAt(pos);
-            
             if (escape)
             {
                 if (c == '"') buf.append('"'); // escape quote

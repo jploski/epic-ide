@@ -47,6 +47,12 @@
             class="org.epic.perleditor.preferences.PerlCriticPreferencePage"
             id="org.epic.perleditor.preferences.SourceCriticPreferencePage" />
         <page
+              category="org.epic.core.preferences.PerlMainPreferencePage"
+              class="org.epic.perleditor.preferences.ModuleStarterPreferencePage"
+              id="org.epic.perleditor.preferences.ModuleStarterPreferencePage"
+              name="Module::Starter">
+        </page>
+        <page
             class="org.epic.perleditor.preferences.TaskTagsPreferencePage"
             category="org.epic.core.preferences.PerlMainPreferencePage"
             name="Task Tags"
@@ -163,6 +169,18 @@
             name="Perl Include Path"
             class="org.epic.core.properties.IncludePathPropertyPage"
             id="org.epic.core.properties.IncludePathPropertyPage">
+            <filter
+                name="nature"
+                value="org.epic.perleditor.perlnature">
+            </filter>
+        </page>
+    </extension>
+    <extension point="org.eclipse.ui.propertyPages">
+        <page
+            objectClass="org.eclipse.core.resources.IProject"
+            name="Perl Ignored Paths"
+            class="org.epic.core.properties.IgnoredPathsPropertyPage"
+            id="org.epic.core.properties.IgnoredPathsPropertyPage">
             <filter
                 name="nature"
                 value="org.epic.perleditor.perlnature">
@@ -296,6 +314,18 @@
                 class="org.epic.core.popupmenus.TogglePerlNatureActionDelegate"
                 id="org.epic.core.togglePerlNature.action" />
         </objectContribution>
+        
+        <objectContribution
+              objectClass="org.eclipse.core.resources.IFolder"
+              id="org.epic.core.toggleLibPath">
+              <action
+                    class="org.epic.core.popupmenus.ToggleLibPathActionDelegate"
+                    icon="icons/epic_project.gif"
+                    id="org.epic.core.toggleLibPath.action"
+                    label="Add to INC"
+                    tooltip="Add to INC Path">
+              </action>
+        </objectContribution>
 
         <viewerContribution
             targetID="#PerlRulerContext"
@@ -404,11 +434,6 @@
                 class="org.epic.perleditor.actions.DefaultRetargetEditorDelegate"
                 menubarPath="org.epic.perleditor.contextMenu.source/criticGroup"
                 id="org.epic.perleditor.actions.ClearMarkerAction#Critic">
-                <enablement>
-                    <systemProperty
-                        name="sourceCriticEnabled"
-                        value="true" />
-                </enablement>
             </action>
             <action
                 definitionId="org.epic.perleditor.commands.perlCritic"
@@ -416,11 +441,6 @@
                 class="org.epic.perleditor.actions.DefaultRetargetEditorDelegate"
                 menubarPath="org.epic.perleditor.contextMenu.source/criticGroup"
                 id="org.epic.perleditor.actions.PerlCriticAction">
-                <enablement>
-                    <systemProperty
-                        name="sourceCriticEnabled"
-                        value="true" />
-                </enablement>
             </action>
 
 			<!-- miscGroup -->
@@ -531,11 +551,6 @@
                 retarget="true"
                 menubarPath="org.epic.perleditor.topLevelMenu.source/criticGroup"
                 id="org.epic.perleditor.actions.ClearMarkerAction#Critic">
-                <enablement>
-                    <systemProperty
-                        name="sourceCriticEnabled"
-                        value="true" />
-                </enablement>
             </action>
             <action
                 definitionId="org.epic.perleditor.commands.perlCritic"
@@ -543,11 +558,6 @@
                 retarget="true"
                 menubarPath="org.epic.perleditor.topLevelMenu.source/criticGroup"
                 id="org.epic.perleditor.actions.PerlCriticAction">
-                <enablement>
-                    <systemProperty
-                        name="sourceCriticEnabled"
-                        value="true" />
-                </enablement>
             </action>
 
 			<!-- html export -->
@@ -712,6 +722,7 @@
         id="markers.podChecker"
         name="Pod Checker">
         <super type="org.epic.perleditor.markers.epic" />
+        <persistent value="true" />
     </extension>
 
     <extension
@@ -719,6 +730,7 @@
         id="markers.critic"
         name="Perl Critic">
         <super type="org.epic.perleditor.markers.epic" />
+		<persistent value="true" />
     </extension>
 
     <extension point="org.eclipse.ui.editors.annotationTypes">
@@ -757,4 +769,18 @@
         </type>
     </extension>
 
-</plugin>
+	<extension point="org.eclipse.ui.perspectiveExtensions">
+		<perspectiveExtension targetID="org.epic.core.Perspective">
+        	<showInPart id="org.eclipse.ui.views.ResourceNavigator"/>
+        </perspectiveExtension>
+	</extension>
+	
+    <extension point="org.eclipse.ui.ide.resourceFilters">
+        <filter pattern=".project" selected="true"/>
+    </extension>
+    <extension point="org.eclipse.ui.ide.resourceFilters">
+        <filter pattern="epic_links" selected="true"/>
+    </extension>
+ 
+</plugin>   
+

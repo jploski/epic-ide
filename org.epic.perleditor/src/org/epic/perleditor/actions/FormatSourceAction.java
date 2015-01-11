@@ -11,11 +11,9 @@ import org.epic.perleditor.editors.PerlEditorActionIds;
 import org.epic.perleditor.editors.util.SourceFormatter;
 import org.epic.perleditor.editors.util.SourceFormatterException;
 
-
 /**
- * DOCUMENT ME!
- *
- * @version $Revision$, $Date$
+ * Reformats the edited document according to the style
+ * specified by the Source Formatter preferences. 
  */
 public class FormatSourceAction extends PerlEditorAction
 {
@@ -63,26 +61,26 @@ public class FormatSourceAction extends PerlEditorAction
             {
                 anchorOffset--;
                 len++;
-        }
+            }
             newText.delete(anchorOffset+1, anchorOffset+len);
         }
         else
             anchorOffset = 0;
-
+        
         doc.set(newText.toString());
         viewer.setSelectedRange(anchorOffset, 0);
         viewer.revealRange(anchorOffset, 0);
     }
 
     protected String getPerlEditorActionId()
-        {
+    {
         return PerlEditorActionIds.FORMAT_SOURCE;
-        }
-
+    }
+    
     private int getAnchorOffset(ISourceViewer viewer, IDocument doc)
-        {
+    {
         try
-            {
+        {
             Point sel = viewer.getSelectedRange();
             int docOffset = sel != null ? sel.x : 0;
             int line = doc.getLineOfOffset(docOffset);
@@ -92,11 +90,11 @@ public class FormatSourceAction extends PerlEditorAction
                 (doc.getChar(i) == '\n' || doc.getChar(i) == '\r') &&
                 doc.getLineOfOffset(i) == line) i--;
             return i+1;
-            }
+        }
         catch (BadLocationException e)
-            {
+        {
             return 0;
-            }
+        }
     }
 
     private String getAnchorString(StringBuffer docText)
@@ -108,25 +106,25 @@ public class FormatSourceAction extends PerlEditorAction
         while (docText.indexOf(buf.toString()) >= 0)
             buf.append(posAnchor);
         return buf.toString();
-        }
-
+    }
+    
     private void handleCoreException(CoreException e)
-        {
+    {
         log(e.getStatus());
         MessageDialog.openError(
             getEditor().getSite().getShell(),
             "Source formatter failed",
             e.getMessage());
-        }
-
+    }
+    
     private String runFormatter(StringBuffer text)
-        {
+    {
         try
-            {
+        {
             return SourceFormatter.format(text.toString(), getLog());
-            }
+        }
         catch (SourceFormatterException e)
-            {
+        {
             if (e.output == null)
             {
                 handleCoreException(e);
@@ -139,14 +137,13 @@ public class FormatSourceAction extends PerlEditorAction
                 "\nUse formatter's output anyway?"))
             {
                 return e.output;
-        }
+            }
             return null;
-    }
+        }
         catch (CoreException e)
-    {
+        {
             handleCoreException(e);
             return null;
+        }
     }
-
-}
 }

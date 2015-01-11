@@ -13,6 +13,9 @@ import org.epic.perl.editor.test.BaseTestCase;
 
 public class BasePDETestCase extends BaseTestCase
 {
+    private final String spinEventLoopLock = "spinEventLoopLock";
+    private boolean spinEventLoopInterrupted;
+
     /**
      * Closes the specified editor, discards unsaved changes.
      */
@@ -81,18 +84,38 @@ public class BasePDETestCase extends BaseTestCase
     }
     
     /**
+     * Forces spinEventLoop to throw an InterruptedException.
+     */
+    protected void interruptSpinEventLoop()
+    {
+        synchronized (spinEventLoopLock)
+        {
+            spinEventLoopInterrupted = true;
+            spinEventLoopLock.notifyAll();
+        }
+    }
+
+    /**
      * Spins the event loop for the specified duration of time.
      */
     protected void spinEventLoop(long timeMillis)
         throws InterruptedException
     {
         Display display = Display.getDefault();
+        while (display.readAndDispatch());
         long t1 = System.currentTimeMillis();
-        while (t1 + timeMillis > System.currentTimeMillis())
+        boolean interrupted;
+        synchronized (spinEventLoopLock)
         {
-            while (display.readAndDispatch());
-            Thread.sleep(100);
+            while (t1 + timeMillis > System.currentTimeMillis() && !spinEventLoopInterrupted)
+            {
+                while (display.readAndDispatch());
+                spinEventLoopLock.wait(100);
+            }
+            interrupted = spinEventLoopInterrupted;
+            spinEventLoopInterrupted = false;
         }
+        if (interrupted) throw new InterruptedException("spinEventLoop interrupted");
     }
     
     protected IWorkbenchPage activeWorkbenchPage()

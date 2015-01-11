@@ -10,9 +10,11 @@ import org.eclipse.jface.text.reconciler.IReconciler;
 import org.eclipse.jface.text.reconciler.MonoReconciler;
 import org.eclipse.jface.text.source.*;
 import org.eclipse.swt.graphics.RGB;
+import org.eclipse.ui.texteditor.AbstractDecoratedTextEditorPreferenceConstants;
 import org.epic.perleditor.PerlEditorPlugin;
 import org.epic.perleditor.editors.perl.*;
 import org.epic.perleditor.editors.util.PreferenceUtil;
+import org.epic.perleditor.preferences.CodeAssistPreferences;
 import org.epic.perleditor.preferences.PreferenceConstants;
 
 /**
@@ -70,7 +72,7 @@ public class PerlSourceViewerConfiguration extends SourceViewerConfiguration
 
         assistant.enableAutoActivation(true);
         assistant.enableAutoInsert(true);
-        assistant.setAutoActivationDelay(500);
+        assistant.setAutoActivationDelay(prefs.getInt(CodeAssistPreferences.AUTO_ACTIVATION_DELAY));
         assistant.setProposalPopupOrientation(ContentAssistant.PROPOSAL_OVERLAY);
         assistant.setContextInformationPopupOrientation(ContentAssistant.CONTEXT_INFO_ABOVE);
         assistant.setContextInformationPopupBackground(
@@ -115,7 +117,7 @@ public class PerlSourceViewerConfiguration extends SourceViewerConfiguration
 
     public String[] getIndentPrefixes(ISourceViewer sourceViewer, String contentType)
     {
-        return new String[] { PreferenceUtil.getTab(0), "\t" };
+        return new String[] { PreferenceUtil.getTab(0), "\t", "" };
     }
 
     public int getTabWidth(ISourceViewer sourceViewer)
@@ -144,8 +146,17 @@ public class PerlSourceViewerConfiguration extends SourceViewerConfiguration
             false);
 
         r.setDelay(prefs.getInt(
-            PerlEditorPlugin.SYNTAX_VALIDATION_INTERVAL_PREFERENCE));
+            PreferenceConstants.EDITOR_SYNTAX_VALIDATION_INTERVAL));
 
         return r;
+    }
+
+	public IUndoManager getUndoManager(ISourceViewer sourceViewer)
+	{
+        if (!prefs.contains(AbstractDecoratedTextEditorPreferenceConstants.EDITOR_UNDO_HISTORY_SIZE))
+            return super.getUndoManager(sourceViewer);
+
+        int undoHistorySize = prefs.getInt(AbstractDecoratedTextEditorPreferenceConstants.EDITOR_UNDO_HISTORY_SIZE);
+        return new TextViewerUndoManager(undoHistorySize);
     }
 }

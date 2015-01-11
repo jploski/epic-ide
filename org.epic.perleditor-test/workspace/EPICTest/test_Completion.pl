@@ -21,3 +21,10 @@ sub bar
 	
 	$y_1->#4
 }
+
+sub baz
+{
+	my $y_1 = TestCompletion::Sub_Package2->new();
+	
+	$y_1->#5
+}

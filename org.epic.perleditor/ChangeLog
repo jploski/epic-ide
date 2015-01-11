@@ -1,0 +1,741 @@
+Eclipse Perl Integration:
+
+Git
+		Debugger:
+		* Implemented Feature Request #156 Change Perl CGI file lookup or settings to load the right file
+		
+		Editor:
+
+
+Version 0.6.56 - 29-October-2014		
+		* Fixed Bug #676 Template insertion does not honor the project's new text file delimiter
+
+Version 0.6.55 - 23-March-2014
+		Debugger:
+		* Fixed Bug #668 Call stack only shows current context - ActivePerl 5.6.13
+
+		Editor:
+		* Implemented Feature Request #134 "method" keyword should be treated the same as "sub"
+
+Version 0.6.54 - 20-February-2014
+		Debugger:
+		* Added $[ to Perl internal variables list to prevent it from appearing in Variables view
+		* Fixed ignored breakpoints in 'require'd files issue discovered during tests with Perl 5.18.2
+
+Version 0.6.53 - 12-July-2013
+		Editor:
+		* Implemented Feature Request #153 Configurable display order for hash keys in debugger
+
+Version 0.6.52 - 08-June-2013
+		Editor:
+		* Fixed Bug #661 Avoid blocking UI when ModuleCompletionHelper is running
+
+Version 0.6.51 - 02-June-2013
+		Debugger:
+		* Fixed Bug #660 Editing of Perl run configurations very slow in big projects		
+		
+Version 0.6.50 - 22-May-2013
+		* Implemented Feature Request #151 Backspace and indentation
+
+Version 0.6.49 - 06-May-2013
+		* Fixed Bug [ 3612632 ] Breakpoints skipped in Windows CGI environment
+
+Version 0.6.48 - 04-May-2013
+		Debugger:
+		* Implemented Feature Request [ 3611304 ] Show preview of array/hash content in Variables view
+
+Version 0.6.47 - 12-Feb-2013
+		Debugger:
+		* Fixed Bug [ 3604263 ] Variables view empty (related to Class::Accessor)
+
+Version 0.6.46 - 15-Jan-2013
+		Debugger:
+		* Fixed Bug [ 3601003 ] NPE when launching script in debug mode
+
+Version 0.6.45 - 30-Sep-2012
+		Editor:
+		* Implemented Feature Request [ 3573183 ] Configurable activation delay for autocompletion
+
+Version 0.6.44 - 18-Apr-2012
+		Debugger:
+		* Fixed Bug [ 1848119 ] Terminate Icon sporadically unusable in debugger
+
+Version 0.6.43 - 08-Apr-2012
+		Editor:
+		* Merged https://github.com/jploski/epic-ide/pull/1 from abhishekisnot/testing:
+		  Implemented Feature Request [ 3403267 ] Modules node collapsed by default in the Outline view
+		  Outline View: icons to perform various actions
+		  Navigator View: add folder to Perl Include Path
+		  Navigator View: filter out .project and epic_links
+		  Perl Perspective: added Problems view to bottom panel
+		  Templates: additional default templates and template variables
+
+Version 0.6.42 - 25-Feb-2012
+		Editor:
+		* Implemented Feature Request [ 1789544 ] Ignore directories when compiling
+
+Version 0.6.41 - 15-Sep-2011
+		* Implemented Feature Request [ 3364563 ] Syntax Coloring: Italic Type Support
+		* Applied Patch [ 3396613 ] add use base / use parent handling (with slight corrections)
+		* Applied Patch [ 3408462 ] Minor corrections to Perl::Critic integration
+
+Version 0.6.40 - 22-Apr-2011
+		Editor:
+		* Implemented Feature Request [ 3291142 ] Support for E4
+		* Fixed Bug [ 3134433 ] Fix for adding multiple critic command line options
+		* Fixed Bug [ 2824215 ] UTF-8 file with BOM produces error message
+
+Version 0.6.39 - 16-Jan-2010
+		Debugger:
+		* Fixed Bug [ 3155635 ] updating to 6.38 causes Bug #3143553
+		* Fixed Bug [ 3143553 ] Error in Core prohibit start of debugger or script
+
+Version 0.6.38 - 08-Dec-2010
+		* Applied Patch [ 3087284 ] show perlcritic policy name in problems view
+		* Fixed Bug [ 3065307 ] Compilation fails on file with UTF-8 encoding
+		* Fixed Bug [ 3106556 ] Perl::Critic markers are not saved on exit
+
+Version 0.6.37 - 13-Oct-2010
+		Debugger:
+
+		Editor:
+		* Fixed Bug [ 2972523 ] Undo history size fixed at 25
+		* Fixed Bug [ 2931385 ] weird bracket autocompletion (Patch [ 3062529 ])
+
+Version 0.6.36 - 02-Apr-2010
+		Debugger:
+        * Added some automatic hints about a workaround for Bug [ 2907155 ]
+
+		Editor:
+		* Fixed Bug [ 2818300 ] Editor toggle breakpoint action not set up
+		* Applied Patch [ 2974383 ] Adds severity and other options for running Perl::Critic
+
+Version 0.6.35 - 21-May-2009
+		Editor:
+		* Fixed Bug [ 1874581 ] Outline view out of sync with comment typing/deletion
+
+Version 0.6.34 - 27-Apr-2009
+		Debugger:
+		* Fixed Bug [ 2782469 ] Step Return very slow, ends up in overload.pm
+
+Version 0.6.33 - 22-Mar-2009
+		Debugger:
+		* Fixed Bug [ 2617018 ] Breakpoints view sorting
+		* Fixed Bug [ 2703403 ] Show options remain disabled in Variables view
+
+		Editor:
+		* Fixed Bug [ 2694463 ] Templates don't work anymore in 0.6.32
+		* Fixed Bug [ 2617016 ] Editor fails highlight. double-click.
+		* Fixed Bug [ 2612813 ] Editor fails highlight. Binary operators.
+
+Version 0.6.32 - 18-Mar-2009
+		Debugger:
+		* Fixed Bug [ 2609775 ] CGI debugging: Could not connect to debug port!
+
+		Editor:
+		* Fixed Bug [ 2680597 ] doesn't respect global Eclipse text editor background color
+		* Implemented Feature Request [ 2692844 ] Preference for fold column background color
+
+Version 0.6.31 - 9-Feb-2009
+		Debugger:
+		* Applied Patch [ 2490403 ] cygwin drive prefix processing
+
+		Editor:
+		* Fixed Bug [ 2502358 ] Content assist and "use base"
+
+Version 0.6.30 - 7-Feb-2009
+		Debugger:
+		* Fixed Bug [ 2513003 ] epic_breakpoints raises exception in Template::Toolkit
+		* Fixed Bug [ 2501676 ] debugger crash
+		* Fixed Bug [ 2433437 ] Content-type does not enable to run/debug perl scripts
+
+		Editor:
+		* Fixed Bug [ 2537700 ] Editor fails highlight. grep + regexp
+		* Fixed Bug [ 2502366 ] Content assist and typed lexicals
+
+Version 0.6.29 - 15-Dec-2008
+		Debugger:
+		* Implemented Feature Request [ 2431423 ] Show @_ in Variables view
+
+Version 0.6.28 - 15-Dec-2008
+		Debugger:
+		* Fixed Bug [ 2431258 ] Perl internal variables not appearing
+		* Fixed Bug [ 2241882 ] NPE in Perl Expression View
+
+Version 0.6.27 - 28-Oct-2008
+		Editor:
+		* Implemented Feature Request [ 2204771 ] Enable variable substitution for Perl executable in prefs
+
+Version 0.6.26 - 26-Oct-2008
+		Debugger:
+		* Fixed Bug [ 2188379 ] Global variables can not be displayed
+		* Implemented Feature Request [ 2197630 ] Display package-scope ('our') variables in debugger
+
+		Editor:
+		* Fixed Bug [ 2059660 ] shift left works different than in other eclipse editors
+
+Version 0.6.25 - 10-Aug-2008
+		Debugger:
+		* Implemented Feature Request [ 2045172 ] Module::Starter integration
+		* Implemented Feature Request [ 2045001 ] Persistent Variables view options
+
+Version 0.6.24 - 26-May-2008
+		Debugger:
+		* Fixed Bug [ 1972281 ] URIs with PATH_INFO not recognized in CGI debug
+
+Version 0.6.23 - 1-May-2008
+		Debugger:
+		* Fixed Bug [ 1931512 ] Debugger port sometimes not released
+		* Fixed Bug [ 1931516 ] Undefined references in epic_breakpoints.pm
+		* Fixed Bug [ 1932366 ] Adding/removing breakpoints unreliable when not suspended
+
+		Editor:
+		* Fixed Bug [ 1102327 ] Perltidy - wrong option causes Error
+		* Fixed Bug [ 1948274 ] Editor crashes w/ Unhandled Event Loop Exception (java heap)
+
+Version 0.6.22 - 25-March-2008
+		Debugger:
+		* Fixed Bug [ 1925536 ] Timed out while waiting for IO redirect
+
+		Editor:
+		* Fixed Bug [ 1594186 ] Inserting templates on proper indentation levels
+		* Fixed Bug [ 1914490 ] syntax coloring off after 'split'
+		* Fixed Bug [ 1921439 ] Syntax Highlighting Breaks after Regex Alternation in grep
+
+Version 0.6.21 - 27-February-2008
+		* Fixed Bug [ 1903265 ] Caret randomly jumps to sub name while typing
+
+Version 0.6.20 - 10-February-2008
+		Editor:
+		* Fixed Bug [ 1882813 ] New Perl 5.10 operators
+		* Fixed Bug [ 1888190 ] subs that start with "tr_" break the Outline
+		* Fixed Bug [ 1881070 ] Perltidy options
+		* Fixed Bug [ 1890775 ] Division operator '/' breaks syntax highlighting
+
+Version 0.6.19 - 25-January-2008
+		Editor:
+		* Fixed Bug [ 1870056 ] Problems with Perl::Critic's enablement
+		* Fixed Bug [ 1879954 ] Slow syntax highlighting when typing # comments
+		* Implemented Feature Request [ 1870058 ] Show In... context menu action
+
+Version 0.6.18 - 10-January-2008
+		Editor:
+		* Fixed Bug [ 1833354 ] => begins POD comment
+		* Fixed Bug [ 1817653 ] No sync of outline view to cursor pos on collapsed subs
+		* Fixed Bug [ 1868914 ] Autocompletion fails when a mod name has digit, underscore
+
+Version 0.6.17 - 18-October-2007
+		* Implemented Feature Request [ 1812499 ] Refresh outline explicitly
+		* Fixed Bug [ 1810913 ] word wrap option does not 'stick'
+
+Version 0.6.16 - 6-October-2007
+		Debugger:
+		* Fixed Bug [ 1805904 ] Cannot terminate CGI debugging session
+
+		Editor:
+		* Fixed Bug [ 1802186 ] Breakpoint properties label missing
+		* Fixed Bug [ 1803739 ] Source formatting wrong with utf8 characters
+		* Implemented Feature Request [ 1410017 ] Dynamic word wrapping
+
+Version 0.6.15 - 9-September-2007
+		* Fixed Bug [ 1783596 ] Slow variable autocompletion
+		* Fixed Bug [ 1772573 ] subroutine folding fails if all parameters are optional
+
+Version 0.6.14 - 22-August-2007
+		Debugger:
+		* Fixed Bug [ 1779782 ] Variables view very slow showing big arrays
+		* Implemented Feature Request [ 1779784 ] Show array slices in Variables view
+
+		Editor:
+		* Fixed Bug [ 1771183 ] Open sub definition fails with main:: prefix
+		
+		RegExp:
+		* Shortcuts context menu entries have been reenabled.
+
+Version 0.6.13 - 8-August-2007
+		Debugger:
+		* Fixed Bug [ 1767958 ] STDIN not forwarded in remote debug mode
+
+		Editor:
+		* Fixed Bug [ 1760636 ] Error notifying a preference change listener
+
+Version 0.6.12 - 26-July-2007
+		Debugger:
+		* Fixed Bug [ 1761095 ] Breakpoints ignored in modules from "use lib"
+		* Fixed Bug [ 1761167 ] Show Global Variables out-of-sync with actual setting
+
+		Editor:
+		* Fixed Bug [ 1736256 ] No template expansion after typing '...use'
+		* Fixed Bug [ 1750197 ] normal code will be interpreted as regular expression
+
+Version 0.6.11 - 26-June-2007
+		Debugger:
+		* Fixed Bug [ 1742785 ] Certain variable types crash the variables view in eclipse
+
+Version 0.6.10 - 21-June-2007
+		Debugger:
+		* Fixed Bug [ 1741069 ] Array contents not displayed correctly in Variables
+
+		Editor:
+		* Fixed Bug [ 1653354 ] NPE in ExplainErrorsRulerAction
+
+Version 0.6.9 - 13-June-2007
+		Debugger:
+		* Fixed Bug [ 1736604 ] Content of @main::foo not displayed in Variables
+		* Fixed Bug [ 1735629 ] An error occurred while dumping array content
+
+Version 0.6.8 - 12-June-2007
+		Debugger:
+		* Fixed Bug [ 1734893 ] Array of hashes does not display correctly in Variables
+
+Version 0.6.7 - 9-June-2007
+		Debugger:
+		* Fixed Bug [ 1732242 ] Fatal: failed to find source perl5db.pl for epic_breakpoints
+		* Fixed Bug [ 1734045 ] Debugger fails: "use" not allowed in expression
+
+Version 0.6.6 - 3-June-2007
+		Debugger:
+		* Fixed Bug [ 1730254 ] Annoying focus grabbing in 0.6.5 CGI debugger
+		* Fixed Bug [ 1728827 ] Exhaustingly slow debugger
+
+Version 0.6.5 - 27-May-2007
+		Debugger:
+		* Major internal refactoring
+		* Fixed Bug [ 1705011 ] CGI,no breakpoints,100% cpu perl.exe zombies,ignore use lib,
+		* Fixed Bug [ 1672279 ] No stop on breakpoints EPIC 0.5.31
+
+		Editor:
+		* Fixed Bug [ 1722253 ] Number literals - wrong syntax coloring
+
+Version 0.6.4 - 21-May-2007
+		Debugger:
+		* Fixed Bug [ 1719825 ] An internal error occurred during: "PerlDB.commandFinished".
+
+		Editor:
+		* Fixed Bug [ 1720833 ] Highlight error with regular expression
+
+Version 0.6.3 - 02-May-2007
+		Debugger:
+		* Implemented Feature Request [ 1709698 ] Do not redirect IO during remote debugging
+		* Implemented Feature Request [ 1708299 ] Highlighting of changed values in Variables view
+		* Fixed Bug [ 1710842 ] Possible deadlock when debugger console enabled
+		* Fixed Bug [ 1710845 ] StringIndexOutOfBoundsException in DumpedEntityReader
+
+Version 0.6.2 - 28-April-2007
+		Debugger:
+		* Fixed Bug [ 1709016 ] EPIC 0.6.1 requires PadWalker version to be 1.0
+
+Version 0.6.1 - 26-April-2007
+		Debugger:
+		* Fixed Bug [ 1706017 ] Wrong number of stack frames in Debug view [Win32]
+		* Fixed Bug [ 1706024 ] Can't open source file for stack frame (Win32)
+		* Implemented RFE [ 1705366 ] Incremental retrieval of variables in debugger
+		* Implemented RFE [ 1573144 ] Display variables from any stack frame
+		* Note: change highlighting in the Variables view is disabled in this version
+
+		Editor:
+		* Fixed Bug [ 1700095 ] wrong syntax highlighting when using qw//
+
+Version 0.5.33 (=0.6.0) - 06-April-2007
+		Editor:
+		* Fixed Bug [ 1695659 ] Cannot open *.html with EPIC in WDSC 7.0
+
+Version 0.5.32 - 27-March-2007
+		Debugger:
+		* Major internal refactoring (in dumpvar_epic.pm)
+
+		Editor:
+		* Fixed Bug [ 1685564 ] Syntax "use constant" statements with division
+
+Version 0.5.31 - 25-February-2007
+		Debugger:
+		* Fixed Bug [ 1663441 ] An internal error occurred during: "Fetching children...
+		* Implemented Feature Request [ 1668287 ] Console pattern matching in CGI mode
+
+		Editor:
+		* Fixed Bug [ 1655539 ] Ctrl-Backspace deletes incorrectly with source folding
+
+Version 0.5.30 - 04-February-2007
+		Debugger:
+		* Fixed Bug [ 1651379 ] Debugger ignores breakpoints in modules (Windows)
+
+		Editor:
+		* Fixed Bug [ 1637794 ] predeclared subroutines displayed incorrectly in the outline
+
+Version 0.5.29 - 06-January-2007
+		Debugger:
+		* Implemented Feature Request [ 1629417 ] Better handling of remote breakpoints
+		* Implemented Feature Request [ 1629390 ] Conditional breakpoints
+
+Version 0.5.28 - 02-January-2007
+		Debugger:
+		* Fixed Bug [ 1626159 ] Can't load Oracle.dll in CGI mode
+
+		Editor:
+		* Fixed Bug [ 1236592 ] Eclipse crash - SWTError: No more handles
+
+Version 0.5.27 - 27-December-2006
+		Debugger:
+		* Fixed Bug [ 1623087 ] Remote debugger ignores breakpoints
+
+Version 0.5.26 - 22-December-2006
+		Debugger:
+		* Fixed Bug [ 1620809 ] Debugger ignores breakpoints
+		* Fixed Bug [ 1166095 ] 'Error Parsing Debugger Variables'.
+
+		Editor:
+		* Fixed Bug [ 1615151 ] Ctrl+Backspace does not work
+
+Version 0.5.25 - 12-December-2006
+		Debugger:
+		* Fixed Bug [ 1614061 ] Unreliable breakpoints in Test::Unit::TestCase
+		* Fixed Bug [ 1614048 ] Debugger sometimes ignores breakpoints
+
+		Editor:
+		* Fixed Bug [ 1598235 ] $args{y} breaks syntax highlighting
+		* Fixed Bug [ 1610304 ] Ctrl+Backspace selects instead of deleting
+
+Version 0.5.24 - 4-December-2006
+		Debugger:
+		* Fixed Bug [ 1608605 ] Debugger does not display variables
+
+		Editor:
+		* Implemented Feature Request [ 1599854 ] Improved word stop recognition
+		* Fixed Bug [ 1608030 ] Delete Next/Previous Word misbehaves
+
+Version 0.5.23 - 3-December-2006
+		Debugger:
+		* Major code refactoring
+		* Fixed Bug [ 1602375 ] Debugger hangs under windows
+
+		Editor:
+		* Fixed Bug [ 1604197 ] NPE occurs with TODO tag, but no description
+
+Version 0.5.22 - 16-November-2006
+		Editor:
+		* Fixed Bug [ 1596637 ] open file from subclipse plugin throws exception
+		* Fixed Bug [ 1597974 ] assertion failed: getPartition returned invalid result...
+
+Version 0.5.21 - 12-November-2006
+		Debugger:
+		* Fixed Bug [ 1594699 ] Debugger continues instead of stepping
+
+		Editor:
+		* Fixed Bug [ 1593435 ] Closing parens doubled with smart typing enabled
+		* Implemented Feature Request [ 1595083 ] Improved auto-indent strategy
+		* Improvements of Perl::Critic integration
+		* Initial integration of Pod::Checker
+
+Version 0.5.20 - 8-November-2006
+		Debugger:
+
+		Editor:
+		* Fixed Bug [ 1591216 ] Unable to open .pl files after updating plug-in
+
+Version 0.5.19 - 7-November-2006
+		Debugger:
+		* Implemented Feature Request [ 849979 ] Hyperlinks in Console window
+
+		Editor:
+		* Fixed Bug [ 1591216 ] Unable to open .pl files after updating plug-in
+
+Version 0.5.18 - 4-November-2006
+		Debugger:
+		* Fixed Bug [ 1560511 ] Error parsing debugger variables
+		* Fixed Bug [ 1544625 ] <STDIN> hangs execution
+
+		Editor:
+		* Initial integration of Perl::Critic
+		* Fixed Bug [ 1576126 ] Smart typing for quotes should be turned off in comments
+		* Fixed Bug [ 1586304 ] User-defined syntax highlighting for variables
+		* Fixed Bug [ 1590543 ] Source/Format fails with Could not extract resources...
+		* Fixed Bug [ 1589280 ] Search & Replace mangles source
+
+Version 0.5.17 - 21-October-2006
+		Debugger:
+		* Fixed Bug [ 1564111 ] "Error Parsing Debugger Variables" When env LANG=zh_CN.GBK
+
+		Editor:
+		* Fixed Bug [ 1581076 ] y=> in argument list breaks syntax highlighting
+		* Fixed Bug [ 1563114 ] EPIC removes all problem markers for Perl files
+
+Version 0.5.16 - 18-October-2006
+		Debugger:
+		* Fixed Bug [ 1570715 ] Perl Runner does not expand variables
+
+		Editor:
+		* Fixed Bug [ 1570548 ] "Properties" context menu should always be the last item
+		* Fixed Bug [ 1577964 ] problem in source code syntax analysis
+
+Version 0.5.15 - 15-October-2006
+		Editor:
+		* Fixed Bug [ 1574984 ] Task tags are not regex escaped
+		* Fixed Bug [ 1574555 ] sub format { ... } breaks syntax highlighting
+		* Implemented Feature Request [ 1576324 ] Searching in PerlDoc view
+
+Version 0.5.14 - 8-October-2006
+		Debugger:
+		* Implemented Feature Request [ 1573088 ] Pass arguments to Perl in CGI mode
+
+Version 0.5.13 - 7-October-2006
+		Debugger:
+		* Implemented Feature Request [ 1572783 ] Environment tab for launch configurations	
+
+		Editor:
+		* Fixed Bug [ 1570201 ] The outline view is not updated when the source is formatted
+		* Fixed Bug [ 1571643 ] Can't open editor: Reason for the failure: / by zero
+
+Version 0.5.12 - 2-October-2006
+		Editor:
+		* Implemented Feature Request: [ 1569585 ] Make "Open Declaration" work for package names
+
+Version 0.5.11 - 1-October-2006
+		Debugger:
+		* Fixed Bug [ 1534713 ] Debugger slowdowns with large string variables
+
+Version 0.5.10 - 25-September-2006
+		Editor:
+		* Fixed Bug [ 1562878 ] Here Docs produce errors
+
+Version 0.5.9 - 25-September-2006
+		Debugger:
+		* Implemented Feature Request: [ 1564860 ] Keep debugger from suspending at first statement
+
+Version 0.5.8 - 20-September-2006
+		Debugger:
+		* Fixed Bug [ 1557015 ] Debugger could not start web server
+
+Version 0.5.7 - 16-September-2006
+		Debugger:
+		* Fixed Bug [ 1559162 ] Debugger does not stop on breakpoint
+		* Fixed Bug [ 1557028 ] debugger doesn't support attributes?!
+
+Version 0.5.6 - 10-September-2006
+		Debugger:
+		* Fixed Bug [ 1555721 ] "Launch as Perl Local" doesn't work for *.t
+		* Fixed Bug [ 1555727 ] "Run As" launch shortcut missing in Perl perspective
+
+		Editor:
+		* Fixed Bug [ 1555697 ] Wrong @INC path used by perldoc
+		* Implemented Feature Request [ 1555703 ] Use a monospace font in PerlDoc view
+
+Version 0.5.5 - 4-September-2006
+		Debugger:
+		* Fixed Bug [ 1546237 ] Error parsing debugger variables
+
+Version 0.5.4 - 4-September-2006
+		Debugger:
+		* Fixed Bug [ 1546580 ] jar declared in classpath is missing
+
+		Editor:
+		* Fixed Bug [ 1551442 ] Source | Format does not seem to work	
+
+Version 0.5.2 - 31-August-2006
+		Editor:
+		* Fixed Bug [ 1549861 ] Open SUB ignores 'require'
+
+Version 0.5.1 - 24-August-2006
+		Debugger:
+		* Implemented Feature Request: [ 1293324 ] Add breakpoints by double-clicking
+
+		Editor:
+		* Fixed Bug [ 1536109 ] java.lang.OutOfMemoryError: Java heap space
+		* Fixed Bug [ 1536386 ] EPIC_0.4.0 OutOfMemory ERROR
+		* Fixed Bug [ 968984 ] Parentheses after 'my' break autocompletion
+		* Fixed Bug [ 1537652 ] Elements of @INC path dropped unexpectedly
+		* Fixed Bug [ 1543885 ] Error Parsing Vars: Unmatched right curly bracket
+		* Support for automatically folding elements on editor open
+
+Version 0.4.0 - 08-August-2006
+		Debugger
+		* Implemented Feature Request: [ 1351860 ] Right-click on runnable script to launch
+		* Fixed Bug [1470346] Cannot execute scripts from linked folders
+		* Implemented Feature Request: [ 1429720 ] Specify working directory for Perl run configurations
+		* Fixed Bug [1233924] Debugging disabled in eclipse 3.1
+		* Fixed Bug [1257160] Can't Debug ... "Error Parsing Debugger Variables"
+		* Debugger now works with Eclipse 3.1
+		* Check for errors in scripts before running/debugging
+		* Fixed bug [1113326] show STDERROR stream in CGI console window
+		* Fixed bug [1113336] Unable to set Perl include path in CGI debug mode
+		* Fixed bug [1114090] NPE in CGITarget.startBrowser
+		* Double-klicking on a breakpoint in the breakpoints view opens the corresponding file
+		* Displaying of variables re-coded.
+		  - This should remove all known bugs (" Error Parsing Debugger Variables")
+		  - significant improvement in speed
+		* Remote Debugging implemented
+		* Improved handling of Regular Expression Breakpoints
+		  - Property dialogue added
+		  - if RegEx can't be extracted user is asked for intervention
+		  - before executing a breakpoint properties are updated if source line has changed
+		* Perl Debugger uses 127.0.0.1 to connect to EPIC for local debugging sessions. This should avoid some Problems with firewalls.
+		* Fixed bug: [ 1050648 ] Environment vars not inherited by debugged script on Solaris
+		* Implemented Feature Request: [ 1051399 ] Debug-Perspective: Switching automatically
+		* Corrected createEnvArray() to work on Linux systems
+		* Fixed problem with Cygwin (Pathmapper error)
+		* Preserve spaces in variable values
+		* Support displaying of empty arrays and hashes
+		* Fixed bug: [ 996461 ] Debugger crashes Perl (termination procedere)
+		* Fixed bug: [ 996581 ] run configuration dialogue forgets filename
+		* Fixed bug: [ 996351 ] NullPointer exception during Launch (problems if path to Perl executable has spaces)
+
+		Editor:
+		* Fixed Bug [ 1366386 ] parser unable to format function
+		* Feature request #1504523 "Improved caret movement to/over word boundaries" implemented
+		* Feature request #1476317 "Mark Occurrences editor feature" partly implemented
+		* Outline now supports multiple package declarations per file
+		* Outline selection now reflects caret position in the editor
+		* Replaced use of org.epic.ext.cbg.editor with a custom ANTLR-based lexer
+		* Partially fixed Bug [ 1345811 ] typing quotes (',") takes forever in 0.3.12
+		* Partially fixed Bug [ 1306168 ] Open SUB Declaration doesn't work as advertised
+		* Partially fixed Bug [ 1256511 ] Text Highlighting does not consider escape character
+		* Fixed Bug [ 1366386 ] use of word 'quote' breaks syntax highlighting
+		* Fixed Bug [ 1363498 ] Toggle Comment via key shortcut does not work
+		* Fixed Bug [ 1363365 ] Outline doesn't heed __END__ token
+		* Fixed Bug [ 1360594 ] syntax highlighting and "_" character in hash key
+		* Fixed Bug [ 1354177 ] Single Quote and regular expressions
+		* Fixed Bug [ 1334523 ] Quickdiff does not work
+		* Fixed Bug [ 1333812 ] error during file save
+		* Fixed Bug [ 1321329 ] Folding does not work reliably in 0.3.12
+		* Fixed Bug [ 1320512 ] Opening Perl editor very slow
+		* Fixed Bug [ 1316066 ] ResourceException for each closed project at startup
+		* Fixed Bug [ 1314702 ] Problem in strings srottak@gmail.com
+		* Fixed Bug [ 1312851 ] qr// problems with quotes
+		* Fixed Bug [ 1309321 ] # in reg exp makes rest of line look like a comment
+		* Fixed Bug [ 1285425 ] Wrong View with perl "fork()"
+		* Fixed Bug [ 1232049 ] code after fork highlighted till end of text
+		* Fixed Bug [1305170] Syntax highlighting broken after regexp
+		* Fixed Bug [1307071] syntax validation / error marking is not greedy enough
+		* Fixed bug: [ 1295065 ] sub new not displayed in outline
+		* Fixed bug: [ 1276748 ] Filetest operators break syntax highlighting
+		* Rewritten bracket matching and smart typing code
+		* Fixed bug: [ 1282601 ] Menu actions not linked to the active editor
+		* Fixed bug: [ 1281422 ] Moving caret up and down doesn't work as expected around { }
+		* Fixed bug: [ 1281415 ] Changing preferences causes an IllegalStateException
+		* Fixed bug: [ 1281410 ] Auto-indent does not work with spaces instead of tabs
+		* Feature request #1100818 "Errors in Modules should be listed" partly implemented
+		* Improved displaying of compilation errors for files using CGI::Carp
+		* Fixed bug: [ 1106548 ] Projects are now built asynchronously, build progress is reported, a build may be cancelled
+		* Feature request #1114657 "Eclipse variables expansion" implemented by Przemyslaw Wesolek
+		* Perl perspective now has shortcuts to show views, create new items (all related to existing actions)
+		* Fixed several exceptions occuring with closed projects or with unexpected selections
+		* Fixed bug: [ 1111483 ] Outline now only displays SUBs without trailing comments
+		* Fixed bug: [ 1106001 ] Now only SUBs and Modules are listed which does not belong to any kind of Syntax group (like Quote, Pod, __END__, ...)
+		* [ 1114652 ] Added support for modifier in regula expressions
+		* [ 1113907 ] Added support for additional spanning types (e.g. 'format')
+		* Module Degel::Refactor updated to version 0.03
+		* Added support for regular expressions and HERE-Documents
+		* Fixed bug: [ 1077441 ] Source formatter does not make tabs 4 column wide
+		* [ 1077441 ] perlTidy: Better handling in rare case of invalid positioning
+		* [ 1081462 ] Option for Enabling and Disabling AutoType-Feature of Quotes and Brackets
+		* Perldoc View has been reimplemented (Accessible via Shift+Ctrl/Control+H)
+		* Added New Perl File Wizard
+		* Implemented Feature Request: [ 1047906 ] Validate source on request, not continuously
+		* Added Jump Matching Bracket
+		* Added Bracket Matching
+		* Added Default Web-Starter Page
+		* Fixed bug: [ 847291 ] Changes in Preference-Editor caused sometimes a NullPointer exception
+		* Added Refactoring: Extract Subroutine. Uses CPAN module Devel::Refactor.
+		* Added Source Folding for POD and subroutines (Source Folding can be disabled via Editor preferences)
+		* Fixed bug: [ 1017681 ] outline/subroutines leads to wrong line if code contains POD
+		* Added Source menu to Editor context popup menu
+		* Added Validate Syntax to Edit menu
+		* Added Open SUB Declaration [ 810926 ]: Finds the selected (resp. current position) SUB locally, require and packages
+		* Fixed bug: Better handling when editing across Platform (line-separator issue in the Outline View)
+		* Preference Page change: Interpreter name is automatically surrounded by "" if browse button is used
+		* Implemented Feature Request: [ 847292 ] Add *.pl to CVS ASCII file list
+		* Fixed bug: [ 993685 ] Outlinie/Modules lists modules in POD with PC line endings
+		* On double-click text selection also select @ and %. (Contributor: Danny Bud <Danny_Bud at bmc.com>)
+		* Fixed bug: [ 999542 ] ResourceException when file removed
+		* Fixed bug: [ 996612 ] ClassCastException on Perl project right-click
+		* Fixed bug: [ 993782 ] no warnings displayed until first change is applied
+		* Fixed bug: [ 814986 ] Pragmas are not modules
+		* Fixed bug: [ 991625 ] Outline\Modules also lists modules from POD sections
+		* Empty entries are no longer added to the Perl Include Path
+		* Performance improvements (Outline View redraw enhanced)
+		* Implemented Customizable Task Tags (RFE 990979)
+		* Fixed bug: Task Tags on end of file do not raise an exception anymore
+		* Fixed bug: Task Tags outside of comments are ignored now.
+
+Version 0.3.0 - 04-July-2004
+		* Fixed bug: [ 934795 ] Outline view does not work with Unix source
+		* moved TODO parser into it?s own thread
+		* parseTasks() does not delete foreign tasks anymore
+		* toogle Perl Nature added to navigator popup menu
+		* Explain Errors/Warnings popup action
+		* Moved Perldoc so separate view
+		* added TODO marker in Perl Editor (Contributor: Philipp Traeder <Traeder at ImmobilienScout24.de>
+		* Built in web browser added
+
+Version 0.2.0 - 07-May-2004
+		* Enhanced Error/Warning detection in Perl Editor
+		* @INC path property error fixed
+		* Fixed bug: [ 926062 ] Outline view doesn't support perldoc entries
+		* Fixed bug: [ 934799 ] Outline view subroutines contain invalid char
+
+Version 0.1.0 - 27-March-2004
+		* Enhanced Module/Subroutine detection in outline view
+		* Performance improvement of Outline View
+		* Added Perleditor specific RulerContextMenu (necessary for debugger)
+		* Different icon for new() in Outline (Feature Request 850033)
+		* Perl project builder and Navigator markers added
+		* OverviewRuler summary view/Task markers fixed in editor
+		* Corrected wrong idle timer label (seconds instead of milliseconds) in main preference page
+		* Perltidy has been updated (Version 20031021)
+		* Small keybinding bug for uncomment action fixed (Ctrl+\)
+
+Version 0.1.0 alpha  - 13-December-2003
+		* HTML Export Command added to plugin.xml (Export/HTML entry was not
+		   visible in Source menu)
+		* Fixed compatibility issues with Eclipse 3.0 M5
+		* Idle timer implemented, should improve performance
+
+Version 0.1.0 alpha  - 27-November-2003
+		* Fixed template preference bug: null pointer exception when editing template
+
+Version 0.1.0 alpha  - 25-November-2003
+		* Fixed problems with Eclipse 3.0 Milestone 5
+		* Spaces or now inserted correctly when using "shift left/right" operation.
+		* Support for non Perl files (eg. EmbPerl) added. The source menu has been
+		  disabled, because it makes no sense (and would currupt the content) for
+		  these files.
+		* The -frm option has been removed from the HTML export preferences.
+
+Version 0.1.0 alpha  - 05-November-2003
+		* Taint mode added
+
+Version 0.1.0 alpha  - 04-November-2003
+		* Fixed bug: [ 833114 ] Ctrl+Space does not work on editing Java Source File
+		* Added better perl executable command line paramter support
+
+Version 0.1.0 alpha  - 29-October-2003
+		* HTML export added
+		* Source menu definition has been moved to plugin.xml
+		* Code Assist preference page added
+		* Added variable inspection to code assist
+		* Quickreference corrected
+		* Color Editor upgraded to version 0.3.0 (thanks to Chris Grindstaff)
+
+Version 0.1.0 alpha  - 16-October-2003
+		* Fixed bug: [ 822545 ] a plugin is used that Doesn't exist in platform version.
+		* Quickreference totally revised.
+
+Version 0.1.0 alpha  - 10-October-2003
+		* Formatter was blocking on big files. Should be fixed.
+
+Version 0.1.0 alpha  - 08-October-2003
+		* PerlTidy is used for formatting (perltidy is provided together with the plugin)
+		* Source Formatter preferences added
+		* Templating support added.
+		* Templating preview added.
+		* Template filename variable added.
+		* Template Perl interpreter variable added
+		* Content assist/templating dropdown enhanced (type-ahead  find)
+		* Comment/uncomment added.
+
+Version 0.1.0 alpha  - 13-September-2003
+        * Compatibility version to work with Eclipse 2.1 and 3.0 RC builds.
+        * Basic Perldoc support has been added (popup menu)
+        * Bug fix: Perl doesn't read the whole program from STDIN in all cases
+        * Bug fix: XML encoding correctly set to UTF-8
+        * Improved SyntaxValidationThread.
+        * Bug fix: send Ctrl-Z to "perl -c" to fix bug with Win98

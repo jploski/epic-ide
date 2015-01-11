@@ -103,7 +103,7 @@ public abstract class ScriptExecutor
             executor.dispose();
         }
     }
-
+    
     /**
      * @return name of a supported
      *         {@link java.nio.charset.Charset </code>charset<code>}
@@ -201,12 +201,7 @@ public abstract class ScriptExecutor
         }
     }
 
-    private File extractScripts() throws CoreException
-    {
-        return ResourceUtilities.extractResources(PerlEditorPlugin.getDefault(), "perlutils/");
-    }
-
-    private File getWorkingDir() throws CoreException
+    protected File getWorkingDir() throws CoreException
     {
         try
         {
@@ -229,5 +224,10 @@ public abstract class ScriptExecutor
             log.log(StatusFactory.createError(getPluginId(), e.getMessage(), e));
             return null;
         }
+    }
+
+    private File extractScripts() throws CoreException
+    {
+        return ResourceUtilities.extractResources(PerlEditorPlugin.getDefault(), "perlutils/");
     }
 }

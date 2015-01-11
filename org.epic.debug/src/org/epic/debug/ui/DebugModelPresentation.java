@@ -18,8 +18,7 @@ import org.eclipse.ui.IEditorRegistry;
 import org.eclipse.ui.PlatformUI;
 import org.epic.core.util.FileUtilities;
 import org.epic.debug.*;
-import org.epic.debug.db.StackFrame;
-import org.epic.debug.varparser.PerlDebugVar;
+import org.epic.debug.db.*;
 
 /**
  * @author ruehl
@@ -32,37 +31,26 @@ public class DebugModelPresentation implements IDebugModelPresentation
 
     public Image getImage(Object element)
     {
-
-        if (element instanceof PerlDebugVar)
+        if (element instanceof PerlVariable)
         {
+            boolean contentChanged = false;
             try
             {
-                if (((PerlDebugVar) element).isSpecial())
-                    return PerlDebugPlugin
-                        .getDefaultDesciptorImageRegistry()
-                        .get(
-                            new PerlImageDescriptor(
-                                DebugUITools
-                                    .getImageDescriptor(IDebugUIConstants.IMG_OBJS_BREAKPOINT_DISABLED),
-                                0));
-
-                if (((PerlDebugVar) element).isLocalScope())
-                {
-                    if (((PerlDebugVar) element).hasContentChanged()) return PerlDebugPlugin
-                        .getDefaultDesciptorImageRegistry().get(
-                            PerlDebugImages.DESC_OBJS_CHANGED_DEBUG_VAR_LOCAL);
-                    else return PerlDebugPlugin
-                        .getDefaultDesciptorImageRegistry().get(
-                            PerlDebugImages.DESC_OBJS_DEBUG_VAR_LOCAL);
-                }
-
-                if (((PerlDebugVar) element).hasContentChanged())
-                    return PerlDebugPlugin.getDefaultDesciptorImageRegistry()
-                        .get(PerlDebugImages.DESC_OBJS_CHANGED_DEBUG_VAR);
+                contentChanged = ((PerlVariable) element).hasContentChanged();
             }
-            catch (DebugException e)
+            catch (DebugException e) { PerlDebugPlugin.log(e); }
+            
+            if (!((PerlVariable) element).isPackageScope())
             {
-                e.printStackTrace();
+                return PerlDebugPlugin.getDefaultDesciptorImageRegistry().get(
+                    contentChanged
+                    ? PerlDebugImages.DESC_OBJS_CHANGED_DEBUG_VAR_LOCAL
+                    : PerlDebugImages.DESC_OBJS_DEBUG_VAR_LOCAL);
+            }
+            else if (contentChanged)
+            {
+                return PerlDebugPlugin.getDefaultDesciptorImageRegistry().get(
+                    PerlDebugImages.DESC_OBJS_CHANGED_DEBUG_VAR);
             }
         }
 
@@ -147,12 +135,17 @@ public class DebugModelPresentation implements IDebugModelPresentation
     {
         try
         {
-            listener.detailComputed(value, value.getValueString());
+        	if (value instanceof PerlValue)
+        	{
+	            listener.detailComputed(
+	                value,
+	                ((PerlValue) value).getDetailValue());
+        	}
+        	else listener.detailComputed(value, "");
         }
         catch (DebugException e)
         {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            PerlDebugPlugin.log(e);
         }
     }
 
@@ -215,14 +208,13 @@ public class DebugModelPresentation implements IDebugModelPresentation
             {
                 flags |= PerlImageDescriptor.ENABLED;
             }
-            if (breakpoint.isInstalled())
+            /*if (breakpoint.isInstalled()) // TODO restore this functionality?
             {
                 flags |= PerlImageDescriptor.INSTALLED;
-            }
+            }*/
         }
         catch (CoreException e)
         {
-
             PerlDebugPlugin.log(e);
         }
         return flags;

@@ -4,7 +4,7 @@
 
     <extension point="org.eclipse.core.resources.markers"
         id="perlLineBreakpointMarker">
-        <super type="org.eclipse.debug.core.breakpointMarker"></super>
+        <super type="org.eclipse.debug.core.lineBreakpointMarker"></super>
         <persistent value="true"></persistent>
     </extension>
 
@@ -30,7 +30,7 @@
          point="org.eclipse.ui.console.consolePatternMatchListeners">
       <consolePatternMatchListener
             class="org.epic.debug.ui.PerlConsoleTracker"
-            regex=".*? at (\S+ line \d+)\."
+            regex=".*? at (\S+ line \d+)\.?"
             qualifier="line \d"
             id="org.epic.debug.ui.PerlConsoleTracker">
          <enablement>
@@ -63,7 +63,7 @@
          	<action
                 label="Breakpoint Properties..."
                 class="org.epic.debug.ui.action.PerlBreakpointPropertiesRulerActionDelegate"
-                menubarPath="group.properties"
+                menubarPath="debug"
                 id="org.epic.debug.ui.action.PerlBreakpointPropertiesRulerActionDelegate">
             </action>
             <action
@@ -104,44 +104,94 @@
     </extension>
 
     <extension point="org.eclipse.ui.viewActions">
-        <!-- Contributions to Expression View Toolbar -->
+        <!--
+        	Contributions to the Variables view pulldown menu.
+        	Note that all the actions are disabled initially.
+        	This is because we cannot determine their state
+        	(checked/unchecked), saved in a preference, before
+        	the plug-in has been loaded. This will cause some
+        	minor puzzlement and inconvenience for the user,
+        	but it is better than allowing state manipulation
+        	while the displayed prior state is not up-to-date.
+        -->
         <viewContribution
             targetID="org.eclipse.debug.ui.VariableView"
-            id="org.epig.debug.showLocalVariablesAction">
+            id="org.epic.debug.showLocalVariablesAction">
             <action
                 label="Show Local Variables"
                 icon="icons/epic.gif"
                 tooltip="Show Local Variable"
-                state="true"
+                state="false"
                 class="org.epic.debug.ui.action.ShowLocalVariableActionDelegate"
                 menubarPath="additions"
-                id="org.epig.debug.showLocalVariablesAction">
+                id="org.epic.debug.showLocalVariablesAction">
+				<enablement>
+        			<pluginState id="org.epic.debug" value="activated" />
+				</enablement>
             </action>
         </viewContribution>
         <viewContribution
             targetID="org.eclipse.debug.ui.VariableView"
-            id="org.epig.debug.showGlobalVariablesAction">
+            id="org.epic.debug.showGlobalVariablesAction">
             <action
                 label="Show Global Variables"
                 icon="icons/epic.gif"
                 tooltip="Show Global Variable"
-                state="true"
+                state="false"
                 class="org.epic.debug.ui.action.ShowGlobalVariableActionDelegate"
                 menubarPath="additions"
-                id="org.epig.debug.showLocalVariablesAction">
+                id="org.epic.debug.showGlobalVariablesAction">
+				<enablement>
+        			<pluginState id="org.epic.debug" value="activated" />
+				</enablement>
             </action>
         </viewContribution>
         <viewContribution
             targetID="org.eclipse.debug.ui.VariableView"
-            id="org.epig.debug.showPerlInternalVariablesAction">
+            id="org.epic.debug.showPerlInternalVariablesAction">
             <action
-                label="Show Perl internal Variables"
+                label="Show Perl Internal Variables"
                 icon="icons/epic.gif"
                 tooltip="Show Perl Internal Variables"
                 state="false"
                 class="org.epic.debug.ui.action.ShowPerlInternalVariableActionDelegate"
                 menubarPath="additions"
-                id="org.epig.debug.showLocalVariablesAction">
+                id="org.epic.debug.showPerlInternalVariablesAction">
+				<enablement>
+        			<pluginState id="org.epic.debug" value="activated" />
+				</enablement>
+            </action>
+        </viewContribution>
+        <viewContribution
+            targetID="org.eclipse.debug.ui.VariableView"
+            id="org.epic.debug.showVarAddressAction">
+            <action
+                label="Show Addresses of Variables"
+                icon="icons/epic.gif"
+                tooltip="Show Addresses of Variables"
+                state="false"
+                class="org.epic.debug.ui.action.ShowVarAddressActionDelegate"
+                menubarPath="additions"
+                id="org.epic.debug.showVarAddressAction">
+				<enablement>
+        			<pluginState id="org.epic.debug" value="activated" />
+				</enablement>
+            </action>
+        </viewContribution>
+        <viewContribution
+            targetID="org.eclipse.debug.ui.VariableView"
+            id="org.epic.debug.highlightVarUpdatesAction">
+            <action
+                label="Highlight Updated Variables"
+                icon="icons/epic.gif"
+                tooltip="Highlight Updated Variables"
+                state="false"
+                class="org.epic.debug.ui.action.HighlightVarUpdatesActionDelegate"
+                menubarPath="additions"
+                id="org.epic.debug.highlightVarUpdatesAction">
+				<enablement>
+        			<pluginState id="org.epic.debug" value="activated" />
+				</enablement>
             </action>
         </viewContribution>
     </extension>
@@ -245,7 +295,6 @@
     </extension>
     <extension point="org.eclipse.debug.ui.launchShortcuts">
         <shortcut
-            category="org.eclipse.jdt.ui.JavaPerspective"
             class="org.epic.debug.LaunchShortcut"
             icon="icons/epic.gif"
             id="org.epic.debug.LaunchShortcut"
@@ -267,6 +316,9 @@
                                 <test
                                     property="org.eclipse.debug.ui.matchesPattern"
                                     value="*.t" />
+								<test
+                            		property="org.eclipse.debug.ui.matchesContentType"
+                                	value="org.epic.perleditor.perl" />
                             </or>
                         </iterate>
                     </with>

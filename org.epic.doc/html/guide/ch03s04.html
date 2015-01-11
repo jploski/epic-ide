@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta name="generator" content="HTML Tidy for Linux/x86 (vers 12 April 2005), see www.w3.org" />
+
+  <title>Recommended Project Layout</title>
+  <link href="book.css" rel="stylesheet" type="text/css" />
+  <meta content="DocBook XSL-NS Stylesheets V1.73.0" name="generator" />
+  <link rel="start" href="index.html" title="EPIC - User's Guide" />
+  <link rel="up" href="ch03.html" title="Perl Projects" />
+  <link rel="prev" href="ch03s03.html" title="Converting an Existing Project" />
+  <link rel="next" href="ch04.html" title="Eclipse Basics" />
+</head>
+
+<body>
+  <div class="section" lang="en" xml:lang="en">
+    <div class="titlepage">
+      <div>
+        <div>
+          <h2 class="title" style="clear: both"><a id="N10262" name="N10262"></a>Recommended
+          Project Layout</h2>
+        </div>
+      </div>
+    </div>
+
+    <p>In order to avoid problems with syntax validation (such as packages reported missing) and
+    the debugger (such as skipped breakpoints), it is best to organize your project according to
+    the conventions of the core Perl distribution:</p>
+
+    <div class="itemizedlist">
+      <ul type="disc">
+        <li>
+          <p>Keep your own modules in dedicated subtrees of your project. For example, create a
+          subdirectory <code class="literal">lib</code> as the root of the subtree containing all
+          *.pm files. Note that you can have more than one such subtree. For example, you could
+          also create <code class="literal">test/lib</code> to store modules that are only imported
+          by test scripts.</p>
+        </li>
+
+        <li>
+          <p>Add the root directories of your subtrees to the @INC path (see <a class="xref" href=
+          "ch03s02.html#include-path">the section called “Perl Include Path”</a>). For example, add
+          the entries <strong class="userinput"><code>lib</code></strong> and <strong class=
+          "userinput"><code>test/lib</code></strong> there.</p>
+        </li>
+
+        <li>
+          <p>Map package names to paths in the subtree (and vice versa). For example, store code
+          for the package <code class="literal">Foo::Bar</code> in file <code class=
+          "literal">lib/Foo/Bar.pm</code> and ensure that <code class=
+          "literal">lib/Foo/Baz.pm</code> contains only package <code class=
+          "literal">Foo::Baz</code>.</p>
+        </li>
+
+        <li>
+          <p>Store your Perl scripts anywhere you like in the project. For example, in subdirectory
+          <code class="literal">bin</code> or <code class="literal">cgi-bin</code>.</p>
+        </li>
+
+        <li>
+          <p>To import from a package, <code class="literal">use</code> it, rather than
+          <code class="literal">require</code> it. For example, <code class="literal">use
+          Foo::Bar;</code> rather than <code class="literal">require
+          '../lib/Foo/Bar.pm';</code></p>
+        </li>
+      </ul>
+    </div>
+  </div>
+</body>
+</html>

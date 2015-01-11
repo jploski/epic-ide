@@ -1,14 +1,13 @@
 package org.epic.perleditor.editors.util;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.io.File;
+import java.util.*;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.ILog;
-import org.epic.core.util.ScriptExecutor;
-import org.epic.core.util.StatusFactory;
+import org.epic.core.util.*;
 import org.epic.perleditor.preferences.PerlCriticPreferencePage;
 
 
@@ -32,29 +31,17 @@ public class SourceCritic extends ScriptExecutor
         super(log);
     }
 
-    //~ Methods
+    //~ Methods   
 
     public static Violation[] critique(IResource resource, ILog log)
     {
-        IFile file = (IFile) resource;
-        /*
-         * it seems that Perl::Critic does not like receiving the editor input when invoked via the
-         * perl executor (although it works fine from the command line outside of java land).
-         *
-         * this work around is ok for now b/c metrics are only run against a single file, but this
-         * won't work for entire directories at a time - perhaps a background job that processes
-         * each one?
-         */
-        ArrayList args = new ArrayList(1);
-        args.add(file.getRawLocation().toOSString());
-
         try
         {
             SourceCritic critic = new SourceCritic(log);
             // meh - not sure if i'm happy w/ this, but it's needed in getCommandLineOpts
             critic.resource = resource;
 
-            String output = critic.run(args).stdout;
+            String output = critic.run(new ArrayList(4)).stdout;
             return critic.parseViolations(output);
         }
         catch (CoreException e)
@@ -77,23 +64,39 @@ public class SourceCritic extends ScriptExecutor
 
         // project specific critic config files
         IFile rc = resource.getProject().getFile(".perlcriticrc");
-        try
-        {
-            rc.refreshLocal(IResource.DEPTH_ZERO, null);
-        }
-        catch (CoreException e)
-        {
-            log(e.getStatus());
-        }
-        if (rc.exists())
+        File rcFile = new File(rc.getRawLocation().toOSString());
+        if (rcFile.exists())
         {
             additionalOptions.add("-profile");
             additionalOptions.add(rc.getRawLocation().toOSString());
         }
+        
+        String severity = PerlCriticPreferencePage.getSeverity();
+        if(!severity.equals("default")) 
+        {
+        	additionalOptions.add("--" + severity);
+        }
 
-        additionalOptions.add("-verbose");
-        additionalOptions.add("%f~|~%s~|~%l~|~%c~|~%m~|~%e" + getSystemLineSeparator());
+        additionalOptions.add("--verbose");
+        additionalOptions.add("%f~|~%s~|~%l~|~%c~|~%m~|~%e~|~%p~||~%n");
+        
+        String otherOptions = PerlCriticPreferencePage.getOtherOptions();
+        if(otherOptions.length() > 0)
+        {
+        	additionalOptions.addAll(CommandLineTokenizer.tokenize(otherOptions));
+        }
 
+        IFile file = (IFile) resource;
+        /*
+         * it seems that Perl::Critic does not like receiving the editor input when invoked via the
+         * perl executor (although it works fine from the command line outside of java land).
+         *
+         * this work around is ok for now b/c metrics are only run against a single file, but this
+         * won't work for entire directories at a time - perhaps a background job that processes
+         * each one?
+         */
+        additionalOptions.add(file.getRawLocation().toOSString());
+        
         return additionalOptions;
     }
 
@@ -113,12 +116,20 @@ public class SourceCritic extends ScriptExecutor
         return "";
     }
 
+    protected File getWorkingDir() throws CoreException
+    {
+        // Run perlcritic from project folder, not from the the one which
+        // contains the script to be checked, in hope that some violations
+        // of the sort "this file is in wrong directory" can be avoided that way.
+        return new File(resource.getProject().getLocation().toOSString());
+    }
+
     private final Violation parseLine(String toParse)
     {
         String[] tmp = toParse.split("~\\|~");
 
-        // handle cases where a line returned from critic doesn't have all 6 expected fields
-        if (tmp.length != 6)
+        // handle cases where a line returned from critic doesn't have all 7 expected fields
+        if (tmp.length != 7)
         {
             return null;
         }
@@ -127,10 +138,13 @@ public class SourceCritic extends ScriptExecutor
 
         violation.file = tmp[0];
         violation.severity = parseInt(tmp[1]);
-        violation.lineNumber = parseInt(tmp[2]);
-        violation.column = parseInt(tmp[3]);
+        // Line number and column are sometimes omitted.
+        // Avoid logging this as an error.
+        violation.lineNumber = "".equals(tmp[2])?-1:parseInt(tmp[2]);
+        violation.column = "".equals(tmp[2])?-1:parseInt(tmp[3]);
         violation.message = tmp[4];
         violation.pbp = tmp[5];
+        violation.policy = tmp[6];
 
         return violation;
     }
@@ -144,8 +158,8 @@ public class SourceCritic extends ScriptExecutor
             return EMPTY_ARRAY;
         }
 
-        String[] lines = toParse.split(separator);
-        ArrayList violations = new ArrayList();;
+        String[] lines = toParse.split("~\\|\\|~" + separator);
+        ArrayList violations = new ArrayList();
         for (int i = 0; i < lines.length; i++)
         {
             System.out.println("critic: " + lines[i]);
@@ -174,6 +188,7 @@ public class SourceCritic extends ScriptExecutor
         public String message;
         public String pbp;
         public int severity;
+        public String policy;
     }
 
 }

@@ -114,7 +114,7 @@ public class CGILaunchConfigurationDelegate extends LaunchConfigurationDelegate
         ILaunch launch, IProcess process, RemotePort debugPort)
         throws CoreException
     {
-        if (debugPort.waitForConnect(true) != RemotePort.WAIT_OK)
+        if (debugPort.waitForConnect(false) != RemotePort.WAIT_OK)
         {
             PerlDebugPlugin.errorDialog("Could not connect to debug port!");
             debugPort.shutdown();

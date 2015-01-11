@@ -87,3 +87,45 @@ $foo->{mCustomerSet};
 # bug 1833354
 foo(key 
 => 0);
+
+# bug 1882813
+say "hi";
+my $amount ||= $product->cost;
+$amount /= 5;
+$amount **= 2;
+$amount |= 2;
+$amount &= 2;
+$amount ^= 2;
+$amount >>= 2;
+$amount <<= 2;
+my $str =~ /=/s;
+print <<EOT;
+heredoc here
+EOT
+$amount = $str // 5;
+$amount //= $str;
+$amount =~ //;
+state $s1 = 100;
+sub foo($_$) { }
+UNITCHECK { }
+$amount ~~ $str;
+$amount ~~ /regex/s;
+sub _bla {}
+
+# bug 1888190
+sub tr_bar {}
+
+# bug 1890775
+some_sub(other_sub / 4);
+
+# bug 1921439
+grep /A|B/, 'A', 'B', 'C';
+
+# bug 1914490
+@array = split /-/,$hyphenDelimitedLine;
+
+# bug 2537700
+grep !/foo/, @array;
+
+# bug 2612813
+$x = $a<<24;

@@ -1,5 +1,6 @@
 package org.epic.core.preferences;
 
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.*;
@@ -13,6 +14,7 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 
 import org.epic.perleditor.PerlEditorPlugin;
+import org.epic.perleditor.preferences.PreferenceConstants;
 
 public class PerlMainPreferencePage
 	extends PreferencePage
@@ -20,7 +22,9 @@ public class PerlMainPreferencePage
 
 	private Text executableText;
 	private Text browserLabelText;
+	private Text debugPreviewKeysText;
 	private Button warningsCheckBox;
+	private Button methodsCheckBox;
 	private Button taintCheckBox;
     private Button debugConsoleCheckBox;
     private Button suspendAtFirstCheckBox;
@@ -30,7 +34,10 @@ public class PerlMainPreferencePage
 	private Combo interpreterTypeCombo;
 	private Label syntaxIntervalSecondsLabel;
 	private Composite fParent;
-	private String[] intepreterTypes = {PerlEditorPlugin.INTERPRETER_TYPE_STANDARD,PerlEditorPlugin.INTERPRETER_TYPE_CYGWIN};
+	private String[] intepreterTypes = {
+        PreferenceConstants.DEBUG_INTERPRETER_TYPE_STANDARD,
+        PreferenceConstants.DEBUG_INTERPRETER_TYPE_CYGWIN
+        };
 
 	/*
 	 * @see PreferencePage#createContents(Composite)
@@ -87,7 +94,7 @@ public class PerlMainPreferencePage
 		executableText.setLayoutData(data);
 
 		executableText.setText(
-			PerlEditorPlugin.getDefault().getExecutablePreference());
+			PerlEditorPlugin.getDefault().getPerlExecutable());
 
 /*
 		Label executableInfoLabel = new Label(top, SWT.NONE);
@@ -105,26 +112,38 @@ public class PerlMainPreferencePage
 		new Label(buttonComposite, SWT.NONE).setText("Interpreter type:");
 		interpreterTypeCombo = new Combo(buttonComposite, SWT.READ_ONLY);
 	    interpreterTypeCombo.setItems(intepreterTypes);
-		interpreterTypeCombo.setText(PerlEditorPlugin.getDefault().getPreferenceStore().getString(PerlEditorPlugin.INTERPRETER_TYPE_PREFERENCE));
-					
+		interpreterTypeCombo.setText(
+            PerlEditorPlugin.getDefault().getPreferenceStore().getString(
+                PreferenceConstants.DEBUG_INTERPRETER_TYPE));
 
-		
 		// Warning preference
 		data = new GridData(GridData.FILL_HORIZONTAL);
 		data.grabExcessHorizontalSpace = true;
 		warningsCheckBox = new Button(top, SWT.CHECK);
 		warningsCheckBox.setText("Enable warnings");
 		warningsCheckBox.setSelection(
-			PerlEditorPlugin.getDefault().getWarningsPreference());
+			PerlEditorPlugin.getDefault().getBooleanPreference(
+                PreferenceConstants.DEBUG_SHOW_WARNINGS));
 		warningsCheckBox.setLayoutData(data);
 		
+		// Warning preference
+		data = new GridData(GridData.FILL_HORIZONTAL);
+		data.grabExcessHorizontalSpace = true;
+		methodsCheckBox = new Button(top, SWT.CHECK);
+		methodsCheckBox.setText("Enable Method::Signature keywords");
+		methodsCheckBox.setSelection(
+			PerlEditorPlugin.getDefault().getBooleanPreference(
+                PreferenceConstants.DEBUG_METHOD_SIGNATURES));
+		methodsCheckBox.setLayoutData(data);
+
 		// Taint check preference
 		data = new GridData(GridData.FILL_HORIZONTAL);
 		data.grabExcessHorizontalSpace = true;
 		taintCheckBox = new Button(top, SWT.CHECK);
 		taintCheckBox.setText("Enable taint mode");
 		taintCheckBox.setSelection(
-			PerlEditorPlugin.getDefault().getTaintPreference());
+            PerlEditorPlugin.getDefault().getBooleanPreference(
+			    PreferenceConstants.DEBUG_TAINT_MODE));
 		taintCheckBox.setLayoutData(data);
 
         // Debugger console (experimental)
@@ -133,7 +152,8 @@ public class PerlMainPreferencePage
         debugConsoleCheckBox = new Button(top, SWT.CHECK);
         debugConsoleCheckBox.setText("Enable debugger console (experimental)");
         debugConsoleCheckBox.setSelection(
-            PerlEditorPlugin.getDefault().getDebugConsolePreference());
+            PerlEditorPlugin.getDefault().getBooleanPreference(
+                PreferenceConstants.DEBUG_DEBUG_CONSOLE));
         debugConsoleCheckBox.setLayoutData(data);        
 
         // Stop debugger at first line
@@ -142,7 +162,8 @@ public class PerlMainPreferencePage
         suspendAtFirstCheckBox = new Button(top, SWT.CHECK);
         suspendAtFirstCheckBox.setText("Suspend debugger at first statement");
         suspendAtFirstCheckBox.setSelection(
-            PerlEditorPlugin.getDefault().getSuspendAtFirstPreference());
+            PerlEditorPlugin.getDefault().getBooleanPreference(
+                PreferenceConstants.DEBUG_SUSPEND_AT_FIRST));
         suspendAtFirstCheckBox.setLayoutData(data);
         
 		//WebBrowser preferences
@@ -161,8 +182,28 @@ public class PerlMainPreferencePage
 		browserLabelText = new Text(browserComposite, SWT.BORDER);
 		browserLabelText.setLayoutData(data);
 		browserLabelText.setText(
-			PerlEditorPlugin.getDefault().getWebBrowserPreference());
+			PerlEditorPlugin.getDefault().getPreferenceStore().getString(
+                PreferenceConstants.BROWSER_START_URL));
 
+	    // "Object identifying" hash keys for previewing hashes in debugger
+        Composite idKeysComposite = new Composite(top, SWT.NULL);
+        GridLayout idKeysLayout = new GridLayout();
+        idKeysLayout.numColumns = 2;
+        idKeysComposite.setLayout(idKeysLayout);
+        data = new GridData(GridData.FILL_BOTH | GridData.VERTICAL_ALIGN_BEGINNING);
+        idKeysComposite.setLayoutData(data);
+        
+        Label debugPreviewKeysLabel = new Label(browserComposite, SWT.NONE);
+        debugPreviewKeysLabel.setText("Debugger preview keys:");
+        
+        data = new GridData(GridData.FILL_HORIZONTAL);
+        data.grabExcessHorizontalSpace = true;
+        debugPreviewKeysText = new Text(browserComposite, SWT.BORDER);
+        debugPreviewKeysText.setLayoutData(data);
+        debugPreviewKeysText.setText(
+            PerlEditorPlugin.getDefault().getPreferenceStore().getString(
+                PreferenceConstants.DEBUG_PREVIEW_KEYS));
+		
 		Composite syntaxIntervalComposite = new Composite(top, SWT.NULL);
 
 		GridLayout syncIntervalLayout = new GridLayout();
@@ -173,30 +214,25 @@ public class PerlMainPreferencePage
 				GridData.FILL_BOTH | GridData.VERTICAL_ALIGN_BEGINNING);
 		syntaxIntervalComposite.setLayoutData(data);
 
-
-
 		validateCheckBox = new Button(syntaxIntervalComposite, SWT.CHECK);
 		validateCheckBox.setText("Validate source when idle for ");
-		validateCheckBox.setSelection(
-				PerlEditorPlugin.getDefault().getSyntaxValidationPreference());
-	
+		validateCheckBox.setSelection(
+            PerlEditorPlugin.getDefault().getBooleanPreference(
+                PreferenceConstants.EDITOR_SYNTAX_VALIDATION));	
 		syntaxCheckInterval = new Scale(syntaxIntervalComposite, SWT.HORIZONTAL);
 		syntaxCheckInterval.setMinimum(1);
 		syntaxCheckInterval.setMaximum(10000);
 		syntaxCheckInterval.setIncrement(100);
 		
 		syntaxIntervalSecondsLabel = new Label(syntaxIntervalComposite, SWT.NONE);
-		int interval = PerlEditorPlugin.getDefault().getPreferenceStore().getInt(PerlEditorPlugin.SYNTAX_VALIDATION_INTERVAL_PREFERENCE) ;
-		float intervalDisplay = Math.round(interval/10f)/100f;
-		syntaxIntervalSecondsLabel.setText(intervalDisplay + " seconds  ");
-		syntaxCheckInterval.setSelection(interval);
+        displayInterval(PerlEditorPlugin.getDefault().getPreferenceStore().getInt(
+            PreferenceConstants.EDITOR_SYNTAX_VALIDATION_INTERVAL));
 		
-		syntaxCheckInterval.addListener (SWT.Selection, new Listener () {
-						public void handleEvent (Event event) {
-						  float intervalDisplay = Math.round(syntaxCheckInterval.getSelection()/10f)/100f;
-						  syntaxIntervalSecondsLabel.setText(intervalDisplay + " seconds  ");
-						}
-				});
+		syntaxCheckInterval.addListener(SWT.Selection, new Listener () {
+            public void handleEvent (Event event)
+            {
+                displayInterval(syntaxCheckInterval.getSelection());
+            } });
 			
 		
 		syntaxIntervalComposite.setLayoutData(data);
@@ -219,49 +255,79 @@ public class PerlMainPreferencePage
 	 * store.
 	 */
 	protected void performDefaults() {
+        IPreferenceStore prefs = PerlEditorPlugin.getDefault().getPreferenceStore();
+        
 		executableText.setText(
-			PerlEditorPlugin.getDefault().getDefaultExecutablePreference());
-			
+			prefs.getDefaultString(PreferenceConstants.DEBUG_PERL_EXECUTABLE));
 		warningsCheckBox.setSelection(
-			PerlEditorPlugin.getDefault().getDefaultWarningsPreference());
+			prefs.getDefaultBoolean(PreferenceConstants.DEBUG_SHOW_WARNINGS));
+		methodsCheckBox.setSelection(
+			prefs.getDefaultBoolean(PreferenceConstants.DEBUG_METHOD_SIGNATURES));
 		taintCheckBox.setSelection(
-					PerlEditorPlugin.getDefault().getDefaultTaintPreference());
-		interpreterTypeCombo.setText(PerlEditorPlugin.INTERPRETER_TYPE_STANDARD);
-
+            prefs.getDefaultBoolean(PreferenceConstants.DEBUG_TAINT_MODE));
+        debugConsoleCheckBox.setSelection(
+            prefs.getDefaultBoolean(PreferenceConstants.DEBUG_DEBUG_CONSOLE));
+        suspendAtFirstCheckBox.setSelection(
+            prefs.getDefaultBoolean(PreferenceConstants.DEBUG_SUSPEND_AT_FIRST));
+		interpreterTypeCombo.setText(
+            prefs.getDefaultString(PreferenceConstants.DEBUG_INTERPRETER_TYPE));
 		browserLabelText.setText(
-			PerlEditorPlugin.getDefault().getDefaultWebBrowserPreference());
-			
-		
-		validateCheckBox.setSelection(
-				PerlEditorPlugin.getDefault().getDefaultSyntaxValidationPreference());
-		float intervalDisplay = Math.round(PerlEditorPlugin.SYNTAX_VALIDATION_INTERVAL_DEFAULT/10f)/100f;
-		syntaxIntervalSecondsLabel.setText(intervalDisplay + " seconds ");
-		syntaxCheckInterval.setSelection(PerlEditorPlugin.SYNTAX_VALIDATION_INTERVAL_DEFAULT);
-	    
-		//colorEditor.loadDefault();
+			prefs.getDefaultString(PreferenceConstants.BROWSER_START_URL));
+        debugPreviewKeysText.setText(
+            prefs.getDefaultString(PreferenceConstants.DEBUG_PREVIEW_KEYS));
+		validateCheckBox.setSelection(
+		    prefs.getDefaultBoolean(PreferenceConstants.EDITOR_SYNTAX_VALIDATION));
+        int defaultInterval = prefs.getDefaultInt(
+            PreferenceConstants.EDITOR_SYNTAX_VALIDATION_INTERVAL);
+        displayInterval(defaultInterval);
 	}
 	/** 
 	 * Method declared on IPreferencePage. Save the
 	 * color preference to the preference store.
 	 */
 	public boolean performOk() {
-		PerlEditorPlugin.getDefault().setExecutablePreference(
+        IPreferenceStore prefs = PerlEditorPlugin.getDefault().getPreferenceStore();
+        
+		PerlEditorPlugin.getDefault().setPerlExecutable(
 			executableText.getText());
-		PerlEditorPlugin.getDefault().setWarningsPreference(
-			warningsCheckBox.getSelection());
-		PerlEditorPlugin.getDefault().setTaintPreference(
+        prefs.setValue(
+            PreferenceConstants.DEBUG_SHOW_WARNINGS,
+            warningsCheckBox.getSelection());
+        prefs.setValue(
+            PreferenceConstants.DEBUG_METHOD_SIGNATURES,
+            methodsCheckBox.getSelection());
+		prefs.setValue(
+            PreferenceConstants.DEBUG_TAINT_MODE,
 			taintCheckBox.getSelection());
-        PerlEditorPlugin.getDefault().setDebugConsolePreference(
+        prefs.setValue(
+            PreferenceConstants.DEBUG_DEBUG_CONSOLE,
             debugConsoleCheckBox.getSelection());
-        PerlEditorPlugin.getDefault().setSuspendAtFirstPreference(
+        prefs.setValue(
+            PreferenceConstants.DEBUG_SUSPEND_AT_FIRST,
             suspendAtFirstCheckBox.getSelection());
-		PerlEditorPlugin.getDefault().setSyntaxValidationPreference(
-            validateCheckBox.getSelection());
-		PerlEditorPlugin.getDefault().getPreferenceStore().setValue(PerlEditorPlugin.INTERPRETER_TYPE_PREFERENCE, interpreterTypeCombo.getText());
-		PerlEditorPlugin.getDefault().getPreferenceStore().setValue(PerlEditorPlugin.SYNTAX_VALIDATION_INTERVAL_PREFERENCE, syntaxCheckInterval.getSelection());
-		PerlEditorPlugin.getDefault().setWebBrowserPreference(
-			browserLabelText.getText());
-			
+		prefs.setValue(
+            PreferenceConstants.EDITOR_SYNTAX_VALIDATION,
+            validateCheckBox.getSelection());
+		prefs.setValue(
+            PreferenceConstants.DEBUG_INTERPRETER_TYPE,
+            interpreterTypeCombo.getText());
+		prefs.setValue(
+            PreferenceConstants.EDITOR_SYNTAX_VALIDATION_INTERVAL,
+            syntaxCheckInterval.getSelection());
+		prefs.setValue(
+            PreferenceConstants.BROWSER_START_URL,
+            browserLabelText.getText());
+        prefs.setValue(
+            PreferenceConstants.DEBUG_PREVIEW_KEYS,
+            debugPreviewKeysText.getText());
+		
 		return super.performOk();
 	}
+    
+    private void displayInterval(int interval)
+    {
+        float intervalDisplay = Math.round(interval/10f)/100f;
+        syntaxIntervalSecondsLabel.setText(intervalDisplay + " seconds ");
+        syntaxCheckInterval.setSelection(interval);
+    }
 }

@@ -1,15 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section name="Workbench">
+	<section name="org.eclipse.ui.texteditor.FindReplaceDialog_dialogBounds">
+		<item value="310" key="DIALOG_WIDTH"/>
+		<item value="164" key="DIALOG_Y_ORIGIN"/>
+		<item value="422" key="DIALOG_HEIGHT"/>
+		<item value="413" key="DIALOG_X_ORIGIN"/>
+		<item value="1|Verdana|12.0|0|GTK|1|" key="DIALOG_FONT_NAME"/>
+	</section>
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog">
-		<item key="wholeword" value="false"/>
-		<item key="incremental" value="false"/>
-		<item key="isRegEx" value="true"/>
-		<item key="y" value="473"/>
-		<item key="selection" value="&#x0A;="/>
-		<item key="wrap" value="true"/>
-		<item key="x" value="503"/>
-		<item key="casesensitive" value="false"/>
+		<item value="true" key="wrap"/>
+		<item value="false" key="casesensitive"/>
+		<item value="true" key="isRegEx"/>
+		<item value="false" key="incremental"/>
+		<item value="false" key="wholeword"/>
+		<item value="" key="selection"/>
+		<item value="473" key="y"/>
+		<item value="503" key="x"/>
 		<list key="findhistory">
+			<item value="test123"/>
 			<item value="\n="/>
 			<item value="next_sibling"/>
 			<item value="foo"/>
@@ -17,14 +25,17 @@
 			<item value="funky"/>
 			<item value="parseurl"/>
 			<item value="sub cmp"/>
-			<item value="parse_url"/>
 		</list>
-		<list key="replacehistory" value="parse_url">
+		<list key="replacehistory">
 			<item value="bar"/>
 			<item value="X"/>
 			<item value="haha"/>
 		</list>
 	</section>
 	<section name="FindReplaceDialog.completion_proposal_size">
+	</section>
+	<section name="org.eclipse.ui.texteditor.GotoLineAction$GotoLineDialog_dialogBounds">
+		<item value="313" key="DIALOG_Y_ORIGIN"/>
+		<item value="305" key="DIALOG_X_ORIGIN"/>
 	</section>
 </section>

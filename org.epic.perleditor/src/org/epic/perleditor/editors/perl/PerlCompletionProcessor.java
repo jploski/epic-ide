@@ -48,13 +48,16 @@ public class PerlCompletionProcessor implements IContentAssistProcessor
     {
 		// get the current document's text, up to caret position
 		IDocument document = viewer.getDocument();
+        ITextSelection selection = (ITextSelection) viewer.getSelectionProvider().getSelection();        
+        if (selection.getLength() > 0) return NO_PROPOSALS;
+
 		String lastTextLine = null;
 		try
         {
             int lastLine = document.getLineOfOffset(documentOffset);
+            int lineStartOffset = document.getLineOffset(lastLine);
             lastTextLine = document.get(
-                document.getLineOffset(lastLine),
-                document.getLineLength(lastLine));
+                lineStartOffset, documentOffset - lineStartOffset);
         }
         catch (BadLocationException ble)
         {
@@ -70,7 +73,7 @@ public class PerlCompletionProcessor implements IContentAssistProcessor
 		else
         {
 			String className = getClassName(documentOffset, document);
-			return className != null
+            return className != null
                 ? computeMethodProposals(viewer, documentOffset, className)
                 : sort(concatenate(
                     computeVariableProposals(viewer, documentOffset),
@@ -111,7 +114,6 @@ public class PerlCompletionProcessor implements IContentAssistProcessor
         ITextViewer viewer, int documentOffset, String className)
     {
         List proposals = getProposalsForClassname(className);
-        
         ContextType contextType = getContextType();
         if (contextType != null)
         {
@@ -274,14 +276,10 @@ public class PerlCompletionProcessor implements IContentAssistProcessor
                 objName = objName.indexOf("->") != -1
                     ? objName.substring(0, objName.indexOf("->"))
                     : objName.substring(0, objName.indexOf("::"));
-
-				// **** Get the classname ***
-                Pattern p = Pattern.compile(
-                    "\\" + objName + "\\s*=\\s*([a-zA-Z:->0-9_]+)(->|::|;)");
-                Matcher m = p.matcher(text);
                 
-                String className = null;
-                while (m.find()) className = m.group(1);
+                String className = findTypedLexical(objName, text);
+                if (className == null) className = findConstructorCall(objName, text);
+
                 return className;
 			}
             else
@@ -301,6 +299,48 @@ public class PerlCompletionProcessor implements IContentAssistProcessor
 			return null; // TODO error handling
 		}
 	}
+
+    private String findConstructorCall(String objName, String text)
+    {
+        // Try to find something like "my $foo = Some::Class->..."
+        Pattern p = Pattern.compile("\\" + objName + "\\s*=\\s*([a-zA-Z:->0-9_]+)(->|::|;)");
+        Matcher m = p.matcher(text);
+        String className = null;
+        while (m.find()) className = m.group(1);
+        return className;
+    }
+    
+    private String findTypedLexical(String objName, String text)
+    {        
+        // Try to find typed lexical like "my Some::Class $foo = ...;"
+        // or "my __PACKAGE__ $foo = ...;"
+        Pattern p = Pattern.compile("my\\s+(\\S+)\\s+\\" + objName + "\\s*=");
+        Matcher m = p.matcher(text);
+        int foundAt = -1;
+        String className = null;
+        while (m.find())
+        {
+            className = m.group(1);
+            foundAt = m.start(1);
+        }                
+        if (className != null)
+        {
+            if ("__PACKAGE__".equals(className)) 
+            {
+                // Find most recent "package ...;" line before
+                // the typed lexical was introduced
+                p = Pattern.compile("\\s*package\\s+(\\S+)\\s*;");
+                m = p.matcher(text);
+                
+                while (m.find() && m.start(1) < foundAt)
+                    className = m.group(1);
+                
+                // not found? bad luck
+                if ("__PACKAGE__".equals(className)) return null;
+            }
+        }
+        return className;
+    }
 	
     private List getProposalsForClassname(String className)
     {
@@ -308,19 +348,18 @@ public class PerlCompletionProcessor implements IContentAssistProcessor
 			"use "
 				+ className
 				+ ";\n\n"
-				+ "foreach $name (sort keys %"
-				+ className
-				+ "::) {\n"
+                + "@classes = qw(" + className + ");\n"
+                + "push(@classes, @" + className + "::ISA);\n"
+                + "foreach $class (@classes) {\n"
+                + "next if ($class eq 'Exporter');\n"
+                + "%symtab = eval '%'.$class.'::';\n"
+				+ "foreach $name (keys %symtab) {\n"
 				+ " next if($name !~ /[a-z]/ || $name =~ /^_/);\n"
-				+ "   if(defined &{\""
-				+ className
-				+ "::$name\"}) {\n"
-				+ "       print \"$name()\\n\";\n"
+				+ "   if(defined &{$class.'::'.$name}) {\n"
+				+ "       $proposals{$name.'()'} = 1;\n"
 				+ "   }\n"
-				+ "   else {\n"
-				+ "       #print \"$name\\n\";\n"
-				+ "   }\n"
-				+ "}\n";
+				+ "}}\n"
+                + "print join(\"\\n\", sort keys %proposals);";
 
         PerlExecutor executor = new PerlExecutor();
 		try
@@ -376,7 +415,7 @@ public class PerlCompletionProcessor implements IContentAssistProcessor
     private String getModuleNamePrefix(String line)
     {
         Pattern pattern = Pattern.compile(
-            ".*use\\s*(.*)$", Pattern.MULTILINE | Pattern.DOTALL);
+            "\\s*use[ \\t]+(\\S*)\\s*$", Pattern.MULTILINE | Pattern.DOTALL);
         Matcher matcher = pattern.matcher(line);
         return matcher.matches() ? matcher.group(1) : null;
     }

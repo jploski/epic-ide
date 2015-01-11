@@ -1,0 +1,22 @@
+\NeedsTeXFormat{LaTeX2e}
+\RequirePackageWithOptions{docbook}
+
+% Keep images at a reasonable size for printing
+\def\imgwidth{%
+  \ifdim\Gin@nat@width>\imgmaxwidth
+    0.52\imgmaxwidth
+  \else
+    0.52\Gin@nat@width
+  \fi
+}
+
+\def\imgheight{%
+  \ifdim\Gin@nat@height>\imgmaxheight
+    0.52\imgmaxheight
+  \else
+    0.52\Gin@nat@height
+  \fi
+}
+
+% Disable the "revision history" section
+\renewcommand{\DBKrevhistory}{}

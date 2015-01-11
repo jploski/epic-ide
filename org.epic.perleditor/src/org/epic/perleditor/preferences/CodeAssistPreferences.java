@@ -13,10 +13,11 @@ import org.epic.perleditor.PerlEditorPlugin;
 public class CodeAssistPreferences {
 	public static final String AUTO_ACTIVATION_CHARS = "CodeAssist.autoActivationChars";
 	public static final String INSPECT_VARIABLES = "CodeAssist.inspectVariables";
+	public static final String AUTO_ACTIVATION_DELAY = "CodeAssist.autoActivationDelay";
 	
 	
 	/**
-	 * Default values intitialization
+	 * Default values initialization
 	 * Calls initializeDefaultValues()
 	 * @param store
 	 */
@@ -31,7 +32,8 @@ public class CodeAssistPreferences {
 	public static void initializeDefaultValues(IPreferenceStore store) {
 		store.setDefault(AUTO_ACTIVATION_CHARS, ">:<$%@");
 		store.setDefault(INSPECT_VARIABLES, true);
-}
+		store.setDefault(AUTO_ACTIVATION_DELAY, 500);
+	}
 
 	
 

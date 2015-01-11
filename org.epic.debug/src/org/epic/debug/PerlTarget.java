@@ -77,7 +77,7 @@ public abstract class PerlTarget extends DebugElement implements IDebugTarget
             null));
     }
 
-    private IProject initProject() throws CoreException
+    protected IProject initProject() throws CoreException
     {
         String projectName =
             getLaunch().getLaunchConfiguration().getAttribute(

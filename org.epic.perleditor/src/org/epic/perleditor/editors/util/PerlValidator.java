@@ -2,18 +2,15 @@ package org.epic.perleditor.editors.util;
 
 import java.io.IOException;
 import java.util.*;
-import java.util.List;
-import java.util.Map;
 
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.*;
-import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.ui.IEditorDescriptor;
 import org.epic.core.Constants;
 import org.epic.core.util.PerlExecutor;
 import org.epic.perleditor.PerlEditorPlugin;
+import org.epic.perleditor.preferences.PreferenceConstants;
 
 /**
  * PerlValidator is a singleton class, use PerlValidator.instance() to obtain
@@ -117,11 +114,17 @@ public class PerlValidator extends PerlValidatorBase
     {
         List args = super.getPerlArgs();        
     
-        if (PerlEditorPlugin.getDefault().getWarningsPreference())
+        if (PerlEditorPlugin.getDefault().getBooleanPreference(
+            PreferenceConstants.DEBUG_SHOW_WARNINGS))
+        {
             args.add("-w");
+        }
     
-        if (PerlEditorPlugin.getDefault().getTaintPreference())
+        if (PerlEditorPlugin.getDefault().getBooleanPreference(
+            PreferenceConstants.DEBUG_TAINT_MODE))
+        {
             args.add("-T");
+        }
     
         return args;
     }

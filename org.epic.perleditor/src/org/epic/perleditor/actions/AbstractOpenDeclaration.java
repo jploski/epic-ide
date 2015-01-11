@@ -143,18 +143,23 @@ abstract class AbstractOpenDeclaration
     }
     
     private Result _runWithSearchString(String searchString) throws CoreException
-    {   
+    {
         if (searchString == null) return Result.invalidSearch();
-        
-        String targetModule = getTargetModule(searchString);        
-        if (targetModule != null && targetModule.equals("main"))
+
+        String targetModule = getTargetModule(searchString);
+
+        // if SUPER::some_sub is found, only search in parent packages.
+        boolean onlySearchInParents = "SUPER".equals(targetModule);
+
+        if ("main".equals(targetModule) || onlySearchInParents)
         {
             // Treat search for 'main::some_sub' exactly the same way
-            // as a search for 'some_sub'
-            targetModule = null;
+            // as a search for 'some_sub'. Also, treat search for 'SUPER::some_sub'
+            // as a search for 'some_sub' in parent packages.
             searchString = getLocalSearchString(searchString);
+            targetModule = null;
         }
-        
+
         if (targetModule != null)
         {   
             String localSearchString = getLocalSearchString(searchString);
@@ -169,39 +174,83 @@ abstract class AbstractOpenDeclaration
         }
         else
         {
-            IRegion match = findDeclaration(
-                getEditor().getSourceFile(), searchString);
-            
+            IRegion match = null;
+            if (!onlySearchInParents)
+            {
+                match = findDeclaration(getEditor().getSourceFile(), searchString);
+            }
+
             if (match != null)
             {
                 getEditor().selectAndReveal(match.getOffset(), match.getLength());
                 return Result.found();
             }
-            else
+
+            Result res = searchInAllParents(searchString, findParents(getEditor().getSourceFile()));
+            if (res != null && res.isFound()) return res;
+
+            String[] usedModules = findUsedModules(getEditor().getSourceFile());
+            res = searchInUsedModules(searchString, usedModules);
+            if (res != null && res.isFound()) return res;
+
+            res = searchInRequires(
+                searchString,
+                getCurrentDir(),
+                getEditor().getSourceFile().getDocument(),
+                new HashSet());
+            if (res.isFound()) return res;
+        }
+        return Result.notFound(searchString);
+    }
+
+    private Result searchInAllParents(String searchString, String[] parents) throws CoreException
+    {
+        Result res = searchInUsedModules(searchString, parents);
+        if (res != null && res.isFound()) return res;
+        for (int i = 0; i < parents.length; i++)
+        {
+            String myParent = parents[i];
+            File moduleFile = findModuleFile(myParent);
+            if (moduleFile == null) continue;
+
+            Result parentResult = searchModuleFile(moduleFile, searchString);
+            if (parentResult != null && parentResult.isFound())
+                return parentResult;
+            SourceFile moduleSource = findSourceFile(moduleFile);
+            if (moduleSource == null) continue;
+            moduleSource.parse();
+            return searchInAllParents(searchString, findParents(moduleSource));
+        }
+        return Result.notFound(searchString);
+    }
+
+    /**
+     * iterates over the 'use' list and looks for searchString
+     * @param searchString
+     * @param usedModules
+     * @return Result
+     * @throws CoreException
+     */
+    private Result searchInUsedModules(String searchString, String[] usedModules) throws CoreException
+    {
+        for (int i = 0; i < usedModules.length; i++)
+        {
+            File moduleFile = findModuleFile(usedModules[i]);
+            if (moduleFile != null)
             {
-                String[] usedModules = findUsedModules(getEditor().getSourceFile());
-                for (int i = 0; i < usedModules.length; i++)
-                {
-                    File moduleFile = findModuleFile(usedModules[i]);
-                    if (moduleFile != null)
-                    {
-                        Result res = searchModuleFile(moduleFile, searchString);
-                        if (res.isFound()) return res;
-                    }
-                }
-                
-                Result res = searchInRequires(
-                    searchString,
-                    getCurrentDir(),
-                    getEditor().getSourceFile().getDocument(),
-                    new HashSet());
-                
-                if (res.isFound()) return res;                
+                Result res = searchModuleFile(moduleFile, searchString);
+                if (res.isFound()) return res;
             }
         }
         return Result.notFound(searchString);
-    }    
+    }
 
+    /**
+     * translates moduleName into File handle
+     * @param moduleName
+     * @return moduleFile
+     * @throws CoreException
+     */
     private File findModuleFile(String moduleName) throws CoreException
     {
         if (moduleName.length() == 0) return null;
@@ -282,7 +331,45 @@ abstract class AbstractOpenDeclaration
         }
         return (String[]) names.toArray(new String[names.size()]);
     }
-    
+
+    /**
+     * @return (unparsed) SourceFile from an identified moduleFile
+     */
+    private SourceFile findSourceFile(File moduleFile) throws CoreException
+    {
+        IDocument doc = null;
+        SourceFile src = null;
+        try
+        {
+            doc = getSourceDocument(moduleFile);
+            src = new SourceFile(null, doc);
+        }
+        catch (IOException e)
+        {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return src;
+    }
+
+    /**
+     * @return names of modules referenced by 'use base/parent' statements from
+     *         the given source text
+     */
+    private String[] findParents(SourceFile sourceFile) throws CoreException
+    {
+        List names = new ArrayList();
+        for (Iterator j = sourceFile.getPackages().iterator(); j.hasNext();)
+        {
+            Package pkg = (Package) j.next();
+            for (Iterator i = pkg.getParents().iterator(); i.hasNext();) {
+                String parentName = ((ISourceElement) i.next()).getName();
+                names.add(parentName);
+            }
+        }
+        return (String[]) names.toArray(new String[names.size()]);
+    }
+
     /**
      * @return the script's parent directory, if the action is executing
      *         on a .pl script (to simulate the @INC entry used when actually

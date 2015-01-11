@@ -2,6 +2,7 @@ package org.epic.core;
 
 import java.io.File;
 import java.util.*;
+import java.util.regex.Pattern;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.*;
@@ -60,6 +61,29 @@ public class PerlProject extends PlatformObject
     }
     
     /**
+     * @return an unmodifiable list of regex Patterns representing paths to be
+     *         ignored by syntax checking. These are the entries explicitly configured
+     *         in the project's properties.
+     */
+    public List getIgnoredPaths()
+    {
+        String[] elems = new XMLUtilities().getIgnoredEntries(project);
+        if (elems.length > 0)
+        {        
+            List patterns = new ArrayList(elems.length);
+            
+            for (int i = 0; i < elems.length; i++)
+            {
+                String elem = quotemeta(elems[i].replace('\\', '/')).replaceAll("\\\\\\*", ".*?").trim();
+                if (elem.length() > 0) patterns.add(Pattern.compile('^' + elem + ".*", Pattern.DOTALL));
+            }
+            
+            return Collections.unmodifiableList(patterns);
+        }
+        else return Collections.EMPTY_LIST;
+    }
+    
+    /**
      * @return an unmodifiable list of File objects representing directories
      *         in the project's include path. These are the entries explicitly
      *         configured in the project's properties.
@@ -113,5 +137,23 @@ public class PerlProject extends PlatformObject
             dirs.add(f); 
         }        
         return Collections.unmodifiableList(dirs);
+    }
+
+    /**
+     * Roughly equivalent to Perl's quotemeta.
+     */
+    private static final String quotemeta(String str)
+    {
+        int len = str.length();
+        StringBuffer buf = new StringBuffer(2*len);
+
+        for (int i = 0; i < str.length(); i++)
+        {
+            char c = str.charAt(i);
+            if(!Character.isLetterOrDigit(c)) buf.append('\\');
+            buf.append(c);
+        }
+
+        return buf.toString();
     }
 }

@@ -8,6 +8,7 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.epic.debug.*;
+import org.epic.debug.db.PerlDebugThread;
 import org.epic.debug.util.*;
 
 /**
@@ -68,14 +69,19 @@ public class RemoteLaunchConfigurationDelegate
             return;
         }
         
-        RemoteDebugTarget target = new RemoteDebugTarget(
-            launch, process, debugPort, mapper);
-        launch.addDebugTarget(target);
-        
-        if (!target.getDebugger().isTerminated())
-            process.init(target.getDebugger());
-        else
+        try
+        {
+            RemoteDebugTarget target = new RemoteDebugTarget(
+                launch, process, debugPort, mapper);
+            launch.addDebugTarget(target);
+            process.init((PerlDebugThread) target.getThreads()[0]);
+        }
+        catch (CoreException e)
+        {
             launch.terminate();
+            if (e.getStatus().getCode() != DebugTarget.SESSION_TERMINATED)
+                throw e;
+        }
     }
     
     protected IProject getProject(ILaunch launch) throws CoreException

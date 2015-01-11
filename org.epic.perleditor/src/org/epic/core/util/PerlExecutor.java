@@ -3,6 +3,7 @@ package org.epic.core.util;
 import java.io.*;
 import java.util.*;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.*;
 import org.eclipse.ui.IFileEditorInput;
@@ -96,7 +97,7 @@ public class PerlExecutor
         
         try
         {
-            return executor.execute(commandLine, input, workingDir);
+            return executor.execute(commandLine, input, workingDir, null);
         }
         catch (InterruptedException e) { throwCoreException(e); return null;}
         catch (IOException e) { throwCoreException(e, commandLine); return null; }
@@ -139,8 +140,15 @@ public class PerlExecutor
 
         try
         {
+            String charset = resource instanceof IFile
+                ? ((IFile) resource).getCharset()
+                : null;
+            
             return executor.execute(
-                commandLine, sourceCode, getPerlWorkingDir(resource));
+                commandLine,
+                sourceCode,
+                getPerlWorkingDir(resource),
+                charset);
         }
         catch (InterruptedException e) { throwCoreException(e); return null;}
         catch (IOException e) { throwCoreException(e, commandLine); return null; }

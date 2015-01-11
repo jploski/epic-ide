@@ -1,4 +1,7 @@
 #!/usr/bin/perl
+
+eval 'exec /usr/bin/perl  -S $0 ${1+"$@"}'
+    if 0; # not running under some shell
 package main;
 
 use Perl::Tidy;
@@ -153,8 +156,8 @@ Options may not be bundled together.  In other words, options B<-q> and
 B<-g> may NOT be entered as B<-qg>.
 
 Option names may be terminated early as long as they are uniquely identified.
-For example, instead of B<-dump-token-types>, it would be sufficient to enter
-B<-dump-tok>, or even B<-dump-t>, to uniquely identify this command.
+For example, instead of B<--dump-token-types>, it would be sufficient to enter
+B<--dump-tok>, or even B<--dump-t>, to uniquely identify this command.
 
 =head2 I/O control
 
@@ -170,7 +173,9 @@ Show summary of usage and exit.
 
 Name of the output file (only if a single input file is being
 processed).  If no output file is specified, and output is not
-redirected to the standard output, the output will go to F<filename.tdy>.
+redirected to the standard output (see B<-st>), the output will go to
+F<filename.tdy>. [Note: - does not redirect to standard output. Use
+B<-st> instead.]
 
 =item	B<-st>,    B<--standard-output>
 
@@ -183,7 +188,7 @@ request outputting to the standard output.  For example,
   perltidy somefile.pl -st >somefile.new.pl
 
 This option may only be used if there is just a single input file.  
-The default is B<-nst> or B<-nostandard-output>.
+The default is B<-nst> or B<--nostandard-output>.
 
 =item	B<-se>,    B<--standard-error-output>
 
@@ -376,7 +381,7 @@ does its own checking, but this option employs perl to get a "second
 opinion".
 
 If perl reports errors in the input file, they will not be reported in
-the error output unless the B<-warning-output> flag is given. 
+the error output unless the B<--warning-output> flag is given. 
 
 The default is B<not> to do this type of syntax checking (although
 perltidy will still do as much self-checking as possible).  The reason
@@ -417,8 +422,6 @@ where s=C<win>, C<dos>, C<unix>, or C<mac>.  This flag tells perltidy
 to output line endings for a specific system.  Normally,
 perltidy writes files with the line separator character of the host
 system.  The C<win> and C<dos> flags have an identical result.
-B<NOTE>: This only works under unix-like systems and is ignored under
-other systems.
 
 =item B<-ple>,  B<--preserve-line-endings>
 
@@ -428,8 +431,6 @@ B<dos>, B<unix>, and B<mac> line endings.  It will only work if perltidy
 input comes from a filename (rather than stdin, for example).  If
 perltidy has trouble determining the input file line ending, it will
 revert to the default behavior of using the line ending of the host system.
-B<NOTE>: This only works under unix-like systems and is ignored under
-other systems.
 
 =back
 
@@ -518,6 +519,7 @@ a C<)>, C<]>, or a non-block C<}>.  Such a line receives:
         aligns with its opening token.
  -cti = 2 one extra indentation level if the line looks like:
         );  or  ];  or  };
+ -cti = 3 one extra indentation level always
 
 The flags B<-cti=1> and B<-cti=2> work well with the B<-lp> flag (previous
 section).
@@ -541,9 +543,9 @@ B<cti=1> is constrained to be no more than one indentation level.
 If desired, this control can be applied independently to each of the
 closing container token types.  In fact, B<-cti=n> is merely an
 abbreviation for B<-cpi=n -csbi=n -cbi=n>, where:  
-B<-cpi> or B<-closing-paren-indentation> controls B<)>'s,
-B<-csbi> or B<-closing-square-bracket-indentation> controls B<]>'s, 
-B<-cbi> or B<-closing-brace-indentation> controls non-block B<}>'s. 
+B<-cpi> or B<--closing-paren-indentation> controls B<)>'s,
+B<-csbi> or B<--closing-square-bracket-indentation> controls B<]>'s, 
+B<-cbi> or B<--closing-brace-indentation> controls non-block B<}>'s. 
 
 =item B<-icp>, B<--indent-closing-paren>
 
@@ -553,8 +555,8 @@ equivalent B<-cti=0>.  They are included for backwards compatability.
 
 =item B<-icb>, B<--indent-closing-brace>
 
-The B<-icb> option leaves a brace which terminates a code block 
-indented with the same indentation as the previous line.  For example,
+The B<-icb> option gives one extra level of indentation to a brace which
+terminates a code block .  For example,
 
         if ($task) {
             yyy();
@@ -781,11 +783,15 @@ a space takes priority.
 
 It is necessary to have a list of all token types in order to create
 this type of input.  Such a list can be obtained by the command
-B<-dump-token-types>.
+B<--dump-token-types>.  Also try the B<-D> flag on a short snippet of code
+and look at the .DEBUG file to see the tokenization. 
 
-=item Space between keyword and opening paren
+B<WARNING> Be sure to put these tokens in quotes to avoid having them
+misinterpreted by your command shell.
 
-When an opening paren follows a keyword, no space is introduced after the
+=item Space between specific keywords and opening paren
+
+When an opening paren follows a Perl keyword, no space is introduced after the
 keyword, unless it is (by default) one of these:
 
    my local our and or eq ne if else elsif until unless 
@@ -801,6 +807,31 @@ where B<s> is a list of keywords (in quotes if necessary).  For example,
 
   my ( $a, $b, $c ) = @_;    # default
   my( $a, $b, $c ) = @_;     # -nsak="my local our"
+
+To put a space after all keywords, see the next item.
+
+=item Space between all keywords and opening parens
+
+When an opening paren follows a function or keyword, no space is introduced
+after the keyword except for the keywords noted in the previous item.  To
+always put a space between a function or keyword and its opening paren,
+use the command:
+
+B<-skp>  or B<--space-keyword-paren>
+
+You will probably also want to use the flag B<-sfp> (next item) too.
+
+=item Space between all function names and opening parens
+
+When an opening paren follows a function the default is not to introduce
+a space.  To cause a space to be introduced use:
+
+B<-sfp>  or B<--space-function-paren>
+
+  myfunc( $a, $b, $c );    # default 
+  myfunc ( $a, $b, $c );   # -sfp
+
+You will probably also want to use the flag B<-skp> (previous item) too.
 
 =item Trimming whitespace around C<qw> quotes
 
@@ -852,13 +883,18 @@ If both B<-ibc> and B<-isbc> are set, then B<-isbc> takes priority.
 
 When B<-olc> is set, lines which are full-line (block) comments longer
 than the value B<maximum-line-length> will have their indentation
-removed.  The default is not to do this.  
+removed.  This is the default; use B<-nolc> to prevent outdenting.
 
 =item B<-msc=n>,  B<--minimum-space-to-comment=n>
 
 Side comments look best when lined up several spaces to the right of
 code.  Perltidy will try to keep comments at least n spaces to the
 right.  The default is n=4 spaces.
+
+=item B<-fpsc=n>,  B<--fixed-position-side-comment=n>
+
+This parameter tells perltidy to line up side comments in column number B<n>
+whenever possible.  The default, n=0, is not do do this.
 
 =item B<-hsc>, B<--hanging-side-comments>
 
@@ -881,7 +917,7 @@ whitespace, they will not be mistaken as hanging side comments.
 A closing side comment is a special comment which perltidy can
 automatically create and place after the closing brace of a code block.
 They can be useful for code maintenance and debugging.  The command
-B<-csc> (or B<-closing-side-comments>) adds or updates closing side
+B<-csc> (or B<--closing-side-comments>) adds or updates closing side
 comments.  For example, here is a small code snippet
 
         sub message {
@@ -917,7 +953,7 @@ commands, B<-csc> and B<-dcsc>:
 
 =over 4
 
-=item B<-csci=n>, or B<-closing-side-comment-interval=n> 
+=item B<-csci=n>, or B<--closing-side-comment-interval=n> 
 
 where C<n> is the minimum number of lines that a block must have in
 order for a closing side comment to be added.  The default value is
@@ -936,7 +972,7 @@ C<n=6>.  To illustrate:
 Now the C<if> and C<else> blocks are commented.  However, now this has
 become very cluttered.
 
-=item B<-cscp=string>, or B<-closing-side-comment-prefix=string> 
+=item B<-cscp=string>, or B<--closing-side-comment-prefix=string> 
 
 where string is the prefix used before the name of the block type.  The
 default prefix, shown above, is C<## end>.  This string will be added to
@@ -945,7 +981,7 @@ order to update, delete, and format them.  Any comment identified as a
 closing side comment will be placed just a single space to the right of
 its closing brace.
 
-=item B<-cscl=string>, or B<-closing-side-comment-list-string> 
+=item B<-cscl=string>, or B<--closing-side-comment-list-string> 
 
 where C<string> is a list of block types to be tagged with closing side
 comments.  By default, all code block types preceded by a keyword or
@@ -958,7 +994,7 @@ affected by any B<-csc> or B<-dcsc> operation:
 
    -cscl="sub : BEGIN END"
 
-=item B<-csct=n>, or B<-closing-side-comment-maximum-text=n> 
+=item B<-csct=n>, or B<--closing-side-comment-maximum-text=n> 
 
 The text appended to certain block types, such as an C<if> block, is
 whatever lies between the keyword introducing the block, such as C<if>,
@@ -972,7 +1008,7 @@ this).  To illustrate, in the above example, the appended text of the
 first block is C< ( !defined( $_[0] )...>.  The existing limit of
 C<n=20> caused this text to be truncated, as indicated by the C<...>.
 
-=item B<-csce=n>, or B<-closing-side-comment-else-flag=n> 
+=item B<-csce=n>, or B<--closing-side-comment-else-flag=n> 
 
 The default, B<n=0>, places the text of the opening C<if> statement after any
 terminal C<else>.
@@ -985,7 +1021,7 @@ side comments.
 If B<n=1> is used, the results will be the same as B<n=2> whenever the
 resulting line length is less than the maximum allowed.
 
-=item B<-cscw>, or B<-closing-side-comment-warnings> 
+=item B<-cscw>, or B<--closing-side-comment-warnings> 
 
 This parameter is intended to help make the initial transition to the use of
 closing side comments.  
@@ -1107,15 +1143,30 @@ The default is to use B<-sbc>.  This may be deactivated with B<-nsbc>.
 
 This parameter defines the prefix used to identify static block comments
 when the B<-sbc> parameter is set.  The default prefix is C<##>,
-corresponding to C<-sbcp=##>.  The first character must be a C<#>
-symbol, since this must only match comments.  As a simple example, to
+corresponding to C<-sbcp=##>.  The prefix is actually part of a perl 
+pattern used to match lines and it must either begin with C<#> or C<^#>.  
+In the first case a prefix ^\s* will be added to match any leading
+whitespace, while in the second case the pattern will match only
+comments with no leading whitespace.  For example, to
 identify all comments as static block comments, one would use C<-sbcp=#>.
+To identify all left-adjusted comments as static block comments, use C<-sbcp='^#'>.
 
 Please note that B<-sbcp> merely defines the pattern used to identify static
 block comments; it will not be used unless the switch B<-sbc> is set.  Also,
-please be aware that this string is used in a perl regular expression which
-identifies these comments, so it must enable a valid regular expression to be
-formed.
+please be aware that since this string is used in a perl regular expression
+which identifies these comments, it must enable a valid regular expression to
+be formed.
+
+A pattern which can be useful is:
+
+    -sbcp=^#{2,}[^\s#] 
+
+This pattern requires a static block comment to have at least one character
+which is neither a # nor a space.  It allows a line containing only '#'
+characters to be rejected as a static block comment.  Such lines are often used
+at the start and end of header information in subroutines and should not be
+separated from the intervening comments, which typically begin with just a
+single '#'.
 
 =item B<-osbc>, B<--outdent-static-block-comments>
 
@@ -1154,6 +1205,64 @@ expression to be formed.
 
 =back
 
+
+=back
+
+=head2 Skipping Selected Sections of Code
+
+Selected lines of code may be passed verbatim to the output without any
+formatting.  This feature is enabled by default but can be disabled with
+the B<--noformat-skipping> or B<-nfs> flag.  It should be used sparingly to
+avoid littering code with markers, but it might be helpful for working
+around occasional problems.  For example it might be useful for keeping
+the indentation of old commented code unchanged, keeping indentation of
+long blocks of aligned comments unchanged, keeping certain list
+formatting unchanged, or working around a glitch in perltidy.
+
+=over 4
+
+=item B<-fs>,  B<--format-skipping>
+
+This flag, which is enabled by default, causes any code between
+special beginning and ending comment markers to be passed to the
+output without formatting.  The default beginning marker is #<<<
+and the default ending marker is #>>> but they
+may be changed (see next items below).  Additional text may appear on
+these special comment lines provided that it is separated from the
+marker by at least one space.  For example
+
+ #<<<  do not let perltidy touch this
+    my @list = (1,
+                1, 1,
+                1, 2, 1,
+                1, 3, 3, 1,
+                1, 4, 6, 4, 1,);
+ #>>>
+
+The comment markers may be placed at any location that a block comment may
+appear.  If they do not appear to be working, use the -log flag and examine the
+F<.LOG> file.  Use B<-nfs> to disable this feature.
+
+=item B<-fsb=string>,  B<--format-skipping-begin=string>
+
+The B<-fsb=string> parameter may be used to change the beginning marker for
+format skipping.  The default is equivalent to -fsb='#<<<'.  The string that
+you enter must begin with a # and should be in quotes as necessary to get past
+the command shell of your system.  It is actually the leading text of a pattern
+that is constructed by appending a '\s', so you must also include backslashes
+for characters to be taken literally rather than as patterns.  
+
+Some examples show how example strings become patterns:
+
+ -fsb='#\{\{\{' becomes /^#\{\{\{\s/  which matches  #{{{ but not #{{{{
+ -fsb='#\*\*'   becomes /^#\*\*\s/    which matches  #** but not #***
+ -fsb='#\*{2,}' becomes /^#\*{2,}\s/  which matches  #** and #***** 
+
+=item B<-fse=string>,  B<--format-skipping-end=string>
+
+The B<-fsb=string> is the corresponding parameter used to change the
+ending marker for format skipping.  The default is equivalent to
+-fse='#<<<'.  
 
 =back
 
@@ -1257,7 +1366,7 @@ B<-blil='if elsif else'> would apply it to only C<if/elsif/else> blocks.
 
 =item B<-bar>,    B<--opening-brace-always-on-right>     
 
-The default style, B<-nbl> places the opening brace on a new
+The default style, B<-nbl> places the opening code block brace on a new
 line if it does not fit on the same line as the opening keyword, like
 this:
 
@@ -1276,6 +1385,32 @@ flag.  In this case, the above example becomes
         }
 
 A conflict occurs if both B<-bl> and B<-bar> are specified.
+
+=item B<-otr>,  B<--opening-token-right> and related flags
+
+The B<-otr> flag is a hint that perltidy should not place a break between a
+comma and an opening token.  For example:
+
+    # default formatting
+    push @{ $self->{$module}{$key} },
+      {
+        accno       => $ref->{accno},
+        description => $ref->{description}
+      };
+
+    # perltidy -otr
+    push @{ $self->{$module}{$key} }, {
+        accno       => $ref->{accno},
+        description => $ref->{description}
+      };
+
+The flag B<-otr> is actually a synonym for three other flags
+which can be used to control parens, hash braces, and square brackets
+separately if desired:
+
+  -opr  or --opening-paren-right
+  -ohbr or --opening-hash-brace-right
+  -osbr or --opening-square-bracket-right
 
 =item Vertical tightness of non-block curly braces, parentheses, and square brackets.
 
@@ -1451,11 +1586,91 @@ possible values of this string, see L<Specifying Block Types>
 
 For example, if we want to just apply this style to C<if>,
 C<elsif>, and C<else> blocks, we could use 
-C<perltidy -bli -bbvt -bbvtl='if elsif else'>.
+C<perltidy -bli -bbvt=1 -bbvtl='if elsif else'>.
 
 There is no vertical tightness control for closing block braces; with
 the exception of one-line blocks, they will normally remain on a 
 separate line.
+
+=item B<-sot>,  B<--stack-opening-tokens> and related flags
+
+The B<-sot> flag tells perltidy to "stack" opening tokens
+when possible to avoid lines with isolated opening tokens.
+
+For example:
+
+    # default
+    $opt_c = Text::CSV_XS->new(
+        {
+            binary       => 1,
+            sep_char     => $opt_c,
+            always_quote => 1,
+        }
+    );
+
+    # -sot
+    $opt_c = Text::CSV_XS->new( {
+            binary       => 1,
+            sep_char     => $opt_c,
+            always_quote => 1,
+        }
+    );
+
+For detailed control of individual closing tokens the following
+controls can be used:
+
+  -sop  or --stack-opening-paren
+  -sohb or --stack-opening-hash-brace
+  -sosb or --stack-opening-square-bracket
+
+The flag B<-sot> is a synonym for B<-sop -sohb -sosb>.
+
+=item B<-sct>,  B<--stack-closing-tokens> and related flags
+
+The B<-sct> flag tells perltidy to "stack" closing tokens
+when possible to avoid lines with isolated closing tokens.
+
+For example:
+
+    # default
+    $opt_c = Text::CSV_XS->new(
+        {
+            binary       => 1,
+            sep_char     => $opt_c,
+            always_quote => 1,
+        }
+    );
+
+    # -sct
+    $opt_c = Text::CSV_XS->new(
+        {
+            binary       => 1,
+            sep_char     => $opt_c,
+            always_quote => 1,
+        } );
+
+The B<-sct> flag is somewhat similar to the B<-vtc> flags, and in some
+cases it can give a similar result.  The difference is that the B<-vtc>
+flags try to avoid lines with leading opening tokens by "hiding" them at
+the end of a previous line, whereas the B<-sct> flag merely tries to
+reduce the number of lines with isolated closing tokens by stacking them
+but does not try to hide them.  For example:
+
+    # -vtc=2
+    $opt_c = Text::CSV_XS->new(
+        {
+            binary       => 1,
+            sep_char     => $opt_c,
+            always_quote => 1, } );
+
+For detailed control of the stacking of individual closing tokens the
+following controls can be used:
+
+  -scp  or --stack-closing-paren
+  -schb or --stack-closing-hash-brace
+  -scsb or --stack-closing-square-bracket
+
+The flag B<-sct> is a synonym for B<-scp -schb -scsb>.
 
 =item B<-dnl>,  B<--delete-old-newlines>
 
@@ -1468,16 +1683,17 @@ points.
 
 By default, perltidy will add line breaks when necessary to create
 continuations of long lines and to improve the script appearance.  Use
-B<-nanl> or B<-noadd-newlines> to prevent any new line breaks.  
+B<-nanl> or B<--noadd-newlines> to prevent any new line breaks.  
 
 This flag does not prevent perltidy from eliminating existing line
-breaks; see B<-freeze-newlines> to completely prevent changes to line
+breaks; see B<--freeze-newlines> to completely prevent changes to line
 break points.
 
 =item Controlling whether perltidy breaks before or after operators
 
-Two command line parameters provide some control over whether
+Four command line parameters provide some control over whether
 a line break should be before or after specific token types.
+Two parameters give detailed control:
 
 B<-wba=s> or B<--want-break-after=s>, and
 
@@ -1490,11 +1706,11 @@ command-line parameter always overwrites the previous one before
 perltidy ever sees it.
 
 By default, perltidy breaks B<after> these token types:
-  % + - * / x != == >= <= =~ !~ < >  | & >= <
-  = **= += *= &= <<= &&= -= /= |= >>= ||= .= %= ^= x=
+  % + - * / x != == >= <= =~ !~ < >  | & 
+  = **= += *= &= <<= &&= -= /= |= >>= ||= //= .= %= ^= x=
 
 And perltidy breaks B<before> these token types by default:
-  . << >> -> && ||
+  . << >> -> && || //
 
 To illustrate, to cause a break after a concatenation operator, C<'.'>,
 rather than before it, the command line would be
@@ -1506,11 +1722,34 @@ math operators C<'+'>, C<'-'>, C<'/'>, and C<'*'>:
 
   -wbb="+ - / *"
 
-These commands should work well for most of the token types that
-perltidy uses (use B<--dump-token-types> for a list).  However, for a
-few token types there may be conflicts with hardwired logic which cause
-unexpected results.  One example is curly braces, which should be
-controlled with the parameter B<bl> provided for that purpose.
+These commands should work well for most of the token types that perltidy uses
+(use B<--dump-token-types> for a list).  Also try the B<-D> flag on a short
+snippet of code and look at the .DEBUG file to see the tokenization.  However,
+for a few token types there may be conflicts with hardwired logic which cause
+unexpected results.  One example is curly braces, which should be controlled
+with the parameter B<bl> provided for that purpose.
+
+B<WARNING> Be sure to put these tokens in quotes to avoid having them
+misinterpreted by your command shell.
+
+Two additional parameters are available which, though they provide no further
+capability, can simplify input are:
+
+B<-baao> or B<--break-after-all-operators>,
+
+B<-bbao> or B<--break-before-all-operators>.
+
+The -baao sets the default to be to break after all of the following operators:
+
+    % + - * / x != == >= <= =~ !~ < > | & 
+    = **= += *= &= <<= &&= -= /= |= >>= ||= //= .= %= ^= x=
+    . : ? && || and or err xor
+
+and the B<-bbao> flag sets the default to break before all of these operators.
+These can be used to define an initial break preference which can be fine-tuned
+with the B<-wba> and B<-wbb> flags.  For example, to break before all operators
+except an B<=> one could use --bbao -wba='=' rather than listing every
+single perl operator except B<=> on a -wbb flag.
 
 =back
 
@@ -1552,7 +1791,8 @@ to retain the original style, yields
                 1, 4, 6, 4, 1,);
 
 A disadvantage of this flag is that all tables in the file
-must already be nicely formatted.
+must already be nicely formatted.  For another possibility see
+the -fs flag in L<Skipping Selected Sections of Code>.
 
 =item B<-mft=n>,  B<--maximum-fields-per-table=n>
 
@@ -1655,9 +1895,9 @@ return lists, such as C<sort> and <map>.  This allows chains of these
 operators to be displayed one per line.  Use B<-nbok> to prevent
 retaining these breakpoints.
 
-=item B<-bot>,  B<--break-at-old-trinary-breakpoints>
+=item B<-bot>,  B<--break-at-old-ternary-breakpoints>
 
-By default, if a conditional (trinary) operator is broken at a C<:>,
+By default, if a conditional (ternary) operator is broken at a C<:>,
 then it will remain broken.  To prevent this, and thereby
 form longer lines, use B<-nbot>.
 
@@ -1667,6 +1907,34 @@ Use this flag to tell perltidy to ignore existing line breaks to the
 maximum extent possible.  This will tend to produce the longest possible
 containers, regardless of type, which do not exceed the line length
 limit.
+
+=item B<-kis>,  B<--keep-interior-semicolons>
+
+Use the B<-kis> flag to prevent breaking at a semicolon if
+there was no break there in the input file.  Normally
+perltidy places a newline after each semicolon which
+terminates a statement unless several statements are
+contained within a one-line brace block.  To illustrate,
+consider the following input lines:
+
+    dbmclose(%verb_delim); undef %verb_delim;
+    dbmclose(%expanded); undef %expanded;
+
+The default is to break after each statement, giving
+
+    dbmclose(%verb_delim);
+    undef %verb_delim;
+    dbmclose(%expanded);
+    undef %expanded;
+
+With B<perltidy -kis> the multiple statements are retained:
+
+    dbmclose(%verb_delim); undef %verb_delim;
+    dbmclose(%expanded);   undef %expanded;
+
+The statements are still subject to the specified value
+of B<maximum-line-length> and will be broken if this 
+maximum is exceeed.
 
 =back
 
@@ -1762,6 +2030,18 @@ style overrides the default style with the following parameters:
 
     -lp -bl -noll -pt=2 -bt=2 -sbt=2 -icp
 
+=item B<-pbp>, B<--perl-best-practices>
+
+B<-pbp> is an abbreviation for the parameters in the book B<Perl Best Practices>
+by Damian Conway:
+
+    -l=78 -i=4 -ci=4 -st -se -vt=2 -cti=0 -pt=1 -bt=1 -sbt=1 -bbt=1 -nsfs -nolq
+    -wbb="% + - * / x != == >= <= =~ !~ < > | & = 
+          **= += *= &= <<= &&= -= /= |= >>= ||= //= .= %= ^= x="
+
+Note that the -st and -se flags make perltidy act as a filter on one file only.  
+These can be overridden with -nst and -nse if necessary.
+
 =back
 
 =head2 Other Controls
@@ -1814,7 +2094,8 @@ named F<.perltidyrc>.  If it does not find one, it will continue looking
 for one in other standard locations.  
 
 These other locations are system-dependent, and may be displayed with
-the command C<perltidy -dpro>.  Under Unix systems, it will look for a
+the command C<perltidy -dpro>.  Under Unix systems, it will first look
+for an environment variable B<PERLTIDY>.  Then it will look for a
 F<.perltidyrc> file in the home directory, and then for a system-wide
 file F</usr/local/etc/perltidyrc>, and then it will look for
 F</etc/perltidyrc>.  Note that these last two system-wide files do not
@@ -1874,8 +2155,8 @@ the B<-npro> option.
 
 =item *
 
-The commands B<-dump-options>, B<-dump-defaults>, B<-dump-long-names>,
-and B<-dump-short-names>, all described below, may all be helpful.
+The commands B<--dump-options>, B<--dump-defaults>, B<--dump-long-names>,
+and B<--dump-short-names>, all described below, may all be helpful.
 
 =back
 
@@ -2249,21 +2530,21 @@ located with an internet search for "HTML color tables".
 
 Besides color, two other character attributes may be set: bold, and italics.
 To set a token type to use bold, use the flag
-B<-html-bold-xxxxxx> or B<-hbx>, where B<xxxxxx> or B<x> are the long
+B<--html-bold-xxxxxx> or B<-hbx>, where B<xxxxxx> or B<x> are the long
 or short names from the above table.  Conversely, to set a token type to 
-NOT use bold, use B<-nohtml-bold-xxxxxx> or B<-nhbx>.
+NOT use bold, use B<--nohtml-bold-xxxxxx> or B<-nhbx>.
 
 Likewise, to set a token type to use an italic font, use the flag
-B<-html-italic-xxxxxx> or B<-hix>, where again B<xxxxxx> or B<x> are the
+B<--html-italic-xxxxxx> or B<-hix>, where again B<xxxxxx> or B<x> are the
 long or short names from the above table.  And to set a token type to
-NOT use italics, use B<-nohtml-italic-xxxxxx> or B<-nhix>.
+NOT use italics, use B<--nohtml-italic-xxxxxx> or B<-nhix>.
 
 For example, to use bold braces and lime color, non-bold, italics keywords the
 following command would be used:
 
 	perltidy -html -hbs -hck=00FF00 -nhbk -hik somefile.pl
 
-The background color can be specified with B<-html-color-background=n>,
+The background color can be specified with B<--html-color-background=n>,
 or B<-hcbg=n> for short, where n is a 6 character hex RGB value.  The
 default color of text is the value given to B<punctuation>, which is
 black as a default.
@@ -2323,11 +2604,12 @@ dot is added, and the backup file will be F<somefile.pl~>  .
 The following list shows all short parameter names which allow a prefix
 'n' to produce the negated form:
 
-    D anl asc aws b bbb bbc bbs bli boc bok bol bot syn ce csc 
-    dac dbc dcsc dnl dws dp dpro dsm dsc ddf dln dop dsn dtt dwls dwrs 
-    f fll frm hsc html ibc icb icp iob isbc lp log lal x lsl ple pod bl 
-    sbl okw ola oll ple pvl q opt sbc sfs ssc sts se st sob 
-    t tac tbc toc tp tsc tqw w
+ D    anl asc  aws  b    bbb bbc bbs  bl   bli  boc bok  bol  bot  ce
+ csc  dac dbc  dcsc ddf  dln dnl dop  dp   dpro dsc dsm  dsn  dtt  dwls
+ dwrs dws f    fll  frm  fs  hsc html ibc  icb  icp iob  isbc lal  log
+ lp   lsl ohbr okw  ola  oll opr opt  osbr otr  ple ple  pod  pvl  q
+ sbc  sbl schb scp  scsb sct se  sfp  sfs  skp  sob sohb sop  sosb sot
+ ssc  st  sts  syn  t    tac tbc toc  tp   tqw  tsc w    x    bar  kis
 
 Equivalently, the prefix 'no' or 'no-' on the corresponding long names may be
 used.
@@ -2401,7 +2683,7 @@ perlstyle(1), Perl::Tidy(3)
 
 =head1 VERSION
 
-This man page documents perltidy version 20031021.
+This man page documents perltidy version 20071205.
 
 =head1 CREDITS
 
@@ -2426,7 +2708,7 @@ see the CHANGES file.
 
 =head1 COPYRIGHT
 
-Copyright (c) 2000-2003 by Steve Hancock
+Copyright (c) 2000-2006 by Steve Hancock
 
 =head1 LICENSE
 

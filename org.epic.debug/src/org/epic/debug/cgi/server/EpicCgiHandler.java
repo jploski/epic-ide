@@ -173,7 +173,7 @@ public class EpicCgiHandler implements Handler
             pathInfoStartI = ((Integer) ret[1]).intValue();
         }
 
-		String[] command = createCommandLine(request, cgiFile);
+		String[] command = createCommandLine(request, root, cgiFile);
         String[] env = createEnvironment(
             request, cgiFile, root, url, pathInfoStartI);
 
@@ -223,7 +223,7 @@ public class EpicCgiHandler implements Handler
     /**
      * @return the command line used to execute the CGI script
      */
-    private String[] createCommandLine(Request request, File cgiFile)
+    private String[] createCommandLine(Request request, String root, File cgiFile)
     {
         //Get Perl executable and generate comand array
         ArrayList commandList = new ArrayList();
@@ -254,7 +254,17 @@ public class EpicCgiHandler implements Handler
             commandList.addAll(exArgs.getProgramArgumentsL());
         }
 
-        commandList.add(cgiFile.getAbsolutePath());
+        String cgiFilePath;
+        try { cgiFilePath = cgiFile.getCanonicalPath(); }
+        catch (IOException e) { cgiFilePath = cgiFile.getAbsolutePath(); }
+        
+        // If the user-entered root directory contains slashes, but the canonicalized
+        // CGI file path contains backslashes, then normalize backslashes into slashes.
+        // This is supposed to avoid skipped breakpoints on Windows due to perl -d source
+        // paths being reported with backslashes and expected with slashes by EPIC:
+        if (root.indexOf('/') != -1 && cgiFilePath.indexOf("\\") != -1) cgiFilePath = cgiFilePath.replace('\\', '/');
+        
+        commandList.add(cgiFilePath);
 
         // Look at the query and check for an =
         // If no '=', then use '+' as an argument delimiter
@@ -389,7 +399,7 @@ public class EpicCgiHandler implements Handler
         try
         {
             cgi = Runtime.getRuntime().exec(
-                command, env, new File(cgiFile.getParent()));
+                command, env, new File(cgiFile.getParentFile().getCanonicalPath()));
 
             DataInputStream in = new DataInputStream(
                 new BufferedInputStream(cgi.getInputStream()));
@@ -532,7 +542,49 @@ public class EpicCgiHandler implements Handler
         String suffixes,
         String root)
     {
-        // Try to find the shortest prefix in url which can be mapped
+        // Check if the requested URI refers directly to a file or directory.
+        // If it is a file, we got our match - exit early.
+        // If it is a directory, try to locate an index.(suffix) file below it.
+        // Otherwise, proceed with the shortest prefix resolution algorithm.
+        
+        File fileAtURI = new File(root, uri);
+        if (fileAtURI.isFile())
+        {
+            StringTokenizer tok = new StringTokenizer(suffixes, ",");
+            String suffix = null;
+            while (tok.hasMoreTokens())
+            {
+                suffix = tok.nextToken();
+                if (uri.endsWith(suffix))
+                {
+                    request.log(Server.LOG_DIAGNOSTIC, "Found CGI at uri: " + fileAtURI);
+                    return new Object[] { fileAtURI, new Integer(uri.length()) };
+                }
+            }
+            request.log(Server.LOG_DIAGNOSTIC, "Found non-CGI at uri: " + fileAtURI);
+            return null;
+        }
+        else if (fileAtURI.isDirectory())
+        {
+            request.log(Server.LOG_DIAGNOSTIC, "Found directory at uri: " + fileAtURI);
+            
+            StringTokenizer tok = new StringTokenizer(suffixes, ",");
+            String suffix = null;
+            while (tok.hasMoreTokens()) 
+            {
+                suffix = tok.nextToken();
+                File indexFile = new File(root, uri + "index" + suffix);
+                request.log(Server.LOG_DIAGNOSTIC, "Trying " + indexFile);
+                if (indexFile.isFile()) 
+                {
+                    request.log(Server.LOG_DIAGNOSTIC, "Found CGI index at uri: " + indexFile);
+                    return new Object[] { indexFile, new Integer(uri.length()) };
+                }
+            }
+            request.log(Server.LOG_DIAGNOSTIC, "No CGI index found at uri: " + fileAtURI);
+        }
+        
+        // Try to find the shortest prefix in uri which can be mapped
         // to an existing CGI script. This is to correctly extract
         // PATH_INFO from URLs
         // like http://localhost/cgi-bin/foo.cgi/some/path/info
@@ -540,7 +592,7 @@ public class EpicCgiHandler implements Handler
         // (PATH_INFO=/some/path/info)
         
         String suffix = null;
-        StringTokenizer tok = new StringTokenizer(suffixes, ",");
+        StringTokenizer tok = new StringTokenizer(suffixes, ",");        
         int start = 1;
         int end = 0;
 
@@ -551,6 +603,7 @@ public class EpicCgiHandler implements Handler
             start = 1;
             end = 0;
             
+            // Search for the shortest matching prefix
             while (end < uri.length())
             {
                 end = uri.indexOf('/', start);
@@ -560,10 +613,10 @@ public class EpicCgiHandler implements Handler
                 if (!s.endsWith(suffix)) s += suffix;
 
                 File cgiFile = new File(root, s);
-                request.log(Server.LOG_DIAGNOSTIC, "looking for: " + cgiFile);
+                request.log(Server.LOG_DIAGNOSTIC, "Trying " + cgiFile);
                 if (cgiFile.isFile())
                 {
-                    request.log(Server.LOG_DIAGNOSTIC, "found: " + cgiFile);
+                    request.log(Server.LOG_DIAGNOSTIC, "Found CGI at uri: " + cgiFile);
                     return new Object[] { cgiFile, new Integer(end) };
                 }
                 start = end + 1;

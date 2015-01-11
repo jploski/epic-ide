@@ -1,0 +1,68 @@
+@foo=[ '1', '2', '3', HASH(0) ], with {[0]='1'
+[1]='2'
+[2]='3'
+[3]=HASH(0)={ key1 => ARRAY(0), key2 => REF(0)->ARRAY(0) }, with {key1=ARRAY(1)=[ 'aa', 'bb', ARRAY(1) ], with {[0]='aa'
+[1]='bb'
+[2]=ARRAY(2)=[ '1', '2', '3' ], with {[0]='1'
+[1]='2'
+[2]='3'
+}
+}
+key2=REF(3)->ARRAY(3)=[ HASH(3), HASH(3) ], with {[0]=HASH(4)={ key => '1' }, with {key='1'
+}
+[1]=HASH(5)={ key => '2' }, with {key='2'
+}
+}
+}
+}
+$foo3=ARRAY(6)=[ '1', '2', '3' ], with {[0]='1'
+[1]='2'
+[2]='3'
+}
+%h={ key => 'val', key2 => ARRAY(7) }, with {key='val'
+key2=ARRAY(7)=[ '1', '2' ], with {[0]='1'
+[1]='2'
+}
+}
+$h2=HASH(8)={ key => 'val', key2 => ARRAY(8) }, with {key='val'
+key2=ARRAY(9)=[ '1', '2' ], with {[0]='1'
+[1]='2'
+}
+}
+$scal='123'
+$arr=ARRAY(10)=[ HASH(10), HASH(10) ], with {[0]=HASH(4)={ key => '1' }, with {key='1'
+}
+[1]=HASH(5)={ key => '2' }, with {key='2'
+}
+}
+$arr2=ARRAY(1)=[ 'aa', 'bb', ARRAY(1) ], with {[0]='aa'
+[1]='bb'
+[2]=ARRAY(2)=[ '1', '2', '3' ], with {[0]='1'
+[1]='2'
+[2]='3'
+}
+}
+$hash=HASH(0)={ key1 => ARRAY(0), key2 => REF(0)->ARRAY(0) }, with {key1=ARRAY(1)=[ 'aa', 'bb', ARRAY(1) ], with {[0]='aa'
+[1]='bb'
+[2]=ARRAY(2)=[ '1', '2', '3' ], with {[0]='1'
+[1]='2'
+[2]='3'
+}
+}
+key2=REF(3)->ARRAY(3)=[ HASH(3), HASH(3) ], with {[0]=HASH(4)={ key => '1' }, with {key='1'
+}
+[1]=HASH(5)={ key => '2' }, with {key='2'
+}
+}
+}
+@list=[ HASH(11), HASH(11) ], with {[0]=HASH(11)={ key => '1' }, with {key='1'
+}
+[1]=HASH(12)={ key => '2' }, with {key='2'
+}
+}
+@list2=[ '1', '2', '3' ], with {[0]='1'
+[1]='2'
+[2]='3'
+}
+$varname='test123'
+@ISA=[]

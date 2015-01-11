@@ -50,28 +50,28 @@ public class ExportHtmlSourceAction extends PerlEditorAction
 
         String outputDir = directoryDialog.open();
         if (outputDir == null) return;
+        
+        lastSelectedDir = outputDir;
 
-            lastSelectedDir = outputDir;
+        // Export options
+        List cmdList = new ArrayList();
 
-            // Export options
-            List cmdList = new ArrayList();
+        cmdList.add("-html");
+        cmdList.add("-opath");
+        cmdList.add(outputDir);
 
-            cmdList.add("-html");
-            cmdList.add("-opath");
-            cmdList.add(outputDir);
+        // Add additional options
+        IPreferenceStore store = PerlEditorPlugin.getDefault().getPreferenceStore();
+        StringTokenizer st =
+            new StringTokenizer(store.getString(
+                    SourceFormatterPreferences.HTML_EXPORT_OPTIONS));
+        while (st.hasMoreTokens())
+        {
+            cmdList.add(st.nextToken());
+        }
 
-            // Add additional options
-            IPreferenceStore store = PerlEditorPlugin.getDefault().getPreferenceStore();
-            StringTokenizer st =
-                new StringTokenizer(store.getString(
-                        SourceFormatterPreferences.HTML_EXPORT_OPTIONS));
-            while (st.hasMoreTokens())
-            {
-                cmdList.add(st.nextToken());
-            }
-
-            // last thing has to be the input file name
-            cmdList.add(filePath);
+        // last thing has to be the input file name
+        cmdList.add(filePath);
 
         try
         {
@@ -87,7 +87,7 @@ public class ExportHtmlSourceAction extends PerlEditorAction
                 getEditor().getSite().getShell(),
                 "HTML export failed",
                 e.getMessage());
-    }
+        }
     }
 
     protected String getPerlEditorActionId()

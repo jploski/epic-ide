@@ -2,13 +2,13 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: EPIC External Libs Plug-in
 Bundle-SymbolicName: org.epic.lib
-Bundle-Version: 0.5.1
+Bundle-Version: 0.6.1
 Bundle-Vendor: EPIC Project
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.osgi
 Bundle-ClassPath: lib/brazil_mini.jar,
  lib/gnu-regexp-1.1.4.jar,
- lib/jdom.jar,
+ lib/jdom-1.1.jar,
  lib/antlr-2.7.5.jar
 Export-Package: antlr,
  antlr.actions.cpp,

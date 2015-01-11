@@ -14,7 +14,7 @@ import org.eclipse.ui.console.*;
 public class PerlConsoleTracker implements IPatternMatchListenerDelegate
 {
     private final Pattern FILE_LINE_PATTERN =
-        Pattern.compile(".*? at ((\\S+) line (\\d+))\\.");
+        Pattern.compile(".*? at ((\\S+) line (\\d+))\\.?");
     
     private TextConsole console;
     

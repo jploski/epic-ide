@@ -26,13 +26,17 @@ public class ModuleCompletionHelper  {
 	
 	private final String perlCode;
 	
-	private String[] moduleNames;
+	private String[] moduleNames = new String[0];
 	
-	private boolean initialized = false;
+	private boolean initializing = false;
 	
-	public synchronized static ModuleCompletionHelper getInstance() {
+	public static ModuleCompletionHelper getInstance() {
 		if (gInstance == null) {
-			gInstance = new ModuleCompletionHelper();				
+			synchronized(ModuleCompletionHelper.class) {
+				if (gInstance == null) {
+					gInstance = new ModuleCompletionHelper();
+				}
+			}
 		}
 		return gInstance;
 	}
@@ -68,45 +72,47 @@ public class ModuleCompletionHelper  {
 	
 	public void scanForModules(TextEditor textEditor) throws CoreException {
         if (!PerlEditorPlugin.getDefault().requirePerlInterpreter(false)) return;
-        
-		PerlExecutor executor = new PerlExecutor();
-		// TODO do we need this synchronization anymore?
-		// accessing the boolean flag "initialized" should be thread-safe, and moduleNames
-		// is accessed only either during initialization or afterwards because of the flag...
-		synchronized (ModuleCompletionHelper.class) { 
-            try
-            {
-                List names =
-                    executor.execute(textEditor, null, perlCode).getStdoutLines();
-                moduleNames = (String[]) names.toArray(new String[names.size()]);
-                initialized = true;
+
+        synchronized (this) {
+            if (initializing) {
+                // avoid running multiple perls scanning for modules.
+                return;
             }
-            finally { executor.dispose(); }
-		}
+            initializing = true;
+        }
+
+        PerlExecutor executor = new PerlExecutor();
+        try
+        {
+            List names =
+                executor.execute(textEditor, null, perlCode).getStdoutLines();
+            moduleNames = (String[]) names.toArray(new String[names.size()]);
+        }
+        finally {
+            executor.dispose(); 
+            initializing = false;
+        }
 	}
 	
 	public ICompletionProposal[] getProposals(
 			String moduleNameFragment, int documentOffset,
 			ITextViewer viewer
 	) {
-        if (!initialized) return new ICompletionProposal[0];
-		synchronized (ModuleCompletionHelper.class) {
-			ArrayList al = new ArrayList();
-			
-			for (int loop = 0; loop < moduleNames.length; loop++) {
-				String moduleName = moduleNames[loop];
-				if ((moduleNameFragment == null) || 
-						(moduleNameFragment.equals("")) ||
-						(moduleName.startsWith(moduleNameFragment))
-				) {
-					al.add(
-						new ModuleProposal(moduleName, moduleNameFragment, 
-										   documentOffset, viewer));
-				}
+		ArrayList al = new ArrayList();
+
+		for (int loop = 0; loop < moduleNames.length; loop++) {
+			String moduleName = moduleNames[loop];
+			if ((moduleNameFragment == null) || 
+					(moduleNameFragment.equals("")) ||
+					(moduleName.startsWith(moduleNameFragment))
+			) {
+				al.add(
+					new ModuleProposal(moduleName, moduleNameFragment, 
+									   documentOffset, viewer));
 			}
-			
-			return (ICompletionProposal[]) al.toArray(new ICompletionProposal[0]);
 		}
+
+		return (ICompletionProposal[]) al.toArray(new ICompletionProposal[0]);
 	}
 	
 	class ModuleProposal implements ICompletionProposal {

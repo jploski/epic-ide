@@ -35,13 +35,14 @@ public abstract class PerlLexerBase extends LexerBase
         OPERATORS = new HashSet();
         
         initKeywords(KEYWORDS1, new String[] { 
-            "BEGIN", "END", "bless", "caller", "continue", "dbmclose",
-            "dbmopen", "die", "do", "dump",
-            "else", "elsif", "eval", "exit", "for", "foreach", "goto",
-            "if", "import", "last", "local", "my", "new", "next", "no",
-            "our", "package", "redo", "ref", "require", "return", "sub",
-            "tie", "tied",
-            "unless", "untie", "until", "use", "wantarray", "while" });
+            "BEGIN", "CHECK", "INIT", "END", "UNITCHECK",
+            "bless", "caller", "continue", "dbmclose",
+            "dbmopen", "default", "die", "do", "dump",
+            "else", "elsif", "eval", "exit", "for", "foreach", "given",
+            "goto", "if", "import", "last", "local", "my", "new", "next",
+            "no", "our", "package", "redo", "ref", "require", "return", "state",
+            "sub", "tie", "tied",
+            "unless", "untie", "until", "use", "wantarray", "when", "while" });
             
         initKeywords(KEYWORDS2, new String[] {
             "__FILE__", "__LINE__", "__PACKAGE__", "abs", "accept",
@@ -66,7 +67,7 @@ public abstract class PerlLexerBase extends LexerBase
             "msgctl", "msgget", "msgrcv", "msgsnd", "oct", "open",
             "ord", "pack", "pipe", "pop", "pos", "print", "push",
             "quotemeta", "rand", "read", "recv", "rename", "reset",
-            "reverse", "rewinddir", "rindex", "rmdir", "scalar", "seek",
+            "reverse", "rewinddir", "rindex", "rmdir", "say", "scalar", "seek",
             "select", "semctl", "semget", "semop", "send", "setgrent",
             "sethostent", "setnetent", "setpgrp", "setpriority",
             "setprotoent", "setpwent", "setservent", "setsockopt", "shift",

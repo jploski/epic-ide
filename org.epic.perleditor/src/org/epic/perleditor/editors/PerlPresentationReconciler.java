@@ -16,7 +16,7 @@ import org.epic.perleditor.PerlEditorPlugin;
 import org.epic.perleditor.preferences.PreferenceConstants;
 
 /**
- * Reponsible for coloring individual partitions created by
+ * Responsible for coloring individual partitions created by
  * {@link org.epic.perleditor.editors.PerlPartitioner}.
  * 
  * @author jploski
@@ -54,33 +54,43 @@ public class PerlPresentationReconciler extends PresentationReconciler
             PartitionTypes.COMMENT,
             PreferenceConstants.EDITOR_COMMENT1_COLOR,
             PreferenceConstants.EDITOR_COMMENT1_COLOR_BOLD,
+            PreferenceConstants.EDITOR_COMMENT1_COLOR_ITALIC,
             PartitionTypes.DEFAULT,
             PreferenceConstants.EDITOR_FOREGROUND_COLOR,
+            null,
             null,
             PartitionTypes.KEYWORD1,
             PreferenceConstants.EDITOR_KEYWORD1_COLOR,
             PreferenceConstants.EDITOR_KEYWORD1_COLOR_BOLD,
+            PreferenceConstants.EDITOR_KEYWORD1_COLOR_ITALIC,
             PartitionTypes.KEYWORD2,
             PreferenceConstants.EDITOR_KEYWORD2_COLOR,
             PreferenceConstants.EDITOR_KEYWORD2_COLOR_BOLD,
+            PreferenceConstants.EDITOR_KEYWORD2_COLOR_ITALIC,
             PartitionTypes.LITERAL1,
             PreferenceConstants.EDITOR_LITERAL1_COLOR,
             PreferenceConstants.EDITOR_LITERAL1_COLOR_BOLD,
+            PreferenceConstants.EDITOR_LITERAL1_COLOR_ITALIC,
             PartitionTypes.LITERAL2,
             PreferenceConstants.EDITOR_LITERAL2_COLOR,
             PreferenceConstants.EDITOR_LITERAL2_COLOR_BOLD,
+            PreferenceConstants.EDITOR_LITERAL2_COLOR_ITALIC,
             PartitionTypes.POD,
             PreferenceConstants.EDITOR_COMMENT2_COLOR,
             PreferenceConstants.EDITOR_COMMENT2_COLOR_BOLD,
+            PreferenceConstants.EDITOR_COMMENT2_COLOR_ITALIC,
             PartitionTypes.VARIABLE,
             PreferenceConstants.EDITOR_VARIABLE_COLOR,
             PreferenceConstants.EDITOR_VARIABLE_COLOR_BOLD,
+            PreferenceConstants.EDITOR_VARIABLE_COLOR_ITALIC,
             PartitionTypes.NUMBER,
             PreferenceConstants.EDITOR_NUMBER_COLOR,
             PreferenceConstants.EDITOR_NUMBER_COLOR_BOLD,
+            PreferenceConstants.EDITOR_NUMBER_COLOR_ITALIC,
             PartitionTypes.OPERATOR,
             PreferenceConstants.EDITOR_OPERATOR_COLOR,
             PreferenceConstants.EDITOR_OPERATOR_COLOR_BOLD,
+            PreferenceConstants.EDITOR_OPERATOR_COLOR_ITALIC,
         };
 
         public ColoringScanner(IPreferenceStore prefs)
@@ -92,13 +102,12 @@ public class PerlPresentationReconciler extends PresentationReconciler
             lengths = new int[3];
             
             textAttributes = new HashMap();
-            for (int i = 0; i < colors.length; i += 3)
+            for (int i = 0; i < colors.length; i += 4)
                 textAttributes.put(colors[i], new Integer(i));
         }
 
         public void setRange(IDocument document, int offset, int length)
         {
-//System.err.println("ColoringScanner.setRange " + offset + ":" + length);
             this.offset = offset;
             this.tokenI = -1;
             
@@ -153,23 +162,17 @@ public class PerlPresentationReconciler extends PresentationReconciler
             
             String colorPref = colors[index+1];
             String boldPref = colors[index+2];
+            String italicPref = colors[index+3];
             
             PerlEditorPlugin p = PerlEditorPlugin.getDefault();
 
             int style = SWT.NORMAL;
             if (boldPref != null && prefs.getBoolean(boldPref))
-                style = SWT.BOLD;
+                style |= SWT.BOLD;
+            if (italicPref != null && prefs.getBoolean(italicPref))
+                style |= SWT.ITALIC;
             
-            Color bgColor =
-                prefs.getBoolean(PreferenceConstants.EDITOR_BACKGROUND_DEFAULT_COLOR)
-                ? null
-                : getColor(p, PreferenceConstants.EDITOR_BACKGROUND_COLOR);
-
-            
-            return new TextAttribute(
-                getColor(p, colorPref),
-                bgColor,
-                style);
+            return new TextAttribute(getColor(p, colorPref), null, style);
         }
         
         private Color getColor(PerlEditorPlugin p, String colorPref)

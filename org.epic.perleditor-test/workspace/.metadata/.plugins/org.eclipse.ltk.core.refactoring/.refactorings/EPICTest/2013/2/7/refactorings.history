@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Rename resource &apos;EPICTest/lib/Foobar.pm&apos; to &apos;TestAccessor.pm&apos;" description="Rename resource &apos;Foobar.pm&apos;" flags="7" id="org.eclipse.ltk.core.refactoring.rename.resource" input="lib/Foobar.pm" name="TestAccessor.pm" stamp="1360674176866" updateReferences="true"/>
+</session>

@@ -1,16 +1,18 @@
 <?xml version="1.0"?>
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-		version="1.0">
-  
-<xsl:import href="http://docbook.sourceforge.net/release/xsl/current/html/chunk.xsl"/>
+<xsl:stylesheet exclude-result-prefixes="d"
+                 xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+		xmlns:d="http://docbook.org/ns/docbook"
+version="1.0">
+
+<xsl:import href="http://docbook.sourceforge.net/release/xsl/1.73.0/html/chunk.xsl"/>
 
 <!-- ********************************************************************
      $Id$
      ********************************************************************
 
      This file is part of the XSL DocBook Stylesheet distribution.
-     See ../README or http://nwalsh.com/docbook/xsl/ for copyright
-     and other information.
+     See ../README or http://docbook.sf.net/release/xsl/current/ for
+     copyright and other information.
 
      ******************************************************************** -->
 <!--
@@ -29,18 +31,35 @@
           </xsl:message>
         </xsl:when>
         <xsl:otherwise>
-          <xsl:message>Formatting from <xsl:value-of select="$rootid"/></xsl:message>
-          <xsl:apply-templates select="key('id',$rootid)" mode="process.root"/>
+          <xsl:if test="$collect.xref.targets = 'yes' or
+                        $collect.xref.targets = 'only'">
+            <xsl:apply-templates select="key('id', $rootid)"
+                        mode="collect.targets"/>
+          </xsl:if>
+          <xsl:if test="$collect.xref.targets != 'only'">
+            <xsl:message>Formatting from <xsl:value-of 
+	                          select="$rootid"/></xsl:message>
+            <xsl:apply-templates select="key('id',$rootid)"
+                        mode="process.root"/>
+            <xsl:call-template name="etoc"/>
+            <xsl:call-template name="plugin.xml"/>
+          </xsl:if>
         </xsl:otherwise>
       </xsl:choose>
     </xsl:when>
     <xsl:otherwise>
-      <xsl:apply-templates select="/" mode="process.root"/>
+      <xsl:if test="$collect.xref.targets = 'yes' or
+                    $collect.xref.targets = 'only'">
+        <xsl:apply-templates select="/" mode="collect.targets"/>
+      </xsl:if>
+      <xsl:if test="$collect.xref.targets != 'only'">
+        <xsl:apply-templates select="/" mode="process.root"/>
+        <xsl:call-template name="etoc"/>
+        <xsl:call-template name="plugin.xml"/>
+      </xsl:if>
     </xsl:otherwise>
   </xsl:choose>
 
-  <xsl:call-template name="etoc"/>
-  <xsl:call-template name="plugin.xml"/>
 
 </xsl:template>
 
@@ -77,7 +96,7 @@
             </xsl:call-template>
           </xsl:variable>
           
-          <toc label="{$title}" topic="{$href}">
+          <toc label="{normalize-space($title)}" topic="{$href}">
             <xsl:apply-templates select="key('id',$rootid)/*" mode="etoc"/>
           </toc>
         </xsl:when>
@@ -101,7 +120,7 @@
             </xsl:call-template>
           </xsl:variable>
           
-          <toc label="{$title}" topic="{$href}">			  
+          <toc label="{normalize-space($title)}" topic="{$href}">
             <xsl:apply-templates select="/*/*" mode="etoc"/>
           </toc>
         </xsl:otherwise>
@@ -111,7 +130,7 @@
   </xsl:call-template>
 </xsl:template>
 
-<xsl:template match="book|part|reference|preface|chapter|bibliography|appendix|article|glossary|section|sect1|sect2|sect3|sect4|sect5|refentry|colophon|bibliodiv|index" mode="etoc">
+<xsl:template match="d:book|d:part|d:reference|d:preface|d:chapter|d:bibliography|d:appendix|d:article|d:glossary|d:section|d:sect1|d:sect2|d:sect3|d:sect4|d:sect5|d:refentry|d:colophon|d:bibliodiv|d:index" mode="etoc">
   <xsl:variable name="title">
     <xsl:if test="$eclipse.autolabel=1">
       <xsl:variable name="label.markup">
@@ -126,11 +145,13 @@
 
   <xsl:variable name="href">
 	<xsl:value-of select="'html/guide/'"/>
-    <xsl:call-template name="href.target.with.base.dir"/>
+    <xsl:call-template name="href.target.with.base.dir">
+      <xsl:with-param name="context" select="/"/>        <!-- Generate links relative to the location of root file/toc.xml file -->
+    </xsl:call-template>
   </xsl:variable>
 
-  <topic label="{$title}" href="{$href}">
-    <xsl:apply-templates select="part|reference|preface|chapter|bibliography|appendix|article|glossary|section|sect1|sect2|sect3|sect4|sect5|refentry|colophon|bibliodiv|index" mode="etoc"/>
+  <topic label="{normalize-space($title)}" href="{$href}">
+    <xsl:apply-templates select="d:part|d:reference|d:preface|d:chapter|d:bibliography|d:appendix|d:article|d:glossary|d:section|d:sect1|d:sect2|d:sect3|d:sect4|d:sect5|d:refentry|d:colophon|d:bibliodiv|d:index" mode="etoc"/>
   </topic>
 
 </xsl:template>

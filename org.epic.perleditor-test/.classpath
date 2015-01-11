@@ -5,10 +5,6 @@
 	<classpathentry exported="true" kind="lib" path="cglib-full-2.0.2.jar"/>
 	<classpathentry exported="true" kind="lib" path="easymock.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins">
-		<accessrules>
-			<accessrule kind="accessible" pattern="org/epic/debug/**"/>
-		</accessrules>
-	</classpathentry>
+	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

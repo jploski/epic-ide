@@ -6,11 +6,15 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.*;
+import org.eclipse.core.variables.IStringVariableManager;
+import org.eclipse.core.variables.VariablesPlugin;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.epic.core.PerlCore;
 import org.epic.core.PerlProject;
 import org.epic.perleditor.PerlEditorPlugin;
+import org.epic.perleditor.preferences.PreferenceConstants;
 
 /**
  * Responsible for the basic command lines used to invoke the Perl interpreter.
@@ -33,8 +37,28 @@ public class PerlExecutableUtilities
      */
     public static List getPerlCommandLine()
     {
-        return new ArrayList(CommandLineTokenizer.tokenize(
-            PerlEditorPlugin.getDefault().getExecutablePreference()));
+        String perlExe = PerlEditorPlugin.getDefault().getPerlExecutable();
+        
+        try
+        {
+            IStringVariableManager varMgr = 
+                VariablesPlugin.getDefault().getStringVariableManager();
+            
+            perlExe = varMgr.performStringSubstitution(perlExe);
+        }
+        catch (CoreException e)
+        {
+            PerlEditorPlugin.getDefault().getLog().log(
+                new Status(Status.ERROR,
+                    PerlEditorPlugin.getPluginId(),
+                    IStatus.OK,
+                    "Variable substitution failed for Perl executable. " +
+                    "The literal value \"" + perlExe + "\" will be used. " +
+                    "Check Perl executable in EPIC Preferences.",
+                    e));
+        }
+        
+        return new ArrayList(CommandLineTokenizer.tokenize(perlExe));
     }
 
     /**
@@ -104,9 +128,9 @@ public class PerlExecutableUtilities
     {
         String type = PerlEditorPlugin.getDefault()
             .getPreferenceStore().getString(
-                PerlEditorPlugin.INTERPRETER_TYPE_PREFERENCE);
+                PreferenceConstants.DEBUG_INTERPRETER_TYPE);
         
-        return type.equals(PerlEditorPlugin.INTERPRETER_TYPE_CYGWIN);
+        return type.equals(PreferenceConstants.DEBUG_INTERPRETER_TYPE_CYGWIN);
     }
     
     /**
@@ -133,7 +157,7 @@ public class PerlExecutableUtilities
         if (m.matches())
         {
             StringBuffer buf = new StringBuffer();
-            buf.append("/cygdrive/");
+            buf.append(CygwinMount.drivePrefix());
             buf.append(m.group(1));
             buf.append(m.group(2));
             return buf.toString();

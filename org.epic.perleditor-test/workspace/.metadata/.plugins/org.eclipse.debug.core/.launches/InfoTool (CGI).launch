@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<launchConfiguration type="org.epic.debug.launchConfigurationPerlCGI">
+<stringAttribute key="ATTR_DEBUG_PORT" value="4444"/>
+<stringAttribute key="ATTR_HTML_ROOT_DIR" value="/mnt/infotool/jpl-v22"/>
+<stringAttribute key="ATTR_BROWSER_ID" value="org.eclipse.help.base.firefox"/>
+<stringAttribute key="ATTR_CGI_ROOT_DIR" value="/mnt/infotool/jpl-v22"/>
+<stringAttribute key="ATTR_HTML_ROOT_FILE" value="/mnt/infotool/jpl-v22/cgi-bin/login.pl"/>
+<mapAttribute key="org.eclipse.debug.core.environmentVariables">
+<mapEntry key="INFOTOOL" value="/mnt/infotool/jpl-v22/cfg/InfoTool-jpl.cfg"/>
+<mapEntry key="TMP" value="/tmp"/>
+</mapAttribute>
+<booleanAttribute key="org.eclipse.debug.core.appendEnvironmentVariables" value="true"/>
+<stringAttribute key="ATTR_CUSTOM_BROWSER_PATH" value=""/>
+<stringAttribute key="ATTR_CGI_FILE_EXTENSION" value=".cgi,.pl"/>
+<stringAttribute key="ATTR_DEBUG_CGI" value="OK"/>
+<stringAttribute key="org.eclipse.debug.core.ATTR_PROCESS_TYPE" value="EpicCGIProxy"/>
+<stringAttribute key="ATTR_PROJECT_NAME" value="infotool-v22"/>
+</launchConfiguration>

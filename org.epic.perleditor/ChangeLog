@@ -2,10 +2,16 @@ Eclipse Perl Integration:
 
 Git
 		Debugger:
-		* Implemented Feature Request #156 Change Perl CGI file lookup or settings to load the right file
 		
 		Editor:
 
+
+Version 0.7.0 - 11-January-2014 ('testing' now requires Eclipse 3.7 + Java 6)
+		Debugger:
+		* Implemented Feature Request #156 Change Perl CGI file lookup or settings to load the right file
+		
+		Debugger/Editor:
+		* Code refactored to use generics (https://github.com/jploski/epic-ide/pull/11)
 
 Version 0.6.56 - 29-October-2014		
 		* Fixed Bug #676 Template insertion does not honor the project's new text file delimiter

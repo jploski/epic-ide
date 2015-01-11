@@ -4,6 +4,7 @@ Bundle-Name: EPIC Documentation Plug-in
 Bundle-SymbolicName: org.epic.doc; singleton:=true
 Bundle-Version: 0.7.0
 Bundle-Localization: plugin
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Eclipse-AutoStart: true
 Bundle-Vendor: EPIC Project
 Require-Bundle: org.eclipse.help

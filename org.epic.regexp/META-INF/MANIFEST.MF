@@ -6,6 +6,7 @@ Bundle-Version: 0.7.0
 Bundle-Activator: org.epic.regexp.RegExpPlugin
 Bundle-Vendor: EPIC Project
 Bundle-Localization: plugin
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: .,
  org.epic.regexp,
  org.epic.regexp.views

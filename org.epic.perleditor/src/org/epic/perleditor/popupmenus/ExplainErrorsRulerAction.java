@@ -11,6 +11,7 @@ import java.util.*;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.Action;
+import org.eclipse.jface.text.source.Annotation;
 import org.eclipse.jface.text.source.IAnnotationModel;
 import org.eclipse.jface.text.source.IVerticalRulerInfo;
 import org.eclipse.ui.IWorkbenchPage;
@@ -30,7 +31,7 @@ public class ExplainErrorsRulerAction extends ResourceAction implements IUpdate 
 	
 	IVerticalRulerInfo ruler;
 	ITextEditor editor;
-	ArrayList markers;
+	ArrayList<IMarker> markers;
 
 	public ExplainErrorsRulerAction(IVerticalRulerInfo ruler, ITextEditor editor) {
         super(PopupMessages.getBundle(), "ExplainErrorsRulerAction.");
@@ -69,14 +70,15 @@ public class ExplainErrorsRulerAction extends ResourceAction implements IUpdate 
 	/**
 	 * Returns all markers which includes the ruler's line of activity.
 	 */
-	private List getMarkersForLine(int aLine) {
+	private List<IMarker> getMarkersForLine(int aLine) {
 		
-		markers = new ArrayList();
+		markers = new ArrayList<IMarker>();
 		IDocumentProvider provider= editor.getDocumentProvider();
 		IAnnotationModel model= provider.getAnnotationModel(editor.getEditorInput());
 
 		if (model != null) {
-			Iterator e = model.getAnnotationIterator();
+			@SuppressWarnings("unchecked")
+			Iterator<Annotation> e = model.getAnnotationIterator();
 			while (e.hasNext()) {
 				Object o = e.next();
 				if (o instanceof MarkerAnnotation) {

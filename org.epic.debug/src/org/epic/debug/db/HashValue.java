@@ -38,7 +38,7 @@ class HashValue extends PerlValue
     private IVariable[] parseHashContent(String content) throws DebugException
     {
         DumpedEntityReader r = new DumpedEntityReader(content);
-        List vars = new ArrayList();
+        List<HashKey> vars = new ArrayList<HashKey>();
         
         try
         {
@@ -60,6 +60,6 @@ class HashValue extends PerlValue
                 e));
         }
 
-        return (IVariable[]) vars.toArray(new IVariable[vars.size()]);
+        return vars.toArray(new IVariable[vars.size()]);
     }
 }

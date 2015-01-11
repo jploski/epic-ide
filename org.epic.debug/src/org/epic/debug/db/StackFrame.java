@@ -19,7 +19,7 @@ public class StackFrame extends DebugElement implements IStackFrame
     private static final String DB_DUMP_GLOBAL_VARS;
     private static final String DB_DUMP_INTERNAL_VARS;
     
-    private static final Set PERL_INTERNAL_VARS = initInternalVars();
+    private static final Set<String> PERL_INTERNAL_VARS = initInternalVars();
 
     private PerlVariable[] vars;
     private final PerlDebugThread thread;
@@ -29,7 +29,7 @@ public class StackFrame extends DebugElement implements IStackFrame
     private final DebuggerInterface db;
     private StackFrame previous;
     private final int frameIndex; // 0 = top stack frame, 1 = one below...
-    private final HashMap rememberedVariables; // only for RFE 1708299
+    private final HashMap<String, PerlVariable> rememberedVariables; // only for RFE 1708299
     
     static
     {
@@ -58,7 +58,7 @@ public class StackFrame extends DebugElement implements IStackFrame
         this.db = db;
         this.previous = previous;
         this.frameIndex = frameIndex;
-        this.rememberedVariables = new HashMap();
+        this.rememberedVariables = new HashMap<String, PerlVariable>();
         
         if (HighlightVarUpdatesActionDelegate.getPreferenceValue())
             getVariables();
@@ -182,12 +182,12 @@ public class StackFrame extends DebugElement implements IStackFrame
         {        
             try
             {
-                List vars = new ArrayList();
+                List<PerlVariable> vars = new ArrayList<PerlVariable>();
                 
                 if (ShowPerlInternalVariableActionDelegate.getPreferenceValue()) dumpInternalVars(vars);
                 if (ShowGlobalVariableActionDelegate.getPreferenceValue()) dumpGlobalVars(vars);
                 if (ShowLocalVariableActionDelegate.getPreferenceValue() && db.hasPadWalker()) dumpLocalVars(vars);
-                this.vars = (PerlVariable[]) vars.toArray(new PerlVariable[vars.size()]);
+                this.vars = vars.toArray(new PerlVariable[vars.size()]);
 
                 if (HighlightVarUpdatesActionDelegate.getPreferenceValue() &&
                     rememberedVariables.isEmpty()) rememberVariables();
@@ -262,7 +262,7 @@ public class StackFrame extends DebugElement implements IStackFrame
         thread.terminate();
     }
     
-    private void dumpGlobalVars(List vars) throws IOException, DebugException
+    private void dumpGlobalVars(List<PerlVariable> vars) throws IOException, DebugException
     {
         String globalVarsString = db.eval(DB_DUMP_GLOBAL_VARS);
         if (globalVarsString == null) return;
@@ -290,7 +290,7 @@ public class StackFrame extends DebugElement implements IStackFrame
         }
     }
 
-    private void dumpInternalVars(List vars) throws IOException, DebugException
+    private void dumpInternalVars(List<PerlVariable> vars) throws IOException, DebugException
     {
         String internalVarsString = db.eval(DB_DUMP_INTERNAL_VARS);
         if (internalVarsString == null) return;
@@ -318,7 +318,7 @@ public class StackFrame extends DebugElement implements IStackFrame
         }
     }
 
-    private void dumpLocalVars(List vars) throws IOException, DebugException
+    private void dumpLocalVars(List<PerlVariable> vars) throws IOException, DebugException
     {         
         String code = HelperScript.replace(
             DB_DUMP_LOCAL_VARS,
@@ -353,26 +353,26 @@ public class StackFrame extends DebugElement implements IStackFrame
     
     private PerlVariable getRememberedVariable(String addr)
     {
-        return (PerlVariable) rememberedVariables.get(addr);
+        return rememberedVariables.get(addr);
     }
     
-    private static Set initInternalVars()
+    private static Set<String> initInternalVars()
     {
         ResourceBundle rb = ResourceBundle.getBundle("org.epic.debug.perlIntVars");
-        Enumeration e = rb.getKeys();
-        Set vars = new HashSet();
+        Enumeration<String> e = rb.getKeys();
+        Set<String> vars = new HashSet<String>();
         while (e.hasMoreElements()) vars.add(e.nextElement());
         return vars;
     }
     
     private void rememberVariables() throws DebugException
     {
-        LinkedList queue = new LinkedList();
+        LinkedList<IVariable[]> queue = new LinkedList<IVariable[]>();
         queue.add(this.vars);
         
         while (!queue.isEmpty())
         {
-            IVariable[] vars = (IVariable[]) queue.removeFirst();
+            IVariable[] vars = queue.removeFirst();
         
             for (int i = 0; i < vars.length; i++)
             {

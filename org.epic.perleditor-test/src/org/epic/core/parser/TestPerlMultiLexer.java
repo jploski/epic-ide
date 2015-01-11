@@ -12,8 +12,8 @@ import org.epic.perl.editor.test.BaseTestCase;
 
 public class TestPerlMultiLexer extends BaseTestCase
 {
-    private Map tokenNames;
-    private List tokenCounts = new ArrayList();
+    private Map<Integer, String> tokenNames;
+    private List<Integer> tokenCounts = new ArrayList<Integer>();
     
     public void testGlob() throws Exception
     {
@@ -51,7 +51,7 @@ public class TestPerlMultiLexer extends BaseTestCase
             w = new PrintWriter(/*sw*/new OutputStreamWriter(System.out), true);
             
             int i = 0;
-            tokenCounts = new ArrayList();
+            tokenCounts = new ArrayList<Integer>();
             while ((path = r.readLine()) != null)
             {
                 _testFile(path, w);
@@ -106,14 +106,14 @@ public class TestPerlMultiLexer extends BaseTestCase
     
     private void setUpTokenNames() throws IOException
     {
-        tokenNames = new HashMap();
+        tokenNames = new HashMap<Integer, String>();
         URL tokensURL = PerlLexer.class.getResource("PerlTokenTypes.txt");
         assertNotNull(tokensURL);
-        List lines = readLines(tokensURL.getPath());
+        List<String> lines = readLines(tokensURL.getPath());
 
         for (int i = 2; i < lines.size(); i++)
         {
-            String line = (String) lines.get(i);
+            String line = lines.get(i);
             StringTokenizer st = new StringTokenizer(line, "=");            
             String name = st.nextToken();
             Integer value = new Integer(st.nextToken());            

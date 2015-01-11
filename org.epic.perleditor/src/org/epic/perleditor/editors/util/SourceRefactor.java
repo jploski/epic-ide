@@ -2,7 +2,6 @@ package org.epic.perleditor.editors.util;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.ILog;
-
 import org.epic.core.util.ScriptExecutor;
 
 import java.util.ArrayList;
@@ -65,9 +64,9 @@ public class SourceRefactor extends ScriptExecutor
         return "perlutils/refactor";
     }
 
-    private static List buildArgs(String subName, String codeSnippet)
+    private static List<String> buildArgs(String subName, String codeSnippet)
     {
-        ArrayList cmdArgs = new ArrayList(3);
+        ArrayList<String> cmdArgs = new ArrayList<String>(3);
         cmdArgs.add(subName.replaceAll("'", "\\\\'"));
         cmdArgs.add(codeSnippet.replaceAll("'", "\\\\'"));
         cmdArgs.add(DELIMITER);

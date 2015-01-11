@@ -21,7 +21,7 @@ import org.eclipse.jface.text.IDocumentListener;
 /* package */ abstract class TextEditNode {
 
 	/* package */ TextEditNode fParent;
-	/* package */ List fChildren;
+	/* package */ List<TextEditNode> fChildren;
 	/* package */ TextEdit fEdit;
 	
 	/* package */ static class DefaultNode extends TextEditNode {
@@ -79,7 +79,7 @@ import org.eclipse.jface.text.IDocumentListener;
 		private int fTargetIndex;
 		private int fSourceIndex;
 		
-		private List fAffectedChildren;
+		private List<TextEditNode> fAffectedChildren;
 		
 		public AbstractMoveNode(TextEdit edit) {
 			super(edit);
@@ -117,13 +117,13 @@ import org.eclipse.jface.text.IDocumentListener;
 					state= 1;
 					break;
 				case 1:
-					TextEditNode target= (TextEditNode)fParent.fChildren.get(fTargetIndex);
-					TextEditNode source= (TextEditNode)fParent.fChildren.get(fSourceIndex);
+					TextEditNode target= fParent.fChildren.get(fTargetIndex);
+					TextEditNode source= fParent.fChildren.get(fSourceIndex);
 					updateOffset(source.fChildren, targetRange.fOffset - sourceRange.fOffset);
 					target.fChildren= source.fChildren;
 					if (target.fChildren != null) {
-						for (Iterator iter= target.fChildren.iterator(); iter.hasNext();) {
-							((TextEditNode)iter.next()).fParent= target;
+						for (Iterator<TextEditNode> iter= target.fChildren.iterator(); iter.hasNext();) {
+							iter.next().fParent= target;
 						}
 					}
 					source.fChildren= null;				
@@ -137,11 +137,11 @@ import org.eclipse.jface.text.IDocumentListener;
 			}
 			return true;
 		}
-		private static void updateOffset(List nodes, int delta) {
+		private static void updateOffset(List<TextEditNode> nodes, int delta) {
 			if (nodes == null)
 				return;
 			for (int i= nodes.size() - 1; i >= 0; i--) {
-				TextEditNode node= (TextEditNode)nodes.get(i);
+				TextEditNode node= nodes.get(i);
 				TextRange range= node.getTextRange();
 				range.fOffset+= delta;
 				updateOffset(node.fChildren, delta);
@@ -150,9 +150,9 @@ import org.eclipse.jface.text.IDocumentListener;
 		private void init() {
 			TextRange source= getSourceRange();
 			TextRange target= getTargetRange();
-			List children= fParent.fChildren;
+			List<TextEditNode> children= fParent.fChildren;
 			for (int i= children.size() - 1; i >= 0; i--) {
-				TextEditNode child= (TextEditNode)children.get(i);
+				TextEditNode child= children.get(i);
 				TextRange range= child.fEdit.getTextRange();
 				if (range == source)
 					fSourceIndex= i;
@@ -161,7 +161,7 @@ import org.eclipse.jface.text.IDocumentListener;
 			}
 			int start= Math.min(fTargetIndex, fSourceIndex);
 			int end= Math.max(fTargetIndex, fSourceIndex);
-			fAffectedChildren= new ArrayList(3);
+			fAffectedChildren= new ArrayList<TextEditNode>(3);
 			for (int i= start + 1; i < end; i++) {
 				fAffectedChildren.add(children.get(i));
 			}
@@ -246,7 +246,7 @@ import org.eclipse.jface.text.IDocumentListener;
 		}
 	}
 	private static class DoRangeUpdater extends RangeUpdater {
-		private List fProcessedNodes= new ArrayList(10);
+		private List<TextEditNode> fProcessedNodes= new ArrayList<TextEditNode>(10);
 		public void setActiveNode(TextEditNode node) {
 			if (fActiveNode != null)
 				fProcessedNodes.add(fActiveNode);
@@ -256,8 +256,8 @@ import org.eclipse.jface.text.IDocumentListener;
 			fActiveNode.checkRange(event);
 			int delta= getDelta(event);
 			if (!fActiveNode.activeNodeChanged(delta)) {
-				for (Iterator iter= fProcessedNodes.iterator(); iter.hasNext();) {
-					((TextEditNode)iter.next()).previousNodeChanged(delta);
+				for (Iterator<TextEditNode> iter= fProcessedNodes.iterator(); iter.hasNext();) {
+					iter.next().previousNodeChanged(delta);
 				}
 			}
 			updateParents(delta);
@@ -276,20 +276,20 @@ import org.eclipse.jface.text.IDocumentListener;
 			int delta= getDelta(event);
 			if (!fActiveNode.activeNodeChanged(delta)) {
 				int start= fRootNode.getUndoIndex() + 1;
-				List children= fRootNode.fChildren;
+				List<TextEditNode> children= fRootNode.fChildren;
 				int size= children != null ? children.size() : 0;
 				for (int i= start; i < size; i++) {
-					updateUndo((TextEditNode)children.get(i), delta);
+					updateUndo(children.get(i), delta);
 				}
 			}
 			updateParents(delta);
 		}
 		private void updateUndo(TextEditNode node, int delta) {
 			node.previousNodeChanged(delta);
-			List children= node.fChildren;
+			List<TextEditNode> children= node.fChildren;
 			int size= children != null ? children.size() : 0;
 			for (int i= 0; i < size; i++) {
-				updateUndo((TextEditNode)children.get(i), delta);
+				updateUndo(children.get(i), delta);
 			}
 		}
 	}
@@ -316,21 +316,21 @@ import org.eclipse.jface.text.IDocumentListener;
 	
 	protected void add(TextEditNode node) {
 		if (fChildren == null) {
-			fChildren= new ArrayList(1);
+			fChildren= new ArrayList<TextEditNode>(1);
 			node.fParent= this;
 			fChildren.add(node);
 			return;
 		}
 		// Optimize using binary search
-		for (Iterator iter= fChildren.iterator(); iter.hasNext();) {
-			TextEditNode child= (TextEditNode)iter.next();
+		for (Iterator<TextEditNode> iter= fChildren.iterator(); iter.hasNext();) {
+			TextEditNode child= iter.next();
 			if (child.covers(node)) {
 				child.add(node);
 				return;
 			}
 		}
 		for (int i= 0; i < fChildren.size(); ) {
-			TextEditNode child= (TextEditNode)fChildren.get(i);
+			TextEditNode child= fChildren.get(i);
 			if (node.covers(child)) {
 				fChildren.remove(i);
 				node.add(child);
@@ -395,8 +395,8 @@ import org.eclipse.jface.text.IDocumentListener;
 		if (!(fEdit instanceof MoveTextEdit || fEdit instanceof NopTextEdit))
 			return false;
 		TextRange lastRange= null;
-		for (Iterator iter= fChildren.iterator(); iter.hasNext(); ) {
-			TextEditNode node= (TextEditNode)iter.next();
+		for (Iterator<TextEditNode> iter= fChildren.iterator(); iter.hasNext(); ) {
+			TextEditNode node= iter.next();
 			if (!node.validate(bufferLength))
 				return false;
 			TextRange range= node.fEdit.getTextRange();
@@ -432,7 +432,7 @@ import org.eclipse.jface.text.IDocumentListener;
 	protected void performDo(TextBuffer buffer, RangeUpdater updater, UndoMemento undo, IProgressMonitor pm) throws CoreException {
 		int size= fChildren != null ? fChildren.size() : 0;
 		for (int i= size - 1; i >= 0; i--) {
-			TextEditNode child= (TextEditNode)fChildren.get(i);
+			TextEditNode child= fChildren.get(i);
 			child.performDo(buffer, updater, undo, pm);
 		}
 		updater.setActiveNode(this);
@@ -446,7 +446,7 @@ import org.eclipse.jface.text.IDocumentListener;
 	public void performedDo()  {
 		int size= fChildren != null ? fChildren.size() : 0;
 		for (int i= size - 1; i >= 0; i--) {
-			TextEditNode child= (TextEditNode)fChildren.get(i);
+			TextEditNode child= fChildren.get(i);
 			child.performedDo();
 		}
 		fEdit.performed();
@@ -458,7 +458,7 @@ import org.eclipse.jface.text.IDocumentListener;
 		int size= fChildren != null ? fChildren.size() : 0;
 		for (int i= 0; i < size; i++) {
 			setUndoIndex(i);
-			TextEditNode child= (TextEditNode)fChildren.get(i);
+			TextEditNode child= fChildren.get(i);
 			child.performUndo(buffer, updater, undo, pm);
 		}
 		updater.setActiveNode(this);
@@ -475,7 +475,7 @@ import org.eclipse.jface.text.IDocumentListener;
 	public void performedUndo()  {
 		int size= fChildren != null ? fChildren.size() : 0;
 		for (int i= 0; i < size; i++) {
-			TextEditNode child= (TextEditNode)fChildren.get(i);
+			TextEditNode child= fChildren.get(i);
 			child.performedUndo();
 		}
 		fEdit.performed();

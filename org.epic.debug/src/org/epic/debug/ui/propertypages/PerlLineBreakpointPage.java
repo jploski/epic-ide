@@ -44,7 +44,7 @@ public class PerlLineBreakpointPage extends PropertyPage
 
     private Button enabledButton;
 
-    private List errors = new ArrayList();
+    private List<String> errors = new ArrayList<String>();
 
     //~ Methods
 
@@ -191,7 +191,7 @@ public class PerlLineBreakpointPage extends PropertyPage
         }
         else
         {
-            addErrorMessage((String) errors.get(errors.size() - 1));
+            addErrorMessage(errors.get(errors.size() - 1));
         }
     }
 

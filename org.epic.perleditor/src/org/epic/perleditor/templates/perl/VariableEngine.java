@@ -21,7 +21,7 @@ public class VariableEngine {
 	/** The context type. */
 	private ContextType fContextType;
 	/** The result proposals. */
-	private ArrayList fProposals= new ArrayList();
+	private ArrayList<VariableProposal> fProposals= new ArrayList<VariableProposal>();
 
 	/**
 	 * Creates the template engine for a particular context type.
@@ -46,7 +46,7 @@ public class VariableEngine {
 	 * Returns the array of matching templates.
 	 */
 	public IPerlCompletionProposal[] getResults() {
-		return (IPerlCompletionProposal[]) fProposals.toArray(new IPerlCompletionProposal[fProposals.size()]);
+		return fProposals.toArray(new IPerlCompletionProposal[fProposals.size()]);
 	}
 
 	/**

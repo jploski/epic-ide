@@ -304,13 +304,13 @@ public class TemplatePreferencePage
   private Template[] getEnabledTemplates() {
     Template[] templates = fTemplates.getTemplates();
 
-    List list = new ArrayList(templates.length);
+    List<Template> list = new ArrayList<Template>(templates.length);
 
     for (int i = 0; i != templates.length; i++)
       if (templates[i].isEnabled())
         list.add(templates[i]);
 
-    return (Template[]) list.toArray(new Template[list.size()]);
+    return list.toArray(new Template[list.size()]);
   }
 
   private SourceViewer createViewer(Composite parent) {
@@ -393,8 +393,8 @@ public class TemplatePreferencePage
     if (type != null)
       contextTypeName = type.getName();
     else {
-      Iterator iterator = registry.iterator();
-      contextTypeName = (String) iterator.next();
+      Iterator<String> iterator = registry.iterator();
+      contextTypeName = iterator.next();
     }
     template.setContext(contextTypeName); //$NON-NLS-1$
 

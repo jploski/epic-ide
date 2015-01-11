@@ -25,7 +25,7 @@ public class SubroutineEngine {
 	/** The context type. */
 	private ContextType fContextType;
 	/** The result proposals. */
-	private ArrayList fProposals= new ArrayList();
+	private ArrayList<SubroutineProposal> fProposals= new ArrayList<SubroutineProposal>();
 
 	/**
 	 * Creates the template engine for a particular context type.
@@ -50,7 +50,7 @@ public class SubroutineEngine {
 	 * Returns the array of matching templates.
 	 */
 	public IPerlCompletionProposal[] getResults() {
-		return (IPerlCompletionProposal[]) fProposals.toArray(new IPerlCompletionProposal[fProposals.size()]);
+		return fProposals.toArray(new IPerlCompletionProposal[fProposals.size()]);
 	}
 
 	/**

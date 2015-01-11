@@ -54,7 +54,7 @@ public class ExportHtmlSourceAction extends PerlEditorAction
         lastSelectedDir = outputDir;
 
         // Export options
-        List cmdList = new ArrayList();
+        List<String> cmdList = new ArrayList<String>();
 
         cmdList.add("-html");
         cmdList.add("-opath");

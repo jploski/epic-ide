@@ -12,11 +12,11 @@ public class ArraySliceValue extends DebugElement implements IValue
 	private final IVariable[] elements;
 	private final int startIndex;
 	
-	public ArraySliceValue(PerlVariable array, List elements, int startIndex)
+	public ArraySliceValue(PerlVariable array, List<ArrayElement> elements, int startIndex)
 	{
 		super(array.getDebugTarget());
 		
-		this.elements = (IVariable[]) elements.toArray(new IVariable[elements.size()]);
+		this.elements = elements.toArray(new IVariable[elements.size()]);
 		this.startIndex = startIndex;
 	}
 	

@@ -143,11 +143,11 @@ public class CGILaunchConfigurationDelegate extends LaunchConfigurationDelegate
      * @return a List of Files representing entries of the classpath
      *         passed to the Brazil (web server) JVM
      */
-    private List getBrazilJVMClasspath() throws CoreException
+    private List<File> getBrazilJVMClasspath() throws CoreException
     {
         try
         {
-            List cp = new ArrayList();
+            List<File> cp = new ArrayList<File>();
             
             URL brazilUrl = Platform.resolve(Platform.getBundle("org.epic.lib")
                 .getEntry("/lib/brazil_mini.jar"));
@@ -240,12 +240,12 @@ public class CGILaunchConfigurationDelegate extends LaunchConfigurationDelegate
      * @return a string with absolute paths separated by
      *         the platform-specific path separator
      */
-    private static String makePathString(List path)
+    private static String makePathString(List<File> path)
     {
         StringBuffer buf = new StringBuffer();
-        for (Iterator i = path.iterator(); i.hasNext();)
+        for (Iterator<File> i = path.iterator(); i.hasNext();)
         {
-            File entry = (File) i.next();
+            File entry = i.next();
             if (buf.length() > 0) buf.append(File.pathSeparator);
             buf.append(entry.getAbsolutePath());
         }
@@ -385,10 +385,10 @@ public class CGILaunchConfigurationDelegate extends LaunchConfigurationDelegate
             add(name, String.valueOf(value));
         }
         
-        public void add(String name, List values)
+        public void add(String name, List<String> values)
         {
             int j = 0;
-            for (Iterator i = values.iterator(); i.hasNext(); j++)
+            for (Iterator<?> i = values.iterator(); i.hasNext(); j++)
                 add(name + "[" + j + "]", i.next().toString());
         }
         

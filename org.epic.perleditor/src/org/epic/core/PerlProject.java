@@ -39,20 +39,20 @@ public class PerlProject extends PlatformObject
      *         seen by the Perl interpreter when executing scripts from
      *         this project, a superset of those returned by {@link #getIncPath}
      */
-    public List getEffectiveIncPath() throws CoreException
+    public List<File> getEffectiveIncPath() throws CoreException
     {
         PerlExecutor executor = new PerlExecutor();
         
         try
         {
             final String perlCode = "foreach $i(@INC) { print \"$i\n\"; }\n";
-            List lines = executor.execute(
+            List<String> lines = executor.execute(
                 this,
-                Collections.EMPTY_LIST,
+                Collections.<String>emptyList(),
                 perlCode).getStdoutLines();
             
             return makeAbsIncPath(
-                (String[]) lines.toArray(new String[lines.size()]));
+                lines.toArray(new String[lines.size()]));
         }
         finally
         {
@@ -65,12 +65,12 @@ public class PerlProject extends PlatformObject
      *         ignored by syntax checking. These are the entries explicitly configured
      *         in the project's properties.
      */
-    public List getIgnoredPaths()
+    public List<Pattern> getIgnoredPaths()
     {
         String[] elems = new XMLUtilities().getIgnoredEntries(project);
         if (elems.length > 0)
         {        
-            List patterns = new ArrayList(elems.length);
+            List<Pattern> patterns = new ArrayList<Pattern>(elems.length);
             
             for (int i = 0; i < elems.length; i++)
             {
@@ -80,7 +80,7 @@ public class PerlProject extends PlatformObject
             
             return Collections.unmodifiableList(patterns);
         }
-        else return Collections.EMPTY_LIST;
+        else return Collections.emptyList();
     }
     
     /**
@@ -89,7 +89,7 @@ public class PerlProject extends PlatformObject
      *         configured in the project's properties.
      * @see {@link #getEffectiveIncPath}
      */
-    public List getIncPath()
+    public List<File> getIncPath()
     {        
         XMLUtilities xmlUtil = new XMLUtilities();
         return makeAbsIncPath(xmlUtil.getIncludeEntries(project, true));
@@ -101,7 +101,7 @@ public class PerlProject extends PlatformObject
      *         explicitly configured in the project's properties.
      * @see {@link #getIncPath}
      */
-    public List getRawIncPath()
+    public List<String> getRawIncPath()
     {
         XMLUtilities xmlUtil = new XMLUtilities();
         return Arrays.asList(xmlUtil.getIncludeEntries(project, true));
@@ -125,9 +125,9 @@ public class PerlProject extends PlatformObject
             new Path("x")).getRawLocation().toFile().getParentFile();
     }
     
-    private List makeAbsIncPath(String[] relIncPath)
+    private List<File> makeAbsIncPath(String[] relIncPath)
     {
-        List dirs = new ArrayList();
+        List<File> dirs = new ArrayList<File>();
         File projectDir = getProjectDir();
 
         for (int i = 0; i < relIncPath.length; i++)

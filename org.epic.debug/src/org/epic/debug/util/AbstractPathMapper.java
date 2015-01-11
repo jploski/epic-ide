@@ -11,13 +11,13 @@ import org.epic.debug.db.DebuggerInterface;
  */
 public abstract class AbstractPathMapper implements IPathMapper
 {
-    private final List epicPathPrefixes;
-    private final List dbPathPrefixes;
+    private final List<IPath> epicPathPrefixes;
+    private final List<IPath> dbPathPrefixes;
     
     protected AbstractPathMapper()
     {
-        epicPathPrefixes = new ArrayList();
-        dbPathPrefixes = new ArrayList();
+        epicPathPrefixes = new ArrayList<IPath>();
+        dbPathPrefixes = new ArrayList<IPath>();
     }
     
     protected void addMapping(IPath epicPathPrefix, IPath dbPathPrefix)
@@ -41,17 +41,17 @@ public abstract class AbstractPathMapper implements IPathMapper
         return false;
     }
     
-    public void setEffectiveIncPath(List inc)
+    public void setEffectiveIncPath(List<IPath> inc)
     {
     }
     
-    private IPath swapPrefix(IPath path, final List srcPrefixes, List targetPrefixes)
+    private IPath swapPrefix(IPath path, final List<IPath> srcPrefixes, List<IPath> targetPrefixes)
     {
         // We want to iterate over srcPrefixes in descending order by length,
         // so that we replace the longest possible srcPrefix. Compute the order now:
         Integer[] srcPrefixI = new Integer[srcPrefixes.size()];
         for (int i = 0; i < srcPrefixI.length; i++) srcPrefixI[i] = new Integer(i);
-        Arrays.sort(srcPrefixI, new Comparator() {
+        Arrays.sort(srcPrefixI, new Comparator<Object>() {
             public int compare(Object o1, Object o2)
             {
                 int i1 = ((Integer) o1).intValue();
@@ -64,12 +64,12 @@ public abstract class AbstractPathMapper implements IPathMapper
         
         for (int i = 0; i < srcPrefixI.length; i++)
         {
-            IPath srcPrefix = (IPath) srcPrefixes.get(srcPrefixI[i].intValue());
+            IPath srcPrefix = srcPrefixes.get(srcPrefixI[i].intValue());
             
             if (srcPrefix.isPrefixOf(path))
             {
                 path = path.removeFirstSegments(srcPrefix.segmentCount());
-                return ((IPath) targetPrefixes.get(srcPrefixI[i].intValue())).append(path);
+                return targetPrefixes.get(srcPrefixI[i].intValue()).append(path);
             }
         }
         return null;

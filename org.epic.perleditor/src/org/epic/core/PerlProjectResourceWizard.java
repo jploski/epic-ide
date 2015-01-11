@@ -28,9 +28,7 @@ import org.eclipse.ui.dialogs.WizardNewProjectReferencePage;
 import org.eclipse.ui.internal.WorkbenchPlugin;
 //import org.eclipse.ui.internal.dialogs.MessageDialogWithToggle;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
-
 import org.eclipse.ui.wizards.newresource.BasicNewResourceWizard;
-
 import org.epic.core.util.*;
 import org.epic.perleditor.PerlPluginImages;
 import org.epic.perleditor.preferences.ModuleStarterPreferencePage;
@@ -157,7 +155,7 @@ public class PerlProjectResourceWizard
 
 		// Run Module-starter first as it clobbers the directory
 		if (mainPage.getUseModule()) {
-			List cmdArgs = new ArrayList(1);
+			List<String> cmdArgs = new ArrayList<String>(1);
 			cmdArgs.add(ModuleStarterPreferencePage.getModuleStarter());
 			cmdArgs.add("--module=" + mainPage.getModuleName());
 
@@ -441,7 +439,7 @@ public class PerlProjectResourceWizard
 
 		// gather the preferred perspectives
 		// always consider the final perspective to be preferred
-		ArrayList preferredPerspIds = new ArrayList();
+		ArrayList<String> preferredPerspIds = new ArrayList<String>();
 		preferredPerspIds.add(finalPerspId);
 		String preferred = configElement.getAttribute(PREFERRED_PERSPECTIVES);
 		if (preferred != null) {

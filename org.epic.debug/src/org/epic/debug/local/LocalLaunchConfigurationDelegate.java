@@ -102,7 +102,7 @@ public class LocalLaunchConfigurationDelegate
         boolean consoleOutput = configuration.getAttribute(
             IDebugUIConstants.ATTR_CAPTURE_IN_CONSOLE, true);        
     
-        List fCmdList = PerlExecutableUtilities.getPerlCommandLine(
+        List<String> fCmdList = PerlExecutableUtilities.getPerlCommandLine(
             PerlCore.create(getProject(launch)));
     
         fCmdList.add("-I" + PerlDebugPlugin.getDefault().getInternalDebugInc());
@@ -164,7 +164,7 @@ public class LocalLaunchConfigurationDelegate
             fCmdList.addAll(exArgs.getProgramArgumentsL());
         }
     
-        return (String[]) fCmdList.toArray(new String[fCmdList.size()]);
+        return fCmdList.toArray(new String[fCmdList.size()]);
     }
     
     private void dumpLaunchDetails(        
@@ -347,7 +347,7 @@ public class LocalLaunchConfigurationDelegate
         Process perlProcess =
             startPerlInterpreter(cmdParams, env, workingDir);
         
-        Map attr = new HashMap(1);
+        Map<String, String> attr = new HashMap<String, String>(1);
         attr.put(
             IProcess.ATTR_PROCESS_TYPE,
             PerlLaunchConfigurationConstants.PERL_PROCESS_TYPE);

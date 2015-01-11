@@ -145,27 +145,27 @@ public class PerlEditorPreferencePage extends PreferencePage implements IWorkben
 
 	private OverlayPreferenceStore fOverlayStore;
 
-	private Map fColorButtons= new HashMap();
+	private Map<ColorEditor, ?> fColorButtons= new HashMap<ColorEditor, Object>();
 
-	private Map fCheckBoxes= new HashMap();
+	private Map<Button, String> fCheckBoxes= new HashMap<Button, String>();
 	private SelectionListener fCheckBoxListener= new SelectionListener() {
 		public void widgetDefaultSelected(SelectionEvent e) {
 		}
 		public void widgetSelected(SelectionEvent e) {
 			Button button= (Button) e.widget;
-			fOverlayStore.setValue((String) fCheckBoxes.get(button), button.getSelection());
+			fOverlayStore.setValue(fCheckBoxes.get(button), button.getSelection());
 		}
 	};
 
-	private Map fTextFields= new HashMap();
+	private Map<Text, String> fTextFields= new HashMap<Text, String>();
 	private ModifyListener fTextFieldListener= new ModifyListener() {
 		public void modifyText(ModifyEvent e) {
 			Text text= (Text) e.widget;
-			fOverlayStore.setValue((String) fTextFields.get(text), text.getText());
+			fOverlayStore.setValue(fTextFields.get(text), text.getText());
 		}
 	};
 
-	private ArrayList fNumberFields= new ArrayList();
+	private ArrayList<Text> fNumberFields= new ArrayList<Text>();
 	private ModifyListener fNumberFieldListener= new ModifyListener() {
 		public void modifyText(ModifyEvent e) {
 			numberFieldChanged((Text) e.widget);
@@ -623,25 +623,25 @@ public class PerlEditorPreferencePage extends PreferencePage implements IWorkben
 
 	private void initializeFields() {
 
-		Iterator e= fColorButtons.keySet().iterator();
+		Iterator<ColorEditor> e = fColorButtons.keySet().iterator();
 		while (e.hasNext()) {
-			ColorEditor c= (ColorEditor) e.next();
+			ColorEditor c= e.next();
 			String key= (String) fColorButtons.get(c);
 			RGB rgb= PreferenceConverter.getColor(fOverlayStore, key);
 			c.setColorValue(rgb);
 		}
 
-		e= fCheckBoxes.keySet().iterator();
-		while (e.hasNext()) {
-			Button b= (Button) e.next();
-			String key= (String) fCheckBoxes.get(b);
+		Iterator<Button> e2 = fCheckBoxes.keySet().iterator();
+		while (e2.hasNext()) {
+			Button b= e2.next();
+			String key= fCheckBoxes.get(b);
 			b.setSelection(fOverlayStore.getBoolean(key));
 		}
 
-		e= fTextFields.keySet().iterator();
-		while (e.hasNext()) {
-			Text t= (Text) e.next();
-			String key= (String) fTextFields.get(t);
+		Iterator<Text> e3 = fTextFields.keySet().iterator();
+		while (e3.hasNext()) {
+			Text t= e3.next();
+			String key= fTextFields.get(t);
 			t.setText(fOverlayStore.getString(key));
 		}
 	}
@@ -769,7 +769,7 @@ public class PerlEditorPreferencePage extends PreferencePage implements IWorkben
 		String number= textControl.getText();
 		IStatus status= validatePositiveNumber(number);
 		if (!status.matches(IStatus.ERROR))
-			fOverlayStore.setValue((String) fTextFields.get(textControl), number);
+			fOverlayStore.setValue(fTextFields.get(textControl), number);
 		updateStatus(status);
 	}
 
@@ -792,7 +792,7 @@ public class PerlEditorPreferencePage extends PreferencePage implements IWorkben
 	void updateStatus(IStatus status) {
 		if (!status.matches(IStatus.ERROR)) {
 			for (int i= 0; i < fNumberFields.size(); i++) {
-				Text text= (Text) fNumberFields.get(i);
+				Text text= fNumberFields.get(i);
 				IStatus s= validatePositiveNumber(text.getText());
 				status= StatusUtil.getMoreSevere(s, status);
 			}

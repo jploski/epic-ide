@@ -15,11 +15,11 @@ import java.util.List;
 public final class UndoMemento {
 
 	/* package */ int fMode;
-	/* package */ List fEdits; 
+	/* package */ List<TextEdit> fEdits; 
 
 	/* package */ UndoMemento(int mode) {
 		fMode= mode;
-		fEdits= new ArrayList(10);
+		fEdits= new ArrayList<TextEdit>(10);
 	}
 	
 	/* package */ void add(TextEdit edit) {

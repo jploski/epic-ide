@@ -290,13 +290,13 @@ public abstract class PerlVariable extends DebugElement implements IVariable
             return;
         }
         
-        LinkedList queue = new LinkedList();
-        Set visited = new HashSet(); // to avoid infinite recursion
+        LinkedList<IVariable[]> queue = new LinkedList<IVariable[]>();
+        Set<String> visited = new HashSet<String>(); // to avoid infinite recursion
         queue.add(getPerlVariables(getValue()));
 
         while (!queue.isEmpty())
         {            
-            IVariable[] vars = (IVariable[]) queue.removeFirst();
+            IVariable[] vars = queue.removeFirst();
         
             for (int i = 0; i < vars.length; i++)
             {                
@@ -323,10 +323,10 @@ public abstract class PerlVariable extends DebugElement implements IVariable
     	else
     	{
     		assert vars[0] instanceof ArraySlice;
-    		List elements = new ArrayList();
+    		List<IVariable> elements = new ArrayList<IVariable>();
     		for (int i = 0; i < vars.length; i++)
     			elements.addAll(Arrays.asList(getPerlVariables(vars[i].getValue()))); 
-    		return (IVariable[]) elements.toArray(new IVariable[elements.size()]);
+    		return elements.toArray(new IVariable[elements.size()]);
     	}
     }
     

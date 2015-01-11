@@ -62,7 +62,7 @@ public class ExecutionArguments {
 		return parseArguments(fProgramArgs);
 	}
 
-	public List getProgramArgumentsL() {
+	public List<String> getProgramArgumentsL() {
 			return parseArgumentsL(fProgramArgs);
 		}
 	private static class ArgumentParser {
@@ -76,7 +76,7 @@ public class ExecutionArguments {
 
 		public String[] parseArguments()
 		{
-			List  v;
+			List<String>  v;
 			v = parseArgumentsL();
 			
 			String[] result= new String[v.size()];
@@ -84,8 +84,8 @@ public class ExecutionArguments {
 		    return result;
 		}
 		
-		public List parseArgumentsL() {
-			List v= new ArrayList();
+		public List<String> parseArgumentsL() {
+			List<String> v= new ArrayList<String>();
 
 			ch= getNext();
 			while (ch > 0) {
@@ -176,11 +176,11 @@ public class ExecutionArguments {
 		return res;
 	}
 	
-	private static List parseArgumentsL(String args) {
+	private static List<String> parseArgumentsL(String args) {
 			if (args == null)
-				return new ArrayList();
+				return new ArrayList<String>();
 			ArgumentParser parser= new ArgumentParser(args);
-			List res= parser.parseArgumentsL();
+			List<String> res= parser.parseArgumentsL();
 
 			return res;
 		}

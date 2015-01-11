@@ -24,14 +24,14 @@ public class TaskTagPreferences implements ITaskTagConstants {
 	
 	public static String[] parseStringList(String stringList) {
 		int currentPos = stringList.indexOf(SEPARATOR);
-		ArrayList resultList = new ArrayList();
+		ArrayList<String> resultList = new ArrayList<String>();
 		while (currentPos > 0) {
 			resultList.add(stringList.substring(0, currentPos));
 			stringList = stringList.substring(currentPos+1);
 			currentPos = stringList.indexOf(SEPARATOR);
 		}
 		
-		return (String[])resultList.toArray(new String[0]);    
+		return resultList.toArray(new String[0]);    
 		
 	}
 

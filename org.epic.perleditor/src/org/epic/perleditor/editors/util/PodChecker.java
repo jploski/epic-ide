@@ -29,7 +29,7 @@ public class PodChecker extends ScriptExecutor
 
     public static Violation[] podchecker(IResource resource, ILog log)
     {
-        ArrayList args = new ArrayList(1);
+        ArrayList<String> args = new ArrayList<String>(1);
         args.add(((IFile) resource).getRawLocation().toOSString());
 
         try

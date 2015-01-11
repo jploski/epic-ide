@@ -11,13 +11,13 @@ import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
 
+
 //import net.sourceforge.phpdt.internal.corext.util.IOCloser;
 import org.epic.perleditor.templates.util.IOCloser;
 //import net.sourceforge.phpdt.internal.ui.PHPStatusConstants;
 import org.epic.perleditor.templates.ui.EPICStatusConstants;
 //import net.sourceforge.phpeclipse.PHPeclipsePlugin;
 import org.epic.perleditor.PerlEditorPlugin;
-
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -35,8 +35,8 @@ import org.eclipse.ui.texteditor.IDocumentProvider;
 /* package */ class TextBufferFactory {
 
 	private IDocumentProvider fDocumentProvider;
-	private Map fFileValueMap;
-	private Map fBufferValueMap;
+	private Map<FileEditorInput, Value> fFileValueMap;
+	private Map<TextBuffer, Value> fBufferValueMap;
 	
 	private static class Value {
 		TextBuffer buffer;
@@ -61,14 +61,14 @@ import org.eclipse.ui.texteditor.IDocumentProvider;
 	public TextBufferFactory(IDocumentProvider provider) {
 		fDocumentProvider= provider;
 		Assert.isNotNull(fDocumentProvider);
-		fFileValueMap= new HashMap(5);
-		fBufferValueMap= new HashMap(5);
+		fFileValueMap= new HashMap<FileEditorInput, Value>(5);
+		fBufferValueMap= new HashMap<TextBuffer, Value>(5);
 	}
 
 	public TextBuffer acquire(IFile file) throws CoreException {
 		FileEditorInput input= new FileEditorInput(file);	
 		
-		Value value= (Value)fFileValueMap.get(input);
+		Value value= fFileValueMap.get(input);
 		if (value != null) {
 			value.references++;
 			return value.buffer;
@@ -86,7 +86,7 @@ import org.eclipse.ui.texteditor.IDocumentProvider;
 	}
 	
 	public void release(TextBuffer buffer) {
-		final Value value= (Value)fBufferValueMap.get(buffer);
+		final Value value= fBufferValueMap.get(buffer);
 		if (value == null)
 			return;
 						
@@ -101,7 +101,7 @@ import org.eclipse.ui.texteditor.IDocumentProvider;
 	}
 	
 	public void commitChanges(TextBuffer buffer, boolean force, IProgressMonitor pm) throws CoreException {
-		final Value value= (Value)fBufferValueMap.get(buffer);
+		final Value value= fBufferValueMap.get(buffer);
 		if (value == null)
 			return;
 		
@@ -161,21 +161,21 @@ import org.eclipse.ui.texteditor.IDocumentProvider;
 	}
 	
 	public void save(TextBuffer buffer, IProgressMonitor pm) throws CoreException {
-		Value value= (Value)fBufferValueMap.get(buffer);
+		Value value= fBufferValueMap.get(buffer);
 		if (value == null)
 			throwNotManaged();
 		fDocumentProvider.saveDocument(pm, value.input, value.document, true);
 	}
 
 	public void aboutToChange(TextBuffer buffer) throws CoreException {
-		Value value= (Value)fBufferValueMap.get(buffer);
+		Value value= fBufferValueMap.get(buffer);
 		if (value == null)
 			throwNotManaged();
 		fDocumentProvider.aboutToChange(value.input);
 	}
 		
 	public void changed(TextBuffer buffer) throws CoreException {
-		Value value= (Value)fBufferValueMap.get(buffer);
+		Value value= fBufferValueMap.get(buffer);
 		if (value == null)
 			throwNotManaged();
 		fDocumentProvider.changed(value.input);

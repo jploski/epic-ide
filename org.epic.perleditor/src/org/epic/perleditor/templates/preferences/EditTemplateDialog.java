@@ -165,9 +165,9 @@ public class EditTemplateDialog extends StatusDialog {
 
 	private TemplateTranslator fTranslator= new TemplateTranslator();	
 	private boolean fSuppressError= true; // #4354	
-	private Map fGlobalActions= new HashMap(10);
-	private List fSelectionActions = new ArrayList(3);	
-	private Vector fContextTypes= new Vector();
+	private Map<String, IAction> fGlobalActions= new HashMap<String, IAction>();
+	private List<String> fSelectionActions = new ArrayList<String>(3);	
+	private Vector<String> fContextTypes= new Vector<String>();
 	
 	private final TemplateVariableProcessor fProcessor= new TemplateVariableProcessor();
 		
@@ -184,11 +184,11 @@ public class EditTemplateDialog extends StatusDialog {
 		fTemplate= template;
 		
 		ContextTypeRegistry registry= ContextTypeRegistry.getInstance();
-		for (Iterator iterator= registry.iterator(); iterator.hasNext(); )
+		for (Iterator<String> iterator= registry.iterator(); iterator.hasNext(); )
 			fContextTypes.add(iterator.next());
 
 		if (fContextTypes.size() > 0)
-			fProcessor.setContextType(ContextTypeRegistry.getInstance().getContextType((String) fContextTypes.get(0)));
+			fProcessor.setContextType(ContextTypeRegistry.getInstance().getContextType(fContextTypes.get(0)));
 	}
 	
 	/*
@@ -224,8 +224,8 @@ public class EditTemplateDialog extends StatusDialog {
 		createLabel(composite, TemplateMessages.getString("EditTemplateDialog.context")); //$NON-NLS-1$		
 		fContextCombo= new Combo(composite, SWT.READ_ONLY);
 
-		for (Iterator iterator= fContextTypes.iterator(); iterator.hasNext(); )
-			fContextCombo.add((String) iterator.next());
+		for (Iterator<String> iterator= fContextTypes.iterator(); iterator.hasNext(); )
+			fContextCombo.add(iterator.next());
 
 		fContextCombo.addModifyListener(new ModifyListener() {
 			public void modifyText(ModifyEvent e) {
@@ -433,32 +433,32 @@ public class EditTemplateDialog extends StatusDialog {
 
 	private void fillContextMenu(IMenuManager menu) {
 		menu.add(new GroupMarker(ITextEditorActionConstants.GROUP_UNDO));
-		menu.appendToGroup(ITextEditorActionConstants.GROUP_UNDO, (IAction) fGlobalActions.get(ITextEditorActionConstants.UNDO));
+		menu.appendToGroup(ITextEditorActionConstants.GROUP_UNDO, fGlobalActions.get(ITextEditorActionConstants.UNDO));
 		
 		menu.add(new Separator(ITextEditorActionConstants.GROUP_EDIT));		
-		menu.appendToGroup(ITextEditorActionConstants.GROUP_EDIT, (IAction) fGlobalActions.get(ITextEditorActionConstants.CUT));
-		menu.appendToGroup(ITextEditorActionConstants.GROUP_EDIT, (IAction) fGlobalActions.get(ITextEditorActionConstants.COPY));
-		menu.appendToGroup(ITextEditorActionConstants.GROUP_EDIT, (IAction) fGlobalActions.get(ITextEditorActionConstants.PASTE));
-		menu.appendToGroup(ITextEditorActionConstants.GROUP_EDIT, (IAction) fGlobalActions.get(ITextEditorActionConstants.SELECT_ALL));
+		menu.appendToGroup(ITextEditorActionConstants.GROUP_EDIT, fGlobalActions.get(ITextEditorActionConstants.CUT));
+		menu.appendToGroup(ITextEditorActionConstants.GROUP_EDIT, fGlobalActions.get(ITextEditorActionConstants.COPY));
+		menu.appendToGroup(ITextEditorActionConstants.GROUP_EDIT, fGlobalActions.get(ITextEditorActionConstants.PASTE));
+		menu.appendToGroup(ITextEditorActionConstants.GROUP_EDIT, fGlobalActions.get(ITextEditorActionConstants.SELECT_ALL));
 
 	//	menu.add(new Separator(IContextMenuConstants.GROUP_GENERATE));
 	//	menu.appendToGroup(IContextMenuConstants.GROUP_GENERATE, (IAction) fGlobalActions.get("ContentAssistProposal")); //$NON-NLS-1$
 	}
 
 	protected void updateSelectionDependentActions() {
-		Iterator iterator= fSelectionActions.iterator();
+		Iterator<String> iterator= fSelectionActions.iterator();
 		while (iterator.hasNext())
-			updateAction((String)iterator.next());		
+			updateAction(iterator.next());		
 	}
 
 	protected void updateUndoAction() {
-		IAction action= (IAction) fGlobalActions.get(ITextEditorActionConstants.UNDO);
+		IAction action= fGlobalActions.get(ITextEditorActionConstants.UNDO);
 		if (action instanceof IUpdate)
 			((IUpdate) action).update();
 	}
 
 	protected void updateAction(String actionId) {
-		IAction action= (IAction) fGlobalActions.get(actionId);
+		IAction action= fGlobalActions.get(actionId);
 		if (action instanceof IUpdate)
 			((IUpdate) action).update();
 	}

@@ -69,7 +69,7 @@ class ProcessExecutor
      * Same as {@link #execute(String[], String, File)}, except the command-line
      * is provided as a List of Strings rather than an array. 
      */
-    public ProcessOutput execute(List commandLine, String input, File workingDir)
+    public ProcessOutput execute(List<String> commandLine, String input, File workingDir)
         throws InterruptedException, IOException
     {
         return execute(

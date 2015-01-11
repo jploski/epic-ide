@@ -1,6 +1,7 @@
 package org.epic.perleditor.actions;
 
 import java.io.File;
+import java.io.Serializable;
 import java.util.Map;
 
 import org.eclipse.core.resources.IResource;
@@ -64,7 +65,7 @@ public class PerlCriticAction extends PerlUserJobAction
     /*
      * @see org.epic.perleditor.actions.PerlJobAction#createMarkerAttributes(org.epic.core.util.MarkerUtilities, java.lang.Object)
      */
-    protected Map createMarkerAttributes(MarkerUtilities factory, Object violation)
+    protected Map<String, Serializable> createMarkerAttributes(MarkerUtilities factory, Object violation)
     {
         return perlCriticBuilderHelper.createMarkerAttributes(factory, violation);
     }

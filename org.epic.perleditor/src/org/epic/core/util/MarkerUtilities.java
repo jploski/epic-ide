@@ -1,5 +1,6 @@
 package org.epic.core.util;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Map;
 
@@ -33,7 +34,7 @@ public class MarkerUtilities
 
     //~ Methods
 
-    public void createMarker(IResource resource, String type, Map attributes)
+    public void createMarker(IResource resource, String type, Map<String, ?> attributes)
     {
         assert attributes != null;
 
@@ -78,7 +79,7 @@ public class MarkerUtilities
 
         if (markers.length == 0) { return EMPTY_ARRAY; }
 
-        ArrayList list = new ArrayList();
+        ArrayList<IMarker> list = new ArrayList<IMarker>();
         for (int i = 0; i < markers.length; i++)
         {
             Integer markerLineNumber = (Integer) getAttribute(markers[i], IMarker.LINE_NUMBER);
@@ -88,7 +89,7 @@ public class MarkerUtilities
             }
         }
 
-        return (IMarker[]) list.toArray(new IMarker[list.size()]);
+        return list.toArray(new IMarker[list.size()]);
     }
 
     private Object getAttribute(IMarker marker, String key)
@@ -123,22 +124,14 @@ public class MarkerUtilities
         }
     }
 
-    public void setLineNumber(Map attributes, int lineNumber)
+    public void setLineNumber(Map<String, Serializable> attributes, int lineNumber)
     {
         attributes.put(IMarker.LINE_NUMBER, new Integer(lineNumber));
     }
 
-    public void setMessage(Map attributes, String message)
+    public void setMessage(Map<String, Serializable> attributes, String message)
     {
         attributes.put(IMarker.MESSAGE, message);
-    }
-
-    /**
-     * @see MarkerUtilities#setSeverity(Map, Integer)
-     */
-    public void setSeverity(Map attributes, int severity)
-    {
-        setSeverity(attributes, new Integer(severity));
     }
 
     /**
@@ -150,23 +143,23 @@ public class MarkerUtilities
      *   <li>IMarker.ERROR</li>
      * </ol>
      */
-    public void setSeverity(Map attributes, Integer severity)
+    public void setSeverity(Map<String, Serializable> attributes, int severity)
     {
-        assert ((severity.intValue() >= 0) && (severity.intValue() <= 2));
-        attributes.put(IMarker.SEVERITY, severity);
+        assert (severity >= 0 && severity <= 2);
+        attributes.put(IMarker.SEVERITY, Integer.valueOf(severity));
     }
 
-    public void setStartEnd(Map attributes, int start, int end)
+    public void setStartEnd(Map<String, Serializable> attributes, int start, int end)
     {
         assert ((start >= 0) && (end >= 0));
-        attributes.put(IMarker.CHAR_START, new Integer(start));
+        attributes.put(IMarker.CHAR_START, Integer.valueOf(start));
 
         if (end == 0)
         {
             end = start;
         }
 
-        attributes.put(IMarker.CHAR_END, new Integer(end));
+        attributes.put(IMarker.CHAR_END, Integer.valueOf(end));
     }
 
     private IMarker[] findMarkers(IResource resource, String type)

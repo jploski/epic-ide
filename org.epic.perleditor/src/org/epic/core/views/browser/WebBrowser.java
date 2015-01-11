@@ -12,6 +12,7 @@ package org.epic.core.views.browser;
 import java.text.MessageFormat;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTError;
 import org.eclipse.swt.browser.Browser;
@@ -320,7 +321,7 @@ public class WebBrowser {
    * Loads the resources
    */
   void initResources() {
-    final Class clazz = this.getClass();
+    final Class<? extends WebBrowser> clazz = this.getClass();
     if (resourceBundle != null) {
       try {
         if (images == null) {

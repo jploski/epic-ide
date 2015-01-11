@@ -35,7 +35,7 @@ public class ProjectSelectionDialog extends ElementListSelectionDialog
      */
     private String[] getPerlProjects()
     {
-        List projectList = new ArrayList();
+        List<String> projectList = new ArrayList<String>();
         IWorkspaceRoot workspaceRoot = PerlDebugPlugin.getWorkspace().getRoot();
         IProject[] projects = workspaceRoot.getProjects();
         for (int i = 0; i < projects.length; i++)
@@ -51,7 +51,7 @@ public class ProjectSelectionDialog extends ElementListSelectionDialog
                 PerlDebugPlugin.log(e);
             }
         }
-        return (String[]) projectList.toArray(new String[projectList.size()]);
+        return projectList.toArray(new String[projectList.size()]);
     }
 
     private static class ProjectLabelProvider extends LabelProvider

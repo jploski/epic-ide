@@ -14,7 +14,7 @@ public class TestBracketMatching extends BasePDETestCase
         {
             String text = testIface.getText();
     
-            List expected = readLines("test.in/TestBracketMatching-expected.txt");
+            List<String> expected = readLines("test.in/TestBracketMatching-expected.txt");
             long t1 = System.currentTimeMillis();
             int j = 0;
             for (int i = 0; i < text.length() && i < 10000; i++)

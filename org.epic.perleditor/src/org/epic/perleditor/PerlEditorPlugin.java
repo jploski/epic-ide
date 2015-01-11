@@ -244,7 +244,7 @@ public class PerlEditorPlugin extends AbstractUIPlugin {
         PerlExecutor executor = new PerlExecutor();
         try
         {
-            List args = new ArrayList(1);
+            List<String> args = new ArrayList<String>(1);
             args.add("-v");
             if (executor.execute(new File("."), args, "")
                 .stdout.indexOf("This is perl") != -1)

@@ -14,7 +14,6 @@ import org.epic.perleditor.templates.Templates;
 import org.epic.perleditor.templates.perl.CompilationUnitContextType;
 import org.epic.perleditor.PerlPluginImages;
 import org.epic.perleditor.templates.perl.IPerlCompletionProposal;
-
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.ITextViewer;
@@ -27,7 +26,7 @@ public class TemplateEngine
     private final ContextType contextType;
 
     /** The result proposals. */
-    private final List proposals;
+    private final List<TemplateProposal> proposals;
 
     /**
      * Creates the template engine for a particular context type. See
@@ -36,7 +35,7 @@ public class TemplateEngine
     public TemplateEngine(ContextType contextType)
     {
         this.contextType = contextType;
-        this.proposals = new ArrayList();
+        this.proposals = new ArrayList<TemplateProposal>();
     }
 
     /**
@@ -52,8 +51,7 @@ public class TemplateEngine
      */
     public IPerlCompletionProposal[] getResults()
     {
-        return (IPerlCompletionProposal[])
-            proposals.toArray(new IPerlCompletionProposal[proposals.size()]);
+        return proposals.toArray(new IPerlCompletionProposal[proposals.size()]);
     }
 
     /**

@@ -1,6 +1,7 @@
 package org.epic.perleditor.editors.util;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.*;
 
 import org.eclipse.core.resources.IMarker;
@@ -76,7 +77,7 @@ public class PerlValidator extends PerlValidatorBase
         return true;
 	} 
 
-    protected void addMarker(IResource resource, Map attributes)
+    protected void addMarker(IResource resource, Map<String, Serializable> attributes)
     {
         new MarkerUtil(resource).addMarker(attributes, Constants.PROBLEM_MARKER);
     }
@@ -110,9 +111,9 @@ public class PerlValidator extends PerlValidatorBase
         return errorResource != null ? errorResource : resource;
     }
     
-    protected List getPerlArgs()
+    protected List<String> getPerlArgs()
     {
-        List args = super.getPerlArgs();        
+        List<String> args = super.getPerlArgs();        
     
         if (PerlEditorPlugin.getDefault().getBooleanPreference(
             PreferenceConstants.DEBUG_SHOW_WARNINGS))
@@ -149,11 +150,11 @@ public class PerlValidator extends PerlValidatorBase
      */
     protected boolean shouldUnderlineError(IResource resource, int lineNr)
     {
-        List markers = MarkerUtil.getMarkersForLine(resource, lineNr);
+        List<IMarker> markers = MarkerUtil.getMarkersForLine(resource, lineNr);
         
-        for (Iterator i = markers.iterator(); i.hasNext();)
+        for (Iterator<IMarker> i = markers.iterator(); i.hasNext();)
         {
-            IMarker marker = (IMarker) i.next();
+            IMarker marker = i.next();
             try
             {
                 Integer severity = (Integer) marker.getAttribute(IMarker.SEVERITY);

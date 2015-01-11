@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+
 //import net.sourceforge.phpdt.internal.corext.template.php.HTMLContextType;
 import org.epic.perleditor.templates.perl.PerlContextType;
 //import net.sourceforge.phpdt.internal.corext.template.php.PHPDocContextType;
@@ -23,7 +24,7 @@ public class ContextTypeRegistry {
 	private static ContextTypeRegistry fInstance;
 	
 	/** all known context types */
-	private final Map fContextTypes= new HashMap();
+	private final Map<String, ContextType> fContextTypes= new HashMap<String, ContextType>();
 	
 	/**
 	 * Returns the single instance of this class.
@@ -53,13 +54,13 @@ public class ContextTypeRegistry {
 	 * Returns the context type if the name is valid, <code>null</code> otherwise.
 	 */
 	public ContextType getContextType(String name) {
-		return (ContextType) fContextTypes.get(name);
+		return fContextTypes.get(name);
 	}
 	
 	/**
 	 * Returns an iterator over the registered context type names.
 	 */
-	public Iterator iterator() {
+	public Iterator<String> iterator() {
 		return fContextTypes.keySet().iterator();	
 	}
 

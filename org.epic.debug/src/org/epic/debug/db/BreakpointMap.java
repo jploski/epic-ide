@@ -21,11 +21,11 @@ import org.epic.debug.PerlLineBreakpoint;
  */
 class BreakpointMap
 {
-    private final Map breakpoints;
+    private final Map<String, Set<PerlBreakpoint>> breakpoints;
 
     public BreakpointMap()
     {
-        breakpoints = new HashMap();
+        breakpoints = new HashMap<String, Set<PerlBreakpoint>>();
     }
 
     public synchronized void add(PerlBreakpoint bp)
@@ -33,10 +33,10 @@ class BreakpointMap
         String path = canonPath(bp.getResourcePath());
         if (path == null) return;
         
-        Set set = (Set) breakpoints.get(path);
+        Set<PerlBreakpoint> set = breakpoints.get(path);
         if (set == null)
         {
-            set = new HashSet();
+            set = new HashSet<PerlBreakpoint>();
             breakpoints.put(path, set);
         }
         set.add(bp);
@@ -47,28 +47,28 @@ class BreakpointMap
         String path = canonPath(bp.getResourcePath());
         if (path == null) return false;
 
-        Set set = (Set) breakpoints.get(path);
+        Set<?> set = breakpoints.get(path);
         if (set == null) return false;
 
         return set.contains(bp);
     }
 
-    public synchronized Set getBreakpoints(IPath path)
+    public synchronized Set<PerlBreakpoint> getBreakpoints(IPath path)
     {
         String canonPath = canonPath(path);
-        if (canonPath == null) return Collections.EMPTY_SET;
+        if (canonPath == null) return Collections.emptySet();
         
-        Set set = (Set) breakpoints.get(canonPath);
-        return set != null ? new HashSet(set) : Collections.EMPTY_SET;
+        Set<PerlBreakpoint> set = breakpoints.get(canonPath);
+        return set != null ? new HashSet<PerlBreakpoint>(set) : Collections.emptySet();
     }
 
     public synchronized PerlBreakpoint getBreakpoint(IPath path, int line)
     {
         String canonPath = canonPath(path);
 
-        for (Iterator i = getBreakpoints(path).iterator(); i.hasNext();)
+        for (Iterator<PerlBreakpoint> i = getBreakpoints(path).iterator(); i.hasNext();)
         {
-            Object obj = i.next();
+            PerlBreakpoint obj = i.next();
             if (!(obj instanceof PerlLineBreakpoint)) continue;
             
             PerlLineBreakpoint bp = (PerlLineBreakpoint) obj;
@@ -93,14 +93,14 @@ class BreakpointMap
     {
     	String path = canonPath(bp.getResourcePath());
     	
-    	Set set = (Set) breakpoints.get(path);
+    	Set<PerlBreakpoint> set = breakpoints.get(path);
         if (set == null) return false;
         
         int lineNumber = bp.getLineNumber();
         
-        for (Iterator i = set.iterator(); i.hasNext();)
+        for (Iterator<PerlBreakpoint> i = set.iterator(); i.hasNext();)
         {
-        	PerlBreakpoint other = (PerlBreakpoint) i.next();
+        	PerlBreakpoint other = i.next();
         	if (!(other instanceof PerlLineBreakpoint)) continue;
         	
         	if (((PerlLineBreakpoint) other).getLineNumber() == lineNumber &&
@@ -117,7 +117,7 @@ class BreakpointMap
     {
         String path = canonPath(bp.getResourcePath());
 
-        Set set = (Set) breakpoints.get(path);
+        Set<PerlBreakpoint> set = breakpoints.get(path);
         if (set == null) return false;
 
         return set.remove(bp);

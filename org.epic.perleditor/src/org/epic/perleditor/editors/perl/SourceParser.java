@@ -46,7 +46,7 @@ public class SourceParser
 	 * @param deleteComments
 	 * @return
 	 */
-	public static List getElements(
+	public static List<SourceElement> getElements(
         IDocument document,
         String regexp,
 		String preFix,
@@ -73,7 +73,7 @@ public class SourceParser
 	 *            (postioning for word-only or for complete line)
 	 * @return
 	 */
-    public static List getElements(
+    public static List<SourceElement> getElements(
         String text,
         String regexp,
         String preFix,
@@ -98,7 +98,7 @@ public class SourceParser
      * @param flags
      * @return
      */
-    public static List getElements(
+    public static List<SourceElement> getElements(
         String text,
         String regexp,
         String preFix,
@@ -112,7 +112,7 @@ public class SourceParser
 
         Pattern p = Pattern.compile(regexp, Pattern.MULTILINE | Pattern.DOTALL);
         Matcher m = p.matcher(text);
-        List results = new ArrayList();
+        List<SourceElement> results = new ArrayList<SourceElement>();
         
         while (m.find())
         {

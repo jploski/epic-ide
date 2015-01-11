@@ -21,7 +21,7 @@ public class PerlBuilder extends IncrementalProjectBuilder
      * IResource instances representing Perl files that need
      * to be validated during the current build.
      */
-    private Set dirtyResources;
+    private Set<IResource> dirtyResources;
 
     /**
      * IResource instances representing Perl files that need
@@ -29,13 +29,13 @@ public class PerlBuilder extends IncrementalProjectBuilder
      * Perl files that still need to be validated because the
      * previous build was cancelled.
      */
-    private Set newDirtyResources;
+    private Set<IResource> newDirtyResources;
     
     /**
      * IResource instances whose labels have to be updated after
      * the current build finishes (normally or by being cancelled).
      */
-    private Set validatedResources;
+    private Set<IResource> validatedResources;
     
 	/**
 	 * No-arg default constructor per IncrementalProjectBuilder specification.
@@ -44,7 +44,7 @@ public class PerlBuilder extends IncrementalProjectBuilder
 	{
 	}
     
-	protected IProject[] build(int kind, Map args, IProgressMonitor monitor)
+	protected IProject[] build(int kind, Map<String, String> args, IProgressMonitor monitor)
 		throws CoreException
 	{
         // To maintain a responsive GUI, the actual build is split into
@@ -56,9 +56,9 @@ public class PerlBuilder extends IncrementalProjectBuilder
         
         try
         {
-            dirtyResources = new HashSet();
-            newDirtyResources = new HashSet();
-            validatedResources = new HashSet();
+            dirtyResources = new HashSet<IResource>();
+            newDirtyResources = new HashSet<IResource>();
+            validatedResources = new HashSet<IResource>();
         
             return buildImpl(kind, args, monitor);
         }
@@ -71,7 +71,7 @@ public class PerlBuilder extends IncrementalProjectBuilder
         }
     }
     
-    private IProject[] buildImpl(int kind, Map args, IProgressMonitor monitor)
+    private IProject[] buildImpl(int kind, Map<?, ?> args, IProgressMonitor monitor)
         throws CoreException
     {
         if (PerlEditorPlugin.getDefault().requirePerlInterpreter(false))
@@ -172,9 +172,9 @@ public class PerlBuilder extends IncrementalProjectBuilder
      * 
      * Note: the dirtyResources set is modified as a side effect.
      */
-    private List getSortedDirtyResources()
+    private List<IResource> getSortedDirtyResources()
     {
-        List sorted = new ArrayList(dirtyResources.size());
+        List<IResource> sorted = new ArrayList<IResource>(dirtyResources.size());
         
         sorted.addAll(newDirtyResources);
         dirtyResources.removeAll(newDirtyResources);

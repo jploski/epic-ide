@@ -24,7 +24,7 @@ class ArraySlice extends DebugElement implements IVariable
 
 	protected ArraySlice(
 			PerlVariable array,
-			List elements,
+			List<ArrayElement> elements,
 			int startIndex) throws DebugException 
     {
 		super(array.getDebugTarget());

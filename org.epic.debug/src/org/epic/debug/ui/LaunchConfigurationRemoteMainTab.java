@@ -638,7 +638,7 @@ public class LaunchConfigurationRemoteMainTab
 	 * @return Stiring[] List of Perl projects
 	 */
 	private String[] getPerlProjects() {
-		List projectList = new ArrayList();
+		List<String> projectList = new ArrayList<String>();
 		IWorkspaceRoot workspaceRoot = PerlDebugPlugin.getWorkspace().getRoot();
 		IProject[] projects = workspaceRoot.getProjects();
 		for (int i = 0; i < projects.length; i++) {
@@ -654,7 +654,7 @@ public class LaunchConfigurationRemoteMainTab
 
 		}
 
-		return (String[]) projectList.toArray(new String[projectList.size()]);
+		return projectList.toArray(new String[projectList.size()]);
 	}
 
 //	private String[] getPerlFiles() {
@@ -696,7 +696,7 @@ public class LaunchConfigurationRemoteMainTab
 		private static final String PERL_EDITOR_ID = "org.epic.perleditor.editors.PerlEditor";
 		private static final String EMB_PERL_FILE_EXTENSION = "epl";
 
-		private List fileList = new ArrayList();
+		private List<String> fileList = new ArrayList<String>();
 		/*
 		 * (non-Javadoc)
 		 * 
@@ -722,7 +722,7 @@ public class LaunchConfigurationRemoteMainTab
 		}
 
 		public String[] getList() {
-			return (String[]) fileList.toArray(new String[fileList.size()]);
+			return fileList.toArray(new String[fileList.size()]);
 		}
 
 	}

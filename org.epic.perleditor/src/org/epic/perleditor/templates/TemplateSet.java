@@ -41,18 +41,15 @@ import org.xml.sax.SAXException;
  */
 public class TemplateSet {
 
-	private static class TemplateComparator implements Comparator {
-		public int compare(Object arg0, Object arg1) {
+	private static class TemplateComparator implements Comparator<Template> {
+		public int compare(Template arg0, Template arg1) {
 			if (arg0 == arg1)
 				return 0;
 
 			if (arg0 == null)
 				return -1;
 
-			Template template0 = (Template) arg0;
-			Template template1 = (Template) arg1;
-
-			return template0.getName().compareTo(template1.getName());
+			return arg0.getName().compareTo(arg1.getName());
 		}
 	}
 
@@ -62,8 +59,8 @@ public class TemplateSet {
 	private static final String CONTEXT_ATTRIBUTE = "context"; //$NON-NLS-1$
 	private static final String ENABLED_ATTRIBUTE = "enabled"; //$NON-NLS-1$
 
-	private List fTemplates = new ArrayList();
-	private Comparator fTemplateComparator = new TemplateComparator();
+	private List<Template> fTemplates = new ArrayList<Template>();
+	private Comparator<Template> fTemplateComparator = new TemplateComparator();
 	private Template[] fSortedTemplates = new Template[0];
 
 	/**
@@ -194,7 +191,7 @@ public class TemplateSet {
 			document.appendChild(root);
 
 			for (int i = 0; i != fTemplates.size(); i++) {
-				Template template = (Template) fTemplates.get(i);
+				Template template = fTemplates.get(i);
 
 				Node node = document.createElement("template"); // $NON-NLS-1$
 																// //$NON-NLS-1$
@@ -271,8 +268,8 @@ public class TemplateSet {
 	}
 
 	private boolean exists(Template template) {
-		for (Iterator iterator = fTemplates.iterator(); iterator.hasNext();) {
-			Template anotherTemplate = (Template) iterator.next();
+		for (Iterator<Template> iterator = fTemplates.iterator(); iterator.hasNext();) {
+			Template anotherTemplate = iterator.next();
 
 			if (template.equals(anotherTemplate))
 				return true;
@@ -301,25 +298,25 @@ public class TemplateSet {
 	 * Returns all templates.
 	 */
 	public Template[] getTemplates() {
-		return (Template[]) fTemplates.toArray(new Template[fTemplates.size()]);
+		return fTemplates.toArray(new Template[fTemplates.size()]);
 	}
 
 	/**
 	 * Returns all templates with a given name.
 	 */
 	public Template[] getTemplates(String name) {
-		ArrayList res = new ArrayList();
-		for (Iterator iterator = fTemplates.iterator(); iterator.hasNext();) {
-			Template curr = (Template) iterator.next();
+		ArrayList<Template> res = new ArrayList<Template>();
+		for (Iterator<Template> iterator = fTemplates.iterator(); iterator.hasNext();) {
+			Template curr = iterator.next();
 			if (curr.getName().equals(name)) {
 				res.add(curr);
 			}
 		}
-		return (Template[]) res.toArray(new Template[res.size()]);
+		return res.toArray(new Template[res.size()]);
 	}
 
 	private void sort() {
-		fSortedTemplates = (Template[]) fTemplates
+		fSortedTemplates = fTemplates
 				.toArray(new Template[fTemplates.size()]);
 		Arrays.sort(fSortedTemplates, fTemplateComparator);
 	}

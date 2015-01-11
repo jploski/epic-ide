@@ -30,7 +30,7 @@ import org.epic.perleditor.PerlEditorPlugin;
 public abstract class VariablesViewActionDelegate
     implements IViewActionDelegate, IActionDelegate2
 {
-    private static Map actionIdToPreferenceKey;
+    private static Map<String, String> actionIdToPreferenceKey;
 
     public synchronized static void enableVariablesViewActions()
     {
@@ -123,7 +123,7 @@ public abstract class VariablesViewActionDelegate
     private static void initActionIdToPreferenceKey()
     {
         if (actionIdToPreferenceKey != null) return;
-        actionIdToPreferenceKey = new HashMap();
+        actionIdToPreferenceKey = new HashMap<String, String>();
 
         actionIdToPreferenceKey.put(
             HighlightVarUpdatesActionDelegate.ACTION_ID,
@@ -163,7 +163,7 @@ public abstract class VariablesViewActionDelegate
             IContributionItem[] item = variablesView.getViewSite().getActionBars().getMenuManager().getItems();
             for (int i = 0; i < item.length; i++)
             {
-                String prefKey = (String) actionIdToPreferenceKey.get(item[i].getId());
+                String prefKey = actionIdToPreferenceKey.get(item[i].getId());
                 if (prefKey != null && item[i] instanceof ActionContributionItem)
                 {
                     IAction action = ((ActionContributionItem) item[i]).getAction();

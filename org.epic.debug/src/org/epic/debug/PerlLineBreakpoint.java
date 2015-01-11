@@ -42,11 +42,11 @@ public class PerlLineBreakpoint extends PerlBreakpoint implements ILineBreakpoin
 
     public PerlLineBreakpoint(IResource resource, int lineNumber) throws DebugException
     {
-        this(resource, lineNumber, -1, -1, true, new HashMap(8), PERL_LINE_BREAKPOINT);
+        this(resource, lineNumber, -1, -1, true, new HashMap<String, Comparable>(), PERL_LINE_BREAKPOINT);
     }
 
     protected PerlLineBreakpoint(IResource resource, int lineNumber, int charStart, int charEnd,
-        boolean add, Map attributes, String markerType) throws DebugException
+        boolean add, Map<String, Comparable> attributes, String markerType) throws DebugException
     {
         assert attributes != null;
 
@@ -56,7 +56,7 @@ public class PerlLineBreakpoint extends PerlBreakpoint implements ILineBreakpoin
 
     //~ Methods
 
-    private void addLineBreakpointAttributes(Map attributes, String modelIdentifier, boolean enabled,
+    private void addLineBreakpointAttributes(Map<String, Comparable> attributes, String modelIdentifier, boolean enabled,
         int lineNumber, int charStart, int charEnd)
     {
         attributes.put(IBreakpoint.ID, modelIdentifier);
@@ -70,7 +70,7 @@ public class PerlLineBreakpoint extends PerlBreakpoint implements ILineBreakpoin
     }
 
     private void createPerlLineBreakpoint(final IResource resource, final int lineNumber,
-        final int charStart, final int charEnd, final boolean add, final Map attributes,
+        final int charStart, final int charEnd, final boolean add, final Map<String, Comparable> attributes,
         final String markerType) throws DebugException
     {
 

@@ -41,7 +41,7 @@ public class SourceCritic extends ScriptExecutor
             // meh - not sure if i'm happy w/ this, but it's needed in getCommandLineOpts
             critic.resource = resource;
 
-            String output = critic.run(new ArrayList(4)).stdout;
+            String output = critic.run(new ArrayList<String>(4)).stdout;
             return critic.parseViolations(output);
         }
         catch (CoreException e)
@@ -55,11 +55,11 @@ public class SourceCritic extends ScriptExecutor
     /*
      * @see org.epic.core.util.ScriptExecutor#getCommandLineOpts(java.util.List)
      */
-    protected List getCommandLineOpts(List additionalOptions)
+    protected List<String> getCommandLineOpts(List<String> additionalOptions)
     {
         if (additionalOptions == null || additionalOptions.isEmpty())
         {
-            additionalOptions = new ArrayList(2);
+            additionalOptions = new ArrayList<String>(2);
         }
 
         // project specific critic config files
@@ -159,7 +159,7 @@ public class SourceCritic extends ScriptExecutor
         }
 
         String[] lines = toParse.split("~\\|\\|~" + separator);
-        ArrayList violations = new ArrayList();
+        ArrayList<Violation> violations = new ArrayList<Violation>();
         for (int i = 0; i < lines.length; i++)
         {
             System.out.println("critic: " + lines[i]);
@@ -177,7 +177,7 @@ public class SourceCritic extends ScriptExecutor
                     "Perl::Critic violations.length == 0, output change?"));
         }
 
-        return (Violation[]) violations.toArray(new Violation[violations.size()]);
+        return violations.toArray(new Violation[violations.size()]);
     }
 
     public static class Violation

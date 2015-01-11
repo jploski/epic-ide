@@ -2,7 +2,7 @@ package org.epic.perleditor.templates.perl;
 
 import java.util.Comparator;
 
-public class PerlCompletionProposalComparator implements Comparator {
+public class PerlCompletionProposalComparator implements Comparator<Object> {
 
 	private boolean fOrderAlphabetically;
 

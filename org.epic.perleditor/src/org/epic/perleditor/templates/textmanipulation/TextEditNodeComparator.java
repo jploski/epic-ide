@@ -10,7 +10,7 @@ import java.util.Comparator;
 /**
  * A special comparator to comapre <code>TextRange</code>s.
  */
-/* package */ class TextEditNodeComparator  implements Comparator {
+/* package */ class TextEditNodeComparator  implements Comparator<Object> {
 	public int compare(Object o1, Object o2) {
 		TextEditNode node1= (TextEditNode)o1;
 		TextEditNode node2= (TextEditNode)o2;

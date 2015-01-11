@@ -32,11 +32,11 @@ public class ExplainErrorsView extends ViewPart {
 	private Color yellow;
 	private Color black;
 	
-	private HashMap levels;
+	private HashMap<String, String> levels;
 	
 
 	public ExplainErrorsView() {
-		levels = new HashMap();
+		levels = new HashMap<String, String>();
 		levels.put("(W)", "A warning (optional)");
 		levels.put("(W once)", "A warning (optional)");
 		levels.put("(D)", "A deprecation (optional)");
@@ -76,11 +76,11 @@ public class ExplainErrorsView extends ViewPart {
 		explanationText.setFocus();
 	}
 	
-	public void explain(ArrayList markers) {
+	public void explain(ArrayList<IMarker> markers) {
 		explanationText.setText("");
 		
 		for(int i=0; i<markers.size(); i++) {
-			IMarker marker = (IMarker) markers.get(i);
+			IMarker marker = markers.get(i);
 			try {
 				int pos = explanationText.getCharCount();
 				explanationText.append((String) marker.getAttribute(IMarker.MESSAGE) +"\n");
@@ -100,7 +100,7 @@ public class ExplainErrorsView extends ViewPart {
 		        String levelStr = null;
 		        
 		        if(expStr.length() > 0) {
-		        	levelStr = (String) levels.get(expStr.substring(0,expStr.indexOf(")")+1));
+		        	levelStr = levels.get(expStr.substring(0,expStr.indexOf(")")+1));
 		        }
 		        
 		        if(levelStr != null) {

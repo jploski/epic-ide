@@ -229,12 +229,12 @@ class PerlThreadBreakpoints
                 return pos;
             }
             
-            Set bps = pendingBreakpoints.getBreakpoints(epicPath);
+            Set<PerlBreakpoint> bps = pendingBreakpoints.getBreakpoints(epicPath);
             if (bps.isEmpty()) return pos;
         
-            for (Iterator i = bps.iterator(); i.hasNext();)
+            for (Iterator<PerlBreakpoint> i = bps.iterator(); i.hasNext();)
             {
-                PerlBreakpoint bp = ((PerlBreakpoint) i.next());
+                PerlBreakpoint bp = i.next();
                 if (bp.isEnabled()) addBreakpoint(bp);
                 else removeBreakpoint(bp);
             }

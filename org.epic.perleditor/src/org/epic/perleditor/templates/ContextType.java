@@ -15,7 +15,6 @@ import org.epic.perleditor.templates.textmanipulation.SimpleTextEdit;
 import org.epic.perleditor.templates.textmanipulation.TextBuffer;
 import org.epic.perleditor.templates.textmanipulation.TextBufferEditor;
 import org.epic.perleditor.templates.textmanipulation.TextEdit;
-
 import org.eclipse.core.runtime.CoreException;
 
  
@@ -29,7 +28,7 @@ public abstract class ContextType implements ITemplateEditor {
   private final String fName;
 
   /** variables used by this content type */
-  private final Map fVariables = new HashMap();
+  private final Map<String, TemplateVariable> fVariables = new HashMap<String, TemplateVariable>();
 
   /**
    * Creates a context type with a name.
@@ -71,7 +70,7 @@ public abstract class ContextType implements ITemplateEditor {
   /**
    * Returns an iterator for the variables known to the context type.
    */
-  public Iterator variableIterator() {
+  public Iterator<TemplateVariable> variableIterator() {
     return fVariables.values().iterator();
   }
 
@@ -101,7 +100,7 @@ public abstract class ContextType implements ITemplateEditor {
       int[] offsets = variable.getOffsets();
       int length = variable.getLength();
 
-      TemplateVariable evaluator = (TemplateVariable) fVariables.get(name);
+      TemplateVariable evaluator = fVariables.get(name);
       String value = (evaluator == null) ? null : evaluator.evaluate(context);
 
       if (value == null)
@@ -136,7 +135,7 @@ public abstract class ContextType implements ITemplateEditor {
   }
 
   private static void positionsToVariables(MultiTextEdit positions, TemplatePosition[] variables) {
-    Iterator iterator = positions.iterator();
+    Iterator<Object> iterator = positions.iterator();
 
     for (int i = 0; i != variables.length; i++) {
       TemplatePosition variable = variables[i];
@@ -155,12 +154,12 @@ public abstract class ContextType implements ITemplateEditor {
   public Template[] getTemplates() {
     Template[] templates = Templates.getInstance().getTemplates();
 
-    Vector vector = new Vector();
+    Vector<Template> vector = new Vector<Template>();
     for (int i = 0; i != templates.length; i++)
       if (templates[i].getContextTypeName().equals(fName))
         vector.add(templates[i]);
 
-    return (Template[]) vector.toArray(new Template[vector.size()]);
+    return vector.toArray(new Template[vector.size()]);
   }
 
 }

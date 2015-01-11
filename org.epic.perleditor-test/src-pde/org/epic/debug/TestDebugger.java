@@ -26,7 +26,7 @@ public class TestDebugger extends BasePDETestCase
 {
     private Thread mainThread;
     private long tStart, tEnd;
-    private Map varAddrs;
+    private Map<String, Integer> varAddrs;
     private int nextVarID;
     
     private TestDriver testStepPerformanceListener = new TestDriver() {
@@ -114,7 +114,7 @@ public class TestDebugger extends BasePDETestCase
     {
         super.setUp();
         
-        varAddrs = new HashMap();
+        varAddrs = new HashMap<String, Integer>();
         nextVarID = 0;
         mainThread = Thread.currentThread();
         tStart = tEnd = 0L;
@@ -317,7 +317,7 @@ public class TestDebugger extends BasePDETestCase
             
             if (m.find())
             {
-                Integer id = (Integer) varAddrs.get(m.group());
+                Integer id = varAddrs.get(m.group());
                 if (id == null)
                 {
                     id = new Integer(nextVarID);

@@ -2,7 +2,7 @@
 <feature
       id="org.epic.feature.main"
       label="EPIC"
-      version="0.6.56"
+      version="0.7.0"
       provider-name="Epic Project"
       plugin="org.epic.perleditor"
       image="icons/epic_install.jpg">
@@ -17,7 +17,7 @@ components.
    </copyright>
 
    <license url="license.html">
-EPIC plugins are distributed under Common Public License v 1.0,
+      EPIC plugins are distributed under Common Public License v 1.0,
 which is reproduced below. EPIC includes software developed by
 the JDOM Project (http://www.jdom.org/), 
    
@@ -242,23 +242,23 @@ The included JDOM software is distributed under the following license:
     these conditions in the documentation and/or other materials
     provided with the distribution.
 
- 3. The name "JDOM" must not be used to endorse or promote products
+ 3. The name &quot;JDOM&quot; must not be used to endorse or promote products
     derived from this software without prior written permission.  For
     written permission, please contact &lt;request_AT_jdom_DOT_org&gt;.
 
- 4. Products derived from this software may not be called "JDOM", nor
-    may "JDOM" appear in their name, without prior written permission
+ 4. Products derived from this software may not be called &quot;JDOM&quot;, nor
+    may &quot;JDOM&quot; appear in their name, without prior written permission
     from the JDOM Project Management &lt;request_AT_jdom_DOT_org&gt;.
 
  In addition, we request (but do not require) that you include in the
  end-user documentation provided with the redistribution and/or in the
  software itself an acknowledgement equivalent to the following:
-     "This product includes software developed by the
-      JDOM Project (http://www.jdom.org/)."
+     &quot;This product includes software developed by the
+      JDOM Project (http://www.jdom.org/).&quot;
  Alternatively, the acknowledgment may be graphical using the logos
  available at http://www.jdom.org/images/logos.
 
- THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESSED OR IMPLIED
+ THIS SOFTWARE IS PROVIDED ``AS IS&apos;&apos; AND ANY EXPRESSED OR IMPLIED
  WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
  OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
  DISCLAIMED.  IN NO EVENT SHALL THE JDOM AUTHORS OR THE PROJECT
@@ -281,48 +281,48 @@ The included JDOM software is distributed under the following license:
    <url>
       <update label="EPIC Updates" url="http://e-p-i-c.sourceforge.net/updates/testing"/>
    </url>
-   
+
    <requires>
-      <import feature="org.eclipse.platform" version="3.2.0" match="greaterOrEqual"/>
+      <import feature="org.eclipse.platform" version="3.7.0" match="greaterOrEqual"/>
    </requires>
 
    <plugin
          id="org.epic.regexp"
          download-size="0"
          install-size="0"
-         version="0.6.1"
+         version="0.7.0"
          unpack="false"/>
 
    <plugin
          id="org.epic.perleditor"
          download-size="0"
          install-size="0"
-         version="0.6.38"
+         version="0.7.0"
          unpack="false"/>
 
    <plugin
          id="org.epic.doc"
          download-size="0"
          install-size="0"
-         version="0.6.2"/>
+         version="0.7.0"/>
 
    <plugin
          id="org.epic.debug"
          download-size="0"
          install-size="0"
-         version="0.6.41"
+         version="0.7.0"
          unpack="false"/>
 
    <plugin
          id="org.epic.lib"
          download-size="0"
          install-size="0"
-         version="0.6.1"/>
+         version="0.7.0"/>
 
    <plugin
          id="org.epic.source"
          download-size="0"
          install-size="0"
-         version="0.6.56"/>
+         version="0.7.0"/>
 
 </feature>

@@ -320,17 +320,23 @@ public class EpicCgiHandler implements Handler
         env.add("SERVER_SOFTWARE=" + software);
         env.add("SERVER_NAME=" + config.getHostname());
         env.add("PATH_INFO=" + url.substring(pathInfoStartI));
-
+        
+        request.log(Server.LOG_DIAGNOSTIC, "PATH_INFO=" + url.substring(pathInfoStartI));
         String suffix = cgiFile.getName();
         if (suffix.lastIndexOf('.') != -1)
             suffix = suffix.substring(suffix.lastIndexOf('.'));
         else suffix = "";
         
         String pre = url.substring(0, pathInfoStartI);
-        if (pre.endsWith(suffix)) {
+        if (pre.endsWith(suffix)) { // exact match, likely no PATH_INFO
             env.add("SCRIPT_NAME=" + pre);
-        } else {
+            request.log(Server.LOG_DIAGNOSTIC, "SCRIPT_NAME=" + pre + " (ends with "+suffix+")");
+        } else if (cgiFile.getName().equals("index"+suffix)) { // directory index match
+            env.add("SCRIPT_NAME=" + pre + "index" + suffix);
+            request.log(Server.LOG_DIAGNOSTIC, "SCRIPT_NAME=" + pre + "index" + suffix+ " (is index"+suffix+")");
+        } else { // shortest prefix matched, append suffix
             env.add("SCRIPT_NAME=" + pre + suffix);
+            request.log(Server.LOG_DIAGNOSTIC, "SCRIPT_NAME=" + pre + suffix);
         }
         env.add("SERVER_PORT=" + config.getServerPort());
         env.add("REMOTE_ADDR="

@@ -25,7 +25,7 @@
     -->
     <extension point="org.eclipse.ui.preferencePages">
         <page
-            name="Perl EPIC"
+            name="Perl"
             class="org.epic.core.preferences.PerlMainPreferencePage"
             id="org.epic.core.preferences.PerlMainPreferencePage">
         </page>

@@ -239,7 +239,7 @@ public class PerlEditorPlugin extends AbstractUIPlugin {
         final String ERROR_TITLE = "Missing Perl interpreter";
         final String ERROR_MSG =
             "To operate correctly, EPIC requires a Perl interpreter. " +
-            "Check your configuration settings (\"Window/Preferences/Perl EPIC\").";
+            "Check your configuration settings (\"Window/Preferences/Perl\").";
 
         PerlExecutor executor = new PerlExecutor();
         try
@@ -257,7 +257,7 @@ public class PerlEditorPlugin extends AbstractUIPlugin {
                     IStatus.ERROR,
                     getPluginId(),
                     IStatus.OK,
-                    "The executable specified in EPIC Preferences " +
+                    "The executable specified in Perl Preferences " +
                     "does not appear to be a valid Perl interpreter.",
                     null);
 

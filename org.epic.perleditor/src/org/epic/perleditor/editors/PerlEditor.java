@@ -166,6 +166,8 @@ public class PerlEditor extends TextEditor implements IPropertyChangeListener
      */
     public void doSaveAs()
     {
+    	FormatSourceAction fsa = new FormatSourceAction(this);
+    	fsa.run();    	
         super.doSaveAs();
         revalidateSyntax();
     }

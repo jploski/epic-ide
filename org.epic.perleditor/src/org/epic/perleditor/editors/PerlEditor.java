@@ -29,6 +29,7 @@ import org.epic.perleditor.PerlEditorPlugin;
 import org.epic.perleditor.actions.*;
 import org.epic.perleditor.preferences.MarkOccurrencesPreferences;
 import org.epic.perleditor.preferences.PreferenceConstants;
+import org.epic.perleditor.preferences.SourceFormatterPreferences;
 import org.epic.perleditor.templates.perl.ModuleCompletionHelper;
 import org.epic.perleditor.views.PerlOutlinePage;
 
@@ -154,8 +155,7 @@ public class PerlEditor extends TextEditor implements IPropertyChangeListener
      */
     public void doSave(IProgressMonitor monitor)
     {
-    	FormatSourceAction fsa = new FormatSourceAction(this);
-    	fsa.run();
+    	formatIfEnabled();
         super.doSave(monitor);
         revalidateSyntax();
     }
@@ -166,12 +166,29 @@ public class PerlEditor extends TextEditor implements IPropertyChangeListener
      */
     public void doSaveAs()
     {
-    	FormatSourceAction fsa = new FormatSourceAction(this);
-    	fsa.run();    	
+    	formatIfEnabled();	
         super.doSaveAs();
         revalidateSyntax();
     }
 
+    /**
+     * Run a format source action if enabled. 
+     */
+    private void formatIfEnabled()
+    {
+        IPreferenceStore store = new ChainedPreferenceStore(new IPreferenceStore[] {
+                EditorsUI.getPreferenceStore(),
+                PerlEditorPlugin.getDefault().getPreferenceStore() });
+        
+        boolean formatOnSave = store.getBoolean(SourceFormatterPreferences.FORMAT_ON_SAVE);
+                
+        if (formatOnSave)
+        {
+	    	FormatSourceAction fsa = new FormatSourceAction(this);
+	    	fsa.run();
+        }
+    }
+    
     /**
      * The PerlEditor implementation of this AbstractTextEditor method performs
      * sets the input of the outline page after AbstractTextEditor has set

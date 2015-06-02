@@ -82,7 +82,11 @@ public class SourceFormatterPreferencePage
 						SourceFormatterPreferences.SWALLOW_OPTIONAL_BLANK_LINES,
 						"Swallow optional blank lines",
 						composite));
- 
+		addField(
+				new BooleanFieldEditor(
+				SourceFormatterPreferences.FORMAT_ON_SAVE,
+				"Format on save",
+				composite)); 
 
 //        addField(new SpacerFieldEditor(composite));
 //		addField(new LabelFieldEditor("Container tightness:", composite));

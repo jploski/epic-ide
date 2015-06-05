@@ -20,6 +20,7 @@ public class SourceFormatterPreferences {
 	public static final String SWALLOW_OPTIONAL_BLANK_LINES ="Formatter.swallowOptionalBlankLines";
 	public static final String PERLTIDY_OPTIONS = "Formatter.perltidyOptions";
 	public static final String HTML_EXPORT_OPTIONS = "Formatter.htmlExportOptions";
+	public static final String FORMAT_ON_SAVE = "Formatter.formatOnSave";
 	
 	
 	/**
@@ -44,6 +45,7 @@ public class SourceFormatterPreferences {
 //		store.setDefault(CONTAINER_TIGHTNESS_SQUARE_BRACKETS, 1);
 		store.setDefault(PERLTIDY_OPTIONS, "");
 		store.setDefault(HTML_EXPORT_OPTIONS, "-toc");
+		store.setDefault(FORMAT_ON_SAVE, false);
 }
 
 	

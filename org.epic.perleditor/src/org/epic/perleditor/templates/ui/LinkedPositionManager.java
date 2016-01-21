@@ -16,6 +16,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.eclipse.core.runtime.Assert;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.BadPositionCategoryException;
 import org.eclipse.jface.text.DocumentCommand;
@@ -27,7 +28,6 @@ import org.eclipse.jface.text.IDocumentListener;
 import org.eclipse.jface.text.IPositionUpdater;
 import org.eclipse.jface.text.Position;
 import org.eclipse.jface.text.TypedPosition;
-import org.eclipse.jface.util.Assert;
 
 
 /**

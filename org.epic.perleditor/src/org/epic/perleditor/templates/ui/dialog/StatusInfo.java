@@ -2,8 +2,8 @@ package org.epic.perleditor.templates.ui.dialog;
 
 import org.epic.perleditor.PerlEditorPlugin;
 
+import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.jface.util.Assert;
 
 /**
  * A settable IStatus. 

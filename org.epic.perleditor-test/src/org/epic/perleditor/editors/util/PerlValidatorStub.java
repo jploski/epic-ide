@@ -2,7 +2,6 @@ package org.epic.perleditor.editors.util;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.Serializable;
 import java.util.*;
 
 import org.eclipse.core.resources.IResource;
@@ -67,8 +66,8 @@ public class PerlValidatorStub extends PerlValidatorBase
         perlExecutor.dispose();
     }
     
-    protected void addMarker(IResource resource, Map<String, Serializable> attributes)
-    {                
+    protected void addMarker(IResource resource, Map<String, Object> attributes)
+    {
     }
     
     protected void clearAllUsedMarkers(IResource resource)

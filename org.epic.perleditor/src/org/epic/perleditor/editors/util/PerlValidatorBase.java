@@ -100,7 +100,7 @@ abstract class PerlValidatorBase
                 errors.getErrorMessage(pline.getMessage());
             
             Integer lineNr = new Integer(pline.getLineNumber());
-            Map<String, Serializable> attributes = new HashMap<String, Serializable>();
+            Map<String, Object> attributes = new HashMap<String, Object>();
 
             attributes.put(IMarker.SEVERITY, errorMsg.getSeverity());
 			attributes.put(
@@ -158,7 +158,7 @@ abstract class PerlValidatorBase
         removeUnusedMarkers(resource);
 	}
     
-    protected abstract void addMarker(IResource resource, Map<String, Serializable> attributes);
+    protected abstract void addMarker(IResource resource, Map<String, Object> attributes);
 
     protected abstract void clearAllUsedMarkers(IResource resource);
 
@@ -327,7 +327,7 @@ abstract class PerlValidatorBase
     }       
     
     private void underlineError(
-        IResource resource, String sourceCode, int lineNo, Map<String, Serializable> attributes)
+        IResource resource, String sourceCode, int lineNo, Map<String, Object> attributes)
     {
         // Get start and end offset
         int lineOffset = 0;

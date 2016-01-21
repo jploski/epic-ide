@@ -77,7 +77,7 @@ public class PerlValidator extends PerlValidatorBase
         return true;
 	} 
 
-    protected void addMarker(IResource resource, Map<String, Serializable> attributes)
+    protected void addMarker(IResource resource, Map<String, Object> attributes)
     {
         new MarkerUtil(resource).addMarker(attributes, Constants.PROBLEM_MARKER);
     }

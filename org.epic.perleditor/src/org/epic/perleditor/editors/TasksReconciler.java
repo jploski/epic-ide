@@ -77,7 +77,7 @@ public class TasksReconciler
     
     private void addTaskMarker(int start, int stop, int lineNumber, String text)
     {
-        Map<String, Serializable> attributes = new HashMap<String, Serializable>(11);
+        Map<String, Object> attributes = new HashMap<String, Object>(11);
         
         attributes.put(IMarker.CHAR_START, new Integer(start));
         attributes.put(IMarker.CHAR_END, new Integer(stop));

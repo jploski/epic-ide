@@ -24,6 +24,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.*;
 import org.eclipse.ui.actions.WorkspaceModifyOperation;
 import org.eclipse.ui.dialogs.WizardNewProjectReferencePage;
+import org.eclipse.ui.internal.UIPlugin;
 //import org.eclipse.ui.internal.IPreferenceConstants;
 import org.eclipse.ui.internal.WorkbenchPlugin;
 //import org.eclipse.ui.internal.dialogs.MessageDialogWithToggle;
@@ -86,7 +87,7 @@ public class PerlProjectResourceWizard
 	 */
 	public PerlProjectResourceWizard() {
 		AbstractUIPlugin plugin =
-			(AbstractUIPlugin) Platform.getPlugin(PlatformUI.PLUGIN_ID);
+			(AbstractUIPlugin) UIPlugin.getDefault();
 		IDialogSettings workbenchSettings = plugin.getDialogSettings();
 		IDialogSettings section = workbenchSettings.getSection("BasicNewProjectResourceWizard"); //$NON-NLS-1$
 		if (section == null)
@@ -181,7 +182,7 @@ public class PerlProjectResourceWizard
 				// warn if module::starter fails
 				if ((output.stderr != null) && !output.stderr.equals("")) {
 					// TODO - add stderr to Messagebox
-					Platform.getPlugin(PlatformUI.PLUGIN_ID).getLog().log(
+					UIPlugin.getDefault().getLog().log(
 					    new Status(Status.ERROR, PlatformUI.PLUGIN_ID, 0, "Module::Starter did not run: " + output.stderr, //$NON-NLS-1$
 					        null));
 					MessageDialog.openError(getShell(), ResourceMessages.getString("NewProject.errorMessage"), //$NON-NLS-1$
@@ -194,7 +195,7 @@ public class PerlProjectResourceWizard
 			}
 			catch (CoreException e) {
 				// TODO Auto-generated catch block
-				Platform.getPlugin(PlatformUI.PLUGIN_ID).getLog().log(new Status(Status.ERROR, PlatformUI.PLUGIN_ID, 0, e.toString(), e));
+				UIPlugin.getDefault().getLog().log(new Status(Status.ERROR, PlatformUI.PLUGIN_ID, 0, e.toString(), e));
 				MessageDialog.openError(getShell(), ResourceMessages.getString("NewProject.errorMessage"), //$NON-NLS-1$
 				    ResourceMessages.format("NewProject.internalError", new Object[] { e.getMessage() })); //$NON-NLS-1$
 			}
@@ -232,7 +233,7 @@ public class PerlProjectResourceWizard
 				}
 			} else {
 				// CoreExceptions are handled above, but unexpected runtime exceptions and errors may still occur.
-				Platform.getPlugin(PlatformUI.PLUGIN_ID).getLog().log(
+				UIPlugin.getDefault().getLog().log(
 					new Status(
 						Status.ERROR,
 						PlatformUI.PLUGIN_ID,
@@ -408,8 +409,7 @@ public class PerlProjectResourceWizard
 		if (configElement == null)
 			return;
 
-		AbstractUIPlugin uiPlugin =
-			(AbstractUIPlugin) Platform.getPlugin(PlatformUI.PLUGIN_ID);
+		AbstractUIPlugin uiPlugin = UIPlugin.getDefault();
 
 		// Retrieve the new project open perspective preference setting
 		String perspSetting =

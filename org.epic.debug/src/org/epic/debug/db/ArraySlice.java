@@ -4,9 +4,7 @@ import java.util.List;
 
 import org.eclipse.core.runtime.Status;
 import org.eclipse.debug.core.DebugException;
-import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.model.DebugElement;
-import org.eclipse.debug.core.model.IDebugTarget;
 import org.eclipse.debug.core.model.IValue;
 import org.eclipse.debug.core.model.IVariable;
 import org.epic.debug.PerlDebugPlugin;

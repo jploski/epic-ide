@@ -7,7 +7,6 @@ import org.eclipse.jface.viewers.ISelection;
 import org.epic.core.util.MarkerUtilities;
 import org.epic.perleditor.editors.PerlEditor;
 import org.epic.perleditor.editors.PerlEditorActionIds;
-import org.epic.perleditor.editors.util.SourceCritic;
 
 
 /**

@@ -18,7 +18,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.*;
 import org.eclipse.ui.editors.text.*;
-import org.eclipse.ui.internal.ViewerActionBuilder;
 import org.eclipse.ui.internal.Workbench;
 import org.eclipse.ui.keys.IBindingService;
 import org.eclipse.ui.texteditor.*;

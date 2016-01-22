@@ -302,7 +302,7 @@ public class EpicCgiHandler implements Handler
          * specially. Multiple headers with the same name are not handled
          * properly.
          */
-        Enumeration keys = request.headers.keys();
+        Enumeration<Object> keys = request.headers.keys();
         while (keys.hasMoreElements())
         {
             String key = (String) keys.nextElement();

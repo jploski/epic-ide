@@ -110,7 +110,7 @@ public class BaseTestCase extends TestCase
             Properties testProperties = new Properties();
             testProperties.load(in);
 
-            for (Enumeration e = testProperties.keys(); e.hasMoreElements();)
+            for (Enumeration<Object> e = testProperties.keys(); e.hasMoreElements();)
             {
                 String key = e.nextElement().toString();
                 String value = testProperties.getProperty(key);

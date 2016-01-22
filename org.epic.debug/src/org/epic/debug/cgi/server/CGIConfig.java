@@ -148,7 +148,7 @@ class CGIConfig
     {
         Map<String, String> ret = new HashMap<String, String>();
         int len = (propsPrefix + prefix).length();
-        for (Iterator i = server.props.keySet().iterator(); i.hasNext();)
+        for (Iterator<Object> i = server.props.keySet().iterator(); i.hasNext();)
         {
             String key = (String) i.next(); 
             if (key.startsWith(propsPrefix + prefix))

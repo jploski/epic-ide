@@ -36,12 +36,12 @@ public class XMLUtilities
                 Document doc = builder.build(file);
 
                 Element root = doc.getRootElement();
-                List entries = root.getChildren("ignoredpathentry");
-                Iterator iter = entries.iterator();
+                List<Element> entries = root.getChildren("ignoredpathentry");
+                Iterator<Element> iter = entries.iterator();
 
                 while (iter.hasNext())
                 {
-                    Element element = (Element) iter.next();
+                    Element element = iter.next();
                     ignores.add(element.getAttributeValue("path"));
                 }
             }

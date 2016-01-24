@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.epic.debug;
 
-import org.eclipse.jface.util.Assert;
+import org.eclipse.core.runtime.Assert;
 
 
 public final class AnnotationType {

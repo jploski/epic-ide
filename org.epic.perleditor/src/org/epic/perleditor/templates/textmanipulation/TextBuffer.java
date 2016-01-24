@@ -15,6 +15,7 @@ import org.epic.perleditor.templates.ui.EPICStatusConstants;
 //import net.sourceforge.phpeclipse.PHPeclipsePlugin;
 import org.epic.perleditor.PerlEditorPlugin;
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -25,7 +26,6 @@ import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IDocumentListener;
 import org.eclipse.jface.text.ILineTracker;
 import org.eclipse.jface.text.IRegion;
-import org.eclipse.jface.util.Assert;
 
 //import org.eclipse.jdt.internal.ui.JavaPlugin;
 //import org.eclipse.jdt.internal.ui.JavaStatusConstants;

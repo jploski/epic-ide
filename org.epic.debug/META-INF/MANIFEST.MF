@@ -36,4 +36,4 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.core.variables,
  org.epic.lib,
  org.eclipse.ui.console
-Eclipse-AutoStart: true
+Bundle-ActivationPolicy: lazy

@@ -48,4 +48,4 @@ Require-Bundle: org.eclipse.jface.text,
  org.eclipse.team.core,
  org.eclipse.core.variables,
  org.epic.lib
-Eclipse-AutoStart: true; exceptions="org.epic.core.content"
+Bundle-ActivationPolicy: lazy;exclude:="org.epic.core.content"

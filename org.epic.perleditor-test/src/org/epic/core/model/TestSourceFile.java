@@ -4,10 +4,8 @@ import java.io.IOException;
 import java.util.Iterator;
 
 import org.eclipse.jface.text.Document;
-import org.eclipse.jface.text.IDocument;
 import org.epic.perl.editor.test.BaseTestCase;
 import org.epic.perl.editor.test.Log;
-import org.epic.perleditor.editors.PartitionTypes;
 import org.epic.perleditor.editors.PerlPartitioner;
 
 public class TestSourceFile extends BaseTestCase

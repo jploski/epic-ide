@@ -4,8 +4,6 @@
  */
 package org.epic.perleditor.templates;
 
-import java.io.*;
-
 import org.eclipse.core.runtime.*;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.text.*;

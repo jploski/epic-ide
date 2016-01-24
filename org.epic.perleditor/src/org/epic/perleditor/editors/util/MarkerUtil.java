@@ -8,22 +8,12 @@ package org.epic.perleditor.editors.util;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.core.internal.resources.Marker;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IAdaptable;
-import org.eclipse.jface.text.BadLocationException;
-import org.eclipse.jface.text.IDocument;
-import org.eclipse.jface.text.Position;
-import org.eclipse.jface.text.source.IAnnotationModel;
-import org.eclipse.jface.text.source.ISourceViewer;
-import org.eclipse.ui.editors.text.TextEditor;
-import org.eclipse.ui.texteditor.MarkerAnnotation;
 import org.epic.perleditor.editors.AddEditorMarker;
 
 /**
@@ -187,7 +177,7 @@ public class MarkerUtil {
 
 		List<IMarker> markers = getMarkersForLine(fResource, line);
 	   for(int i = 0; i < markers.size(); i++) {
-	   		Marker marker = (Marker) markers.get(i);
+	   		IMarker marker = markers.get(i);
 	   		String markerText = marker.getAttribute(IMarker.MESSAGE, (String) null);
 
 	   		try {

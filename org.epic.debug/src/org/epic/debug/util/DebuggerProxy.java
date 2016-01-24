@@ -1,7 +1,6 @@
 package org.epic.debug.util;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 
 import org.eclipse.core.runtime.*;
 import org.eclipse.debug.core.*;

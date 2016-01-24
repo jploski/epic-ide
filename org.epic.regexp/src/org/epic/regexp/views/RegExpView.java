@@ -36,7 +36,6 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.part.ViewPart;
-import org.epic.regexp.views.RegExpView.SubexpressionPos;
 
 public class RegExpView extends ViewPart {
 

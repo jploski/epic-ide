@@ -35,7 +35,7 @@ public class AddEditorMarker {
 	    textEditor = editor;
 	}
 	
-	public void addMarker(IResource resource, Map<?, ?> attributes, String markerType) {
+	public void addMarker(IResource resource, Map<String, Object> attributes, String markerType) {
 			try {
 				MarkerUtilities.createMarker(resource, attributes, markerType);
 			} catch (CoreException x) {
@@ -43,7 +43,7 @@ public class AddEditorMarker {
 			}
 	}
 
-	public void addMarker(Map<?, ?> attributes, String markerType) {
+	public void addMarker(Map<String, Object> attributes, String markerType) {
 		if(textEditor == null)
 			return;
 			

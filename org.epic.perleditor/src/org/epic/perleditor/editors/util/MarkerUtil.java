@@ -157,7 +157,7 @@ public class MarkerUtil {
 	 * @param attributes	Marker attributes
 	 * @param markerType Marker type
 	 */
-	public void addMarker(Map<String, Serializable> attributes, String markerType) {
+	public void addMarker(Map<String, Object> attributes, String markerType) {
 		attributes.put(EPIC_MARKER_USED_FLAG, Boolean.TRUE);
 		AddEditorMarker ed = new AddEditorMarker();
 		ed.addMarker(fResource, attributes, markerType);

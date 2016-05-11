@@ -146,19 +146,25 @@ public class PerlEditorPlugin extends AbstractUIPlugin {
 	 * @param store
 	 *            the preference store to fill
 	 */
-	protected void initializeDefaultPreferences(IPreferenceStore store) {
-		PreferenceConstants.initializeDefaultValues(store);
-		SourceFormatterPreferences.initializeDefaultValues(store);
-		CodeAssistPreferences.initializeDefaultValues(store);
-		TaskTagPreferences.initializeDefaults(store);
-		MarkOccurrencesPreferences.initializeDefaultValues(store);
+    protected void initializeDefaultPreferences(final IPreferenceStore store) {
+        Display.getDefault().syncExec(new Runnable() {
+            @Override
+            public void run()
+            {
+                PreferenceConstants.initializeDefaultValues(store);
+                SourceFormatterPreferences.initializeDefaultValues(store);
+                CodeAssistPreferences.initializeDefaultValues(store);
+                TaskTagPreferences.initializeDefaults(store);
+                MarkOccurrencesPreferences.initializeDefaultValues(store);
 
-        System.setProperty(
-            PreferenceConstants.SOURCE_CRITIC_ENABLED,
-            store.getString(PreferenceConstants.SOURCE_CRITIC_ENABLED));
-	}
+                System.setProperty(
+                    PreferenceConstants.SOURCE_CRITIC_ENABLED,
+                    store.getString(PreferenceConstants.SOURCE_CRITIC_ENABLED));
+            }
+        });
+    }
 
-	public String getPerlExecutable() {
+    public String getPerlExecutable() {
 		return getPreferenceStore().getString(PreferenceConstants.DEBUG_PERL_EXECUTABLE);
 	}
 

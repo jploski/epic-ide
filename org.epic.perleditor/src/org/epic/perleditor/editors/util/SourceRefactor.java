@@ -67,8 +67,8 @@ public class SourceRefactor extends ScriptExecutor
     private static List<String> buildArgs(String subName, String codeSnippet)
     {
         ArrayList<String> cmdArgs = new ArrayList<String>(3);
-        cmdArgs.add(subName.replaceAll("'", "\\\\'"));
-        cmdArgs.add(codeSnippet.replaceAll("'", "\\\\'"));
+        cmdArgs.add(subName.replaceAll("'", "\\'"));
+        cmdArgs.add(codeSnippet.replaceAll("'", "\\'"));
         cmdArgs.add(DELIMITER);
 
         return cmdArgs;

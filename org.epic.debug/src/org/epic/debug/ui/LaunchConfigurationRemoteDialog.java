@@ -13,25 +13,25 @@ import org.eclipse.debug.ui.ILaunchConfigurationTab;
  * Window>Preferences>Java>Code Generation.
  */
 public class LaunchConfigurationRemoteDialog
-	extends AbstractLaunchConfigurationTabGroup {
+    extends AbstractLaunchConfigurationTabGroup {
 
-	/**
-	 * Constructor for LaucunchConfigurationDialog.
-	 */
-	public LaunchConfigurationRemoteDialog() {
-		super();
-	}
+    /**
+     * Constructor for LaucunchConfigurationDialog.
+     */
+    public LaunchConfigurationRemoteDialog() {
+        super();
+    }
 
-	/**
-	 * @see org.eclipse.debug.ui.ILaunchConfigurationTabGroup#createTabs(ILaunchConfigurationDialog, String)
-	 */
-	
+    /**
+     * @see org.eclipse.debug.ui.ILaunchConfigurationTabGroup#createTabs(ILaunchConfigurationDialog, String)
+     */
+    
 public void createTabs(ILaunchConfigurationDialog dialog, String mode) {
-		ILaunchConfigurationTab[] tabs = new ILaunchConfigurationTab[] {
-		
-			
-			 new LaunchConfigurationRemoteMainTab(),new org.eclipse.debug.ui.CommonTab()
-		};
-		setTabs(tabs);
-	}
+        ILaunchConfigurationTab[] tabs = new ILaunchConfigurationTab[] {
+        
+            
+             new LaunchConfigurationRemoteMainTab(),new org.eclipse.debug.ui.CommonTab()
+        };
+        setTabs(tabs);
+    }
 }

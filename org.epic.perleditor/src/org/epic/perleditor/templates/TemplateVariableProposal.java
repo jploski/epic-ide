@@ -24,79 +24,79 @@ import org.eclipse.swt.widgets.Shell;
  */
 public class TemplateVariableProposal implements ICompletionProposal {
 
-	private TemplateVariable fVariable;
-	private int fOffset;
-	private int fLength;	
-	private ITextViewer fViewer;
-	
-	private Point fSelection;
+    private TemplateVariable fVariable;
+    private int fOffset;
+    private int fLength;	
+    private ITextViewer fViewer;
+    
+    private Point fSelection;
 
-	/**
-	 * Creates a template variable proposal.
-	 * 
-	 * @param variable the template variable
-	 * @param offset the offset to replace
-	 * @param length the length to replace
-	 * @param viewer the viewer
-	 */
-	public TemplateVariableProposal(TemplateVariable variable, int offset, int length, ITextViewer viewer) {
-		fVariable= variable;
-		fOffset= offset;
-		fLength= length;
-		fViewer= viewer;
-	}
-	
-	/*
-	 * @see ICompletionProposal#apply(IDocument)
-	 */
-	public void apply(IDocument document) {
+    /**
+     * Creates a template variable proposal.
+     * 
+     * @param variable the template variable
+     * @param offset the offset to replace
+     * @param length the length to replace
+     * @param viewer the viewer
+     */
+    public TemplateVariableProposal(TemplateVariable variable, int offset, int length, ITextViewer viewer) {
+        fVariable= variable;
+        fOffset= offset;
+        fLength= length;
+        fViewer= viewer;
+    }
+    
+    /*
+     * @see ICompletionProposal#apply(IDocument)
+     */
+    public void apply(IDocument document) {
 
-		try {
-			String variable= fVariable.getName().equals("dollar") ? "$$" : "${" + fVariable.getName() + '}'; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-			document.replace(fOffset, fLength, variable);
-			fSelection= new Point(fOffset + variable.length(), 0);
+        try {
+            String variable= fVariable.getName().equals("dollar") ? "$$" : "${" + fVariable.getName() + '}'; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            document.replace(fOffset, fLength, variable);
+            fSelection= new Point(fOffset + variable.length(), 0);
 
-		} catch (BadLocationException e) {
-			e.printStackTrace();
-			//PHPeclipsePlugin.log(e);
+        } catch (BadLocationException e) {
+            e.printStackTrace();
+            //PHPeclipsePlugin.log(e);
 
-			Shell shell= fViewer.getTextWidget().getShell();
-			MessageDialog.openError(shell, TemplateMessages.getString("TemplateVariableProposal.error.title"), e.getMessage()); //$NON-NLS-1$
-		}
-	}
+            Shell shell= fViewer.getTextWidget().getShell();
+            MessageDialog.openError(shell, TemplateMessages.getString("TemplateVariableProposal.error.title"), e.getMessage()); //$NON-NLS-1$
+        }
+    }
 
-	/*
-	 * @see ICompletionProposal#getSelection(IDocument)
-	 */
-	public Point getSelection(IDocument document) {
-		return fSelection;
-	}
+    /*
+     * @see ICompletionProposal#getSelection(IDocument)
+     */
+    public Point getSelection(IDocument document) {
+        return fSelection;
+    }
 
-	/*
-	 * @see ICompletionProposal#getAdditionalProposalInfo()
-	 */
-	public String getAdditionalProposalInfo() {
-		return null;
-	}
+    /*
+     * @see ICompletionProposal#getAdditionalProposalInfo()
+     */
+    public String getAdditionalProposalInfo() {
+        return null;
+    }
 
-	/*
-	 * @see ICompletionProposal#getDisplayString()
-	 */
-	public String getDisplayString() {
-		return fVariable.getName() + " - " + fVariable.getDescription(); //$NON-NLS-1$
-	}
+    /*
+     * @see ICompletionProposal#getDisplayString()
+     */
+    public String getDisplayString() {
+        return fVariable.getName() + " - " + fVariable.getDescription(); //$NON-NLS-1$
+    }
 
-	/*
-	 * @see ICompletionProposal#getImage()
-	 */
-	public Image getImage() {
-		return null;
-	}
+    /*
+     * @see ICompletionProposal#getImage()
+     */
+    public Image getImage() {
+        return null;
+    }
 
-	/*
-	 * @see ICompletionProposal#getContextInformation()
-	 */
-	public IContextInformation getContextInformation() {
-		return null;
-	}
+    /*
+     * @see ICompletionProposal#getContextInformation()
+     */
+    public IContextInformation getContextInformation() {
+        return null;
+    }
 }

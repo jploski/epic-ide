@@ -327,8 +327,8 @@ public class TemplatePreferencePage
     new PerlPartitioner(PerlEditorPlugin.getDefault().getLog(), document);
 
     // TODO changed check
-	PerlSourceViewerConfiguration sourceViewerConfiguration = new PerlSourceViewerConfiguration(PerlEditorPlugin.getDefault().getPreferenceStore(), null);
-	viewer.configure(sourceViewerConfiguration);
+    PerlSourceViewerConfiguration sourceViewerConfiguration = new PerlSourceViewerConfiguration(PerlEditorPlugin.getDefault().getPreferenceStore(), null);
+    viewer.configure(sourceViewerConfiguration);
     //viewer.configure(new PerlSourceViewerConfiguration(tools, null));
     // (tools, null));
     viewer.setEditable(false);
@@ -581,8 +581,8 @@ public class TemplatePreferencePage
       openWriteErrorDialog(e);
     }
 
-	PerlEditorPlugin.getDefault().savePluginPreferences();
-	// TODO check if needed
+    PerlEditorPlugin.getDefault().savePluginPreferences();
+    // TODO check if needed
     //PHPEditorEnvironment.disconnect(this);
     return super.performOk();
   }

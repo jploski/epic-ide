@@ -18,31 +18,31 @@ public class PerlCriticBuilderHelper {
     //~ Static fields/initializers
 
     public static String METRICS_MARKER = "org.epic.perleditor.markers.critic";
-	private static PerlCriticBuilderHelper instance;
-	private boolean criticResourcePreconditions;
-	private boolean criticAutoRunPreconditions;
-	
-	public PerlCriticBuilderHelper () {
-		setCriticResourcePreconditions(checkCriticResourcePreconditions());
-		setCriticAutoRunPreconditions(checkCriticAutoRunPreconditions());
-	}
-	
-	private boolean checkCriticAutoRunPreconditions() {
-		return (isCriticResourcePreconditions() && PerlCriticPreferencePage.isPerlCriticJobEnabled());
-	}
+    private static PerlCriticBuilderHelper instance;
+    private boolean criticResourcePreconditions;
+    private boolean criticAutoRunPreconditions;
+    
+    public PerlCriticBuilderHelper () {
+        setCriticResourcePreconditions(checkCriticResourcePreconditions());
+        setCriticAutoRunPreconditions(checkCriticAutoRunPreconditions());
+    }
+    
+    private boolean checkCriticAutoRunPreconditions() {
+        return (isCriticResourcePreconditions() && PerlCriticPreferencePage.isPerlCriticJobEnabled());
+    }
 
-	private boolean checkCriticResourcePreconditions() {
-		if (!PerlCriticPreferencePage.isPerlCriticEnabled()) {
-			return false;
-		}
+    private boolean checkCriticResourcePreconditions() {
+        if (!PerlCriticPreferencePage.isPerlCriticEnabled()) {
+            return false;
+        }
 
-		File perlCriticScript = new File(PerlCriticPreferencePage
-				.getPerlCritic());
-		if (!perlCriticScript.exists() || !perlCriticScript.isFile()) {
-			return false;
-		} else
-			return true;
-	}
+        File perlCriticScript = new File(PerlCriticPreferencePage
+                .getPerlCritic());
+        if (!perlCriticScript.exists() || !perlCriticScript.isFile()) {
+            return false;
+        } else
+            return true;
+    }
 
     /**
      * @return the PerlCricitBuilderHelper singleton
@@ -67,7 +67,7 @@ public class PerlCriticBuilderHelper {
      */
     public void buildResource(IResource resource)
     {
-    	
+        
         Object[] violations = doJob(resource);
 
         final MarkerUtilities factory = new MarkerUtilities(PerlEditorPlugin.getDefault().getLog(), PerlEditorPlugin.getPluginId());
@@ -119,20 +119,20 @@ public class PerlCriticBuilderHelper {
         return PerlCriticPreferencePage.getMarkerSeverity(severity);
     }
 
-	public void setCriticAutoRunPreconditions(boolean criticAutoRunPreconditions) {
-		this.criticAutoRunPreconditions = criticAutoRunPreconditions;
-	}
+    public void setCriticAutoRunPreconditions(boolean criticAutoRunPreconditions) {
+        this.criticAutoRunPreconditions = criticAutoRunPreconditions;
+    }
 
-	public boolean isCriticAutoRunPreconditions() {
-		return criticAutoRunPreconditions;
-	}
+    public boolean isCriticAutoRunPreconditions() {
+        return criticAutoRunPreconditions;
+    }
 
-	public void setCriticResourcePreconditions(boolean criticResourcePreconditions) {
-		this.criticResourcePreconditions = criticResourcePreconditions;
-	}
+    public void setCriticResourcePreconditions(boolean criticResourcePreconditions) {
+        this.criticResourcePreconditions = criticResourcePreconditions;
+    }
 
-	public boolean isCriticResourcePreconditions() {
-		return criticResourcePreconditions;
-	}
+    public boolean isCriticResourcePreconditions() {
+        return criticResourcePreconditions;
+    }
 
 }

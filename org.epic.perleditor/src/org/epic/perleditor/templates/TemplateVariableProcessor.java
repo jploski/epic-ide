@@ -19,113 +19,113 @@ import org.eclipse.jface.text.contentassist.IContextInformationValidator;
 
 public class TemplateVariableProcessor implements IContentAssistProcessor {	
 
-	private static Comparator<Object> fgTemplateVariableProposalComparator= new Comparator<Object>() {
-		public int compare(Object arg0, Object arg1) {
-			TemplateVariableProposal proposal0= (TemplateVariableProposal) arg0;
-			TemplateVariableProposal proposal1= (TemplateVariableProposal) arg1;
-			
-			return proposal0.getDisplayString().compareTo(proposal1.getDisplayString());
-		}
+    private static Comparator<Object> fgTemplateVariableProposalComparator= new Comparator<Object>() {
+        public int compare(Object arg0, Object arg1) {
+            TemplateVariableProposal proposal0= (TemplateVariableProposal) arg0;
+            TemplateVariableProposal proposal1= (TemplateVariableProposal) arg1;
+            
+            return proposal0.getDisplayString().compareTo(proposal1.getDisplayString());
+        }
 
-		public boolean equals(Object arg0) {
-			return false;
-		}
-	};
+        public boolean equals(Object arg0) {
+            return false;
+        }
+    };
 
-	
-	/** the context type */
-	private ContextType fContextType;
-	
-	/**
-	 * Sets the context type.
-	 */
-	public void setContextType(ContextType contextType) {
-		fContextType= contextType;	
-	}
-	
-	/*
-	 * @see IContentAssistProcessor#computeCompletionProposals(ITextViewer, int)
-	 */
-	public ICompletionProposal[] computeCompletionProposals(ITextViewer viewer,	int documentOffset) {
+    
+    /** the context type */
+    private ContextType fContextType;
+    
+    /**
+     * Sets the context type.
+     */
+    public void setContextType(ContextType contextType) {
+        fContextType= contextType;	
+    }
+    
+    /*
+     * @see IContentAssistProcessor#computeCompletionProposals(ITextViewer, int)
+     */
+    public ICompletionProposal[] computeCompletionProposals(ITextViewer viewer,	int documentOffset) {
 
-		if (fContextType == null)
-			return null;
+        if (fContextType == null)
+            return null;
 
-		List<TemplateVariableProposal> proposals= new ArrayList<TemplateVariableProposal>();		
-		
-		String text= viewer.getDocument().get();
-		int start= getStart(text, documentOffset);
-		int end= documentOffset;
+        List<TemplateVariableProposal> proposals= new ArrayList<TemplateVariableProposal>();		
+        
+        String text= viewer.getDocument().get();
+        int start= getStart(text, documentOffset);
+        int end= documentOffset;
 
-		String string= text.substring(start, end);
-		String prefix= (string.length() >= 2)
-			? string.substring(2)
-			: null;
+        String string= text.substring(start, end);
+        String prefix= (string.length() >= 2)
+            ? string.substring(2)
+            : null;
 
-		int offset= start;
-		int length= end - start;
+        int offset= start;
+        int length= end - start;
 
-		for (Iterator<TemplateVariable> iterator= fContextType.variableIterator(); iterator.hasNext(); ) {
-			TemplateVariable variable= iterator.next();
+        for (Iterator<TemplateVariable> iterator= fContextType.variableIterator(); iterator.hasNext(); ) {
+            TemplateVariable variable= iterator.next();
 
-			if (prefix == null || variable.getName().startsWith(prefix))
-				proposals.add(new TemplateVariableProposal(variable, offset, length, viewer));
-		}
+            if (prefix == null || variable.getName().startsWith(prefix))
+                proposals.add(new TemplateVariableProposal(variable, offset, length, viewer));
+        }
 
-		Collections.sort(proposals, fgTemplateVariableProposalComparator);
-		return proposals.toArray(new ICompletionProposal[proposals.size()]);
-	}
+        Collections.sort(proposals, fgTemplateVariableProposalComparator);
+        return proposals.toArray(new ICompletionProposal[proposals.size()]);
+    }
 
-	/* Guesses the start position of the completion */
-	private int getStart(String string, int end) {
-		int start= end;
+    /* Guesses the start position of the completion */
+    private int getStart(String string, int end) {
+        int start= end;
 
-		if (start >= 1 && string.charAt(start - 1) == '$')
-			return start - 1;
-				
-		while ((start != 0) && Character.isUnicodeIdentifierPart(string.charAt(start - 1)))
-			start--;
+        if (start >= 1 && string.charAt(start - 1) == '$')
+            return start - 1;
+                
+        while ((start != 0) && Character.isUnicodeIdentifierPart(string.charAt(start - 1)))
+            start--;
 
-		if (start >= 2 && string.charAt(start - 1) == '{' && string.charAt(start - 2) == '$')
-			return start - 2;
-			
-		return end;
-	}
+        if (start >= 2 && string.charAt(start - 1) == '{' && string.charAt(start - 2) == '$')
+            return start - 2;
+            
+        return end;
+    }
 
-	/*
-	 * @see IContentAssistProcessor#computeContextInformation(ITextViewer, int)
-	 */
-	public IContextInformation[] computeContextInformation(ITextViewer viewer, int documentOffset) {
-		return null;
-	}
+    /*
+     * @see IContentAssistProcessor#computeContextInformation(ITextViewer, int)
+     */
+    public IContextInformation[] computeContextInformation(ITextViewer viewer, int documentOffset) {
+        return null;
+    }
 
-	/*
-	 * @see IContentAssistProcessor#getCompletionProposalAutoActivationCharacters()
-	 */
-	public char[] getCompletionProposalAutoActivationCharacters() {
-		return new char[] {'$'};
-	}
+    /*
+     * @see IContentAssistProcessor#getCompletionProposalAutoActivationCharacters()
+     */
+    public char[] getCompletionProposalAutoActivationCharacters() {
+        return new char[] {'$'};
+    }
 
-	/*
-	 * @see IContentAssistProcessor#getContextInformationAutoActivationCharacters()
-	 */
-	public char[] getContextInformationAutoActivationCharacters() {
-		return null;
-	}
+    /*
+     * @see IContentAssistProcessor#getContextInformationAutoActivationCharacters()
+     */
+    public char[] getContextInformationAutoActivationCharacters() {
+        return null;
+    }
 
-	/*
-	 * @see IContentAssistProcessor#getErrorMessage()
-	 */
-	public String getErrorMessage() {
-		return null;
-	}
+    /*
+     * @see IContentAssistProcessor#getErrorMessage()
+     */
+    public String getErrorMessage() {
+        return null;
+    }
 
-	/*
-	 * @see IContentAssistProcessor#getContextInformationValidator()
-	 */
-	public IContextInformationValidator getContextInformationValidator() {
-		return null;
-	}
+    /*
+     * @see IContentAssistProcessor#getContextInformationValidator()
+     */
+    public IContextInformationValidator getContextInformationValidator() {
+        return null;
+    }
 
 }
 

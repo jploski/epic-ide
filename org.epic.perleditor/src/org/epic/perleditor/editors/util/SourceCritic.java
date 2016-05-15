@@ -77,7 +77,7 @@ public class SourceCritic extends ScriptExecutor
         String severity = PerlCriticPreferencePage.getSeverity();
         if(!"default".equals(severity))
         {
-        	additionalOptions.add("--" + severity);
+            additionalOptions.add("--" + severity);
         }
 
         additionalOptions.add("--verbose");
@@ -86,7 +86,7 @@ public class SourceCritic extends ScriptExecutor
         String otherOptions = PerlCriticPreferencePage.getOtherOptions();
         if(otherOptions.length() > 0)
         {
-        	additionalOptions.addAll(CommandLineTokenizer.tokenize(otherOptions));
+            additionalOptions.addAll(CommandLineTokenizer.tokenize(otherOptions));
         }
 
         IFile file = (IFile) resource;

@@ -105,18 +105,18 @@ public class PerlLineBreakpoint extends PerlBreakpoint implements ILineBreakpoin
     public int getLineNumber() throws CoreException
     {
         return removedLineNumber != -1
-        		? removedLineNumber
-        		: ensureMarker().getAttribute(IMarker.LINE_NUMBER, -1);
+                ? removedLineNumber
+                : ensureMarker().getAttribute(IMarker.LINE_NUMBER, -1);
     }
     
     public void pendingRemove() throws CoreException
     {
-    	super.pendingRemove();
-    	
-    	// Remember the last line number the breakpoint marker had
-    	// before it was removed; we need it to remove the breakpoint
-    	// from the Perl debugger when it suspends next time:
-    	this.removedLineNumber = getLineNumber(); 
+        super.pendingRemove();
+        
+        // Remember the last line number the breakpoint marker had
+        // before it was removed; we need it to remove the breakpoint
+        // from the Perl debugger when it suspends next time:
+        this.removedLineNumber = getLineNumber(); 
     }
 
     /**

@@ -37,16 +37,16 @@ public class PerlBuilder extends IncrementalProjectBuilder
      */
     private Set<IResource> validatedResources;
     
-	/**
-	 * No-arg default constructor per IncrementalProjectBuilder specification.
-	 */
-	public PerlBuilder()
-	{
-	}
+    /**
+     * No-arg default constructor per IncrementalProjectBuilder specification.
+     */
+    public PerlBuilder()
+    {
+    }
     
-	protected IProject[] build(int kind, Map<String, String> args, IProgressMonitor monitor)
-		throws CoreException
-	{
+    protected IProject[] build(int kind, Map<String, String> args, IProgressMonitor monitor)
+        throws CoreException
+    {
         // To maintain a responsive GUI, the actual build is split into
         // two phases:
         // phase 1 (this method, blocking, fast) determines which Perl files
@@ -82,7 +82,7 @@ public class PerlBuilder extends IncrementalProjectBuilder
         }
         else { /* it makes no sense to even attempt a build without perl */ }
         return null;
-	}
+    }
     
     /**
      * Adds a resource to validatedResources if it is an IProject (label

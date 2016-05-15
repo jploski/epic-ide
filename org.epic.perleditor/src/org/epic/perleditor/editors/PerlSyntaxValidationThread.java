@@ -26,10 +26,10 @@ public class PerlSyntaxValidationThread
 
     private StringReaderThread srt = new StringReaderThread();
 
-	public PerlSyntaxValidationThread()
+    public PerlSyntaxValidationThread()
     {
-		super("PerlSyntaxValidationThread");       
-	}
+        super("PerlSyntaxValidationThread");       
+    }
     
     /**
      * Terminates this thread, releases resources.
@@ -62,7 +62,7 @@ public class PerlSyntaxValidationThread
         }
     }
 
-	public void run()
+    public void run()
     {
         try { runImpl(); }
         catch (InterruptedException e) { /* we were requested to terminate */ }
@@ -71,7 +71,7 @@ public class PerlSyntaxValidationThread
     private void runImpl() throws InterruptedException
     {
         int exceptions = 0;
-		while (!Thread.interrupted())
+        while (!Thread.interrupted())
         {
             String text;
             synchronized (lock)
@@ -97,15 +97,15 @@ public class PerlSyntaxValidationThread
                             e));
                 }
             }
-		}
-	}
+        }
+    }
 
-	private void validate()
+    private void validate()
     {
         synchronized (lock)
         {
             code = document.get();
             lock.notifyAll();
         }
-	}
+    }
 }

@@ -13,37 +13,37 @@ import org.epic.perleditor.PerlEditorPlugin;
  */
 class CygwinMount
 {
-	private static String cygDrivePrefix = "/cygdrive/";
+    private static String cygDrivePrefix = "/cygdrive/";
 
-	private CygwinMount()
+    private CygwinMount()
     {
     }
     
     static public String drivePrefix()
     {
-    	if (cygDrivePrefix == null)
-    	{
-    		try 
-    		{
-				setDrivePrefix();
-			} 
-    		catch (CoreException e) 
-    		{	// Ignore
-			}
-    	}
-    	return cygDrivePrefix;
+        if (cygDrivePrefix == null)
+        {
+            try 
+            {
+                setDrivePrefix();
+            } 
+            catch (CoreException e) 
+            {	// Ignore
+            }
+        }
+        return cygDrivePrefix;
     }
 
     static private String setDrivePrefix() throws CoreException
     {
-    	try
+        try
         {        
             ProcessExecutor executor = new ProcessExecutor();
             String cmd[] = new String[] { "mount", "-p" };
             File	wrkDir = new File(".");
 
             // Select the user version if available -- otherwise system default
-        	Pattern p = Pattern.compile("^([^ \t]+).*user|system", Pattern.MULTILINE);
+            Pattern p = Pattern.compile("^([^ \t]+).*user|system", Pattern.MULTILINE);
             Matcher m = p.matcher(executor.execute(cmd, "", wrkDir, null).stdout);
             
             if (m.find())

@@ -142,7 +142,7 @@ public class SubroutineProposal implements IPerlCompletionProposal {
 
     //return textToHTML(fTemplate); // fTemplateBuffer.getString());
     
-	//	Do not return additional info for subroutines
+    //	Do not return additional info for subroutines
   	return null;
 
     //	    } catch (CoreException e) {

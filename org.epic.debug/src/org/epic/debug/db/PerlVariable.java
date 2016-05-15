@@ -213,7 +213,7 @@ public abstract class PerlVariable extends DebugElement implements IVariable
      */
     public void setValue(IValue value) throws DebugException
     {
-    	throwNotSupported();
+        throwNotSupported();
     }
 
     /**
@@ -318,16 +318,16 @@ public abstract class PerlVariable extends DebugElement implements IVariable
     
     private IVariable[] getPerlVariables(IValue value) throws DebugException
     {
-    	IVariable[] vars = value.getVariables();
-    	if (vars.length == 0 || vars[0] instanceof PerlVariable) return vars;
-    	else
-    	{
-    		assert vars[0] instanceof ArraySlice;
-    		List<IVariable> elements = new ArrayList<IVariable>();
-    		for (int i = 0; i < vars.length; i++)
-    			elements.addAll(Arrays.asList(getPerlVariables(vars[i].getValue()))); 
-    		return elements.toArray(new IVariable[elements.size()]);
-    	}
+        IVariable[] vars = value.getVariables();
+        if (vars.length == 0 || vars[0] instanceof PerlVariable) return vars;
+        else
+        {
+            assert vars[0] instanceof ArraySlice;
+            List<IVariable> elements = new ArrayList<IVariable>();
+            for (int i = 0; i < vars.length; i++)
+                elements.addAll(Arrays.asList(getPerlVariables(vars[i].getValue()))); 
+            return elements.toArray(new IVariable[elements.size()]);
+        }
     }
     
     private void throwNotSupported() throws DebugException

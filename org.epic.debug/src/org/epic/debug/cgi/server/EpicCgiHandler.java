@@ -81,60 +81,60 @@ public class EpicCgiHandler implements Handler
     
     private CGIConfig config;
 
-	private Socket diagSocket;
-	private Socket outSocket;
-	private Socket errorSocket;
+    private Socket diagSocket;
+    private Socket outSocket;
+    private Socket errorSocket;
     
     private PrintWriter mDiag; // diagnostic info to CGI proxy
     private OutputStream mOut; // forwards CGI stdout to CGI proxy
     private OutputStream mError; // forwards CGI stderr to CGI proxy
     private Exception defaultEnvError;
 
-	/**
-	 * construct table of CGI environment variables that need special handling
-	 */
-	static
+    /**
+     * construct table of CGI environment variables that need special handling
+     */
+    static
     {
-		envMap = new Hashtable<String, String>(2);
-		envMap.put("content-length", "CONTENT_LENGTH");
-		envMap.put("content-type", "CONTENT_TYPE");
-	}
+        envMap = new Hashtable<String, String>(2);
+        envMap.put("content-length", "CONTENT_LENGTH");
+        envMap.put("content-type", "CONTENT_TYPE");
+    }
 
-	public EpicCgiHandler()
+    public EpicCgiHandler()
     {
-	}
+    }
 
-	/**
-	 * One time initialization. The handler configuration properties are
-	 * extracted and set in {@link #respond(Request)}to allow upstream handlers
-	 * to modify the parameters.
-	 */
-	public boolean init(Server server, String prefix)
+    /**
+     * One time initialization. The handler configuration properties are
+     * extracted and set in {@link #respond(Request)}to allow upstream handlers
+     * to modify the parameters.
+     */
+    public boolean init(Server server, String prefix)
     {
         config = new CGIConfig(server, prefix);
 
         return connectToCGIProxy();
-	}
+    }
 
-	/**
-	 * Dispatch and handle the CGI request. Gets called on ALL requests. Set up
-	 * the environment, exec the process, and deal appropriately with the input
-	 * and output.
-	 * 
-	 * In this implementation, all cgi script files must end with a standard
-	 * suffix, although the suffix may omitted from the url. The url
-	 * /main/do/me/too?a=b will look, starting in DocRoot, for main.cgi,
-	 * main/do.cgi, etc until a matching file is found.
-	 * <p>
-	 * Input parameters examined in the request properties:
-	 * <dl>
-	 * <dt>Suffix
-	 * <dd>The suffix for all cgi scripts (defaults to .cgi)
-	 * <dt>DocRoot
-	 * <dd>The document root, for locating the script.
-	 * </dl>
-	 */
-	public boolean respond(Request request)
+    /**
+     * Dispatch and handle the CGI request. Gets called on ALL requests. Set up
+     * the environment, exec the process, and deal appropriately with the input
+     * and output.
+     * 
+     * In this implementation, all cgi script files must end with a standard
+     * suffix, although the suffix may omitted from the url. The url
+     * /main/do/me/too?a=b will look, starting in DocRoot, for main.cgi,
+     * main/do.cgi, etc until a matching file is found.
+     * <p>
+     * Input parameters examined in the request properties:
+     * <dl>
+     * <dt>Suffix
+     * <dd>The suffix for all cgi scripts (defaults to .cgi)
+     * <dt>DocRoot
+     * <dd>The document root, for locating the script.
+     * </dl>
+     */
+    public boolean respond(Request request)
     {
         // The current implementation of EPIC debugger cannot reliably
         // process concurrent debug connections. Therefore, we serialise
@@ -148,17 +148,17 @@ public class EpicCgiHandler implements Handler
     
     private boolean respondImpl(Request request)
     {
-		String url = request.props.getProperty("url.orig", request.url);
-		String prefix = config.getRequestProperty(request, PREFIX, "/");
+        String url = request.props.getProperty("url.orig", request.url);
+        String prefix = config.getRequestProperty(request, PREFIX, "/");
 
-		if (!url.startsWith(prefix)) return false;
+        if (!url.startsWith(prefix)) return false;
         if (url.endsWith("favicon.ico")) return false;
 
-		String suffixes = config.getRequestProperty(request, SUFFIX, ".cgi");
-		String root = config.getRequestProperty(
+        String suffixes = config.getRequestProperty(request, SUFFIX, ".cgi");
+        String root = config.getRequestProperty(
             request, ROOT, request.props.getProperty(ROOT, "."));
 
-		request.log(
+        request.log(
             Server.LOG_DIAGNOSTIC,
             "suffix=" + suffixes + 
             " root=" + root +
@@ -173,13 +173,13 @@ public class EpicCgiHandler implements Handler
             pathInfoStartI = ((Integer) ret[1]).intValue();
         }
 
-		String[] command = createCommandLine(request, root, cgiFile);
+        String[] command = createCommandLine(request, root, cgiFile);
         String[] env = createEnvironment(
             request, cgiFile, root, url, pathInfoStartI);
 
         execCGI(request, cgiFile, command, env);
-		return true;
-	}
+        return true;
+    }
     
     /**
      * Opens communication channels to the EPIC CGI proxy running

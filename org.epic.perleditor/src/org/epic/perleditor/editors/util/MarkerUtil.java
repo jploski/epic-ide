@@ -24,11 +24,11 @@ import org.epic.perleditor.editors.AddEditorMarker;
  */
 public class MarkerUtil {
 
-	//private ISourceViewer fViewer;
-	//private TextEditor fTextEditor;
-	private IResource fResource;
+    //private ISourceViewer fViewer;
+    //private TextEditor fTextEditor;
+    private IResource fResource;
 
-	private static final String EPIC_MARKER_USED_FLAG = "epic.markerUsedFlag";
+    private static final String EPIC_MARKER_USED_FLAG = "epic.markerUsedFlag";
 
 
 //	public MarkerUtil(TextEditor textEditor, ISourceViewer viewer) {
@@ -37,56 +37,56 @@ public class MarkerUtil {
 //		resource = (IResource) ((IAdaptable) fTextEditor.getEditorInput()).getAdapter(IResource.class);
 //	}
 
-	/**
-	 * Constructor
-	 *
-	 * @param resource The resource
-	 */
-	public MarkerUtil(IResource resource) {
-		fResource = resource;
-	}
+    /**
+     * Constructor
+     *
+     * @param resource The resource
+     */
+    public MarkerUtil(IResource resource) {
+        fResource = resource;
+    }
 
-	/**
-	 *  Sets used flag to false of all markers that have the specified marker type
-	 *
-	 * @param markerType The Marker type
-	 */
-	public void clearAllUsedFlags(String markerType) {
-		clearAllUsedFlags(markerType, null);
-	}
+    /**
+     *  Sets used flag to false of all markers that have the specified marker type
+     *
+     * @param markerType The Marker type
+     */
+    public void clearAllUsedFlags(String markerType) {
+        clearAllUsedFlags(markerType, null);
+    }
 
-	/**
-	 *  Sets used flag to false of all markers that have the specified marker type
-	 *
-	 * @param markerType The Marker type
-	 * @param additionalAttribute Additional attribute to check for
-	 */
-	public void clearAllUsedFlags(String markerType, String additionalAttribute) {
-		try {
-			IMarker[] markers = fResource.findMarkers(markerType, true, IResource.DEPTH_ONE);
-			for(int i = 0; i < markers.length; i++) {
-				if(additionalAttribute != null) {
-	   				// If additional attribute is not present check next marker
-	   				if(markers[i].getAttribute(additionalAttribute) == null) {
-	   					continue;
-	   				}
-	   			}
+    /**
+     *  Sets used flag to false of all markers that have the specified marker type
+     *
+     * @param markerType The Marker type
+     * @param additionalAttribute Additional attribute to check for
+     */
+    public void clearAllUsedFlags(String markerType, String additionalAttribute) {
+        try {
+            IMarker[] markers = fResource.findMarkers(markerType, true, IResource.DEPTH_ONE);
+            for(int i = 0; i < markers.length; i++) {
+                if(additionalAttribute != null) {
+       				// If additional attribute is not present check next marker
+       				if(markers[i].getAttribute(additionalAttribute) == null) {
+       					continue;
+       				}
+       			}
                 markers[i].setAttribute(EPIC_MARKER_USED_FLAG, false);
-			}
-		} catch (CoreException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
+            }
+        } catch (CoreException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
 
-	/**
-	 * Deletes all unused markers of given type
-	 *
-	 * @param markerType Marker Type
-	 */
-	public void removeUnusedMarkers(String markerType) {
-		removeUnusedMarkers(markerType, null);
-	}
+    /**
+     * Deletes all unused markers of given type
+     *
+     * @param markerType Marker Type
+     */
+    public void removeUnusedMarkers(String markerType) {
+        removeUnusedMarkers(markerType, null);
+    }
 
     public void removeObsoleteProblemMarkers()
     {
@@ -115,128 +115,128 @@ public class MarkerUtil {
         }
     }
 
-	/**
-	 * Deletes all unused markers of given type
-	 *
-	 * @param markerType Marker Type
-	 * @param additionalAttribute Additional attribute to check for
-	 */
-	public void removeUnusedMarkers(String markerType, String additionalAttribute) {
-		try {
-			IMarker[] markers = fResource.exists() ? fResource.findMarkers(markerType, true, IResource.DEPTH_ONE) : new IMarker[0];
-			for(int i = 0; i < markers.length; i++) {
-				if(additionalAttribute != null) {
-	   				// If additional attribute is not present check next marker
-	   				if(markers[i].getAttribute(additionalAttribute) == null) {
-	   					continue;
-	   				}
-	   			}
-				if(!markers[i].getAttribute(EPIC_MARKER_USED_FLAG, false)) {
-					markers[i].delete();
-				}
-			}
-		} catch (CoreException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
+    /**
+     * Deletes all unused markers of given type
+     *
+     * @param markerType Marker Type
+     * @param additionalAttribute Additional attribute to check for
+     */
+    public void removeUnusedMarkers(String markerType, String additionalAttribute) {
+        try {
+            IMarker[] markers = fResource.exists() ? fResource.findMarkers(markerType, true, IResource.DEPTH_ONE) : new IMarker[0];
+            for(int i = 0; i < markers.length; i++) {
+                if(additionalAttribute != null) {
+       				// If additional attribute is not present check next marker
+       				if(markers[i].getAttribute(additionalAttribute) == null) {
+       					continue;
+       				}
+       			}
+                if(!markers[i].getAttribute(EPIC_MARKER_USED_FLAG, false)) {
+                    markers[i].delete();
+                }
+            }
+        } catch (CoreException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
 
-	/**
-	 * Adds a marker
-	 *
-	 * @param attributes	Marker attributes
-	 * @param markerType Marker type
-	 */
-	public void addMarker(Map<String, Object> attributes, String markerType) {
-		attributes.put(EPIC_MARKER_USED_FLAG, Boolean.TRUE);
-		AddEditorMarker ed = new AddEditorMarker();
-		ed.addMarker(fResource, attributes, markerType);
-	}
+    /**
+     * Adds a marker
+     *
+     * @param attributes	Marker attributes
+     * @param markerType Marker type
+     */
+    public void addMarker(Map<String, Object> attributes, String markerType) {
+        attributes.put(EPIC_MARKER_USED_FLAG, Boolean.TRUE);
+        AddEditorMarker ed = new AddEditorMarker();
+        ed.addMarker(fResource, attributes, markerType);
+    }
 
-	/**
-	 * @param makerType Marker Type
-	 * @param line Line Number
-	 * @param text Text to copare
-	 * @param setUsedFlag Set to true if used flag should be set
-	 * @return <code>true</code> if maker is already presen otherwise <code>false</code>
-	 */
-	public boolean isMarkerPresent(String makerType, int line, String text,  boolean setUsedFlag) {
-		return isMarkerPresent(makerType, line, text, null, setUsedFlag);
-	}
+    /**
+     * @param makerType Marker Type
+     * @param line Line Number
+     * @param text Text to copare
+     * @param setUsedFlag Set to true if used flag should be set
+     * @return <code>true</code> if maker is already presen otherwise <code>false</code>
+     */
+    public boolean isMarkerPresent(String makerType, int line, String text,  boolean setUsedFlag) {
+        return isMarkerPresent(makerType, line, text, null, setUsedFlag);
+    }
 
-	/**
-	 * @param makerType Marker Type
-	 * @param line Line Number
-	 * @param text Text to copare
-	 * @param additionalAtrribute Additional attribute to check for
-	 * @param setUsedFlag Set to true if used flag should be set
-	 * @return <code>true</code> if maker is already presen otherwise <code>false</code>
-	 */
-	public boolean isMarkerPresent(String makerType, int line, String text, String additionalAttribute, boolean setUsedFlag) {
-		boolean found = false;
+    /**
+     * @param makerType Marker Type
+     * @param line Line Number
+     * @param text Text to copare
+     * @param additionalAtrribute Additional attribute to check for
+     * @param setUsedFlag Set to true if used flag should be set
+     * @return <code>true</code> if maker is already presen otherwise <code>false</code>
+     */
+    public boolean isMarkerPresent(String makerType, int line, String text, String additionalAttribute, boolean setUsedFlag) {
+        boolean found = false;
 
-		List<IMarker> markers = getMarkersForLine(fResource, line);
-	   for(int i = 0; i < markers.size(); i++) {
-	   		IMarker marker = markers.get(i);
-	   		String markerText = marker.getAttribute(IMarker.MESSAGE, (String) null);
+        List<IMarker> markers = getMarkersForLine(fResource, line);
+       for(int i = 0; i < markers.size(); i++) {
+       		IMarker marker = markers.get(i);
+       		String markerText = marker.getAttribute(IMarker.MESSAGE, (String) null);
 
-	   		try {
-	   			if(!marker.getType().equals(makerType)) {
-		   			continue;
-		   		}
+       		try {
+       			if(!marker.getType().equals(makerType)) {
+           			continue;
+           		}
 
-	   			if(additionalAttribute != null) {
-	   				// If additional attribute is not present check next marker
-	   				if(marker.getAttribute(additionalAttribute) == null) {
-	   					continue;
-	   				}
-	   			}
+       			if(additionalAttribute != null) {
+       				// If additional attribute is not present check next marker
+       				if(marker.getAttribute(additionalAttribute) == null) {
+       					continue;
+       				}
+       			}
 
-				if(markerText != null && markerText.equals(text)) {
-					found = true;
-					if(setUsedFlag) {
-						try {
-							marker.setAttribute(EPIC_MARKER_USED_FLAG, true);
-						} catch (CoreException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-					}
-					break;
-				}
-			} catch (CoreException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-	   }
+                if(markerText != null && markerText.equals(text)) {
+                    found = true;
+                    if(setUsedFlag) {
+                        try {
+                            marker.setAttribute(EPIC_MARKER_USED_FLAG, true);
+                        } catch (CoreException e) {
+                            // TODO Auto-generated catch block
+                            e.printStackTrace();
+                        }
+                    }
+                    break;
+                }
+            } catch (CoreException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+       }
 
-	   return found;
-	}
+       return found;
+    }
 
-	/**
-	 *  Returns all markers which includes the ruler's line of activity.
-	 *
-	 * @param resource The reource
-	 * @param aLine The line number
-	 * @return List of all makers for given line
-	 */
-	public static List<IMarker> getMarkersForLine(IResource resource, int aLine) {
-		List<IMarker> markers = new ArrayList<IMarker>();
-		try {
-			IMarker[] allMarkers = resource.findMarkers(null, true, IResource.DEPTH_ONE);
-			for(int i = 0; i < allMarkers.length; i++) {
-				IMarker marker = allMarkers[i];
+    /**
+     *  Returns all markers which includes the ruler's line of activity.
+     *
+     * @param resource The reource
+     * @param aLine The line number
+     * @return List of all makers for given line
+     */
+    public static List<IMarker> getMarkersForLine(IResource resource, int aLine) {
+        List<IMarker> markers = new ArrayList<IMarker>();
+        try {
+            IMarker[] allMarkers = resource.findMarkers(null, true, IResource.DEPTH_ONE);
+            for(int i = 0; i < allMarkers.length; i++) {
+                IMarker marker = allMarkers[i];
                 Integer lineNr = (Integer) marker.getAttribute(IMarker.LINE_NUMBER);
-				if(lineNr != null && lineNr.intValue() == aLine) {
-					markers.add(marker);
-				}
-			}
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return markers;
-	}
+                if(lineNr != null && lineNr.intValue() == aLine) {
+                    markers.add(marker);
+                }
+            }
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return markers;
+    }
 
 //	/**
 //	 * Returns all markers which includes the ruler's line of activity.

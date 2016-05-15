@@ -24,45 +24,45 @@ import org.eclipse.ui.texteditor.MarkerUtilities;
  * attribute value.
  */
 public class AddEditorMarker {
-	
-	private ITextEditor textEditor;
-	
-	public AddEditorMarker() {
-		 textEditor = null;
-	}
-	
-	public AddEditorMarker(ITextEditor editor) {
-	    textEditor = editor;
-	}
-	
-	public void addMarker(IResource resource, Map<String, Object> attributes, String markerType) {
-			try {
-				MarkerUtilities.createMarker(resource, attributes, markerType);
-			} catch (CoreException x) {
-				x.printStackTrace();
-			}
-	}
+    
+    private ITextEditor textEditor;
+    
+    public AddEditorMarker() {
+         textEditor = null;
+    }
+    
+    public AddEditorMarker(ITextEditor editor) {
+        textEditor = editor;
+    }
+    
+    public void addMarker(IResource resource, Map<String, Object> attributes, String markerType) {
+            try {
+                MarkerUtilities.createMarker(resource, attributes, markerType);
+            } catch (CoreException x) {
+                x.printStackTrace();
+            }
+    }
 
-	public void addMarker(Map<String, Object> attributes, String markerType) {
-		if(textEditor == null)
-			return;
-			
-		try {
-			MarkerUtilities.createMarker(getResource(), attributes, markerType);
-		} catch (CoreException x) {
-			x.printStackTrace();
-		}
-	}
-	
-	/** 
-	 * Returns the resource on which to create the marker, 
-	 * or <code>null</code> if there is no applicable resource. This
-	 * queries the editor's input using <code>getAdapter(IResource.class)</code>.
-	 *
-	 * @return the resource to which to attach the newly created marker
-	 */
-	protected IResource getResource() {
-		IEditorInput input= textEditor.getEditorInput();
-		return (IResource) ((IAdaptable) input).getAdapter(IResource.class);
-	}
+    public void addMarker(Map<String, Object> attributes, String markerType) {
+        if(textEditor == null)
+            return;
+            
+        try {
+            MarkerUtilities.createMarker(getResource(), attributes, markerType);
+        } catch (CoreException x) {
+            x.printStackTrace();
+        }
+    }
+    
+    /** 
+     * Returns the resource on which to create the marker, 
+     * or <code>null</code> if there is no applicable resource. This
+     * queries the editor's input using <code>getAdapter(IResource.class)</code>.
+     *
+     * @return the resource to which to attach the newly created marker
+     */
+    protected IResource getResource() {
+        IEditorInput input= textEditor.getEditorInput();
+        return (IResource) ((IAdaptable) input).getAdapter(IResource.class);
+    }
 }

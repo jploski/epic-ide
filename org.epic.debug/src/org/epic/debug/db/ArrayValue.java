@@ -43,7 +43,7 @@ class ArrayValue extends PerlValue
         
         try
         {
-        	int i = 0, sliceStartI = 0;
+            int i = 0, sliceStartI = 0;
             while (r.hasMoreEntities())
             {
                 vars.add(new ArrayElement(
@@ -55,21 +55,21 @@ class ArrayValue extends PerlValue
                 
                 if (vars.size() == 1000)
                 {
-                	if (slices == null) slices = new ArrayList<ArraySlice>();
-                	slices.add(new ArraySlice(getHolder(), vars, sliceStartI));
-                	sliceStartI = i;
-                	vars = new ArrayList<ArrayElement>();
+                    if (slices == null) slices = new ArrayList<ArraySlice>();
+                    slices.add(new ArraySlice(getHolder(), vars, sliceStartI));
+                    sliceStartI = i;
+                    vars = new ArrayList<ArrayElement>();
                 }
             }
             if (slices != null)
             {
-            	if (!vars.isEmpty())
-            		slices.add(new ArraySlice(getHolder(), vars, sliceStartI));
-            	return slices.toArray(new IVariable[slices.size()]);
+                if (!vars.isEmpty())
+                    slices.add(new ArraySlice(getHolder(), vars, sliceStartI));
+                return slices.toArray(new IVariable[slices.size()]);
             }
             else
             {
-            	return vars.toArray(new IVariable[vars.size()]);
+                return vars.toArray(new IVariable[vars.size()]);
             }
         }
         catch (Exception e)

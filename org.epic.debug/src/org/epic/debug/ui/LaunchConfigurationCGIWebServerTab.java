@@ -41,16 +41,16 @@ import org.epic.debug.PerlDebugPlugin;
 import org.epic.debug.PerlLaunchConfigurationConstants;
 
 public class LaunchConfigurationCGIWebServerTab
-	extends AbstractLaunchConfigurationTab
-	implements IPropertyChangeListener
+    extends AbstractLaunchConfigurationTab
+    implements IPropertyChangeListener
 {
-	private Text fCGISuffix;
-	private DirectoryFieldEditor fCGIRootDir;
-	private DirectoryFieldEditor fHTMLRootDir;
-	private FileFieldEditor fHTMLRootFile;
+    private Text fCGISuffix;
+    private DirectoryFieldEditor fCGIRootDir;
+    private DirectoryFieldEditor fHTMLRootDir;
+    private FileFieldEditor fHTMLRootFile;
 
-	public void createControl(Composite parent)
-	{
+    public void createControl(Composite parent)
+    {
         Font font = parent.getFont();
 
         Composite comp = new Composite(parent, SWT.NONE);
@@ -73,178 +73,178 @@ public class LaunchConfigurationCGIWebServerTab
         createCGIRootDirectoryGroup(fields);
         createVerticalSpacer(comp, 1);
         createCGISuffixGroup(comp);
-	}
+    }
 
-	public void initializeFrom(ILaunchConfiguration config)
-	{
-		updateParamsFromConfig(config);
-	}
+    public void initializeFrom(ILaunchConfiguration config)
+    {
+        updateParamsFromConfig(config);
+    }
 
-	private void updateParamsFromConfig(ILaunchConfiguration config)
-	{
-		try
-		{
-			fHTMLRootDir.setStringValue(
-				config.getAttribute(
-					PerlLaunchConfigurationConstants.ATTR_HTML_ROOT_DIR,
-					(String) null));
-			fHTMLRootFile.setStringValue(
-				config.getAttribute(
-					PerlLaunchConfigurationConstants.ATTR_HTML_ROOT_FILE,
-					(String) null));
-			fCGIRootDir.setStringValue(
-				config.getAttribute(
-					PerlLaunchConfigurationConstants.ATTR_CGI_ROOT_DIR,
-					(String) null));
-			fCGISuffix.setText(
+    private void updateParamsFromConfig(ILaunchConfiguration config)
+    {
+        try
+        {
+            fHTMLRootDir.setStringValue(
                 config.getAttribute(
-				    PerlLaunchConfigurationConstants.ATTR_CGI_FILE_EXTENSION,
-					".cgi,.pl"));
-		}
+                    PerlLaunchConfigurationConstants.ATTR_HTML_ROOT_DIR,
+                    (String) null));
+            fHTMLRootFile.setStringValue(
+                config.getAttribute(
+                    PerlLaunchConfigurationConstants.ATTR_HTML_ROOT_FILE,
+                    (String) null));
+            fCGIRootDir.setStringValue(
+                config.getAttribute(
+                    PerlLaunchConfigurationConstants.ATTR_CGI_ROOT_DIR,
+                    (String) null));
+            fCGISuffix.setText(
+                config.getAttribute(
+                    PerlLaunchConfigurationConstants.ATTR_CGI_FILE_EXTENSION,
+                    ".cgi,.pl"));
+        }
         catch (CoreException e)
-		{
+        {
             PerlDebugPlugin.log(e);
-		}
-	}
+        }
+    }
 
-	public void performApply(ILaunchConfigurationWorkingCopy config)
-	{
-		config.setAttribute(
-			PerlLaunchConfigurationConstants.ATTR_HTML_ROOT_DIR,
-			this.fHTMLRootDir.getStringValue());
-		config.setAttribute(
-			PerlLaunchConfigurationConstants.ATTR_HTML_ROOT_FILE,
-			this.fHTMLRootFile.getStringValue());
-		config.setAttribute(
-			PerlLaunchConfigurationConstants.ATTR_CGI_ROOT_DIR,
-			this.fCGIRootDir.getStringValue());
-		config.setAttribute(
+    public void performApply(ILaunchConfigurationWorkingCopy config)
+    {
+        config.setAttribute(
+            PerlLaunchConfigurationConstants.ATTR_HTML_ROOT_DIR,
+            this.fHTMLRootDir.getStringValue());
+        config.setAttribute(
+            PerlLaunchConfigurationConstants.ATTR_HTML_ROOT_FILE,
+            this.fHTMLRootFile.getStringValue());
+        config.setAttribute(
+            PerlLaunchConfigurationConstants.ATTR_CGI_ROOT_DIR,
+            this.fCGIRootDir.getStringValue());
+        config.setAttribute(
             PerlLaunchConfigurationConstants.ATTR_CGI_FILE_EXTENSION,
-			this.fCGISuffix.getText());
-		config.setAttribute(
-			PerlLaunchConfigurationConstants.ATTR_DEBUG_CGI,
-			"OK");
-	}
+            this.fCGISuffix.getText());
+        config.setAttribute(
+            PerlLaunchConfigurationConstants.ATTR_DEBUG_CGI,
+            "OK");
+    }
 
-	public void dispose()
-	{
-	}
+    public void dispose()
+    {
+    }
 
-	public boolean isValid(ILaunchConfiguration config)
-	{
-		setErrorMessage(null);
-		setMessage(null);
+    public boolean isValid(ILaunchConfiguration config)
+    {
+        setErrorMessage(null);
+        setMessage(null);
 
-		String value = fHTMLRootDir.getStringValue();
+        String value = fHTMLRootDir.getStringValue();
 
-		if (value == null)
-		{
-			setErrorMessage("HTML Root Directory is missing");
-			return false;
-		}
+        if (value == null)
+        {
+            setErrorMessage("HTML Root Directory is missing");
+            return false;
+        }
 
-		File file = new File(value);
-		if (!file.exists() || !file.isDirectory())
-		{
-			setErrorMessage("HTML Root Directory is invalid");
-			return false;
-		}
+        File file = new File(value);
+        if (!file.exists() || !file.isDirectory())
+        {
+            setErrorMessage("HTML Root Directory is invalid");
+            return false;
+        }
 
-		value = fHTMLRootFile.getStringValue();
+        value = fHTMLRootFile.getStringValue();
 
-		if (value == null)
-		{
-			setErrorMessage("HTML Startup File is missing");
-			return false;
-		}
+        if (value == null)
+        {
+            setErrorMessage("HTML Startup File is missing");
+            return false;
+        }
 
-		file = new File(value);
-		if (!file.exists() || !file.isFile())
-		{
-			setErrorMessage("HTML Startup File is invalid");
-			return false;
-		}
+        file = new File(value);
+        if (!file.exists() || !file.isFile())
+        {
+            setErrorMessage("HTML Startup File is invalid");
+            return false;
+        }
 
-		if (value.indexOf(fHTMLRootDir.getStringValue()) != 0)
-		{
-			setErrorMessage("HTML Startup File must be located within HTML Root Directory (or one of its subfolders)");
-			return false;
-		}
+        if (value.indexOf(fHTMLRootDir.getStringValue()) != 0)
+        {
+            setErrorMessage("HTML Startup File must be located within HTML Root Directory (or one of its subfolders)");
+            return false;
+        }
 
-		value = fCGIRootDir.getStringValue();
-		if (value == null)
-		{
-			setErrorMessage("CGI Root Directory is missing");
-			return false;
-		}
+        value = fCGIRootDir.getStringValue();
+        if (value == null)
+        {
+            setErrorMessage("CGI Root Directory is missing");
+            return false;
+        }
 
-		file = new File(value);
-		if (!file.exists() || !file.isDirectory())
-		{
-			setErrorMessage("CGI Root Directory is invalid");
-			return false;
-		}
-		return true;
-	}
+        file = new File(value);
+        if (!file.exists() || !file.isDirectory())
+        {
+            setErrorMessage("CGI Root Directory is invalid");
+            return false;
+        }
+        return true;
+    }
 
-	public void setDefaults(ILaunchConfigurationWorkingCopy config)
-	{
-		String root =
-			ResourcesPlugin.getWorkspace().getRoot().getLocation().toOSString();
+    public void setDefaults(ILaunchConfigurationWorkingCopy config)
+    {
+        String root =
+            ResourcesPlugin.getWorkspace().getRoot().getLocation().toOSString();
 
-		config.setAttribute(
+        config.setAttribute(
             PerlLaunchConfigurationConstants.ATTR_HTML_ROOT_DIR,
             root);
-		config.setAttribute(
+        config.setAttribute(
             PerlLaunchConfigurationConstants.ATTR_HTML_ROOT_FILE,
             root);
         config.setAttribute(
             PerlLaunchConfigurationConstants.ATTR_CGI_ROOT_DIR,
             root);
-		config.setAttribute(
-			PerlLaunchConfigurationConstants.ATTR_DEBUG_PORT,
-			PerlDebugPlugin.getDefaultDebugPort());
-		config.setAttribute(
-			PerlLaunchConfigurationConstants.ATTR_DEBUG_CGI,
-			"OK");
-		config.setAttribute(
-			PerlLaunchConfigurationConstants.ATTR_CGI_ENV,
-			(Map<String, String>) null);
-		config.setAttribute(
+        config.setAttribute(
+            PerlLaunchConfigurationConstants.ATTR_DEBUG_PORT,
+            PerlDebugPlugin.getDefaultDebugPort());
+        config.setAttribute(
+            PerlLaunchConfigurationConstants.ATTR_DEBUG_CGI,
+            "OK");
+        config.setAttribute(
+            PerlLaunchConfigurationConstants.ATTR_CGI_ENV,
+            (Map<String, String>) null);
+        config.setAttribute(
             PerlLaunchConfigurationConstants.ATTR_CGI_FILE_EXTENSION,
-			".cgi,.pl");
-	}
+            ".cgi,.pl");
+    }
 
-	public String getName()
-	{
-		return "Web Server";
-	}
+    public String getName()
+    {
+        return "Web Server";
+    }
 
-	public Image getImage()
-	{
-		return (
-			PerlDebugPlugin.getDefaultDesciptorImageRegistry().get(
-				PerlDebugImages.DESC_OBJS_LaunchTabCGI));
-	}
+    public Image getImage()
+    {
+        return (
+            PerlDebugPlugin.getDefaultDesciptorImageRegistry().get(
+                PerlDebugImages.DESC_OBJS_LaunchTabCGI));
+    }
 
-	public void propertyChange(PropertyChangeEvent event)
-	{
-		if (event.getSource() == fHTMLRootDir)
-		{            
-			if (fHTMLRootFile
-				.getStringValue()
-				.indexOf(fHTMLRootDir.getStringValue())
-				!= 0)
-				fHTMLRootFile.setStringValue(fHTMLRootDir.getStringValue());
-		}
+    public void propertyChange(PropertyChangeEvent event)
+    {
+        if (event.getSource() == fHTMLRootDir)
+        {            
+            if (fHTMLRootFile
+                .getStringValue()
+                .indexOf(fHTMLRootDir.getStringValue())
+                != 0)
+                fHTMLRootFile.setStringValue(fHTMLRootDir.getStringValue());
+        }
 
-		updateLaunchConfigurationDialog();
-	}
+        updateLaunchConfigurationDialog();
+    }
 
-	public void update()
-	{
-		updateLaunchConfigurationDialog();
-	}
+    public void update()
+    {
+        updateLaunchConfigurationDialog();
+    }
     
     private void createCGIRootDirectoryGroup(Composite parent)
     {       

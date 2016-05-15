@@ -11,26 +11,26 @@ import org.eclipse.debug.ui.*;
  * Window>Preferences>Java>Code Generation.
  */
 public class LaunchConfigurationDialog
-	extends AbstractLaunchConfigurationTabGroup {
+    extends AbstractLaunchConfigurationTabGroup {
 
-	/**
-	 * Constructor for LaucunchConfigurationDialog.
-	 */
-	public LaunchConfigurationDialog() {
-		super();
-	}
+    /**
+     * Constructor for LaucunchConfigurationDialog.
+     */
+    public LaunchConfigurationDialog() {
+        super();
+    }
 
-	/**
-	 * @see org.eclipse.debug.ui.ILaunchConfigurationTabGroup#createTabs(ILaunchConfigurationDialog, String)
-	 */
-	
+    /**
+     * @see org.eclipse.debug.ui.ILaunchConfigurationTabGroup#createTabs(ILaunchConfigurationDialog, String)
+     */
+    
     public void createTabs(ILaunchConfigurationDialog dialog, String mode) {
-		ILaunchConfigurationTab[] tabs = new ILaunchConfigurationTab[] {
-			 new LaunchConfigurationMainTab(true),
+        ILaunchConfigurationTab[] tabs = new ILaunchConfigurationTab[] {
+             new LaunchConfigurationMainTab(true),
              new LaunchConfigurationArgumentsTab(false),
              new EnvironmentTab(),
              new org.eclipse.debug.ui.CommonTab()
-		};
-		setTabs(tabs);
-	}
+        };
+        setTabs(tabs);
+    }
 }

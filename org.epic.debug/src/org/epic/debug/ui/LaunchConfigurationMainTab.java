@@ -41,30 +41,30 @@ public class LaunchConfigurationMainTab
             : new ProjectBlock();
     }
 
-	public void createControl(Composite parent)
-	{
-		Font font = parent.getFont();
+    public void createControl(Composite parent)
+    {
+        Font font = parent.getFont();
 
-		Composite comp = new Composite(parent, SWT.NONE);
-		setControl(comp);
+        Composite comp = new Composite(parent, SWT.NONE);
+        setControl(comp);
 
-		GridLayout topLayout = new GridLayout();
+        GridLayout topLayout = new GridLayout();
         topLayout.verticalSpacing = 0;
-		comp.setLayout(topLayout);
+        comp.setLayout(topLayout);
         comp.setFont(font);
         
-		projectBlock.createControl(comp);
-	}
+        projectBlock.createControl(comp);
+    }
 
-	public void initializeFrom(ILaunchConfiguration config)
-	{
-		projectBlock.initializeFrom(config);
-	}
+    public void initializeFrom(ILaunchConfiguration config)
+    {
+        projectBlock.initializeFrom(config);
+    }
 
-	public void performApply(ILaunchConfigurationWorkingCopy config)
-	{
-		projectBlock.performApply(config);
-	}
+    public void performApply(ILaunchConfigurationWorkingCopy config)
+    {
+        projectBlock.performApply(config);
+    }
     
     public String getErrorMessage()
     {
@@ -84,32 +84,32 @@ public class LaunchConfigurationMainTab
         projectBlock.setLaunchConfigurationDialog(dialog);
     }
 
-	public void dispose()
-	{
-	}
+    public void dispose()
+    {
+    }
 
-	public boolean isValid(ILaunchConfiguration config)
-	{
-		setErrorMessage(null);
-		setMessage(null);
+    public boolean isValid(ILaunchConfiguration config)
+    {
+        setErrorMessage(null);
+        setMessage(null);
 
-		return projectBlock.isValid(config);
-	}
+        return projectBlock.isValid(config);
+    }
 
-	public void setDefaults(ILaunchConfigurationWorkingCopy config)
-	{
-		projectBlock.setDefaults(config);
-	}
+    public void setDefaults(ILaunchConfigurationWorkingCopy config)
+    {
+        projectBlock.setDefaults(config);
+    }
 
-	public String getName()
-	{
-		return "Main";
-	}
+    public String getName()
+    {
+        return "Main";
+    }
 
-	public Image getImage()
-	{
-		return
-			PerlDebugPlugin.getDefaultDesciptorImageRegistry().get(
-				PerlDebugImages.DESC_OBJS_LaunchTabMain);
-	}
+    public Image getImage()
+    {
+        return
+            PerlDebugPlugin.getDefaultDesciptorImageRegistry().get(
+                PerlDebugImages.DESC_OBJS_LaunchTabMain);
+    }
 }

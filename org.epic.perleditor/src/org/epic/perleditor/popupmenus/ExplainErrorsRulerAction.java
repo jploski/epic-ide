@@ -28,76 +28,76 @@ import org.epic.perleditor.views.ExplainErrorsView;
  * Window&gt;Preferences&gt;Java&gt;Code Generation&gt;Code and Comments
  */
 public class ExplainErrorsRulerAction extends ResourceAction implements IUpdate {
-	
-	IVerticalRulerInfo ruler;
-	ITextEditor editor;
-	ArrayList<IMarker> markers;
+    
+    IVerticalRulerInfo ruler;
+    ITextEditor editor;
+    ArrayList<IMarker> markers;
 
-	public ExplainErrorsRulerAction(IVerticalRulerInfo ruler, ITextEditor editor) {
+    public ExplainErrorsRulerAction(IVerticalRulerInfo ruler, ITextEditor editor) {
         super(PopupMessages.getBundle(), "ExplainErrorsRulerAction.");
-		this.ruler = ruler;
-		this.editor = editor;
-	}
-	
-	/**
-	 * @see Action#run()
-	 */
-	public void run() {
-		ExplainErrorsView view = null;
-		IWorkbenchPage activePage =
-			PerlEditorPlugin
-				.getWorkbenchWindow()
-				.getActivePage();
-		try
-		{
-		view = (ExplainErrorsView)	activePage.showView(
-				"org.epic.perleditor.views.ExplainErrorsView");
-		} catch (PartInitException e)
-		{
-			e.printStackTrace();
-		}
-		view.explain(markers);
-	}
-	
-	/* (non-Javadoc)
-	 * @see org.eclipse.ui.texteditor.IUpdate#update()
-	 */
-	public void update() {
+        this.ruler = ruler;
+        this.editor = editor;
+    }
+    
+    /**
+     * @see Action#run()
+     */
+    public void run() {
+        ExplainErrorsView view = null;
+        IWorkbenchPage activePage =
+            PerlEditorPlugin
+                .getWorkbenchWindow()
+                .getActivePage();
+        try
+        {
+        view = (ExplainErrorsView)	activePage.showView(
+                "org.epic.perleditor.views.ExplainErrorsView");
+        } catch (PartInitException e)
+        {
+            e.printStackTrace();
+        }
+        view.explain(markers);
+    }
+    
+    /* (non-Javadoc)
+     * @see org.eclipse.ui.texteditor.IUpdate#update()
+     */
+    public void update() {
         getMarkersForLine(ruler.getLineOfLastMouseButtonActivity()+1);
-		setEnabled(markers.size() > 0 ? true : false);
-	}
-	
-	/**
-	 * Returns all markers which includes the ruler's line of activity.
-	 */
-	private List<IMarker> getMarkersForLine(int aLine) {
-		
-		markers = new ArrayList<IMarker>();
-		IDocumentProvider provider= editor.getDocumentProvider();
-		IAnnotationModel model= provider.getAnnotationModel(editor.getEditorInput());
+        setEnabled(markers.size() > 0 ? true : false);
+    }
+    
+    /**
+     * Returns all markers which includes the ruler's line of activity.
+     */
+    private List<IMarker> getMarkersForLine(int aLine) {
+        
+        markers = new ArrayList<IMarker>();
+        IDocumentProvider provider= editor.getDocumentProvider();
+        IAnnotationModel model= provider.getAnnotationModel(editor.getEditorInput());
 
-		if (model != null) {
-			@SuppressWarnings("unchecked")
-			Iterator<Annotation> e = model.getAnnotationIterator();
-			while (e.hasNext()) {
-				Object o = e.next();
-				if (o instanceof MarkerAnnotation) {
-					MarkerAnnotation a = (MarkerAnnotation) o;
-					try {
-						IMarker marker = a.getMarker();
-						int markerLineNumber = ((Integer) marker.getAttribute(IMarker.LINE_NUMBER)).intValue();
-						if (marker.getType().equals(Constants.PROBLEM_MARKER) && markerLineNumber == aLine) {
-							markers.add(marker);
-							//System.out.println("Marker: " + marker.getAttribute(IMarker.MESSAGE));
-						}
-					} catch (CoreException e1) {
-						e1.printStackTrace();
-					}
-				}
-			}
-		}
-		return markers;
-	}
+        if (model != null) {
+            @SuppressWarnings("unchecked")
+            Iterator<Annotation> e = model.getAnnotationIterator();
+            while (e.hasNext()) {
+                Object o = e.next();
+                if (o instanceof MarkerAnnotation) {
+                    MarkerAnnotation a = (MarkerAnnotation) o;
+                    try {
+                        IMarker marker = a.getMarker();
+                        int markerLineNumber = ((Integer) marker.getAttribute(IMarker.LINE_NUMBER)).intValue();
+                        if (marker.getType().equals(Constants.PROBLEM_MARKER) && markerLineNumber == aLine) {
+                            markers.add(marker);
+                            //System.out.println("Marker: " + marker.getAttribute(IMarker.MESSAGE));
+                        }
+                    } catch (CoreException e1) {
+                        e1.printStackTrace();
+                    }
+                }
+            }
+        }
+        return markers;
+    }
 
 
 }

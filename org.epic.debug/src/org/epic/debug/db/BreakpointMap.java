@@ -89,26 +89,26 @@ class BreakpointMap
     }
     
     public synchronized boolean remove(PerlLineBreakpoint bp, boolean enabled)
-    	throws CoreException
+        throws CoreException
     {
-    	String path = canonPath(bp.getResourcePath());
-    	
-    	Set<PerlBreakpoint> set = breakpoints.get(path);
+        String path = canonPath(bp.getResourcePath());
+        
+        Set<PerlBreakpoint> set = breakpoints.get(path);
         if (set == null) return false;
         
         int lineNumber = bp.getLineNumber();
         
         for (Iterator<PerlBreakpoint> i = set.iterator(); i.hasNext();)
         {
-        	PerlBreakpoint other = i.next();
-        	if (!(other instanceof PerlLineBreakpoint)) continue;
-        	
-        	if (((PerlLineBreakpoint) other).getLineNumber() == lineNumber &&
-        	    other.isEnabled() == enabled)
-        	{
-        		i.remove();
-        		return true;
-        	}
+            PerlBreakpoint other = i.next();
+            if (!(other instanceof PerlLineBreakpoint)) continue;
+            
+            if (((PerlLineBreakpoint) other).getLineNumber() == lineNumber &&
+                other.isEnabled() == enabled)
+            {
+                i.remove();
+                return true;
+            }
         }
         return false;
     }

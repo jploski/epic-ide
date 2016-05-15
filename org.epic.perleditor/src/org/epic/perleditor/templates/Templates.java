@@ -19,79 +19,79 @@ import org.eclipse.jface.dialogs.ErrorDialog;
  */
 public class Templates extends TemplateSet {
 
-	private static final String DEFAULT_FILE= "default-templates.xml"; //$NON-NLS-1$
-	private static final String TEMPLATE_FILE= "templates.xml"; //$NON-NLS-1$
+    private static final String DEFAULT_FILE= "default-templates.xml"; //$NON-NLS-1$
+    private static final String TEMPLATE_FILE= "templates.xml"; //$NON-NLS-1$
 
-	/** Singleton. */
-	private static Templates fgTemplates;
+    /** Singleton. */
+    private static Templates fgTemplates;
 
-	/**
-	 * Returns an instance of templates.
-	 */
-	public static Templates getInstance() {
-		if (fgTemplates == null)
-			fgTemplates= create();
-		
-		return fgTemplates;
-	}
+    /**
+     * Returns an instance of templates.
+     */
+    public static Templates getInstance() {
+        if (fgTemplates == null)
+            fgTemplates= create();
+        
+        return fgTemplates;
+    }
 
-	private static Templates create() {
-		Templates templates= new Templates();
+    private static Templates create() {
+        Templates templates= new Templates();
 
-		try {			
-			File templateFile= getTemplateFile();
-			if (templateFile.exists()) {
-				templates.addFromFile(templateFile);
-			} else {
-				templates.addFromStream(getDefaultsAsStream());
-				templates.saveToFile(templateFile);
-			}
+        try {			
+            File templateFile= getTemplateFile();
+            if (templateFile.exists()) {
+                templates.addFromFile(templateFile);
+            } else {
+                templates.addFromStream(getDefaultsAsStream());
+                templates.saveToFile(templateFile);
+            }
 
-		} catch (CoreException e) {
-			e.printStackTrace();
-			//PHPeclipsePlugin.log(e);
-			ErrorDialog.openError(null,
-				TemplateMessages.getString("Templates.error.title"), //$NON-NLS-1$
-				e.getMessage(), e.getStatus());
+        } catch (CoreException e) {
+            e.printStackTrace();
+            //PHPeclipsePlugin.log(e);
+            ErrorDialog.openError(null,
+                TemplateMessages.getString("Templates.error.title"), //$NON-NLS-1$
+                e.getMessage(), e.getStatus());
 
-			templates.clear();
-		}
+            templates.clear();
+        }
 
-		return templates;
-	}	
-	
-	/**
-	 * Resets the template set.
-	 */
-	public void reset() throws CoreException {
-		clear();
-		addFromFile(getTemplateFile());
-	}
+        return templates;
+    }	
+    
+    /**
+     * Resets the template set.
+     */
+    public void reset() throws CoreException {
+        clear();
+        addFromFile(getTemplateFile());
+    }
 
-	/**
-	 * Resets the template set with the default templates.
-	 */
-	public void restoreDefaults() throws CoreException {
-		clear();
-		addFromStream(getDefaultsAsStream());
-	}
+    /**
+     * Resets the template set with the default templates.
+     */
+    public void restoreDefaults() throws CoreException {
+        clear();
+        addFromStream(getDefaultsAsStream());
+    }
 
-	/**
-	 * Saves the template set.
-	 */
-	public void save() throws CoreException {					
-		saveToFile(getTemplateFile());
-	}
+    /**
+     * Saves the template set.
+     */
+    public void save() throws CoreException {					
+        saveToFile(getTemplateFile());
+    }
 
-	private static InputStream getDefaultsAsStream() {
-		return Templates.class.getResourceAsStream(DEFAULT_FILE);
-	}
+    private static InputStream getDefaultsAsStream() {
+        return Templates.class.getResourceAsStream(DEFAULT_FILE);
+    }
 
-	private static File getTemplateFile() {
-		IPath path= PerlEditorPlugin.getDefault().getStateLocation();
-		path= path.append(TEMPLATE_FILE);
-		
-		return path.toFile();
-	}
+    private static File getTemplateFile() {
+        IPath path= PerlEditorPlugin.getDefault().getStateLocation();
+        path= path.append(TEMPLATE_FILE);
+        
+        return path.toFile();
+    }
 }
 

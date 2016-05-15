@@ -9,31 +9,31 @@ import org.eclipse.jface.preference.IPreferenceStore;
  */
 public class TaskTagPreferences implements ITaskTagConstants {
   
-	private static final String SEPARATOR = "#";  
-	
-	public TaskTagPreferences() {
-		super();
-	}
-	
-	public static void initializeDefaults(IPreferenceStore store) {
-		store.setDefault(ID_TASK_TAGS, "TODO#TASK#");
-		store.setDefault(ID_IGNORE_CASE, true);
-		store.setDefault(ID_WHITESPACE, true);
-	}  
-	
-	
-	public static String[] parseStringList(String stringList) {
-		int currentPos = stringList.indexOf(SEPARATOR);
-		ArrayList<String> resultList = new ArrayList<String>();
-		while (currentPos > 0) {
-			resultList.add(stringList.substring(0, currentPos));
-			stringList = stringList.substring(currentPos+1);
-			currentPos = stringList.indexOf(SEPARATOR);
-		}
-		
-		return resultList.toArray(new String[0]);    
-		
-	}
+    private static final String SEPARATOR = "#";  
+    
+    public TaskTagPreferences() {
+        super();
+    }
+    
+    public static void initializeDefaults(IPreferenceStore store) {
+        store.setDefault(ID_TASK_TAGS, "TODO#TASK#");
+        store.setDefault(ID_IGNORE_CASE, true);
+        store.setDefault(ID_WHITESPACE, true);
+    }  
+    
+    
+    public static String[] parseStringList(String stringList) {
+        int currentPos = stringList.indexOf(SEPARATOR);
+        ArrayList<String> resultList = new ArrayList<String>();
+        while (currentPos > 0) {
+            resultList.add(stringList.substring(0, currentPos));
+            stringList = stringList.substring(currentPos+1);
+            currentPos = stringList.indexOf(SEPARATOR);
+        }
+        
+        return resultList.toArray(new String[0]);    
+        
+    }
 
   public static String createList(String[] items) {
     String result = new String();

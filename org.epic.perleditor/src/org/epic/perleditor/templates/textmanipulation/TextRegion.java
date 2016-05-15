@@ -20,18 +20,18 @@ package org.epic.perleditor.templates.textmanipulation;
 // This class avoids contamination of clients with wrong imports.
 
 public abstract class TextRegion {
-	
-	/**
-	 * Returns the offset of the region.
-	 *
-	 * @return the offset of the region
-	 */
-	public abstract int getOffset();
-	/**
-	 * Returns the length of the region.
-	 *
-	 * @return the length of the region
-	 */
-	public abstract int getLength();
-	
+    
+    /**
+     * Returns the offset of the region.
+     *
+     * @return the offset of the region
+     */
+    public abstract int getOffset();
+    /**
+     * Returns the length of the region.
+     *
+     * @return the length of the region
+     */
+    public abstract int getLength();
+    
 }

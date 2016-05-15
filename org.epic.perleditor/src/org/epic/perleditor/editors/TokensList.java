@@ -197,7 +197,7 @@ class TokensList implements List<PerlToken>, RandomAccess
 
     public List<PerlToken> subList(int fromIndex, int toIndex)
     {
-    	PerlToken[] ret = new PerlToken[toIndex - fromIndex];
+        PerlToken[] ret = new PerlToken[toIndex - fromIndex];
         System.arraycopy(tokens, fromIndex, ret, 0, ret.length);
         return Collections.unmodifiableList(Arrays.asList(ret));
     }
@@ -243,18 +243,18 @@ class TokensList implements List<PerlToken>, RandomAccess
         return OFFSET_TOKEN;
     }
 
-	@Override
-	public boolean addAll(Collection<? extends PerlToken> c) {
+    @Override
+    public boolean addAll(Collection<? extends PerlToken> c) {
         throw new UnsupportedOperationException();
-	}
+    }
 
-	@Override
-	public boolean addAll(int index, Collection<? extends PerlToken> c) {
+    @Override
+    public boolean addAll(int index, Collection<? extends PerlToken> c) {
         throw new UnsupportedOperationException();
-	}
+    }
 
-	@Override
-	public boolean retainAll(Collection<?> c) {
+    @Override
+    public boolean retainAll(Collection<?> c) {
         throw new UnsupportedOperationException();
-	}
+    }
 }

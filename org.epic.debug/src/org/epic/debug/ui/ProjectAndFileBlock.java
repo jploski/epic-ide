@@ -34,114 +34,114 @@ public class ProjectAndFileBlock extends ProjectBlock
     private Text fMainText;
     private Button fileButton;
 
-	/**
-	 * This method creates the file and project part of the
-	 * LaunchConfigurationTab.
-	 * 
-	 * @param parent
-	 *            a composite for the tab
-	 * 
-	 * @see org.eclipse.debug.ui.ILaunchConfigurationTab#createControl(org.eclipse.swt.widgets.Composite)
-	 */
-	public void createControl(Composite parent) {
+    /**
+     * This method creates the file and project part of the
+     * LaunchConfigurationTab.
+     * 
+     * @param parent
+     *            a composite for the tab
+     * 
+     * @see org.eclipse.debug.ui.ILaunchConfigurationTab#createControl(org.eclipse.swt.widgets.Composite)
+     */
+    public void createControl(Composite parent) {
         super.createControl(parent);
 
         Composite comp = (Composite) getControl();
-		createVerticalSpacer(comp, 1);
+        createVerticalSpacer(comp, 1);
         createScriptFileEditor(comp);
-	}
+    }
 
-	/**
-	 * Sets an empty string as the default values of project and file names.
-	 * 
-	 * @param configuration
-	 *            configuration copy
-	 * 
-	 * @see org.eclipse.debug.ui.ILaunchConfigurationTab#setDefaults(org.eclipse.debug.core.ILaunchConfigurationWorkingCopy)
-	 */
-	public void setDefaults(ILaunchConfigurationWorkingCopy config) {
+    /**
+     * Sets an empty string as the default values of project and file names.
+     * 
+     * @param configuration
+     *            configuration copy
+     * 
+     * @see org.eclipse.debug.ui.ILaunchConfigurationTab#setDefaults(org.eclipse.debug.core.ILaunchConfigurationWorkingCopy)
+     */
+    public void setDefaults(ILaunchConfigurationWorkingCopy config) {
         super.setDefaults(config);
 
-		config.setAttribute(PerlLaunchConfigurationConstants.ATTR_STARTUP_FILE,
-				"");
-	}
+        config.setAttribute(PerlLaunchConfigurationConstants.ATTR_STARTUP_FILE,
+                "");
+    }
 
-	/**
-	 * Initializes the file and project names from a given configuration.
-	 * 
-	 * @param configuration
-	 * 
-	 * @see org.eclipse.debug.ui.ILaunchConfigurationTab#initializeFrom(org.eclipse.debug.core.ILaunchConfiguration)
-	 */
-	public void initializeFrom(ILaunchConfiguration config) {
+    /**
+     * Initializes the file and project names from a given configuration.
+     * 
+     * @param configuration
+     * 
+     * @see org.eclipse.debug.ui.ILaunchConfigurationTab#initializeFrom(org.eclipse.debug.core.ILaunchConfiguration)
+     */
+    public void initializeFrom(ILaunchConfiguration config) {
         super.initializeFrom(config);
 
-		String mainTypeName = "";
-		try {
-			mainTypeName = config.getAttribute(
-					PerlLaunchConfigurationConstants.ATTR_STARTUP_FILE, "");
-		} catch (CoreException ce) {
-			PerlDebugPlugin.log(ce);
-		}
-		fMainText.setText(mainTypeName);
+        String mainTypeName = "";
+        try {
+            mainTypeName = config.getAttribute(
+                    PerlLaunchConfigurationConstants.ATTR_STARTUP_FILE, "");
+        } catch (CoreException ce) {
+            PerlDebugPlugin.log(ce);
+        }
+        fMainText.setText(mainTypeName);
 
-	}
+    }
 
-	/**
-	 * Saves the project and file values in the configuration
-	 * 
-	 * @param configuration
-	 * 
-	 * @see org.eclipse.debug.ui.ILaunchConfigurationTab#performApply(org.eclipse.debug.core.ILaunchConfigurationWorkingCopy)
-	 */
-	public void performApply(ILaunchConfigurationWorkingCopy config) {
+    /**
+     * Saves the project and file values in the configuration
+     * 
+     * @param configuration
+     * 
+     * @see org.eclipse.debug.ui.ILaunchConfigurationTab#performApply(org.eclipse.debug.core.ILaunchConfigurationWorkingCopy)
+     */
+    public void performApply(ILaunchConfigurationWorkingCopy config) {
         super.performApply(config);
 
-		config.setAttribute(PerlLaunchConfigurationConstants.ATTR_STARTUP_FILE,
-				(String) fMainText.getText());
-	}
+        config.setAttribute(PerlLaunchConfigurationConstants.ATTR_STARTUP_FILE,
+                (String) fMainText.getText());
+    }
 
-	/**
-	 * Returns the name
-	 * 
-	 * @see org.eclipse.debug.ui.ILaunchConfigurationTab#getName()
-	 */
-	public String getName() {
-		return "project and file";
-	}
+    /**
+     * Returns the name
+     * 
+     * @see org.eclipse.debug.ui.ILaunchConfigurationTab#getName()
+     */
+    public String getName() {
+        return "project and file";
+    }
 
-	/**
-	 * Tests, if the project and file names are valid and sets otherwise
-	 * errormessages. The following is examined:
-	 * <ul>
-	 * <li> if a project is inserted
-	 * <li> if the project exists in the current workspace
-	 * <li> if a file is inserted
-	 * <li> if the file belongs to the current project
-	 * </ul>
-	 * 
-	 * @see org.eclipse.debug.ui.ILaunchConfigurationTab#isValid(org.eclipse.debug.core.ILaunchConfiguration)
-	 */
-	public boolean isValid(ILaunchConfiguration config) {
-		setErrorMessage(null);
-		setMessage(null);
+    /**
+     * Tests, if the project and file names are valid and sets otherwise
+     * errormessages. The following is examined:
+     * <ul>
+     * <li> if a project is inserted
+     * <li> if the project exists in the current workspace
+     * <li> if a file is inserted
+     * <li> if the file belongs to the current project
+     * </ul>
+     * 
+     * @see org.eclipse.debug.ui.ILaunchConfigurationTab#isValid(org.eclipse.debug.core.ILaunchConfiguration)
+     */
+    public boolean isValid(ILaunchConfiguration config) {
+        setErrorMessage(null);
+        setMessage(null);
         
         boolean valid = super.isValid(config);
         if (!valid) return false;
 
-		String name = fMainText.getText().trim();
-		if (name.length() == 0) {
-			setErrorMessage("Startup File is not specified");
-			return false;
-		}
+        String name = fMainText.getText().trim();
+        if (name.length() == 0) {
+            setErrorMessage("Startup File is not specified");
+            return false;
+        }
 
-		if (! existsFile(name)) {
-			setErrorMessage("File does not exist or match to the project");
-			return false;
-		}
+        if (! existsFile(name)) {
+            setErrorMessage("File does not exist or match to the project");
+            return false;
+        }
 
-		return true;
-	}
+        return true;
+    }
     
     private void createScriptFileEditor(Composite parent) {
         Font font = parent.getFont();
@@ -168,40 +168,40 @@ public class ProjectAndFileBlock extends ProjectBlock
         fileButton.addSelectionListener(new ButtonListener());
     }
 
-	/**
-	 * Returns all Perl files which belong to the current project.
-	 * 
-	 * @return list of files matching the current project
-	 */
-	private String[] getPerlFiles() {
-		String projectName = getSelectedProject();
+    /**
+     * Returns all Perl files which belong to the current project.
+     * 
+     * @return list of files matching the current project
+     */
+    private String[] getPerlFiles() {
+        String projectName = getSelectedProject();
 
-		if (projectName == null || projectName.length() == 0) {
-			return (new String[] {});
-		}
+        if (projectName == null || projectName.length() == 0) {
+            return (new String[] {});
+        }
 
-		IWorkspaceRoot workspaceRoot = PerlDebugPlugin.getWorkspace().getRoot();
-		IProject project = workspaceRoot.getProject(projectName);
-		IResourceVisitor visitor = new PerlProjectVisitor();
-		try {
-			project.accept(visitor);
-		} catch (CoreException e) {
-			e.printStackTrace();
-		}
-		return ((PerlProjectVisitor) visitor).getList();
-	}
+        IWorkspaceRoot workspaceRoot = PerlDebugPlugin.getWorkspace().getRoot();
+        IProject project = workspaceRoot.getProject(projectName);
+        IResourceVisitor visitor = new PerlProjectVisitor();
+        try {
+            project.accept(visitor);
+        } catch (CoreException e) {
+            e.printStackTrace();
+        }
+        return ((PerlProjectVisitor) visitor).getList();
+    }
 
-	private boolean existsFile(String filename) {
-		String projectName = getSelectedProject();
+    private boolean existsFile(String filename) {
+        String projectName = getSelectedProject();
 
-		if (projectName == null || projectName.length() == 0) {
-			return false;
-		}
+        if (projectName == null || projectName.length() == 0) {
+            return false;
+        }
 
-		IWorkspaceRoot workspaceRoot = PerlDebugPlugin.getWorkspace().getRoot();
-		IProject project = workspaceRoot.getProject(projectName);
-		return project.getFile(filename).exists();
-	}
+        IWorkspaceRoot workspaceRoot = PerlDebugPlugin.getWorkspace().getRoot();
+        IProject project = workspaceRoot.getProject(projectName);
+        return project.getFile(filename).exists();
+    }
     
     protected void newProjectSelected()
     {
@@ -209,74 +209,74 @@ public class ProjectAndFileBlock extends ProjectBlock
         fMainText.setText("");
     }
 
-	/**
-	 * Used to get the Perl files of a current project.
-	 */
-	private static class PerlProjectVisitor implements IResourceVisitor {
-		private static final String PERL_EDITOR_ID = "org.epic.perleditor.editors.PerlEditor";
+    /**
+     * Used to get the Perl files of a current project.
+     */
+    private static class PerlProjectVisitor implements IResourceVisitor {
+        private static final String PERL_EDITOR_ID = "org.epic.perleditor.editors.PerlEditor";
 
-		private static final String EMB_PERL_FILE_EXTENSION = "epl";
+        private static final String EMB_PERL_FILE_EXTENSION = "epl";
 
-		private List<String> fileList = new ArrayList<String>();
+        private List<String> fileList = new ArrayList<String>();
 
-		public boolean visit(IResource resource) throws CoreException {
-			IEditorDescriptor defaultEditorDescriptor = PerlDebugPlugin
-					.getDefault().getWorkbench().getEditorRegistry()
-					.getDefaultEditor(resource.getName());
+        public boolean visit(IResource resource) throws CoreException {
+            IEditorDescriptor defaultEditorDescriptor = PerlDebugPlugin
+                    .getDefault().getWorkbench().getEditorRegistry()
+                    .getDefaultEditor(resource.getName());
 
-			if (defaultEditorDescriptor == null) {
-				return true;
-			}
+            if (defaultEditorDescriptor == null) {
+                return true;
+            }
 
-			if (defaultEditorDescriptor.getId().equals(PERL_EDITOR_ID) &&
-				!EMB_PERL_FILE_EXTENSION.equals(resource.getFileExtension()) &&
-				resource.getType() == IResource.FILE) {
-				fileList.add(resource.getFullPath().removeFirstSegments(1)
-						.toString());
-			}
-			return true;
-		}
+            if (defaultEditorDescriptor.getId().equals(PERL_EDITOR_ID) &&
+                !EMB_PERL_FILE_EXTENSION.equals(resource.getFileExtension()) &&
+                resource.getType() == IResource.FILE) {
+                fileList.add(resource.getFullPath().removeFirstSegments(1)
+                        .toString());
+            }
+            return true;
+        }
 
-		public String[] getList() {
-			return fileList.toArray(new String[fileList.size()]);
-		}
-	}
+        public String[] getList() {
+            return fileList.toArray(new String[fileList.size()]);
+        }
+    }
 
-	/**
-	 * A listener to update for text changes and widget selection. Creates a
-	 * selection dialog for the buttons.
-	 */
-	private class ButtonListener extends SelectionAdapter {
-		public void widgetSelected(SelectionEvent e) {
-			String[] files = getPerlFiles();
+    /**
+     * A listener to update for text changes and widget selection. Creates a
+     * selection dialog for the buttons.
+     */
+    private class ButtonListener extends SelectionAdapter {
+        public void widgetSelected(SelectionEvent e) {
+            String[] files = getPerlFiles();
 
-			ILabelProvider labelProvider = new FileLabelProvider();
-			ElementListSelectionDialog dialog = new ElementListSelectionDialog(
-					getShell(), labelProvider);
-			dialog.setTitle("File Selection");
-			dialog.setMessage("Matching files:");
-			dialog.setElements(files);
+            ILabelProvider labelProvider = new FileLabelProvider();
+            ElementListSelectionDialog dialog = new ElementListSelectionDialog(
+                    getShell(), labelProvider);
+            dialog.setTitle("File Selection");
+            dialog.setMessage("Matching files:");
+            dialog.setElements(files);
 
-			String perlFile = fMainText.getText();
-			if (perlFile != null) {
-				dialog.setInitialSelections(new Object[] { perlFile });
-			}
-			if (dialog.open() == ElementListSelectionDialog.OK) {
-				fMainText.setText((String) dialog.getFirstResult());
-			}
-		}
-	}
+            String perlFile = fMainText.getText();
+            if (perlFile != null) {
+                dialog.setInitialSelections(new Object[] { perlFile });
+            }
+            if (dialog.open() == ElementListSelectionDialog.OK) {
+                fMainText.setText((String) dialog.getFirstResult());
+            }
+        }
+    }
 
-	/**
-	 * A label provider for Perl files.
+    /**
+     * A label provider for Perl files.
      * 
-	 * @author Katrin Dust
-	 */
-	private static class FileLabelProvider extends LabelProvider {
-		public Image getImage(Object element) {
-			return AbstractUIPlugin.imageDescriptorFromPlugin(
-					PerlDebugPlugin.getDefault().toString(), "icons/epic.gif")
-					.createImage();
-		}
-	}
+     * @author Katrin Dust
+     */
+    private static class FileLabelProvider extends LabelProvider {
+        public Image getImage(Object element) {
+            return AbstractUIPlugin.imageDescriptorFromPlugin(
+                    PerlDebugPlugin.getDefault().toString(), "icons/epic.gif")
+                    .createImage();
+        }
+    }
 }

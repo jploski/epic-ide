@@ -1,13 +1,16 @@
 package org.epic.perleditor.editors.util;
 
 import java.io.File;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.ILog;
-import org.epic.core.util.*;
+import org.epic.core.util.CommandLineTokenizer;
+import org.epic.core.util.ScriptExecutor;
+import org.epic.core.util.StatusFactory;
 import org.epic.perleditor.preferences.PerlCriticPreferencePage;
 
 
@@ -72,7 +75,7 @@ public class SourceCritic extends ScriptExecutor
         }
         
         String severity = PerlCriticPreferencePage.getSeverity();
-        if(!severity.equals("default")) 
+        if(!"default".equals(severity))
         {
         	additionalOptions.add("--" + severity);
         }
@@ -162,16 +165,16 @@ public class SourceCritic extends ScriptExecutor
         ArrayList<Violation> violations = new ArrayList<Violation>();
         for (int i = 0; i < lines.length; i++)
         {
-            System.out.println("critic: " + lines[i]);
-
             Violation v = parseLine(lines[i]);
             if (v != null)
             {
                 violations.add(v);
+            } else {
+                log(StatusFactory.createWarning(getPluginId(), "Could not parse perlcritic output: " + lines[i]));
             }
         }
 
-        if (violations.size() == 0)
+        if (violations.isEmpty())
         {
             log(StatusFactory.createWarning(getPluginId(),
                     "Perl::Critic violations.length == 0, output change?"));

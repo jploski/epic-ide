@@ -86,7 +86,7 @@ public abstract class ScriptExecutor
              * given that, logging the stderr as a warning will help the end user to figure out what
              * is going on (and assist in logging bug reports, etc)
              */
-            if ((output.stderr != null) && ! output.stderr.equals(""))
+            if ((output.stderr != null) && ! "".equals(output.stderr))
             {
                 log.log(StatusFactory.createWarning(PerlEditorPlugin.getPluginId(),
                         "Perl Process stderr: " + output.stderr, null));

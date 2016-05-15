@@ -14,48 +14,30 @@ import org.eclipse.core.runtime.CoreException;
 
 /**
  * @author luelljoc
- *
- * To change the template for this generated type comment go to
- * Window>Preferences>Java>Code Generation>Code and Comments
  */
 public class PerlProjectNature implements IProjectNature {
 
 	private IProject project;
-	private String PLUGIN_ID = "org.epic.perleditor";
-	/**
-	 * 
-	 */
-	public PerlProjectNature() {
-		super();
-		// TODO Auto-generated constructor stub
-	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.core.resources.IProjectNature#configure()
-	 */
+	private static final String PLUGIN_ID = "org.epic.perleditor";
+
+	@Override
 	public void configure() throws CoreException {
-		// register Perl builder
-		//		IProjectDescription description = getProject().getDescription();
-		//		ICommand command = description.newCommand();
-		//		command.setBuilderName(PLUGIN_ID + ".perlbuilder");
-		//		System.out.println("Builder name: " + PLUGIN_ID+ ".perlbuilder");
-		String BUILDER_ID = PLUGIN_ID + ".perlbuilder";
+		String builderId = PLUGIN_ID + ".perlbuilder";
 		IProjectDescription desc = project.getDescription();
 		ICommand[] commands = desc.getBuildSpec();
 		boolean found = false;
 
 		for (int i = 0; i < commands.length; ++i) {
-			if (commands[i].getBuilderName().equals(BUILDER_ID)) {
+			if (commands[i].getBuilderName().equals(builderId)) {
 				found = true;
 				break;
 			}
 		}
 		if (!found) {
-			// TODO remove debug output
-			System.out.println("Builder added: " + PLUGIN_ID+ ".perlbuilder");
 			//add builder to project
 			ICommand command = desc.newCommand();
-			command.setBuilderName(BUILDER_ID);
+			command.setBuilderName(builderId);
 			ICommand[] newCommands = new ICommand[commands.length + 1];
 
 			// Add it before other builders.
@@ -66,27 +48,19 @@ public class PerlProjectNature implements IProjectNature {
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.core.resources.IProjectNature#deconfigure()
-	 */
+	@Override
 	public void deconfigure() throws CoreException {
-		// TODO Auto-generated method stub
-
+		// NOOP
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.core.resources.IProjectNature#getProject()
-	 */
+	@Override
 	public IProject getProject() {
 		return project;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.core.resources.IProjectNature#setProject(org.eclipse.core.resources.IProject)
-	 */
+	@Override
 	public void setProject(IProject fProject) {
 		project = fProject;
-
 	}
 
 }

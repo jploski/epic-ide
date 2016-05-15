@@ -51,8 +51,6 @@ public class PerlProjectNature implements IProjectNature {
 			}
 		}
 		if (!found) {
-			// TODO remove debug output
-			System.out.println("Builder added: " + PLUGIN_ID+ ".perlbuilder");
 			//add builder to project
 			ICommand command = desc.newCommand();
 			command.setBuilderName(BUILDER_ID);

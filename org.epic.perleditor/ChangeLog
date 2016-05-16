@@ -4,7 +4,11 @@ Git
 		Debugger:
 		
 		Editor:
-
+		* Renamed Settings entry from "Perl EPIC" to "Perl"
+		* Added Support for Eclipse NEON
+		* Fixed Bug #328 Refactor: "Extract subroutine" backslashes single quotes
+		* Fixed Bug #664 Minor Syntax Coloring Flaw"
+		* Fixed Bug #484 Logging written to stdout with 0.6.21
 
 Version 0.7.0 - 11-January-2014 ('testing' now requires Eclipse 3.7 + Java 6)
 		Debugger:

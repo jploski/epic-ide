@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: EPIC External Libs Plug-in
 Bundle-SymbolicName: org.epic.lib
-Bundle-Version: 0.7.0
+Bundle-Version: 0.7.1
 Bundle-Vendor: EPIC Project
 Bundle-Localization: plugin
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6

@@ -6,6 +6,14 @@ Git
 		Editor:
 
 
+Version 0.7.1 - 16-May-2016
+		Editor:
+		* Eclipse Neon support with further code cleanups
+		* Renamed Settings entry from "Perl EPIC" to "Perl"
+		* Fixed Bug #664 Minor Syntax Coloring Flaw
+		* Fixed Bug #328 Refactor: "Extract subroutine" backslashes single quotes
+		* Fixed Bug #689 Exception when running src-pde tests 
+
 Version 0.7.0 - 11-January-2014 ('testing' now requires Eclipse 3.7 + Java 6)
 		Debugger:
 		* Implemented Feature Request #156 Change Perl CGI file lookup or settings to load the right file

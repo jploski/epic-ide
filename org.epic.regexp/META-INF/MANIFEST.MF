@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Perl RegExp Plug-in
 Bundle-SymbolicName: org.epic.regexp; singleton:=true
-Bundle-Version: 0.7.0
+Bundle-Version: 0.7.1
 Bundle-Activator: org.epic.regexp.RegExpPlugin
 Bundle-Vendor: EPIC Project
 Bundle-Localization: plugin

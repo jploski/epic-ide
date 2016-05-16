@@ -9,6 +9,7 @@ package org.epic.core.util;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.runtime.CoreException;
+import org.epic.perleditor.Logger;
 
 /**
  * @author luelljoc
@@ -27,7 +28,7 @@ public class NatureUtilities {
             description.setNatureIds(newNatures);
             project.setDescription(description, null);
         } catch (CoreException e) {
-            e.printStackTrace();
+            Logger.logException(e);
         }
     }
 
@@ -52,7 +53,7 @@ public class NatureUtilities {
                 project.setDescription(description, null);
             }
         } catch (CoreException e) {
-            e.printStackTrace();
+            Logger.logException(e);
         }
     }
 }

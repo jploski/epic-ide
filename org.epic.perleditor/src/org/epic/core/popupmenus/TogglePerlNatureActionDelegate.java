@@ -17,6 +17,7 @@ import org.eclipse.ui.IWorkbenchPart;
 //import org.eclipse.ui.views.navigator.IResourceNavigator;
 import org.epic.core.Constants;
 import org.epic.core.util.NatureUtilities;
+import org.epic.perleditor.Logger;
 
 /**
  * @author luelljoc
@@ -57,7 +58,7 @@ public class TogglePerlNatureActionDelegate implements IObjectActionDelegate {
                     }
                     action.setEnabled(project.isAccessible());
                 } catch (CoreException e) {
-                    e.printStackTrace();
+                    Logger.logException(e);
                 }
             }
         }
@@ -80,8 +81,7 @@ public class TogglePerlNatureActionDelegate implements IObjectActionDelegate {
                     }
                 }
             } catch (CoreException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+                Logger.logException(e);
             }
 
         }

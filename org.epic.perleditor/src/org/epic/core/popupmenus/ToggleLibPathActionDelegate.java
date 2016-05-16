@@ -9,6 +9,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IWorkbenchPart;
 import org.epic.core.util.XMLUtilities;
+import org.epic.perleditor.Logger;
 
 public class ToggleLibPathActionDelegate implements IObjectActionDelegate
 {
@@ -78,7 +79,7 @@ public class ToggleLibPathActionDelegate implements IObjectActionDelegate
         }
         catch (IOException e)
         {
-            e.printStackTrace();
+            Logger.logException(e);
             return false;
         }
         return true;
@@ -110,7 +111,7 @@ public class ToggleLibPathActionDelegate implements IObjectActionDelegate
         }
         catch (IOException e)
         {
-            e.printStackTrace();
+            Logger.logException(e);
             return false;
         }
         return true;

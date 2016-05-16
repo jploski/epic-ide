@@ -23,6 +23,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IDecoratorManager;
 import org.eclipse.ui.IEditorDescriptor;
 import org.epic.core.Constants;
+import org.epic.perleditor.Logger;
 import org.epic.perleditor.PerlEditorPlugin;
 
 /**
@@ -82,7 +83,7 @@ public class PerlDecorator extends LabelProvider
                 }
             }
         } catch (CoreException e) {
-            e.printStackTrace();
+            Logger.logException(e);
         }
         
         try {
@@ -94,7 +95,7 @@ public class PerlDecorator extends LabelProvider
                 }
             }
         } catch (CoreException e) {
-            e.printStackTrace();
+            Logger.logException(e);
         }
 
         if (!isPerlProject && defaultEditorDescriptor != null) {
@@ -112,7 +113,7 @@ public class PerlDecorator extends LabelProvider
                 //resource.getProject().accept(projectVisitor);
                 resource.accept(projectVisitor);
             } catch (CoreException e1) {
-                e1.printStackTrace();
+                Logger.logException(e1);
             }
 
             int state = projectVisitor.getState();
@@ -134,7 +135,7 @@ public class PerlDecorator extends LabelProvider
                     }
                 }
             } catch (CoreException e1) {
-                e1.printStackTrace();
+                Logger.logException(e1);
             }
         }
     }
@@ -197,7 +198,7 @@ public class PerlDecorator extends LabelProvider
                 }
             }
         } catch (CoreException e) {
-            e.printStackTrace();
+            Logger.logException(e);
         }
 
         return state;

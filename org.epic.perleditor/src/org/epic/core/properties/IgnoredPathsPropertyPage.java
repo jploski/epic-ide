@@ -10,6 +10,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.*;
 import org.eclipse.ui.dialogs.PropertyPage;
 import org.epic.core.util.XMLUtilities;
+import org.epic.perleditor.Logger;
 
 public class IgnoredPathsPropertyPage extends PropertyPage
 {
@@ -125,7 +126,7 @@ public class IgnoredPathsPropertyPage extends PropertyPage
         }
         catch (Exception e)
         {
-            e.printStackTrace();
+            Logger.logException(e);
             return false;
         }
     }

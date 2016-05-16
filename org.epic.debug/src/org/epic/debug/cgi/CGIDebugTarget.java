@@ -40,15 +40,15 @@ public class CGIDebugTarget extends DebugTarget
             {
                 if (events[i].getKind() == DebugEvent.TERMINATE)
                 {
-                	if (getThread().equals(events[i].getSource()))
-                	{
-                		debugSessionTerminated();
-                		return;
-                	}                
-                	else if (getProcess().equals(events[i].getSource()))
-                	{
-                		getRemotePort().shutdown();
-                	}
+                    if (getThread().equals(events[i].getSource()))
+                    {
+                        debugSessionTerminated();
+                        return;
+                    }                
+                    else if (getProcess().equals(events[i].getSource()))
+                    {
+                        getRemotePort().shutdown();
+                    }
                 }
             }
         }
@@ -82,30 +82,30 @@ public class CGIDebugTarget extends DebugTarget
     
     public IThread[] getThreads() throws DebugException
     {
-    	return isTerminated() ? new IThread[0] : super.getThreads();
+        return isTerminated() ? new IThread[0] : super.getThreads();
     }
 
     public boolean hasThreads() throws DebugException
     {
-    	return getThreads().length > 0;
+        return getThreads().length > 0;
     }
 
-	public void debugSessionTerminated()
-	{
+    public void debugSessionTerminated()
+    {
         fireTerminateEvent();
         getLaunch().removeDebugTarget(CGIDebugTarget.this);
 
         Job acceptNewDebugger = new Job("EPIC.acceptNewDebugger") {
-        	protected IStatus run(IProgressMonitor monitor)
-        	{
-        		if (acceptNewDebugger()) { respawn(); return Status.OK_STATUS; }
-        		else return Status.CANCEL_STATUS;
-        	}
+            protected IStatus run(IProgressMonitor monitor)
+            {
+                if (acceptNewDebugger()) { respawn(); return Status.OK_STATUS; }
+                else return Status.CANCEL_STATUS;
+            }
         };
         acceptNewDebugger.setPriority(Job.LONG);
         acceptNewDebugger.setSystem(true);
         acceptNewDebugger.schedule();
-	}
+    }
     
     private boolean acceptNewDebugger()
     {

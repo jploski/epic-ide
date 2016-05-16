@@ -36,91 +36,91 @@ import org.epic.perleditor.preferences.ModuleStarterPreferencePage;
 
 public class PerlNewProjectCreationPage extends WizardNewProjectCreationPage
 {
-	private Link moduleStarterPrefLink;
-	private Button moduleButton;
-	private Label moduleNameLabel;
-	private Text moduleNameText;
-	private boolean useModule = false;
-	private boolean useModuleStarter = false;
+    private Link moduleStarterPrefLink;
+    private Button moduleButton;
+    private Label moduleNameLabel;
+    private Text moduleNameText;
+    private boolean useModule = false;
+    private boolean useModuleStarter = false;
 
-	/**
-	 * @param pageName
-	 */
-	public PerlNewProjectCreationPage(String pageName)
-	{
-		super(pageName);
-		setTitle(ResourceMessages.getString("NewProject.title")); //$NON-NLS-1$
-		setDescription(ResourceMessages.getString("NewProject.description")); //$NON-NLS-1$
-	}
+    /**
+     * @param pageName
+     */
+    public PerlNewProjectCreationPage(String pageName)
+    {
+        super(pageName);
+        setTitle(ResourceMessages.getString("NewProject.title")); //$NON-NLS-1$
+        setDescription(ResourceMessages.getString("NewProject.description")); //$NON-NLS-1$
+    }
 
-	public PerlNewProjectCreationPage()
-	{
-		this(PerlNewProjectCreationPage.class.getName());
-	}
+    public PerlNewProjectCreationPage()
+    {
+        this(PerlNewProjectCreationPage.class.getName());
+    }
 
-	public void createControl(Composite parent)
-	{
-		super.createControl(parent);
+    public void createControl(Composite parent)
+    {
+        super.createControl(parent);
 
-		useModuleStarter = ModuleStarterPreferencePage.isModuleStarterEnabled();
+        useModuleStarter = ModuleStarterPreferencePage.isModuleStarterEnabled();
 
-		Composite composite = (Composite) getControl();
+        Composite composite = (Composite) getControl();
 
-		Group group = new Group(composite, SWT.NONE);
-		group.setText("Module::Starter Information");
-		group.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
-		group.setLayout(new GridLayout(2, false));
+        Group group = new Group(composite, SWT.NONE);
+        group.setText("Module::Starter Information");
+        group.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
+        group.setLayout(new GridLayout(2, false));
 
-		moduleButton = new Button(group, SWT.CHECK);
-		moduleButton.setText("&Use Module::Starter");
-		moduleButton.setSelection(false);
-		moduleButton.setEnabled(useModuleStarter);
-		moduleButton.addSelectionListener(new SelectionAdapter()
-		{
-			public void widgetSelected(SelectionEvent event)
-			{
-				useModule = moduleButton.getSelection();
-				setModuleName();
-			}
-		});
-		moduleButton.setToolTipText(ResourceMessages
-		    .getString("NewProject.moduleStarterTooltip"));
+        moduleButton = new Button(group, SWT.CHECK);
+        moduleButton.setText("&Use Module::Starter");
+        moduleButton.setSelection(false);
+        moduleButton.setEnabled(useModuleStarter);
+        moduleButton.addSelectionListener(new SelectionAdapter()
+        {
+            public void widgetSelected(SelectionEvent event)
+            {
+                useModule = moduleButton.getSelection();
+                setModuleName();
+            }
+        });
+        moduleButton.setToolTipText(ResourceMessages
+            .getString("NewProject.moduleStarterTooltip"));
 
-		// link element to Module::Starter pref page
-		moduleStarterPrefLink = new Link(group, SWT.NONE);
-		moduleStarterPrefLink.setFont(group.getFont());
-		moduleStarterPrefLink.setText(ResourceMessages
-		    .getString("NewProject.moduleStarterPrefDesc")); //$NON-NLS-1$
-		moduleStarterPrefLink.setLayoutData(new GridData(GridData.END,
-		    GridData.CENTER, false, false));
-		moduleStarterPrefLink.addSelectionListener(new SelectionAdapter()
-		{
-			public void widgetSelected(SelectionEvent event)
-			{
-				String moduleStarterID = ModuleStarterPreferencePage.MODULE_STARTER_PREF_ID;
-				Map<String, Boolean> data = new HashMap<String, Boolean>();
-				data.put("PropertyAndPreferencePage.nolink", Boolean.TRUE); //$NON-NLS-1$
-				PreferencesUtil.createPreferenceDialogOn(getShell(),
-				    moduleStarterID, new String[] { moduleStarterID }, data)
-				    .open();
-				// check if we changed the preferences
-				toggleEnabled(ModuleStarterPreferencePage.isModuleStarterEnabled());
-			}
-		});
+        // link element to Module::Starter pref page
+        moduleStarterPrefLink = new Link(group, SWT.NONE);
+        moduleStarterPrefLink.setFont(group.getFont());
+        moduleStarterPrefLink.setText(ResourceMessages
+            .getString("NewProject.moduleStarterPrefDesc")); //$NON-NLS-1$
+        moduleStarterPrefLink.setLayoutData(new GridData(GridData.END,
+            GridData.CENTER, false, false));
+        moduleStarterPrefLink.addSelectionListener(new SelectionAdapter()
+        {
+            public void widgetSelected(SelectionEvent event)
+            {
+                String moduleStarterID = ModuleStarterPreferencePage.MODULE_STARTER_PREF_ID;
+                Map<String, Boolean> data = new HashMap<String, Boolean>();
+                data.put("PropertyAndPreferencePage.nolink", Boolean.TRUE); //$NON-NLS-1$
+                PreferencesUtil.createPreferenceDialogOn(getShell(),
+                    moduleStarterID, new String[] { moduleStarterID }, data)
+                    .open();
+                // check if we changed the preferences
+                toggleEnabled(ModuleStarterPreferencePage.isModuleStarterEnabled());
+            }
+        });
 
-		moduleNameLabel = new Label(group, SWT.LEAD);
-		moduleNameLabel.setText("Module Name");
+        moduleNameLabel = new Label(group, SWT.LEAD);
+        moduleNameLabel.setText("Module Name");
 
-		moduleNameText = new Text(group, SWT.LEFT | SWT.READ_ONLY);
-		GridData moduleNameData = new GridData(GridData.FILL_HORIZONTAL);
-		moduleNameData.widthHint = 250;
-		moduleNameText.setLayoutData(moduleNameData);
-		moduleNameText.setFont(parent.getFont());
+        moduleNameText = new Text(group, SWT.LEFT | SWT.READ_ONLY);
+        GridData moduleNameData = new GridData(GridData.FILL_HORIZONTAL);
+        moduleNameData.widthHint = 250;
+        moduleNameText.setLayoutData(moduleNameData);
+        moduleNameText.setFont(parent.getFont());
 
         toggleEnabled(ModuleStarterPreferencePage.isModuleStarterEnabled());
 
-		setModuleName();
-	}
+        setModuleName();
+    }
     
     public void setPageComplete(boolean complete)
     {
@@ -138,14 +138,14 @@ public class PerlNewProjectCreationPage extends WizardNewProjectCreationPage
         return moduleNameText.getText().trim();
     }
 
-	private void setModuleName()
-	{
+    private void setModuleName()
+    {
         String projectName = getProjectName();
         if (projectName == null || !useModule) projectName = "";
         
         if (moduleNameText != null)        
             moduleNameText.setText(projectName.replaceAll("-", "::"));
-	}
+    }
     
     private void toggleEnabled(boolean enabled)
     {

@@ -151,8 +151,8 @@ public class PerlSourceViewerConfiguration extends SourceViewerConfiguration
         return r;
     }
 
-	public IUndoManager getUndoManager(ISourceViewer sourceViewer)
-	{
+    public IUndoManager getUndoManager(ISourceViewer sourceViewer)
+    {
         if (!prefs.contains(AbstractDecoratedTextEditorPreferenceConstants.EDITOR_UNDO_HISTORY_SIZE))
             return super.getUndoManager(sourceViewer);
 

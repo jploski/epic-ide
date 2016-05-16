@@ -190,7 +190,7 @@ public abstract class ScriptExecutor
         }
         catch (NumberFormatException e)
         {
-        	// stacktrace will provide exact error location
+            // stacktrace will provide exact error location
             log.log(StatusFactory.createError(getPluginId(), e.getMessage(), e));
             // results in "Unknown" being displayed in the Problems view
             return -1;

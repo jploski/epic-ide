@@ -37,71 +37,71 @@ import org.eclipse.swt.graphics.Color;
  */
 public class CGIConsoleColorProvider implements IConsoleColorProvider {
 
-	private IProcess fProcess;
-	private IConsole fConsole;
+    private IProcess fProcess;
+    private IConsole fConsole;
 
-	/**
-	 * @see IConsoleColorProvider#connect(IProcess, IConsole)
-	 */
-	public void connect(IProcess process, IConsole 	console) {
-		fProcess = process;
-		fConsole = console;
-		console.connect(((CGIProxy)process).getErrorStreamMonitor(),IDebugUIConstants.ID_STANDARD_ERROR_STREAM);
-		console.connect(((CGIProxy)process).getInputStreamMonitor(),IDebugUIConstants.ID_STANDARD_INPUT_STREAM);
-		console.connect(((CGIProxy)process).getOutputStreamMonitor(),IDebugUIConstants.ID_STANDARD_OUTPUT_STREAM);
-	}
+    /**
+     * @see IConsoleColorProvider#connect(IProcess, IConsole)
+     */
+    public void connect(IProcess process, IConsole 	console) {
+        fProcess = process;
+        fConsole = console;
+        console.connect(((CGIProxy)process).getErrorStreamMonitor(),IDebugUIConstants.ID_STANDARD_ERROR_STREAM);
+        console.connect(((CGIProxy)process).getInputStreamMonitor(),IDebugUIConstants.ID_STANDARD_INPUT_STREAM);
+        console.connect(((CGIProxy)process).getOutputStreamMonitor(),IDebugUIConstants.ID_STANDARD_OUTPUT_STREAM);
+    }
 
-	/**
-	 * @see IConsoleColorProvider#disconnect()
-	 */
-	public void disconnect() {
-		fConsole = null;
-		fProcess = null;
-	}
+    /**
+     * @see IConsoleColorProvider#disconnect()
+     */
+    public void disconnect() {
+        fConsole = null;
+        fProcess = null;
+    }
 
-	/**
-	 * @see IConsoleColorProvider#isReadOnly()
-	 */
-	public boolean isReadOnly() {
+    /**
+     * @see IConsoleColorProvider#isReadOnly()
+     */
+    public boolean isReadOnly() {
         return true;
-		//return fProcess == null || fProcess.isTerminated();
-	}
+        //return fProcess == null || fProcess.isTerminated();
+    }
 
-	/**
-	 * @see IConsoleColorProvider#getColor(String)
-	 */
-	public Color getColor(String streamIdentifer) {
-		if (IDebugUIConstants.ID_STANDARD_OUTPUT_STREAM.equals(streamIdentifer)) {
-			return DebugUIPlugin.getPreferenceColor(IDebugPreferenceConstants.CONSOLE_SYS_OUT_COLOR);
-		}
-		if (IDebugUIConstants.ID_STANDARD_ERROR_STREAM.equals(streamIdentifer)) {
-			return DebugUIPlugin.getPreferenceColor(IDebugPreferenceConstants.CONSOLE_SYS_ERR_COLOR);
-		}
-		if (IDebugUIConstants.ID_STANDARD_INPUT_STREAM.equals(streamIdentifer)) {
-			return DebugUIPlugin.getPreferenceColor(IDebugPreferenceConstants.CONSOLE_SYS_IN_COLOR);
-		}
-		return null;
-	}
+    /**
+     * @see IConsoleColorProvider#getColor(String)
+     */
+    public Color getColor(String streamIdentifer) {
+        if (IDebugUIConstants.ID_STANDARD_OUTPUT_STREAM.equals(streamIdentifer)) {
+            return DebugUIPlugin.getPreferenceColor(IDebugPreferenceConstants.CONSOLE_SYS_OUT_COLOR);
+        }
+        if (IDebugUIConstants.ID_STANDARD_ERROR_STREAM.equals(streamIdentifer)) {
+            return DebugUIPlugin.getPreferenceColor(IDebugPreferenceConstants.CONSOLE_SYS_ERR_COLOR);
+        }
+        if (IDebugUIConstants.ID_STANDARD_INPUT_STREAM.equals(streamIdentifer)) {
+            return DebugUIPlugin.getPreferenceColor(IDebugPreferenceConstants.CONSOLE_SYS_IN_COLOR);
+        }
+        return null;
+    }
 
-	/**
-	 * Returns the process this color provider is providing color for, or
-	 * <code>null</code> if none.
-	 *
-	 * @return the process this color provider is providing color for, or
-	 * <code>null</code> if none
-	 */
-	protected IProcess getProcess() {
-		return fProcess;
-	}
+    /**
+     * Returns the process this color provider is providing color for, or
+     * <code>null</code> if none.
+     *
+     * @return the process this color provider is providing color for, or
+     * <code>null</code> if none
+     */
+    protected IProcess getProcess() {
+        return fProcess;
+    }
 
-	/**
-	 * Returns the consonle this color provider is connected to, or
-	 * <code>null</code> if none.
-	 *
-	 * @return IConsole the consonle this color provider is connected to, or
-	 * <code>null</code> if none
-	 */
-	protected IConsole getConsole() {
-		return fConsole;
-	}
+    /**
+     * Returns the consonle this color provider is connected to, or
+     * <code>null</code> if none.
+     *
+     * @return IConsole the consonle this color provider is connected to, or
+     * <code>null</code> if none
+     */
+    protected IConsole getConsole() {
+        return fConsole;
+    }
 }

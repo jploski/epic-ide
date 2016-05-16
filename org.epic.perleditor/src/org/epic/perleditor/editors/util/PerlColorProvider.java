@@ -25,10 +25,10 @@ public class PerlColorProvider
         }
     }
 
-	/**
-	 * Return the Color that is stored in the Color table as rgb.
-	 */
-	public synchronized Color getColor(RGB rgb)
+    /**
+     * Return the Color that is stored in the Color table as rgb.
+     */
+    public synchronized Color getColor(RGB rgb)
     {
         Color c = colors.get(rgb);
         if (c == null)
@@ -37,5 +37,5 @@ public class PerlColorProvider
             colors.put(rgb, c);
         }
         return c;
-	}
+    }
 }

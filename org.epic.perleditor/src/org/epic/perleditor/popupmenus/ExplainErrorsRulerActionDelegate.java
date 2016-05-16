@@ -18,14 +18,14 @@ import org.eclipse.ui.texteditor.ITextEditor;
  * Window&gt;Preferences&gt;Java&gt;Code Generation&gt;Code and Comments
  */
 public class ExplainErrorsRulerActionDelegate
-		extends
-		AbstractRulerActionDelegate {
+        extends
+        AbstractRulerActionDelegate {
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.ui.texteditor.AbstractRulerActionDelegate#createAction(org.eclipse.ui.texteditor.ITextEditor, org.eclipse.jface.text.source.IVerticalRulerInfo)
-	 */
-	protected IAction createAction(ITextEditor editor,
-			IVerticalRulerInfo rulerInfo) {
-		return new ExplainErrorsRulerAction(rulerInfo, editor);
-	}
+    /* (non-Javadoc)
+     * @see org.eclipse.ui.texteditor.AbstractRulerActionDelegate#createAction(org.eclipse.ui.texteditor.ITextEditor, org.eclipse.jface.text.source.IVerticalRulerInfo)
+     */
+    protected IAction createAction(ITextEditor editor,
+            IVerticalRulerInfo rulerInfo) {
+        return new ExplainErrorsRulerAction(rulerInfo, editor);
+    }
 }

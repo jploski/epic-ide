@@ -15,14 +15,14 @@ public class PerlSourceViewer extends ProjectionViewer {
 
     private IVerticalRulerColumn foldColumn;
     
-	public PerlSourceViewer(
-		Composite parent,
-		IVerticalRuler ruler,
-		IOverviewRuler overviewRuler,
-		boolean showAnnotationsOverview,
-		int styles) {
-		super(parent, ruler, overviewRuler, showAnnotationsOverview, styles);
-	}
+    public PerlSourceViewer(
+        Composite parent,
+        IVerticalRuler ruler,
+        IOverviewRuler overviewRuler,
+        boolean showAnnotationsOverview,
+        int styles) {
+        super(parent, ruler, overviewRuler, showAnnotationsOverview, styles);
+    }
     
     public void addVerticalRulerColumn(IVerticalRulerColumn column)
     {
@@ -39,21 +39,21 @@ public class PerlSourceViewer extends ProjectionViewer {
         return super.getVerticalRuler();
     }
 
-	protected void customizeDocumentCommand(DocumentCommand command) {
-		try {
-			if (command.text.equals("\t")) {
-				int line            = getDocument().getLineOfOffset(command.offset);
-				int lineStartOffset = getDocument().getLineOffset(line);		
-				int column          = command.offset - lineStartOffset;
+    protected void customizeDocumentCommand(DocumentCommand command) {
+        try {
+            if (command.text.equals("\t")) {
+                int line            = getDocument().getLineOfOffset(command.offset);
+                int lineStartOffset = getDocument().getLineOffset(line);		
+                int column          = command.offset - lineStartOffset;
 
-				command.text = PreferenceUtil.getTab(column);
-			}
-		} catch (BadLocationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		super.customizeDocumentCommand(command);
-	}
+                command.text = PreferenceUtil.getTab(column);
+            }
+        } catch (BadLocationException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        super.customizeDocumentCommand(command);
+    }
 
     public void updateFoldColumnBackgroundColor(boolean force)
     {

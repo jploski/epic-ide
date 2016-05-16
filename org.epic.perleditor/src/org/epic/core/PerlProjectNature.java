@@ -17,50 +17,50 @@ import org.eclipse.core.runtime.CoreException;
  */
 public class PerlProjectNature implements IProjectNature {
 
-	private IProject project;
+    private IProject project;
 
-	private static final String PLUGIN_ID = "org.epic.perleditor";
+    private static final String PLUGIN_ID = "org.epic.perleditor";
 
-	@Override
-	public void configure() throws CoreException {
-		String builderId = PLUGIN_ID + ".perlbuilder";
-		IProjectDescription desc = project.getDescription();
-		ICommand[] commands = desc.getBuildSpec();
-		boolean found = false;
+    @Override
+    public void configure() throws CoreException {
+        String builderId = PLUGIN_ID + ".perlbuilder";
+        IProjectDescription desc = project.getDescription();
+        ICommand[] commands = desc.getBuildSpec();
+        boolean found = false;
 
-		for (int i = 0; i < commands.length; ++i) {
-			if (commands[i].getBuilderName().equals(builderId)) {
-				found = true;
-				break;
-			}
-		}
-		if (!found) {
-			//add builder to project
-			ICommand command = desc.newCommand();
-			command.setBuilderName(builderId);
-			ICommand[] newCommands = new ICommand[commands.length + 1];
+        for (int i = 0; i < commands.length; ++i) {
+            if (commands[i].getBuilderName().equals(builderId)) {
+                found = true;
+                break;
+            }
+        }
+        if (!found) {
+            //add builder to project
+            ICommand command = desc.newCommand();
+            command.setBuilderName(builderId);
+            ICommand[] newCommands = new ICommand[commands.length + 1];
 
-			// Add it before other builders.
-			System.arraycopy(commands, 0, newCommands, 1, commands.length);
-			newCommands[0] = command;
-			desc.setBuildSpec(newCommands);
-			project.setDescription(desc, null);
-		}
-	}
+            // Add it before other builders.
+            System.arraycopy(commands, 0, newCommands, 1, commands.length);
+            newCommands[0] = command;
+            desc.setBuildSpec(newCommands);
+            project.setDescription(desc, null);
+        }
+    }
 
-	@Override
-	public void deconfigure() throws CoreException {
-		// NOOP
-	}
+    @Override
+    public void deconfigure() throws CoreException {
+        // NOOP
+    }
 
-	@Override
-	public IProject getProject() {
-		return project;
-	}
+    @Override
+    public IProject getProject() {
+        return project;
+    }
 
-	@Override
-	public void setProject(IProject fProject) {
-		project = fProject;
-	}
+    @Override
+    public void setProject(IProject fProject) {
+        project = fProject;
+    }
 
 }

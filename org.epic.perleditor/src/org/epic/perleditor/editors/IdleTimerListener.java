@@ -19,5 +19,5 @@ public interface IdleTimerListener
      * or the viewer is not visible, the notification may, but does not have
      * to occur.
      */
-	public void onEditorIdle(ISourceViewer viewer);
+    public void onEditorIdle(ISourceViewer viewer);
 }

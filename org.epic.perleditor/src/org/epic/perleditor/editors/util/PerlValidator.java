@@ -39,7 +39,7 @@ public class PerlValidator extends PerlValidatorBase
         if (instance == null) instance = new PerlValidator();
         return instance;
     }
-	
+    
     /**
      * Validates source code of the specified resource (through "perl -c")
      * and appropriately updates problem markers on this and possibly also
@@ -52,30 +52,30 @@ public class PerlValidator extends PerlValidatorBase
      * @exception java.io.IOException
      *            if the source text of the resource could not be read
      */
-	public synchronized boolean validate(IResource resource)
+    public synchronized boolean validate(IResource resource)
         throws CoreException, IOException
     {
-		IEditorDescriptor defaultEditorDescriptor =
-			PerlEditorPlugin
-				.getDefault()
-				.getWorkbench()
-				.getEditorRegistry()
-				.getDefaultEditor(resource.getFullPath().toString());
+        IEditorDescriptor defaultEditorDescriptor =
+            PerlEditorPlugin
+                .getDefault()
+                .getWorkbench()
+                .getEditorRegistry()
+                .getDefaultEditor(resource.getFullPath().toString());
 
-		if (defaultEditorDescriptor == null) return false;
+        if (defaultEditorDescriptor == null) return false;
 
-		if (!defaultEditorDescriptor.getId().equals(Constants.PERL_EDITOR_ID)
-			|| resource.getFileExtension().equals(Constants.EMB_PERL_FILE_EXTENSION))
+        if (!defaultEditorDescriptor.getId().equals(Constants.PERL_EDITOR_ID)
+            || resource.getFileExtension().equals(Constants.EMB_PERL_FILE_EXTENSION))
         {
-			return false;
-		}
+            return false;
+        }
         
         // if workspace is out-of-sync with the file system:
         if (!resource.exists()) return false; 
 
-		validate(resource, readSourceFile(resource));
+        validate(resource, readSourceFile(resource));
         return true;
-	} 
+    } 
 
     protected void addMarker(IResource resource, Map<String, Object> attributes)
     {

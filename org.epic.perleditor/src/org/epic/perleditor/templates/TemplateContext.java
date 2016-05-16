@@ -11,31 +11,31 @@ import org.eclipse.core.runtime.CoreException;
  */
 public abstract class TemplateContext {
 
-	/** context type of this context */
-	private final ContextType fContextType;
+    /** context type of this context */
+    private final ContextType fContextType;
 
-	/**
-	 * Creates a template context of a particular context type.
-	 */
-	protected TemplateContext(ContextType contextType) {
-		fContextType= contextType;
-	}
+    /**
+     * Creates a template context of a particular context type.
+     */
+    protected TemplateContext(ContextType contextType) {
+        fContextType= contextType;
+    }
 
-	/**
-	 * Returns the context type of this context.
-	 */
-	public ContextType getContextType() {
-	 	return fContextType;   
-	}
+    /**
+     * Returns the context type of this context.
+     */
+    public ContextType getContextType() {
+     	return fContextType;   
+    }
 
-	/**
-	 * Evaluates the template and returns a template buffer.
-	 */
-	public abstract TemplateBuffer evaluate(Template template) throws CoreException;
-	
-	/**
-	 * Tests if the specified template can be evaluated in this context.
-	 */
-	public abstract boolean canEvaluate(Template template);
-	
+    /**
+     * Evaluates the template and returns a template buffer.
+     */
+    public abstract TemplateBuffer evaluate(Template template) throws CoreException;
+    
+    /**
+     * Tests if the specified template can be evaluated in this context.
+     */
+    public abstract boolean canEvaluate(Template template);
+    
 }

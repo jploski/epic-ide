@@ -27,38 +27,38 @@ import org.epic.perleditor.preferences.PreferenceConstants;
  */
 public class IdleTimer extends Thread
 {
-	private final ISourceViewer sourceViewer;
+    private final ISourceViewer sourceViewer;
     private final Display display;
     private final List<IdleTimerListener> listeners = new ArrayList<IdleTimerListener>();
 
     private long lastChange = -1L;
-	private int waitForTermination = 1000; // millis
+    private int waitForTermination = 1000; // millis
 
     /**
      * @param sourceViewer  viewer monitored for document changes
      * @param display       display to use for broadcasting notifications
      */
-	public IdleTimer(ISourceViewer sourceViewer, Display display)
+    public IdleTimer(ISourceViewer sourceViewer, Display display)
     {
-		super("IdleTimer");
+        super("IdleTimer");
         assert sourceViewer != null;
         assert display != null;
         
-		this.sourceViewer = sourceViewer;
-		this.display = display;
-	}
+        this.sourceViewer = sourceViewer;
+        this.display = display;
+    }
 
     /**
      * Registers a listener to receive change notifications.
      * This operation triggers an immediate notification to all listeners,
      * regardless of whether the document has changed.
      */
-	public synchronized void addListener(IdleTimerListener listener)
+    public synchronized void addListener(IdleTimerListener listener)
     {
         listeners.add(listener);
         lastChange = System.currentTimeMillis();
         notifyAll();
-	}
+    }
     
     /**
      * Terminates the thread.
@@ -72,21 +72,21 @@ public class IdleTimer extends Thread
     /**
      * Unregisters a listener added with addListener.
      */
-	public synchronized void removeListener(IdleTimerListener listener)
+    public synchronized void removeListener(IdleTimerListener listener)
     {
-		listeners.remove(listener);
-	}
-	
+        listeners.remove(listener);
+    }
+    
     /**
      * @return true if the given listener is already registered,
      *         false otherwise 
      */
-	public synchronized boolean isRegistered(IdleTimerListener listener)
+    public synchronized boolean isRegistered(IdleTimerListener listener)
     {
-		return listeners.contains(listener);
-	}
+        return listeners.contains(listener);
+    }
 
-	public void run()
+    public void run()
     {
         IDocumentListener changeListener = new IDocumentListener() {
             public void documentAboutToBeChanged(DocumentEvent event) { }

@@ -10,21 +10,21 @@ import org.eclipse.debug.core.model.*;
 public class DebuggerProxy2 extends PlatformObject
     implements IProcess, ITerminate, IStreamsProxy
 {
-	private final ILaunch launch;
+    private final ILaunch launch;
     private boolean terminated;
     private DebugOutProxy debugOut;
     private DebugInProxy debugIn;
 
-	public DebuggerProxy2(
+    public DebuggerProxy2(
         BufferedReader debugIn,
         PrintWriter debugOut,
         ILaunch launch)
     {
-		this.launch = launch;
+        this.launch = launch;
         this.debugIn = new DebugInProxy(debugIn);
         this.debugOut = new DebugOutProxy(debugOut);
-		fireCreationEvent();
-	}
+        fireCreationEvent();
+    }
     
     public PrintWriter getDebugOut()
     {
@@ -36,108 +36,108 @@ public class DebuggerProxy2 extends PlatformObject
         return debugIn;
     }
 
-	public String getLabel()
+    public String getLabel()
     {
-		return "perl -d";
-	}
+        return "perl -d";
+    }
 
-	public ILaunch getLaunch()
+    public ILaunch getLaunch()
     {
-		return launch;
-	}
+        return launch;
+    }
 
-	public IStreamsProxy getStreamsProxy()
+    public IStreamsProxy getStreamsProxy()
     {
-		return this;
-	}
+        return this;
+    }
  
-	public void setAttribute(String key, String value)
+    public void setAttribute(String key, String value)
     {
-		launch.setAttribute(key, value);
-	}
+        launch.setAttribute(key, value);
+    }
 
-	public String getAttribute(String key)
+    public String getAttribute(String key)
     {
-		return launch.getAttribute(key);
-	}
+        return launch.getAttribute(key);
+    }
 
-	public int getExitValue() throws DebugException
+    public int getExitValue() throws DebugException
     {
-		return 0;
-	}
+        return 0;
+    }
 
-	public Object getAdapter(Class adapter)
+    public Object getAdapter(Class adapter)
     {
-		if (adapter.equals(IProcess.class)) return this;
+        if (adapter.equals(IProcess.class)) return this;
 
-		if (adapter.equals(IDebugTarget.class))
+        if (adapter.equals(IDebugTarget.class))
         {
-			ILaunch launch = getLaunch();
-			IDebugTarget[] targets = launch.getDebugTargets();
+            ILaunch launch = getLaunch();
+            IDebugTarget[] targets = launch.getDebugTargets();
             
-			for (int i = 0; i < targets.length; i++)
-				if (this.equals(targets[i].getProcess())) return targets[i];
+            for (int i = 0; i < targets.length; i++)
+                if (this.equals(targets[i].getProcess())) return targets[i];
 
-			return null;
-		}
-		return super.getAdapter(adapter);
-	}
+            return null;
+        }
+        return super.getAdapter(adapter);
+    }
 
-	public boolean canTerminate()
+    public boolean canTerminate()
     {
-		return true;
-	}
+        return true;
+    }
 
-	public boolean isTerminated()
+    public boolean isTerminated()
     {
         return terminated;
-	}
+    }
 
-	public void terminate() throws DebugException
+    public void terminate() throws DebugException
     {
         fireTerminateEvent();
         terminated = true;
-	}
+    }
 
-	public IStreamMonitor getErrorStreamMonitor()
+    public IStreamMonitor getErrorStreamMonitor()
     {
-		return debugOut.getStreamMonitor();
-	}
+        return debugOut.getStreamMonitor();
+    }
 
-	public IStreamMonitor getOutputStreamMonitor()
+    public IStreamMonitor getOutputStreamMonitor()
     {
-		return debugIn.getStreamMonitor();
-	}
+        return debugIn.getStreamMonitor();
+    }
 
-	public void write(String input) throws IOException
+    public void write(String input) throws IOException
     {
         // TODO
-	}
+    }
 
-	/**
-	 * Fire a debug event marking the creation of this element.
-	 */
-	private void fireCreationEvent()
+    /**
+     * Fire a debug event marking the creation of this element.
+     */
+    private void fireCreationEvent()
     {
-		fireEvent(new DebugEvent(this, DebugEvent.CREATE));
-	}
+        fireEvent(new DebugEvent(this, DebugEvent.CREATE));
+    }
 
-	/**
-	 * Fire a debug event
-	 */
-	private void fireEvent(DebugEvent event)
+    /**
+     * Fire a debug event
+     */
+    private void fireEvent(DebugEvent event)
     {
-		DebugPlugin manager = DebugPlugin.getDefault();
-		if (manager != null) manager.fireDebugEventSet(new DebugEvent[] { event });
-	}
+        DebugPlugin manager = DebugPlugin.getDefault();
+        if (manager != null) manager.fireDebugEventSet(new DebugEvent[] { event });
+    }
 
-	/**
-	 * Fire a debug event marking the termination of this process.
-	 */
-	private void fireTerminateEvent()
+    /**
+     * Fire a debug event marking the termination of this process.
+     */
+    private void fireTerminateEvent()
     {
-		fireEvent(new DebugEvent(this, DebugEvent.TERMINATE));
-	}
+        fireEvent(new DebugEvent(this, DebugEvent.TERMINATE));
+    }
     
     private static class DebugOutProxy extends PrintWriter
     {

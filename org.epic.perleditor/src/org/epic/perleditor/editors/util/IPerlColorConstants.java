@@ -23,19 +23,19 @@ package org.epic.perleditor.editors.util;
  * @see org.eclipse.jdt.ui.text.IColorManager
  */
 public interface IPerlColorConstants {
-	
-	String STRING_COLOR = "nullColor";
-	String KEYWORD1_COLOR = "keyword1Color";
-	String KEYWORD2_COLOR = "keyword2Color";
-	String VARIABLE_COLOR = "variableColor";
-	String COMMENT1_COLOR = "comment1Color";
-	String COMMENT2_COLOR = "comment2Color";
-	String LITERAL1_COLOR = "literal1Color";
-	String LITERAL2_COLOR ="literal2Color";
-	String LABEL_COLOR = "labelColor";
-	String FUNCTION_COLOR = "functionColor";
-	String MARKUP_COLOR = "markupColor";
-	String OPERATOR_COLOR ="operatorColor";
-	String NUMBER_COLOR = "numberColor";
-	String INVALID_COLOR = "invalidColor";
+    
+    String STRING_COLOR = "nullColor";
+    String KEYWORD1_COLOR = "keyword1Color";
+    String KEYWORD2_COLOR = "keyword2Color";
+    String VARIABLE_COLOR = "variableColor";
+    String COMMENT1_COLOR = "comment1Color";
+    String COMMENT2_COLOR = "comment2Color";
+    String LITERAL1_COLOR = "literal1Color";
+    String LITERAL2_COLOR ="literal2Color";
+    String LABEL_COLOR = "labelColor";
+    String FUNCTION_COLOR = "functionColor";
+    String MARKUP_COLOR = "markupColor";
+    String OPERATOR_COLOR ="operatorColor";
+    String NUMBER_COLOR = "numberColor";
+    String INVALID_COLOR = "invalidColor";
 }

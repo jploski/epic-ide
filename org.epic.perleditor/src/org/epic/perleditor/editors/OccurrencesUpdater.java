@@ -92,7 +92,7 @@ public class OccurrencesUpdater implements ISelectionChangedListener
     {
         ITextSelection textSelection = (ITextSelection) event.getSelection();
         updateAnnotations(textSelection);
-	}
+    }
 
     /**
      * Stops listening to selection events (caret movements) in
@@ -206,7 +206,7 @@ public class OccurrencesUpdater implements ISelectionChangedListener
             String contentType = PartitionTypes.getPerlPartition(doc, index).getType();
             if (contentType.equals(type)
                 || (contentType.equals(PartitionTypes.LITERAL1) && type
-                	.equals(PartitionTypes.VARIABLE))
+                    .equals(PartitionTypes.VARIABLE))
                 || (contentType.equals(PartitionTypes.VARIABLE) && type
                     .equals(PartitionTypes.LITERAL1)))
             {

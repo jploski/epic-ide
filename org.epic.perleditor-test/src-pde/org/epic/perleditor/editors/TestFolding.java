@@ -27,7 +27,7 @@ public class TestFolding extends BasePDETestCase
             
             List<String> lines = new ArrayList<String>();
             for (@SuppressWarnings("unchecked")
-			Iterator<Annotation> i = model.getAnnotationIterator(); i.hasNext();)
+            Iterator<Annotation> i = model.getAnnotationIterator(); i.hasNext();)
             {
                 Annotation a = i.next();
                 Position p = model.getPosition(a);

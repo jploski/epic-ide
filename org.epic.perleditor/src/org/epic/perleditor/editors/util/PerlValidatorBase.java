@@ -26,13 +26,13 @@ import org.epic.perleditor.PerlEditorPlugin;
 abstract class PerlValidatorBase
 {
     private static final boolean DEBUG = true;
-	private static int maxErrorsShown = 500;
+    private static int maxErrorsShown = 500;
     private static final int BUF_SIZE = 1024;
     
     private final ILog log;
-	private final PerlValidatorErrors errors;
+    private final PerlValidatorErrors errors;
     private final PerlExecutor executor;
-	
+    
     protected PerlValidatorBase(ILog log, PerlExecutor executor)
     {
         this.log = log;
@@ -45,12 +45,12 @@ abstract class PerlValidatorBase
      * Validates the provided source code, creates markers on the given
      * IResource.
      */
-	public synchronized void validate(IResource resource, String sourceCode)
+    public synchronized void validate(IResource resource, String sourceCode)
         throws CoreException
     {
-		//TODO check if perlOutput is empty (indicates error)           
+        //TODO check if perlOutput is empty (indicates error)           
 
-		// Mark problem markers as unused
+        // Mark problem markers as unused
         //
         // TODO: Scheduling all markers for removal at this point is actually
         // wrong because some markers might have been added by validation of
@@ -73,9 +73,9 @@ abstract class PerlValidatorBase
         List<String> lines = makeLinesList(perlOutput);
         boolean continued = false;
 
-		// Markers have to be added in reverse order
-		// Otherwise lower line number will appear at the end of the list
-		for (int i = lines.size() - 1; i >= 0; i--)
+        // Markers have to be added in reverse order
+        // Otherwise lower line number will appear at the end of the list
+        for (int i = lines.size() - 1; i >= 0; i--)
         {                
             String line = lines.get(i);
             
@@ -103,7 +103,7 @@ abstract class PerlValidatorBase
             Map<String, Object> attributes = new HashMap<String, Object>();
 
             attributes.put(IMarker.SEVERITY, errorMsg.getSeverity());
-			attributes.put(
+            attributes.put(
                 Constants.MARKER_ATTR_PERL_ERROR_EXPLANATION,
                 errorMsg.getExplanation());            
 
@@ -153,10 +153,10 @@ abstract class PerlValidatorBase
             }
             
             addMarker(errorResource, attributes);
-		}
+        }
         
         removeUnusedMarkers(resource);
-	}
+    }
     
     protected abstract void addMarker(IResource resource, Map<String, Object> attributes);
 
@@ -283,11 +283,11 @@ abstract class PerlValidatorBase
     {
         if (perlOutput.indexOf("syntax OK") == -1)
         {
-			System.out.println("-----------------------------------------");
-			System.out.println("           OUTPUT");
-			System.out.println("-----------------------------------------");
-			System.out.println(perlOutput);
-			System.out.println("-----------------------------------------");
+            System.out.println("-----------------------------------------");
+            System.out.println("           OUTPUT");
+            System.out.println("-----------------------------------------");
+            System.out.println(perlOutput);
+            System.out.println("-----------------------------------------");
         }
     }
     

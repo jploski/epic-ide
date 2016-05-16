@@ -118,7 +118,7 @@ public class DebugTarget extends PerlTarget
     
     public IThread getThread()
     {
-    	return thread;
+        return thread;
     }
 
     public IThread[] getThreads() throws DebugException

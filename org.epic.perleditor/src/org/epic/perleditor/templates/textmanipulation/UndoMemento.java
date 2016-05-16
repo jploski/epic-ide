@@ -14,16 +14,16 @@ import java.util.List;
  */
 public final class UndoMemento {
 
-	/* package */ int fMode;
-	/* package */ List<TextEdit> fEdits; 
+    /* package */ int fMode;
+    /* package */ List<TextEdit> fEdits; 
 
-	/* package */ UndoMemento(int mode) {
-		fMode= mode;
-		fEdits= new ArrayList<TextEdit>(10);
-	}
-	
-	/* package */ void add(TextEdit edit) {
-		fEdits.add(edit);
-	}	
+    /* package */ UndoMemento(int mode) {
+        fMode= mode;
+        fEdits= new ArrayList<TextEdit>(10);
+    }
+    
+    /* package */ void add(TextEdit edit) {
+        fEdits.add(edit);
+    }	
 }
 

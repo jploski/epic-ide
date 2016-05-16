@@ -58,7 +58,7 @@ public abstract class RulerBreakpointAction extends Action {
         IDocument document = fEditor.getDocumentProvider().getDocument(fEditor.getEditorInput());
         if (annotationModel != null) {
             @SuppressWarnings("unchecked")
-			Iterator<Annotation> iterator = annotationModel.getAnnotationIterator();
+            Iterator<Annotation> iterator = annotationModel.getAnnotationIterator();
             while (iterator.hasNext()) {
                 Object object = iterator.next();
                 if (object instanceof SimpleMarkerAnnotation) {

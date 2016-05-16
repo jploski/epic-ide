@@ -16,76 +16,76 @@ import org.epic.perleditor.editors.util.MarkerUtil;
 
 public class PerlAnnotationHover implements IAnnotationHover {
 
-	static final int MAX_INFO_LENGTH = 80;
-	private TextEditor fTextEditor;
-	
-	public  PerlAnnotationHover(TextEditor editor) {
-		super();
-		fTextEditor = editor;
-	}
+    static final int MAX_INFO_LENGTH = 80;
+    private TextEditor fTextEditor;
+    
+    public  PerlAnnotationHover(TextEditor editor) {
+        super();
+        fTextEditor = editor;
+    }
 
-	/**
-	 * @see org.eclipse.jface.text.source.IAnnotationHover#getHoverInfo(org.eclipse.jface.text.source.ISourceViewer, int)
-	 */
-	
-	public String getHoverInfo(ISourceViewer viewer, int line) {
-		String info = null;
-		
-		IResource resource = (IResource) ((IAdaptable) fTextEditor.getEditorInput()).getAdapter(IResource.class);
-		
-		List<IMarker> markers = MarkerUtil.getMarkersForLine(resource, line+1);
-		if (markers != null) {
-			info = "";
-			for (int i =  0; i < markers.size(); i++) {
-				IMarker marker = markers.get(i);
-				String message =
-					marker.getAttribute(IMarker.MESSAGE, (String) null);
-				if (message != null && message.trim().length() > 0) {
-					
-					if (message.length() > MAX_INFO_LENGTH) {
-						message = splitMessage(message);
-					}
-					info += message;
-					
-					if(i != markers.size() - 1) {
-						 info += "\n";
-					}
-				}
-			}
-		}
-		return info;
-	}
+    /**
+     * @see org.eclipse.jface.text.source.IAnnotationHover#getHoverInfo(org.eclipse.jface.text.source.ISourceViewer, int)
+     */
+    
+    public String getHoverInfo(ISourceViewer viewer, int line) {
+        String info = null;
+        
+        IResource resource = (IResource) ((IAdaptable) fTextEditor.getEditorInput()).getAdapter(IResource.class);
+        
+        List<IMarker> markers = MarkerUtil.getMarkersForLine(resource, line+1);
+        if (markers != null) {
+            info = "";
+            for (int i =  0; i < markers.size(); i++) {
+                IMarker marker = markers.get(i);
+                String message =
+                    marker.getAttribute(IMarker.MESSAGE, (String) null);
+                if (message != null && message.trim().length() > 0) {
+                    
+                    if (message.length() > MAX_INFO_LENGTH) {
+                        message = splitMessage(message);
+                    }
+                    info += message;
+                    
+                    if(i != markers.size() - 1) {
+                         info += "\n";
+                    }
+                }
+            }
+        }
+        return info;
+    }
 
-	private String splitMessage(String message) {
-		String result = "";
-		
-		if(message.length() <= MAX_INFO_LENGTH) {
-			return message;
-		}
-		
-		String tmpStr = new String(message);
-		
-		while(tmpStr.length() > MAX_INFO_LENGTH) {
-			
-			int spacepos = tmpStr.indexOf(" ", MAX_INFO_LENGTH);
-			
-			if(spacepos != -1) {
-				result += tmpStr.substring(0, spacepos) + "\n";
-				tmpStr = tmpStr.substring(spacepos);
-			}
-			else {
-				result += tmpStr.substring(0, MAX_INFO_LENGTH) + "\n";
-				tmpStr = tmpStr.substring(MAX_INFO_LENGTH);
-			}
-			
-			
-		    	
-		}
-		
-		result += tmpStr;
-		
-		return result;
-	}
+    private String splitMessage(String message) {
+        String result = "";
+        
+        if(message.length() <= MAX_INFO_LENGTH) {
+            return message;
+        }
+        
+        String tmpStr = new String(message);
+        
+        while(tmpStr.length() > MAX_INFO_LENGTH) {
+            
+            int spacepos = tmpStr.indexOf(" ", MAX_INFO_LENGTH);
+            
+            if(spacepos != -1) {
+                result += tmpStr.substring(0, spacepos) + "\n";
+                tmpStr = tmpStr.substring(spacepos);
+            }
+            else {
+                result += tmpStr.substring(0, MAX_INFO_LENGTH) + "\n";
+                tmpStr = tmpStr.substring(MAX_INFO_LENGTH);
+            }
+            
+            
+                
+        }
+        
+        result += tmpStr;
+        
+        return result;
+    }
 
 
 }

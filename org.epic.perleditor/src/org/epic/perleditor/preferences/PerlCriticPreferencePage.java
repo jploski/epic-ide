@@ -53,9 +53,9 @@ public class PerlCriticPreferencePage extends PreferencePage implements IWorkben
 
     private Button useDefaultButton;
 
-	private Combo severityOptions;
+    private Combo severityOptions;
 
-	private Text otherOptions;
+    private Text otherOptions;
 
     //~ Methods
 
@@ -103,12 +103,12 @@ public class PerlCriticPreferencePage extends PreferencePage implements IWorkben
     
     public static String getSeverity()
     {
-    	 return PerlEditorPlugin.getDefault().getPreferenceStore().getString(
+         return PerlEditorPlugin.getDefault().getPreferenceStore().getString(
                  PreferenceConstants.SOURCE_CRITIC_SEVERITY);
     }
     
     public static String getOtherOptions() {
-    	 return PerlEditorPlugin.getDefault().getPreferenceStore().getString(
+         return PerlEditorPlugin.getDefault().getPreferenceStore().getString(
                  PreferenceConstants.SOURCE_CRITIC_OTHEROPTIONS);
     }
 

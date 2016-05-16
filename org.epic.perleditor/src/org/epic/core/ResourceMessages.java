@@ -18,11 +18,11 @@ import java.util.ResourceBundle;
  * Utility class which helps managing messages
  */
 public class ResourceMessages {
-	private static final String RESOURCE_BUNDLE= "org.epic.core.messages";//$NON-NLS-1$
-	private static ResourceBundle bundle = ResourceBundle.getBundle(RESOURCE_BUNDLE);
+    private static final String RESOURCE_BUNDLE= "org.epic.core.messages";//$NON-NLS-1$
+    private static ResourceBundle bundle = ResourceBundle.getBundle(RESOURCE_BUNDLE);
 
 private ResourceMessages(){
-	// prevent instantiation of class
+    // prevent instantiation of class
 }
 /**
  * Returns the formatted message for the given key in
@@ -33,7 +33,7 @@ private ResourceMessages(){
  * @return the string
  */
 public static String format(String key, Object[] args) {
-	return MessageFormat.format(getString(key),args);
+    return MessageFormat.format(getString(key),args);
 }
 /**
  * Returns the resource object with the given key in
@@ -44,10 +44,10 @@ public static String format(String key, Object[] args) {
  * @return the string
  */
 public static String getString(String key) {
-	try {
-		return bundle.getString(key);
-	} catch (MissingResourceException e) {
-		return key;
-	}
+    try {
+        return bundle.getString(key);
+    } catch (MissingResourceException e) {
+        return key;
+    }
 }
 }

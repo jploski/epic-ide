@@ -14,6 +14,7 @@ import org.eclipse.core.resources.IResource;
 import java.io.File;
 
 import org.epic.core.util.XMLUtilities;
+import org.epic.perleditor.Logger;
 
 public class IncludePathPropertyPage extends PropertyPage {
     //plements IWorkbenchPropertyPage {
@@ -159,7 +160,7 @@ public class IncludePathPropertyPage extends PropertyPage {
             xmlUtil.writeIncludeEntries(project, incPathList.getItems());
             return true;
         } catch (Exception e) {
-            e.printStackTrace();
+            Logger.logException(e);
             return false;
         }
     }

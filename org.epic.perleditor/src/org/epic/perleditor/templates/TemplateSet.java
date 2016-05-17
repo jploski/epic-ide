@@ -27,6 +27,7 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
 import org.eclipse.core.runtime.CoreException;
+import org.epic.perleditor.Logger;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
@@ -83,6 +84,7 @@ public class TemplateSet {
                 if (stream != null)
                     stream.close();
             } catch (IOException e) {
+                Logger.logException(e);
             }
         }
     }
@@ -172,6 +174,7 @@ public class TemplateSet {
                 if (stream != null)
                     stream.close();
             } catch (IOException e) {
+                Logger.logException(e);
             }
         }
     }
@@ -237,23 +240,11 @@ public class TemplateSet {
     }
 
     private static void throwReadException(Throwable t) throws CoreException {
-        t.printStackTrace();
-        //PHPeclipsePlugin.log(t);
-        //		IStatus status= new
-        // JavaUIStatus(JavaStatusConstants.TEMPLATE_IO_EXCEPTION,
-        //			TemplateMessages.getString("TemplateSet.error.read"), t);
-        // //$NON-NLS-1$
-        //		throw new JavaUIException(status);
+        Logger.logException(t);
     }
 
     private static void throwWriteException(Throwable t) throws CoreException {
-        //PHPeclipsePlugin.log(t);
-        t.printStackTrace();
-        //		IStatus status= new
-        // JavaUIStatus(JavaStatusConstants.TEMPLATE_IO_EXCEPTION,
-        //			TemplateMessages.getString("TemplateSet.error.write"), t);
-        // //$NON-NLS-1$
-        //		throw new JavaUIException(status);
+        Logger.logException(t);
     }
 
     /**

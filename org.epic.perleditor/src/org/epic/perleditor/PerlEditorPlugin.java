@@ -41,6 +41,13 @@ public class PerlEditorPlugin extends AbstractUIPlugin {
     private boolean requirePerlCheckPassed;
     private boolean requirePerlErrorDisplayed;
 
+    public static final boolean isDebugMode;
+
+    static {
+        String value = Platform.getDebugOption("org.epic.perleditor/debug"); //$NON-NLS-1$
+        isDebugMode = value != null && value.equalsIgnoreCase("true"); //$NON-NLS-1$
+    }
+
     /**
      * The constructor.
      */

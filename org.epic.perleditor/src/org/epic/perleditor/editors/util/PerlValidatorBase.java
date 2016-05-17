@@ -12,6 +12,7 @@ import org.eclipse.jface.text.Document;
 import org.epic.core.Constants;
 import org.epic.core.PerlCore;
 import org.epic.core.util.PerlExecutor;
+import org.epic.perleditor.Logger;
 import org.epic.perleditor.PerlEditorPlugin;
 
 /**
@@ -25,7 +26,6 @@ import org.epic.perleditor.PerlEditorPlugin;
  */
 abstract class PerlValidatorBase
 {
-    private static final boolean DEBUG = true;
     private static int maxErrorsShown = 500;
     private static final int BUF_SIZE = 1024;
     
@@ -67,16 +67,15 @@ abstract class PerlValidatorBase
         if (isIgnoredPath(resource)) return;
 
         String perlOutput = runPerl(resource, sourceCode);
+        printPerlOutput(resource, perlOutput);
 
-        if (DEBUG) printPerlOutput(perlOutput);
-        
         List<String> lines = makeLinesList(perlOutput);
         boolean continued = false;
 
         // Markers have to be added in reverse order
         // Otherwise lower line number will appear at the end of the list
         for (int i = lines.size() - 1; i >= 0; i--)
-        {                
+        {
             String line = lines.get(i);
             
             // Is this a continuation of the line i-1?
@@ -88,10 +87,10 @@ abstract class PerlValidatorBase
             else
             {
                 if (continued) line += lines.get(i + 1);
-                continued = false;                
+                continued = false;
             }
             
-            ParsedErrorLine pline = new ParsedErrorLine(line, log);            
+            ParsedErrorLine pline = new ParsedErrorLine(line, log);
             IResource errorResource = getErrorResource(pline, resource);
 
             if (shouldIgnore(pline, errorResource)) continue;
@@ -126,7 +125,7 @@ abstract class PerlValidatorBase
                     String errorSourceCode;
                     
                     try
-                    {                    
+                    {
                         if (errorResource == resource) errorSourceCode = sourceCode;
                         else errorSourceCode = readSourceFile(errorResource);
                     
@@ -279,15 +278,16 @@ abstract class PerlValidatorBase
         return false;
     }
     
-    private void printPerlOutput(String perlOutput)
+    private void printPerlOutput(IResource resource, String perlOutput)
     {
-        if (perlOutput.indexOf("syntax OK") == -1)
+        if(perlOutput.indexOf("syntax OK") == -1)
         {
-            System.out.println("-----------------------------------------");
-            System.out.println("           OUTPUT");
-            System.out.println("-----------------------------------------");
-            System.out.println(perlOutput);
-            System.out.println("-----------------------------------------");
+            Logger.debugMSG("Syntax Error Validating: " + resource.getFullPath());
+            Logger.debugMSG("-----------------------------------------");
+            Logger.debugMSG("           OUTPUT");
+            Logger.debugMSG("-----------------------------------------");
+            Logger.debugMSG(perlOutput);
+            Logger.debugMSG("-----------------------------------------");
         }
     }
     

@@ -24,6 +24,7 @@ import org.eclipse.ui.texteditor.*;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 import org.epic.core.model.*;
 import org.epic.core.util.FileUtilities;
+import org.epic.perleditor.Logger;
 import org.epic.perleditor.PerlEditorPlugin;
 import org.epic.perleditor.actions.*;
 import org.epic.perleditor.preferences.MarkOccurrencesPreferences;
@@ -133,7 +134,7 @@ public class PerlEditor extends TextEditor implements IPropertyChangeListener
         }
         catch (InterruptedException e)
         {
-            e.printStackTrace(); // TODO log it
+            Logger.logException(e);
         }
     }
 
@@ -653,7 +654,7 @@ public class PerlEditor extends TextEditor implements IPropertyChangeListener
         }
         catch (BadLocationException e)
         {
-            e.printStackTrace(); // TODO log it
+            Logger.logException(e);
         }
         finally
         {
@@ -1199,7 +1200,7 @@ public class PerlEditor extends TextEditor implements IPropertyChangeListener
                 }
                 catch (BadLocationException exception)
                 {
-                    // Should not happen
+                    Logger.logException(exception);
                 }
             }
             else // just move the caret

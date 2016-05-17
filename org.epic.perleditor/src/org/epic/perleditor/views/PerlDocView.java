@@ -1,19 +1,21 @@
 package org.epic.perleditor.views;
 
-import java.io.*;
+import java.io.File;
 import java.util.ResourceBundle;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.JFaceResources;
-import org.eclipse.jface.text.*;
+import org.eclipse.jface.text.Document;
+import org.eclipse.jface.text.IFindReplaceTarget;
 import org.eclipse.jface.text.source.SourceViewer;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
-import org.eclipse.swt.graphics.*;
+import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -34,14 +36,11 @@ import org.eclipse.ui.texteditor.FindReplaceAction;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.epic.core.util.PerlExecutor;
 import org.epic.perleditor.PerlEditorPlugin;
-import org.epic.perleditor.popupmenus.PopupMessages;
 import org.epic.perleditor.PerlPluginImages;
+import org.epic.perleditor.popupmenus.PopupMessages;
 
 /**
  * @author luelljoc
- * 
- * To change the template for this generated type comment go to
- * Window&gt;Preferences&gt;Java&gt;Code Generation&gt;Code and Comments
  */
 public class PerlDocView extends ViewPart {
     
@@ -54,7 +53,7 @@ public class PerlDocView extends ViewPart {
     
     
     private static int ITEM_COUNT = 4;
-    private static String[] searchOptions = {"-t -f", "-t -q", "-t", "-m"};
+    private static String[] searchOptions = {"'-t','-f',", "'-t','-q',", "'-t',", "'-m',"};
     private static String[] tabItemsLabels = {"Builtin Function", "FAQ", "Module", "Module Source"};
     private boolean[] foundItems = {false, false, false, false};
     private SourceViewer[] sourceViewers = {null, null, null, null};
@@ -253,14 +252,8 @@ public class PerlDocView extends ViewPart {
     private String getPerlDoc(String option, String searchText, ITextEditor textEditor) throws CoreException {
 
         String perlCode =
-            "use Env qw(@PERL5LIB);\n\n"
-                + "splice(@PERL5LIB, 0, 0, @INC);\n"
-                + "exec('perldoc "
-                + option
-                + " \""
-                + searchText
-                + "\"');";
-        
+            "@ARGV = ("+ option + "'"+searchText.replaceAll("'", "\\'")+"'); use Pod::Perldoc; Pod::Perldoc->run();";
+
         PerlExecutor executor = new PerlExecutor();
         try
         {
@@ -279,7 +272,7 @@ public class PerlDocView extends ViewPart {
             }
         }
         finally { executor.dispose(); }
-    }		
+    }
 
     public void setFocus()
     {

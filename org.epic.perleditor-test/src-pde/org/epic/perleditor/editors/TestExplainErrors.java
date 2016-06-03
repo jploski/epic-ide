@@ -53,8 +53,7 @@ public class TestExplainErrors extends BasePDETestCase
     
     private IMarker getErrorMarker(IAnnotationModel model)
     {
-        for (@SuppressWarnings("unchecked")
-        Iterator<Annotation> i = model.getAnnotationIterator(); i.hasNext();)
+        for (Iterator<Annotation> i = model.getAnnotationIterator(); i.hasNext();)
         {
             Object obj = i.next();
             if (obj instanceof MarkerAnnotation)

@@ -77,7 +77,6 @@ public class ExplainErrorsRulerAction extends ResourceAction implements IUpdate 
         IAnnotationModel model= provider.getAnnotationModel(editor.getEditorInput());
 
         if (model != null) {
-            @SuppressWarnings("unchecked")
             Iterator<Annotation> e = model.getAnnotationIterator();
             while (e.hasNext()) {
                 Object o = e.next();

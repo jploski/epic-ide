@@ -6,8 +6,8 @@
  */
 package org.epic.perleditor.views;
 
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.eclipse.core.resources.IMarker;
@@ -76,7 +76,7 @@ public class ExplainErrorsView extends ViewPart {
         explanationText.setFocus();
     }
     
-    public void explain(ArrayList<IMarker> markers) {
+    public void explain(List<IMarker> markers) {
         explanationText.setText("");
         
         for(int i=0; i<markers.size(); i++) {

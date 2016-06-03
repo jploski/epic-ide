@@ -1,12 +1,15 @@
 package org.epic.perleditor.editors.util;
 
 import java.io.IOException;
-import java.io.Serializable;
-import java.util.*;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.ui.IEditorDescriptor;
 import org.epic.core.Constants;
 import org.epic.core.util.PerlExecutor;

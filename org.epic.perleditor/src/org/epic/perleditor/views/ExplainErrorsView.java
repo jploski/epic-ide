@@ -8,6 +8,7 @@ package org.epic.perleditor.views;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.runtime.CoreException;
@@ -31,12 +32,11 @@ public class ExplainErrorsView extends ViewPart {
     private Color red;
     private Color yellow;
     private Color black;
-    
-    private HashMap<String, String> levels;
-    
+
+    private final Map<String, String> levels = new HashMap<String, String>();
+
 
     public ExplainErrorsView() {
-        levels = new HashMap<String, String>();
         levels.put("(W)", "A warning (optional)");
         levels.put("(W once)", "A warning (optional)");
         levels.put("(D)", "A deprecation (optional)");

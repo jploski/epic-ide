@@ -19,6 +19,7 @@ import org.epic.debug.ui.RegExpBPSettingsDialog;
  * @deprecated this class is no longer used - it is currently being kept around so parts of its
  * implementation can be refactored out later
  */
+@Deprecated
 public class PerlRegExpBreakpoint extends PerlLineBreakpoint {
 
     private static final String Perl_REGEXP_BREAKPOINT = "org.epic.debug.perlRegExpBreakpointMarker"; //$NON-NLS-1$

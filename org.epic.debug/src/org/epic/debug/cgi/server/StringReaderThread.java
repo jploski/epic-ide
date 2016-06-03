@@ -103,7 +103,7 @@ class StringReaderThread extends Thread
             return result;
         }
     }
-    
+
     public void run()
     {
         while (!disposed)

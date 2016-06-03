@@ -96,11 +96,11 @@ public class TestPerlMultiLexer extends BaseTestCase
         }
         tokenCounts.add(new Integer(i));
     }
-    
+
     protected void setUp()
         throws Exception
     {
-        super.setUp();        
+        super.setUp();
         setUpTokenNames();
     }
     

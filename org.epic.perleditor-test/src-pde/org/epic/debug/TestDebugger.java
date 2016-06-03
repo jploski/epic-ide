@@ -46,7 +46,7 @@ public class TestDebugger extends BasePDETestCase
                 }
             }
         }
-        
+
         protected String getScriptName() { return "test_Debugger.pl"; }
         };
 
@@ -109,7 +109,7 @@ public class TestDebugger extends BasePDETestCase
 
         protected String getScriptName() { return "test_Variables.pl"; }
         };
-        
+
     protected void setUp() throws Exception
     {
         super.setUp();
@@ -359,7 +359,7 @@ public class TestDebugger extends BasePDETestCase
         {
             return data.toString();
         }
-        
+
         public void handleDebugEvents(DebugEvent[] events)
         {
             for (int i = 0; i < events.length; i++)

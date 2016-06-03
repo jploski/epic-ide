@@ -4,7 +4,7 @@ import java.util.*;
 
 import org.eclipse.core.runtime.*;
 import org.eclipse.jface.text.*;
-import org.eclipse.jface.util.ListenerList;
+import org.eclipse.core.runtime.ListenerList;
 import org.epic.core.parser.*;
 import org.epic.perleditor.PerlEditorPlugin;
 import org.epic.perleditor.editors.PartitionTypes;
@@ -19,7 +19,7 @@ import org.epic.perleditor.editors.PerlPartitioner;
  */
 public class SourceFile
 {
-    private final ListenerList listeners = new ListenerList(1);
+    private final ListenerList<ISourceFileListener> listeners = new ListenerList<ISourceFileListener>(1);
     private final ILog log;
     private final IDocument doc;
     private List<PODComment> pods;

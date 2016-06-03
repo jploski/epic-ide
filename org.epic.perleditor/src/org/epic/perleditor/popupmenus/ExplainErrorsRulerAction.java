@@ -64,7 +64,7 @@ public class ExplainErrorsRulerAction extends ResourceAction implements IUpdate 
      */
     public void update() {
         getMarkersForLine(ruler.getLineOfLastMouseButtonActivity()+1);
-        setEnabled(markers.size() > 0 ? true : false);
+        setEnabled(!markers.isEmpty());
     }
     
     /**

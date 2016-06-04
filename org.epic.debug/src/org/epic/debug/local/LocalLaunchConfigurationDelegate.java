@@ -178,7 +178,7 @@ public class LocalLaunchConfigurationDelegate
             return;
         }
 
-        StringBuffer buf = new StringBuffer("Starting Perl debugger:\n");
+        StringBuilder buf = new StringBuilder("Starting Perl debugger:\n");
         buf.append("Command line:\n");
         for (int i = 0; i < cmdParams.length; i++)
         {

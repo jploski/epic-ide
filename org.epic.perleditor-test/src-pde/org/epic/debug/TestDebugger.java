@@ -96,7 +96,7 @@ public class TestDebugger extends BasePDETestCase
                     {
                         try
                         {
-                            StringBuffer buf = new StringBuffer();
+                            StringBuilder buf = new StringBuilder();
                             varsToString(frame.getVariables(), buf);
                             appendData(buf.toString());
                         }
@@ -304,7 +304,7 @@ public class TestDebugger extends BasePDETestCase
             } });
     }
     
-    private void varsToString(IVariable[] vars, StringBuffer buf)
+    private void varsToString(IVariable[] vars, StringBuilder buf)
         throws Exception
     {
         final String HEX_ADDR = "0x[0-9a-z]+";
@@ -348,11 +348,11 @@ public class TestDebugger extends BasePDETestCase
      */
     private abstract class TestDriver implements IDebugEventSetListener
     {
-        private StringBuffer data;
+        private StringBuilder data;
         
         public TestDriver()
         {
-            data = new StringBuffer();
+            data = new StringBuilder();
         }
         
         public String getData()

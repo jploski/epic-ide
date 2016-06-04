@@ -59,7 +59,7 @@ public final class PerlAutoIndentStrategy extends DefaultIndentLineAutoEditStrat
     private boolean handleNewLineAfterHashClosingBracket(
         IDocument document,
         int whiteend,
-        StringBuffer textToInsert) throws BadLocationException
+        StringBuilder textToInsert) throws BadLocationException
     {
         int docLength = document.getLength();
         if (whiteend < docLength && "}".equals(document.get(whiteend, 1)))
@@ -85,7 +85,7 @@ public final class PerlAutoIndentStrategy extends DefaultIndentLineAutoEditStrat
         DocumentCommand command,
         int start,
         int line,
-        StringBuffer textToInsert) throws BadLocationException
+        StringBuilder textToInsert) throws BadLocationException
     {
         // Quick check first:
         String lineText = document.get(start, document.getLineLength(line));
@@ -112,7 +112,7 @@ public final class PerlAutoIndentStrategy extends DefaultIndentLineAutoEditStrat
     private void handleNewLineWithinBlock(
         IDocument document,
         DocumentCommand command,
-        StringBuffer textToInsert) throws BadLocationException
+        StringBuilder textToInsert) throws BadLocationException
     {
         int docLength = document.getLength();
         int p = command.offset == docLength
@@ -138,7 +138,7 @@ public final class PerlAutoIndentStrategy extends DefaultIndentLineAutoEditStrat
     private void handleNewLineBeforeClosingBracket(
         IDocument document,
         DocumentCommand command,
-        StringBuffer textToInsert) throws BadLocationException
+        StringBuilder textToInsert) throws BadLocationException
     {
         IRegion block = bracketMatcher.match(document, command.offset+1);
         if (block == null) return;
@@ -214,7 +214,7 @@ public final class PerlAutoIndentStrategy extends DefaultIndentLineAutoEditStrat
 
         try
         {
-            StringBuffer buf = new StringBuffer(command.text);
+            StringBuilder buf = new StringBuilder(command.text);
             if (newLineInsertedBeforeClosingBracket(document, command))                
             {
                 handleNewLineBeforeClosingBracket(document, command, buf);                
@@ -266,7 +266,7 @@ public final class PerlAutoIndentStrategy extends DefaultIndentLineAutoEditStrat
             if (indLine == line) return;            
 
             // take the indent of the found line with an open bracket
-            StringBuffer replaceText = new StringBuffer(
+            StringBuilder replaceText = new StringBuilder(
                 getIndentOfLine(document, indLine));
             // add the rest of the current line including the just added
             // close bracket

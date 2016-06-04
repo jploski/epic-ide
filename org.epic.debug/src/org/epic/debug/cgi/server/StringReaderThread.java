@@ -125,7 +125,7 @@ class StringReaderThread extends Thread
             }
             
             // process read() request
-            StringBuffer sb = new StringBuffer();
+            StringBuilder sb = new StringBuilder();
             IOException e = null;
             char[] b = new char[1024];
             

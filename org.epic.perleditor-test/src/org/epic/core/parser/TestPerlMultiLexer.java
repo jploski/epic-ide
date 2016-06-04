@@ -139,7 +139,7 @@ public class TestPerlMultiLexer extends BaseTestCase
     
     private String token2String(Token t)
     {
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
         buf.append('<');
         buf.append(tokenNames.get(new Integer(t.getType())));
         buf.append(">,line=");

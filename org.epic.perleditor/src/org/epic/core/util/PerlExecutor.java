@@ -228,7 +228,7 @@ public class PerlExecutor
     
     private String getCommandLineString(List<String> commandLine)
     {
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
         
         for (Iterator<String> i = commandLine.iterator(); i.hasNext();)
         {

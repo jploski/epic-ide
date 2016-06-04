@@ -106,7 +106,7 @@ public class DebugModelPresentation implements IDebugModelPresentation
 
     public String getText(Object element)
     {
-        StringBuffer erg = new StringBuffer();
+        StringBuilder erg = new StringBuilder();
 
         if (element instanceof PerlLineBreakpoint)
         {

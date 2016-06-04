@@ -31,7 +31,7 @@ public class TestFolding extends BasePDETestCase
                 Annotation a = i.next();
                 Position p = model.getPosition(a);
                 
-                StringBuffer buf = new StringBuffer();
+                StringBuilder buf = new StringBuilder();
                 buf.append(p.getOffset());
                 buf.append(':');
                 buf.append(p.getLength());
@@ -41,7 +41,7 @@ public class TestFolding extends BasePDETestCase
             }
             Collections.sort(lines);
             
-            StringBuffer buf = new StringBuffer();
+            StringBuilder buf = new StringBuilder();
             for (Iterator<String> i = lines.iterator(); i.hasNext();)
             {
                 buf.append(i.next());

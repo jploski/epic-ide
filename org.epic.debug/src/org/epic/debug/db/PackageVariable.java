@@ -20,7 +20,7 @@ class PackageVariable extends PerlVariable
     public String getExpression() throws DebugException
     {
         String name = getName();
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
         
         int refCount = getDumpedEntity().getReferenceCount();
         

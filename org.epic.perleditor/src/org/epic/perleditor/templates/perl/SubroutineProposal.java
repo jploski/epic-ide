@@ -179,7 +179,7 @@ public class SubroutineProposal implements IPerlCompletionProposal {
   }
 
   private static String textToHTML(String string) {
-    StringBuffer buffer = new StringBuffer(string.length());
+    StringBuilder buffer = new StringBuilder(string.length());
     buffer.append("<pre>"); //$NON-NLS-1$
 
     for (int i = 0; i != string.length(); i++) {

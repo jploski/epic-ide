@@ -102,7 +102,7 @@ public class TasksReconciler
         for (int i = 0; i < TODO_STRINGS.length; i++)
         {
             // construct the search string
-            StringBuffer buffy = new StringBuffer();
+            StringBuilder buffy = new StringBuilder();
             buffy.append("#");
             if (allowWhiteSpace) buffy.append("\\s*");
             buffy.append("\\Q");

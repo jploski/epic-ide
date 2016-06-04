@@ -314,7 +314,7 @@ public class RemotePort
     
     public String toString()
     {
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
         buf.append("RemotePort[");
         buf.append(name);        
         if (mServer != null)

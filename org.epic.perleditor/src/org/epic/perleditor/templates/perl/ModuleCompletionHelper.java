@@ -44,7 +44,7 @@ public class ModuleCompletionHelper  {
     private ModuleCompletionHelper() {
         super();
         
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         sb.append("use strict;\n");
         sb.append("use File::Find;\n");
         sb.append("\n");

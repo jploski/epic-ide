@@ -139,7 +139,7 @@ import org.eclipse.ui.texteditor.IDocumentProvider;
         try {		
             document= new Document();
             in= new InputStreamReader(new BufferedInputStream(stream), ResourcesPlugin.getEncoding());
-            StringBuffer buffer= new StringBuffer();
+            StringBuilder buffer= new StringBuilder();
             char[] readBuffer= new char[2048];
             int n= in.read(readBuffer);
             while (n > 0) {

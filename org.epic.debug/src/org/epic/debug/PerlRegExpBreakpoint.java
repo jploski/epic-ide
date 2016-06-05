@@ -52,7 +52,7 @@ public class PerlRegExpBreakpoint extends PerlLineBreakpoint {
     }
 
     String getMarkerID() {
-        return (Perl_REGEXP_BREAKPOINT);
+        return Perl_REGEXP_BREAKPOINT;
     }
 
     public String getSourceLine() {
@@ -61,7 +61,7 @@ public class PerlRegExpBreakpoint extends PerlLineBreakpoint {
 
     private Object getAttribute(String fID) {
         try {
-            return (getMarker().getAttribute(fID));
+            return getMarker().getAttribute(fID);
         } catch (CoreException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -128,8 +128,8 @@ public class PerlRegExpBreakpoint extends PerlLineBreakpoint {
     public boolean isStoredDataValid(String fCurrentSourceLine) {
         String lineStored = getSourceLine();
 
-        return (fCurrentSourceLine != null && lineStored != null
-                && fCurrentSourceLine.equals(lineStored) && getRegExp() != null && getMatchText() != null);
+        return fCurrentSourceLine != null && lineStored != null
+                && fCurrentSourceLine.equals(lineStored) && getRegExp() != null && getMatchText() != null;
 
     }
     void calculateRegExp() {
@@ -204,7 +204,7 @@ public class PerlRegExpBreakpoint extends PerlLineBreakpoint {
             e2.printStackTrace();
             return false;
         }
-        return (true);
+        return true;
     }
 
     private String getCurrentSourceLine() {

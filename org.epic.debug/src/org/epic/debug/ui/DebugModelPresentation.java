@@ -63,7 +63,7 @@ public class DebugModelPresentation implements IDebugModelPresentation
             }
         }
         if (element instanceof PerlBreakpoint)
-            return (getPerlBreakpointImage((PerlBreakpoint) element));
+            return getPerlBreakpointImage((PerlBreakpoint) element);
 
         return null;
     }
@@ -110,9 +110,9 @@ public class DebugModelPresentation implements IDebugModelPresentation
 
         if (element instanceof PerlLineBreakpoint)
         {
-            PerlLineBreakpoint bp = ((PerlLineBreakpoint) element);
+            PerlLineBreakpoint bp = (PerlLineBreakpoint) element;
 
-            if (bp.getResourcePath() == null) return ("[]");
+            if (bp.getResourcePath() == null) return "[]";
             erg.append(bp.getResourcePath().lastSegment());
             try
             {
@@ -126,9 +126,9 @@ public class DebugModelPresentation implements IDebugModelPresentation
             }
             if (bp.isInvalidBreakpointPosition())
                 erg.append(" - <invalid position>");
-            return (erg.toString());
+            return erg.toString();
         }
-        return (null);
+        return null;
     }
 
     public void computeDetail(IValue value, IValueDetailListener listener)

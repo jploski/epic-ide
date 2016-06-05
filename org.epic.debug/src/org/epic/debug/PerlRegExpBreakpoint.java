@@ -170,7 +170,7 @@ public class PerlRegExpBreakpoint extends PerlLineBreakpoint {
             if (delim == null)
                 return false;
             String temp = line;
-            temp.replaceAll("\\" + delim, "xx");
+            temp = temp.replaceAll("\\" + delim, "xx");
             RE findRegExp = new RE("([$%@][^\\s]+)[\\s]*=~[\\s]*[m]?" + delim
                     + "(.*)" + delim + "(.*)", 0, RESyntax.RE_SYNTAX_PERL5);
             match = findRegExp.getMatch(temp);

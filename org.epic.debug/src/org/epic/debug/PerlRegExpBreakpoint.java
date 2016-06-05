@@ -186,12 +186,12 @@ public class PerlRegExpBreakpoint extends PerlLineBreakpoint {
             if (var == null || text == null)
                 return false;
 
-            if (mod != null && mod.indexOf("i") >= 0)
+            if (mod != null && mod.indexOf('i') >= 0)
                 setIgnoreCase(true);
             else
                 setIgnoreCase(false);
 
-            if (mod != null && mod.indexOf("m") >= 0)
+            if (mod != null && mod.indexOf('m') >= 0)
                 setMultiLine(true);
             else
                 setMultiLine(false);

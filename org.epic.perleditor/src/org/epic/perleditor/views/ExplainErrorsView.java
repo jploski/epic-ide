@@ -100,7 +100,7 @@ public class ExplainErrorsView extends ViewPart {
                 String levelStr = null;
                 
                 if(expStr.length() > 0) {
-                    levelStr = levels.get(expStr.substring(0,expStr.indexOf(")")+1));
+                    levelStr = levels.get(expStr.substring(0,expStr.indexOf(')')+1));
                 }
                 
                 if(levelStr != null) {
@@ -116,7 +116,7 @@ public class ExplainErrorsView extends ViewPart {
                 }
 
                 
-                explanationText.append(levelStr != null ? expStr.substring(expStr.indexOf(")")+2) : expStr);
+                explanationText.append(levelStr != null ? expStr.substring(expStr.indexOf(')')+2) : expStr);
                 explanationText.append("\n");
             } catch (CoreException e) {
                 e.printStackTrace();

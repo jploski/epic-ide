@@ -44,7 +44,7 @@ public class TasksReconciler
     
     public void reconcile()
     {
-        IEditorInput input = (IEditorInput) editor.getEditorInput();
+        IEditorInput input = editor.getEditorInput();
         if (!(input instanceof IFileEditorInput)) return;
         
         IDocumentProvider docProvider = editor.getDocumentProvider();

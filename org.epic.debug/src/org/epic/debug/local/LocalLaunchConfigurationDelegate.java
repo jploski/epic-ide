@@ -151,7 +151,7 @@ public class LocalLaunchConfigurationDelegate
                 MessageFormat.format(
                     "Could not translate path {0} into a Cygwin path.\n" +
                     "Make sure your Cygwin mounts are configured properly.",
-                    new String[] { getScriptPath(launch).toOSString() }),
+                    getScriptPath(launch).toOSString()),
                 null
                 ));
         }
@@ -406,7 +406,7 @@ public class LocalLaunchConfigurationDelegate
                 Status.OK,
                 MessageFormat.format(
                     "Working directory does not exist: {0}",
-                    new String[] { path.toString() }),
+                    path.toString()),
                 null
                 ));
     }

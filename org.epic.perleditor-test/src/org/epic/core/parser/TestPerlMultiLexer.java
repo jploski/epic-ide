@@ -91,7 +91,7 @@ public class TestPerlMultiLexer extends BaseTestCase
         Token t;
         while ((t = nextToken(selector, path)).getType() != Token.EOF_TYPE)
         {
-            //System.err.println(path + ": " + i + ":" + token2String(t) + " " + t.getClass());
+            System.out.println(path + ": " + i + ":" + token2String(t) + " " + t.getClass());
             i++;
         }
         tokenCounts.add(new Integer(i));

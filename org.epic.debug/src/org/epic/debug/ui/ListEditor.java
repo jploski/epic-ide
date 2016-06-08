@@ -11,6 +11,7 @@
 package org.epic.debug.ui;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Assert;
@@ -297,29 +298,19 @@ public class ListEditor extends FieldEditor
     {
         if (list != null)
         {
-
-            int count = 0;
-            String res = null;
             list.removeAll();
-            count = 0;
-
-            java.util.List<String> envs = null;
-
             try
             {
-                envs =
-                    fLaunch.getAttribute(
-                        PerlLaunchConfigurationConstants.ATTR_CGI_ENV,
-                        (ArrayList<String>) null);
+                for (String env : fLaunch.getAttribute(
+                    PerlLaunchConfigurationConstants.ATTR_CGI_ENV, Collections.<String>emptyList()))
+                {
+                    list.add(env);
+                }
             } catch (CoreException e1)
             {
                 // TODO Auto-generated catch block
                 e1.printStackTrace();
             }
-
-            if (envs != null)
-                for (int x = 0; x < envs.size(); ++x)
-                    list.add((String) envs.get(x));
         }
     }
 

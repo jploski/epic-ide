@@ -240,9 +240,6 @@ public class TemplatePreferencePage
     fTableViewer.setAllChecked(false);
     fTableViewer.setCheckedElements(getEnabledTemplates());
 
-    IPreferenceStore prefs = PerlEditorPlugin.getDefault().getPreferenceStore();
-    //	fFormatButton.setSelection(prefs.getBoolean(PREF_FORMAT_TEMPLATES));
-
     updateButtons();
     configureTableResizing(
       innerParent,

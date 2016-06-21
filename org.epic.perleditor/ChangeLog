@@ -6,6 +6,10 @@ Git
 		Editor:
 
 
+Version 0.7.2 - 21-Jun-2016
+		Editor:
+		* PerlTidy upgraded to 1.74 (2016/03/02)
+
 Version 0.7.1 - 16-May-2016
 		Editor:
 		* Eclipse Neon support with further code cleanups

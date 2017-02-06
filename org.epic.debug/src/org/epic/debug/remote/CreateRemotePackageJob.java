@@ -1,7 +1,9 @@
 package org.epic.debug.remote;
 
 import java.io.*;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -14,7 +16,12 @@ import org.eclipse.ui.IEditorRegistry;
 import org.epic.core.PerlCore;
 import org.epic.core.PerlProject;
 import org.epic.debug.PerlDebugPlugin;
+import org.epic.debug.util.CygwinPathMapper;
+import org.epic.debug.util.IPathMapper;
+import org.epic.debug.util.NullPathMapper;
 import org.epic.debug.util.RemotePathMapper;
+import org.epic.perleditor.PerlEditorPlugin;
+import org.epic.perleditor.preferences.PreferenceConstants;
 
 /**
  * Creates a ZIP archive with project files and helper scripts.
@@ -54,7 +61,6 @@ public class CreateRemotePackageJob extends Job
             addHelperScriptToArchive("dumpvar_epic.pm");
             addHelperScriptToArchive("epic_breakpoints.pm");
             addHelperScriptToArchive("autoflush_epic.pm");
-            addPerl5DbToArchive();
             addStartScriptToArchive();
 
             return Status.OK_STATUS;
@@ -125,42 +131,27 @@ public class CreateRemotePackageJob extends Job
         }
     }
     
-    private void addPerl5DbToArchive() throws CoreException
-    {
-        try
-        {
-            File perl5Db = PerlDebugPlugin.getDefault().patchPerl5Db();
-            addFileToArchive(
-                new BufferedInputStream(new FileInputStream(perl5Db)),
-                getWorkingDirPrefix() + "perl5db.pl");
-        }
-        catch (IOException e)
-        {
-            throw new CoreException(new Status(
-                IStatus.ERROR,
-                PerlDebugPlugin.getUniqueIdentifier(),
-                IStatus.OK,
-                "Could not add patched perl5db.pl to archive",
-                e));
-        }
-    }
-    
     private void addStartScriptToArchive() throws CoreException
     {
         try
         {
+        	String remoteProjectDir=launchDelegate.getRemoteProjectDir(launch).replaceAll("\\\\", "\\\\\\\\");
+        	if(remoteProjectDir.trim().isEmpty()) remoteProjectDir=".";
             zipOut.putNextEntry(new ZipEntry("start_epicDB.pl"));
-            String startDB = "$ENV{PERLDB_OPTS}=\"RemotePort="
+            String startDB = "use Cwd 'abs_path';\n\n"
+            	+ "$ENV{PERLDB_OPTS}=\"RemotePort="
                 + launchDelegate.getEpicDebuggerIP(launch) + ":" 
                 + launchDelegate.getEpicDebuggerPort(launch)
                 + " DumpReused ReadLine=0 PrintRet=0\";\n" + "if( ! -d \""
-                + launchDelegate.getRemoteProjectDir(launch)
+                + remoteProjectDir
                 + "\" ) {die(\"Target directory does not exist!\")};\n"
-                + "chdir(\"" + launchDelegate.getRemoteProjectDir(launch) + "/"
+                + "chdir(\"" + remoteProjectDir + "/"
                 + launchDelegate.getScriptPath(launch).removeLastSegments(1) + "\");"
+                + "\npatchPerl5db() unless (-e perl5db.pl);"
                 + "\nsystem(\"perl -d " + createIncPath() + " "
-                + launchDelegate.getRemoteProjectDir(launch) + "/"
-                + launchDelegate.getScriptPath(launch) + "\");";
+                + remoteProjectDir + "/"
+                + launchDelegate.getScriptPath(launch) + "\");\n\n"
+                + perl5dbPatcherSub();
             zipOut.write(startDB.getBytes());
         }
         catch (IOException e)
@@ -174,14 +165,52 @@ public class CreateRemotePackageJob extends Job
         }
     }
 
+    private String perl5dbPatcherSub(){
+    	return 
+    	  "sub patchPerl5db {\n"
+    	+ "	return if(-e \"perl5db.pl\");\n"
+    	+ "	my $marker = 'return unless $postponed_file{$filename};';\n"
+    	+ "	my $patch  = '    { use epic_breakpoints; my $osingle = $single; $single = 0; $single = epic_breakpoints::_postponed($filename, $line) || $osingle; }';\n"
+    	+ "	my $found  = 0;\n"
+    	+ "	for my $path (@INC) {\n"
+    	+ "		if (-e \"$path/perl5db.pl\") {\n"
+    	+ "\n"
+    	+ "			# Note: we do not use a replace all because of bug 1734045\n"
+    	+ "			open(SFH, \"<$path/perl5db.pl\");\n"
+    	+ "			open(OFH, \">perl5db.pl\");\n"
+    	+ "			while (<SFH>) {\n"
+    	+ "				my $line = $_;\n"
+    	+ "				if ($line =~ /\\Q$marker\\E/) {\n"
+    	+ "					$found=1;\n"
+    	+ "					print OFH \"$patch\\n\";\n"
+    	+ "				}\n"
+    	+ "				print OFH $line;\n"
+    	+ "			}\n"
+    	+ "			close OFH;\n"
+    	+ "			close SFH;\n"
+    	+ "			if(!$found){\n"
+    	+ "				unlink \"perl5db.pl\";\n"
+    	+ "			}else{\n"
+    	+ "				return;\n"
+    	+ "			}\n"
+    	+ "		}\n"
+    	+ "	}\n"
+    	+ "	if(!$found){\n"
+    	+ "		die \"could not find a patchable perl5db\";\n"
+    	+ "	}\n"
+    	+ "}";
+    }
+    
     private String createIncPath() throws CoreException
     {
         StringBuffer buf = new StringBuffer();
         String localProjectDir = getPerlProject().getProjectDir().toString();
-        String remoteProjectDir = launchDelegate.getRemoteProjectDir(launch);
+        String remoteProjectDir=launchDelegate.getRemoteProjectDir(launch).replaceAll("\\\\", "\\\\\\\\");
+    	if(remoteProjectDir.trim().isEmpty()) remoteProjectDir=".";
+        
         
         buf.append(" -I \\\"");
-        buf.append(launchDelegate.getRemoteProjectDir(launch));
+        buf.append(remoteProjectDir);
         buf.append("\\\"");
         
         for (Iterator<String> i = getPerlProject().getRawIncPath().iterator(); i.hasNext();)

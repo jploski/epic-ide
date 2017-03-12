@@ -6,6 +6,10 @@ Git
 		Editor:
 
 
+Version 0.7.3 - 12-Mar-2017
+		Editor:
+		* Implemented Feature Request #164 Syntax highlighting after __END__ 
+
 Version 0.7.2 - 21-Jun-2016
 		Editor:
 		* PerlTidy upgraded to 1.74 (2016/03/02)

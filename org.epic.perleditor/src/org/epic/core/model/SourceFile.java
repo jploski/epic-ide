@@ -159,6 +159,7 @@ public class SourceFile
         private PerlToken t;
         private int type;
         private int blockLevel;
+        private boolean afterEnd;
         
         private Stack<Package> pkgStack;
         private Stack<Subroutine> subStack;
@@ -187,13 +188,19 @@ public class SourceFile
         
         public boolean hasMoreTokens()
         {
-            return tIndex < tokenCount;
+            return tIndex < tokenCount && !afterEnd;
         }
         
         public void processToken() throws BadLocationException
         {
             this.t = tokens.get(tIndex);
             this.type = t.getType();
+            
+            if (this.type == PerlTokenTypes.END)
+            {
+                afterEnd = true;
+                return;
+            }
             
             updateBlockLevel();
             updatePackageState();

@@ -465,6 +465,8 @@ protected NUMBER
 		$setType(PerlTokenTypes.NUMBER);
 	};
 
+END: "__END__";
+
 protected WORD
 	: ID
 	{
@@ -478,7 +480,6 @@ protected WORD
 		}
 		else if ("package".equals(str)) { $setType(PerlTokenTypes.KEYWORD_PACKAGE); }
 		else if ("format".equals(str) && !afterSub) { format = true; $setType(PerlTokenTypes.KEYWORD_FORMAT); }
-		else if ("__END__".equals(str)) { $setType(Token.EOF_TYPE); }
 		else if ("__DATA__".equals(str)) { $setType(Token.EOF_TYPE); }
 		else if (!afterSub)
 		{

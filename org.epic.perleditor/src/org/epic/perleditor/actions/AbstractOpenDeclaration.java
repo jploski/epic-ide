@@ -18,6 +18,7 @@ import org.epic.core.PerlProject;
 import org.epic.core.model.*;
 import org.epic.core.model.Package;
 import org.epic.core.util.FileUtilities;
+import org.epic.perleditor.IRequiredFileResolver;
 import org.epic.perleditor.PerlEditorPlugin;
 import org.epic.perleditor.editors.*;
 import org.epic.perleditor.editors.perl.SourceElement;
@@ -61,12 +62,28 @@ abstract class AbstractOpenDeclaration
 {
     private static final String REQUIRE_REG_EXPR = "^[\\s]*require\\s+(\\S+)";
     private final OpenDeclarationAction action;
+    private List<IRequiredFileResolver> requiredFileResolvers;
 
     //~ Constructors
 
     public AbstractOpenDeclaration(OpenDeclarationAction action)
     {
         this.action = action;
+
+        requiredFileResolvers = new ArrayList<IRequiredFileResolver>();
+        IConfigurationElement[] config = Platform.getExtensionRegistry().getConfigurationElementsFor("org.epic.perleditor.requiredFileResolver");
+        for (IConfigurationElement cfg: config) {
+            Object handler;
+            try {
+                handler = cfg.createExecutableExtension("class");
+                if ( handler instanceof IRequiredFileResolver ) {
+                    requiredFileResolvers.add( (IRequiredFileResolver)handler );
+                }
+            } catch ( CoreException e ) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
     }
     
     //~ Methods
@@ -290,6 +307,11 @@ abstract class AbstractOpenDeclaration
             SourceElement elem = i.next();
             String elemText = elem.getName();
             
+            for (IRequiredFileResolver requireFileResolver: requiredFileResolvers) {
+                File requiredFile = requireFileResolver.resolveRequiredFile(elemText);
+                if (requiredFile != null && requiredFile.isFile()) requiredFiles.add(requiredFile);
+            }
+
             if (elemText.indexOf("\"") != -1 ||
                 elemText.indexOf("'") != -1)
             {

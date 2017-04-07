@@ -51,8 +51,9 @@ public class OpenDeclarationAction extends PerlEditorAction
                     contributedActions.add(new ContributedOpenDeclarationHandler(this, (IOpenDeclarationHandler)handler));
                 }
             } catch ( CoreException e ) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+                PerlEditorPlugin.getDefault().getLog().log(
+                        new Status(IStatus.WARNING, PerlEditorPlugin.getUniqueIdentifier(),
+                        "failed to load openDeclaration extension", e));
             }
         }
     }

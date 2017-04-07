@@ -55,7 +55,7 @@
                   
                </documentation>
                <appInfo>
-                  <meta.attribute kind="java" basedOn=":org.epic.perleditor.IRequiredFileResolver"/>
+                  <meta.attribute kind="java" basedOn=":org.epic.perleditor.actions.IRequiredFileResolver"/>
                </appInfo>
             </annotation>
          </attribute>

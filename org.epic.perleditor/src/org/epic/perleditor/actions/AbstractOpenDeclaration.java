@@ -18,7 +18,6 @@ import org.epic.core.PerlProject;
 import org.epic.core.model.*;
 import org.epic.core.model.Package;
 import org.epic.core.util.FileUtilities;
-import org.epic.perleditor.IRequiredFileResolver;
 import org.epic.perleditor.PerlEditorPlugin;
 import org.epic.perleditor.editors.*;
 import org.epic.perleditor.editors.perl.SourceElement;

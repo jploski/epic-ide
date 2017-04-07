@@ -1,4 +1,4 @@
-package org.epic.perleditor;
+package org.epic.perleditor.actions;
 
 import java.io.File;
 

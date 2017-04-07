@@ -50,8 +50,9 @@ public class SourceFile
                     tokenHandlers.add((ITokenHandler)handler);
                 }
             } catch (CoreException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+                PerlEditorPlugin.getDefault().getLog().log(
+                        new Status(IStatus.WARNING, PerlEditorPlugin.getUniqueIdentifier(),
+                                   "failed to load tokenHandler extension", e));
             }
         }
     }

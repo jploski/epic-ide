@@ -24,6 +24,7 @@ public class SourceFile
     private final IDocument doc;
     private List<PODComment> pods;
     private List<Package> packages;
+    private List<ITokenHandler> tokenHandlers;
     
     /**
      * Creates a SourceFile which will be reflecting contents of the given
@@ -38,6 +39,21 @@ public class SourceFile
         this.doc = doc;
         this.pods = Collections.emptyList();
         this.packages = Collections.emptyList();
+
+        this.tokenHandlers = new ArrayList<ITokenHandler>();
+        IConfigurationElement[] config = Platform.getExtensionRegistry().getConfigurationElementsFor("org.epic.perleditor.tokenHandler");
+        for (IConfigurationElement cfg: config) {
+            Object handler;
+            try {
+                handler = cfg.createExecutableExtension("class");
+                if (handler instanceof ITokenHandler) {
+                    tokenHandlers.add((ITokenHandler)handler);
+                }
+            } catch (CoreException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
     }
     
     /**
@@ -109,7 +125,12 @@ public class SourceFile
         {
             try
             {
-                ParsingState state = new ParsingState(partitioner.getTokens());
+                List<PerlToken> tokens = partitioner.getTokens();
+                ParsingState state = new ParsingState(tokens, tokenHandlers);
+
+                for (ITokenHandler handler: tokenHandlers) {
+                    handler.start(this, tokens);
+                }
 
                 while (state.hasMoreTokens()) state.processToken();
                 state.finish();
@@ -124,6 +145,12 @@ public class SourceFile
                     "; report it as a bug " +
                     "in plug-in " + PerlEditorPlugin.getPluginId(),
                     e));
+            }
+            finally
+            {
+                for (ITokenHandler handler: tokenHandlers) {
+                    handler.end();
+                }
             }
         }
         fireSourceFileChanged();
@@ -160,6 +187,7 @@ public class SourceFile
         private int type;
         private int blockLevel;
         private boolean afterEnd;
+        private List<ITokenHandler> tokenHandlers;
         
         private Stack<Package> pkgStack;
         private Stack<Subroutine> subStack;
@@ -171,10 +199,11 @@ public class SourceFile
         private boolean inSubProto;
         private PerlToken baseKeyword;
         
-        public ParsingState(List<PerlToken> tokens)
+        public ParsingState(List<PerlToken> tokens, List<ITokenHandler> tokenHandlers)
         {
             this.tIndex = 0;
             this.tokens = tokens;
+            this.tokenHandlers = tokenHandlers;
             this.tokenCount = tokens.size();
             this.pkgStack = new Stack<Package>();
             this.subStack = new Stack<Subroutine>();
@@ -196,6 +225,10 @@ public class SourceFile
             this.t = tokens.get(tIndex);
             this.type = t.getType();
             
+            for (ITokenHandler handler: tokenHandlers) {
+                handler.handleToken(tIndex);
+            }
+
             if (this.type == PerlTokenTypes.END)
             {
                 afterEnd = true;

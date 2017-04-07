@@ -79,8 +79,9 @@ abstract class AbstractOpenDeclaration
                     requiredFileResolvers.add( (IRequiredFileResolver)handler );
                 }
             } catch ( CoreException e ) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+                PerlEditorPlugin.getDefault().getLog().log(
+                        new Status(IStatus.WARNING, PerlEditorPlugin.getUniqueIdentifier(),
+                        "failed to load requiredFileResolver extension", e));
             }
         }
     }

@@ -301,10 +301,10 @@ public class ListEditor extends FieldEditor
             list.removeAll();
             try
             {
-                for (String env : fLaunch.getAttribute(
+                for (Object env : fLaunch.getAttribute(
                     PerlLaunchConfigurationConstants.ATTR_CGI_ENV, Collections.<String>emptyList()))
                 {
-                    list.add(env);
+                    list.add(String.valueOf(env));
                 }
             } catch (CoreException e1)
             {

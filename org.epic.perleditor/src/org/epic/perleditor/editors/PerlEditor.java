@@ -210,7 +210,7 @@ public class PerlEditor extends TextEditor implements IPropertyChangeListener
         // Map external files into workspace (epic-links)
         if (input instanceof ILocationProvider)
         {
-            ILocationProvider l = input.getAdapter(ILocationProvider.class);
+            ILocationProvider l = (ILocationProvider) input.getAdapter(ILocationProvider.class);
 
             input = FileUtilities.getFileEditorInput(l.getPath(l).makeAbsolute());
             if (input == null) throw new CoreException(new Status(
@@ -562,7 +562,7 @@ public class PerlEditor extends TextEditor implements IPropertyChangeListener
         // for "Delete Previous" registered through Preferences > Keys. Otherwise we'd lose
         // backspace functionality:
 
-        IBindingService service = getSite().getService(IBindingService.class);
+        IBindingService service = (IBindingService) getSite().getService(IBindingService.class);
         if (service.getActiveBindingsFor(ITextEditorActionDefinitionIds.DELETE_PREVIOUS).length > 0)
         {
             action = new BackspaceAction(ST.DELETE_PREVIOUS);
@@ -699,7 +699,7 @@ public class PerlEditor extends TextEditor implements IPropertyChangeListener
      */
     private IResource getResource()
     {
-        return getEditorInput().getAdapter(IResource.class);
+        return (IResource) getEditorInput().getAdapter(IResource.class);
     }
 
     private void installBracketInserter()

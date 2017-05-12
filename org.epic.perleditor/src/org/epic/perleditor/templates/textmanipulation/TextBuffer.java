@@ -122,7 +122,7 @@ public class TextBuffer {
     
     public Block getBlockContent(int start, int length, int tabWidth) {
         Block result= new Block();
-        StringBuffer buffer= new StringBuffer();
+        StringBuilder buffer= new StringBuilder();
         int lineOffset= getLineInformationOfOffset(start).getOffset();
         if (start > lineOffset) {
             String line= getContent(lineOffset, start - lineOffset);

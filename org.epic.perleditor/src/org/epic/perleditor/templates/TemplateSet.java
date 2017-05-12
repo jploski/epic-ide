@@ -122,7 +122,7 @@ public class TemplateSet {
                 boolean enabled = (enabledNode == null)
                         || (enabledNode.getNodeValue().equals("true")); //$NON-NLS-1$
 
-                StringBuffer buffer = new StringBuffer();
+                StringBuilder buffer = new StringBuilder();
                 NodeList children = node.getChildNodes();
                 for (int j = 0; j != children.getLength(); j++) {
                     String value = children.item(j).getNodeValue();

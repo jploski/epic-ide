@@ -190,7 +190,7 @@ public class TemplateProposal implements IPerlCompletionProposal
             String lineStart = doc.get(
                 lineOffset, region.getOffset() - lineOffset);
             
-            StringBuffer buf = new StringBuffer();
+            StringBuilder buf = new StringBuilder();
             for (int i = 0; i < lineStart.length(); i++)
             {
                 char c = lineStart.charAt(i);

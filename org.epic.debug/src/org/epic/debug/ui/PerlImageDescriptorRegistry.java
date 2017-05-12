@@ -9,6 +9,7 @@ package org.epic.debug.ui;
 
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -30,7 +31,7 @@ import org.eclipse.swt.widgets.Display;
  */
 public class PerlImageDescriptorRegistry {
 
-    private HashMap<ImageDescriptor, Image> fRegistry= new HashMap<ImageDescriptor, Image>(10);
+    private Map<ImageDescriptor, Image> fRegistry= new HashMap<ImageDescriptor, Image>();
     private Display fDisplay;
 
     /**

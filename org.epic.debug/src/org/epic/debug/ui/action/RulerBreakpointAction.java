@@ -30,6 +30,7 @@ import org.eclipse.ui.texteditor.SimpleMarkerAnnotation;
  * @deprecated direct cut and paste of org.eclipse.debug.ui.actions.RulerBreakpointAction to enable
  * support for 3.1 users. if/when 3.1 support is no longer required, this class can be removed.
  */
+@Deprecated
 public abstract class RulerBreakpointAction extends Action {
 
     private ITextEditor fEditor;
@@ -57,7 +58,6 @@ public abstract class RulerBreakpointAction extends Action {
         IAnnotationModel annotationModel = fEditor.getDocumentProvider().getAnnotationModel(fEditor.getEditorInput());
         IDocument document = fEditor.getDocumentProvider().getDocument(fEditor.getEditorInput());
         if (annotationModel != null) {
-            @SuppressWarnings("unchecked")
             Iterator<Annotation> iterator = annotationModel.getAnnotationIterator();
             while (iterator.hasNext()) {
                 Object object = iterator.next();

@@ -1,32 +1,65 @@
 package org.epic.perleditor.editors;
 
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.*;
-import org.eclipse.jface.action.*;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.jface.text.*;
-import org.eclipse.jface.text.source.*;
-import org.eclipse.jface.text.source.projection.*;
+import org.eclipse.jface.text.BadLocationException;
+import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.text.IRegion;
+import org.eclipse.jface.text.ITypedRegion;
+import org.eclipse.jface.text.TextSelection;
+import org.eclipse.jface.text.source.ISourceViewer;
+import org.eclipse.jface.text.source.IVerticalRuler;
+import org.eclipse.jface.text.source.projection.ProjectionAnnotationModel;
+import org.eclipse.jface.text.source.projection.ProjectionSupport;
+import org.eclipse.jface.text.source.projection.ProjectionViewer;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
-import org.eclipse.jface.viewers.*;
+import org.eclipse.jface.viewers.IPostSelectionProvider;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.ISelectionProvider;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ST;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.ui.*;
-import org.eclipse.ui.editors.text.*;
+import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IFileEditorInput;
+import org.eclipse.ui.editors.text.EditorsUI;
+import org.eclipse.ui.editors.text.ILocationProvider;
+import org.eclipse.ui.editors.text.TextEditor;
 import org.eclipse.ui.internal.Workbench;
 import org.eclipse.ui.keys.IBindingService;
-import org.eclipse.ui.texteditor.*;
+import org.eclipse.ui.texteditor.ChainedPreferenceStore;
+import org.eclipse.ui.texteditor.ContentAssistAction;
+import org.eclipse.ui.texteditor.ITextEditorActionDefinitionIds;
+import org.eclipse.ui.texteditor.SourceViewerDecorationSupport;
+import org.eclipse.ui.texteditor.TextNavigationAction;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
-import org.epic.core.model.*;
+import org.epic.core.model.ISourceElement;
+import org.epic.core.model.SourceFile;
 import org.epic.core.util.FileUtilities;
 import org.epic.perleditor.Logger;
 import org.epic.perleditor.PerlEditorPlugin;
-import org.epic.perleditor.actions.*;
+import org.epic.perleditor.actions.ClearMarkerAction;
+import org.epic.perleditor.actions.ExportHtmlSourceAction;
+import org.epic.perleditor.actions.ExtractSubroutineAction;
+import org.epic.perleditor.actions.FormatSourceAction;
+import org.epic.perleditor.actions.Jump2BracketAction;
+import org.epic.perleditor.actions.OpenDeclarationAction;
+import org.epic.perleditor.actions.PerlCriticAction;
+import org.epic.perleditor.actions.PerlDocAction;
+import org.epic.perleditor.actions.PerlEditorAction;
+import org.epic.perleditor.actions.PodCheckerAction;
+import org.epic.perleditor.actions.ToggleCommentAction;
+import org.epic.perleditor.actions.ValidateSourceAction;
 import org.epic.perleditor.preferences.MarkOccurrencesPreferences;
 import org.epic.perleditor.preferences.PreferenceConstants;
 import org.epic.perleditor.templates.perl.ModuleCompletionHelper;
@@ -113,11 +146,9 @@ public class PerlEditor extends TextEditor implements IPropertyChangeListener
 
         try
         {
-            if (sourceViewer instanceof ITextViewerExtension &&
-                bracketInserter != null)
+            if (bracketInserter != null)
             {
-                ((ITextViewerExtension) sourceViewer).removeVerifyKeyListener(
-                    bracketInserter);
+                sourceViewer.removeVerifyKeyListener(bracketInserter);
             }
             if (validationThread != null) validationThread.dispose();
             if (idleTimer != null) idleTimer.dispose();
@@ -179,8 +210,7 @@ public class PerlEditor extends TextEditor implements IPropertyChangeListener
         // Map external files into workspace (epic-links)
         if (input instanceof ILocationProvider)
         {
-            ILocationProvider l = (ILocationProvider)
-                input.getAdapter(ILocationProvider.class);
+            ILocationProvider l = input.getAdapter(ILocationProvider.class);
 
             input = FileUtilities.getFileEditorInput(l.getPath(l).makeAbsolute());
             if (input == null) throw new CoreException(new Status(
@@ -532,7 +562,7 @@ public class PerlEditor extends TextEditor implements IPropertyChangeListener
         // for "Delete Previous" registered through Preferences > Keys. Otherwise we'd lose
         // backspace functionality:
 
-        IBindingService service = (IBindingService) getSite().getService(IBindingService.class);
+        IBindingService service = getSite().getService(IBindingService.class);
         if (service.getActiveBindingsFor(ITextEditorActionDefinitionIds.DELETE_PREVIOUS).length > 0)
         {
             action = new BackspaceAction(ST.DELETE_PREVIOUS);
@@ -669,8 +699,7 @@ public class PerlEditor extends TextEditor implements IPropertyChangeListener
      */
     private IResource getResource()
     {
-        return (IResource)
-            ((IAdaptable) getEditorInput()).getAdapter(IResource.class);
+        return getEditorInput().getAdapter(IResource.class);
     }
 
     private void installBracketInserter()
@@ -680,9 +709,7 @@ public class PerlEditor extends TextEditor implements IPropertyChangeListener
 
         reconfigureBracketInserter();
 
-        if (sourceViewer instanceof ITextViewerExtension)
-            ((ITextViewerExtension) sourceViewer).prependVerifyKeyListener(
-                bracketInserter);
+        sourceViewer.prependVerifyKeyListener(bracketInserter);
 
         bracketInserter.setViewer(sourceViewer);
     }
@@ -751,15 +778,13 @@ public class PerlEditor extends TextEditor implements IPropertyChangeListener
 
     private void installProjectionSupport()
     {
-        ProjectionViewer viewer = (ProjectionViewer) sourceViewer;
-
         projectionSupport = new ProjectionSupport(
-            viewer, getAnnotationAccess(), getSharedColors());
+            sourceViewer, getAnnotationAccess(), getSharedColors());
         projectionSupport.addSummarizableAnnotationType("org.eclipse.ui.workbench.texteditor.error");
         projectionSupport.addSummarizableAnnotationType("org.eclipse.ui.workbench.texteditor.warning");
         projectionSupport.install();
 
-        viewer.doOperation(ProjectionViewer.TOGGLE);
+        sourceViewer.doOperation(ProjectionViewer.TOGGLE);
     }
 
     private void installSyntaxValidationThread()
@@ -851,7 +876,7 @@ public class PerlEditor extends TextEditor implements IPropertyChangeListener
 
         public IVerticalRuler getVerticalRuler()
         {
-            return ((PerlSourceViewer) sourceViewer)._getVerticalRuler();
+            return sourceViewer._getVerticalRuler();
         }
 
         public void setCaretOffset(final int offset)

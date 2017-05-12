@@ -1,7 +1,9 @@
 package org.epic.perleditor.editors;
 
-import java.io.Serializable;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -42,7 +44,7 @@ public class TasksReconciler
     
     public void reconcile()
     {
-        IEditorInput input = (IEditorInput) editor.getEditorInput();
+        IEditorInput input = editor.getEditorInput();
         if (!(input instanceof IFileEditorInput)) return;
         
         IDocumentProvider docProvider = editor.getDocumentProvider();
@@ -100,7 +102,7 @@ public class TasksReconciler
         for (int i = 0; i < TODO_STRINGS.length; i++)
         {
             // construct the search string
-            StringBuffer buffy = new StringBuffer();
+            StringBuilder buffy = new StringBuilder();
             buffy.append("#");
             if (allowWhiteSpace) buffy.append("\\s*");
             buffy.append("\\Q");

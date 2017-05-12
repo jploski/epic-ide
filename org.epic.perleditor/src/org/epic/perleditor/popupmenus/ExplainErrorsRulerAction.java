@@ -64,7 +64,7 @@ public class ExplainErrorsRulerAction extends ResourceAction implements IUpdate 
      */
     public void update() {
         getMarkersForLine(ruler.getLineOfLastMouseButtonActivity()+1);
-        setEnabled(markers.size() > 0 ? true : false);
+        setEnabled(!markers.isEmpty());
     }
     
     /**
@@ -77,7 +77,6 @@ public class ExplainErrorsRulerAction extends ResourceAction implements IUpdate 
         IAnnotationModel model= provider.getAnnotationModel(editor.getEditorInput());
 
         if (model != null) {
-            @SuppressWarnings("unchecked")
             Iterator<Annotation> e = model.getAnnotationIterator();
             while (e.hasNext()) {
                 Object o = e.next();

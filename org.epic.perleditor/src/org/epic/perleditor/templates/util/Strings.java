@@ -17,7 +17,7 @@ import org.eclipse.jface.text.IRegion;
 public class Strings {
 
     public static String removeNewLine(String message) {
-        StringBuffer result= new StringBuffer();
+        StringBuilder result= new StringBuilder();
         int current= 0;
         int index= message.indexOf('\n', 0);
         while (index != -1) {

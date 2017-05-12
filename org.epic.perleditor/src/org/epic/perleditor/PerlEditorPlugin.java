@@ -155,7 +155,6 @@ public class PerlEditorPlugin extends AbstractUIPlugin {
      */
     protected void initializeDefaultPreferences(final IPreferenceStore store) {
         Display.getDefault().syncExec(new Runnable() {
-            @Override
             public void run()
             {
                 PreferenceConstants.initializeDefaultValues(store);

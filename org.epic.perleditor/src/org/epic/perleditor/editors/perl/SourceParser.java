@@ -121,7 +121,7 @@ public class SourceParser
             if (m.groupCount() > 0) { start = m.start(1); end = m.end(1); }
             else { start = m.start(); end = m.end(); }
             
-            StringBuffer buf = new StringBuffer();
+            StringBuilder buf = new StringBuilder();
             buf.append(preFix);
             buf.append(text.substring(start, end));
             buf.append(postFix);

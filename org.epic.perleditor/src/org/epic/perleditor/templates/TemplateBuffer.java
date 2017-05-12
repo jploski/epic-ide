@@ -72,7 +72,7 @@ public final class TemplateBuffer {
         int indentLen = indentChars.length();        
         if (indentLen == 0) return; // nothing to do
         
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
         
         for (int k = 0;; k++)
         {

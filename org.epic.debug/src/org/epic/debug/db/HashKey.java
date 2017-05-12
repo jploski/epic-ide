@@ -23,7 +23,7 @@ class HashKey extends PerlVariable
     
     public String getExpression() throws DebugException
     {
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
         int refCount = getDumpedEntity().getReferenceCount() - 1;
         
         for (int i = 0; i < refCount; i++) buf.append("${");

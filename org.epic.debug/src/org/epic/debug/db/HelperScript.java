@@ -42,7 +42,7 @@ class HelperScript
         int i = code.indexOf(tag);
         if (i == -1) return code;
         
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
         buf.append(code.substring(0, i));
         buf.append(subst);
         buf.append(code.substring(i+tag.length()));

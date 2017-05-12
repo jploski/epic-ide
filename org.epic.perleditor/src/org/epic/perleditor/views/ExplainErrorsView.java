@@ -6,8 +6,9 @@
  */
 package org.epic.perleditor.views;
 
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.runtime.CoreException;
@@ -31,12 +32,11 @@ public class ExplainErrorsView extends ViewPart {
     private Color red;
     private Color yellow;
     private Color black;
-    
-    private HashMap<String, String> levels;
-    
+
+    private final Map<String, String> levels = new HashMap<String, String>();
+
 
     public ExplainErrorsView() {
-        levels = new HashMap<String, String>();
         levels.put("(W)", "A warning (optional)");
         levels.put("(W once)", "A warning (optional)");
         levels.put("(D)", "A deprecation (optional)");
@@ -76,7 +76,7 @@ public class ExplainErrorsView extends ViewPart {
         explanationText.setFocus();
     }
     
-    public void explain(ArrayList<IMarker> markers) {
+    public void explain(List<IMarker> markers) {
         explanationText.setText("");
         
         for(int i=0; i<markers.size(); i++) {
@@ -100,7 +100,7 @@ public class ExplainErrorsView extends ViewPart {
                 String levelStr = null;
                 
                 if(expStr.length() > 0) {
-                    levelStr = levels.get(expStr.substring(0,expStr.indexOf(")")+1));
+                    levelStr = levels.get(expStr.substring(0,expStr.indexOf(')')+1));
                 }
                 
                 if(levelStr != null) {
@@ -116,7 +116,7 @@ public class ExplainErrorsView extends ViewPart {
                 }
 
                 
-                explanationText.append(levelStr != null ? expStr.substring(expStr.indexOf(")")+2) : expStr);
+                explanationText.append(levelStr != null ? expStr.substring(expStr.indexOf(')')+2) : expStr);
                 explanationText.append("\n");
             } catch (CoreException e) {
                 e.printStackTrace();

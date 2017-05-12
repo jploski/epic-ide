@@ -357,7 +357,7 @@ public class DebuggerInterface
     private String readCommandOutput()
         throws IOException, SessionTerminatedException
     {
-        StringBuffer output = new StringBuffer();
+        StringBuilder output = new StringBuilder();
         while (true)
         {
             int count;

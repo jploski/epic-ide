@@ -75,7 +75,7 @@ public class PerlPartitioner implements
              i < tokenCount;
              i++)
         {
-            PerlToken t = (PerlToken) tokens.get(i);
+            PerlToken t = tokens.get(i);
             if (t.getOffset() >= offset + length) break;
             
             if (prevRegionEnd == -1)
@@ -252,17 +252,17 @@ public class PerlPartitioner implements
             
             if (lastUnaffectedTokenI >= 0)
             {
-                PerlToken t = (PerlToken) tokens.get(lastUnaffectedTokenI);
-                if (t.includes(event.getOffset())) lastUnaffectedTokenI--;                
+                PerlToken t = tokens.get(lastUnaffectedTokenI);
+                if (t.includes(event.getOffset())) lastUnaffectedTokenI--;
             }
             else lastUnaffectedTokenI = -1;
             
             // scan back for a curly brace
             while (lastUnaffectedTokenI >= 0)
             {
-                PerlToken t = (PerlToken) tokens.get(lastUnaffectedTokenI);
+                PerlToken t = tokens.get(lastUnaffectedTokenI);
                 PerlToken prevT = lastUnaffectedTokenI > 0
-                    ? (PerlToken) tokens.get(lastUnaffectedTokenI-1)
+                    ? tokens.get(lastUnaffectedTokenI-1)
                     : null;
     
                 if (t.getType() == PerlTokenTypes.OPEN_CURLY &&
@@ -309,8 +309,8 @@ public class PerlPartitioner implements
 
         PerlToken sync;
         if (syncTokenI >= 0 && syncTokenI < tokens.size())
-        {          
-            sync = (PerlToken) tokens.get(syncTokenI);
+        {
+            sync = tokens.get(syncTokenI);
             sync.shift(shiftDelta, 0);
             tokens.markSync(syncTokenI+1);
         }
@@ -355,7 +355,7 @@ public class PerlPartitioner implements
 
                     for (int i = start; i < tokenCount; i++)
                     {
-                        PerlToken pt = (PerlToken) tokens.get(i);
+                        PerlToken pt = tokens.get(i);
                         pt.shift(shiftDelta, lineShiftDelta);
                         if (pt instanceof CurlyToken)
                         {
@@ -420,14 +420,14 @@ public class PerlPartitioner implements
             if (!tokens.isEmpty())
                 return new TypedRegion(
                     0,
-                    ((PerlToken) tokens.get(0)).getOffset(),
+                    tokens.get(0).getOffset(),
                     PartitionTypes.DEFAULT);
             else
                 return new TypedRegion(0, 0, PartitionTypes.DEFAULT);
         }
         else
         {
-            PerlToken t = (PerlToken) tokens.get(i);
+            PerlToken t = tokens.get(i);
             if (t.includes(offset))
             {
                 if (preferOpenPartitions && t.getOffset() == offset)
@@ -446,7 +446,7 @@ public class PerlPartitioner implements
                         // and preferOpenPartitions is false, we return the
                         // previous non-whitespace partition instead
                         
-                        PerlToken t2 = (PerlToken) tokens.get(i-1);
+                        PerlToken t2 = tokens.get(i-1);
                         if (t2.getOffset() + t2.getLength() == offset)
                         {
                             return token2Region(t2, i-1);
@@ -460,7 +460,7 @@ public class PerlPartitioner implements
             if (i < tokens.size() - 1)
             {
                 // offset lies in a gap between tokens
-                PerlToken t2 = (PerlToken) tokens.get(i+1);
+                PerlToken t2 = tokens.get(i+1);
                 return new TypedRegion(
                     t.getOffset() + t.getLength(),
                     t2.getOffset() - (t.getOffset() + t.getLength()),

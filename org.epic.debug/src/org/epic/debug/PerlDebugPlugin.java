@@ -163,7 +163,7 @@ public class PerlDebugPlugin extends AbstractUIPlugin
             mapper = new NullPathMapper();
         
         File perl5DbFile = null;
-        StringBuffer searchPath = new StringBuffer();
+        StringBuilder searchPath = new StringBuilder();
         for (Iterator<String> i = inc.iterator(); i.hasNext();)
         {
             File dir = mapper.getEpicPath(
@@ -195,7 +195,7 @@ public class PerlDebugPlugin extends AbstractUIPlugin
             "Fatal: failed to patch perl5db.pl for epic_breakpoints.pm",
             null));
 
-        StringBuffer newPerl5Db = new StringBuffer();
+        StringBuilder newPerl5Db = new StringBuilder();
         newPerl5Db.append(perl5db.substring(0, i));
         newPerl5Db.append(EPIC_BREAKPOINTS_PATCH);
         newPerl5Db.append(perl5db.substring(i));
@@ -569,7 +569,7 @@ public class PerlDebugPlugin extends AbstractUIPlugin
             .asList(new String[] { marker }));
         List<String> envList = new ArrayList<String>();
 
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
         for (Iterator<String> i = lines.iterator(); i.hasNext();)
         {
             String line = i.next();

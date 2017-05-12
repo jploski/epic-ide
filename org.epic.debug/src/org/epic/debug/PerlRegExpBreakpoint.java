@@ -19,6 +19,7 @@ import org.epic.debug.ui.RegExpBPSettingsDialog;
  * @deprecated this class is no longer used - it is currently being kept around so parts of its
  * implementation can be refactored out later
  */
+@Deprecated
 public class PerlRegExpBreakpoint extends PerlLineBreakpoint {
 
     private static final String Perl_REGEXP_BREAKPOINT = "org.epic.debug.perlRegExpBreakpointMarker"; //$NON-NLS-1$
@@ -51,7 +52,7 @@ public class PerlRegExpBreakpoint extends PerlLineBreakpoint {
     }
 
     String getMarkerID() {
-        return (Perl_REGEXP_BREAKPOINT);
+        return Perl_REGEXP_BREAKPOINT;
     }
 
     public String getSourceLine() {
@@ -60,7 +61,7 @@ public class PerlRegExpBreakpoint extends PerlLineBreakpoint {
 
     private Object getAttribute(String fID) {
         try {
-            return (getMarker().getAttribute(fID));
+            return getMarker().getAttribute(fID);
         } catch (CoreException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -127,8 +128,8 @@ public class PerlRegExpBreakpoint extends PerlLineBreakpoint {
     public boolean isStoredDataValid(String fCurrentSourceLine) {
         String lineStored = getSourceLine();
 
-        return (fCurrentSourceLine != null && lineStored != null
-                && fCurrentSourceLine.equals(lineStored) && getRegExp() != null && getMatchText() != null);
+        return fCurrentSourceLine != null && lineStored != null
+                && fCurrentSourceLine.equals(lineStored) && getRegExp() != null && getMatchText() != null;
 
     }
     void calculateRegExp() {
@@ -169,7 +170,7 @@ public class PerlRegExpBreakpoint extends PerlLineBreakpoint {
             if (delim == null)
                 return false;
             String temp = line;
-            temp.replaceAll("\\" + delim, "xx");
+            temp = temp.replaceAll("\\" + delim, "xx");
             RE findRegExp = new RE("([$%@][^\\s]+)[\\s]*=~[\\s]*[m]?" + delim
                     + "(.*)" + delim + "(.*)", 0, RESyntax.RE_SYNTAX_PERL5);
             match = findRegExp.getMatch(temp);
@@ -185,12 +186,12 @@ public class PerlRegExpBreakpoint extends PerlLineBreakpoint {
             if (var == null || text == null)
                 return false;
 
-            if (mod != null && mod.indexOf("i") >= 0)
+            if (mod != null && mod.indexOf('i') >= 0)
                 setIgnoreCase(true);
             else
                 setIgnoreCase(false);
 
-            if (mod != null && mod.indexOf("m") >= 0)
+            if (mod != null && mod.indexOf('m') >= 0)
                 setMultiLine(true);
             else
                 setMultiLine(false);
@@ -203,7 +204,7 @@ public class PerlRegExpBreakpoint extends PerlLineBreakpoint {
             e2.printStackTrace();
             return false;
         }
-        return (true);
+        return true;
     }
 
     private String getCurrentSourceLine() {

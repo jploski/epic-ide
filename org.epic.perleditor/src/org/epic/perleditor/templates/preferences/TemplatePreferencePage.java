@@ -240,9 +240,6 @@ public class TemplatePreferencePage
     fTableViewer.setAllChecked(false);
     fTableViewer.setCheckedElements(getEnabledTemplates());
 
-    IPreferenceStore prefs = PerlEditorPlugin.getDefault().getPreferenceStore();
-    //	fFormatButton.setSelection(prefs.getBoolean(PREF_FORMAT_TEMPLATES));
-
     updateButtons();
     configureTableResizing(
       innerParent,
@@ -513,9 +510,10 @@ public class TemplatePreferencePage
     IStructuredSelection selection =
       (IStructuredSelection) fTableViewer.getSelection();
 
-    Iterator elements = selection.iterator();
+    @SuppressWarnings("unchecked")
+    Iterator<Template> elements = selection.iterator();
     while (elements.hasNext()) {
-      Template template = (Template) elements.next();
+      Template template = elements.next();
       fTemplates.remove(template);
     }
 
@@ -549,8 +547,6 @@ public class TemplatePreferencePage
    * @see PreferencePage#performDefaults()
    */
   protected void performDefaults() {
-    IPreferenceStore prefs = PerlEditorPlugin.getDefault().getPreferenceStore();
-    //	fFormatButton.setSelection(prefs.getDefaultBoolean(PREF_FORMAT_TEMPLATES));
 
     try {
       fTemplates.restoreDefaults();

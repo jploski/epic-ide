@@ -91,16 +91,16 @@ public class TestPerlMultiLexer extends BaseTestCase
         Token t;
         while ((t = nextToken(selector, path)).getType() != Token.EOF_TYPE)
         {
-            //System.err.println(path + ": " + i + ":" + token2String(t) + " " + t.getClass());
+            System.out.println(path + ": " + i + ":" + token2String(t) + " " + t.getClass());
             i++;
         }
         tokenCounts.add(new Integer(i));
     }
-    
+
     protected void setUp()
         throws Exception
     {
-        super.setUp();        
+        super.setUp();
         setUpTokenNames();
     }
     
@@ -139,7 +139,7 @@ public class TestPerlMultiLexer extends BaseTestCase
     
     private String token2String(Token t)
     {
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
         buf.append('<');
         buf.append(tokenNames.get(new Integer(t.getType())));
         buf.append(">,line=");

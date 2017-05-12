@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.epic.perleditor.editors;
 
-import org.eclipse.jface.text.Assert;
+import org.eclipse.core.runtime.Assert;
 
 public final class AnnotationType {
 

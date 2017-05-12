@@ -32,7 +32,7 @@ class TokensList implements List<PerlToken>, RandomAccess
         // 2000 is a little more than enough for 75% of Perl files I examined 
         tokens = new PerlToken[2000];
     }
-    
+
     public boolean add(PerlToken t)
     {
         if (i == tokens.length) expand(Math.min(tokens.length, 30000));
@@ -55,7 +55,7 @@ class TokensList implements List<PerlToken>, RandomAccess
         assert noOverlaps();
         return true;
     }
-    
+
     public PerlToken get(int i)
     {
         return tokens[i];
@@ -65,7 +65,7 @@ class TokensList implements List<PerlToken>, RandomAccess
     {
         return i == 0;
     }
-    
+
     public int size()
     {
         return i;
@@ -183,7 +183,7 @@ class TokensList implements List<PerlToken>, RandomAccess
     {
         throw new UnsupportedOperationException();
     }
-    
+
     public <T> T[] toArray(T[] a)
     {
         if (a.length < i)
@@ -243,17 +243,14 @@ class TokensList implements List<PerlToken>, RandomAccess
         return OFFSET_TOKEN;
     }
 
-    @Override
     public boolean addAll(Collection<? extends PerlToken> c) {
         throw new UnsupportedOperationException();
     }
 
-    @Override
     public boolean addAll(int index, Collection<? extends PerlToken> c) {
         throw new UnsupportedOperationException();
     }
 
-    @Override
     public boolean retainAll(Collection<?> c) {
         throw new UnsupportedOperationException();
     }

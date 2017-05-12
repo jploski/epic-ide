@@ -116,7 +116,7 @@ public abstract class CompilationUnitContextType extends ContextType {
             
             try {
                 String[] arguments= method.getParameterNames();
-                StringBuffer buffer= new StringBuffer();
+                StringBuilder buffer= new StringBuilder();
                 
                 for (int i= 0; i < arguments.length; i++) {
                     if (i > 0)

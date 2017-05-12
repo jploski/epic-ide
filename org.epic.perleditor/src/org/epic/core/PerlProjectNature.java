@@ -21,7 +21,6 @@ public class PerlProjectNature implements IProjectNature {
 
     private static final String PLUGIN_ID = "org.epic.perleditor";
 
-    @Override
     public void configure() throws CoreException {
         String builderId = PLUGIN_ID + ".perlbuilder";
         IProjectDescription desc = project.getDescription();
@@ -48,17 +47,14 @@ public class PerlProjectNature implements IProjectNature {
         }
     }
 
-    @Override
     public void deconfigure() throws CoreException {
         // NOOP
     }
 
-    @Override
     public IProject getProject() {
         return project;
     }
 
-    @Override
     public void setProject(IProject fProject) {
         project = fProject;
     }

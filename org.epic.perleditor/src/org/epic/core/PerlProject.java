@@ -145,7 +145,7 @@ public class PerlProject extends PlatformObject
     private static final String quotemeta(String str)
     {
         int len = str.length();
-        StringBuffer buf = new StringBuffer(2*len);
+        StringBuilder buf = new StringBuilder(2*len);
 
         for (int i = 0; i < str.length(); i++)
         {

@@ -57,7 +57,7 @@ public class CommandLineTokenizer
         
         if (pos == line.length()) return null;
         
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
         boolean escape = false, inQuote = false;
 
         // find the next whitespace or end-of-line, don't care about quotes

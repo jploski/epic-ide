@@ -33,7 +33,7 @@ public class TestSourceFile extends BaseTestCase
         SourceFile src = new SourceFile(new Log(), doc);
         src.parse();
         
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
         for (Iterator<Package> i = src.getPackages().iterator(); i.hasNext();)
         {
             Package pkg = i.next();

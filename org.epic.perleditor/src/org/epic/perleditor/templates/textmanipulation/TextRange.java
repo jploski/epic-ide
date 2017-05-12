@@ -172,7 +172,7 @@ public final class TextRange {
      * @see Object#toString()
      */
     public String toString() {
-        StringBuffer buffer= new StringBuffer();
+        StringBuilder buffer= new StringBuilder();
         buffer.append(TextManipulationMessages.getString("TextRange.offset")); //$NON-NLS-1$
         buffer.append(fOffset);
         buffer.append(TextManipulationMessages.getString("TextRange.length")); //$NON-NLS-1$

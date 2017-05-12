@@ -332,12 +332,12 @@ public class DebuggerProxy2 extends PlatformObject
         private static final String NL = System.getProperty("line.separator");
         
         private Set<IStreamListener> listeners;
-        private StringBuffer buf;
+        private StringBuilder buf;
         
         public DebugInProxy(Reader in)
         {
             super(in);
-            buf = new StringBuffer();
+            buf = new StringBuilder();
             listeners = new HashSet<IStreamListener>();
         }
         

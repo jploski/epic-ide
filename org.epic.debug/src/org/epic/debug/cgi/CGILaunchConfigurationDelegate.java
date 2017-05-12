@@ -242,7 +242,7 @@ public class CGILaunchConfigurationDelegate extends LaunchConfigurationDelegate
      */
     private static String makePathString(List<File> path)
     {
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
         for (Iterator<File> i = path.iterator(); i.hasNext();)
         {
             File entry = i.next();

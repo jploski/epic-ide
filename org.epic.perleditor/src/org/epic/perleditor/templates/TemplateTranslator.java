@@ -36,7 +36,7 @@ public class TemplateTranslator {
     private static final char IDENTIFIER_END= '}';
 
     /** a buffer for the translation result string */
-    private final StringBuffer fBuffer= new StringBuffer();    
+    private final StringBuilder fBuffer= new StringBuilder();    
     /** position offsets of variables */
     private final Vector<Integer> fOffsets= new Vector<Integer>();
     /** position lengths of variables */

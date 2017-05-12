@@ -264,7 +264,7 @@ public abstract class PerlVariable extends DebugElement implements IVariable
             if (clean) quotedName = "'" + name + "'";
             else // pack those pesky Unicode characters
             {
-                StringBuffer buf = new StringBuffer("pack('");
+                StringBuilder buf = new StringBuilder("pack('");
                 for (int i = 0; i < name.length(); i++) buf.append('U');
                 buf.append("',");
                 for (int i = 0; i < name.length(); i++)

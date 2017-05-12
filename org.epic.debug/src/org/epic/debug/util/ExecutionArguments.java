@@ -111,7 +111,7 @@ public class ExecutionArguments {
         }
 
         private String parseString() {
-            StringBuffer buf= new StringBuffer();
+            StringBuilder buf= new StringBuilder();
             ch= getNext();
             while (ch > 0 && ch != '"') {
                 if (ch == '\\') {
@@ -137,7 +137,7 @@ public class ExecutionArguments {
         }
 
         private String parseToken() {
-            StringBuffer buf= new StringBuffer();
+            StringBuilder buf= new StringBuilder();
 
             while (ch > 0 && !Character.isWhitespace((char)ch)) {
                 if (ch == '\\') {

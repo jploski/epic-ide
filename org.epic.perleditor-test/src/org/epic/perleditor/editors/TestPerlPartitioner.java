@@ -15,7 +15,7 @@ public class TestPerlPartitioner extends BaseTestCase
         ITypedRegion[] partitioning =
             partitioner.computePartitioning(0, doc.getLength());
         
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
         for (int i = 0; i < partitioning.length; i++)
         {
             ITypedRegion r = partitioning[i];

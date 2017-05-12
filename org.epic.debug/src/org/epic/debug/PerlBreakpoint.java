@@ -99,7 +99,7 @@ public abstract class PerlBreakpoint extends Breakpoint
         }
         if (doc == null)
         {
-            StringBuffer sourceCode = new StringBuffer();
+            StringBuilder sourceCode = new StringBuilder();
 
             int BUF_SIZE = 1024;
 

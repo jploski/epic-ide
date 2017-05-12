@@ -156,7 +156,7 @@ public class PerlExecutableUtilities
         
         if (m.matches())
         {
-            StringBuffer buf = new StringBuffer();
+            StringBuilder buf = new StringBuilder();
             buf.append(CygwinMount.drivePrefix());
             buf.append(m.group(1));
             buf.append(m.group(2));

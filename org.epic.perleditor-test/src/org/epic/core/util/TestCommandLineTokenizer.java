@@ -41,7 +41,7 @@ public class TestCommandLineTokenizer extends BaseTestCase
     private void _test(String in, String out)
     {        
         List<String> ret = CommandLineTokenizer.tokenize(in);
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
 
         for (Iterator<String> i = ret.iterator(); i.hasNext();)
         {

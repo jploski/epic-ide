@@ -1,9 +1,8 @@
-#Thu Apr 18 22:45:53 CEST 2013
+#Fri May 12 15:30:09 CEST 2017
 PERL_EXECUTABLE="/usr/bin/perl"
 SHOW_WARNINGS=0
 autoCompletionBracket4=false
 autoCompletionBracket3=false
-SUSPEND_AT_FIRST_CONSOLE=false
 autoCompletionBracket2=false
 autoCompletionBracket1=false
 SYNTAX_VALIDATION_PREFERENCE=0

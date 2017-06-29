@@ -6,6 +6,10 @@ Git
 		Editor:
 
 
+Version 0.7.4 - 29-Jun-2017
+		Editor:
+		* Pull Request #41 Fix use of deprecated API that was removed in Oxygen
+
 Version 0.7.3 - 12-Mar-2017
 		Editor:
 		* Implemented Feature Request #164 Syntax highlighting after __END__ 

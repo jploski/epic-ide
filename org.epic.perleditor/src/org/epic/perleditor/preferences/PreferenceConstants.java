@@ -1,7 +1,7 @@
 package org.epic.perleditor.preferences;
 
 import org.eclipse.ui.texteditor.AbstractTextEditor;
-import org.eclipse.jface.preference.PreferenceConverter;
+import org.eclipse.jface.resource.StringConverter;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.jface.preference.IPreferenceStore;
 
@@ -508,10 +508,11 @@ public class PreferenceConstants
         store.setDefault(AUTO_COMPLETION_BRACKET4, true);
         store.setDefault(EDITOR_MATCHING_BRACKETS, true);
 
+
         for (int i = 0; i < DEFAULT_COLORS.length; i += 2)
         {
-            PreferenceConverter.setDefault(store, (String) DEFAULT_COLORS[i],
-                (RGB) DEFAULT_COLORS[i + 1]);
+            store.setDefault((String) DEFAULT_COLORS[i],
+                    StringConverter.asString((RGB) DEFAULT_COLORS[i + 1]));
         }
 
         store.setDefault(EDITOR_STRING_COLOR_BOLD, false);

@@ -246,20 +246,30 @@ public class PerlEditorPlugin extends AbstractUIPlugin {
      * if the check does not pass (but only once for background ops,
      * until Preferences are updated).
      */
-    private void checkForPerlInterpreter(boolean interactive)
+    private void checkForPerlInterpreter(boolean interactive)
     {
         final String ERROR_TITLE = "Missing Perl interpreter";
         final String ERROR_MSG =
             "To operate correctly, EPIC requires a Perl interpreter. " +
-            "Check your configuration settings (\"Window/Preferences/Perl\").";
+            "Check your configuration settings (\"Window -> Preferences -> Perl\").";
 
         PerlExecutor executor = new PerlExecutor();
+
         try
         {
             List<String> args = new ArrayList<String>(1);
             args.add("-v");
-            if (executor.execute(new File("."), args, "")
-                .stdout.matches("This is c?perl"))
+
+            /* Test if the configured Perl-5 smells right?
+             *  Run the command, capture stdout, look for expected Perl
+             *  interpreter output.
+             *   $ perl -v
+             *
+             *  TODO: It may make more sense to run a command like the following and avoid
+             *     string inspections altogether. If it runs without error then it's reasonably
+             *     safe to assume it is Perl. You get the version string as a bonus, if you care             *    perl -e 'use 5.010001; printf "# %s\n", $]'             *   (adjust to your tastes)             */            String perl_dash_v_output = "" + executor.execute(new File("."), args, "").stdout;
+            if ( perl_dash_v_output.indexOf( "This is perl 5"  ) != -1
+              || perl_dash_v_output.indexOf( "This is cperl 5" ) != -1 )
             {
                 requirePerlCheckPassed = true;
             }
@@ -270,10 +280,12 @@ public class PerlEditorPlugin extends AbstractUIPlugin {
                     getPluginId(),
                     IStatus.OK,
                     "The executable specified in Perl Preferences " +
-                    "does not appear to be a valid Perl interpreter.",
-                    null);
-
-                getLog().log(status);
+                    "does not appear to be a valid Perl interpreter. \n[ " +
+                    PerlExecutableUtilities.getPerlCommandLine() + " -> " + args + " ]\n" +
+                    perl_dash_v_output.split( "\n" )[1],
+                    null
+                );
+                getLog().log(status);
                 if (!requirePerlErrorDisplayed || interactive)
                 {
                     requirePerlErrorDisplayed = true;

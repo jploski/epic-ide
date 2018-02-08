@@ -2,8 +2,6 @@ package dumpvar_epic;
 
 # When updating, do not forget the POD description at the end of this file.
 
-binmode($DB::OUT, ":utf8");
-
 use strict;
 use warnings;
 
@@ -122,6 +120,8 @@ sub _dump_entity
     my $name = shift;
     my $ent = shift;
     
+    binmode($DB::OUT, ':utf8');
+    
     print _token($name);
     
     my @refchain = ( overload::StrVal($ent) );
@@ -189,6 +189,8 @@ sub _dump_entity
     print SEP;
     print _token(length($val));
     print "\n";
+    
+    binmode($DB::OUT, ':raw');
 }
 
 # Dumps all key-value pairs contained in a hash.

@@ -258,8 +258,8 @@ public class PerlEditorPlugin extends AbstractUIPlugin {
         {
             List<String> args = new ArrayList<String>(1);
             args.add("-v");
-            if (executor.execute(new File("."), args, "")
-                .stdout.indexOf("This is perl") != -1)
+            String stdout = executor.execute(new File("."), args, "").stdout;
+            if (stdout.contains("This is perl") || stdout.contains("This is cperl"))
             {
                 requirePerlCheckPassed = true;
             }

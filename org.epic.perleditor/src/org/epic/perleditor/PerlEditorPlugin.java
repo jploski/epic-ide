@@ -267,8 +267,13 @@ public class PerlEditorPlugin extends AbstractUIPlugin {
              *
              *  TODO: It may make more sense to run a command like the following and avoid
              *     string inspections altogether. If it runs without error then it's reasonably
-             *     safe to assume it is Perl. You get the version string as a bonus, if you care             *    perl -e 'use 5.010001; printf "# %s\n", $]'             *   (adjust to your tastes)             */            String perl_dash_v_output = "" + executor.execute(new File("."), args, "").stdout;
-            if ( perl_dash_v_output.indexOf( "This is perl 5"  ) != -1
+             *     safe to assume it is Perl. You get the version string as a bonus, if you care
+             *    perl -e 'use 5.010001; printf "# %s\n", $]'
+             *   (adjust to your tastes)
+             */
+            String perl_dash_v_output = "" + executor.execute(new File("."), args, "").stdout;
+
+            if ( perl_dash_v_output.indexOf( "This is perl 5"  ) != -1
               || perl_dash_v_output.indexOf( "This is cperl 5" ) != -1 )
             {
                 requirePerlCheckPassed = true;

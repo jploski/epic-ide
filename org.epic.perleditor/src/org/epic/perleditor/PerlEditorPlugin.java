@@ -286,10 +286,9 @@ public class PerlEditorPlugin extends AbstractUIPlugin {
              *    perl -e 'use 5.010001; printf "# %s\n", $]'
              *   (adjust to your tastes)
              */
-            String perl_dash_v_output = executor.execute(new File("."), args, "").stdout;
+            String stdout = executor.execute(new File("."), args, "").stdout;
 
-            if ( perl_dash_v_output.indexOf( "This is perl 5"  ) > -1
-              || perl_dash_v_output.indexOf( "This is cperl 5" ) > -1 )
+            if ( stdout.contains("This is perl 5" ) || stdout.contains("This is cperl 5") > -1 )
             {
                 requirePerlCheckPassed = true;
 

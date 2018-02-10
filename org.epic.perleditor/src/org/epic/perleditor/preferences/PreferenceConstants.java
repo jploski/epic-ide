@@ -52,9 +52,10 @@ public class PreferenceConstants
     public static final String DEBUG_INTERPRETER_TYPE_CYGWIN = "Cygwin";
 
     /**
-     * Path to the Perl interpreter
+     * Path to the Perl interpreter(s)
      */
     public static final String DEBUG_PERL_EXECUTABLE = "PERL_EXECUTABLE";
+    public static final String DEBUG_PERL6_EXECUTABLE = "PERL6_EXECUTABLE";
 
     /**
      * Whether or not the -w option should be passed to Perl during syntax
@@ -466,6 +467,7 @@ public class PreferenceConstants
         store.setDefault(DEBUG_INTERPRETER_TYPE,
             DEBUG_INTERPRETER_TYPE_STANDARD);
         store.setDefault(DEBUG_PERL_EXECUTABLE, "perl"); //$NON-NLS-1$
+        store.setDefault(DEBUG_PERL6_EXECUTABLE, "perl6"); //$NON-NLS-1$
         store.setDefault(DEBUG_SHOW_WARNINGS, true);
         store.setDefault(DEBUG_METHOD_SIGNATURES, false);
         store.setDefault(DEBUG_TAINT_MODE, false);

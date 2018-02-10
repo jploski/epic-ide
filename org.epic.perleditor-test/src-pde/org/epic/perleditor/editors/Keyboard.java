@@ -164,6 +164,6 @@ public class Keyboard
         Display display = Display.getDefault();
         display.post(e);
         while (display.readAndDispatch());
-        try { Thread.sleep(2); } catch (InterruptedException _) { }
+        try { Thread.sleep(2); } catch (InterruptedException ie) { }
     }
 }

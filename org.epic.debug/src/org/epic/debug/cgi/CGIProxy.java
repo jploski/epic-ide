@@ -212,7 +212,8 @@ public class CGIProxy extends PlatformObject implements IProcess, ITerminate
     /* (non-Javadoc)
      * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
      */
-    public Object getAdapter(Class adapter)
+    @SuppressWarnings( "unchecked" )
+    public Object getAdapter(@SuppressWarnings( "rawtypes" ) Class adapter)
     {
         if (adapter.equals(IProcess.class))
         {

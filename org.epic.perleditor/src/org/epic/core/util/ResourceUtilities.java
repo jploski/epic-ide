@@ -12,7 +12,7 @@ import org.osgi.framework.Bundle;
 /**
  * A utility class which enables a plug-in to map a part of its
  * deployment jar to a working directory in the file system.
- * This mapping is necessary because the Perl intepreter cannot
+ * This mapping is necessary because the Perl interpreter cannot
  * access resources (such as scripts) contained in the plug-in jar.
  * 
  * @author jploski
@@ -112,7 +112,7 @@ public class ResourceUtilities
     {
         try
         {
-            URL url = Platform.resolve(plugin.getEntry("/"));
+            URL url = FileLocator.resolve(plugin.getEntry("/"));
             
             if (url.getProtocol().equalsIgnoreCase("jar"))
             {
@@ -147,7 +147,7 @@ public class ResourceUtilities
     {
         try
         {
-            return Platform.resolve(plugin.getEntry("/"))
+            return FileLocator.resolve(plugin.getEntry("/"))
                 .getProtocol().equalsIgnoreCase("jar");
         }
         catch (IOException e)

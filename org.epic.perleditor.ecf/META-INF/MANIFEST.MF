@@ -7,7 +7,6 @@ Bundle-Activator: org.epic.perleditor.ecf.Activator
 Bundle-Vendor: EPIC Project
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
- org.eclipse.ecf.docshare,
  org.epic.perleditor
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy

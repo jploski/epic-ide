@@ -3,7 +3,7 @@ package org.epic.core.util;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.jface.text.TextUtilities;
 import org.epic.perleditor.PerlEditorPlugin;
 
@@ -19,6 +19,8 @@ import java.util.List;
  * Base class for classes representing executable "helper" Perl scripts shipped with EPIC and their
  * mandatory command line parameters. A subclass instance can be used to execute its script on
  * various inputs, and possibly with additional command line parameters.
+ * 
+ * @author jploski?
  */
 public abstract class ScriptExecutor
 {
@@ -208,7 +210,7 @@ public abstract class ScriptExecutor
                 URL url =
                     new URL(PerlEditorPlugin.getDefault().getBundle().getEntry("/"),
                         getScriptDir());
-                URL workingURL = Platform.resolve(url);
+                URL workingURL = FileLocator.resolve(url);
                 return new File(workingURL.getPath());
             }
 

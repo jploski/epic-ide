@@ -16,7 +16,7 @@ import org.epic.debug.PerlLineBreakpoint;
 
 
 /**
- * Presents the standard properties dialog to configure the attibutes of a Perl Breakpoint from the
+ * Presents the standard properties dialog to configure the attributes of a Perl Breakpoint from the
  * ruler popup menu of a text editor.
  */
 public class PerlBreakpointPropertiesRulerAction extends RulerBreakpointAction implements IUpdate

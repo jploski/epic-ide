@@ -6,7 +6,6 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.help.WorkbenchHelp;
 import org.epic.perleditor.PerlEditorPlugin;
 import org.epic.perleditor.editors.PerlEditor;
 
@@ -26,7 +25,11 @@ implements IWorkbenchPreferencePage, ITaskTagConstants {
     
     public void createControl(Composite parent) {
         super.createControl(parent);
-        WorkbenchHelp.setHelp(getControl(), getPreferenceHelpContextID());    
+
+        PlatformUI
+            .getWorkbench()
+            .getHelpSystem()
+            .setHelp(getControl(), getPreferenceHelpContextID());
     }
     
     /* (non-Javadoc)

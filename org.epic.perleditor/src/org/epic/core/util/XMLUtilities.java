@@ -15,6 +15,11 @@ import org.jdom.*;
 import org.jdom.input.*;
 import org.jdom.output.*;
 
+/**
+ * Helper XML reader: Perl include and ignore paths
+ * 
+ * @author jploski?
+ */
 public class XMLUtilities
 {
     private static final String INCLUDE_FILE_NAME = ".includepath";
@@ -39,7 +44,8 @@ public class XMLUtilities
                 Document doc = builder.build(file);
 
                 Element root = doc.getRootElement();
-                List<Element> entries = root.getChildren("ignoredpathentry");
+                @SuppressWarnings( "unchecked" ) // Poor typing in the library!
+                List<Element> entries = (List<Element>) root.getChildren("ignoredpathentry");
                 Iterator<Element> iter = entries.iterator();
 
                 while (iter.hasNext())
@@ -86,9 +92,10 @@ public class XMLUtilities
                 // Get root element
                 Element root = doc.getRootElement();
 
-                List entries = root.getChildren("includepathentry");
+                @SuppressWarnings( "unchecked" ) // Poor typing the library!
+                List<Element> entries = (List<Element>) root.getChildren("includepathentry");
 
-                Iterator iter = entries.iterator();
+                Iterator<Element> iter = entries.iterator();
 
                 while (iter.hasNext())
                 {

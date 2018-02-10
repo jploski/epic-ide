@@ -197,7 +197,7 @@ public class LaunchShortcut implements ILaunchShortcut {
             if (type != null) {
                 ILaunchConfigurationWorkingCopy wc = type.newInstance(null,
                         getLaunchManager()
-                                .generateUniqueLaunchConfigurationNameFrom(
+                                .generateLaunchConfigurationName(
                                         file.getName()));
                 wc.setAttribute(
                         PerlLaunchConfigurationConstants.ATTR_STARTUP_FILE,

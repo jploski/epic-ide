@@ -21,7 +21,10 @@ import org.eclipse.core.runtime.CoreException;
 public class PerlLinkExternalFilesNature implements IProjectNature {
 
     private IProject project;
+
+    @SuppressWarnings( "unused" )
     private String PLUGIN_ID = "org.epic.perleditor";
+
     /**
      * 
      */

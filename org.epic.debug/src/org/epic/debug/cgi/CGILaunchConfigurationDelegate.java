@@ -149,7 +149,7 @@ public class CGILaunchConfigurationDelegate extends LaunchConfigurationDelegate
         {
             List<File> cp = new ArrayList<File>();
             
-            URL brazilUrl = Platform.resolve(Platform.getBundle("org.epic.lib")
+            URL brazilUrl = FileLocator.resolve(Platform.getBundle("org.epic.lib")
                 .getEntry("/lib/brazil_mini.jar"));
             
             assert "file".equalsIgnoreCase(brazilUrl.getProtocol()) :
@@ -162,7 +162,7 @@ public class CGILaunchConfigurationDelegate extends LaunchConfigurationDelegate
             
             if (binUrl != null)
             {
-                binUrl = Platform.resolve(binUrl);
+                binUrl = FileLocator.resolve(binUrl);
                 assert binUrl.getProtocol().equalsIgnoreCase("file");
     
                 // 'bin' folder exists = we're running inside of
@@ -172,7 +172,7 @@ public class CGILaunchConfigurationDelegate extends LaunchConfigurationDelegate
             }
             else
             {
-                URL dirUrl = Platform.resolve(bundle.getEntry("/"));
+                URL dirUrl = FileLocator.resolve(bundle.getEntry("/"));
                 
                 if (dirUrl.getProtocol().equalsIgnoreCase("jar"))
                 {

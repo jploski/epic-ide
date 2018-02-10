@@ -302,7 +302,9 @@ public class EpicCgiHandler implements Handler
          * specially. Multiple headers with the same name are not handled
          * properly.
          */
-        Enumeration<Object> keys = request.headers.keys();
+        @SuppressWarnings( "unchecked" )
+        Enumeration<String> keys = request.headers.keys();
+
         while (keys.hasMoreElements())
         {
             String key = (String) keys.nextElement();
@@ -407,8 +409,8 @@ public class EpicCgiHandler implements Handler
             cgi = Runtime.getRuntime().exec(
                 command, env, new File(cgiFile.getParentFile().getCanonicalPath()));
 
-            DataInputStream in = new DataInputStream(
-                new BufferedInputStream(cgi.getInputStream()));
+            BufferedReader in = new BufferedReader(
+                new InputStreamReader(cgi.getInputStream(), "ISO-8859-1" ));
 
             // If we have data, send it to the process
 
@@ -491,16 +493,17 @@ public class EpicCgiHandler implements Handler
              */
 
             ByteArrayOutputStream buff = new ByteArrayOutputStream();
-            byte[] buf = new byte[1024];
-            int bread;
-            while ((bread = in.read(buf, 0, buf.length)) > 0)
+            char[] buf = new char[1024];
+
+            while (( in.read( buf, 0, buf.length )) > 0 )
             {
-                buff.write(buf, 0, bread);
-                mOut.write(buf, 0, bread);
+                byte[] t_byte = buf.toString().getBytes();
+                buff.write( t_byte, 0, t_byte.length );
+                mOut.write( t_byte, 0, t_byte.length );
                 mOut.flush();
             }
 
-            request.sendHeaders(status, type, buff.size());
+            request.sendHeaders( status, type, buff.size());
             buff.writeTo(request.out);
             request.log(Server.LOG_DIAGNOSTIC, "CGI output " + buff.size() + " bytes.");
             cgi.waitFor();            

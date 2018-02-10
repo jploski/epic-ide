@@ -16,6 +16,7 @@ import java.io.*;
 import java.util.*;
 
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.preferences.DefaultScope;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.preference.*;
 import org.eclipse.jface.resource.JFaceResources;
@@ -38,6 +39,7 @@ import org.eclipse.ui.editors.text.EditorsUI;
 import org.eclipse.ui.texteditor.ChainedPreferenceStore;
 import org.epic.perleditor.PerlEditorPlugin;
 import org.epic.perleditor.editors.*;
+import org.osgi.service.prefs.BackingStoreException;
 
 /*
  * The page for setting the editor options.
@@ -651,7 +653,19 @@ public class PerlEditorPreferencePage extends PreferencePage implements IWorkben
      */
     public boolean performOk() {
         fOverlayStore.propagate();
-        PerlEditorPlugin.getDefault().savePluginPreferences();
+
+        // Deprecated
+        //  PerlEditorPlugin.getDefault().savePluginPreferences();
+
+        // Believed to be new save solution
+        try
+        {
+            DefaultScope.INSTANCE.getNode(PerlEditorPlugin.getPluginId()).flush();
+        }
+        catch ( BackingStoreException e )
+        {
+            e.printStackTrace();
+        }
 
         return true;
     }
@@ -707,9 +721,12 @@ public class PerlEditorPreferencePage extends PreferencePage implements IWorkben
         return getTextControl(addLabelledTextField(composite, label, key, textLimit, indentation, isNumber));
     }
 
+    /* (non-javadoc)
+     * unused
+     *
     private static Label getLabelControl(Control[] labelledTextField){
         return (Label)labelledTextField[0];
-    }
+    } */
 
     private static Text getTextControl(Control[] labelledTextField){
         return (Text)labelledTextField[1];

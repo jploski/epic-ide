@@ -184,6 +184,7 @@ class TokensList implements List<PerlToken>, RandomAccess
         throw new UnsupportedOperationException();
     }
 
+    @SuppressWarnings( "unchecked" )
     public <T> T[] toArray(T[] a)
     {
         if (a.length < i)

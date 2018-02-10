@@ -5,8 +5,7 @@ Bundle-SymbolicName: org.epic.perleditor; singleton:=true
 Bundle-Version: 0.7.4
 Bundle-Activator: org.epic.perleditor.PerlEditorPlugin
 Bundle-Vendor: EPIC Project
-Bundle-Localization: plugin
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Export-Package: .,
  org.epic.core,
  org.epic.core.builders,

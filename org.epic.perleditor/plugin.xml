@@ -4,7 +4,7 @@
 
     <extension point="org.eclipse.ui.editors">
         <editor
-            name="Epic Perl Editor"
+            name="Epic Perl5 Editor"
             icon="icons/epic.gif"
             extensions="pl, ipl, pm, cgi, epl, t"
             contributorClass="org.epic.perleditor.editors.PerlActionContributor"

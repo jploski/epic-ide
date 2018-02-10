@@ -21,7 +21,6 @@ public class RemotePort
     private OutputStream mOutStream;
     private InputStream mInStream;
     private String name; // for debugging only
-    private int lastUsedPort;
 
     private Thread mConnectionThread;
     private volatile boolean mStop;
@@ -160,7 +159,7 @@ public class RemotePort
 
     public int waitForConnect(boolean fTimeOut, boolean shutdownOnTimeout)
     {
-        int port =  mServer.getLocalPort();
+    //  int port =  mServer.getLocalPort();
         try
         {
             for (int x = 0;
@@ -269,7 +268,6 @@ public class RemotePort
                 {
                     mServer = new ServerSocket(i);
                     mServer.setSoTimeout(5000);
-                    lastUsedPort = i;
                     found = true;
                 }
                 catch (IOException e) { }

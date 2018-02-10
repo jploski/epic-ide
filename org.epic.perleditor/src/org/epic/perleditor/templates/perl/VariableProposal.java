@@ -12,7 +12,7 @@ import org.epic.perleditor.templates.ui.LinkedPositionManager;
 import org.epic.perleditor.templates.ui.LinkedPositionUI;
 //import org.epic.perleditor.PerlEditorPlugin;
 
-import org.eclipse.core.runtime.CoreException;
+//import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
@@ -39,7 +39,7 @@ public class VariableProposal implements IPerlCompletionProposal {
   private final IRegion fRegion;
 
   //private TemplateBuffer fTemplateBuffer;
-  private String fOldText;
+  //private String fOldText;
   private IRegion fSelectedRegion; // initialized by apply()
 
   /**
@@ -178,6 +178,9 @@ public class VariableProposal implements IPerlCompletionProposal {
     return null;
   }
 
+  /*
+   * UNUSED:
+   *
   private static String textToHTML(String string) {
     StringBuilder buffer = new StringBuilder(string.length());
     buffer.append("<pre>"); //$NON-NLS-1$
@@ -214,19 +217,22 @@ public class VariableProposal implements IPerlCompletionProposal {
 
     buffer.append("</pre>"); //$NON-NLS-1$
     return buffer.toString();
-  }
+  } */
 
   private void openErrorDialog(BadLocationException e) {
     Shell shell = fViewer.getTextWidget().getShell();
     MessageDialog.openError(shell, TemplateMessages.getString("TemplateEvaluator.error.title"), e.getMessage()); //$NON-NLS-1$
   }
 
+  /*
+   * UNUSED:
+   *
   private void handleException(CoreException e) {
     Shell shell = fViewer.getTextWidget().getShell();
     //PHPeclipsePlugin.log(e);
     e.printStackTrace();
     //		ExceptionHandler.handle(e, shell, TemplateMessages.getString("TemplateEvaluator.error.title"), null); //$NON-NLS-1$
-  }
+  } */
 
   /*
    * @see IJavaCompletionProposal#getRelevance()

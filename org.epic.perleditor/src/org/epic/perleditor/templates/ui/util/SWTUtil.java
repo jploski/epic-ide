@@ -76,7 +76,9 @@ public class SWTUtil {
      */		
     public static int getButtonHeigthHint(Button button) {
         PixelConverter converter= new PixelConverter(button);
-        return converter.convertVerticalDLUsToPixels(IDialogConstants.BUTTON_HEIGHT);
+        // TODO Is this an acceptable alternative to 
+        // Deprecated: IDialogConstants.BUTTON_HEIGHT
+        return converter.convertVerticalDLUsToPixels(button.getSize().x);
     }	
 
     

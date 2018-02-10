@@ -68,14 +68,14 @@ public class PerlSubHyperlinkDetector implements IHyperlinkDetector
     private static class PerlSubHyperlink implements IHyperlink
     {
         private final PerlEditor editor;
-        private final String subName;
+    //  private final String subName;
         private final IRegion subNameRegion;
         
         public PerlSubHyperlink(
             PerlEditor editor, String subName, IRegion subNameRegion)
         {
             this.editor = editor;
-            this.subName = subName;
+        //  this.subName = subName;
             this.subNameRegion = subNameRegion;
         }
         

@@ -1,6 +1,7 @@
 package org.epic.perleditor.preferences;
 
-import org.eclipse.core.runtime.Preferences;
+import org.eclipse.core.runtime.preferences.DefaultScope;
+import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.epic.perleditor.PerlEditorPlugin;
 
@@ -50,10 +51,11 @@ public class SourceFormatterPreferences {
 
     /**
      * Method getPluginPreferences.
-     * @return Preferences
+     * @return IEclipsePreferences
      */
-    public Preferences getPluginPreferences() {
-        return PerlEditorPlugin.getDefault().getPluginPreferences();
+    public IEclipsePreferences getPluginPreferences() {
+        return DefaultScope.INSTANCE.getNode( PerlEditorPlugin.getPluginId() );
+    //  return PerlEditorPlugin.getDefault().getPluginPreferences();
     }
 
 }

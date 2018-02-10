@@ -13,7 +13,7 @@ import org.epic.perleditor.preferences.MarkOccurrencesPreferences;
 /**
  * This class marks occurrences of a selection in the current document. The
  * class uses the document partitioner to mark the surrounding text. Which types
- * are provided, can be determined by the preference page "Mark Occurences".
+ * are provided, can be determined by the preference page "Mark Occurrences".
  *
  * @author Katrin Dust
  */
@@ -237,7 +237,7 @@ public class OccurrencesUpdater implements ISelectionChangedListener
             .toArray(new Annotation[annotations.size()]);
 
         if (model != null) // the viewer's AnnotationModel may have been already disposed
-            model.replaceAnnotations(array, Collections.EMPTY_MAP);
+            model.replaceAnnotations(array, Collections.emptyMap());
 
         annotations.clear();
     }

@@ -45,7 +45,7 @@ public class PerlOutlinePage extends ContentOutlinePage
         if (PerlEditorPlugin.getDefault().getPreferenceStore()
             .getBoolean(PreferenceConstants.OUTLINE_SORT))
         {
-            viewer.setSorter(new ViewerSorter());
+            viewer.setComparator(new ViewerComparator());
         }
         viewer.setInput(source);
         contentProvider.correctViewerExpansion();
@@ -162,14 +162,14 @@ public class PerlOutlinePage extends ContentOutlinePage
             if (PerlEditorPlugin.getDefault().getPreferenceStore()
                 .getBoolean(PreferenceConstants.OUTLINE_SORT))
             {
-                getTreeViewer().setSorter(null);
+                getTreeViewer().setComparator(null);
                 PerlEditorPlugin.getDefault().getPreferenceStore()
                     .setValue(PreferenceConstants.OUTLINE_SORT, false);
                 setChecked(false);
             }
             else
             {
-                getTreeViewer().setSorter(new ViewerSorter());
+                getTreeViewer().setComparator(new ViewerComparator());
                 PerlEditorPlugin.getDefault().getPreferenceStore()
                     .setValue(PreferenceConstants.OUTLINE_SORT, true);
                 setChecked(true);

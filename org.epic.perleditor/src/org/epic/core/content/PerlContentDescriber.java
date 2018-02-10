@@ -28,7 +28,7 @@ public class PerlContentDescriber implements ITextContentDescriber
 
     public int describe(InputStream contents, IContentDescription description) throws IOException
     {
-        // TODO do we need support for other charsets here?
+        // TODO do we need support for other charsets here? Perl is "naturally" all about UTF-8, so should its source?
         return describe(new InputStreamReader(contents, "ISO-8859-1"), description);
     }
 

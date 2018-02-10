@@ -162,7 +162,8 @@ public class PerlDocView extends ViewPart {
         super.dispose();
     }
     
-    public Object getAdapter(Class required)
+    @SuppressWarnings("unchecked")
+	public Object getAdapter(@SuppressWarnings("rawtypes") Class required)
     {
         if (IFindReplaceTarget.class.equals(required))
         {

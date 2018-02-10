@@ -219,6 +219,8 @@ public class PerlMultiLexer extends TokenStreamSelector
         }
     }
 
+/*
+ * UNUSED?
     private static Reader createStringReader(IDocument doc, int startOffset)
     {
         try
@@ -233,6 +235,7 @@ public class PerlMultiLexer extends TokenStreamSelector
             throw new RuntimeException(e);
         }
     }
+ */
 
     private static class PerlLexerSharedInputState
         extends LexerSharedInputState

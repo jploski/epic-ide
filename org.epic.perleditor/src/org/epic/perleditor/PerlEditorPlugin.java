@@ -13,11 +13,12 @@ import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.team.core.IFileTypeInfo;
+import org.eclipse.team.core.IStringMapping;
 import org.eclipse.team.core.Team;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.eclipse.ui.texteditor.IDocumentProvider;
+import org.epic.core.util.PerlExecutableUtilities;
 import org.epic.core.util.PerlExecutor;
 import org.epic.perleditor.editors.PerlDocumentProvider;
 import org.epic.perleditor.editors.util.PerlColorProvider;
@@ -26,6 +27,8 @@ import org.osgi.framework.BundleContext;
 
 /**
  * The main plugin class to be used in the desktop.
+ * 
+ * @author jploski?
  */
 public class PerlEditorPlugin extends AbstractUIPlugin {
     //The shared instance.
@@ -51,8 +54,8 @@ public class PerlEditorPlugin extends AbstractUIPlugin {
     /**
      * The constructor.
      */
-    //public PerlEditorPlugin(IPluginDescriptor descriptor) {
-    public PerlEditorPlugin() {
+    public PerlEditorPlugin()
+    {
         //super(descriptor);
         plugin = this;
         try {
@@ -64,7 +67,7 @@ public class PerlEditorPlugin extends AbstractUIPlugin {
 
         // Set team file extensions
         String[] perlTypes = { "pl", "pm" };
-        IFileTypeInfo[] fileTypes = Team.getAllTypes();
+        IStringMapping[] fileTypes = Team.getFileContentManager().getExtensionMappings();
 
         int newTypesLength = fileTypes.length + perlTypes.length;
         String[] extensions = new String[newTypesLength];
@@ -72,7 +75,7 @@ public class PerlEditorPlugin extends AbstractUIPlugin {
 
         int i;
         for (i = 0; i < fileTypes.length; i++) {
-            extensions[i] = fileTypes[i].getExtension();
+            extensions[i] = fileTypes[i].getString();
             types[i] = fileTypes[i].getType();
         }
 
@@ -82,7 +85,7 @@ public class PerlEditorPlugin extends AbstractUIPlugin {
             types[i] = Team.TEXT;
         }
 
-        Team.setAllTypes(extensions, types);
+        Team.getFileContentManager().setExtensionMappings(extensions, types);
     }
 
     /**
@@ -181,6 +184,18 @@ public class PerlEditorPlugin extends AbstractUIPlugin {
         checkForPerlInterpreter(true);
     }
     
+    public String getPerl6Executable()
+    {
+        return getPreferenceStore().getString( PreferenceConstants.DEBUG_PERL6_EXECUTABLE );
+    }
+
+    public void setPerl6Executable( String value )
+    {
+        getPreferenceStore().setValue( PreferenceConstants.DEBUG_PERL6_EXECUTABLE, value );
+        requirePerlErrorDisplayed = false;
+    //  checkForPerlInterpreter( true );
+    }
+    
     public boolean getBooleanPreference(String name) {
         boolean ret = getPreferenceStore().getBoolean(name);
         if (ret) return true;
@@ -251,17 +266,44 @@ public class PerlEditorPlugin extends AbstractUIPlugin {
         final String ERROR_TITLE = "Missing Perl interpreter";
         final String ERROR_MSG =
             "To operate correctly, EPIC requires a Perl interpreter. " +
-            "Check your configuration settings (\"Window/Preferences/Perl\").";
+            "Check your configuration settings (\"Window -> Preferences -> Perl\").";
 
         PerlExecutor executor = new PerlExecutor();
+
         try
         {
             List<String> args = new ArrayList<String>(1);
             args.add("-v");
-            if (executor.execute(new File("."), args, "")
-                .stdout.matches("This is c?perl"))
+
+            /* Test if the configured Perl-5 smells right?
+             *  Run the command, capture stdout, look for expected Perl
+             *  interpreter output.
+             *   $ perl -v
+             *
+             *  TODO: It may make more sense to run a command like the following and avoid
+             *     string inspections altogether. If it runs without error then it's reasonably
+             *     safe to assume it is Perl. You get the version string as a bonus, if you care
+             *    perl -e 'use 5.010001; printf "# %s\n", $]'
+             *   (adjust to your tastes)
+             */
+            String perl_dash_v_output = executor.execute(new File("."), args, "").stdout;
+
+            if ( perl_dash_v_output.indexOf( "This is perl 5"  ) > -1
+              || perl_dash_v_output.indexOf( "This is cperl 5" ) > -1 )
             {
                 requirePerlCheckPassed = true;
+
+                Status status = new Status(
+                        IStatus.OK,
+                        getPluginId(),
+                        IStatus.OK,
+                        "The PERL-5 executable has been confirmed. " +
+                        PerlExecutableUtilities.getPerlCommandLine() + " -> " + args + "\n" +
+                        "!MESSAGE " + perl_dash_v_output.split( "\n" )[1],
+                        null
+                      );
+
+                getLog().log(status);
             }
             else
             {
@@ -270,8 +312,11 @@ public class PerlEditorPlugin extends AbstractUIPlugin {
                     getPluginId(),
                     IStatus.OK,
                     "The executable specified in Perl Preferences " +
-                    "does not appear to be a valid Perl interpreter.",
-                    null);
+                    "does not appear to be a valid Perl interpreter. " +
+                    PerlExecutableUtilities.getPerlCommandLine() + " -> " + args + "\n" +
+                    "!MESSAGE " + perl_dash_v_output.split( "\n" )[1],
+                    null
+                  );
 
                 getLog().log(status);
                 if (!requirePerlErrorDisplayed || interactive)

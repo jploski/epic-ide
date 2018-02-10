@@ -5,6 +5,7 @@ import org.eclipse.core.runtime.IStatus;
 
 public class SourceFormatterException extends CoreException
 {
+    private static final long serialVersionUID = 1L;
     public final String output;
     
     SourceFormatterException(IStatus status)

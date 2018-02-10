@@ -7,6 +7,7 @@ import org.epic.perleditor.PerlEditorPlugin;
 
 /**
  * @author luelljoc
+ * @update ancient.wizard(v.burns)
  *
  * To change the template for this generated type comment go to
  * Window&gt;Preferences&gt;Java&gt;Code Generation&gt;Code and Comments
@@ -19,14 +20,15 @@ public class FileUtilities
 
         try
         {
-            IFile[] files = root.findFilesForLocation(fPath);
+        	// Needs to be debugged
+            IFile[] files = root.findFilesForLocationURI(root.getFile(fPath).getLocationURI());
             if (files.length > 0) return new FileEditorInput(files[0]); // found
 
             // not found, let's create a link to its parent folder
             // and search again
             createFolderLink(fPath, getEpicLinksProject(root));
     
-            files = root.findFilesForLocation(fPath);    
+            files = root.findFilesForLocationURI(root.getFile(fPath).getLocationURI());    
             if (files.length > 0) return new FileEditorInput(files[0]); // found
             
             // we have the link and the file still can't be found??

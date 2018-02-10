@@ -26,13 +26,13 @@ public class Mouse
             Robot robot = new Robot();
             robot.mouseMove(p.x, p.y);
             while (display.readAndDispatch());
-            try { Thread.sleep(20); } catch (InterruptedException _) { }
+            try { Thread.sleep(20); } catch (InterruptedException ie) { }
             robot.mousePress(button);
             while (display.readAndDispatch());
-            try { Thread.sleep(20); } catch (InterruptedException _) { }
+            try { Thread.sleep(20); } catch (InterruptedException ie) { }
             robot.mouseRelease(button);
             while (display.readAndDispatch());
-            try { Thread.sleep(20); } catch (InterruptedException _) { }
+            try { Thread.sleep(20); } catch (InterruptedException ie) { }
         }
         catch (AWTException e) { throw new RuntimeException(e); }
     }

@@ -494,12 +494,13 @@ public class EpicCgiHandler implements Handler
 
             ByteArrayOutputStream buff = new ByteArrayOutputStream();
             char[] buf = new char[1024];
+            int bytes_read;
 
-            while (( in.read( buf, 0, buf.length )) > 0 )
+            while (( bytes_read = in.read( buf, 0, buf.length )) > 0 )
             {
-                byte[] t_byte = buf.toString().getBytes();
-                buff.write( t_byte, 0, t_byte.length );
-                mOut.write( t_byte, 0, t_byte.length );
+                byte[] t_byte = String.valueOf(buf).getBytes();
+                buff.write( t_byte, 0, bytes_read );
+                mOut.write( t_byte, 0, bytes_read );
                 mOut.flush();
             }
 

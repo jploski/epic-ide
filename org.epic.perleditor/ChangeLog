@@ -6,6 +6,13 @@ Git
 		Editor:
 
 
+Version 0.7.5 - 08-Feb-2018
+		Debugger:
+		* Fixed Bug #698 Debugging session stucks: recv() is deprecated on :utf8
+
+		Editor:
+		* Pull Request #42  Compatibility with cperl executable file
+
 Version 0.7.4 - 29-Jun-2017
 		Editor:
 		* Pull Request #41 Fix use of deprecated API that was removed in Oxygen

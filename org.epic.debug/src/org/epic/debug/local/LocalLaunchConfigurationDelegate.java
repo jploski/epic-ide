@@ -101,7 +101,13 @@ public class LocalLaunchConfigurationDelegate
 
         boolean consoleOutput = configuration.getAttribute(
             IDebugUIConstants.ATTR_CAPTURE_IN_CONSOLE, true);        
-    
+
+        // TODO This is where things go sideways for Perl-6. This always picks the PERL-5
+        //		interpreter. It's needs a slick way of picking the PERL-6 interpreter, perhaps
+        //		based on the targets editor OR some other nifty clue; This call is buried in
+        //      the PERL-5 editor, perhaps it's time to put it elsewhere by moving all interpreter
+        //      functions out of the editor and making this call do the magic for us I.E no change
+        //		required here if ->getPerlCommandLine() can get what it needs from the "launch"
         List<String> fCmdList = PerlExecutableUtilities.getPerlCommandLine(
             PerlCore.create(getProject(launch)));
     
@@ -338,11 +344,10 @@ public class LocalLaunchConfigurationDelegate
 
     private IProcess startPerlProcess(
         ILaunch launch, String processName, int debugPort) throws CoreException
-    {        
-        String[] cmdParams = createCommandLine(launch);        
+    {
+        String[] cmdParams = createCommandLine(launch);
         String[] env = PerlDebugPlugin.getDebugEnv(launch, debugPort);
         IPath workingDir = getLocalWorkingDir(launch);
-                
         dumpLaunchDetails(cmdParams, env, workingDir);
         Process perlProcess =
             startPerlInterpreter(cmdParams, env, workingDir);

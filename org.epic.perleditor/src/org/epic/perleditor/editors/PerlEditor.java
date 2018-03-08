@@ -893,7 +893,9 @@ public class PerlEditor extends TextEditor implements IPropertyChangeListener
 
         public void setTopIndex(int topIndex)
         {
+            Display display = sourceViewer.getTextWidget().getDisplay();
             sourceViewer.setTopIndex(topIndex);
+            while (display.readAndDispatch());
         }
 
         public void selectText(String text)

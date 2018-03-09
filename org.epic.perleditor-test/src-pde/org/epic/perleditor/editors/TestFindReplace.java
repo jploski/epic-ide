@@ -2,6 +2,7 @@ package org.epic.perleditor.editors;
 
 import org.eclipse.core.filebuffers.FileBuffers;
 import org.eclipse.core.filebuffers.ITextFileBufferManager;
+import org.eclipse.core.filebuffers.LocationKind;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jface.text.*;
@@ -24,19 +25,19 @@ public class TestFindReplace extends BasePDETestCase
             ((IFileEditorInput) editor.getEditorInput()).getFile().getLocation();
         
         ITextFileBufferManager bm = FileBuffers.getTextFileBufferManager();
-        bm.connect(fileLocation, new NullProgressMonitor());
-        
+        bm.connect(fileLocation, LocationKind.LOCATION, new NullProgressMonitor());
+
         try
         {
             IDocument doc = editor.getViewer().getDocument();
             doc.replace(0, 0, "abc");
             
-            String bufText = bm.getTextFileBuffer(fileLocation).getDocument().get();           
+            String bufText = bm.getTextFileBuffer(fileLocation, LocationKind.LOCATION).getDocument().get();           
             assertEquals(doc.get(), bufText);
         }
         finally
         {
-            bm.disconnect(fileLocation, new NullProgressMonitor());
+            bm.disconnect(fileLocation, LocationKind.LOCATION, new NullProgressMonitor());
             closeEditor(editor);
         }
     }
@@ -88,8 +89,8 @@ public class TestFindReplace extends BasePDETestCase
         String replaceString,
         boolean regExSearch)
     {
-        int replaceCount= 0;
-        int findReplacePosition= 0;
+    //  int replaceCount = 0;
+        int findReplacePosition = 0;
         boolean forwardSearch = true;
         boolean caseSensitive = false;
         boolean wholeWord = false;
@@ -116,7 +117,7 @@ public class TestFindReplace extends BasePDETestCase
                         replaceString,
                         regExSearch);
                     Point selection = target.getSelection();
-                    replaceCount++;
+                //  replaceCount++;
 
                     if (forwardSearch)
                         findReplacePosition = selection.x + selection.y;

@@ -20,13 +20,13 @@ import org.eclipse.core.runtime.Platform;
  * The execution arguments for running a Java VM. The execution arguments are
  * separated into two parts: arguments to the VM itself, and arguments to the Java
  * main program. This class provides convenience methods for parsing a string
- * of arguments into seperate components.
+ * of arguments into separate components.
  * <p>
  * Clients may instantiate this class; it is not intended to be subclassed.
  * </p>
  */
-public class ExecutionArguments {
-    private String fVMArgs;
+public class ExecutionArguments
+{
     private String fProgramArgs;
 
     /**

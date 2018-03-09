@@ -17,18 +17,16 @@ import org.eclipse.core.runtime.CoreException;
 
 import org.eclipse.debug.core.model.IBreakpoint;
 
-import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.widgets.Display;
+//import org.eclipse.swt.graphics.Image;
+//import org.eclipse.swt.widgets.Display;
 
-import org.eclipse.jface.resource.ImageRegistry;
+//import org.eclipse.jface.resource.ImageRegistry;
 
 import org.eclipse.ui.texteditor.MarkerUtilities;
 
 import org.eclipse.debug.ui.DebugUITools;
 import org.eclipse.debug.ui.IDebugModelPresentation;
 import org.epic.core.Constants;
-
-
 
 
 /**
@@ -40,21 +38,21 @@ import org.epic.core.Constants;
 public class PerlMarkerAnnotation extends MarkerAnnotation {
 
 
-    private static final int NO_IMAGE= 0;
-    private static final int ORIGINAL_MARKER_IMAGE= 1;
-    private static final int QUICKFIX_IMAGE= 2;
-    private static final int QUICKFIX_ERROR_IMAGE= 3;
-    private static final int OVERLAY_IMAGE= 4;
-    private static final int GRAY_IMAGE= 5;
-    private static final int BREAKPOINT_IMAGE= 6;
+//  private static final int NO_IMAGE= 0;
+//  private static final int ORIGINAL_MARKER_IMAGE= 1;
+//  private static final int QUICKFIX_IMAGE= 2;
+//  private static final int QUICKFIX_ERROR_IMAGE= 3;
+//  private static final int OVERLAY_IMAGE= 4;
+//  private static final int GRAY_IMAGE= 5;
+//  private static final int BREAKPOINT_IMAGE= 6;
 
-    
-    private static Image fgQuickFixErrorImage;
-    private static ImageRegistry fgGrayMarkersImageRegistry;
+
+//  private static Image fgQuickFixErrorImage;
+//  private static ImageRegistry fgGrayMarkersImageRegistry;
 
     private IDebugModelPresentation fPresentation;
     private AnnotationType fType;
-    private int fImageType;
+//  private int fImageType;
     
 
 
@@ -70,7 +68,7 @@ public class PerlMarkerAnnotation extends MarkerAnnotation {
      */
     protected void initialize() {
         
-        fImageType= NO_IMAGE;
+    //  fImageType= NO_IMAGE;
         IMarker marker= getMarker();
 
         if (MarkerUtilities.isMarkerType(marker, IBreakpoint.BREAKPOINT_MARKER)) {
@@ -78,9 +76,9 @@ public class PerlMarkerAnnotation extends MarkerAnnotation {
             if (fPresentation == null)
                 fPresentation= DebugUITools.newDebugModelPresentation();
 
-            setImage(null); // see bug 32469
-            setLayer(4);
-            fImageType= BREAKPOINT_IMAGE;
+        //  setImage(null); // see bug 32469
+        //  setLayer(4);
+        //  fImageType= BREAKPOINT_IMAGE;
 
             fType= AnnotationType.UNKNOWN;
 
@@ -111,7 +109,7 @@ public class PerlMarkerAnnotation extends MarkerAnnotation {
                     //PerlDebugPlugin.log(e);
                 }
             }
-            super.initialize();
+        //  super.initialize();
         }
     }
 
@@ -140,6 +138,10 @@ public class PerlMarkerAnnotation extends MarkerAnnotation {
     /*
      * @see MarkerAnnotation#getImage(Display)
      */
+    /*
+     * (non-Javadoc)
+     * IGNORE:
+     *
     public Image getImage(Display display) {
         if (fImageType == BREAKPOINT_IMAGE) {
             Image result= super.getImage(display);
@@ -155,13 +157,16 @@ public class PerlMarkerAnnotation extends MarkerAnnotation {
 
         
         return super.getImage(display);
-    }
+    } */
 
+    /*
+     * UNUSED:
+     *
     private ImageRegistry getGrayMarkerImageRegistry(Display display) {
         if (fgGrayMarkersImageRegistry == null)
             fgGrayMarkersImageRegistry= new ImageRegistry(display);
         return fgGrayMarkersImageRegistry;
-    }
+    } */
 
     
     public AnnotationType getAnnotationType() {

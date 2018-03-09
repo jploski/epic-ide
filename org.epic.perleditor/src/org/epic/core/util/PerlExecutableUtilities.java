@@ -9,7 +9,10 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.*;
 import org.eclipse.core.variables.IStringVariableManager;
 import org.eclipse.core.variables.VariablesPlugin;
+import org.eclipse.debug.ui.DebugUITools;
+import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.IFileEditorInput;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.epic.core.PerlCore;
 import org.epic.core.PerlProject;
@@ -38,7 +41,13 @@ public class PerlExecutableUtilities
     public static List<String> getPerlCommandLine()
     {
         String perlExe = PerlEditorPlugin.getDefault().getPerlExecutable();
-        
+
+        System.out.println("# " + perlExe );
+        if ( DebugUITools.getCurrentProcess() != null )
+        {
+        	System.out.println(DebugUITools.getCurrentProcess().getLabel());
+        }
+
         try
         {
             IStringVariableManager varMgr = 
@@ -68,7 +77,10 @@ public class PerlExecutableUtilities
      */
     public static List<String> getPerlCommandLine(ITextEditor textEditor)
     {
-        IProject project = 
+    	System.out.println("# " + textEditor.getClass().getName());
+    	System.out.println("# " + textEditor.getTitle());
+
+    	IProject project = 
             ((IFileEditorInput) textEditor.getEditorInput())
             .getFile().getProject();
 
@@ -85,7 +97,20 @@ public class PerlExecutableUtilities
      */
     public static List<String> getPerlCommandLine(PerlProject project)
     {
-        List<String> commandLine = getPerlCommandLine();        
+    	System.out.println("# " + project.getClass().getName() + " >> " + project.getProject().getName());
+    //	System.out.println("# " + PlatformUI.getWorkbench().getEditorRegistry());
+    //	System.out.println("# " + PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor().getClass().getName());
+
+    	/*
+    	IEditorReference[] editors = PlatformUI.getWorkbench().getEditorRegistry().getDefaultEditor().getId(); //getActiveWorkbenchWindow().getActivePage().getEditorReferences();
+
+    	for ( int i = 0 ; i < editors.length ; i++ )
+    	{
+    		System.out.println("# " + editors[i].getName());
+    	}
+    	*/
+
+    	List<String> commandLine = getPerlCommandLine();        
         commandLine.addAll(getPerlIncArgs(project));
         return commandLine;
     }

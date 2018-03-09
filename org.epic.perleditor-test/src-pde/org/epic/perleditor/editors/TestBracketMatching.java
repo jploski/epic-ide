@@ -15,7 +15,7 @@ public class TestBracketMatching extends BasePDETestCase
             String text = testIface.getText();
     
             List<String> expected = readLines("test.in/TestBracketMatching-expected.txt");
-            long t1 = System.currentTimeMillis();
+        //  long t1 = System.currentTimeMillis();
             int j = 0;
             for (int i = 0; i < text.length() && i < 10000; i++)
             {
@@ -35,8 +35,8 @@ public class TestBracketMatching extends BasePDETestCase
                     j++;
                 }
             }
-            long t2 = System.currentTimeMillis();
-            //System.out.println("time: " + (t2-t1)); // 24661 -> 19000
+        //  long t2 = System.currentTimeMillis();
+        //  System.out.println("time: " + (t2-t1)); // 24661 -> 19000
         }
         finally
         {

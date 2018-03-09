@@ -68,6 +68,7 @@ import org.epic.perleditor.views.PerlOutlinePage;
 /**
  * Perl specific text editor.
  */
+@SuppressWarnings( "restriction" )
 public class PerlEditor extends TextEditor implements IPropertyChangeListener
 {
     /**
@@ -276,7 +277,8 @@ public class PerlEditor extends TextEditor implements IPropertyChangeListener
      * The PerlEditor implementation of this AbstractTextEditor method performs
      * gets the Perl content outline page if request is for a an outline page.
      */
-    public Object getAdapter(Class adapter)
+    @SuppressWarnings( "unchecked" )
+    public Object getAdapter(@SuppressWarnings( "rawtypes" ) Class adapter)
     {
         if (ProjectionAnnotationModel.class.equals(adapter))
         {
@@ -948,7 +950,7 @@ public class PerlEditor extends TextEditor implements IPropertyChangeListener
          * Removes this selection changed listener from the given selection provider.
          *
          * @param selectionProvider the selection provider
-         */
+         * UNUSED?
         public void uninstall(ISelectionProvider selectionProvider) {
             if (selectionProvider == null)
                 return;
@@ -959,7 +961,7 @@ public class PerlEditor extends TextEditor implements IPropertyChangeListener
             } else  {
                 selectionProvider.removeSelectionChangedListener(this);
             }
-        }
+        } */
     }
 
     /**

@@ -95,10 +95,10 @@ import org.eclipse.jface.text.IDocumentListener;
             return true;
         }
         protected void checkRange(DocumentEvent event) {
-            TextRange range= getChildRange();
-            int eventOffset= event.getOffset();
-            int eventLength= event.getLength();
-            int eventEnd = eventOffset + eventLength - 1;
+        //  TextRange range= getChildRange();
+        //  int eventOffset= event.getOffset();
+        //  int eventLength= event.getLength();
+        //  int eventEnd = eventOffset + eventLength - 1;
             // "Edit changes text that lies outside its defined range"
     //		Assert.isTrue(range.fOffset <= eventOffset && eventEnd <= range.getInclusiveEnd());
         }
@@ -368,10 +368,10 @@ import org.eclipse.jface.text.IDocumentListener;
     //---- Accessing Ranges ------------------------------------------------------------------------------
     
     protected void checkRange(DocumentEvent event) {
-        TextRange range= getTextRange();
-        int eventOffset= event.getOffset();
-        int eventLength= event.getLength();
-        int eventEnd = eventOffset + eventLength - 1;
+    //  TextRange range= getTextRange();
+    //  int eventOffset= event.getOffset();
+    //  int eventLength= event.getLength();
+    //  int eventEnd = eventOffset + eventLength - 1;
         // "Edit changes text that lies outside its defined range"
     //	Assert.isTrue(range.fOffset <= eventOffset && eventEnd <= range.getInclusiveEnd());
     }

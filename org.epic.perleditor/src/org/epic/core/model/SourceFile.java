@@ -12,14 +12,14 @@ import org.epic.perleditor.editors.PerlPartitioner;
 
 /**
  * A parsed Perl source file. This class provides access to 
- * {@link org.epic.core.model.ISourceElement}s recognised in a Perl
+ * {@link org.epic.core.model.ISourceElement}s recognized in a Perl
  * source file.
  * 
  * @author jploski
  */
 public class SourceFile
 {
-    private final ListenerList listeners = new ListenerList();
+    private final ListenerList<ISourceFileListener> listeners = new ListenerList<ISourceFileListener>();
     private final ILog log;
     private final IDocument doc;
     private List<PODComment> pods;

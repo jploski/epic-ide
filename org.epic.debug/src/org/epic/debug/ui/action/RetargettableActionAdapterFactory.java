@@ -13,7 +13,8 @@ public class RetargettableActionAdapterFactory implements IAdapterFactory
 {
     //~ Methods
 
-    public Object getAdapter(Object adaptableObject, Class adapterType)
+    @SuppressWarnings( "unchecked" )
+    public Object getAdapter(Object adaptableObject, @SuppressWarnings( "rawtypes" ) Class adapterType)
     {
         if (adapterType == IToggleBreakpointsTarget.class)
         {
@@ -23,6 +24,7 @@ public class RetargettableActionAdapterFactory implements IAdapterFactory
         return null;
     }
 
+    @SuppressWarnings( { "rawtypes", "unchecked" } )
     public Class[] getAdapterList()
     {
         return new Class[] { IToggleBreakpointsTarget.class };

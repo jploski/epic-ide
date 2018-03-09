@@ -307,6 +307,7 @@
                         <count value="1" />
                         <iterate>
                             <or>
+                                <!-- PERL-5 -->
                                 <test
                                     property="org.eclipse.debug.ui.matchesPattern"
                                     value="*.pl" />
@@ -319,6 +320,16 @@
 								<test
                             		property="org.eclipse.debug.ui.matchesContentType"
                                 	value="org.epic.perleditor.perl" />
+                                <!-- PERL-6 -->
+                                <test
+                                    property="org.eclipse.debug.ui.matchesPattern"
+                                    value="*.pl6" />
+                                <test
+                                    property="org.eclipse.debug.ui.matchesPattern"
+                                    value="*.p6" />
+                                <test
+                                    property="org.eclipse.debug.ui.matchesPattern"
+                                    value="*.pm6" />
                             </or>
                         </iterate>
                     </with>

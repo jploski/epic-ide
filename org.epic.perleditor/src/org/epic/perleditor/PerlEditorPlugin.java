@@ -13,7 +13,7 @@ import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.team.core.IFileTypeInfo;
+import org.eclipse.team.core.IStringMapping;
 import org.eclipse.team.core.Team;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
@@ -26,6 +26,8 @@ import org.osgi.framework.BundleContext;
 
 /**
  * The main plugin class to be used in the desktop.
+ * 
+ * @author jploski?
  */
 public class PerlEditorPlugin extends AbstractUIPlugin {
     //The shared instance.
@@ -51,8 +53,8 @@ public class PerlEditorPlugin extends AbstractUIPlugin {
     /**
      * The constructor.
      */
-    //public PerlEditorPlugin(IPluginDescriptor descriptor) {
-    public PerlEditorPlugin() {
+    public PerlEditorPlugin()
+    {
         //super(descriptor);
         plugin = this;
         try {
@@ -64,7 +66,7 @@ public class PerlEditorPlugin extends AbstractUIPlugin {
 
         // Set team file extensions
         String[] perlTypes = { "pl", "pm" };
-        IFileTypeInfo[] fileTypes = Team.getAllTypes();
+        IStringMapping[] fileTypes = Team.getFileContentManager().getExtensionMappings();
 
         int newTypesLength = fileTypes.length + perlTypes.length;
         String[] extensions = new String[newTypesLength];
@@ -72,7 +74,7 @@ public class PerlEditorPlugin extends AbstractUIPlugin {
 
         int i;
         for (i = 0; i < fileTypes.length; i++) {
-            extensions[i] = fileTypes[i].getExtension();
+            extensions[i] = fileTypes[i].getString();
             types[i] = fileTypes[i].getType();
         }
 
@@ -82,7 +84,7 @@ public class PerlEditorPlugin extends AbstractUIPlugin {
             types[i] = Team.TEXT;
         }
 
-        Team.setAllTypes(extensions, types);
+        Team.getFileContentManager().setExtensionMappings(extensions, types);
     }
 
     /**
@@ -179,6 +181,18 @@ public class PerlEditorPlugin extends AbstractUIPlugin {
         getPreferenceStore().setValue(PreferenceConstants.DEBUG_PERL_EXECUTABLE, value);
         requirePerlErrorDisplayed = false;
         checkForPerlInterpreter(true);
+    }
+    
+    public String getPerl6Executable()
+    {
+        return getPreferenceStore().getString( PreferenceConstants.DEBUG_PERL6_EXECUTABLE );
+    }
+
+    public void setPerl6Executable( String value )
+    {
+        getPreferenceStore().setValue( PreferenceConstants.DEBUG_PERL6_EXECUTABLE, value );
+        requirePerlErrorDisplayed = false;
+    //  checkForPerlInterpreter( true );
     }
     
     public boolean getBooleanPreference(String name) {

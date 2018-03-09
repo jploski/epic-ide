@@ -212,14 +212,17 @@ public class ProjectAndFileBlock extends ProjectBlock
     /**
      * Used to get the Perl files of a current project.
      */
-    private static class PerlProjectVisitor implements IResourceVisitor {
-        private static final String PERL_EDITOR_ID = "org.epic.perleditor.editors.PerlEditor";
+    private static class PerlProjectVisitor implements IResourceVisitor
+    {
+        private static final String PERL5_EDITOR_ID = "org.epic.perleditor.editors.PerlEditor";
+        private static final String PERL6_EDITOR_ID = "org.epic.perl6editor.editors.PerlEditor";
 
         private static final String EMB_PERL_FILE_EXTENSION = "epl";
 
         private List<String> fileList = new ArrayList<String>();
 
-        public boolean visit(IResource resource) throws CoreException {
+        public boolean visit(IResource resource) throws CoreException
+        {
             IEditorDescriptor defaultEditorDescriptor = PerlDebugPlugin
                     .getDefault().getWorkbench().getEditorRegistry()
                     .getDefaultEditor(resource.getName());
@@ -228,9 +231,12 @@ public class ProjectAndFileBlock extends ProjectBlock
                 return true;
             }
 
-            if (defaultEditorDescriptor.getId().equals(PERL_EDITOR_ID) &&
-                !EMB_PERL_FILE_EXTENSION.equals(resource.getFileExtension()) &&
-                resource.getType() == IResource.FILE) {
+            if ((     defaultEditorDescriptor.getId().equals(PERL5_EDITOR_ID)
+                   || defaultEditorDescriptor.getId().equals(PERL6_EDITOR_ID))
+                   &&  !EMB_PERL_FILE_EXTENSION.equals(resource.getFileExtension())
+                   &&  resource.getType() == IResource.FILE
+               )
+            {
                 fileList.add(resource.getFullPath().removeFirstSegments(1)
                         .toString());
             }

@@ -88,6 +88,15 @@ public class PerlDebugPlugin extends AbstractUIPlugin
         }
     }
 
+    public static String getPluginId()
+    {
+    	// TODO Needs to be debugged, proved?
+        PerlDebugPlugin plugin = getDefault();
+        return plugin != null
+            ? plugin.getBundle().getSymbolicName()
+            : "org.epic.debug";
+    }
+
     /**
      * Extracts a file from the plug-in archive (or installation location) to a
      * temporary location.

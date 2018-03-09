@@ -66,7 +66,8 @@ public class DebuggerProxy2 extends PlatformObject
         return 0;
     }
 
-    public Object getAdapter(Class adapter)
+    @SuppressWarnings( "unchecked" )
+    public Object getAdapter(@SuppressWarnings( "rawtypes" ) Class adapter)
     {
         if (adapter.equals(IProcess.class)) return this;
 

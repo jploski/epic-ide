@@ -16,8 +16,8 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.model.IBreakpoint;
 import org.eclipse.debug.ui.DebugUITools;
 import org.eclipse.debug.ui.IDebugModelPresentation;
-import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.widgets.Display;
+//import org.eclipse.swt.graphics.Image;
+//import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.texteditor.MarkerAnnotation;
 import org.eclipse.ui.texteditor.MarkerUtilities;
 
@@ -26,12 +26,12 @@ import org.eclipse.ui.texteditor.MarkerUtilities;
  */
 public class PerlMarkerAnnotation extends MarkerAnnotation
 {
-    private static final int NO_IMAGE = 0;
-    private static final int BREAKPOINT_IMAGE = 6;
+//  private static final int NO_IMAGE = 0;
+//  private static final int BREAKPOINT_IMAGE = 6;
 
     private IDebugModelPresentation fPresentation;
     private AnnotationType fType;
-    private int fImageType;
+//  private int fImageType;
 
     public PerlMarkerAnnotation(IMarker marker)
     {
@@ -44,7 +44,7 @@ public class PerlMarkerAnnotation extends MarkerAnnotation
      */
     protected void initialize()
     {
-        fImageType = NO_IMAGE;
+    //  fImageType = NO_IMAGE;
         IMarker marker = getMarker();
 
         if (MarkerUtilities.isMarkerType(marker, IBreakpoint.BREAKPOINT_MARKER))
@@ -53,9 +53,9 @@ public class PerlMarkerAnnotation extends MarkerAnnotation
             if (fPresentation == null)
                 fPresentation = DebugUITools.newDebugModelPresentation();
 
-            setImage(null); // see bug 32469
-            setLayer(4);
-            fImageType = BREAKPOINT_IMAGE;
+        //  setImage(null); // see bug 32469
+        //  setLayer(4);
+        //  fImageType = BREAKPOINT_IMAGE;
 
             fType = AnnotationType.UNKNOWN;
 
@@ -91,7 +91,7 @@ public class PerlMarkerAnnotation extends MarkerAnnotation
                     PerlDebugPlugin.log(e);
                 }
             }
-            super.initialize();
+        //  super.initialize();
         }
     }
 
@@ -107,6 +107,9 @@ public class PerlMarkerAnnotation extends MarkerAnnotation
         return false;
     }
 
+    /* (non-Javadoc)
+     * Hide
+     *
     public Image getImage(Display display)
     {
         if (fImageType == BREAKPOINT_IMAGE)
@@ -125,7 +128,7 @@ public class PerlMarkerAnnotation extends MarkerAnnotation
         }
 
         return super.getImage(display);
-    }
+    } */
 
     public AnnotationType getAnnotationType()
     {

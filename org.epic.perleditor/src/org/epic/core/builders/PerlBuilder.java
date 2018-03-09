@@ -112,11 +112,11 @@ public class PerlBuilder extends IncrementalProjectBuilder
      */
     private void cancelPreviousPerlBuilderJob()
     {
-        IJobManager jobMan = Platform.getJobManager();
+        IJobManager jobMan = Job.getJobManager();
         Job[] jobs = jobMan.find(PerlBuilderJob.JOB_FAMILY);
 
         if (jobs.length == 0) return; // no previous build found
-        
+
         jobMan.cancel(PerlBuilderJob.JOB_FAMILY);
         try { jobMan.join(PerlBuilderJob.JOB_FAMILY, null); }
         catch (InterruptedException e)
@@ -125,7 +125,7 @@ public class PerlBuilder extends IncrementalProjectBuilder
             // if they do anyway, we treat is as a build cancellation
             throw new OperationCanceledException();
         }
-        
+
         PerlBuilderJob cancelled = (PerlBuilderJob) jobs[0];        
         dirtyResources.addAll(cancelled.getDirtyResources());
     }

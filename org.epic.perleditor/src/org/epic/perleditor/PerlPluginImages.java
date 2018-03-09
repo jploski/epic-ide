@@ -4,7 +4,9 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Iterator;
 
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.runtime.FileLocator;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.swt.graphics.Image;
@@ -14,6 +16,8 @@ import org.osgi.framework.Bundle;
  * Bundle of most images used by the Perl plug-in.
  * 
  * This class is adapted from org.eclipse.jdt.internal.ui.JavaPluginImages.
+ * 
+ * @author jploski?
  */
 public class PerlPluginImages
 {
@@ -169,7 +173,7 @@ public class PerlPluginImages
     private static ImageDescriptor createImageDescriptor(Bundle bundle,
         IPath path, boolean useMissingImageDescriptor)
     {
-        URL url = Platform.find(bundle, path);
+        URL url = FileLocator.find(bundle, path, null );
         if (url != null) return ImageDescriptor.createFromURL(url);
         else return useMissingImageDescriptor ? ImageDescriptor
             .getMissingImageDescriptor() : null;

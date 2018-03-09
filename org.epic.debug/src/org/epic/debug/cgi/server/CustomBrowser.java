@@ -11,7 +11,6 @@ import java.util.StringTokenizer;
 
 import org.eclipse.help.browser.IBrowser;
 import org.eclipse.help.internal.HelpPlugin;
-import org.eclipse.help.internal.browser.StreamConsumer;
 import org.epic.debug.PerlDebugPlugin;
 
 /**
@@ -19,7 +18,7 @@ import org.epic.debug.PerlDebugPlugin;
  */
 public class CustomBrowser implements IBrowser
 {
-    public static final String CUSTOM_BROWSER_PATH_KEY = "custom_browser_path";
+//   public static final String CUSTOM_BROWSER_PATH_KEY = "custom_browser_path";
 
     /**
      * @see org.eclipse.help.ui.browser.IBrowser#close()
@@ -63,7 +62,8 @@ public class CustomBrowser implements IBrowser
             Thread errConsumer = new StreamConsumer(pr.getErrorStream());
             errConsumer.setName("Custom browser adapter error reader");
             errConsumer.start();
-        } catch (Exception e)
+        }
+        catch (Exception e)
         {
             PerlDebugPlugin.getDefault().logError(
                 "CustomBrowser.errorLaunching " + path,
@@ -171,7 +171,7 @@ public class CustomBrowser implements IBrowser
         return command;
     }
 
-     public static boolean isCustomBrowserID(String fID)
+    public static boolean isCustomBrowserID(String fID)
     {
         return (HelpPlugin.PLUGIN_ID + ".base.custombrowser").equals(fID);
     }

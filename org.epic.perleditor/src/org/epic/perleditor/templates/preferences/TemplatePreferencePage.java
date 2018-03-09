@@ -5,6 +5,7 @@ import java.util.*;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.preferences.DefaultScope;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -26,13 +27,13 @@ import org.epic.perleditor.PerlEditorPlugin;
 import org.epic.perleditor.editors.*;
 import org.epic.perleditor.templates.*;
 import org.epic.perleditor.templates.ui.util.SWTUtil;
+import org.osgi.service.prefs.BackingStoreException;
 
 public class TemplatePreferencePage
   extends PreferencePage
   implements IWorkbenchPreferencePage {
 
   // preference store keys
-  //private static final String PREF_FORMAT_TEMPLATES = PHPeclipsePlugin.PLUGIN_ID + ".template.format"; //$NON-NLS-1$
   private static final String PREF_FORMAT_TEMPLATES = PerlEditorPlugin.getPluginId() + ".template.format";
 
   private Templates fTemplates;
@@ -111,7 +112,7 @@ public class TemplatePreferencePage
     fTableViewer.setLabelProvider(new TemplateLabelProvider());
     fTableViewer.setContentProvider(new TemplateContentProvider());
 
-    fTableViewer.setSorter(new ViewerSorter() {
+    fTableViewer.setComparator(new ViewerComparator() {
       public int compare(Viewer viewer, Object object1, Object object2) {
         if ((object1 instanceof Template) && (object2 instanceof Template)) {
           Template left = (Template) object1;
@@ -566,7 +567,7 @@ public class TemplatePreferencePage
    * @see PreferencePage#performOk()
    */
   public boolean performOk() {
-    IPreferenceStore prefs = PerlEditorPlugin.getDefault().getPreferenceStore();
+  //IPreferenceStore prefs = PerlEditorPlugin.getDefault().getPreferenceStore();
     //	prefs.setValue(PREF_FORMAT_TEMPLATES, fFormatButton.getSelection());
 
     try {
@@ -577,7 +578,17 @@ public class TemplatePreferencePage
       openWriteErrorDialog(e);
     }
 
-    PerlEditorPlugin.getDefault().savePluginPreferences();
+    // Deprecated? What is the new solution
+    // PerlEditorPlugin.getDefault().savePluginPreferences();
+    try
+    {
+        DefaultScope.INSTANCE.getNode(PerlEditorPlugin.getPluginId()).flush();
+    }
+    catch ( BackingStoreException e )
+    {
+        e.printStackTrace();
+    }
+
     // TODO check if needed
     //PHPEditorEnvironment.disconnect(this);
     return super.performOk();

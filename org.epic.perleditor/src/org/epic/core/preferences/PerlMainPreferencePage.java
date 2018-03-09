@@ -21,6 +21,7 @@ public class PerlMainPreferencePage
     implements IWorkbenchPreferencePage {
 
     private Text executableText;
+    private Text executableTextP6;
     private Text browserLabelText;
     private Text debugPreviewKeysText;
     private Button warningsCheckBox;
@@ -69,6 +70,7 @@ public class PerlMainPreferencePage
                 GridData.FILL_BOTH | GridData.VERTICAL_ALIGN_BEGINNING);
         buttonComposite.setLayoutData(data);
 
+        // Perl 5 Executable
         Label executableLabel = new Label(buttonComposite, SWT.NONE);
         executableLabel.setText("Perl executable:");
 
@@ -89,12 +91,38 @@ public class PerlMainPreferencePage
             }
         });
 
+        // Perl 6 Executable
+        Label executableLabelP6 = new Label(buttonComposite, SWT.NONE);
+        executableLabelP6.setText( "Perl 6 executable" );
+
+        executableTextP6 = new Text(buttonComposite, SWT.BORDER);
+
+        Button browseButtonP6 =
+            new Button(buttonComposite, SWT.PUSH | SWT.CENTER);
+
+        browseButtonP6.setText( "..." ); //$NON-NLS-1$
+        browseButtonP6.addSelectionListener( new SelectionAdapter()
+        {
+            public void widgetSelected( SelectionEvent event )
+            {
+                FileDialog fileBrowser = new FileDialog( fParent.getShell());
+                String dir = fileBrowser.open();
+                if ( dir != null )
+                {
+                    // Surround interpreter name by ""
+                    executableTextP6.setText("\"" + dir + "\"");
+                }
+            }
+        });
+
         data = new GridData(GridData.FILL_HORIZONTAL);
         data.grabExcessHorizontalSpace = true;
-        executableText.setLayoutData(data);
+        executableText.setLayoutData( data );
+        executableTextP6.setLayoutData( data );
 
         executableText.setText(
             PerlEditorPlugin.getDefault().getPerlExecutable());
+        executableTextP6.setText( "perl6" );
 
 /*
         Label executableInfoLabel = new Label(top, SWT.NONE);
@@ -259,6 +287,8 @@ public class PerlMainPreferencePage
         
         executableText.setText(
             prefs.getDefaultString(PreferenceConstants.DEBUG_PERL_EXECUTABLE));
+        executableTextP6.setText(
+            prefs.getDefaultString(PreferenceConstants.DEBUG_PERL6_EXECUTABLE));
         warningsCheckBox.setSelection(
             prefs.getDefaultBoolean(PreferenceConstants.DEBUG_SHOW_WARNINGS));
         methodsCheckBox.setSelection(
@@ -290,6 +320,8 @@ public class PerlMainPreferencePage
         
         PerlEditorPlugin.getDefault().setPerlExecutable(
             executableText.getText());
+        PerlEditorPlugin.getDefault().setPerl6Executable(
+                executableTextP6.getText());
         prefs.setValue(
             PreferenceConstants.DEBUG_SHOW_WARNINGS,
             warningsCheckBox.getSelection());

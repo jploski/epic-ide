@@ -529,7 +529,10 @@ public class PerlPartitioner implements
     {
         documentChanged2(new DocumentEvent(doc, 0, doc.getLength(), doc.get()));
     }
-    
+
+    /*
+     * UNUSED
+     *
     private void dumpPartitioning(
         int offset,
         int length,
@@ -548,7 +551,7 @@ public class PerlPartitioner implements
         }
         System.err.println("---- end of computePartitioning");
 
-    }
+    } */
     
     private PerlToken nextToken(PerlMultiLexer lexer) throws TokenStreamException
     {

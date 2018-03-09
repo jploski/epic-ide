@@ -12,7 +12,7 @@ import org.epic.perleditor.templates.perl.PerlUnitContext;
 import org.epic.perleditor.PerlPluginImages;
 //import net.sourceforge.phpdt.internal.ui.text.java.IPHPCompletionProposal;
 
-import org.eclipse.jface.text.BadLocationException;
+//import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.ITextViewer;
@@ -75,12 +75,12 @@ public class SubroutineEngine {
         
     Point selection= viewer.getSelectedRange();
     // remember selected text
-    String selectedText= null;
-    if (selection.y != 0) {
-      try {
-        selectedText= document.get(selection.x, selection.y);
-      } catch (BadLocationException e) {e.printStackTrace();}
-    }
+    // String selectedText= null;
+    // if (selection.y != 0) {
+    //  try {
+    //  selectedText= document.get(selection.x, selection.y);
+    // } catch (BadLocationException e) {e.printStackTrace();}
+    // }
 
     ((CompilationUnitContextType) fContextType).setContextParameters(document, completionPosition, selection.y);//mpilationUnit);
 

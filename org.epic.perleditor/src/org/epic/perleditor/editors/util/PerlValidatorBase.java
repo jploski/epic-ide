@@ -12,6 +12,7 @@ import org.eclipse.jface.text.Document;
 import org.epic.core.Constants;
 import org.epic.core.PerlCore;
 import org.epic.core.util.PerlExecutor;
+import org.epic.perleditor.Logger;
 import org.epic.perleditor.PerlEditorPlugin;
 
 /**
@@ -25,14 +26,13 @@ import org.epic.perleditor.PerlEditorPlugin;
  */
 abstract class PerlValidatorBase
 {
-    private static final boolean DEBUG = true;
-	private static int maxErrorsShown = 500;
+    private static int maxErrorsShown = 500;
     private static final int BUF_SIZE = 1024;
     
     private final ILog log;
-	private final PerlValidatorErrors errors;
+    private final PerlValidatorErrors errors;
     private final PerlExecutor executor;
-	
+    
     protected PerlValidatorBase(ILog log, PerlExecutor executor)
     {
         this.log = log;
@@ -45,12 +45,12 @@ abstract class PerlValidatorBase
      * Validates the provided source code, creates markers on the given
      * IResource.
      */
-	public synchronized void validate(IResource resource, String sourceCode)
+    public synchronized void validate(IResource resource, String sourceCode)
         throws CoreException
     {
-		//TODO check if perlOutput is empty (indicates error)           
+        //TODO check if perlOutput is empty (indicates error)           
 
-		// Mark problem markers as unused
+        // Mark problem markers as unused
         //
         // TODO: Scheduling all markers for removal at this point is actually
         // wrong because some markers might have been added by validation of
@@ -67,17 +67,16 @@ abstract class PerlValidatorBase
         if (isIgnoredPath(resource)) return;
 
         String perlOutput = runPerl(resource, sourceCode);
+        printPerlOutput(resource, perlOutput);
 
-        if (DEBUG) printPerlOutput(perlOutput);
-        
-        List lines = makeLinesList(perlOutput);
+        List<String> lines = makeLinesList(perlOutput);
         boolean continued = false;
 
-		// Markers have to be added in reverse order
-		// Otherwise lower line number will appear at the end of the list
-		for (int i = lines.size() - 1; i >= 0; i--)
-        {                
-            String line = (String) lines.get(i);
+        // Markers have to be added in reverse order
+        // Otherwise lower line number will appear at the end of the list
+        for (int i = lines.size() - 1; i >= 0; i--)
+        {
+            String line = lines.get(i);
             
             // Is this a continuation of the line i-1?
             if (line.startsWith(" "))
@@ -88,10 +87,10 @@ abstract class PerlValidatorBase
             else
             {
                 if (continued) line += lines.get(i + 1);
-                continued = false;                
+                continued = false;
             }
             
-            ParsedErrorLine pline = new ParsedErrorLine(line, log);            
+            ParsedErrorLine pline = new ParsedErrorLine(line, log);
             IResource errorResource = getErrorResource(pline, resource);
 
             if (shouldIgnore(pline, errorResource)) continue;
@@ -100,10 +99,10 @@ abstract class PerlValidatorBase
                 errors.getErrorMessage(pline.getMessage());
             
             Integer lineNr = new Integer(pline.getLineNumber());
-            Map attributes = new HashMap(11);
+            Map<String, Object> attributes = new HashMap<String, Object>();
 
             attributes.put(IMarker.SEVERITY, errorMsg.getSeverity());
-			attributes.put(
+            attributes.put(
                 Constants.MARKER_ATTR_PERL_ERROR_EXPLANATION,
                 errorMsg.getExplanation());            
 
@@ -126,7 +125,7 @@ abstract class PerlValidatorBase
                     String errorSourceCode;
                     
                     try
-                    {                    
+                    {
                         if (errorResource == resource) errorSourceCode = sourceCode;
                         else errorSourceCode = readSourceFile(errorResource);
                     
@@ -153,12 +152,12 @@ abstract class PerlValidatorBase
             }
             
             addMarker(errorResource, attributes);
-		}
+        }
         
         removeUnusedMarkers(resource);
-	}
+    }
     
-    protected abstract void addMarker(IResource resource, Map attributes);
+    protected abstract void addMarker(IResource resource, Map<String, Object> attributes);
 
     protected abstract void clearAllUsedMarkers(IResource resource);
 
@@ -167,9 +166,9 @@ abstract class PerlValidatorBase
         return line.isLocalError() ? resource : null;
     }
     
-    protected List getPerlArgs()
+    protected List<String> getPerlArgs()
     {
-        List args = new ArrayList();
+        List<String> args = new ArrayList<String>();
         args.add("-c");
         return args;
     }
@@ -241,9 +240,9 @@ abstract class PerlValidatorBase
      * 
      * @return a list of Strings, one per line (without line terminators)
      */
-    private static List makeLinesList(String perlOutput)
+    private static List<String> makeLinesList(String perlOutput)
     {
-        List lines = new ArrayList();
+        List<String> lines = new ArrayList<String>();
         StringTokenizer st = new StringTokenizer(perlOutput, "\r\n");
         int lineCount = 0;
 
@@ -262,12 +261,12 @@ abstract class PerlValidatorBase
      */
     private boolean isIgnoredPath(IResource resource)
     {
-        List ignoredPaths = PerlCore.create(resource.getProject()).getIgnoredPaths();
+        List<Pattern> ignoredPaths = PerlCore.create(resource.getProject()).getIgnoredPaths();
         if (!ignoredPaths.isEmpty())
         {
-            for (Iterator i = ignoredPaths.iterator(); i.hasNext();)
+            for (Iterator<Pattern> i = ignoredPaths.iterator(); i.hasNext();)
             {
-                Pattern p = (Pattern) i.next();
+                Pattern p = i.next();
                 String path = resource.getProjectRelativePath().toString();               
                 if (p.matcher(path).matches())
                 {
@@ -279,15 +278,16 @@ abstract class PerlValidatorBase
         return false;
     }
     
-    private void printPerlOutput(String perlOutput)
+    private void printPerlOutput(IResource resource, String perlOutput)
     {
-        if (perlOutput.indexOf("syntax OK") == -1)
+        if(perlOutput.indexOf("syntax OK") == -1)
         {
-			System.out.println("-----------------------------------------");
-			System.out.println("           OUTPUT");
-			System.out.println("-----------------------------------------");
-			System.out.println(perlOutput);
-			System.out.println("-----------------------------------------");
+            Logger.debugMSG("Syntax Error Validating: " + resource.getFullPath());
+            Logger.debugMSG("-----------------------------------------");
+            Logger.debugMSG("           OUTPUT");
+            Logger.debugMSG("-----------------------------------------");
+            Logger.debugMSG(perlOutput);
+            Logger.debugMSG("-----------------------------------------");
         }
     }
     
@@ -327,7 +327,7 @@ abstract class PerlValidatorBase
     }       
     
     private void underlineError(
-        IResource resource, String sourceCode, int lineNo, Map attributes)
+        IResource resource, String sourceCode, int lineNo, Map<String, Object> attributes)
     {
         // Get start and end offset
         int lineOffset = 0;

@@ -67,7 +67,7 @@ public class PerlDebugPlugin extends AbstractUIPlugin
         }
     }
 
-    public static void createDefaultIncPath(List fInc) throws CoreException
+    public static void createDefaultIncPath(List<String> fInc) throws CoreException
     {
         fInc.addAll(runHelperScript("get_inc.pl"));
     }
@@ -149,7 +149,7 @@ public class PerlDebugPlugin extends AbstractUIPlugin
      */
     public File patchPerl5Db() throws IOException, CoreException
     {
-        List inc = new ArrayList();
+        List<String> inc = new ArrayList<String>();
         createDefaultIncPath(inc);
         
         String interpreterType = PerlEditorPlugin.getDefault()
@@ -163,8 +163,8 @@ public class PerlDebugPlugin extends AbstractUIPlugin
             mapper = new NullPathMapper();
         
         File perl5DbFile = null;
-        StringBuffer searchPath = new StringBuffer();
-        for (Iterator i = inc.iterator(); i.hasNext();)
+        StringBuilder searchPath = new StringBuilder();
+        for (Iterator<String> i = inc.iterator(); i.hasNext();)
         {
             File dir = mapper.getEpicPath(
                 new Path((String) i.next())).toFile();
@@ -195,7 +195,7 @@ public class PerlDebugPlugin extends AbstractUIPlugin
             "Fatal: failed to patch perl5db.pl for epic_breakpoints.pm",
             null));
 
-        StringBuffer newPerl5Db = new StringBuffer();
+        StringBuilder newPerl5Db = new StringBuilder();
         newPerl5Db.append(perl5db.substring(0, i));
         newPerl5Db.append(EPIC_BREAKPOINTS_PATCH);
         newPerl5Db.append(perl5db.substring(i));
@@ -254,9 +254,9 @@ public class PerlDebugPlugin extends AbstractUIPlugin
         }
         if (launch.getLaunchMode().equals(ILaunchManager.DEBUG_MODE))
         {
-            List envList = new ArrayList(Arrays.asList(env));
+            List<String> envList = new ArrayList<String>(Arrays.asList(env));
             envList.add(getPerlDebugEnv(debugPort));
-            env = (String[]) envList.toArray(new String[envList.size()]);
+            env = envList.toArray(new String[envList.size()]);
         }
         return env;
     }
@@ -565,14 +565,14 @@ public class PerlDebugPlugin extends AbstractUIPlugin
         // variables with multi-line values
 
         String marker = System.currentTimeMillis() + " ";
-        List lines = runHelperScript("get_env.pl", Arrays
+        List<String> lines = runHelperScript("get_env.pl", Arrays
             .asList(new String[] { marker }));
-        List envList = new ArrayList();
+        List<String> envList = new ArrayList<String>();
 
-        StringBuffer buf = new StringBuffer();
-        for (Iterator i = lines.iterator(); i.hasNext();)
+        StringBuilder buf = new StringBuilder();
+        for (Iterator<String> i = lines.iterator(); i.hasNext();)
         {
-            String line = (String) i.next();
+            String line = i.next();
 
             if (!line.startsWith(marker)) // continuation
             {
@@ -587,15 +587,15 @@ public class PerlDebugPlugin extends AbstractUIPlugin
             }
         }
         if (buf.length() > 0) envList.add(buf.toString());
-        return (String[]) envList.toArray(new String[envList.size()]);
+        return envList.toArray(new String[envList.size()]);
     }
 
-    private static List runHelperScript(String scriptName) throws CoreException
+    private static List<String> runHelperScript(String scriptName) throws CoreException
     {
-        return runHelperScript(scriptName, Collections.EMPTY_LIST);
+        return runHelperScript(scriptName, Collections.<String>emptyList());
     }
 
-    private static List runHelperScript(String scriptName, List scriptArgs)
+    private static List<String> runHelperScript(String scriptName, List<String> scriptArgs)
         throws CoreException
     {
         PerlExecutor executor = new PerlExecutor();
@@ -603,7 +603,7 @@ public class PerlDebugPlugin extends AbstractUIPlugin
         {
             File scriptFile = PerlDebugPlugin.getDefault().extractTempFile(
                 scriptName, null);
-            List args = new ArrayList(1);
+            List<String> args = new ArrayList<String>(1);
             args.add(scriptFile.getAbsolutePath());
             args.addAll(scriptArgs);
             return executor.execute(scriptFile.getParentFile(), args, "")

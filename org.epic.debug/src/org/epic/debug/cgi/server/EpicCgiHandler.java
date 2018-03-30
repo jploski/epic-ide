@@ -77,64 +77,64 @@ public class EpicCgiHandler implements Handler
     private static final String ENV = "ENV";
 
     private static String software = "Mini Java CgiHandler 0.2";
-    private static Hashtable envMap; // environ maps
+    private static Hashtable<String, String> envMap; // environ maps
     
     private CGIConfig config;
 
-	private Socket diagSocket;
-	private Socket outSocket;
-	private Socket errorSocket;
+    private Socket diagSocket;
+    private Socket outSocket;
+    private Socket errorSocket;
     
     private PrintWriter mDiag; // diagnostic info to CGI proxy
     private OutputStream mOut; // forwards CGI stdout to CGI proxy
     private OutputStream mError; // forwards CGI stderr to CGI proxy
     private Exception defaultEnvError;
 
-	/**
-	 * construct table of CGI environment variables that need special handling
-	 */
-	static
+    /**
+     * construct table of CGI environment variables that need special handling
+     */
+    static
     {
-		envMap = new Hashtable(2);
-		envMap.put("content-length", "CONTENT_LENGTH");
-		envMap.put("content-type", "CONTENT_TYPE");
-	}
+        envMap = new Hashtable<String, String>(2);
+        envMap.put("content-length", "CONTENT_LENGTH");
+        envMap.put("content-type", "CONTENT_TYPE");
+    }
 
-	public EpicCgiHandler()
+    public EpicCgiHandler()
     {
-	}
+    }
 
-	/**
-	 * One time initialization. The handler configuration properties are
-	 * extracted and set in {@link #respond(Request)}to allow upstream handlers
-	 * to modify the parameters.
-	 */
-	public boolean init(Server server, String prefix)
+    /**
+     * One time initialization. The handler configuration properties are
+     * extracted and set in {@link #respond(Request)}to allow upstream handlers
+     * to modify the parameters.
+     */
+    public boolean init(Server server, String prefix)
     {
         config = new CGIConfig(server, prefix);
 
         return connectToCGIProxy();
-	}
+    }
 
-	/**
-	 * Dispatch and handle the CGI request. Gets called on ALL requests. Set up
-	 * the environment, exec the process, and deal appropriately with the input
-	 * and output.
-	 * 
-	 * In this implementation, all cgi script files must end with a standard
-	 * suffix, although the suffix may omitted from the url. The url
-	 * /main/do/me/too?a=b will look, starting in DocRoot, for main.cgi,
-	 * main/do.cgi, etc until a matching file is found.
-	 * <p>
-	 * Input parameters examined in the request properties:
-	 * <dl>
-	 * <dt>Suffix
-	 * <dd>The suffix for all cgi scripts (defaults to .cgi)
-	 * <dt>DocRoot
-	 * <dd>The document root, for locating the script.
-	 * </dl>
-	 */
-	public boolean respond(Request request)
+    /**
+     * Dispatch and handle the CGI request. Gets called on ALL requests. Set up
+     * the environment, exec the process, and deal appropriately with the input
+     * and output.
+     * 
+     * In this implementation, all cgi script files must end with a standard
+     * suffix, although the suffix may omitted from the url. The url
+     * /main/do/me/too?a=b will look, starting in DocRoot, for main.cgi,
+     * main/do.cgi, etc until a matching file is found.
+     * <p>
+     * Input parameters examined in the request properties:
+     * <dl>
+     * <dt>Suffix
+     * <dd>The suffix for all cgi scripts (defaults to .cgi)
+     * <dt>DocRoot
+     * <dd>The document root, for locating the script.
+     * </dl>
+     */
+    public boolean respond(Request request)
     {
         // The current implementation of EPIC debugger cannot reliably
         // process concurrent debug connections. Therefore, we serialise
@@ -148,17 +148,17 @@ public class EpicCgiHandler implements Handler
     
     private boolean respondImpl(Request request)
     {
-		String url = request.props.getProperty("url.orig", request.url);
-		String prefix = config.getRequestProperty(request, PREFIX, "/");
+        String url = request.props.getProperty("url.orig", request.url);
+        String prefix = config.getRequestProperty(request, PREFIX, "/");
 
-		if (!url.startsWith(prefix)) return false;
+        if (!url.startsWith(prefix)) return false;
         if (url.endsWith("favicon.ico")) return false;
 
-		String suffixes = config.getRequestProperty(request, SUFFIX, ".cgi");
-		String root = config.getRequestProperty(
+        String suffixes = config.getRequestProperty(request, SUFFIX, ".cgi");
+        String root = config.getRequestProperty(
             request, ROOT, request.props.getProperty(ROOT, "."));
 
-		request.log(
+        request.log(
             Server.LOG_DIAGNOSTIC,
             "suffix=" + suffixes + 
             " root=" + root +
@@ -173,13 +173,13 @@ public class EpicCgiHandler implements Handler
             pathInfoStartI = ((Integer) ret[1]).intValue();
         }
 
-		String[] command = createCommandLine(request, root, cgiFile);
+        String[] command = createCommandLine(request, root, cgiFile);
         String[] env = createEnvironment(
             request, cgiFile, root, url, pathInfoStartI);
 
         execCGI(request, cgiFile, command, env);
-		return true;
-	}
+        return true;
+    }
     
     /**
      * Opens communication channels to the EPIC CGI proxy running
@@ -226,7 +226,7 @@ public class EpicCgiHandler implements Handler
     private String[] createCommandLine(Request request, String root, File cgiFile)
     {
         //Get Perl executable and generate comand array
-        ArrayList commandList = new ArrayList();
+        ArrayList<String> commandList = new ArrayList<String>();
         commandList.add(config.getPerlExecutable());
         
         // Add absolute path to local working directory to make
@@ -273,7 +273,7 @@ public class EpicCgiHandler implements Handler
             commandList.add(request.query);
 
         String[] command =
-            (String[]) commandList.toArray(new String[commandList.size()]);
+            commandList.toArray(new String[commandList.size()]);
 
         /*
         for (int i = 0; i < command.length; i++)
@@ -294,7 +294,7 @@ public class EpicCgiHandler implements Handler
         String url,
         int pathInfoStartI)
     {
-        List env = new ArrayList();
+        List<String> env = new ArrayList<String>();
 
         /*
          * Build the environment array. First, get all the http headers most
@@ -302,11 +302,11 @@ public class EpicCgiHandler implements Handler
          * specially. Multiple headers with the same name are not handled
          * properly.
          */
-        Enumeration keys = request.headers.keys();
+        Enumeration<Object> keys = request.headers.keys();
         while (keys.hasMoreElements())
         {
             String key = (String) keys.nextElement();
-            String special = (String) envMap.get(key.toLowerCase());
+            String special = envMap.get(key.toLowerCase());
             if (special != null)
                 env.add(special + "=" + request.headers.get(key));
             else env.add(
@@ -354,10 +354,10 @@ public class EpicCgiHandler implements Handler
 
         if (!config.getRequestProperty(request, CUSTOM, "").equals(""))
         {
-            Map props = config.getProperties("");            
-            for (Iterator i = props.keySet().iterator(); i.hasNext();)
+            Map<String, String> props = config.getProperties("");            
+            for (Iterator<String> i = props.keySet().iterator(); i.hasNext();)
             {
-                String key = (String) i.next();
+                String key = i.next();
                 env.add("CONFIG_" + key + "=" + props.get(key)); 
             }            
             env.add("CONFIG_PREFIX=" + config.getPropsPrefix());
@@ -367,14 +367,14 @@ public class EpicCgiHandler implements Handler
         // (configurable with the CGI Environment tab; if nothing
         // is configured, the environment of the workbench is used)
         
-        Map userEnv = config.getProperties(ENV + "_");
-        for (Iterator i = userEnv.keySet().iterator(); i.hasNext();)
+        Map<String, String> userEnv = config.getProperties(ENV + "_");
+        for (Iterator<String> i = userEnv.keySet().iterator(); i.hasNext();)
         {
-            String key = (String) i.next();
+            String key = i.next();
             env.add(key + "=" + userEnv.get(key)); 
         }
 
-        String[] environ = (String[]) env.toArray(new String[env.size()]);
+        String[] environ = env.toArray(new String[env.size()]);
 
         return environ;
     }

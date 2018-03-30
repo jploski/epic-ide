@@ -35,9 +35,9 @@ public class CommandLineTokenizer
      * 
      * @return the list of Strings representing command line components
      */
-    public static List tokenize(String commandLine)
+    public static List<String> tokenize(String commandLine)
     {
-        List tokens = new ArrayList();
+        List<String> tokens = new ArrayList<String>();
         
         int[] pos = new int[] { 0 };
         String token;
@@ -57,7 +57,7 @@ public class CommandLineTokenizer
         
         if (pos == line.length()) return null;
         
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
         boolean escape = false, inQuote = false;
 
         // find the next whitespace or end-of-line, don't care about quotes

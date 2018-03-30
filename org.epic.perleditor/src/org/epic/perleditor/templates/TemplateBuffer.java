@@ -12,53 +12,53 @@ import org.eclipse.core.runtime.CoreException;
  * A template buffer is a container for a string and variables.
  */
 public final class TemplateBuffer {
-	
-	/** The string of the template buffer */ 
-	private String fString;
-	/** The variable positions of the template buffer */
-	private TemplatePosition[] fVariables;
-	
-	/**
-	 * Creates a template buffer.
-	 * 
-	 * @param string the string
-	 * @param variables the variable positions
-	 * @throws CoreException for illegal variable positions
-	 */
+    
+    /** The string of the template buffer */ 
+    private String fString;
+    /** The variable positions of the template buffer */
+    private TemplatePosition[] fVariables;
+    
+    /**
+     * Creates a template buffer.
+     * 
+     * @param string the string
+     * @param variables the variable positions
+     * @throws CoreException for illegal variable positions
+     */
     public TemplateBuffer(String string, TemplatePosition[] variables) throws CoreException {
-		setContent(string, variables);
+        setContent(string, variables);
     }
 
-	/**
-	 * Sets the content of the template buffer.
-	 * 
-	 * @param string the string
-	 * @param variables the variable positions
-	 * @throws CoreException for illegal variable positions
-	 */
-	public final void setContent(String string, TemplatePosition[] variables) throws CoreException {
-	//	Assert.isNotNull(string);
-	//	Assert.isNotNull(variables);
+    /**
+     * Sets the content of the template buffer.
+     * 
+     * @param string the string
+     * @param variables the variable positions
+     * @throws CoreException for illegal variable positions
+     */
+    public final void setContent(String string, TemplatePosition[] variables) throws CoreException {
+    //	Assert.isNotNull(string);
+    //	Assert.isNotNull(variables);
 
-		// XXX assert non-overlapping variable properties
+        // XXX assert non-overlapping variable properties
 
-		fString= string;
-		fVariables= variables;
-	}
+        fString= string;
+        fVariables= variables;
+    }
 
-	/**
-	 * Returns the string of the template buffer.
-	 */
-	public final String getString() {
-		return fString;
-	}
-	
-	/**
-	 * Returns the variable positions of the template buffer.
-	 */
-	public final TemplatePosition[] getVariables() {
-		return fVariables;
-	}
+    /**
+     * Returns the string of the template buffer.
+     */
+    public final String getString() {
+        return fString;
+    }
+    
+    /**
+     * Returns the variable positions of the template buffer.
+     */
+    public final TemplatePosition[] getVariables() {
+        return fVariables;
+    }
     
     /**
      * Indents all lines after the first line in this TemplateBuffer
@@ -72,7 +72,7 @@ public final class TemplateBuffer {
         int indentLen = indentChars.length();        
         if (indentLen == 0) return; // nothing to do
         
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
         
         for (int k = 0;; k++)
         {

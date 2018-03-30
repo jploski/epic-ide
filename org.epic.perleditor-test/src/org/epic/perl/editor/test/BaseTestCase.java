@@ -69,7 +69,7 @@ public class BaseTestCase extends TestCase
      * @param path relative to directory containing test.properties
      * @return a list of strings represented lines from the specified file
      */
-    protected List readLines(String path) throws IOException
+    protected List<String> readLines(String path) throws IOException
     {
         BufferedReader r = null;
 
@@ -77,7 +77,7 @@ public class BaseTestCase extends TestCase
         {
             r = new BufferedReader(new FileReader(getFile(path)));
 
-            List lines = new ArrayList();
+            List<String> lines = new ArrayList<String>();
             String l;
             while ((l = r.readLine()) != null) lines.add(l);
             return lines;
@@ -110,7 +110,7 @@ public class BaseTestCase extends TestCase
             Properties testProperties = new Properties();
             testProperties.load(in);
 
-            for (Enumeration e = testProperties.keys(); e.hasMoreElements();)
+            for (Enumeration<Object> e = testProperties.keys(); e.hasMoreElements();)
             {
                 String key = e.nextElement().toString();
                 String value = testProperties.getProperty(key);

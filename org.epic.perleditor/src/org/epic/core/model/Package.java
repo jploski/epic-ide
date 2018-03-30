@@ -35,9 +35,9 @@ public class Package implements IMultilineElement
     private final int blockLevel;
     private final PerlToken packageKeyword;
     private final PerlToken name;
-    private final List subs;
-    private final List uses;
-    private final List parents;
+    private final List<Subroutine> subs;
+    private final List<ModuleUse> uses;
+    private final List<ModuleUse> parents;
     private PerlToken lastToken;
     
     /**
@@ -49,9 +49,9 @@ public class Package implements IMultilineElement
         this.blockLevel = 0;
         this.packageKeyword = null;
         this.name = null;
-        this.subs = new ArrayList();
-        this.uses = new ArrayList();
-        this.parents = new ArrayList();
+        this.subs = new ArrayList<Subroutine>();
+        this.uses = new ArrayList<ModuleUse>();
+        this.parents = new ArrayList<ModuleUse>();
     }
     
     /**
@@ -67,9 +67,9 @@ public class Package implements IMultilineElement
         this.blockLevel = blockLevel;
         this.packageKeyword = packageKeyword;
         this.name = name;
-        this.subs = new ArrayList();
-        this.uses = new ArrayList();
-        this.parents = new ArrayList();
+        this.subs = new ArrayList<Subroutine>();
+        this.uses = new ArrayList<ModuleUse>();
+        this.parents = new ArrayList<ModuleUse>();
     }
     
     public Subroutine addSub(
@@ -140,17 +140,17 @@ public class Package implements IMultilineElement
         return name != null ? name.getOffset() : -1;
     }
     
-    public List getSubs()
+    public List<Subroutine> getSubs()
     {
         return Collections.unmodifiableList(subs);
     }
     
-    public List getUses()
+    public List<ModuleUse> getUses()
     {
         return Collections.unmodifiableList(uses);
     }
 
-    public List getParents()
+    public List<ModuleUse> getParents()
     {
         return Collections.unmodifiableList(parents);
     }

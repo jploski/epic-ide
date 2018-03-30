@@ -27,7 +27,7 @@ public class NullPathMapper implements IPathMapper
         return false;
     }
     
-    public void setEffectiveIncPath(List inc)
+    public void setEffectiveIncPath(List<IPath> inc)
     {
     }
 }

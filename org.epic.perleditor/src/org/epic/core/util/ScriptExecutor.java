@@ -4,16 +4,12 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
-
 import org.eclipse.jface.text.TextUtilities;
-
 import org.epic.perleditor.PerlEditorPlugin;
 
 import java.io.File;
 import java.io.IOException;
-
 import java.net.URL;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -44,7 +40,7 @@ public abstract class ScriptExecutor
      *
      * @return execution results
      */
-    public final ProcessOutput run(List args) throws CoreException
+    public final ProcessOutput run(List<String> args) throws CoreException
     {
         return run("", args);
     }
@@ -69,7 +65,7 @@ public abstract class ScriptExecutor
      *
      * @return execution results
      */
-    public final ProcessOutput run(String text, List additionalArgs) throws CoreException
+    public final ProcessOutput run(String text, List<String> additionalArgs) throws CoreException
     {
         File workingDir = getWorkingDir();
 
@@ -77,7 +73,7 @@ public abstract class ScriptExecutor
             getCharsetName(), ignoresBrokenPipe());
         try
         {
-            List cmdArgs = new ArrayList(1);
+            List<String> cmdArgs = new ArrayList<String>(1);
             cmdArgs.add(getExecutable());
             cmdArgs.addAll(getCommandLineOpts(additionalArgs));
 
@@ -90,7 +86,7 @@ public abstract class ScriptExecutor
              * given that, logging the stderr as a warning will help the end user to figure out what
              * is going on (and assist in logging bug reports, etc)
              */
-            if ((output.stderr != null) && ! output.stderr.equals(""))
+            if ((output.stderr != null) && ! "".equals(output.stderr))
             {
                 log.log(StatusFactory.createWarning(PerlEditorPlugin.getPluginId(),
                         "Perl Process stderr: " + output.stderr, null));
@@ -136,9 +132,9 @@ public abstract class ScriptExecutor
      *
      * @return complete list of command line arguments
      */
-    protected List getCommandLineOpts(List additionalOptions)
+    protected List<String> getCommandLineOpts(List<String> additionalOptions)
     {
-        return (additionalOptions != null) ? additionalOptions : Collections.EMPTY_LIST;
+        return (additionalOptions != null) ? additionalOptions : Collections.<String>emptyList();
     }
 
     /**
@@ -194,7 +190,7 @@ public abstract class ScriptExecutor
         }
         catch (NumberFormatException e)
         {
-        	// stacktrace will provide exact error location
+            // stacktrace will provide exact error location
             log.log(StatusFactory.createError(getPluginId(), e.getMessage(), e));
             // results in "Unknown" being displayed in the Problems view
             return -1;

@@ -23,8 +23,8 @@ public class RemotePathMapper extends AbstractPathMapper
         } };
     
     private final String remoteProjectDir;
-    private final List epicInc;
-    private List debuggerInc;
+    private final List<IPath> epicInc;
+    private List<IPath> debuggerInc;
     
     public RemotePathMapper(IProject project, String remoteProjectDir)
         throws CoreException
@@ -70,18 +70,18 @@ public class RemotePathMapper extends AbstractPathMapper
         return true;
     }
     
-    public void setEffectiveIncPath(List inc)
+    public void setEffectiveIncPath(List<IPath> inc)
     {
         this.debuggerInc = inc;
     }
     
-    private List convertFilesToPaths(List files)
+    private List<IPath> convertFilesToPaths(List<File> files)
     {
-        List paths = new ArrayList(files.size());
+        List<IPath> paths = new ArrayList<IPath>(files.size());
         
-        for (Iterator i = files.iterator(); i.hasNext();)
+        for (Iterator<File> i = files.iterator(); i.hasNext();)
         {
-            File file = (File) i.next();
+            File file = i.next();
             try { paths.add(Path.fromOSString(file.getCanonicalPath())); }
             catch (IOException e) { paths.add(Path.fromOSString(file.getAbsolutePath())); }
         }
@@ -90,27 +90,27 @@ public class RemotePathMapper extends AbstractPathMapper
     
     private IPath convertPath(
         IPath path,
-        List sourceIncDirs,
-        List targetIncDirs,
+        List<IPath> sourceIncDirs,
+        List<IPath> targetIncDirs,
         IPathChecker checker)
     {
         IPath relativePath = makeRelative(path, sourceIncDirs);
         if (relativePath == null) return null;
 
-        for (Iterator i = targetIncDirs.iterator(); i.hasNext();)
+        for (Iterator<IPath> i = targetIncDirs.iterator(); i.hasNext();)
         {
-            IPath incDir = (IPath) i.next();            
+            IPath incDir = i.next();            
             IPath convertedPath = incDir.append(relativePath);
             if (checker.fileExists(convertedPath)) return convertedPath;
         }
         return null;
     }
     
-    private IPath makeRelative(IPath dbPath, List incDirs)
+    private IPath makeRelative(IPath dbPath, List<IPath> incDirs)
     {
-        for (Iterator i = incDirs.iterator(); i.hasNext();)
+        for (Iterator<IPath> i = incDirs.iterator(); i.hasNext();)
         {
-            IPath incDir = (IPath) i.next();
+            IPath incDir = i.next();
             if (incDir.isPrefixOf(dbPath))
                 return dbPath.removeFirstSegments(incDir.segmentCount());
         }

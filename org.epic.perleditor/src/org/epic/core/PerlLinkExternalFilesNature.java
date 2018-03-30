@@ -20,44 +20,44 @@ import org.eclipse.core.runtime.CoreException;
  */
 public class PerlLinkExternalFilesNature implements IProjectNature {
 
-	private IProject project;
-	private String PLUGIN_ID = "org.epic.perleditor";
-	/**
-	 * 
-	 */
-	public PerlLinkExternalFilesNature() {
-		super();
-		// TODO Auto-generated constructor stub
-	}
+    private IProject project;
+    private String PLUGIN_ID = "org.epic.perleditor";
+    /**
+     * 
+     */
+    public PerlLinkExternalFilesNature() {
+        super();
+        // TODO Auto-generated constructor stub
+    }
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.core.resources.IProjectNature#configure()
-	 */
-	public void configure() throws CoreException {
-	
-	}
+    /* (non-Javadoc)
+     * @see org.eclipse.core.resources.IProjectNature#configure()
+     */
+    public void configure() throws CoreException {
+    
+    }
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.core.resources.IProjectNature#deconfigure()
-	 */
-	public void deconfigure() throws CoreException {
-		// TODO Auto-generated method stub
+    /* (non-Javadoc)
+     * @see org.eclipse.core.resources.IProjectNature#deconfigure()
+     */
+    public void deconfigure() throws CoreException {
+        // TODO Auto-generated method stub
 
-	}
+    }
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.core.resources.IProjectNature#getProject()
-	 */
-	public IProject getProject() {
-		return project;
-	}
+    /* (non-Javadoc)
+     * @see org.eclipse.core.resources.IProjectNature#getProject()
+     */
+    public IProject getProject() {
+        return project;
+    }
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.core.resources.IProjectNature#setProject(org.eclipse.core.resources.IProject)
-	 */
-	public void setProject(IProject fProject) {
-		project = fProject;
+    /* (non-Javadoc)
+     * @see org.eclipse.core.resources.IProjectNature#setProject(org.eclipse.core.resources.IProject)
+     */
+    public void setProject(IProject fProject) {
+        project = fProject;
 
-	}
+    }
 
 }

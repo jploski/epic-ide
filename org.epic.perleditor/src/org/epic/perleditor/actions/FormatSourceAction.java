@@ -33,7 +33,7 @@ public class FormatSourceAction extends PerlEditorAction
 
         if (doc.getLength() == 0) return;
 
-        StringBuffer text = new StringBuffer(doc.get());
+        StringBuilder text = new StringBuilder(doc.get());
         String anchor = getAnchorString(text);
 
         ISourceViewer viewer = getEditor().getViewer();
@@ -48,7 +48,7 @@ public class FormatSourceAction extends PerlEditorAction
             return;
         }
         
-        StringBuffer newText = new StringBuffer(formattedText);
+        StringBuilder newText = new StringBuilder(formattedText);
         anchorOffset = newText.indexOf(anchor);
         if (anchorOffset > 0)
         {
@@ -97,10 +97,10 @@ public class FormatSourceAction extends PerlEditorAction
         }
     }
 
-    private String getAnchorString(StringBuffer docText)
+    private String getAnchorString(StringBuilder docText)
     {
-        String posAnchor = "öß§²";
-        StringBuffer buf = new StringBuffer();
+        String posAnchor = "ï¿½ß§ï¿½";
+        StringBuilder buf = new StringBuilder();
         buf.append('#');
         buf.append(posAnchor);        
         while (docText.indexOf(buf.toString()) >= 0)
@@ -117,7 +117,7 @@ public class FormatSourceAction extends PerlEditorAction
             e.getMessage());
     }
     
-    private String runFormatter(StringBuffer text)
+    private String runFormatter(StringBuilder text)
     {
         try
         {

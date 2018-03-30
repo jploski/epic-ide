@@ -19,10 +19,10 @@ import org.eclipse.jface.text.contentassist.ICompletionProposal;
  * should be listed before proposals with lower relevance.
  */
 public interface IPerlCompletionProposal extends ICompletionProposal {
-	
-	/**
-	 * Returns the relevance of the proposal.
-	 */
-	int getRelevance();
+    
+    /**
+     * Returns the relevance of the proposal.
+     */
+    int getRelevance();
 
 }

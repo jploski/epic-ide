@@ -2,10 +2,11 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Perl RegExp Plug-in
 Bundle-SymbolicName: org.epic.regexp; singleton:=true
-Bundle-Version: 0.6.1
+Bundle-Version: 0.7.1
 Bundle-Activator: org.epic.regexp.RegExpPlugin
 Bundle-Vendor: EPIC Project
 Bundle-Localization: plugin
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: .,
  org.epic.regexp,
  org.epic.regexp.views
@@ -18,4 +19,4 @@ Require-Bundle: org.eclipse.ui.ide,
  org.eclipse.ui,
  org.eclipse.core.runtime,
  org.epic.lib
-Eclipse-AutoStart: true
+Bundle-ActivationPolicy: lazy

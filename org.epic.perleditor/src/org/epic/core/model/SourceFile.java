@@ -4,7 +4,7 @@ import java.util.*;
 
 import org.eclipse.core.runtime.*;
 import org.eclipse.jface.text.*;
-import org.eclipse.jface.util.ListenerList;
+import org.eclipse.core.runtime.ListenerList;
 import org.epic.core.parser.*;
 import org.epic.perleditor.PerlEditorPlugin;
 import org.epic.perleditor.editors.PartitionTypes;
@@ -19,11 +19,11 @@ import org.epic.perleditor.editors.PerlPartitioner;
  */
 public class SourceFile
 {
-    private final ListenerList listeners = new ListenerList(1);
+    private final ListenerList listeners = new ListenerList();
     private final ILog log;
     private final IDocument doc;
-    private List pods;
-    private List packages;
+    private List<PODComment> pods;
+    private List<Package> packages;
     
     /**
      * Creates a SourceFile which will be reflecting contents of the given
@@ -36,8 +36,8 @@ public class SourceFile
         assert doc != null;
         this.log = log;
         this.doc = doc;
-        this.pods = Collections.EMPTY_LIST;
-        this.packages = Collections.EMPTY_LIST;
+        this.pods = Collections.emptyList();
+        this.packages = Collections.emptyList();
     }
     
     /**
@@ -64,7 +64,7 @@ public class SourceFile
      * @return a list of {@link Package} instances representing package
      *         scopes within the source file
      */
-    public List getPackages()
+    public List<Package> getPackages()
     {
         return Collections.unmodifiableList(packages);
     }
@@ -73,7 +73,7 @@ public class SourceFile
      * @return an iterator over {@link PODComment} instances representing
      *         POD comments found in the source, in their original order  
      */
-    public Iterator getPODs()
+    public Iterator<PODComment> getPODs()
     {
         return Collections.unmodifiableList(pods).iterator();
     }
@@ -82,7 +82,7 @@ public class SourceFile
      * @return an iterator over {@link Subroutine} instances representing
      *         subroutines found in the source, in their original order  
      */
-    public Iterator getSubs()
+    public Iterator<Subroutine> getSubs()
     {
         return new SubIterator();
     }
@@ -91,15 +91,15 @@ public class SourceFile
      * @return an iterator over {@link ModuleUse} instances representing
      *         'use module' statements found in the source, in their original order  
      */
-    public Iterator getUses()
+    public Iterator<ModuleUse> getUses()
     {
         return new ModuleUseIterator();
     }
     
     public synchronized void parse()
     {
-        this.pods = new ArrayList();
-        this.packages = new ArrayList();
+        this.pods = new ArrayList<PODComment>();
+        this.packages = new ArrayList<Package>();
         
         PerlPartitioner partitioner = (PerlPartitioner)
             PartitionTypes.getPerlPartitioner(doc);
@@ -154,14 +154,15 @@ public class SourceFile
     private class ParsingState
     {
         private final int tokenCount;
-        private final List tokens;
+        private final List<PerlToken> tokens;
         private int tIndex;
         private PerlToken t;
         private int type;
         private int blockLevel;
+        private boolean afterEnd;
         
-        private Stack pkgStack;
-        private Stack subStack;
+        private Stack<Package> pkgStack;
+        private Stack<Subroutine> subStack;
         private PerlToken podStart;
         private PerlToken packageKeyword;
         private PerlToken subKeyword;
@@ -170,13 +171,13 @@ public class SourceFile
         private boolean inSubProto;
         private PerlToken baseKeyword;
         
-        public ParsingState(List tokens)
+        public ParsingState(List<PerlToken> tokens)
         {
             this.tIndex = 0;
             this.tokens = tokens;
             this.tokenCount = tokens.size();
-            this.pkgStack = new Stack();
-            this.subStack = new Stack();
+            this.pkgStack = new Stack<Package>();
+            this.subStack = new Stack<Subroutine>();
         }
         
         public void finish()
@@ -187,13 +188,19 @@ public class SourceFile
         
         public boolean hasMoreTokens()
         {
-            return tIndex < tokenCount;
+            return tIndex < tokenCount && !afterEnd;
         }
         
         public void processToken() throws BadLocationException
         {
-            this.t = (PerlToken) tokens.get(tIndex);
+            this.t = tokens.get(tIndex);
             this.type = t.getType();
+            
+            if (this.type == PerlTokenTypes.END)
+            {
+                afterEnd = true;
+                return;
+            }
             
             updateBlockLevel();
             updatePackageState();
@@ -208,18 +215,18 @@ public class SourceFile
         {            
             if (pkgStack.isEmpty()) return;
 
-            Package pkg = (Package) pkgStack.peek();
+            Package pkg = pkgStack.peek();
             if (blockLevel > pkg.getBlockLevel()) return;
             //System.err.println("closePackage " + pkg.getName() + " " + t);
             pkgStack.pop();
-            pkg.setLastToken((PerlToken) tokens.get(tIndex-1));
+            pkg.setLastToken(tokens.get(tIndex-1));
         }
         
         private void closeSub()
         {
             if (subStack.isEmpty()) return;
             
-            Subroutine sub = (Subroutine) subStack.peek();
+            Subroutine sub = subStack.peek();
             if (blockLevel-1 > sub.getBlockLevel()) return;
             subStack.pop();
             if (t instanceof CurlyToken) // could be false on finish()
@@ -229,7 +236,7 @@ public class SourceFile
         private Package getCurrentPackage()
         {
             if (pkgStack.isEmpty()) openPackage(new Package());
-            return (Package) pkgStack.peek();
+            return pkgStack.peek();
         }
         
         private void openPackage(Package pkg)
@@ -369,10 +376,10 @@ public class SourceFile
         }
     }
     
-    private class SubIterator implements Iterator
+    private class SubIterator implements Iterator<Subroutine>
     {
-        private Iterator pkgIterator;
-        private Iterator subIterator;
+        private Iterator<Package> pkgIterator;
+        private Iterator<Subroutine> subIterator;
         
         public SubIterator()
         {
@@ -390,7 +397,7 @@ public class SourceFile
             {
                 if (pkgIterator.hasNext())
                 {
-                    Package pkg = (Package) pkgIterator.next();
+                    Package pkg = pkgIterator.next();
                     subIterator = pkg.getSubs().iterator();
                 }
                 else return false;
@@ -398,16 +405,16 @@ public class SourceFile
             return true;
         }
 
-        public Object next()
+        public Subroutine next()
         {
             return subIterator.next();
         }
     }
     
-    private class ModuleUseIterator implements Iterator
+    private class ModuleUseIterator implements Iterator<ModuleUse>
     {
-        private Iterator pkgIterator;
-        private Iterator useIterator;
+        private Iterator<Package> pkgIterator;
+        private Iterator<ModuleUse> useIterator;
         
         public ModuleUseIterator()
         {
@@ -425,7 +432,7 @@ public class SourceFile
             {
                 if (pkgIterator.hasNext())
                 {
-                    Package pkg = (Package) pkgIterator.next();
+                    Package pkg = pkgIterator.next();
                     useIterator = pkg.getUses().iterator();
                 }
                 else return false;
@@ -433,7 +440,7 @@ public class SourceFile
             return true;
         }
 
-        public Object next()
+        public ModuleUse next()
         {
             return useIterator.next();
         }

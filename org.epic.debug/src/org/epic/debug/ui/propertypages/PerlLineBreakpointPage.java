@@ -13,7 +13,6 @@ import org.eclipse.jface.text.source.SourceViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.*;
@@ -44,7 +43,7 @@ public class PerlLineBreakpointPage extends PropertyPage
 
     private Button enabledButton;
 
-    private List errors = new ArrayList();
+    private List<String> errors = new ArrayList<String>();
 
     //~ Methods
 
@@ -191,7 +190,7 @@ public class PerlLineBreakpointPage extends PropertyPage
         }
         else
         {
-            addErrorMessage((String) errors.get(errors.size() - 1));
+            addErrorMessage(errors.get(errors.size() - 1));
         }
     }
 

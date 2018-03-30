@@ -45,5 +45,5 @@ public interface IPathMapper
      * 
      * @param inc the effective \@INC path, as a list of IPath objects
      */
-    public void setEffectiveIncPath(List inc);
+    public void setEffectiveIncPath(List<IPath> inc);
 }

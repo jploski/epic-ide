@@ -1,17 +1,16 @@
 package org.epic.perleditor.actions;
 
+import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IResource;
-
 import org.epic.core.util.MarkerUtilities;
-
 import org.epic.perleditor.editors.PerlEditor;
 import org.epic.perleditor.editors.PerlEditorActionIds;
 import org.epic.perleditor.editors.util.PodChecker;
 import org.epic.perleditor.editors.util.PodChecker.Violation;
-
-import java.util.HashMap;
-import java.util.Map;
 
 
 /**
@@ -39,9 +38,9 @@ public class PodCheckerAction extends PerlUserJobAction
      * org.epic.perleditor.actions.PerlJobAction#createMarkerAttributes(org.epic.core.util.MarkerUtilities,
      * java.lang.Object)
      */
-    protected Map createMarkerAttributes(MarkerUtilities factory, Object violation)
+    protected Map<String, Serializable> createMarkerAttributes(MarkerUtilities factory, Object violation)
     {
-        Map attributes = new HashMap(3);
+        Map<String, Serializable> attributes = new HashMap<String, Serializable>();
         Violation v = (Violation) violation;
 
         int severity;

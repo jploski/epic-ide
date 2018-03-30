@@ -176,7 +176,7 @@ public class CreateRemotePackageJob extends Job
 
     private String createIncPath() throws CoreException
     {
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
         String localProjectDir = getPerlProject().getProjectDir().toString();
         String remoteProjectDir = launchDelegate.getRemoteProjectDir(launch);
         
@@ -184,7 +184,7 @@ public class CreateRemotePackageJob extends Job
         buf.append(launchDelegate.getRemoteProjectDir(launch));
         buf.append("\\\"");
         
-        for (Iterator i = getPerlProject().getRawIncPath().iterator(); i.hasNext();)
+        for (Iterator<String> i = getPerlProject().getRawIncPath().iterator(); i.hasNext();)
         {
             String path = new Path((String) i.next()).toString();
 

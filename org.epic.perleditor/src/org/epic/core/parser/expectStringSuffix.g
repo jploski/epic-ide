@@ -12,8 +12,9 @@ options
 	importVocab = shared;
 }
 
+// see http://perldoc.perl.org/perlop.html#s%2fPATTERN%2fREPLACEMENT%2fmsixpodualgcer
 STRING_SUFFIX:
-	('g'|'i'|'m'|'o'|'s'|'x')*
+	('m'|'s'|'i'|'x'|'p'|'o'|'d'|'u'|'a'|'l'|'g'|'c'|'e'|'r')*
 	{
 		getParent().pop();
 		if ($getText.length() == 0) getParent().retry();

@@ -2,32 +2,28 @@ package org.epic.perleditor.preferences;
 
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.runtime.Assert;
-
 import org.eclipse.jface.preference.PreferencePage;
-
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Text;
-
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
-
 import org.epic.core.builders.PerlCriticBuilderHelper;
 import org.epic.core.util.WidgetUtils;
-
 import org.epic.perleditor.PerlEditorPlugin;
 
 import java.io.File;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -52,14 +48,14 @@ public class PerlCriticPreferencePage extends PreferencePage implements IWorkben
 
     private Button jobEnabledButton;
 
-    private List errors = new ArrayList(5);
+    private List<String> errors = new ArrayList<String>(5);
     private Button useCustomButton;
 
     private Button useDefaultButton;
 
-	private Combo severityOptions;
+    private Combo severityOptions;
 
-	private Text otherOptions;
+    private Text otherOptions;
 
     //~ Methods
 
@@ -107,12 +103,12 @@ public class PerlCriticPreferencePage extends PreferencePage implements IWorkben
     
     public static String getSeverity()
     {
-    	 return PerlEditorPlugin.getDefault().getPreferenceStore().getString(
+         return PerlEditorPlugin.getDefault().getPreferenceStore().getString(
                  PreferenceConstants.SOURCE_CRITIC_SEVERITY);
     }
     
     public static String getOtherOptions() {
-    	 return PerlEditorPlugin.getDefault().getPreferenceStore().getString(
+         return PerlEditorPlugin.getDefault().getPreferenceStore().getString(
                  PreferenceConstants.SOURCE_CRITIC_OTHEROPTIONS);
     }
 
@@ -152,7 +148,7 @@ public class PerlCriticPreferencePage extends PreferencePage implements IWorkben
         return super.performOk();
     }
 
-    protected Control createContents(Composite parent)
+    protected Control createContents(final Composite parent)
     {
         Composite composite = createComposite(parent, 1);
 
@@ -202,8 +198,13 @@ public class PerlCriticPreferencePage extends PreferencePage implements IWorkben
                 }
             });
 
+        Composite buttonComposite = new Composite(locations, SWT.NULL);
+
+        GridLayout buttonLayout = new GridLayout(2, false);
+        buttonComposite.setLayout(buttonLayout);
+
         // TODO: validation job to ensure this is correct?
-        customText = WidgetUtils.createText(locations, "Path to perlcritic");
+        customText = WidgetUtils.createText(buttonComposite, "Path to perlcritic");
         customText.addModifyListener(new ModifyListener()
             {
                 public void modifyText(ModifyEvent e)
@@ -211,6 +212,19 @@ public class PerlCriticPreferencePage extends PreferencePage implements IWorkben
                     validateLocation(customText.getText());
                 }
             });
+
+        Button browseButton = new Button(buttonComposite, SWT.PUSH | SWT.CENTER);
+
+        browseButton.setText("..."); //$NON-NLS-1$
+        browseButton.addSelectionListener(new SelectionAdapter() {
+            public void widgetSelected(SelectionEvent event) {
+                FileDialog fileBrowser = new FileDialog(parent.getShell());
+                String dir = fileBrowser.open();
+                if (dir != null) {
+                    customText.setText(dir);
+                }
+            }
+       });
 
         WidgetUtils.createLabel(composite, "Severity Marker Settings");
 
@@ -277,7 +291,7 @@ public class PerlCriticPreferencePage extends PreferencePage implements IWorkben
         }
         else
         {
-            addErrorMessage((String) errors.get(errors.size() - 1));
+            addErrorMessage(errors.get(errors.size() - 1));
         }
     }
 

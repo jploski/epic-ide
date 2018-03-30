@@ -28,35 +28,35 @@ public class PerlPairMatcher implements ICharacterPairMatcher
     
     private final ILog log;
     private ISourceViewer viewer;
-	private IDocument fDocument;
-	private int fOffset;
-	private int fStartPos;
-	private int fEndPos;
-	private int fAnchor;
+    private IDocument fDocument;
+    private int fOffset;
+    private int fStartPos;
+    private int fEndPos;
+    private int fAnchor;
 
     private final static char[] BRACKETS =
         { '{', '}', '(', ')', '[', ']', '<', '>' };
 
-	public PerlPairMatcher(ILog log)
+    public PerlPairMatcher(ILog log)
     {
         this.log = log;
-	}
+    }
 
-	public IRegion match(IDocument document, int offset)
+    public IRegion match(IDocument document, int offset)
     {
-		fOffset = offset;
-		if (fOffset < 0) return null;
+        fOffset = offset;
+        if (fOffset < 0) return null;
 
-		fDocument = document;
-		if (fDocument != null &&
+        fDocument = document;
+        if (fDocument != null &&
             fDocument.getLength() > 0 &&
             matchPairsAt(NO_PRETENDED_CHAR) &&
             fStartPos != fEndPos)
         {
-			return new Region(fStartPos, fEndPos - fStartPos + 1);
+            return new Region(fStartPos, fEndPos - fStartPos + 1);
         }
-		return null;
-	}
+        return null;
+    }
     
     /**
      * Same as {@link #match}, but pretend that the given character
@@ -89,10 +89,10 @@ public class PerlPairMatcher implements ICharacterPairMatcher
         this.viewer = viewer;
     }
 
-	public int getAnchor()
+    public int getAnchor()
     {
-		return fAnchor;
-	}
+        return fAnchor;
+    }
 
     public int getEndPos()
     {
@@ -104,83 +104,83 @@ public class PerlPairMatcher implements ICharacterPairMatcher
         return fStartPos;
     }
 
-	public void dispose()
+    public void dispose()
     {
-		clear();
-		fDocument= null;
-	}
+        clear();
+        fDocument= null;
+    }
 
-	public void clear()
+    public void clear()
     {
-	}
+    }
 
-	private boolean matchPairsAt(char pretendPrevChar)
+    private boolean matchPairsAt(char pretendPrevChar)
     {
-		int i;
-		int pairIndex1 = BRACKETS.length;
-		int pairIndex2 = BRACKETS.length;
+        int i;
+        int pairIndex1 = BRACKETS.length;
+        int pairIndex2 = BRACKETS.length;
 
-		fStartPos = -1;
-		fEndPos = -1;
+        fStartPos = -1;
+        fEndPos = -1;
 
-		// get the char preceding the start position
-		try
+        // get the char preceding the start position
+        try
         {
             boolean pretendPeer = pretendPrevChar != NO_PRETENDED_CHAR;
-			char prevChar =
+            char prevChar =
                 pretendPeer
                 ? pretendPrevChar
                 : fDocument.getChar(Math.max(fOffset - 1, 0));
 
-			// check if the character before the activation point is
+            // check if the character before the activation point is
             // an opening peer character (if so: we'll search forwards)
-			for (i = 0; i < BRACKETS.length; i += 2)
+            for (i = 0; i < BRACKETS.length; i += 2)
             {
-				if (prevChar == BRACKETS[i])
+                if (prevChar == BRACKETS[i])
                 {
-					fStartPos = fOffset - 1;
-					pairIndex1 = i;
-				}
-			}
+                    fStartPos = fOffset - 1;
+                    pairIndex1 = i;
+                }
+            }
 
-			// check if the character before the activation point is
+            // check if the character before the activation point is
             // a closing peer character (if so: we'll search backwards)
-			for (i = 1; i < BRACKETS.length; i += 2)
+            for (i = 1; i < BRACKETS.length; i += 2)
             {
-				if (prevChar == BRACKETS[i])
+                if (prevChar == BRACKETS[i])
                 {
-					fEndPos = fOffset - 1;
-					pairIndex2 = i;
-				}
-			}
+                    fEndPos = fOffset - 1;
+                    pairIndex2 = i;
+                }
+            }
 
-			if (fEndPos > -1)
+            if (fEndPos > -1)
             {
                 //if (pretendPeer) fEndPos--;
-				fAnchor = RIGHT;                
-				fStartPos = searchForOpeningPeer(
+                fAnchor = RIGHT;                
+                fStartPos = searchForOpeningPeer(
                     fEndPos,
                     BRACKETS[pairIndex2 - 1],
                     BRACKETS[pairIndex2],
                     fDocument,
                     pretendPeer);
-				if (fStartPos > -1) return true;
-				else fEndPos= -1;
-			}
+                if (fStartPos > -1) return true;
+                else fEndPos= -1;
+            }
             else if (fStartPos > -1)
             {
                 //if (pretendPeer) fStartPos++;
-				fAnchor = LEFT;
-				fEndPos = searchForClosingPeer(
+                fAnchor = LEFT;
+                fEndPos = searchForClosingPeer(
                     fStartPos,
                     BRACKETS[pairIndex1],
                     BRACKETS[pairIndex1 + 1],
                     fDocument,
                     pretendPeer);
-				if (fEndPos > -1) return true;
-				else fStartPos= -1;
-			}
-		}
+                if (fEndPos > -1) return true;
+                else fStartPos= -1;
+            }
+        }
         catch (BadLocationException e)
         {
             // this one should never occur
@@ -192,10 +192,10 @@ public class PerlPairMatcher implements ICharacterPairMatcher
                     "in plug-in " + PerlEditorPlugin.getPluginId(),
                     e));
         }
-		return false;
-	}
+        return false;
+    }
 
-	private int searchForClosingPeer(
+    private int searchForClosingPeer(
         int offset,
         char openingPeer,
         char closingPeer,
@@ -207,7 +207,7 @@ public class PerlPairMatcher implements ICharacterPairMatcher
             ? Math.min(viewer.getBottomIndexEndOffset()+1, document.getLength())
             : document.getLength();
         
-		return searchForPeer(
+        return searchForPeer(
             offset,
             end,
             closingPeer,
@@ -217,7 +217,7 @@ public class PerlPairMatcher implements ICharacterPairMatcher
             pretendPeer);
     }
 
-	private int searchForOpeningPeer(
+    private int searchForOpeningPeer(
         int offset,
         char openingPeer,
         char closingPeer,
@@ -237,7 +237,7 @@ public class PerlPairMatcher implements ICharacterPairMatcher
             -1,
             document,
             pretendPeer);
-	}
+    }
     
     /**
      * Finds a matching peer character, starting the (forward or backward)

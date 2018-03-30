@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+
 //import net.sourceforge.phpdt.internal.corext.template.php.HTMLContextType;
 import org.epic.perleditor.templates.perl.PerlContextType;
 //import net.sourceforge.phpdt.internal.corext.template.php.PHPDocContextType;
@@ -19,55 +20,55 @@ import org.epic.perleditor.templates.perl.PerlContextType;
  */
 public class ContextTypeRegistry {
 
-	/** the singleton */
-	private static ContextTypeRegistry fInstance;
-	
-	/** all known context types */
-	private final Map fContextTypes= new HashMap();
-	
-	/**
-	 * Returns the single instance of this class.
-	 */
-	public static ContextTypeRegistry getInstance() {
-		if (fInstance == null)
-			fInstance= new ContextTypeRegistry();
-			
-		return fInstance;	
-	}
+    /** the singleton */
+    private static ContextTypeRegistry fInstance;
+    
+    /** all known context types */
+    private final Map<String, ContextType> fContextTypes= new HashMap<String, ContextType>();
+    
+    /**
+     * Returns the single instance of this class.
+     */
+    public static ContextTypeRegistry getInstance() {
+        if (fInstance == null)
+            fInstance= new ContextTypeRegistry();
+            
+        return fInstance;	
+    }
 
-	/**
-	 * Adds a context type to the registry.
-	 */	
-	public void add(ContextType contextType) {
-		fContextTypes.put(contextType.getName(), contextType);
-	}
-	
-	/**
-	 * Removes a context type from the registry.
-	 */
-	public void remove(ContextType contextType) {
-		fContextTypes.remove(contextType.getName());
-	}
+    /**
+     * Adds a context type to the registry.
+     */	
+    public void add(ContextType contextType) {
+        fContextTypes.put(contextType.getName(), contextType);
+    }
+    
+    /**
+     * Removes a context type from the registry.
+     */
+    public void remove(ContextType contextType) {
+        fContextTypes.remove(contextType.getName());
+    }
 
-	/**
-	 * Returns the context type if the name is valid, <code>null</code> otherwise.
-	 */
-	public ContextType getContextType(String name) {
-		return (ContextType) fContextTypes.get(name);
-	}
-	
-	/**
-	 * Returns an iterator over the registered context type names.
-	 */
-	public Iterator iterator() {
-		return fContextTypes.keySet().iterator();	
-	}
+    /**
+     * Returns the context type if the name is valid, <code>null</code> otherwise.
+     */
+    public ContextType getContextType(String name) {
+        return fContextTypes.get(name);
+    }
+    
+    /**
+     * Returns an iterator over the registered context type names.
+     */
+    public Iterator<String> iterator() {
+        return fContextTypes.keySet().iterator();	
+    }
 
-	// XXX bootstrap with java and javadoc context types
-	private ContextTypeRegistry() {
-		add(new PerlContextType());
+    // XXX bootstrap with java and javadoc context types
+    private ContextTypeRegistry() {
+        add(new PerlContextType());
     //add(new PHPDocContextType());
-		//add(new HTMLContextType());
-	}
+        //add(new HTMLContextType());
+    }
 
 }

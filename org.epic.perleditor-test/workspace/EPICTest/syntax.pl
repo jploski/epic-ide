@@ -129,3 +129,10 @@ grep !/foo/, @array;
 
 # bug 2612813
 $x = $a<<24;
+
+# bug 664 Minor Syntax Coloring Flaw
+s///msixpodnger;
+s///ounger;
+s/a/b/c;
+# invalid regex modifier
+s///mq;

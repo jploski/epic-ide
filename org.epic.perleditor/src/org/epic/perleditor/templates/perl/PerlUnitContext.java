@@ -71,12 +71,12 @@ public class PerlUnitContext extends DocumentTemplateContext
     {
         if (!canEvaluate(template)) return null;
 
-		// make sure line delimiters match to what's supposed to be used in the document.
+        // make sure line delimiters match to what's supposed to be used in the document.
         String pattern = template.getPattern();
-		pattern = pattern.replaceAll("\\r\\n|\\r|\\n", TextUtilities.getDefaultLineDelimiter(this.getDocument()));
+        pattern = pattern.replaceAll("\\r\\n|\\r|\\n", TextUtilities.getDefaultLineDelimiter(this.getDocument()));
 
         TemplateTranslator translator = new TemplateTranslator();
-		TemplateBuffer buffer = translator.translate(pattern);
+        TemplateBuffer buffer = translator.translate(pattern);
 
         getContextType().edit(buffer, this);
 

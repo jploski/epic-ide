@@ -3,8 +3,6 @@ package org.epic.perleditor.editors;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.PreferenceConverter;
 import org.eclipse.jface.text.*;
@@ -43,7 +41,7 @@ public class PerlPresentationReconciler extends PresentationReconciler
         private final IPreferenceStore prefs;
         private final IToken[] tokens;
         private final int[] lengths;
-        private final Map textAttributes;
+        private final Map<String, Integer> textAttributes;
         private int offset;
         private int tokenI;
         
@@ -101,7 +99,7 @@ public class PerlPresentationReconciler extends PresentationReconciler
             tokens[0] = Token.EOF;
             lengths = new int[3];
             
-            textAttributes = new HashMap();
+            textAttributes = new HashMap<String, Integer>();
             for (int i = 0; i < colors.length; i += 4)
                 textAttributes.put(colors[i], new Integer(i));
         }
@@ -158,7 +156,7 @@ public class PerlPresentationReconciler extends PresentationReconciler
         
         private TextAttribute attr(String type)
         {
-            int index = ((Integer) textAttributes.get(type)).intValue();
+            int index = textAttributes.get(type).intValue();
             
             String colorPref = colors[index+1];
             String boldPref = colors[index+2];

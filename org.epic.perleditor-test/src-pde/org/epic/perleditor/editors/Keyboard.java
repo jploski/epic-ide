@@ -12,7 +12,7 @@ import org.eclipse.swt.widgets.Event;
  */
 public class Keyboard
 {
-    private static final Set uppercaseChars = new HashSet();
+    private static final Set<Character> uppercaseChars = new HashSet<Character>();
     
     static
     {

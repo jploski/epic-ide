@@ -40,9 +40,9 @@ public class PerlValidatorStub extends PerlValidatorBase
             } };
             
         perlExecutor = new PerlExecutor(processExecutor) {
-            protected List getPerlCommandLine(PerlProject project)
+            protected List<String> getPerlCommandLine(PerlProject project)
             {
-                List ret = new ArrayList();
+                List<String> ret = new ArrayList<String>();
                 ret.add(BaseTestCase.getProperty("perl"));
                 ret.add("-Itest.in");
                 ret.add("-c");
@@ -66,8 +66,8 @@ public class PerlValidatorStub extends PerlValidatorBase
         perlExecutor.dispose();
     }
     
-    protected void addMarker(IResource resource, Map attributes)
-    {                
+    protected void addMarker(IResource resource, Map<String, Object> attributes)
+    {
     }
     
     protected void clearAllUsedMarkers(IResource resource)

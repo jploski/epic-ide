@@ -28,55 +28,62 @@ import org.osgi.framework.BundleContext;
  * The main plugin class to be used in the desktop.
  */
 public class PerlEditorPlugin extends AbstractUIPlugin {
-	//The shared instance.
-	private static PerlEditorPlugin plugin;
+    //The shared instance.
+    private static PerlEditorPlugin plugin;
 
-	//Resource bundle.
-	private ResourceBundle resourceBundle;
+    //Resource bundle.
+    private ResourceBundle resourceBundle;
 
     private PerlColorProvider colorProvider = new PerlColorProvider();
 
-	private IDocumentProvider fDocumentProvider;
+    private IDocumentProvider fDocumentProvider;
 
     private boolean requirePerlCheckPassed;
     private boolean requirePerlErrorDisplayed;
 
-	/**
-	 * The constructor.
-	 */
-	//public PerlEditorPlugin(IPluginDescriptor descriptor) {
-	public PerlEditorPlugin() {
-		//super(descriptor);
-		plugin = this;
-		try {
-			resourceBundle = ResourceBundle
-					.getBundle("org.epic.perleditor.PerlEditorPluginResources");
-		} catch (MissingResourceException x) {
-			resourceBundle = null;
-		}
+    public static final boolean isDebugMode;
 
-		// Set team file extensions
-		String[] perlTypes = { "pl", "pm" };
-		IFileTypeInfo[] fileTypes = Team.getAllTypes();
+    static {
+        String value = Platform.getDebugOption("org.epic.perleditor/debug"); //$NON-NLS-1$
+        isDebugMode = value != null && value.equalsIgnoreCase("true"); //$NON-NLS-1$
+    }
 
-		int newTypesLength = fileTypes.length + perlTypes.length;
-		String[] extensions = new String[newTypesLength];
-		int[] types = new int[newTypesLength];
+    /**
+     * The constructor.
+     */
+    //public PerlEditorPlugin(IPluginDescriptor descriptor) {
+    public PerlEditorPlugin() {
+        //super(descriptor);
+        plugin = this;
+        try {
+            resourceBundle = ResourceBundle
+                    .getBundle("org.epic.perleditor.PerlEditorPluginResources");
+        } catch (MissingResourceException x) {
+            resourceBundle = null;
+        }
 
-		int i;
-		for (i = 0; i < fileTypes.length; i++) {
-			extensions[i] = fileTypes[i].getExtension();
-			types[i] = fileTypes[i].getType();
-		}
+        // Set team file extensions
+        String[] perlTypes = { "pl", "pm" };
+        IFileTypeInfo[] fileTypes = Team.getAllTypes();
 
-		// Add Perl extensions to the list as ASCII
-		for (; i < newTypesLength; i++) {
-			extensions[i] = perlTypes[i - fileTypes.length];
-			types[i] = Team.TEXT;
-		}
+        int newTypesLength = fileTypes.length + perlTypes.length;
+        String[] extensions = new String[newTypesLength];
+        int[] types = new int[newTypesLength];
 
-		Team.setAllTypes(extensions, types);
-	}
+        int i;
+        for (i = 0; i < fileTypes.length; i++) {
+            extensions[i] = fileTypes[i].getExtension();
+            types[i] = fileTypes[i].getType();
+        }
+
+        // Add Perl extensions to the list as ASCII
+        for (; i < newTypesLength; i++) {
+            extensions[i] = perlTypes[i - fileTypes.length];
+            types[i] = Team.TEXT;
+        }
+
+        Team.setAllTypes(extensions, types);
+    }
 
     /**
      * Returns a color with the requested RGB value.
@@ -96,78 +103,83 @@ public class PerlEditorPlugin extends AbstractUIPlugin {
             );
     }
 
-	/**
-	 * Returns the shared instance.
-	 */
-	public static PerlEditorPlugin getDefault() {
-		return plugin;
-	}
+    /**
+     * Returns the shared instance.
+     */
+    public static PerlEditorPlugin getDefault() {
+        return plugin;
+    }
 
-	/**
-	 * Returns the workspace instance.
-	 */
-	public static IWorkspace getWorkspace() {
-		return ResourcesPlugin.getWorkspace();
-	}
+    /**
+     * Returns the workspace instance.
+     */
+    public static IWorkspace getWorkspace() {
+        return ResourcesPlugin.getWorkspace();
+    }
 
-	/**
-	 * Returns the string from the plugin's resource bundle, or 'key' if not
-	 * found.
-	 */
-	public static String getResourceString(String key) {
-		ResourceBundle bundle = PerlEditorPlugin.getDefault()
-				.getResourceBundle();
-		try {
-			return bundle.getString(key);
-		} catch (MissingResourceException e) {
-			return key;
-		}
-	}
+    /**
+     * Returns the string from the plugin's resource bundle, or 'key' if not
+     * found.
+     */
+    public static String getResourceString(String key) {
+        ResourceBundle bundle = PerlEditorPlugin.getDefault()
+                .getResourceBundle();
+        try {
+            return bundle.getString(key);
+        } catch (MissingResourceException e) {
+            return key;
+        }
+    }
 
-	/**
-	 * Returns the plugin's resource bundle,
-	 */
-	public ResourceBundle getResourceBundle() {
-		return resourceBundle;
-	}
+    /**
+     * Returns the plugin's resource bundle,
+     */
+    public ResourceBundle getResourceBundle() {
+        return resourceBundle;
+    }
 
-	public static IWorkbenchWindow getWorkbenchWindow() {
-		IWorkbenchWindow window = getDefault().getWorkbench()
-				.getActiveWorkbenchWindow();
-		if (window == null)
-			window = getDefault().getWorkbench().getWorkbenchWindows()[0];
-		return window;
-	}
+    public static IWorkbenchWindow getWorkbenchWindow() {
+        IWorkbenchWindow window = getDefault().getWorkbench()
+                .getActiveWorkbenchWindow();
+        if (window == null)
+            window = getDefault().getWorkbench().getWorkbenchWindows()[0];
+        return window;
+    }
 
-	/**
-	 * Initializes a preference store with default preference values for this
-	 * plug-in.
-	 *
-	 * @param store
-	 *            the preference store to fill
-	 */
-	protected void initializeDefaultPreferences(IPreferenceStore store) {
-		PreferenceConstants.initializeDefaultValues(store);
-		SourceFormatterPreferences.initializeDefaultValues(store);
-		CodeAssistPreferences.initializeDefaultValues(store);
-		TaskTagPreferences.initializeDefaults(store);
-		MarkOccurrencesPreferences.initializeDefaultValues(store);
+    /**
+     * Initializes a preference store with default preference values for this
+     * plug-in.
+     *
+     * @param store
+     *            the preference store to fill
+     */
+    protected void initializeDefaultPreferences(final IPreferenceStore store) {
+        Display.getDefault().syncExec(new Runnable() {
+            public void run()
+            {
+                PreferenceConstants.initializeDefaultValues(store);
+                SourceFormatterPreferences.initializeDefaultValues(store);
+                CodeAssistPreferences.initializeDefaultValues(store);
+                TaskTagPreferences.initializeDefaults(store);
+                MarkOccurrencesPreferences.initializeDefaultValues(store);
 
-        System.setProperty(
-            PreferenceConstants.SOURCE_CRITIC_ENABLED,
-            store.getString(PreferenceConstants.SOURCE_CRITIC_ENABLED));
-	}
+                System.setProperty(
+                    PreferenceConstants.SOURCE_CRITIC_ENABLED,
+                    store.getString(PreferenceConstants.SOURCE_CRITIC_ENABLED));
+            }
+        });
+    }
 
-	public String getPerlExecutable() {
-		return getPreferenceStore().getString(PreferenceConstants.DEBUG_PERL_EXECUTABLE);
-	}
+    public String getPerlExecutable() {
+        return getPreferenceStore().getString(PreferenceConstants.DEBUG_PERL_EXECUTABLE);
+    }
 
-	public void setPerlExecutable(String value) {
+    public void setPerlExecutable(String value) {
 
-		getPreferenceStore().setValue(PreferenceConstants.DEBUG_PERL_EXECUTABLE, value);
+        getPreferenceStore().setValue(PreferenceConstants.DEBUG_PERL_EXECUTABLE, value);
         requirePerlErrorDisplayed = false;
         checkForPerlInterpreter(true);
-	}
+    }
     
     public boolean getBooleanPreference(String name) {
         boolean ret = getPreferenceStore().getBoolean(name);
@@ -179,18 +191,18 @@ public class PerlEditorPlugin extends AbstractUIPlugin {
         return value.equals("1") ? true : false;
     }
 
-	public static String getPluginId() {
+    public static String getPluginId() {
         PerlEditorPlugin plugin = getDefault();
-		return plugin != null
+        return plugin != null
             ? plugin.getBundle().getSymbolicName()
             : "org.epic.perleditor";
-	}
+    }
 
-	public synchronized IDocumentProvider getDocumentProvider() {
-		if (fDocumentProvider == null)
-			fDocumentProvider = new PerlDocumentProvider();
-		return fDocumentProvider;
-	}
+    public synchronized IDocumentProvider getDocumentProvider() {
+        if (fDocumentProvider == null)
+            fDocumentProvider = new PerlDocumentProvider();
+        return fDocumentProvider;
+    }
 
     public static String getUniqueIdentifier()
     {
@@ -239,15 +251,15 @@ public class PerlEditorPlugin extends AbstractUIPlugin {
         final String ERROR_TITLE = "Missing Perl interpreter";
         final String ERROR_MSG =
             "To operate correctly, EPIC requires a Perl interpreter. " +
-            "Check your configuration settings (\"Window/Preferences/Perl EPIC\").";
+            "Check your configuration settings (\"Window/Preferences/Perl\").";
 
         PerlExecutor executor = new PerlExecutor();
         try
         {
-            List args = new ArrayList(1);
+            List<String> args = new ArrayList<String>(1);
             args.add("-v");
-            if (executor.execute(new File("."), args, "")
-                .stdout.indexOf("This is perl") != -1)
+            String stdout = executor.execute(new File("."), args, "").stdout;
+            if (stdout.contains("This is perl") || stdout.contains("This is cperl"))
             {
                 requirePerlCheckPassed = true;
             }
@@ -257,7 +269,7 @@ public class PerlEditorPlugin extends AbstractUIPlugin {
                     IStatus.ERROR,
                     getPluginId(),
                     IStatus.OK,
-                    "The executable specified in EPIC Preferences " +
+                    "The executable specified in Perl Preferences " +
                     "does not appear to be a valid Perl interpreter.",
                     null);
 

@@ -13,14 +13,11 @@ import org.epic.core.parser.PerlToken;
  * 
  * @author jploski
  */
-class TokensList implements List, RandomAccess
+class TokensList implements List<PerlToken>, RandomAccess
 {
-    private final Comparator tokenPosComparator = new Comparator() {
-        public int compare(Object o1, Object o2)
+    private final Comparator<PerlToken> tokenPosComparator = new Comparator<PerlToken>() {
+        public int compare(PerlToken p1, PerlToken p2)
         {
-            PerlToken p1 = (PerlToken) o1;
-            PerlToken p2 = (PerlToken) o2;
-            
             return p1.getOffset() - p2.getOffset();
         } };
     
@@ -35,8 +32,8 @@ class TokensList implements List, RandomAccess
         // 2000 is a little more than enough for 75% of Perl files I examined 
         tokens = new PerlToken[2000];
     }
-    
-    public void add(PerlToken t)
+
+    public boolean add(PerlToken t)
     {
         if (i == tokens.length) expand(Math.min(tokens.length, 30000));
         
@@ -56,9 +53,10 @@ class TokensList implements List, RandomAccess
         tokens[i] = t;
         i++;
         assert noOverlaps();
+        return true;
     }
-    
-    public Object get(int i)
+
+    public PerlToken get(int i)
     {
         return tokens[i];
     }
@@ -67,7 +65,7 @@ class TokensList implements List, RandomAccess
     {
         return i == 0;
     }
-    
+
     public int size()
     {
         return i;
@@ -111,19 +109,29 @@ class TokensList implements List, RandomAccess
         throw new UnsupportedOperationException();            
     }
 
-    public Object[] toArray()
+    public PerlToken[] toArray()
     {
         PerlToken[] ret = new PerlToken[i];
         System.arraycopy(tokens, 0, ret, 0, i);
         return ret;
     }
 
-    public Object remove(int index)
+    public PerlToken remove(int index)
     {
         throw new UnsupportedOperationException();
     }
 
-    public void add(int index, Object element)
+    public boolean remove(Object o)
+    {
+        throw new UnsupportedOperationException();
+    }
+
+    public boolean removeAll(Collection<?> c)
+    {
+        throw new UnsupportedOperationException();
+    }
+
+    public void add(int index, PerlToken element)
     {
         throw new UnsupportedOperationException();
     }
@@ -144,72 +152,42 @@ class TokensList implements List, RandomAccess
         return -1;
     }
 
-    public boolean add(Object o)
-    {
-        throw new UnsupportedOperationException();
-    }
-
     public boolean contains(Object o)
     {
         return indexOf(o) != -1;
     }
 
-    public boolean remove(Object o)
+    public boolean containsAll(Collection<?> c)
     {
-        throw new UnsupportedOperationException();
-    }
-
-    public boolean addAll(int index, Collection c)
-    {
-        throw new UnsupportedOperationException();
-    }
-
-    public boolean addAll(Collection c)
-    {
-        throw new UnsupportedOperationException();
-    }
-
-    public boolean containsAll(Collection c)
-    {
-        for (Iterator i = c.iterator(); i.hasNext();)
+        for (Iterator<?> i = c.iterator(); i.hasNext();)
             if (!contains(i.next())) return false;
         return true;
     }
 
-    public boolean removeAll(Collection c)
-    {
-        throw new UnsupportedOperationException();
-    }
-
-    public boolean retainAll(Collection c)
-    {
-        throw new UnsupportedOperationException();
-    }
-
-    public Iterator iterator()
+    public Iterator<PerlToken> iterator()
     {
         return new TokensListIterator(this);
     }
 
-    public ListIterator listIterator()
+    public ListIterator<PerlToken> listIterator()
     {
         return new TokensListIterator(this);
     }
 
-    public ListIterator listIterator(int index)
+    public ListIterator<PerlToken> listIterator(int index)
     {
         return new TokensListIterator(this, index);
     }
 
-    public Object set(int index, Object element)
+    public PerlToken set(int index, PerlToken element)
     {
         throw new UnsupportedOperationException();
     }
 
-    public Object[] toArray(Object[] a)
+    public <T> T[] toArray(T[] a)
     {
         if (a.length < i)
-            a = (Object[]) java.lang.reflect.Array.newInstance(
+            a = (T[]) java.lang.reflect.Array.newInstance(
                 a.getClass().getComponentType(), i);
         
         System.arraycopy(tokens, 0, a, 0, i);
@@ -217,9 +195,9 @@ class TokensList implements List, RandomAccess
         return a;
     }
 
-    public List subList(int fromIndex, int toIndex)
+    public List<PerlToken> subList(int fromIndex, int toIndex)
     {
-        Object[] ret = new Object[toIndex - fromIndex];
+        PerlToken[] ret = new PerlToken[toIndex - fromIndex];
         System.arraycopy(tokens, fromIndex, ret, 0, ret.length);
         return Collections.unmodifiableList(Arrays.asList(ret));
     }
@@ -263,5 +241,17 @@ class TokensList implements List, RandomAccess
     {
         OFFSET_TOKEN.setOffset(offset);
         return OFFSET_TOKEN;
+    }
+
+    public boolean addAll(Collection<? extends PerlToken> c) {
+        throw new UnsupportedOperationException();
+    }
+
+    public boolean addAll(int index, Collection<? extends PerlToken> c) {
+        throw new UnsupportedOperationException();
+    }
+
+    public boolean retainAll(Collection<?> c) {
+        throw new UnsupportedOperationException();
     }
 }

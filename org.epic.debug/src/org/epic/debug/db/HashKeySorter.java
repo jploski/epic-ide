@@ -15,7 +15,7 @@ import org.epic.perleditor.preferences.PreferenceConstants;
  */
 public class HashKeySorter
 {
-    private static Map weights;
+    private static Map<String, Integer> weights;
     
     /**
      * Initializes the weights list used by {{@link #sort(IVariable[])} to match
@@ -28,7 +28,7 @@ public class HashKeySorter
         
         if (debugPreviewKeys != null && debugPreviewKeys.trim().length() > 0)
         {
-            weights = new HashMap();
+            weights = new HashMap<String, Integer>();
             StringTokenizer st = new StringTokenizer(debugPreviewKeys, ",");
             
             int i = 0;
@@ -48,7 +48,7 @@ public class HashKeySorter
     {
         if (weights == null) return;
            
-        Arrays.sort(ivarArr, new Comparator() {
+        Arrays.sort(ivarArr, new Comparator<Object>() {
             public int compare(Object o1, Object o2)
             {
                 if (o1 == o2) return 0;
@@ -59,8 +59,8 @@ public class HashKeySorter
                         String k1 = ((HashKey) o1).getName();
                         String k2 = ((HashKey) o2).getName();
                         
-                        Integer w1 = (Integer) weights.get(k1);
-                        Integer w2 = (Integer) weights.get(k2);
+                        Integer w1 = weights.get(k1);
+                        Integer w2 = weights.get(k2);
                         
                         if (w1 == null && w2 == null)
                         {

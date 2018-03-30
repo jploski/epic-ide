@@ -4,9 +4,7 @@ import java.util.List;
 
 import org.eclipse.core.runtime.Status;
 import org.eclipse.debug.core.DebugException;
-import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.model.DebugElement;
-import org.eclipse.debug.core.model.IDebugTarget;
 import org.eclipse.debug.core.model.IValue;
 import org.eclipse.debug.core.model.IVariable;
 import org.epic.debug.PerlDebugPlugin;
@@ -20,16 +18,16 @@ import org.epic.debug.PerlDebugPlugin;
  */
 class ArraySlice extends DebugElement implements IVariable
 {
-	private final ArraySliceValue value;
+    private final ArraySliceValue value;
 
-	protected ArraySlice(
-			PerlVariable array,
-			List elements,
-			int startIndex) throws DebugException 
+    protected ArraySlice(
+            PerlVariable array,
+            List<ArrayElement> elements,
+            int startIndex) throws DebugException 
     {
-		super(array.getDebugTarget());
-		
-		this.value = new ArraySliceValue(array, elements, startIndex);
+        super(array.getDebugTarget());
+        
+        this.value = new ArraySliceValue(array, elements, startIndex);
     }
 
     public String getName() throws DebugException
@@ -49,11 +47,11 @@ class ArraySlice extends DebugElement implements IVariable
 
     public boolean hasValueChanged() throws DebugException
     {
-    	IVariable[] vars = value.getVariables();
-    	
-    	for (int i  = 0; i < vars.length; i++)
-    		if (vars[i].hasValueChanged()) return true;
-    	
+        IVariable[] vars = value.getVariables();
+        
+        for (int i  = 0; i < vars.length; i++)
+            if (vars[i].hasValueChanged()) return true;
+        
         return false;
     }
 
@@ -64,12 +62,12 @@ class ArraySlice extends DebugElement implements IVariable
 
     public void setValue(String expression) throws DebugException
     {
-    	throwNotSupported();
+        throwNotSupported();
     }
 
     public void setValue(IValue value) throws DebugException
     {
-    	throwNotSupported();    
+        throwNotSupported();    
     }
 
     public boolean supportsValueModification()
@@ -79,13 +77,13 @@ class ArraySlice extends DebugElement implements IVariable
 
     public boolean verifyValue(String expression) throws DebugException
     {
-    	throwNotSupported();
+        throwNotSupported();
         return false;
     }
 
     public boolean verifyValue(IValue value) throws DebugException
     {
-    	throwNotSupported();
+        throwNotSupported();
         return false;
     }
     

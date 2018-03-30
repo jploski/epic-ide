@@ -23,6 +23,8 @@ public class TestPerlValidator extends BaseTestCase
         cMockResource.setReturnValue(mockProject);
         mockResource.getProject();
         cMockResource.setReturnValue(mockProject);
+        mockResource.getFullPath();
+        cMockResource.setReturnValue(null);
         cMockResource.replay();
 
         // We expect a "broken pipe" IOException when feeding a large
@@ -31,7 +33,7 @@ public class TestPerlValidator extends BaseTestCase
         PerlValidatorStub validator = new PerlValidatorStub();
         
         try
-        {         
+        {
             validator.validate(
                 mockResource,
                 validator.readSourceFile(getFile("test.in/Tool.pm").getAbsolutePath(), null));

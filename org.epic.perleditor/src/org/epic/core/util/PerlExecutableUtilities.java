@@ -35,7 +35,7 @@ public class PerlExecutableUtilities
      *         if EPIC is set up properly, the returned list should at
      *         the very least contain a path to the interpreter's executable 
      */
-    public static List getPerlCommandLine()
+    public static List<String> getPerlCommandLine()
     {
         String perlExe = PerlEditorPlugin.getDefault().getPerlExecutable();
         
@@ -58,7 +58,7 @@ public class PerlExecutableUtilities
                     e));
         }
         
-        return new ArrayList(CommandLineTokenizer.tokenize(perlExe));
+        return new ArrayList<String>(CommandLineTokenizer.tokenize(perlExe));
     }
 
     /**
@@ -66,7 +66,7 @@ public class PerlExecutableUtilities
      * @return a list of Strings representing the command line used to invoke
      *         the Perl for scripts belonging to the enclosing project 
      */
-    public static List getPerlCommandLine(ITextEditor textEditor)
+    public static List<String> getPerlCommandLine(ITextEditor textEditor)
     {
         IProject project = 
             ((IFileEditorInput) textEditor.getEditorInput())
@@ -83,9 +83,9 @@ public class PerlExecutableUtilities
      *         {@link #getPerlCommandLine()} with the project-specific
      *         include path appended to it. 
      */
-    public static List getPerlCommandLine(PerlProject project)
+    public static List<String> getPerlCommandLine(PerlProject project)
     {
-        List commandLine = getPerlCommandLine();        
+        List<String> commandLine = getPerlCommandLine();        
         commandLine.addAll(getPerlIncArgs(project));
         return commandLine;
     }
@@ -96,14 +96,14 @@ public class PerlExecutableUtilities
      *         the project's include path; the directories are
      *         translated for Cygwin if necessary
      */
-    public static List getPerlIncArgs(PerlProject project)
+    public static List<String> getPerlIncArgs(PerlProject project)
     {    
         boolean cygwin = isCygwinInterpreter();
-        List args = new ArrayList();
+        List<String> args = new ArrayList<String>();
         
-        for (Iterator i = project.getIncPath().iterator(); i.hasNext();)
+        for (Iterator<File> i = project.getIncPath().iterator(); i.hasNext();)
         {
-            String path = ((File) i.next()).getAbsolutePath();
+            String path = i.next().getAbsolutePath();
             // replace '\\' by '/' due to problems with Brazil
             path = path.replace('\\', '/');
             if (cygwin) path = translatePathForCygwin(path);
@@ -119,7 +119,7 @@ public class PerlExecutableUtilities
      */
     public static String getPerlInterpreterPath()
     {
-        List commandLine = getPerlCommandLine();
+        List<String> commandLine = getPerlCommandLine();
         if (commandLine.isEmpty()) return null;
         return (String) commandLine.get(0).toString().replace('\\', '/');
     }
@@ -156,7 +156,7 @@ public class PerlExecutableUtilities
         
         if (m.matches())
         {
-            StringBuffer buf = new StringBuffer();
+            StringBuilder buf = new StringBuilder();
             buf.append(CygwinMount.drivePrefix());
             buf.append(m.group(1));
             buf.append(m.group(2));

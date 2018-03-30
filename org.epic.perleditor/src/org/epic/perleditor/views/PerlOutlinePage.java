@@ -7,7 +7,6 @@ import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.viewers.*;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.views.contentoutline.ContentOutlinePage;
@@ -85,9 +84,9 @@ public class PerlOutlinePage extends ContentOutlinePage
             || caretLine > lastCaretSub.getEndLine())
         {
             lastCaretSub = null;
-            for (Iterator i = source.getSubs(); i.hasNext();)
+            for (Iterator<Subroutine> i = source.getSubs(); i.hasNext();)
             {
-                Subroutine sub = (Subroutine) i.next();
+                Subroutine sub = i.next();
                 if (caretLine >= sub.getStartLine()
                     && caretLine <= sub.getEndLine())
                 {

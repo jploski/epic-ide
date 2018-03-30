@@ -13,9 +13,9 @@ import antlr.LexerSharedInputState;
  */
 public abstract class PerlLexerBase extends LexerBase
 {   
-    protected static Set KEYWORDS1;
-    protected static Set KEYWORDS2;
-    protected static Set OPERATORS;
+    protected static Set<String> KEYWORDS1;
+    protected static Set<String> KEYWORDS2;
+    protected static Set<String> OPERATORS;
     protected int pc; // current curly brace nesting level
     protected boolean qmarkRegexp;
     protected boolean slashRegexp;
@@ -30,9 +30,9 @@ public abstract class PerlLexerBase extends LexerBase
     
     static
     {
-        KEYWORDS1 = new HashSet();
-        KEYWORDS2 = new HashSet();
-        OPERATORS = new HashSet();
+        KEYWORDS1 = new HashSet<String>();
+        KEYWORDS2 = new HashSet<String>();
+        OPERATORS = new HashSet<String>();
         
         initKeywords(KEYWORDS1, new String[] { 
             "BEGIN", "CHECK", "INIT", "END", "UNITCHECK",
@@ -146,7 +146,7 @@ public abstract class PerlLexerBase extends LexerBase
         this.pc = level;
     }
 
-    private static void initKeywords(Set dest, String[] src)
+    private static void initKeywords(Set<String> dest, String[] src)
     {
         for (int i = 0; i < src.length; i++) dest.add(src[i]);
     }

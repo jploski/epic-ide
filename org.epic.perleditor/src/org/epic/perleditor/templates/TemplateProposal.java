@@ -4,8 +4,6 @@
  */
 package org.epic.perleditor.templates;
 
-import java.io.*;
-
 import org.eclipse.core.runtime.*;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.text.*;
@@ -23,163 +21,163 @@ import org.epic.perleditor.templates.ui.LinkedPositionUI;
  */
 public class TemplateProposal implements IPerlCompletionProposal
 {
-	private final Template template;
-	private final TemplateContext context;
-	private final ITextViewer viewer;
-	private final Image image;
-	private final IRegion region;
+    private final Template template;
+    private final TemplateContext context;
+    private final ITextViewer viewer;
+    private final Image image;
+    private final IRegion region;
 
-	private TemplateBuffer templateBuffer;
-	private IRegion selectedRegion; // initialized by apply()
-		
-	/**
-	 * Creates a template proposal with a template and its context.
-	 * @param template  the template
-	 * @param context   the context in which the template was requested.
-	 * @param image     the icon of the proposal.
-	 */	
-	public TemplateProposal(
+    private TemplateBuffer templateBuffer;
+    private IRegion selectedRegion; // initialized by apply()
+        
+    /**
+     * Creates a template proposal with a template and its context.
+     * @param template  the template
+     * @param context   the context in which the template was requested.
+     * @param image     the icon of the proposal.
+     */	
+    public TemplateProposal(
         Template template,
         TemplateContext context,
         IRegion region,
         ITextViewer viewer,
         Image image)
     {
-		this.template = template;
+        this.template = template;
         this.context = context;
         this.viewer = viewer;
         this.image = image;
         this.region = region;
-	}
+    }
 
-	public void apply(IDocument document)
+    public void apply(IDocument document)
     {
-	    try
+        try
         {
             if (templateBuffer == null)
                 templateBuffer = context.evaluate(template);
 
-			int start = region.getOffset();
-			int end = region.getOffset() + region.getLength();
-			
-			// insert template string
+            int start = region.getOffset();
+            int end = region.getOffset() + region.getLength();
+            
+            // insert template string
             templateBuffer.indent(getLineIndent(document, region.getOffset())); 
-			document.replace(start, end - start, templateBuffer.getString());	
+            document.replace(start, end - start, templateBuffer.getString());	
 
-			// translate positions
-			LinkedPositionManager manager = new LinkedPositionManager(document);
-			TemplatePosition[] variables = templateBuffer.getVariables();
-			for (int i = 0; i < variables.length; i++)
+            // translate positions
+            LinkedPositionManager manager = new LinkedPositionManager(document);
+            TemplatePosition[] variables = templateBuffer.getVariables();
+            for (int i = 0; i < variables.length; i++)
             {
-				TemplatePosition variable = variables[i];
+                TemplatePosition variable = variables[i];
 
-				if (variable.isResolved()) continue;
+                if (variable.isResolved()) continue;
 
-				int[] offsets = variable.getOffsets();
-				int length = variable.getLength();
+                int[] offsets = variable.getOffsets();
+                int length = variable.getLength();
 
-				for (int j = 0; j < offsets.length; j++)
-					manager.addPosition(offsets[j] + start, length);
-			}
+                for (int j = 0; j < offsets.length; j++)
+                    manager.addPosition(offsets[j] + start, length);
+            }
 
-			LinkedPositionUI editor = new LinkedPositionUI(viewer, manager);
-			editor.setFinalCaretOffset(getCaretOffset(templateBuffer) + start);
-			editor.enter();
+            LinkedPositionUI editor = new LinkedPositionUI(viewer, manager);
+            editor.setFinalCaretOffset(getCaretOffset(templateBuffer) + start);
+            editor.enter();
 
-			selectedRegion = editor.getSelectedRegion();
-		}
+            selectedRegion = editor.getSelectedRegion();
+        }
         catch (Exception e)
         {
             logException("Failed to apply template", e);
-			openErrorDialog(e);
-	    }
-	}
-	
-	private static int getCaretOffset(TemplateBuffer buffer)
+            openErrorDialog(e);
+        }
+    }
+    
+    private static int getCaretOffset(TemplateBuffer buffer)
     {
-	    TemplatePosition[] variables = buffer.getVariables();
-		for (int i = 0; i != variables.length; i++)
+        TemplatePosition[] variables = buffer.getVariables();
+        for (int i = 0; i != variables.length; i++)
         {
-			TemplatePosition variable = variables[i];
-			
-			if (variable.getName().equals(PerlTemplateMessages.getString(
+            TemplatePosition variable = variables[i];
+            
+            if (variable.getName().equals(PerlTemplateMessages.getString(
                 "GlobalVariables.variable.name.cursor"))) //$NON-NLS-1$
             {
-				return variable.getOffsets()[0];
+                return variable.getOffsets()[0];
             }
-		}
-		return buffer.getString().length();
-	}
+        }
+        return buffer.getString().length();
+    }
 
-	public Point getSelection(IDocument document)
+    public Point getSelection(IDocument document)
     {
-		return new Point(
+        return new Point(
             selectedRegion.getOffset(), selectedRegion.getLength());
     }
 
-	public String getAdditionalProposalInfo()
+    public String getAdditionalProposalInfo()
     {
-	    try
+        try
         {
             if (templateBuffer == null)
                 templateBuffer = context.evaluate(template);
 
-			return templateBuffer.getString();
-	    }
+            return templateBuffer.getString();
+        }
         catch (CoreException e)
         {
-			logException("Failed to evaluate template", e);
-			return null;
-	    }
-	}
+            logException("Failed to evaluate template", e);
+            return null;
+        }
+    }
 
-	public String getDisplayString()
+    public String getDisplayString()
     {
-		return
+        return
             template.getName() +
             TemplateMessages.getString("TemplateProposal.delimiter") + 
             template.getDescription(); //$NON-NLS-1$
-	}
+    }
 
-	public Image getImage()
+    public Image getImage()
     {
-		return image;
-	}
+        return image;
+    }
 
-	public IContextInformation getContextInformation()
+    public IContextInformation getContextInformation()
     {
-		return null;
-	}
+        return null;
+    }
 
-	private void openErrorDialog(Exception e)
+    private void openErrorDialog(Exception e)
     {
-		Shell shell = viewer.getTextWidget().getShell();
-		MessageDialog.openError(
+        Shell shell = viewer.getTextWidget().getShell();
+        MessageDialog.openError(
             shell,
             TemplateMessages.getString("TemplateEvaluator.error.title"),
             e.getMessage()); //$NON-NLS-1$
-	}
+    }
 
-	public int getRelevance()
+    public int getRelevance()
     {
-		if (context instanceof PerlUnitContext)
+        if (context instanceof PerlUnitContext)
         {
-			PerlUnitContext ctx = (PerlUnitContext) context;
-			switch (ctx.getCharacterBeforeStart())
+            PerlUnitContext ctx = (PerlUnitContext) context;
+            switch (ctx.getCharacterBeforeStart())
             {
-			// high relevance after whitespace
-			case ' ':
-			case '\r':
-			case '\n':
-			case '\t':
-				return 90;
+            // high relevance after whitespace
+            case ' ':
+            case '\r':
+            case '\n':
+            case '\t':
+                return 90;
 
-			default:
-				return 0;
-			}
-		}
+            default:
+                return 0;
+            }
+        }
         else return 90;
-	}
+    }
     
     private String getLineIndent(IDocument doc, int offset)
     {
@@ -192,7 +190,7 @@ public class TemplateProposal implements IPerlCompletionProposal
             String lineStart = doc.get(
                 lineOffset, region.getOffset() - lineOffset);
             
-            StringBuffer buf = new StringBuffer();
+            StringBuilder buf = new StringBuilder();
             for (int i = 0; i < lineStart.length(); i++)
             {
                 char c = lineStart.charAt(i);

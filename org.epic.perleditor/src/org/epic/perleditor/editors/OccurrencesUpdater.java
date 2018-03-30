@@ -36,7 +36,7 @@ public class OccurrencesUpdater implements ISelectionChangedListener
     private ISourceViewer sourceViewer;
 
     /** List of current annotations (used for removing) */
-    private final LinkedList annotations = new LinkedList();
+    private final LinkedList<Annotation> annotations = new LinkedList<Annotation>();
 
     /** Stores the last marked text */
     private String lastMarkedText = "";
@@ -92,7 +92,7 @@ public class OccurrencesUpdater implements ISelectionChangedListener
     {
         ITextSelection textSelection = (ITextSelection) event.getSelection();
         updateAnnotations(textSelection);
-	}
+    }
 
     /**
      * Stops listening to selection events (caret movements) in
@@ -135,7 +135,7 @@ public class OccurrencesUpdater implements ISelectionChangedListener
      *            the length of the annotation position
      */
     private void addAnnotation(
-        String text, Map newAnnotations, int offset, int length)
+        String text, Map<Annotation, Position> newAnnotations, int offset, int length)
     {
         Annotation annotation = new Annotation(ANNOTATION_TYPE, false, text);
         Position position = new Position(offset, length);
@@ -199,14 +199,14 @@ public class OccurrencesUpdater implements ISelectionChangedListener
         String docText = doc.get();
         int index = docText.indexOf(text, offset);
 
-        Map newAnnotations = new HashMap();
+        Map<Annotation, Position> newAnnotations = new HashMap<Annotation, Position>();
         while (index != -1)
         {
             offset = index + text.length();
             String contentType = PartitionTypes.getPerlPartition(doc, index).getType();
             if (contentType.equals(type)
                 || (contentType.equals(PartitionTypes.LITERAL1) && type
-                	.equals(PartitionTypes.VARIABLE))
+                    .equals(PartitionTypes.VARIABLE))
                 || (contentType.equals(PartitionTypes.VARIABLE) && type
                     .equals(PartitionTypes.LITERAL1)))
             {
@@ -233,7 +233,7 @@ public class OccurrencesUpdater implements ISelectionChangedListener
         IAnnotationModel _model = this.sourceViewer.getAnnotationModel();
         IAnnotationModelExtension model = (IAnnotationModelExtension) _model;
 
-        Annotation[] array = (Annotation[]) annotations
+        Annotation[] array = annotations
             .toArray(new Annotation[annotations.size()]);
 
         if (model != null) // the viewer's AnnotationModel may have been already disposed

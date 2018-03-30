@@ -25,13 +25,13 @@ public class TestFolding extends BasePDETestCase
             IAnnotationModel model = (IAnnotationModel)
                 editor.getAdapter(ProjectionAnnotationModel.class);
             
-            List lines = new ArrayList();
-            for (Iterator i = model.getAnnotationIterator(); i.hasNext();)
+            List<String> lines = new ArrayList<String>();
+            for(Iterator<Annotation> i = model.getAnnotationIterator(); i.hasNext();)
             {
-                Annotation a = (Annotation) i.next();
+                Annotation a = i.next();
                 Position p = model.getPosition(a);
                 
-                StringBuffer buf = new StringBuffer();
+                StringBuilder buf = new StringBuilder();
                 buf.append(p.getOffset());
                 buf.append(':');
                 buf.append(p.getLength());
@@ -41,8 +41,8 @@ public class TestFolding extends BasePDETestCase
             }
             Collections.sort(lines);
             
-            StringBuffer buf = new StringBuffer();
-            for (Iterator i = lines.iterator(); i.hasNext();)
+            StringBuilder buf = new StringBuilder();
+            for (Iterator<String> i = lines.iterator(); i.hasNext();)
             {
                 buf.append(i.next());
                 buf.append('\n');

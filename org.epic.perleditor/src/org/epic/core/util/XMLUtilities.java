@@ -4,6 +4,9 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.variables.IStringVariableManager;
 import org.eclipse.core.variables.VariablesPlugin;
+import org.epic.perleditor.Logger;
+
+import static org.epic.perleditor.Logger.INFO;
 
 import java.io.*;
 import java.util.*;
@@ -24,7 +27,7 @@ public class XMLUtilities
     
     public String[] getIgnoredEntries(IProject project)
     {
-        List ignores = new ArrayList();
+        List<String> ignores = new ArrayList<String>();
         try
         {
             String fileName = project.getLocation().toString() + File.separator + IGNORE_FILE_NAME;
@@ -36,22 +39,22 @@ public class XMLUtilities
                 Document doc = builder.build(file);
 
                 Element root = doc.getRootElement();
-                List entries = root.getChildren("ignoredpathentry");
-                Iterator iter = entries.iterator();
+                List<Element> entries = root.getChildren("ignoredpathentry");
+                Iterator<Element> iter = entries.iterator();
 
                 while (iter.hasNext())
                 {
-                    Element element = (Element) iter.next();
+                    Element element = iter.next();
                     ignores.add(element.getAttributeValue("path"));
                 }
             }
         }
         catch (Exception e)
         {
-            e.printStackTrace();
+            Logger.logException(e);
         }
 
-        return (String[]) ignores.toArray(new String[ignores.size()]);
+        return ignores.toArray(new String[ignores.size()]);
     }
 
     public String[] getIncludeEntries(IProject project)
@@ -61,7 +64,7 @@ public class XMLUtilities
 
     public String[] getIncludeEntries(IProject project, boolean replaceVariables)
     {
-        List includes = new ArrayList();
+        List<String> includes = new ArrayList<String>();
         try
         {
             String fileName = project.getLocation().toString() + File.separator
@@ -109,7 +112,7 @@ public class XMLUtilities
                         catch (CoreException e)
                         {
                             path = null;
-                            e.printStackTrace();
+                            Logger.log(INFO, "", e);
                         }
                     }
 
@@ -122,10 +125,10 @@ public class XMLUtilities
         }
         catch (Exception e)
         {
-            e.printStackTrace();
+            Logger.logException(e);
         }
 
-        return (String[]) includes.toArray(new String[includes.size()]);
+        return includes.toArray(new String[includes.size()]);
     }
 
     public void writeIgnoredEntries(IProject project, String[] items)

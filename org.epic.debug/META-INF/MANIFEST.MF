@@ -2,10 +2,11 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Perl Debug Plug-in
 Bundle-SymbolicName: org.epic.debug; singleton:=true
-Bundle-Version: 0.6.42
+Bundle-Version: 0.7.3
 Bundle-Activator: org.epic.debug.PerlDebugPlugin
 Bundle-Vendor: EPIC Project
 Bundle-Localization: plugin
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: org.epic.debug,
  org.epic.debug.cgi,
  org.epic.debug.cgi.server,
@@ -35,4 +36,4 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.core.variables,
  org.epic.lib,
  org.eclipse.ui.console
-Eclipse-AutoStart: true
+Bundle-ActivationPolicy: lazy

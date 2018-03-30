@@ -78,9 +78,9 @@ public class ResourceUtilities
             try
             {
                 File destDir = location.getParentFile();
-                for (Enumeration e = zipFile.entries(); e.hasMoreElements();)
+                for (Enumeration<? extends ZipEntry> e = zipFile.entries(); e.hasMoreElements();)
                 {
-                    ZipEntry entry = (ZipEntry) e.nextElement();
+                    ZipEntry entry = e.nextElement();
                     if (entry.getName().startsWith(pathInPlugin))
                         extractZipEntry(zipFile, entry, destDir);               
                 }

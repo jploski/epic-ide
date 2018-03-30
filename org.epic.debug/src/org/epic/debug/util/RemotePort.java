@@ -15,19 +15,19 @@ public class RemotePort
     public static final int WAIT_ERROR = 3;
     
     private ServerSocket mServer;
-	private Socket mClient;
-	private PrintWriter mWriter;
-	private BufferedReader mReader;
-	private OutputStream mOutStream;
-	private InputStream mInStream;
+    private Socket mClient;
+    private PrintWriter mWriter;
+    private BufferedReader mReader;
+    private OutputStream mOutStream;
+    private InputStream mInStream;
     private String name; // for debugging only
     private int lastUsedPort;
 
-	private Thread mConnectionThread;
-	private volatile boolean mStop;
+    private Thread mConnectionThread;
+    private volatile boolean mStop;
 
-	private final int mStartPortSearch;
-	private final int mEndPortSearch;
+    private final int mStartPortSearch;
+    private final int mEndPortSearch;
 
     public RemotePort(String name, int startPortSearch, int endPortSearch)
     {
@@ -36,8 +36,8 @@ public class RemotePort
         this.mEndPortSearch = endPortSearch;
     }
     
-	public RemotePort(String name)
-	{
+    public RemotePort(String name)
+    {
         this(name, DEFAULT_LOW_PORT, DEFAULT_HIGH_PORT);
     }
     
@@ -135,73 +135,73 @@ public class RemotePort
         return mClient != null;
     }
 
-	public void shutdown()
-	{
+    public void shutdown()
+    {
         //System.err.println("*************** " + this + " shutdown");
         mServer = null;
         reset();
         mStop = true;
-	}
+    }
 
     public boolean startConnect()
     {
         return startConnect(false);
     }
     
-	public boolean startReconnect()
-	{
-		return startConnect(true);
-	}
+    public boolean startReconnect()
+    {
+        return startConnect(true);
+    }
 
     public int waitForConnect(boolean fTimeOut)
     {
         return waitForConnect(fTimeOut, true);
     }
 
-	public int waitForConnect(boolean fTimeOut, boolean shutdownOnTimeout)
-	{
-		int port =  mServer.getLocalPort();
-		try
-		{
-			for (int x = 0;
-				((x < 100) || (!fTimeOut)) && (mClient == null);
-				++x)
-			{
-				if (mStop) break;
+    public int waitForConnect(boolean fTimeOut, boolean shutdownOnTimeout)
+    {
+        int port =  mServer.getLocalPort();
+        try
+        {
+            for (int x = 0;
+                ((x < 100) || (!fTimeOut)) && (mClient == null);
+                ++x)
+            {
+                if (mStop) break;
 
 /*                if ((x % 10) == 0 && fTimeOut)
-    				System.out.println(
-    					"Waiting for connect Port"
-    						+ port
-    						+ "(Try "
-    						+ x
-    						+ " of 100)\n");*/
-						
-				Thread.sleep(100);
-			}
+                    System.out.println(
+                        "Waiting for connect Port"
+                            + port
+                            + "(Try "
+                            + x
+                            + " of 100)\n");*/
+                        
+                Thread.sleep(100);
+            }
 
-			if (mClient == null)
-			{
-				if (shutdownOnTimeout) shutdown();
-				if (mStop) return WAIT_TERMINATE;
-				else return WAIT_ERROR;
-			}
+            if (mClient == null)
+            {
+                if (shutdownOnTimeout) shutdown();
+                if (mStop) return WAIT_TERMINATE;
+                else return WAIT_ERROR;
+            }
 
-			mWriter = new PrintWriter(mClient.getOutputStream(), true);
-			mReader = createReader();
-		}
+            mWriter = new PrintWriter(mClient.getOutputStream(), true);
+            mReader = createReader();
+        }
         catch (IOException e)
-		{
-			PerlDebugPlugin.log(e);
-			return WAIT_ERROR;
-		}
+        {
+            PerlDebugPlugin.log(e);
+            return WAIT_ERROR;
+        }
         catch (InterruptedException e)
-		{
-			PerlDebugPlugin.log(e);
-			return WAIT_ERROR;
-		}
-		return WAIT_OK;
-	}
+        {
+            PerlDebugPlugin.log(e);
+            return WAIT_ERROR;
+        }
+        return WAIT_OK;
+    }
     
     private BufferedReader createReader()
     {
@@ -314,7 +314,7 @@ public class RemotePort
     
     public String toString()
     {
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
         buf.append("RemotePort[");
         buf.append(name);        
         if (mServer != null)

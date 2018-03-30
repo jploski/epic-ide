@@ -27,9 +27,9 @@ public class TestSourceParser extends BaseTestCase
     
     public void testTwig() throws Exception
     {
-        List lines = readLines("workspace/EPICTest/Twig.pm");
-        StringBuffer buf = new StringBuffer();
-        for (Iterator i = lines.iterator(); i.hasNext();)
+        List<String> lines = readLines("workspace/EPICTest/Twig.pm");
+        StringBuilder buf = new StringBuilder();
+        for (Iterator<String> i = lines.iterator(); i.hasNext();)
         {
             buf.append(i.next());
             buf.append('\n');

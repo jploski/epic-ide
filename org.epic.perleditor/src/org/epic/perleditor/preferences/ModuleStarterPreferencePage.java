@@ -54,7 +54,7 @@ public class ModuleStarterPreferencePage extends PreferencePage implements
     private Text emailText;
     private Text addnOptsText;
 
-    private List errors = new ArrayList(5);
+    private List<String> errors = new ArrayList<String>(5);
 
     /*
      * (non-Javadoc)
@@ -351,7 +351,7 @@ public class ModuleStarterPreferencePage extends PreferencePage implements
     private void updateErrorMessage()
     {
         String message = errors.isEmpty()
-            ? null : (String) errors.get(errors.size()-1);
+            ? null : errors.get(errors.size()-1);
         
         setErrorMessage(message);
         setValid(message == null);

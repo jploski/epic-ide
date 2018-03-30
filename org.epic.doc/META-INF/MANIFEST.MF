@@ -2,8 +2,9 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: EPIC Documentation Plug-in
 Bundle-SymbolicName: org.epic.doc; singleton:=true
-Bundle-Version: 0.6.2
+Bundle-Version: 0.7.1
 Bundle-Localization: plugin
-Eclipse-AutoStart: true
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-ActivationPolicy: lazy
 Bundle-Vendor: EPIC Project
 Require-Bundle: org.eclipse.help

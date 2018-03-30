@@ -1,11 +1,10 @@
 package org.epic.perleditor.editors;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import org.eclipse.core.runtime.ILog;
 
 import org.eclipse.jface.text.Document;
-import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.source.IAnnotationModel;
 
 import org.epic.core.model.SourceFile;

@@ -14,79 +14,49 @@ import org.eclipse.core.runtime.CoreException;
 
 /**
  * @author luelljoc
- *
- * To change the template for this generated type comment go to
- * Window>Preferences>Java>Code Generation>Code and Comments
  */
 public class PerlProjectNature implements IProjectNature {
 
-	private IProject project;
-	private String PLUGIN_ID = "org.epic.perleditor";
-	/**
-	 * 
-	 */
-	public PerlProjectNature() {
-		super();
-		// TODO Auto-generated constructor stub
-	}
+    private IProject project;
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.core.resources.IProjectNature#configure()
-	 */
-	public void configure() throws CoreException {
-		// register Perl builder
-		//		IProjectDescription description = getProject().getDescription();
-		//		ICommand command = description.newCommand();
-		//		command.setBuilderName(PLUGIN_ID + ".perlbuilder");
-		//		System.out.println("Builder name: " + PLUGIN_ID+ ".perlbuilder");
-		String BUILDER_ID = PLUGIN_ID + ".perlbuilder";
-		IProjectDescription desc = project.getDescription();
-		ICommand[] commands = desc.getBuildSpec();
-		boolean found = false;
+    private static final String PLUGIN_ID = "org.epic.perleditor";
 
-		for (int i = 0; i < commands.length; ++i) {
-			if (commands[i].getBuilderName().equals(BUILDER_ID)) {
-				found = true;
-				break;
-			}
-		}
-		if (!found) {
-			// TODO remove debug output
-			System.out.println("Builder added: " + PLUGIN_ID+ ".perlbuilder");
-			//add builder to project
-			ICommand command = desc.newCommand();
-			command.setBuilderName(BUILDER_ID);
-			ICommand[] newCommands = new ICommand[commands.length + 1];
+    public void configure() throws CoreException {
+        String builderId = PLUGIN_ID + ".perlbuilder";
+        IProjectDescription desc = project.getDescription();
+        ICommand[] commands = desc.getBuildSpec();
+        boolean found = false;
 
-			// Add it before other builders.
-			System.arraycopy(commands, 0, newCommands, 1, commands.length);
-			newCommands[0] = command;
-			desc.setBuildSpec(newCommands);
-			project.setDescription(desc, null);
-		}
-	}
+        for (int i = 0; i < commands.length; ++i) {
+            if (commands[i].getBuilderName().equals(builderId)) {
+                found = true;
+                break;
+            }
+        }
+        if (!found) {
+            //add builder to project
+            ICommand command = desc.newCommand();
+            command.setBuilderName(builderId);
+            ICommand[] newCommands = new ICommand[commands.length + 1];
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.core.resources.IProjectNature#deconfigure()
-	 */
-	public void deconfigure() throws CoreException {
-		// TODO Auto-generated method stub
+            // Add it before other builders.
+            System.arraycopy(commands, 0, newCommands, 1, commands.length);
+            newCommands[0] = command;
+            desc.setBuildSpec(newCommands);
+            project.setDescription(desc, null);
+        }
+    }
 
-	}
+    public void deconfigure() throws CoreException {
+        // NOOP
+    }
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.core.resources.IProjectNature#getProject()
-	 */
-	public IProject getProject() {
-		return project;
-	}
+    public IProject getProject() {
+        return project;
+    }
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.core.resources.IProjectNature#setProject(org.eclipse.core.resources.IProject)
-	 */
-	public void setProject(IProject fProject) {
-		project = fProject;
-
-	}
+    public void setProject(IProject fProject) {
+        project = fProject;
+    }
 
 }

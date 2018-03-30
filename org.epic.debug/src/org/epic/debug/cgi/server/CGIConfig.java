@@ -17,7 +17,7 @@ class CGIConfig
     
     private final boolean debugMode;
     private String debugInc;
-    private List runInc;
+    private List<String> runInc;
     private final String hostname; 
     private final int portIn;
     private final int portOut;
@@ -144,11 +144,11 @@ class CGIConfig
      * @return a mapping of property names <b>with the prefix stripped</b>
      *         to their respective values
      */
-    public Map getProperties(String prefix)
+    public Map<String, String> getProperties(String prefix)
     {
-        Map ret = new HashMap();
+        Map<String, String> ret = new HashMap<String, String>();
         int len = (propsPrefix + prefix).length();
-        for (Iterator i = server.props.keySet().iterator(); i.hasNext();)
+        for (Iterator<Object> i = server.props.keySet().iterator(); i.hasNext();)
         {
             String key = (String) i.next(); 
             if (key.startsWith(propsPrefix + prefix))
@@ -184,7 +184,7 @@ class CGIConfig
      * @return a list with command-line parameters representing
      *         the include path for the Perl interpreter 
      */
-    public List getRunInclude()
+    public List<String> getRunInclude()
     {
         // TODO why do we return a List here and a String in getDebugInclude?
         // more refactoring needed
@@ -204,9 +204,9 @@ class CGIConfig
         return Integer.parseInt(getProperty(name));
     }
     
-    private List getListProperty(String name)
+    private List<String> getListProperty(String name)
     {
-        List values = new ArrayList();
+        List<String> values = new ArrayList<String>();
 
         for (int i = 0;; i++)
         {

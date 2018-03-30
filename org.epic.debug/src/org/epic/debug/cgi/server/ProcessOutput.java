@@ -32,20 +32,20 @@ class ProcessOutput
         this.stderr = stderr;
     }
  
-    public List getStderrLines()
+    public List<String> getStderrLines()
     {
         return getLines(stderr);
     }
     
-    public List getStdoutLines()
+    public List<String> getStdoutLines()
     {
         return getLines(stdout);
     }
     
-    private List getLines(String str)
+    private List<String> getLines(String str)
     {
         BufferedReader r = new BufferedReader(new StringReader(str));
-        List lines = new ArrayList();
+        List<String> lines = new ArrayList<String>();
         String l;
         
         try { while ((l = r.readLine()) != null) lines.add(l); }

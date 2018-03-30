@@ -240,9 +240,6 @@ public class TemplatePreferencePage
     fTableViewer.setAllChecked(false);
     fTableViewer.setCheckedElements(getEnabledTemplates());
 
-    IPreferenceStore prefs = PerlEditorPlugin.getDefault().getPreferenceStore();
-    //	fFormatButton.setSelection(prefs.getBoolean(PREF_FORMAT_TEMPLATES));
-
     updateButtons();
     configureTableResizing(
       innerParent,
@@ -304,13 +301,13 @@ public class TemplatePreferencePage
   private Template[] getEnabledTemplates() {
     Template[] templates = fTemplates.getTemplates();
 
-    List list = new ArrayList(templates.length);
+    List<Template> list = new ArrayList<Template>(templates.length);
 
     for (int i = 0; i != templates.length; i++)
       if (templates[i].isEnabled())
         list.add(templates[i]);
 
-    return (Template[]) list.toArray(new Template[list.size()]);
+    return list.toArray(new Template[list.size()]);
   }
 
   private SourceViewer createViewer(Composite parent) {
@@ -327,8 +324,8 @@ public class TemplatePreferencePage
     new PerlPartitioner(PerlEditorPlugin.getDefault().getLog(), document);
 
     // TODO changed check
-	PerlSourceViewerConfiguration sourceViewerConfiguration = new PerlSourceViewerConfiguration(PerlEditorPlugin.getDefault().getPreferenceStore(), null);
-	viewer.configure(sourceViewerConfiguration);
+    PerlSourceViewerConfiguration sourceViewerConfiguration = new PerlSourceViewerConfiguration(PerlEditorPlugin.getDefault().getPreferenceStore(), null);
+    viewer.configure(sourceViewerConfiguration);
     //viewer.configure(new PerlSourceViewerConfiguration(tools, null));
     // (tools, null));
     viewer.setEditable(false);
@@ -393,8 +390,8 @@ public class TemplatePreferencePage
     if (type != null)
       contextTypeName = type.getName();
     else {
-      Iterator iterator = registry.iterator();
-      contextTypeName = (String) iterator.next();
+      Iterator<String> iterator = registry.iterator();
+      contextTypeName = iterator.next();
     }
     template.setContext(contextTypeName); //$NON-NLS-1$
 
@@ -513,9 +510,10 @@ public class TemplatePreferencePage
     IStructuredSelection selection =
       (IStructuredSelection) fTableViewer.getSelection();
 
-    Iterator elements = selection.iterator();
+    @SuppressWarnings("unchecked")
+    Iterator<Template> elements = selection.iterator();
     while (elements.hasNext()) {
-      Template template = (Template) elements.next();
+      Template template = elements.next();
       fTemplates.remove(template);
     }
 
@@ -549,8 +547,6 @@ public class TemplatePreferencePage
    * @see PreferencePage#performDefaults()
    */
   protected void performDefaults() {
-    IPreferenceStore prefs = PerlEditorPlugin.getDefault().getPreferenceStore();
-    //	fFormatButton.setSelection(prefs.getDefaultBoolean(PREF_FORMAT_TEMPLATES));
 
     try {
       fTemplates.restoreDefaults();
@@ -581,8 +577,8 @@ public class TemplatePreferencePage
       openWriteErrorDialog(e);
     }
 
-	PerlEditorPlugin.getDefault().savePluginPreferences();
-	// TODO check if needed
+    PerlEditorPlugin.getDefault().savePluginPreferences();
+    // TODO check if needed
     //PHPEditorEnvironment.disconnect(this);
     return super.performOk();
   }

@@ -19,7 +19,7 @@ class LexicalVariable extends PerlVariable
     
     public String getExpression() throws DebugException
     {
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
         int refCount = getDumpedEntity().getReferenceCount();
         
         for (int i = 0; i < refCount; i++) buf.append("${");

@@ -1,6 +1,7 @@
 package org.epic.core.builders;
 
 import java.io.File;
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -17,31 +18,31 @@ public class PerlCriticBuilderHelper {
     //~ Static fields/initializers
 
     public static String METRICS_MARKER = "org.epic.perleditor.markers.critic";
-	private static PerlCriticBuilderHelper instance;
-	private boolean criticResourcePreconditions;
-	private boolean criticAutoRunPreconditions;
-	
-	public PerlCriticBuilderHelper () {
-		setCriticResourcePreconditions(checkCriticResourcePreconditions());
-		setCriticAutoRunPreconditions(checkCriticAutoRunPreconditions());
-	}
-	
-	private boolean checkCriticAutoRunPreconditions() {
-		return (isCriticResourcePreconditions() && PerlCriticPreferencePage.isPerlCriticJobEnabled());
-	}
+    private static PerlCriticBuilderHelper instance;
+    private boolean criticResourcePreconditions;
+    private boolean criticAutoRunPreconditions;
+    
+    public PerlCriticBuilderHelper () {
+        setCriticResourcePreconditions(checkCriticResourcePreconditions());
+        setCriticAutoRunPreconditions(checkCriticAutoRunPreconditions());
+    }
+    
+    private boolean checkCriticAutoRunPreconditions() {
+        return (isCriticResourcePreconditions() && PerlCriticPreferencePage.isPerlCriticJobEnabled());
+    }
 
-	private boolean checkCriticResourcePreconditions() {
-		if (!PerlCriticPreferencePage.isPerlCriticEnabled()) {
-			return false;
-		}
+    private boolean checkCriticResourcePreconditions() {
+        if (!PerlCriticPreferencePage.isPerlCriticEnabled()) {
+            return false;
+        }
 
-		File perlCriticScript = new File(PerlCriticPreferencePage
-				.getPerlCritic());
-		if (!perlCriticScript.exists() || !perlCriticScript.isFile()) {
-			return false;
-		} else
-			return true;
-	}
+        File perlCriticScript = new File(PerlCriticPreferencePage
+                .getPerlCritic());
+        if (!perlCriticScript.exists() || !perlCriticScript.isFile()) {
+            return false;
+        } else
+            return true;
+    }
 
     /**
      * @return the PerlCricitBuilderHelper singleton
@@ -66,7 +67,7 @@ public class PerlCriticBuilderHelper {
      */
     public void buildResource(IResource resource)
     {
-    	
+        
         Object[] violations = doJob(resource);
 
         final MarkerUtilities factory = new MarkerUtilities(PerlEditorPlugin.getDefault().getLog(), PerlEditorPlugin.getPluginId());
@@ -74,7 +75,7 @@ public class PerlCriticBuilderHelper {
 
         for (int i = 0; i < violations.length; i++)
         {
-            Map attributes = createMarkerAttributes(factory, violations[i]);
+            Map<String, Serializable> attributes = createMarkerAttributes(factory, violations[i]);
             factory.createMarker(resource, METRICS_MARKER, attributes);
         }
     }
@@ -90,9 +91,9 @@ public class PerlCriticBuilderHelper {
     /*
      * @see org.epic.perleditor.actions.PerlJobAction#createMarkerAttributes(org.epic.core.util.MarkerUtilities, java.lang.Object)
      */
-    public Map createMarkerAttributes(MarkerUtilities factory, Object violation)
+    public Map<String, Serializable> createMarkerAttributes(MarkerUtilities factory, Object violation)
     {
-        Map attributes = new HashMap();
+        Map<String, Serializable> attributes = new HashMap<String, Serializable>();
         Violation v = (Violation) violation;
 
         /*
@@ -118,20 +119,20 @@ public class PerlCriticBuilderHelper {
         return PerlCriticPreferencePage.getMarkerSeverity(severity);
     }
 
-	public void setCriticAutoRunPreconditions(boolean criticAutoRunPreconditions) {
-		this.criticAutoRunPreconditions = criticAutoRunPreconditions;
-	}
+    public void setCriticAutoRunPreconditions(boolean criticAutoRunPreconditions) {
+        this.criticAutoRunPreconditions = criticAutoRunPreconditions;
+    }
 
-	public boolean isCriticAutoRunPreconditions() {
-		return criticAutoRunPreconditions;
-	}
+    public boolean isCriticAutoRunPreconditions() {
+        return criticAutoRunPreconditions;
+    }
 
-	public void setCriticResourcePreconditions(boolean criticResourcePreconditions) {
-		this.criticResourcePreconditions = criticResourcePreconditions;
-	}
+    public void setCriticResourcePreconditions(boolean criticResourcePreconditions) {
+        this.criticResourcePreconditions = criticResourcePreconditions;
+    }
 
-	public boolean isCriticResourcePreconditions() {
-		return criticResourcePreconditions;
-	}
+    public boolean isCriticResourcePreconditions() {
+        return criticResourcePreconditions;
+    }
 
 }

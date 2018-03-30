@@ -18,7 +18,7 @@ public class LexerOptions
      */
     public static boolean useMethodSignatures()
     {
-		return PerlEditorPlugin.getDefault().getBooleanPreference(PreferenceConstants.DEBUG_METHOD_SIGNATURES);
+        return PerlEditorPlugin.getDefault().getBooleanPreference(PreferenceConstants.DEBUG_METHOD_SIGNATURES);
     }
 
 }

@@ -17,8 +17,8 @@ public class PerlOutlineContentProvider implements ITreeContentProvider
 
     private static final Object[] EMPTY_ARRAY = new Object[0];
 
-    private final List prevSubsContent;
-    private final List prevUsesContent;
+    private final List<Subroutine> prevSubsContent;
+    private final List<ModuleUse> prevUsesContent;
     private final ISourceFileListener listener = new ISourceFileListener()
     {
         public void sourceFileChanged(SourceFile source)
@@ -32,8 +32,8 @@ public class PerlOutlineContentProvider implements ITreeContentProvider
 
     public PerlOutlineContentProvider()
     {
-        this.prevSubsContent = new ArrayList();
-        this.prevUsesContent = new ArrayList();
+        this.prevSubsContent = new ArrayList<Subroutine>();
+        this.prevUsesContent = new ArrayList<ModuleUse>();
     }
 
     public void dispose()
@@ -119,13 +119,13 @@ public class PerlOutlineContentProvider implements ITreeContentProvider
                 prevUsesContent.iterator());
     }
 
-    private boolean packageContentChanged(Iterator curContent,
-        Iterator prevContent)
+    private boolean packageContentChanged(Iterator<? extends IPackageElement> curContent,
+        Iterator<? extends IPackageElement> prevContent)
     {
         while (curContent.hasNext() && prevContent.hasNext())
         {
-            IPackageElement curElem = (IPackageElement) curContent.next();
-            IPackageElement prevElem = (IPackageElement) prevContent.next();
+            IPackageElement curElem = curContent.next();
+            IPackageElement prevElem = prevContent.next();
 
             if (packageElementsDiffer(curElem, prevElem))
             {
@@ -165,10 +165,10 @@ public class PerlOutlineContentProvider implements ITreeContentProvider
 
         if (model != null)
         {
-            for (Iterator i = model.getSubs(); i.hasNext();)
+            for (Iterator<Subroutine> i = model.getSubs(); i.hasNext();)
                 prevSubsContent.add(i.next());
 
-            for (Iterator i = model.getUses(); i.hasNext();)
+            for (Iterator<ModuleUse> i = model.getUses(); i.hasNext();)
                 prevUsesContent.add(i.next());
         }
     }

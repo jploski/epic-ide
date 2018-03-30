@@ -8,7 +8,7 @@ import org.epic.perleditor.PerlPluginImages;
 
 public class PerlOutlineLabelProvider extends LabelProvider
 {	
-	public Image getImage(Object element)
+    public Image getImage(Object element)
     {
         if (element instanceof Subroutine)
         {
@@ -36,17 +36,17 @@ public class PerlOutlineLabelProvider extends LabelProvider
         }
 
         return null;
-	}
+    }
 
-	public String getText(Object element)
+    public String getText(Object element)
     {
-		if (element instanceof ISourceElement)
+        if (element instanceof ISourceElement)
             return ((ISourceElement) element).getName();
         else
             return element.toString();
-	}
+    }
 
-	public void dispose()
+    public void dispose()
     {	
-	}
+    }
 }

@@ -19,24 +19,24 @@ import java.io.Reader;
 //import org.eclipse.jdt.internal.ui.JavaPlugin;
 
 public class IOCloser {
-	public static void perform(Reader reader, InputStream stream) {
-		try {
-			rethrows(reader, stream);
-		} catch (IOException e) {
-			//PHPeclipsePlugin.log(e);
-			e.printStackTrace();
-		}
-	}
-	
-	public static void rethrows(Reader reader, InputStream stream) throws IOException {
-		if (reader != null) {
-			reader.close();
-			return;
-		}
-		if (stream != null) {
-			stream.close();
-			return;
-		}
-	}	
+    public static void perform(Reader reader, InputStream stream) {
+        try {
+            rethrows(reader, stream);
+        } catch (IOException e) {
+            //PHPeclipsePlugin.log(e);
+            e.printStackTrace();
+        }
+    }
+    
+    public static void rethrows(Reader reader, InputStream stream) throws IOException {
+        if (reader != null) {
+            reader.close();
+            return;
+        }
+        if (stream != null) {
+            stream.close();
+            return;
+        }
+    }	
 }
 

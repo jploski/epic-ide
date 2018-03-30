@@ -1,7 +1,6 @@
 package org.epic.perleditor.editors;
 
 import org.eclipse.core.runtime.ILog;
-
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
@@ -10,11 +9,9 @@ import org.eclipse.jface.text.source.Annotation;
 import org.eclipse.jface.text.source.IAnnotationModel;
 import org.eclipse.jface.text.source.projection.ProjectionAnnotation;
 import org.eclipse.jface.text.source.projection.ProjectionAnnotationModel;
-
 import org.epic.core.model.IMultilineElement;
 import org.epic.core.model.SourceFile;
 import org.epic.core.util.StatusFactory;
-
 import org.epic.perleditor.PerlEditorPlugin;
 import org.epic.perleditor.preferences.PreferenceConstants;
 
@@ -36,7 +33,7 @@ public class FoldReconciler
 
     private final PerlEditor editor;
 
-    private final Set folds; // of Annotation instances
+    private final Set<Tuple> folds; // of Annotation instances
 
     private boolean initialized = false;
 
@@ -48,7 +45,7 @@ public class FoldReconciler
     public FoldReconciler(PerlEditor editor)
     {
         this.editor = editor;
-        this.folds = new HashSet();
+        this.folds = new HashSet<Tuple>();
     }
 
     //~ Methods
@@ -69,7 +66,7 @@ public class FoldReconciler
             IAnnotationModel annotations = getAnnotations();
             if (annotations == null) { return; }
 
-            Set tuples = computeFoldPositions();
+            Set<Tuple> tuples = computeFoldPositions();
 
             removeFolds(tuples);
             addFolds(tuples);
@@ -106,11 +103,11 @@ public class FoldReconciler
      *
      * @param tuples <code>Tuple</code> instances representing new folds
      */
-    private void addFolds(Set tuples)
+    private void addFolds(Set<Tuple> tuples)
     {
-        for (Iterator iter = tuples.iterator(); iter.hasNext();)
+        for (Iterator<Tuple> iter = tuples.iterator(); iter.hasNext();)
         {
-            Tuple t = (Tuple) iter.next();
+            Tuple t = iter.next();
             if (! folds.contains(t))
             {
                 getAnnotations().addAnnotation(t.annotation, t.position);
@@ -122,9 +119,9 @@ public class FoldReconciler
     /**
      * Computes fold positions for <code>SourceElement</code>s
      */
-    private Set computeFoldPositions() throws BadLocationException
+    private Set<Tuple> computeFoldPositions() throws BadLocationException
     {
-        HashSet tuples = new HashSet();
+        HashSet<Tuple> tuples = new HashSet<Tuple>();
 
         computeFoldPositions(tuples, getSourceFile().getPODs(),
             initialized ? false : isFoldPerldoc());
@@ -144,14 +141,14 @@ public class FoldReconciler
      * @param elements iterator for a collection of <code>SourceElement</code>s
      * @param collapse true if fold is initially collapsed, false otherwise
      */
-    private void computeFoldPositions(Set tuples, Iterator elements, boolean collapse)
+    private void computeFoldPositions(Set<Tuple> tuples, Iterator<? extends IMultilineElement> elements, boolean collapse)
         throws BadLocationException
     {
         IDocument doc = getSourceFile().getDocument();
 
         while (elements.hasNext())
         {
-            IMultilineElement e = (IMultilineElement) elements.next();
+            IMultilineElement e = elements.next();
 
             if (e.getStartLine() == e.getEndLine())
             {
@@ -208,11 +205,11 @@ public class FoldReconciler
      * @param toRemove the set of Tuple instances representing required positions of folds according
      *                 to the current SourceFile of the editor; this set is updated by the method
      */
-    private void removeFolds(Set toRemove)
+    private void removeFolds(Set<Tuple> toRemove)
     {
-        for (Iterator iter = folds.iterator(); iter.hasNext();)
+        for (Iterator<Tuple> iter = folds.iterator(); iter.hasNext();)
         {
-            Tuple t = (Tuple) iter.next();
+            Tuple t = iter.next();
             Position p = getAnnotations().getPosition(t.annotation);
 
             if ((p != null) && (p.isDeleted() || ! toRemove.contains(t)))

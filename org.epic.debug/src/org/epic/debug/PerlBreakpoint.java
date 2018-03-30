@@ -5,8 +5,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.HashSet;
-import java.util.Set;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
@@ -101,7 +99,7 @@ public abstract class PerlBreakpoint extends Breakpoint
         }
         if (doc == null)
         {
-            StringBuffer sourceCode = new StringBuffer();
+            StringBuilder sourceCode = new StringBuilder();
 
             int BUF_SIZE = 1024;
 

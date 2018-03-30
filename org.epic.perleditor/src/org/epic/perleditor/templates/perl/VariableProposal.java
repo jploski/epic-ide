@@ -49,66 +49,66 @@ public class VariableProposal implements IPerlCompletionProposal {
    * @param image     the icon of the proposal.
    */
   public VariableProposal(String template, TemplateContext context, IRegion region, ITextViewer viewer, Image image_fun, Image image_var) {
-	//		Assert.isNotNull(template);
-	//		Assert.isNotNull(context);
-	//		Assert.isNotNull(region);
-	//		Assert.isNotNull(viewer);
+    //		Assert.isNotNull(template);
+    //		Assert.isNotNull(context);
+    //		Assert.isNotNull(region);
+    //		Assert.isNotNull(viewer);
 
-	fTemplate = template;
-	fContext = context;
-	fViewer = viewer;
-	fImage_fun= image_fun;
-	fImage_var= image_var;
-	fRegion = region;
+    fTemplate = template;
+    fContext = context;
+    fViewer = viewer;
+    fImage_fun= image_fun;
+    fImage_var= image_var;
+    fRegion = region;
   }
 
   /*
    * @see ICompletionProposal#apply(IDocument)
    */
   public void apply(IDocument document) {
-	try {
-	  //		    if (fTemplateBuffer == null)
-	  //				fTemplateBuffer= fContext.evaluate(fTemplate);
+    try {
+      //		    if (fTemplateBuffer == null)
+      //				fTemplateBuffer= fContext.evaluate(fTemplate);
 
-	  int start = fRegion.getOffset();
-	  int end = fRegion.getOffset() + fRegion.getLength();
+      int start = fRegion.getOffset();
+      int end = fRegion.getOffset() + fRegion.getLength();
 
-	  // insert template string
-	//  String templateString = fTemplate; // fTemplateBuffer.getString();	
-	  document.replace(start, end - start, fTemplate);
+      // insert template string
+    //  String templateString = fTemplate; // fTemplateBuffer.getString();	
+      document.replace(start, end - start, fTemplate);
 
-	  // translate positions
-	  LinkedPositionManager manager = new LinkedPositionManager(document);
-	  //			TemplatePosition[] variables= fTemplateBuffer.getVariables();
-	  //			for (int i= 0; i != variables.length; i++) {
-	  //				TemplatePosition variable= variables[i];
-	  //
-	  //				if (variable.isResolved())
-	  //					continue;
-	  //				
-	  //				int[] offsets= variable.getOffsets();
-	  //				int length= variable.getLength();
-	  //				
-	  //				for (int j= 0; j != offsets.length; j++)
-	  //					manager.addPosition(offsets[j] + start, length);
-	  //			}
+      // translate positions
+      LinkedPositionManager manager = new LinkedPositionManager(document);
+      //			TemplatePosition[] variables= fTemplateBuffer.getVariables();
+      //			for (int i= 0; i != variables.length; i++) {
+      //				TemplatePosition variable= variables[i];
+      //
+      //				if (variable.isResolved())
+      //					continue;
+      //				
+      //				int[] offsets= variable.getOffsets();
+      //				int length= variable.getLength();
+      //				
+      //				for (int j= 0; j != offsets.length; j++)
+      //					manager.addPosition(offsets[j] + start, length);
+      //			}
 
-	  LinkedPositionUI editor = new LinkedPositionUI(fViewer, manager);
-	  editor.setFinalCaretOffset(fTemplate.length()+start);
+      LinkedPositionUI editor = new LinkedPositionUI(fViewer, manager);
+      editor.setFinalCaretOffset(fTemplate.length()+start);
    //   editor.setFinalCaretOffset(getCaretOffset(fTemplateBuffer) + start);
-	  editor.enter();
+      editor.enter();
 
-	  fSelectedRegion = editor.getSelectedRegion();
+      fSelectedRegion = editor.getSelectedRegion();
 
-	} catch (BadLocationException e) {
-	  //PHPeclipsePlugin.log(e);
-	  e.printStackTrace();
-	  openErrorDialog(e);
+    } catch (BadLocationException e) {
+      //PHPeclipsePlugin.log(e);
+      e.printStackTrace();
+      openErrorDialog(e);
 
-	}
-	//      catch (CoreException e) {
-	//			handleException(e);
-	//	    }	    
+    }
+    //      catch (CoreException e) {
+    //			handleException(e);
+    //	    }	    
   }
 
 //	private static int getCaretOffset(TemplateBuffer buffer) {
@@ -127,105 +127,105 @@ public class VariableProposal implements IPerlCompletionProposal {
    * @see ICompletionProposal#getSelection(IDocument)
    */
   public Point getSelection(IDocument document) {
-	return new Point(fSelectedRegion.getOffset(), fSelectedRegion.getLength());
-	//	  return null;
+    return new Point(fSelectedRegion.getOffset(), fSelectedRegion.getLength());
+    //	  return null;
   }
 
   /*
    * @see ICompletionProposal#getAdditionalProposalInfo()
    */
   public String getAdditionalProposalInfo() {
-	//	    try {
-	//			if (fTemplateBuffer == null)
-	//				fTemplateBuffer= fContext.evaluate(fTemplate);
+    //	    try {
+    //			if (fTemplateBuffer == null)
+    //				fTemplateBuffer= fContext.evaluate(fTemplate);
 
 
-	//return textToHTML(fTemplate); // fTemplateBuffer.getString());
+    //return textToHTML(fTemplate); // fTemplateBuffer.getString());
     
-	//Do not return additional info for subroutines
-	return null;
+    //Do not return additional info for subroutines
+    return null;
 
-	//	    } catch (CoreException e) {
-	//			handleException(e);		    
-	//			return null;
-	//	    }
+    //	    } catch (CoreException e) {
+    //			handleException(e);		    
+    //			return null;
+    //	    }
   }
 
   /*
    * @see ICompletionProposal#getDisplayString()
    */
   public String getDisplayString() {
-	// No description available for Perl subroutines
-	return(fTemplate);
-	//return fTemplate + TemplateMessages.getString("TemplateProposal.delimiter") + fTemplate; // $NON-NLS-1$ //$NON-NLS-1$
-	//		return fTemplate.getName() + TemplateMessages.getString("TemplateProposal.delimiter") + fTemplate.getDescription(); // $NON-NLS-1$ //$NON-NLS-1$
+    // No description available for Perl subroutines
+    return(fTemplate);
+    //return fTemplate + TemplateMessages.getString("TemplateProposal.delimiter") + fTemplate; // $NON-NLS-1$ //$NON-NLS-1$
+    //		return fTemplate.getName() + TemplateMessages.getString("TemplateProposal.delimiter") + fTemplate.getDescription(); // $NON-NLS-1$ //$NON-NLS-1$
   }
 
   /*
    * @see ICompletionProposal#getImage()
    */
   public Image getImage() {
-	if (fTemplate.charAt(0)=='$') {
-	  return fImage_var;
-	}
-		return fImage_fun;
+    if (fTemplate.charAt(0)=='$') {
+      return fImage_var;
+    }
+        return fImage_fun;
   }
 
   /*
    * @see ICompletionProposal#getContextInformation()
    */
   public IContextInformation getContextInformation() {
-	return null;
+    return null;
   }
 
   private static String textToHTML(String string) {
-	StringBuffer buffer = new StringBuffer(string.length());
-	buffer.append("<pre>"); //$NON-NLS-1$
+    StringBuilder buffer = new StringBuilder(string.length());
+    buffer.append("<pre>"); //$NON-NLS-1$
 
-	for (int i = 0; i != string.length(); i++) {
-	  char ch = string.charAt(i);
+    for (int i = 0; i != string.length(); i++) {
+      char ch = string.charAt(i);
 
-	  switch (ch) {
-		case '&' :
-		  buffer.append("&amp;"); //$NON-NLS-1$
-		  break;
+      switch (ch) {
+        case '&' :
+          buffer.append("&amp;"); //$NON-NLS-1$
+          break;
 
-		case '<' :
-		  buffer.append("&lt;"); //$NON-NLS-1$
-		  break;
+        case '<' :
+          buffer.append("&lt;"); //$NON-NLS-1$
+          break;
 
-		case '>' :
-		  buffer.append("&gt;"); //$NON-NLS-1$
-		  break;
+        case '>' :
+          buffer.append("&gt;"); //$NON-NLS-1$
+          break;
 
-		case '\t' :
-		  buffer.append("    "); //$NON-NLS-1$
-		  break;
+        case '\t' :
+          buffer.append("    "); //$NON-NLS-1$
+          break;
 
-		case '\n' :
-		  buffer.append("<br>"); //$NON-NLS-1$
-		  break;
+        case '\n' :
+          buffer.append("<br>"); //$NON-NLS-1$
+          break;
 
-		default :
-		  buffer.append(ch);
-		  break;
-	  }
-	}
+        default :
+          buffer.append(ch);
+          break;
+      }
+    }
 
-	buffer.append("</pre>"); //$NON-NLS-1$
-	return buffer.toString();
+    buffer.append("</pre>"); //$NON-NLS-1$
+    return buffer.toString();
   }
 
   private void openErrorDialog(BadLocationException e) {
-	Shell shell = fViewer.getTextWidget().getShell();
-	MessageDialog.openError(shell, TemplateMessages.getString("TemplateEvaluator.error.title"), e.getMessage()); //$NON-NLS-1$
+    Shell shell = fViewer.getTextWidget().getShell();
+    MessageDialog.openError(shell, TemplateMessages.getString("TemplateEvaluator.error.title"), e.getMessage()); //$NON-NLS-1$
   }
 
   private void handleException(CoreException e) {
-	Shell shell = fViewer.getTextWidget().getShell();
-	//PHPeclipsePlugin.log(e);
-	e.printStackTrace();
-	//		ExceptionHandler.handle(e, shell, TemplateMessages.getString("TemplateEvaluator.error.title"), null); //$NON-NLS-1$
+    Shell shell = fViewer.getTextWidget().getShell();
+    //PHPeclipsePlugin.log(e);
+    e.printStackTrace();
+    //		ExceptionHandler.handle(e, shell, TemplateMessages.getString("TemplateEvaluator.error.title"), null); //$NON-NLS-1$
   }
 
   /*
@@ -233,22 +233,22 @@ public class VariableProposal implements IPerlCompletionProposal {
    */
   public int getRelevance() {
 
-	if (fContext instanceof PerlUnitContext) {
-	  PerlUnitContext context = (PerlUnitContext) fContext;
-	  switch (context.getCharacterBeforeStart()) {
-		// high relevance after whitespace
-		case ' ' :
-		case '\r' :
-		case '\n' :
-		case '\t' :
-		  return 90;
+    if (fContext instanceof PerlUnitContext) {
+      PerlUnitContext context = (PerlUnitContext) fContext;
+      switch (context.getCharacterBeforeStart()) {
+        // high relevance after whitespace
+        case ' ' :
+        case '\r' :
+        case '\n' :
+        case '\t' :
+          return 90;
 
-		default :
-		  return 0;
-	  }
-	} else {
-	  return 90;
-	}
+        default :
+          return 0;
+      }
+    } else {
+      return 90;
+    }
   }
 
 }

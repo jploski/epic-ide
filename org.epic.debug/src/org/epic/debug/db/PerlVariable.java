@@ -213,7 +213,7 @@ public abstract class PerlVariable extends DebugElement implements IVariable
      */
     public void setValue(IValue value) throws DebugException
     {
-    	throwNotSupported();
+        throwNotSupported();
     }
 
     /**
@@ -264,7 +264,7 @@ public abstract class PerlVariable extends DebugElement implements IVariable
             if (clean) quotedName = "'" + name + "'";
             else // pack those pesky Unicode characters
             {
-                StringBuffer buf = new StringBuffer("pack('");
+                StringBuilder buf = new StringBuilder("pack('");
                 for (int i = 0; i < name.length(); i++) buf.append('U');
                 buf.append("',");
                 for (int i = 0; i < name.length(); i++)
@@ -290,13 +290,13 @@ public abstract class PerlVariable extends DebugElement implements IVariable
             return;
         }
         
-        LinkedList queue = new LinkedList();
-        Set visited = new HashSet(); // to avoid infinite recursion
+        LinkedList<IVariable[]> queue = new LinkedList<IVariable[]>();
+        Set<String> visited = new HashSet<String>(); // to avoid infinite recursion
         queue.add(getPerlVariables(getValue()));
 
         while (!queue.isEmpty())
         {            
-            IVariable[] vars = (IVariable[]) queue.removeFirst();
+            IVariable[] vars = queue.removeFirst();
         
             for (int i = 0; i < vars.length; i++)
             {                
@@ -318,16 +318,16 @@ public abstract class PerlVariable extends DebugElement implements IVariable
     
     private IVariable[] getPerlVariables(IValue value) throws DebugException
     {
-    	IVariable[] vars = value.getVariables();
-    	if (vars.length == 0 || vars[0] instanceof PerlVariable) return vars;
-    	else
-    	{
-    		assert vars[0] instanceof ArraySlice;
-    		List elements = new ArrayList();
-    		for (int i = 0; i < vars.length; i++)
-    			elements.addAll(Arrays.asList(getPerlVariables(vars[i].getValue()))); 
-    		return (IVariable[]) elements.toArray(new IVariable[elements.size()]);
-    	}
+        IVariable[] vars = value.getVariables();
+        if (vars.length == 0 || vars[0] instanceof PerlVariable) return vars;
+        else
+        {
+            assert vars[0] instanceof ArraySlice;
+            List<IVariable> elements = new ArrayList<IVariable>();
+            for (int i = 0; i < vars.length; i++)
+                elements.addAll(Arrays.asList(getPerlVariables(vars[i].getValue()))); 
+            return elements.toArray(new IVariable[elements.size()]);
+        }
     }
     
     private void throwNotSupported() throws DebugException

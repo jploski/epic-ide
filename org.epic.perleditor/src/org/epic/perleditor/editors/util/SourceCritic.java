@@ -1,13 +1,16 @@
 package org.epic.perleditor.editors.util;
 
 import java.io.File;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.ILog;
-import org.epic.core.util.*;
+import org.epic.core.util.CommandLineTokenizer;
+import org.epic.core.util.ScriptExecutor;
+import org.epic.core.util.StatusFactory;
 import org.epic.perleditor.preferences.PerlCriticPreferencePage;
 
 
@@ -41,7 +44,7 @@ public class SourceCritic extends ScriptExecutor
             // meh - not sure if i'm happy w/ this, but it's needed in getCommandLineOpts
             critic.resource = resource;
 
-            String output = critic.run(new ArrayList(4)).stdout;
+            String output = critic.run(new ArrayList<String>(4)).stdout;
             return critic.parseViolations(output);
         }
         catch (CoreException e)
@@ -55,11 +58,11 @@ public class SourceCritic extends ScriptExecutor
     /*
      * @see org.epic.core.util.ScriptExecutor#getCommandLineOpts(java.util.List)
      */
-    protected List getCommandLineOpts(List additionalOptions)
+    protected List<String> getCommandLineOpts(List<String> additionalOptions)
     {
         if (additionalOptions == null || additionalOptions.isEmpty())
         {
-            additionalOptions = new ArrayList(2);
+            additionalOptions = new ArrayList<String>(2);
         }
 
         // project specific critic config files
@@ -72,9 +75,9 @@ public class SourceCritic extends ScriptExecutor
         }
         
         String severity = PerlCriticPreferencePage.getSeverity();
-        if(!severity.equals("default")) 
+        if(!"default".equals(severity))
         {
-        	additionalOptions.add("--" + severity);
+            additionalOptions.add("--" + severity);
         }
 
         additionalOptions.add("--verbose");
@@ -83,7 +86,7 @@ public class SourceCritic extends ScriptExecutor
         String otherOptions = PerlCriticPreferencePage.getOtherOptions();
         if(otherOptions.length() > 0)
         {
-        	additionalOptions.addAll(CommandLineTokenizer.tokenize(otherOptions));
+            additionalOptions.addAll(CommandLineTokenizer.tokenize(otherOptions));
         }
 
         IFile file = (IFile) resource;
@@ -159,25 +162,25 @@ public class SourceCritic extends ScriptExecutor
         }
 
         String[] lines = toParse.split("~\\|\\|~" + separator);
-        ArrayList violations = new ArrayList();
+        ArrayList<Violation> violations = new ArrayList<Violation>();
         for (int i = 0; i < lines.length; i++)
         {
-            System.out.println("critic: " + lines[i]);
-
             Violation v = parseLine(lines[i]);
             if (v != null)
             {
                 violations.add(v);
+            } else {
+                log(StatusFactory.createWarning(getPluginId(), "Could not parse perlcritic output: " + lines[i]));
             }
         }
 
-        if (violations.size() == 0)
+        if (violations.isEmpty())
         {
             log(StatusFactory.createWarning(getPluginId(),
                     "Perl::Critic violations.length == 0, output change?"));
         }
 
-        return (Violation[]) violations.toArray(new Violation[violations.size()]);
+        return violations.toArray(new Violation[violations.size()]);
     }
 
     public static class Violation

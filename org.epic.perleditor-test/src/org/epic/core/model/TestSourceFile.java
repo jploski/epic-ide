@@ -4,10 +4,8 @@ import java.io.IOException;
 import java.util.Iterator;
 
 import org.eclipse.jface.text.Document;
-import org.eclipse.jface.text.IDocument;
 import org.epic.perl.editor.test.BaseTestCase;
 import org.epic.perl.editor.test.Log;
-import org.epic.perleditor.editors.PartitionTypes;
 import org.epic.perleditor.editors.PerlPartitioner;
 
 public class TestSourceFile extends BaseTestCase
@@ -35,10 +33,10 @@ public class TestSourceFile extends BaseTestCase
         SourceFile src = new SourceFile(new Log(), doc);
         src.parse();
         
-        StringBuffer buf = new StringBuffer();
-        for (Iterator i = src.getPackages().iterator(); i.hasNext();)
+        StringBuilder buf = new StringBuilder();
+        for (Iterator<Package> i = src.getPackages().iterator(); i.hasNext();)
         {
-            Package pkg = (Package) i.next();
+            Package pkg = i.next();
             buf.append(pkg.getName());
             buf.append(':');
             buf.append(pkg.getStartLine());
@@ -48,9 +46,9 @@ public class TestSourceFile extends BaseTestCase
             buf.append(pkg.getSubs().size());
             buf.append(':');
             buf.append('{');
-            for (Iterator j = pkg.getSubs().iterator(); j.hasNext();)
+            for (Iterator<Subroutine> j = pkg.getSubs().iterator(); j.hasNext();)
             {
-                Subroutine sub = (Subroutine) j.next();
+                Subroutine sub = j.next();
                 buf.append(sub.getName());
                 buf.append(':');
                 buf.append(sub.getBlockLevel());

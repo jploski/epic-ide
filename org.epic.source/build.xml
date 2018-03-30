@@ -7,7 +7,7 @@
 	<property name="basearch" value="${arch}"/>
 	<property name="basenl" value="${nl}"/>
 	<property name="bundleId" value="org.epic.source"/>
-	<property name="bundleVersion" value="0.6.57"/>
+	<property name="bundleVersion" value="0.7.5"/>
 	<property name="p2.publishonerror" value="false"/>
 
 	<!-- Compiler settings. -->
@@ -29,6 +29,15 @@
 		</fileset>
 	</path>
 	<property name="bootclasspath" refid="path_bootclasspath"/>
+	<condition property="bundleBootClasspath" value="${JavaSE-1.6}"	>
+		<isset property="JavaSE-1.6"/>
+	</condition>
+	<condition property="bundleJavacSource" value="1.6"	>
+		<isset property="JavaSE-1.6"/>
+	</condition>
+	<condition property="bundleJavacTarget" value="1.6"	>
+		<isset property="JavaSE-1.6"/>
+	</condition>
 	<property name="bundleJavacSource" value="${javacSource}"/>
 	<property name="bundleJavacTarget" value="${javacTarget}"/>
 	<property name="bundleBootClasspath" value="${bootclasspath}"/>
@@ -38,7 +47,7 @@
 			<isset property="buildTempFolder"/>
 		</condition>
 		<property name="pluginTemp" value="${basedir}"/>
-		<condition property="build.result.folder" value="${pluginTemp}/org.epic.source_0.6.57"		>
+		<condition property="build.result.folder" value="${pluginTemp}/org.epic.source_0.7.5"		>
 			<isset property="buildTempFolder"/>
 		</condition>
 		<property name="build.result.folder" value="${basedir}"/>
@@ -68,7 +77,7 @@
 		<antcall target="gather.bin.parts">
 			<param name="destination.temp.folder" value="${temp.folder}/"/>
 		</antcall>
-		<jar destfile="${plugin.destination}/org.epic.source_0.6.57.jar" basedir="${temp.folder}/org.epic.source_0.6.57" filesetmanifest="merge"/>
+		<jar destfile="${plugin.destination}/org.epic.source_0.7.5.jar" basedir="${temp.folder}/org.epic.source_0.7.5" filesetmanifest="merge"/>
 		<delete dir="${temp.folder}"/>
 	</target>
 
@@ -77,8 +86,8 @@
 	</target>
 
 	<target name="checkCompilationResults" if="compilation.error.occured">
-		<echo file="${compilation.problem.marker}" message="org.epic.source_0.6.57${line.separator}compilation.error.occured=${compilation.error.occured}"/>
-		<eclipse.logCompileError bundle="org.epic.source_0.6.57" log="${compilation.prereq.log}">
+		<echo file="${compilation.problem.marker}" message="org.epic.source_0.7.5${line.separator}compilation.error.occured=${compilation.error.occured}"/>
+		<eclipse.logCompileError bundle="org.epic.source_0.7.5" log="${compilation.prereq.log}">
 		</eclipse.logCompileError>
 	</target>
 
@@ -86,7 +95,7 @@
 	</target>
 
 	<target name="publish.bin.parts" depends="init" if="p2.publish.parts" unless="compilation.problem.marker.exists">
-		<mkdir dir="${build.result.folder}/org.epic.source_0.6.57"/>
+		<mkdir dir="${build.result.folder}/org.epic.source_0.7.5"/>
 		<copy todir="${build.result.folder}" failonerror="true" overwrite="true">
 			<fileset dir="${basedir}">
 				<include name="META-INF/MANIFEST.MF"/>
@@ -109,8 +118,8 @@
 	</target>
 
 	<target name="gather.bin.parts" depends="init" if="destination.temp.folder">
-		<mkdir dir="${destination.temp.folder}/org.epic.source_0.6.57"/>
-		<copy todir="${destination.temp.folder}/org.epic.source_0.6.57" failonerror="true" overwrite="true">
+		<mkdir dir="${destination.temp.folder}/org.epic.source_0.7.5"/>
+		<copy todir="${destination.temp.folder}/org.epic.source_0.7.5" failonerror="true" overwrite="true">
 			<fileset dir="${basedir}">
 				<include name="src/"/>
 				<include name="META-INF/"/>
@@ -119,7 +128,7 @@
 			</fileset>
 		</copy>
 		<antcall target="apitools.generation">
-			<param name="target.folder" value="${destination.temp.folder}/org.epic.source_0.6.57"/>
+			<param name="target.folder" value="${destination.temp.folder}/org.epic.source_0.7.5"/>
 			<param name="projectLocation" value="${basedir}"/>
 			<param name="binary.folders" value="/home/jpl/git/epic-ide/org.epic.source"/>
 			<param name="projectName" value="${bundleId}_${bundleVersion}"/>
@@ -131,7 +140,7 @@
 
 	<target name="gather.sources" depends="init" if="destination.temp.folder">
 		<antcall target="copy.src.includes">
-			<param name="source.destination.folder" value="${destination.temp.folder}/org.epic.source_0.6.57"/>
+			<param name="source.destination.folder" value="${destination.temp.folder}/org.epic.source_0.7.5"/>
 		</antcall>
 	</target>
 
@@ -148,8 +157,8 @@
 	</target>
 
 	<target name="clean" depends="init" description="Clean the plug-in: org.epic.source of all the zips, jars and logs created.">
-		<delete file="${plugin.destination}/org.epic.source_0.6.57.jar"/>
-		<delete file="${plugin.destination}/org.epic.source_0.6.57.zip"/>
+		<delete file="${plugin.destination}/org.epic.source_0.7.5.jar"/>
+		<delete file="${plugin.destination}/org.epic.source_0.7.5.zip"/>
 		<delete dir="${temp.folder}"/>
 		<delete file="${compilation.problem.marker}" quiet="true"/>
 	</target>
@@ -175,7 +184,7 @@
 				<include name="**/*.bin${logExtension}"/>
 			</fileset>
 		</delete>
-		<zip destfile="${plugin.destination}/org.epic.source_0.6.57.zip" basedir="${temp.folder}" filesonly="true" whenempty="skip" update="false"/>
+		<zip destfile="${plugin.destination}/org.epic.source_0.7.5.zip" basedir="${temp.folder}" filesonly="true" whenempty="skip" update="false"/>
 		<delete dir="${temp.folder}"/>
 	</target>
 

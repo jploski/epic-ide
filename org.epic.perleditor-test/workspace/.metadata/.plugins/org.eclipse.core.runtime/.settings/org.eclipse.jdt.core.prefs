@@ -1,4 +1,0 @@
-#Fri May 12 15:07:38 CEST 2017
-eclipse.preferences.version=1
-org.eclipse.jdt.core.builder.resourceCopyExclusionFilter=,*.g,*.launch
-org.eclipse.jdt.core.classpathVariable.ANTLR_HOME=/home/jpl/eclipse-3.7/dropins/org.antlr_2.7.6

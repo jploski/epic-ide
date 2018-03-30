@@ -1,4 +1,0 @@
-use lib '../lib';
-use SomeModule;
-
-SomeModule::hello();

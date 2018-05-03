@@ -1,10 +1,14 @@
 package org.epic.perleditor.preferences;
 
-import org.eclipse.jface.preference.*;
+import org.eclipse.jface.preference.BooleanFieldEditor;
+import org.eclipse.jface.preference.FieldEditorPreferencePage;
+import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.jface.preference.IntegerFieldEditor;
+import org.eclipse.jface.preference.StringFieldEditor;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
-import org.eclipse.ui.help.WorkbenchHelp;
+import org.eclipse.ui.PlatformUI;
 import org.epic.perleditor.PerlEditorPlugin;
 
 
@@ -46,7 +50,7 @@ public class CodeAssistPreferencePage
      */
     public void createControl(Composite parent) {
         super.createControl(parent);
-        WorkbenchHelp.setHelp(getControl(), getPreferenceHelpContextID());
+        PlatformUI.getWorkbench().getHelpSystem().setHelp(getControl(), getPreferenceHelpContextID());
     }
     
     protected String getPreferenceHelpContextID() {

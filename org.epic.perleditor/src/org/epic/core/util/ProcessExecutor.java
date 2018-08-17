@@ -172,6 +172,10 @@ public class ProcessExecutor
                 // detect that the thrown exception is indeed a "broken pipe":
                 // There is no error code (not even a platform-specific one),
                 // and the error message carried by the exception is localized.
+                //
+                // Additionally, if "broken pipe" happened, data might be left
+                // unflushed, gets flushed on additional calls to "close" and
+                // leads to another exception again. So only "close" here!
                 try
                 {
                     inputWriter.write(input.substring(bomOffset+1));

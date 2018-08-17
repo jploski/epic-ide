@@ -175,7 +175,7 @@ public class ProcessExecutor
                 try
                 {
                     inputWriter.write(input.substring(bomOffset+1));
-                    inputWriter.flush();
+                    inputWriter.close();
                 }
                 catch (IOException e)
                 {
@@ -183,8 +183,6 @@ public class ProcessExecutor
                     brokenPipe(e); // call it to support testing for this condition
                 }
             }
-
-            inputWriter.close();
 
             ProcessOutput ret = new ProcessOutput(
                 stdout.getResult(),

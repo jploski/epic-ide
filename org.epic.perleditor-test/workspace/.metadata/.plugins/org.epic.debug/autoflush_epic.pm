@@ -1,1 +1,0 @@
-$| = 1; my $tmp = CORE::select(STDERR); $| = 1; CORE::select($tmp);

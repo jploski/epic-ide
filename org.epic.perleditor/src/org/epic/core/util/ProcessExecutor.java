@@ -165,12 +165,12 @@ public class ProcessExecutor
                 inputWriter.write(input.substring(bomOffset,bomOffset+1));
                 inputWriter.flush();
 
-                // The remaining write operation will often result in
-                // a "broken pipe" IOException because Perl does not wait
-                // until WE close the stream (and Java unfortunately treats
-                // this condition as an exception). To make things worse, there is
-                // no way to detect that the thrown exception is indeed a "broken
-                // pipe": there is no error code (not even platform-specific one),
+                // The remaining write operation will often result in a "broken
+                // pipe"-IOException, because Perl does not wait until WE close
+                // the stream (and Java unfortunately treats this condition as
+                // an exception). To make things worse, there is no easy way to
+                // detect that the thrown exception is indeed a "broken pipe":
+                // There is no error code (not even a platform-specific one),
                 // and the error message carried by the exception is localized.
                 try
                 {

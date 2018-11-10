@@ -120,7 +120,7 @@ sub _dump_entity
     my $name = shift;
     my $ent = shift;
     
-    binmode($DB::OUT, ':utf8');
+    binmode($DB::OUT, ':encoding(UTF-8)');
     
     print _token($name);
     

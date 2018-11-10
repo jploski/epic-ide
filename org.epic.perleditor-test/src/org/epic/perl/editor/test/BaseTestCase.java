@@ -71,11 +71,20 @@ public class BaseTestCase extends TestCase
      */
     protected List<String> readLines(String path) throws IOException
     {
+        return readLines(new FileReader(getFile(path)));
+    }
+    
+    /**
+     * @param reader reader for a text file
+     * @return a list of strings represented lines from the specified file
+     */
+    protected List<String> readLines(Reader in) throws IOException
+    {
         BufferedReader r = null;
 
         try
         {
-            r = new BufferedReader(new FileReader(getFile(path)));
+            r = new BufferedReader(in);
 
             List<String> lines = new ArrayList<String>();
             String l;

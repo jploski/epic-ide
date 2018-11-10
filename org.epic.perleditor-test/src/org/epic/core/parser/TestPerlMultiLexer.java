@@ -107,9 +107,9 @@ public class TestPerlMultiLexer extends BaseTestCase
     private void setUpTokenNames() throws IOException
     {
         tokenNames = new HashMap<Integer, String>();
-        URL tokensURL = PerlLexer.class.getResource("PerlTokenTypes.txt");
-        assertNotNull(tokensURL);
-        List<String> lines = readLines(tokensURL.getPath());
+        InputStream tokensIn = PerlLexer.class.getResourceAsStream("PerlTokenTypes.txt");
+        assertNotNull(tokensIn);
+        List<String> lines = readLines(new InputStreamReader(tokensIn));
 
         for (int i = 2; i < lines.size(); i++)
         {

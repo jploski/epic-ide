@@ -5,8 +5,7 @@ Bundle-SymbolicName: org.epic.debug; singleton:=true
 Bundle-Version: 0.7.4
 Bundle-Activator: org.epic.debug.PerlDebugPlugin
 Bundle-Vendor: EPIC Project
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8,
- JavaSE-1.7
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Export-Package: org.epic.debug,
  org.epic.debug.cgi,
  org.epic.debug.cgi.server,

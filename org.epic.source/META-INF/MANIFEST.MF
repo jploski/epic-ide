@@ -4,4 +4,4 @@ Bundle-Name: EPIC Source Plug-in
 Bundle-SymbolicName: org.epic.source; singleton:=true
 Bundle-Version: 0.7.6
 Bundle-Vendor: EPIC Project
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7

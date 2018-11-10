@@ -19,5 +19,4 @@ Require-Bundle: org.junit,
 Bundle-ClassPath: cglib-full-2.0.2.jar,
  easymock.jar,
  bin/
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8,
- JavaSE-1.7
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7

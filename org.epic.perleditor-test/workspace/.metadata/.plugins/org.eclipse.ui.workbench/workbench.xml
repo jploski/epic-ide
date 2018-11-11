@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<workbench version="2.0">
+<workbench progressCount="13" version="2.0">
 <workbenchAdvisor/>
-<window height="1080" width="1062" x="522" y="0">
+<window height="1088" width="1046" x="756" y="19">
 <fastViewData fastViewLocation="1024"/>
 <perspectiveBar>
 <itemSize x="160"/>
@@ -20,7 +20,7 @@
 <coolItem id="org.eclipse.wst.xml.ui.perspective.NewFileToolBar" itemType="typeToolBarContribution" x="-1" y="-1"/>
 <coolItem id="org.eclipse.wst.xml.ui.design.DesignToolBar" itemType="typeToolBarContribution" x="-1" y="-1"/>
 <coolItem id="com.amazonaws.eclipse.toolbar" itemType="typeToolBarContribution" x="41" y="26"/>
-<coolItem id="org.epic.perleditor.editors.PerlEditor" itemType="typeToolBarContribution" x="-1" y="-1"/>
+<coolItem id="org.epic.perleditor.editors.PerlEditor" itemType="typePlaceholder" x="-1" y="-1"/>
 <coolItem id="org.epic.perleditor.toolbar.actionSet.presentation" itemType="typeToolBarContribution" x="36" y="26"/>
 <coolItem id="group.nav" itemType="typeGroupMarker"/>
 <coolItem id="org.eclipse.ui.workbench.navigate" itemType="typeToolBarContribution" x="172" y="26"/>
@@ -33,21 +33,10 @@
 <editorArea activeWorkbook="DefaultEditorWorkbook">
 <info part="DefaultEditorWorkbook">
 <folder appearance="1" expanded="2">
-<presentation id="org.eclipse.ui.presentations.WorkbenchPresentationFactory">
-<part id="0"/>
-<part id="1"/>
-</presentation>
+<presentation id="org.eclipse.ui.presentations.WorkbenchPresentationFactory"/>
 </folder>
 </info>
 </editorArea>
-<editor activePart="true" focus="true" id="org.epic.perleditor.editors.PerlEditor" name="TestAccessor.pm" partName="TestAccessor.pm" path="/home/jpl/git/epic-ide/org.epic.perleditor-test/workspace/EPICTest/lib/TestAccessor.pm" title="TestAccessor.pm" tooltip="EPICTest/lib/TestAccessor.pm" workbook="DefaultEditorWorkbook">
-<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/EPICTest/lib/TestAccessor.pm"/>
-<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="261" selectionTopPixel="0"/>
-</editor>
-<editor id="org.epic.perleditor.editors.PerlEditor" name="TestDebugger3.pm" partName="TestDebugger3.pm" path="/home/jpl/git/epic-ide/org.epic.perleditor-test/workspace/EPICTest/noinc/TestDebugger3.pm" title="TestDebugger3.pm" tooltip="EPICTest/noinc/TestDebugger3.pm" workbook="DefaultEditorWorkbook">
-<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/EPICTest/noinc/TestDebugger3.pm"/>
-<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="61" selectionTopPixel="0"/>
-</editor>
 </editors>
 <views>
 <view id="org.eclipse.pde.runtime.LogView" partName="Error Log">
@@ -60,7 +49,9 @@
 <filter element=".project" isEnabled="true"/>
 <filter element="epic_links" isEnabled="true"/>
 </filters>
-<selection>&#x0A;<element path="/EPICTest"/>
+<expanded>&#x0A;<element path="/EPICTest"/>
+</expanded>
+<selection>&#x0A;<element path="/EPICTest/test_Variables.pl"/>
 </selection>
 </viewState>
 </view>
@@ -102,7 +93,7 @@
 <viewState/>
 </view>
 </views>
-<perspectives activePart="org.epic.perleditor.editors.PerlEditor" activePerspective="org.eclipse.debug.ui.DebugPerspective">
+<perspectives activePart="org.eclipse.ui.console.ConsoleView" activePerspective="org.eclipse.debug.ui.DebugPerspective">
 <perspective editorAreaTrimState="2" editorAreaVisible="1" fixed="0" version="0.016">
 <descriptor class="org.eclipse.debug.internal.ui.DebugPerspectiveFactory" id="org.eclipse.debug.ui.DebugPerspective" label="Debug"/>
 <alwaysOnActionSet id="org.eclipse.ui.edit.text.actionSet.annotationNavigation"/>
@@ -160,7 +151,7 @@
 <page content="org.eclipse.ui.cheatsheets.views.CheatSheetView" label="LabelNotFound"/>
 </folder>
 </info>
-<info folder="true" part="org.eclipse.debug.internal.ui.ConsoleFolderView" ratio="0.75" ratioLeft="558" ratioRight="186" relationship="4" relative="org.eclipse.debug.internal.ui.NavigatorFolderView">
+<info folder="true" part="org.eclipse.debug.internal.ui.ConsoleFolderView" ratio="0.806048" ratioLeft="773" ratioRight="186" relationship="4" relative="org.eclipse.debug.internal.ui.NavigatorFolderView">
 <folder activePageID="org.eclipse.ui.console.ConsoleView" appearance="2" expanded="2">
 <page content="org.eclipse.ui.console.ConsoleView" label="Console"/>
 <page content="org.eclipse.ui.views.TaskList" label="Tasks"/>
@@ -178,7 +169,7 @@
 </presentation>
 </folder>
 </info>
-<info part="org.eclipse.ui.editorss" ratio="0.4498208" ratioLeft="251" ratioRight="307" relationship="4" relative="org.eclipse.debug.internal.ui.NavigatorFolderView"/>
+<info part="org.eclipse.ui.editorss" ratio="0.32597402" ratioLeft="251" ratioRight="519" relationship="4" relative="org.eclipse.debug.internal.ui.NavigatorFolderView"/>
 <info folder="true" part="org.eclipse.debug.internal.ui.OutlineFolderView" ratio="0.74953616" ratioLeft="808" ratioRight="270" relationship="2" relative="org.eclipse.ui.editorss">
 <folder activePageID="org.eclipse.ui.views.ContentOutline" appearance="2" expanded="2">
 <page content="org.eclipse.ui.views.ContentOutline" label="Outline"/>
@@ -273,169 +264,7 @@
 </perspective>
 </perspectives>
 <workingSets/>
-<navigationHistory>
-<editors>
-<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.epic.perleditor.editors.PerlEditor" path="/EPICTest/test_Debugger2.pl"/>
-<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.epic.perleditor.editors.PerlEditor" path="/EPICTest/noinc/TestDebugger3.pm"/>
-<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.epic.perleditor.editors.PerlEditor" path="/EPICTest/test_Debugger.pl"/>
-<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.epic.perleditor.editors.PerlEditor" path="/EPICTest/test_Variables.pl"/>
-<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.epic.perleditor.editors.PerlEditor" path="/EPICTest/lib/TestAccessor.pm"/>
-<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.epic.perleditor.editors.PerlEditor" path="/EPICTest/test_Debugger2.pl"/>
-<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.epic.perleditor.editors.PerlEditor" path="/EPICTest/noinc/TestDebugger3.pm"/>
-<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.epic.perleditor.editors.PerlEditor" path="/EPICTest/test_Debugger.pl"/>
-<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.epic.perleditor.editors.PerlEditor" path="/EPICTest/test_Variables.pl"/>
-</editors>
-<item historyLabel="test_Debugger2.pl" index="0">
-<position/>
-</item>
-<item historyLabel="test_Debugger.pl" index="2">
-<position/>
-</item>
-<item historyLabel="test_Debugger2.pl" index="0">
-<position/>
-</item>
-<item historyLabel="test_Debugger2.pl" index="0">
-<position/>
-</item>
-<item historyLabel="test_Debugger.pl" index="2">
-<position info="not_deleted" x="120" y="0"/>
-</item>
-<item historyLabel="TestDebugger3.pm" index="1">
-<position info="not_deleted" x="61" y="0"/>
-</item>
-<item historyLabel="test_Debugger.pl" index="2">
-<position info="not_deleted" x="143" y="0"/>
-</item>
-<item historyLabel="test_Debugger.pl" index="2">
-<position info="not_deleted" x="156" y="0"/>
-</item>
-<item historyLabel="test_Debugger.pl" index="2">
-<position info="not_deleted" x="176" y="0"/>
-</item>
-<item historyLabel="test_Debugger.pl" index="2">
-<position info="not_deleted" x="221" y="0"/>
-</item>
-<item historyLabel="test_Debugger.pl" index="2">
-<position info="not_deleted" x="244" y="0"/>
-</item>
-<item historyLabel="test_Debugger.pl" index="2">
-<position info="not_deleted" x="262" y="0"/>
-</item>
-<item historyLabel="test_Debugger.pl" index="2">
-<position info="not_deleted" x="285" y="0"/>
-</item>
-<item historyLabel="test_Debugger.pl" index="2">
-<position info="not_deleted" x="301" y="0"/>
-</item>
-<item historyLabel="test_Debugger.pl" index="2">
-<position info="not_deleted" x="317" y="0"/>
-</item>
-<item historyLabel="test_Debugger.pl" index="2">
-<position info="not_deleted" x="337" y="0"/>
-</item>
-<item historyLabel="test_Debugger.pl" index="2">
-<position info="not_deleted" x="380" y="0"/>
-</item>
-<item historyLabel="test_Debugger2.pl" index="0">
-<position info="not_deleted" x="0" y="0"/>
-</item>
-<item historyLabel="test_Debugger2.pl" index="0">
-<position info="not_deleted" x="29" y="0"/>
-</item>
-<item historyLabel="test_Variables.pl" index="3">
-<position info="not_deleted" x="422" y="0"/>
-</item>
-<item historyLabel="TestDebugger3.pm" index="1">
-<position info="not_deleted" x="61" y="0"/>
-</item>
-<item historyLabel="TestAccessor.pm" index="4">
-<position info="not_deleted" x="261" y="0"/>
-</item>
-<item historyLabel="test_Debugger2.pl" index="5">
-<position/>
-</item>
-<item historyLabel="TestDebugger3.pm" index="6">
-<position/>
-</item>
-<item historyLabel="test_Debugger.pl" index="7">
-<position/>
-</item>
-<item historyLabel="test_Debugger.pl" index="7">
-<position/>
-</item>
-<item historyLabel="test_Debugger2.pl" index="5">
-<position/>
-</item>
-<item historyLabel="TestAccessor.pm" index="4">
-<position info="not_deleted" x="261" y="0"/>
-</item>
-<item historyLabel="test_Debugger.pl" index="7">
-<position/>
-</item>
-<item historyLabel="test_Debugger2.pl" index="5">
-<position/>
-</item>
-<item historyLabel="test_Debugger2.pl" index="5">
-<position/>
-</item>
-<item historyLabel="test_Debugger.pl" index="7">
-<position info="not_deleted" x="120" y="0"/>
-</item>
-<item historyLabel="TestDebugger3.pm" index="6">
-<position info="not_deleted" x="61" y="0"/>
-</item>
-<item historyLabel="test_Debugger.pl" index="7">
-<position info="not_deleted" x="143" y="0"/>
-</item>
-<item historyLabel="test_Debugger.pl" index="7">
-<position info="not_deleted" x="156" y="0"/>
-</item>
-<item historyLabel="test_Debugger.pl" index="7">
-<position info="not_deleted" x="176" y="0"/>
-</item>
-<item historyLabel="test_Debugger.pl" index="7">
-<position info="not_deleted" x="221" y="0"/>
-</item>
-<item historyLabel="test_Debugger.pl" index="7">
-<position info="not_deleted" x="244" y="0"/>
-</item>
-<item historyLabel="test_Debugger.pl" index="7">
-<position info="not_deleted" x="262" y="0"/>
-</item>
-<item historyLabel="test_Debugger.pl" index="7">
-<position info="not_deleted" x="285" y="0"/>
-</item>
-<item historyLabel="test_Debugger.pl" index="7">
-<position info="not_deleted" x="301" y="0"/>
-</item>
-<item historyLabel="test_Debugger.pl" index="7">
-<position info="not_deleted" x="317" y="0"/>
-</item>
-<item historyLabel="test_Debugger.pl" index="7">
-<position info="not_deleted" x="337" y="0"/>
-</item>
-<item historyLabel="test_Debugger.pl" index="7">
-<position info="not_deleted" x="380" y="0"/>
-</item>
-<item historyLabel="test_Debugger2.pl" index="5">
-<position info="not_deleted" x="0" y="0"/>
-</item>
-<item historyLabel="test_Debugger2.pl" index="5">
-<position info="not_deleted" x="29" y="0"/>
-</item>
-<item historyLabel="TestAccessor.pm" index="4">
-<position info="not_deleted" x="261" y="0"/>
-</item>
-<item historyLabel="test_Variables.pl" index="8">
-<position info="not_deleted" x="422" y="0"/>
-</item>
-<item historyLabel="TestDebugger3.pm" index="6">
-<position info="not_deleted" x="61" y="0"/>
-</item>
-<item active="true" historyLabel="TestAccessor.pm" index="4">
-<position info="not_deleted" x="261" y="0"/>
-</item>
-</navigationHistory>
+<navigationHistory/>
 <input factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/" type="8"/>
 </page>
 <workbenchWindowAdvisor/>
@@ -455,8 +284,8 @@
 <file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.epic.perleditor.editors.PerlEditor" name="test_FindReplace.pl" tooltip="EPICTest/test_FindReplace.pl">
 <persistable path="/EPICTest/test_FindReplace.pl"/>
 </file>
-<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.epic.perleditor.editors.PerlEditor" name="test_Variables.pl" tooltip="EPICTest/test_Variables.pl">
-<persistable path="/EPICTest/test_Variables.pl"/>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.epic.perleditor.editors.PerlEditor" name="TestDebugger3.pm" tooltip="EPICTest/noinc/TestDebugger3.pm">
+<persistable path="/EPICTest/noinc/TestDebugger3.pm"/>
 </file>
 <file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.epic.perleditor.editors.PerlEditor" name="test_Debugger.pl" tooltip="EPICTest/test_Debugger.pl">
 <persistable path="/EPICTest/test_Debugger.pl"/>
@@ -464,8 +293,8 @@
 <file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.epic.perleditor.editors.PerlEditor" name="test_Debugger2.pl" tooltip="EPICTest/test_Debugger2.pl">
 <persistable path="/EPICTest/test_Debugger2.pl"/>
 </file>
-<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.epic.perleditor.editors.PerlEditor" name="EPIC-TestEditorAssociation5146095821263131222.pl" tooltip="epic_links/1494595661948/EPIC-TestEditorAssociation5146095821263131222.pl">
-<persistable path="/epic_links/1494595661948/EPIC-TestEditorAssociation5146095821263131222.pl"/>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.epic.perleditor.editors.PerlEditor" name="EPIC-TestEditorAssociation4256041123229378077.pl" tooltip="epic_links/1494595661948/EPIC-TestEditorAssociation4256041123229378077.pl">
+<persistable path="/epic_links/1494595661948/EPIC-TestEditorAssociation4256041123229378077.pl"/>
 </file>
 <file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.epic.perleditor.editors.PerlEditor" name="test_EditorAssociation.pre" tooltip="EPICTest/test_EditorAssociation.pre">
 <persistable path="/EPICTest/test_EditorAssociation.pre"/>
@@ -476,14 +305,14 @@
 <file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.epic.perleditor.editors.PerlEditor" name="TestOpenSub.pm" tooltip="EPICTest/lib/TestOpenSub.pm">
 <persistable path="/EPICTest/lib/TestOpenSub.pm"/>
 </file>
-<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.epic.perleditor.editors.PerlEditor" name="test_OpenSub3.pl" tooltip="EPICTest/test_OpenSub3.pl">
-<persistable path="/EPICTest/test_OpenSub3.pl"/>
-</file>
 <file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.epic.perleditor.editors.PerlEditor" name="test_OpenSub2.pl" tooltip="EPICTest/test_OpenSub2.pl">
 <persistable path="/EPICTest/test_OpenSub2.pl"/>
 </file>
 <file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.epic.perleditor.editors.PerlEditor" name="test_OpenSub.pl" tooltip="EPICTest/test_OpenSub.pl">
 <persistable path="/EPICTest/test_OpenSub.pl"/>
+</file>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.epic.perleditor.editors.PerlEditor" name="test_OpenSub3.pl" tooltip="EPICTest/test_OpenSub3.pl">
+<persistable path="/EPICTest/test_OpenSub3.pl"/>
 </file>
 <file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.epic.perleditor.editors.PerlEditor" name="test_PerlDoc.pl" tooltip="EPICTest/test_PerlDoc.pl">
 <persistable path="/EPICTest/test_PerlDoc.pl"/>

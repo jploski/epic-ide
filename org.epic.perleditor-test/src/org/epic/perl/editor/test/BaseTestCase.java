@@ -52,7 +52,7 @@ public class BaseTestCase extends TestCase
         try
         {
             r = new BufferedReader(new InputStreamReader(
-                new FileInputStream(getFile(path)), "ISO-8859-1"));
+                new FileInputStream(getFile(path)), "UTF-8"));
 
             char[] buf = new char[4096];
             int bread;

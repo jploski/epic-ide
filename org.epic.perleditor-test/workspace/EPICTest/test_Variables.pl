@@ -1,5 +1,7 @@
 #!/usr/bin/perl
 
+use utf8;
+
 use Data::Dumper;
 
 use lib 'noinc';
@@ -19,6 +21,7 @@ $scal = 123;
 $ref1 = \%h;
 $ref2 = \$h2;
 my $foo2 = \@foo;
+my $ü = { 𝑛 => "\x{1d45b}" };
 
 TestDebugger3::foo(123, 'abc');
 TestAccessor::test();

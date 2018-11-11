@@ -5,6 +5,7 @@ package dumpvar_epic;
 use strict;
 use warnings;
 
+use Encode;
 use Scalar::Util;
 use overload;
 
@@ -120,7 +121,7 @@ sub _dump_entity
     my $name = shift;
     my $ent = shift;
     
-    binmode($DB::OUT, ':encoding(UTF-8)');
+    binmode($DB::OUT, ':raw');
     
     print _token($name);
     
@@ -148,20 +149,23 @@ sub _dump_entity
         print _token($t);
     }
 
-    my $val;
+    my ($val, $len);
     if ($cycle)
     {
-        $val = 'cycle'; 
+        $val = 'cycle';
+        $len = 5; 
     }
     elsif (ref($tmp) eq 'HASH' || ref($tmp) eq 'ARRAY')
     {
         $val = '...';
+        $len = 3;
     }
     elsif (ref($tmp) eq 'SCALAR')
     {
         if (defined($$tmp))
         {
-            if (length($$tmp) > MAX_SCALAR_LENGTH)
+            $len = length($$tmp); 
+            if ($len > MAX_SCALAR_LENGTH)
             {
                 $val = '\''.substr($$tmp, 0, MAX_SCALAR_LENGTH).'\'';
             }
@@ -170,27 +174,34 @@ sub _dump_entity
                 $val = '\''.$$tmp.'\'';
             }
         }
-        else { $val = 'undef'; }
+        else { $val = 'undef'; $len = 5; }
     }
     else # CODE, GLOB, or possibly a blessed reference
     {
         if (overload::StrVal($tmp) eq ''.$tmp)
         {
             $val = '...'; # without stringify operation, treat as hash
+            $len = 3;
         }
         else
         {
-            $val = '\''.$tmp.'\''; # with stringify operation, treat as string
+            $len = length($tmp);
+            if ($len > MAX_SCALAR_LENGTH)
+            {
+                $val = '\''.substr($tmp, 0, MAX_SCALAR_LENGTH).'\'';
+            }
+            else
+            {
+                $val = '\''.$tmp.'\''; # with stringify operation, treat as string
+            }
         } 
     }
 
     print SEP;
     print _token($val);
     print SEP;
-    print _token(length($val));
+    print _token($len);
     print "\n";
-    
-    binmode($DB::OUT, ':raw');
 }
 
 # Dumps all key-value pairs contained in a hash.
@@ -264,8 +275,9 @@ sub _dump_package_var
 sub _token
 {
     my $value = shift;
+    my $value_utf8 = Encode::encode_utf8($value);
     
-    return length($value).SEP.$value;
+    return length($value_utf8).SEP.$value_utf8;
 }
 
 sub _unctrl
@@ -307,8 +319,9 @@ The I<entities> dumpable by this module can be classified as follows:
 The dump format is designed to be reasonably concise and easy to parse
 while remaining human-readable to support debugging the debugger.
 
-An entity is dumped by printing a series of tokens. Each token is a utf8
-string and is preceded by its length expressed as a decimal integer.
+An entity is dumped by printing a series of tokens. Each token is a UTF-8
+byte sequence and is preceded by its length (count of bytes) expressed
+as a decimal integer.
 Tokens, as well as the token length and token content, are separated
 from each other with a pipe (vertical bar) character. Thus, the string
 C<"3|abc"> would contain a single three-character long token with value
@@ -440,58 +453,58 @@ skipped here for clarity.
 
     $x = 5
 
-        $x|1|SCALAR(0x123456)|'5'|3
+        2|$x|1|1|17|SCALAR(0x1234567)|3|'5'|1|1
       
     $x = 'st\'r'
 
-        $x|1|SCALAR(0x123456)|'st'r'|6
+        2|$x|1|1|17|SCALAR(0x1234567)|6|'st'r'|1|4
 
     @x = ( 1, 2, 3 )
 
-        @x|1|ARRAY(0x123456)|...|3
+        2|@x|1|1|15|ARRAY(0x123456)|3|...|1|3
 
     %x = ( key => 'value' )
 
-        %x|1|HASH(0x123456)|...|3
+        2|%x|1|1|14|HASH(0x123456)|3|...|1|3
 
     $x = 5, $y = \$x
 
-        $y|2|REF(0x123457)|SCALAR(0x123456)|'5'|3
+        2|$y|1|2|14|REF(0x1234567)|17|SCALAR(0x6543210)|3|'5'|1|1
 
     $x = [ 1, 2, 3 ]
 
-        $x|2|REF(0x123457)|ARRAY(0x123456)|...|3
+        2|$x|1|2|13|REF(0x123456)|15|ARRAY(0x654321)|3|...|1|3
 
     $x = { key => 'value' }
 
-        $x|2|REF(0x123457)|HASH(0x123456)|...|3
+        2|$x|1|2|14|REF(0x1234567)|15|HASH(0x6543210)|3|...|1|3
 
 =head2 Type 2: key-value pairs of a hash 
 
     $x->{"k ey"} = 5
 
-        k ey|1|SCALAR(0x123456)|'5'|3
+        4|k ey|1|1|17|SCALAR(0x1234567)|3|'5'|1|1
           
     $x->{'key'} = 'str'
 
-        key|1|SCALAR(0x123456)|'str'|5
+        3|key|1|1|17|SCALAR(0x14a3448)|5|'str'|1|3
           
     $x->{'key'} = { other => 'value' }
 
-        key|2|REF(0x123457)|HASH(0x123456)|...|3
+        3|key|1|2|14|REF(0x1234567)|15|HASH(0x7654321)|3|...|1|3
           
     $x->{'key'} = [ 1, 2, 3 ]
 
-        key|2|REF(0x123457)|ARRAY(0x123456)|...|3
+        3|key|1|2|14|REF(0x1234567)|16|ARRAY(0x7654321)|3|...|1|3
 
 =head2 Type 3: elements of a list
 
     $x[0] = 5
 
-        0|1|SCALAR(0x123456)|'5'|3
+        1|0|1|1|17|SCALAR(0x1234567)|3|'5'|1|1
           
     $x[1] = 'str'
 
-        1|1|SCALAR(0x123456)|'str'|5
+        1|1|1|1|17|SCALAR(0x1234567)|5|'str'|1|3
 
 =cut

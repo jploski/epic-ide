@@ -207,8 +207,15 @@ public class RemotePort
     {
         try
         {
+            // Use fake ISO-8859-1 encoding to read raw UTF-8 bytes from debugger.
+            // We decode the UTF-8 sequences ourselves in DumpedEntityReader to
+            // avoid communicating unstable "character lengths" of strings.
+            // For example, U+1D45B is a single character in Perl (length($str) == 1),
+            // but represented as two chars when decoded in Java (str.length() == 2),
+            // which would cause trouble in DumpedEntityReader.
+            
             return new BufferedReader(
-                new InputStreamReader(getInStream(), "UTF8"));
+                new InputStreamReader(getInStream(), "ISO-8859-1"));
         }
         catch (UnsupportedEncodingException e)
         {

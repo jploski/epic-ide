@@ -1,30 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section name="Workbench">
-	<section name="org.eclipse.ui.texteditor.FindReplaceDialog_dialogBounds">
-		<item value="310" key="DIALOG_WIDTH"/>
-		<item value="164" key="DIALOG_Y_ORIGIN"/>
-		<item value="422" key="DIALOG_HEIGHT"/>
-		<item value="413" key="DIALOG_X_ORIGIN"/>
-		<item value="1|Verdana|12.0|0|GTK|1|" key="DIALOG_FONT_NAME"/>
+	<section name="org.eclipse.ui.texteditor.GotoLineAction$GotoLineDialog_dialogBounds">
+		<item value="313" key="DIALOG_Y_ORIGIN"/>
+		<item value="305" key="DIALOG_X_ORIGIN"/>
 	</section>
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog">
-		<item value="true" key="wrap"/>
+		<item value="false" key="isRegEx"/>
+		<item value="abc" key="selection"/>
 		<item value="false" key="casesensitive"/>
-		<item value="true" key="isRegEx"/>
-		<item value="false" key="incremental"/>
-		<item value="false" key="wholeword"/>
-		<item value="" key="selection"/>
-		<item value="473" key="y"/>
 		<item value="503" key="x"/>
+		<item value="473" key="y"/>
+		<item value="false" key="incremental"/>
+		<item value="true" key="wrap"/>
+		<item value="false" key="wholeword"/>
 		<list key="findhistory">
+			<item value="abc"/>
+			<item value="$x"/>
 			<item value="test123"/>
 			<item value="\n="/>
 			<item value="next_sibling"/>
 			<item value="foo"/>
 			<item value="a"/>
 			<item value="funky"/>
-			<item value="parseurl"/>
-			<item value="sub cmp"/>
 		</list>
 		<list key="replacehistory">
 			<item value="bar"/>
@@ -34,8 +31,11 @@
 	</section>
 	<section name="FindReplaceDialog.completion_proposal_size">
 	</section>
-	<section name="org.eclipse.ui.texteditor.GotoLineAction$GotoLineDialog_dialogBounds">
-		<item value="313" key="DIALOG_Y_ORIGIN"/>
-		<item value="305" key="DIALOG_X_ORIGIN"/>
+	<section name="org.eclipse.ui.texteditor.FindReplaceDialog_dialogBounds">
+		<item value="310" key="DIALOG_WIDTH"/>
+		<item value="1|Verdana|12.0|0|GTK|1|" key="DIALOG_FONT_NAME"/>
+		<item value="422" key="DIALOG_HEIGHT"/>
+		<item value="388" key="DIALOG_Y_ORIGIN"/>
+		<item value="-404" key="DIALOG_X_ORIGIN"/>
 	</section>
 </section>

@@ -1,5 +1,8 @@
 package org.epic.debug.db;
 
+import java.nio.ByteBuffer;
+import java.nio.charset.Charset;
+
 import org.eclipse.core.runtime.Assert;
 
 /**
@@ -10,6 +13,7 @@ import org.eclipse.core.runtime.Assert;
  */
 class DumpedEntityReader
 {
+    private final Charset UTF8_CHARSET = Charset.forName("UTF-8");
     private final String input;
     private int i;
     
@@ -51,6 +55,14 @@ class DumpedEntityReader
         if (i < input.length() &&
             (input.charAt(i) == '\n' || input.charAt(i) == '|')) i++;
 
-        return input.substring(j+1, j+tokenLength+1);
+        String token = input.substring(j+1, j+tokenLength+1);
+        try
+        {
+            return UTF8_CHARSET.decode(ByteBuffer.wrap(token.getBytes("ISO-8859-1"))).toString();
+        }
+        catch (Exception e)
+        {
+            return token;
+        }
     }
 }

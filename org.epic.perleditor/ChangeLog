@@ -6,6 +6,11 @@ Git
 		Editor:
 
 
+Version 0.7.7 - 11-Nov-2018
+		Debugger:
+		* Fixed Bug #700 Ticket #698 not solved in EPIC 0.7.5
+		* Fixed bug related to transmitting multi-byte Unicode characters to Variables view
+
 Version 0.7.6 - 10-Nov-2018
 		Debugger:
 		* Fixed Bug #700 Ticket #698 not solved in EPIC 0.7.5

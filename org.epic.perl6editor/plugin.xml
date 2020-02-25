@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+
+   <!-- The PERL 6 Editor
+   -->
+   <extension point="org.eclipse.ui.editors">
+      <editor
+            name="Perl 6 Editor"
+            extensions="pl6, p6, pm6"
+            icon="icons/epic.gif"
+            contributorClass="org.eclipse.ui.texteditor.BasicTextEditorActionContributor"
+            class="org.epic.perl6editor.editors.PerlEditor"
+            id="org.epic.perl6editor.editors.PerlEditor">
+      </editor>
+   </extension>
+
+</plugin>

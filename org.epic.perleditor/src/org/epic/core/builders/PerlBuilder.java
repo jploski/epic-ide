@@ -112,7 +112,7 @@ public class PerlBuilder extends IncrementalProjectBuilder
      */
     private void cancelPreviousPerlBuilderJob()
     {
-        IJobManager jobMan = Platform.getJobManager();
+        IJobManager jobMan = Job.getJobManager();
         Job[] jobs = jobMan.find(PerlBuilderJob.JOB_FAMILY);
 
         if (jobs.length == 0) return; // no previous build found

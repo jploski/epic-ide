@@ -135,13 +135,19 @@ public class DebugModelPresentation implements IDebugModelPresentation
     {
         try
         {
-            if (value instanceof PerlValue)
-            {
-                listener.detailComputed(
-                    value,
-                    ((PerlValue) value).getDetailValue());
-            }
-            else listener.detailComputed(value, "");
+        	if (value instanceof PerlValue)
+        	{
+	            listener.detailComputed(
+	                value,
+	                ((PerlValue) value).getDetailValue());
+        	}
+        	else if (value instanceof PerlXValue)
+        	{
+	            listener.detailComputed(
+	                value,
+	                ((PerlXValue) value).getDetailValue());
+        	}
+        	else listener.detailComputed(value, "");
         }
         catch (DebugException e)
         {

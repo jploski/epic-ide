@@ -257,8 +257,11 @@ public class PerlDebugThread extends DebugElement implements IThread
                 ));
     }
 
+    private boolean terminating=false;
     public void terminate() throws DebugException
     {
+    	if(terminating) return;
+    	terminating=true;
         synchronized (LOCK)
         {
             if (isSuspended())
@@ -272,6 +275,10 @@ public class PerlDebugThread extends DebugElement implements IThread
                 getDebugTarget().getProcess().terminate();
             }
         }
+    }
+    
+    public DebugTarget getDebugTarget(){
+    	return (DebugTarget)super.getDebugTarget();
     }
     
     /**
@@ -380,7 +387,7 @@ public class PerlDebugThread extends DebugElement implements IThread
         }
     }
     
-    private void suspended(int kind)
+    public void suspended(int kind)
     {
         try
         {            

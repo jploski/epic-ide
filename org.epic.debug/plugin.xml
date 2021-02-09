@@ -233,6 +233,13 @@
             public="true"
             id="org.epic.debug.launchConfigurationPerlRemote">
         </launchConfigurationType>
+        <launchConfigurationType
+            name="Perl Multi Remote"
+            delegate="org.epic.debug.remote.MultiRemoteLaunchConfigurationDelegate"
+            modes="debug"
+            public="true"
+            id="org.epic.debug.launchConfigurationPerlMultiRemote">
+        </launchConfigurationType>
     </extension>
 
     <extension point="org.eclipse.debug.core.sourceLocators">
@@ -274,6 +281,11 @@
             class="org.epic.debug.ui.LaunchConfigurationRemoteDialog"
             id="org.epic.debug.launchDialogRemote">
         </launchConfigurationTabGroup>
+        <launchConfigurationTabGroup
+            type="org.epic.debug.launchConfigurationPerlMultiRemote"
+            class="org.epic.debug.ui.LaunchConfigurationMultiRemoteDialog"
+            id="org.epic.debug.launchDialogMultiRemote">
+        </launchConfigurationTabGroup>
     </extension>
 
     <extension point="org.eclipse.debug.ui.launchConfigurationTypeImages">
@@ -290,6 +302,11 @@
         <launchConfigurationTypeImage
             icon="icons/epic_remote.gif"
             configTypeID="org.epic.debug.launchConfigurationPerlRemote"
+            id="org.epic.debug.launchimage">
+        </launchConfigurationTypeImage>
+        <launchConfigurationTypeImage
+            icon="icons/epic_remote.gif"
+            configTypeID="org.epic.debug.launchConfigurationPerlMultiRemote"
             id="org.epic.debug.launchimage">
         </launchConfigurationTypeImage>
     </extension>
@@ -334,6 +351,12 @@
                id="org.eclipse.jdt.ui.JavaPerspective">
          </perspective>
         </shortcut>
+    </extension>
+    <extension
+          point="org.eclipse.debug.core.watchExpressionDelegates">
+          <watchExpressionDelegate
+     		debugModel="org.epic.debug"
+     		delegateClass="org.epic.debug.db.PerlXWatchExpressionDelegate"/>
     </extension>
 	<!-- Adapters for contextual launch -->
 

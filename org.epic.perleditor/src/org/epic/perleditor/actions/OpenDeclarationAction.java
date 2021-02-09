@@ -24,6 +24,7 @@ public class OpenDeclarationAction extends PerlEditorAction
 {
     private final OpenSubDeclaration openSub;
     private final OpenPackageDeclaration openPackage;
+    private final OpenVariableDeclaration openVariable;
     
     //~ Constructors
 
@@ -33,6 +34,7 @@ public class OpenDeclarationAction extends PerlEditorAction
         
         this.openSub = new OpenSubDeclaration(this);
         this.openPackage = new OpenPackageDeclaration(this);
+        this.openVariable = new OpenVariableDeclaration(this);
     }
     
     //~ Methods
@@ -56,7 +58,12 @@ public class OpenDeclarationAction extends PerlEditorAction
         if (!res1.isFound())
         {
             AbstractOpenDeclaration.Result res2 = openPackage.run();
-            if (!res2.isFound()) reportFailure(res1);
+            if (!res2.isFound()) {
+            	AbstractOpenDeclaration.Result res3 = openVariable.run();
+            	if(!res3.isFound()){
+            		reportFailure(res1);
+            	}
+            }
         }
     }
     

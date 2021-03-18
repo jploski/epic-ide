@@ -172,10 +172,14 @@ public class ProcessExecutor
                 // no way to detect that the thrown exception is indeed a "broken
                 // pipe": there is no error code (not even platform-specific one),
                 // and the error message carried by the exception is localized.
-                try 
+                //
+                // Additionally, if "broken pipe" happened, data might be left
+                // unflushed, gets flushed on additional calls to "close" and
+                // leads to another exception again. So only "close" here!
+                try
                 {
                     inputWriter.write(input.substring(bomOffset+1));
-                    inputWriter.flush();
+                    inputWriter.close();
                 }
                 catch (IOException e)
                 {
@@ -184,8 +188,6 @@ public class ProcessExecutor
                 }
             }
     
-            inputWriter.close();
-                
             ProcessOutput ret = new ProcessOutput(
                 stdout.getResult(),
                 stderr.getResult());

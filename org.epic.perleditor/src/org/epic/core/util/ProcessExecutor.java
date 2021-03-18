@@ -12,7 +12,7 @@ import java.util.List;
  * A specialized client class is available for this case and should be used
  * instead of the generic ProcessExecutor.
  * </p>
- *
+ * 
  * @see org.epic.core.util.PerlExecutor2
  * @author jploski
  */
@@ -23,7 +23,7 @@ public class ProcessExecutor
     private final String charsetName;
     private final StringReaderThread stdout;
     private final StringReaderThread stderr;
-
+    
     /**
      * Creates a ProcessExecutor which will use the platform's default charset.
      */
@@ -43,9 +43,9 @@ public class ProcessExecutor
     {
         this.charsetName = charsetName;
         this.stdout = new StringReaderThread(":ProcessExecutor:stdout");
-        this.stderr = new StringReaderThread(":ProcessExecutor:stderr");
+        this.stderr = new StringReaderThread(":ProcessExecutor:stderr");        
     }
-
+    
     /**
      * Releases resources held by this ProcessExecutor.
      * Any active calls to {@link #execute} will throw an InterruptedException.
@@ -60,10 +60,10 @@ public class ProcessExecutor
         try { stderr.dispose(); }
         catch (InterruptedException e) { /* should never happen */ }
     }
-
+    
     /**
      * Same as {@link #execute(String[], String, File, String)}, except the command-line
-     * is provided as a List of Strings rather than an array.
+     * is provided as a List of Strings rather than an array. 
      */
     public ProcessOutput execute(List<String> commandLine, String input, File workingDir, String charset)
         throws InterruptedException, IOException
@@ -74,13 +74,13 @@ public class ProcessExecutor
             workingDir,
             charset);
     }
-
+    
     /**
      * Executes a process specified by the (platform-specific) command line,
      * collects output and blocks until the process terminates. The process
      * is executed in the given working directory, with the provided input,
      * which is converted to bytes using this ProcessExecutor's charset.
-     *
+     * 
      * @param commandLine  path to the process and command line parameters
      * @param input        input to be passed to the process via stdin
      * @param workingDir   working directory in which to execute the process
@@ -92,19 +92,19 @@ public class ProcessExecutor
      *            if {@link #dispose} was called during this operation
      * @execption java.io.IOException
      *            if the process could not be started or communication problems
-     *            were encountered
+     *            were encountered 
      */
     public ProcessOutput execute(String[] commandLine, String input, File workingDir, String inputCharset)
         throws InterruptedException, IOException
     {
         if (disposed) throw new IllegalStateException("ProcessExecutor disposed");
-
+        
         Process proc = null;
-
+        
         try
         {
             proc = Runtime.getRuntime().exec(commandLine, null, workingDir);
-
+    
             /*
              * Due to Java Bug #4763384 sleep for a very small amount of time
              * immediately after starting the subprocess
@@ -119,11 +119,11 @@ public class ProcessExecutor
             InputStream procStderr = proc.getErrorStream();
             InputStream procStdout = proc.getInputStream();
             OutputStream procStdin = proc.getOutputStream();
-
+            
             Reader stderrReader;
             Reader stdoutReader;
             Writer inputWriter;
-
+            
             if (inputCharset != null)
             {
                 stderrReader = new InputStreamReader(procStderr, inputCharset);
@@ -142,15 +142,15 @@ public class ProcessExecutor
                 stdoutReader = new InputStreamReader(procStdout);
                 inputWriter = new OutputStreamWriter(procStdin);
             }
-
+        
             stderr.read(stderrReader);
             stdout.read(stdoutReader);
-
+            
             if (input.length() > 0)
             {
 
                 // because pushing a character stream into perl throws an error
-                // on files with BOM, we detect BOM and skip this char.
+                // on files with BOM, we detect BOM and skip this char. 
                 int bomOffset = 0;
                 try {
                     bomOffset = getBOMOffset(input.substring(0,1));
@@ -164,13 +164,13 @@ public class ProcessExecutor
                 // is ready and not throwing exceptions...
                 inputWriter.write(input.substring(bomOffset,bomOffset+1));
                 inputWriter.flush();
-
-                // The remaining write operation will often result in a "broken
-                // pipe"-IOException, because Perl does not wait until WE close
-                // the stream (and Java unfortunately treats this condition as
-                // an exception). To make things worse, there is no easy way to
-                // detect that the thrown exception is indeed a "broken pipe":
-                // There is no error code (not even a platform-specific one),
+                
+                // The remaining write operation will often result in
+                // a "broken pipe" IOException because Perl does not wait
+                // until WE close the stream (and Java unfortunately treats
+                // this condition as an exception). To make things worse, there is
+                // no way to detect that the thrown exception is indeed a "broken
+                // pipe": there is no error code (not even platform-specific one),
                 // and the error message carried by the exception is localized.
                 //
                 // Additionally, if "broken pipe" happened, data might be left
@@ -187,11 +187,11 @@ public class ProcessExecutor
                     brokenPipe(e); // call it to support testing for this condition
                 }
             }
-
+    
             ProcessOutput ret = new ProcessOutput(
                 stdout.getResult(),
                 stderr.getResult());
-
+            
             stderrReader.close();
             stdoutReader.close();
 
@@ -204,19 +204,19 @@ public class ProcessExecutor
             throw e;
         }
         catch (IOException e)
-        {
+        { 
             if (proc != null) proc.destroy();
             throw e;
         }
     }
-
+    
 
     /**
      * This method is for the benefit of PerlValidator and should not concern
      * other clients.
      * <p>
      * Configures this ProcessExecutor to ignore suspected broken pipe
-     * exceptions while delivering input to the executed process.
+     * exceptions while delivering input to the executed process. 
      * It is intended as a workaround for a situation in which the Perl
      * interpreter (invoked with a -c switch) closes its output stream
      * before it has received the entire input; this particular behavior
@@ -226,7 +226,7 @@ public class ProcessExecutor
     {
         this.ignoreBrokenPipe = true;
     }
-
+    
     /**
      * Invoked when a suspected broken pipe exception was thrown
      * while delivering input to the executed process. This method
@@ -236,7 +236,7 @@ public class ProcessExecutor
     {
         if (!ignoreBrokenPipe) throw e; // just rethrow by default
     }
-
+    
     private int getBOMOffset(String bomChar) throws UnsupportedEncodingException {
         byte[] bom = new byte[4];
         //inputCharset = "UTF-32BE";
@@ -269,6 +269,6 @@ public class ProcessExecutor
         } else {
            // Unicode BOM mark not found
            return 0;
-        }
+        }    
     }
 }

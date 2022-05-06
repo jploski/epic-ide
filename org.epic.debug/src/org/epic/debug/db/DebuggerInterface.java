@@ -3,6 +3,8 @@ package org.epic.debug.db;
 import gnu.regexp.REMatch;
 
 import java.io.*;
+import java.util.Date;
+import java.util.Hashtable;
 
 import org.eclipse.core.runtime.*;
 
@@ -86,8 +88,14 @@ public class DebuggerInterface
         return "1".equals(eval("print $DB::OUT -f '" + osPath + "'"));
     }
     
+    private IPPosition currentIP=null;
     public synchronized IPPosition getCurrentIP() throws IOException
     {
+    	//this is optimized on the theory that
+    	//1-this will only be called when the debugger is suspended (if it's not you certainly can't get an answer from the eval!)
+    	//2-when suspended, the only thing which can change the IP is a continue, next, step command
+    	if(currentIP!=null) return currentIP;
+    	
         String output = runSyncCommand(CMD_EXEC, ".");
 
         // mRe_IP_Pos_CODE handles locations like
@@ -108,9 +116,21 @@ public class DebuggerInterface
             if (temp != null) result = temp;
         }
 
-        return new IPPosition(
-            new Path(result.toString(1)),
-            Integer.parseInt(result.toString(2)));
+        currentIP=new IPPosition(
+                new Path(result.toString(1)),
+                Integer.parseInt(result.toString(2)));
+        return currentIP;
+    }
+
+    private Hashtable<IPath, String> remoteMD5cache=new Hashtable<IPath, String>();
+    public synchronized String getScriptMd5(IPath path) throws IOException
+    {
+    	if(remoteMD5cache.containsKey(path)){
+    		return remoteMD5cache.get(path);
+    	}
+    	String md5=runSyncCommand(CMD_EXEC, "epic_breakpoints::get_script_MD5('" + path + "')");
+    	remoteMD5cache.put(path, md5);
+        return md5;
     }
 
     public synchronized String getOS() throws IOException
@@ -266,23 +286,29 @@ public class DebuggerInterface
     
     private String runCommand(int command, String code) throws IOException
     {
+    	long sttime=(new Date()).getTime();
         command = maskCommandModifiers(command);
 
         switch (command)
         {
         case CMD_STEP_INTO:
+        	currentIP=null;
             outputLine("s");
             break;
         case CMD_STEP_OVER:
+        	currentIP=null;
             outputLine("n");
             break;
         case CMD_STEP_RETURN:
+        	currentIP=null;
             outputLine("r");
             break;
         case CMD_RESUME:
+        	currentIP=null;
             outputLine("c");
             break;
         case CMD_TERMINATE:
+        	currentIP=null;
             outputLine("q");
             break;
         case CMD_SUSPEND:
@@ -300,6 +326,10 @@ public class DebuggerInterface
         {
             if (out == null) throw new SessionTerminatedException("disposed");
         }
+        
+        long endtime=(new Date()).getTime();
+        long time=endtime-sttime;
+        System.out.println("command " + command + ": " + code + " : " + time + " ms");
         return readCommandOutput();
     }
     

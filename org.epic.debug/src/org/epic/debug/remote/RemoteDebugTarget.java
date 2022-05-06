@@ -45,6 +45,9 @@ class RemoteDebugTarget extends DebugTarget
     protected DebuggerInterface initDebuggerInterface(DebuggerInterface db)
         throws DebugException
     {
+    	if(getPathMapper() instanceof RemotePathMapperMd5){
+    		((RemotePathMapperMd5)getPathMapper()).setDebuggerInterface(db);
+    	}
         boolean shouldRedirectIO = true;
         try
         {

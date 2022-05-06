@@ -54,66 +54,70 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IEditorDescriptor;
 import org.epic.debug.*;
 import org.epic.debug.util.RemotePort;
+import org.eclipse.swt.events.SelectionAdapter;
 
 public class LaunchConfigurationRemoteMainTab
-        extends
-            AbstractLaunchConfigurationTab implements IPropertyChangeListener {
+		extends
+			AbstractLaunchConfigurationTab implements IPropertyChangeListener {
 
-    /**
-     * A launch configuration tab that displays and edits project and main type
-     * name launch configuration attributes.
-     * <p>
-     * This class may be instantiated. This class is not intended to be
-     * subclassed.
-     * </p>
-     * 
-     * @since 2.0
-     */
+	/**
+	 * A launch configuration tab that displays and edits project and main type
+	 * name launch configuration attributes.
+	 * <p>
+	 * This class may be instantiated. This class is not intended to be
+	 * subclassed.
+	 * </p>
+	 * 
+	 * @since 2.0
+	 */
 
-    // Project UI widgets
-    //protected Label fProjLabel;
-    protected Label fHostLabel;
-    protected Label fPortLabel;
-    //protected Text fProjText;
-    //protected Button fProjButton;
-    protected Text fHostText;
-    protected Text fPortText;
+	// Project UI widgets
+	//protected Label fProjLabel;
+	protected Label fHostLabel;
+	protected Label fPortLabel;
+	//protected Text fProjText;
+	//protected Button fProjButton;
+	protected Text fHostText;
+	protected Text fPortText;
 
-    // Main class UI widgets
-    //protected Label fMainLabel;
-    //protected Text fFileText;
-    //	protected Button fSearchButton;
-    //  protected Button fSearchExternalJarsCheckButton;
-    //	protected Button fStopInMainCheckButton;
+	// Main class UI widgets
+	//protected Label fMainLabel;
+	//protected Text fFileText;
+	//	protected Button fSearchButton;
+	//  protected Button fSearchExternalJarsCheckButton;
+	//	protected Button fStopInMainCheckButton;
 
-    protected static final String EMPTY_STRING = ""; //$NON-NLS-1$
+	protected static final String EMPTY_STRING = ""; //$NON-NLS-1$
 
-    private static final String PERL_NATURE_ID = "org.epic.perleditor.perlnature";
-    private Label fDestLabel;
-    private Text fDestText;
-    private GridLayout layout;
-    private FileFieldEditor mDebugPackageFilePath;
-    private Object checkComp;
-    private Label fCreatePkgLabel;
+	private static final String PERL_NATURE_ID = "org.epic.perleditor.perlnature";
+	private Label fDestLabel;
+	private Text fDestText;
+	private Button fmd5CheckBox;
+	private GridLayout layout;
+	private FileFieldEditor mDebugPackageFilePath;
+	private Object checkComp;
+	private Label fCreatePkgLabel;
     private Label fCaptureOutLabel;
-    private Button fCreatePkgCheckBox;
+	private Button fCreatePkgCheckBox;
     private Button fCaptureOutCheckBox;
-    Composite mDebugPackageComp;
-    
-    private ProjectAndFileBlock fProjectAndFileBlock  = new ProjectAndFileBlock();;
+	Composite mDebugPackageComp;
+	
+	private ProjectAndFileBlock fProjectAndFileBlock  = new ProjectAndFileBlock();
+	private Composite md5Comp;;
 
-    
-    /**
-     * @see org.eclipse.debug.ui.ILaunchConfigurationTab#createControl(Composite)
-     */
-    public void createControl(Composite parent) {
-        Font font = parent.getFont();
+	
+	/**
+	 * @see org.eclipse.debug.ui.ILaunchConfigurationTab#createControl(Composite)
+	 * @wbp.parser.entryPoint
+	 */
+	public void createControl(Composite parent) {
+		Font font = parent.getFont();
 
-        Composite comp = new Composite(parent, SWT.NONE);
-        setControl(comp);
-        GridLayout topLayout = new GridLayout();
-        comp.setLayout(topLayout);
-        GridData gd;
+		Composite comp = new Composite(parent, SWT.NONE);
+		setControl(comp);
+		GridLayout topLayout = new GridLayout();
+		comp.setLayout(topLayout);
+		GridData gd;
 //
 //		createVerticalSpacer(comp, 1);
 //
@@ -179,100 +183,125 @@ public class LaunchConfigurationRemoteMainTab
 //			}
 //		});
 
-        fProjectAndFileBlock.createControl(comp);
-        
-        createVerticalSpacer(comp, 2);
-        Composite hostComp = new Composite(comp, SWT.NONE);
-        GridLayout hostLayout = new GridLayout();
-        hostLayout.numColumns = 3;
-        hostLayout.marginHeight = 0;
-        hostLayout.marginWidth = 0;
-        hostLayout.makeColumnsEqualWidth = true;
-        hostComp.setLayout(hostLayout);
-        gd = new GridData(GridData.FILL_HORIZONTAL);
-        hostComp.setLayoutData(gd);
-        hostComp.setFont(font);
+		fProjectAndFileBlock.createControl(comp);
+		
+		createVerticalSpacer(comp, 2);
+		Composite hostComp = new Composite(comp, SWT.NONE);
+		GridLayout hostLayout = new GridLayout();
+		hostLayout.numColumns = 3;
+		hostLayout.marginHeight = 0;
+		hostLayout.marginWidth = 0;
+		hostLayout.makeColumnsEqualWidth = true;
+		hostComp.setLayout(hostLayout);
+		gd = new GridData(GridData.FILL_HORIZONTAL);
+		hostComp.setLayoutData(gd);
+		hostComp.setFont(font);
 
-        fHostLabel = new Label(hostComp, SWT.NONE);
-        fHostLabel.setText("Local Host IP:"); //$NON-NLS-1$
-        gd = new GridData();
-        gd.horizontalSpan = 1;
-        fHostLabel.setLayoutData(gd);
-        fHostLabel.setFont(font);
+		fHostLabel = new Label(hostComp, SWT.NONE);
+		fHostLabel.setText("Local Host IP:"); //$NON-NLS-1$
+		gd = new GridData();
+		gd.horizontalSpan = 1;
+		fHostLabel.setLayoutData(gd);
+		fHostLabel.setFont(font);
 
-        fHostText = new Text(hostComp, SWT.SINGLE | SWT.BORDER);
+		fHostText = new Text(hostComp, SWT.SINGLE | SWT.BORDER);
 
-        gd = new GridData(GridData.FILL_HORIZONTAL);
-        gd.horizontalSpan = 2;
-        fHostText.setLayoutData(gd);
-        fHostText.setFont(font);
-        fHostText.addModifyListener(new ModifyListener() {
-            public void modifyText(ModifyEvent evt) {
-                updateLaunchConfigurationDialog();
-            }
-        });
+		gd = new GridData(GridData.FILL_HORIZONTAL);
+		gd.horizontalSpan = 2;
+		fHostText.setLayoutData(gd);
+		fHostText.setFont(font);
+		fHostText.addModifyListener(new ModifyListener() {
+			public void modifyText(ModifyEvent evt) {
+				updateLaunchConfigurationDialog();
+			}
+		});
 
-        createVerticalSpacer(comp, 1);
-        Composite destComp = new Composite(comp, SWT.NONE);
-        GridLayout destLayout = new GridLayout();
-        destLayout.numColumns = 3;
-        destLayout.marginHeight = 0;
-        destLayout.marginWidth = 0;
-        destLayout.makeColumnsEqualWidth = true;
-        destComp.setLayout(destLayout);
-        gd = new GridData(GridData.FILL_HORIZONTAL);
-        destComp.setLayoutData(gd);
-        destComp.setFont(font);
+		createVerticalSpacer(comp, 1);
+		Composite destComp = new Composite(comp, SWT.NONE);
+		GridLayout destLayout = new GridLayout();
+		destLayout.numColumns = 3;
+		destLayout.marginHeight = 0;
+		destLayout.marginWidth = 0;
+		destLayout.makeColumnsEqualWidth = true;
+		destComp.setLayout(destLayout);
+		gd = new GridData(GridData.FILL_HORIZONTAL);
+		destComp.setLayoutData(gd);
+		destComp.setFont(font);
 
-        fDestLabel = new Label(destComp, SWT.NONE);
-        fDestLabel.setText("Target Host Project Installation Path:"); //$NON-NLS-1$
-        gd = new GridData();
-        gd.horizontalSpan = 1;
-        fDestLabel.setLayoutData(gd);
-        fDestLabel.setFont(font);
+		fDestLabel = new Label(destComp, SWT.NONE);
+		fDestLabel.setText("Target Host Project Installation Path:"); //$NON-NLS-1$
+		gd = new GridData();
+		gd.horizontalSpan = 1;
+		fDestLabel.setLayoutData(gd);
+		fDestLabel.setFont(font);
 
-        fDestText = new Text(destComp, SWT.SINGLE | SWT.BORDER);
+		fDestText = new Text(destComp, SWT.SINGLE | SWT.BORDER);
 
-        gd = new GridData(GridData.FILL_HORIZONTAL);
-        gd.horizontalSpan = 2;
-        fDestText.setLayoutData(gd);
-        fDestText.setFont(font);
-        fDestText.addModifyListener(new ModifyListener() {
-            public void modifyText(ModifyEvent evt) {
-                updateLaunchConfigurationDialog();
-            }
-        });
+		gd = new GridData(GridData.FILL_HORIZONTAL);
+		gd.horizontalSpan = 2;
+		fDestText.setLayoutData(gd);
+		fDestText.setFont(font);
+		fDestText.addModifyListener(new ModifyListener() {
+			public void modifyText(ModifyEvent evt) {
+				updateLaunchConfigurationDialog();
+			}
+		});
 
-        createVerticalSpacer(comp, 1);
-        Composite portComp = new Composite(comp, SWT.NONE);
-        GridLayout portLayout = new GridLayout();
-        portLayout.numColumns = 3;
-        portLayout.marginHeight = 0;
-        portLayout.marginWidth = 0;
-        portLayout.makeColumnsEqualWidth = true;
-        portComp.setLayout(portLayout);
-        gd = new GridData(GridData.FILL_HORIZONTAL);
-        portComp.setLayoutData(gd);
-        portComp.setFont(font);
+		createVerticalSpacer(comp, 1);
+		
+		md5Comp = new Composite(comp, SWT.NONE);
+		GridLayout md5Layout = new GridLayout();
+		md5Layout.numColumns = 3;
+		md5Layout.marginHeight = 0;
+		md5Layout.marginWidth = 0;
+		md5Layout.makeColumnsEqualWidth = true;
+		md5Comp.setLayout(md5Layout);
+		gd = new GridData(GridData.FILL_HORIZONTAL);
+		md5Comp.setLayoutData(gd);
+		
+		Label fmd5Label = new Label(md5Comp, SWT.NONE);
+		fmd5Label.setText("Breakpoints match code, not path");
+		
+		fmd5CheckBox = new Button(md5Comp, SWT.CHECK);
+		fmd5CheckBox.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				calculateDestTextEnabled();
+				updateLaunchConfigurationDialog();
+			}
+		});
+		
+		createVerticalSpacer(comp, 1);
+		
+		Composite portComp = new Composite(comp, SWT.NONE);
+		GridLayout portLayout = new GridLayout();
+		portLayout.numColumns = 3;
+		portLayout.marginHeight = 0;
+		portLayout.marginWidth = 0;
+		portLayout.makeColumnsEqualWidth = true;
+		portComp.setLayout(portLayout);
+		gd = new GridData(GridData.FILL_HORIZONTAL);
+		portComp.setLayoutData(gd);
+		portComp.setFont(font);
 
-        fPortLabel = new Label(portComp, SWT.NONE);
-        fPortLabel.setText("Port:"); //$NON-NLS-1$
-        gd = new GridData();
-        gd.verticalAlignment = 1;
-        fPortLabel.setLayoutData(gd);
-        fPortLabel.setFont(font);
+		fPortLabel = new Label(portComp, SWT.NONE);
+		fPortLabel.setText("Port:"); //$NON-NLS-1$
+		gd = new GridData();
+		gd.verticalAlignment = 1;
+		fPortLabel.setLayoutData(gd);
+		fPortLabel.setFont(font);
 
-        fPortText = new Text(portComp, SWT.SINGLE | SWT.BORDER);
+		fPortText = new Text(portComp, SWT.SINGLE | SWT.BORDER);
 
-        gd = new GridData(GridData.FILL_HORIZONTAL);
-        gd.horizontalSpan = 2;
-        fPortText.setLayoutData(gd);
-        fPortText.setFont(font);
-        fPortText.addModifyListener(new ModifyListener() {
-            public void modifyText(ModifyEvent evt) {
-                updateLaunchConfigurationDialog();
-            }
-        });
+		gd = new GridData(GridData.FILL_HORIZONTAL);
+		gd.horizontalSpan = 2;
+		fPortText.setLayoutData(gd);
+		fPortText.setFont(font);
+		fPortText.addModifyListener(new ModifyListener() {
+			public void modifyText(ModifyEvent evt) {
+				updateLaunchConfigurationDialog();
+			}
+		});
         
         createVerticalSpacer(comp, 1);
         Composite captureComp = new Composite(comp, SWT.NONE);
@@ -298,116 +327,135 @@ public class LaunchConfigurationRemoteMainTab
         gd.horizontalSpan = 1;
         fCaptureOutCheckBox.setLayoutData(gd);
         fCaptureOutCheckBox.setFont(font);
+        new Label(captureComp, SWT.NONE);
         
-        //********************************
-        createVerticalSpacer(comp, 1);
-        Composite checkComp = new Composite(comp, SWT.NONE);
-        GridLayout checkLayout = new GridLayout();
-        checkLayout.numColumns = 3;
-        checkLayout.marginHeight = 0;
-        checkLayout.marginWidth = 0;
-        checkLayout.makeColumnsEqualWidth = true;
-        checkComp.setLayout(portLayout);
-        gd = new GridData(GridData.FILL_HORIZONTAL);
-        checkComp.setLayoutData(gd);
-        checkComp.setFont(font);
+		//********************************
+		createVerticalSpacer(comp, 1);
+		Composite checkComp = new Composite(comp, SWT.NONE);
+		GridLayout checkLayout = new GridLayout();
+		checkLayout.numColumns = 3;
+		checkLayout.marginHeight = 0;
+		checkLayout.marginWidth = 0;
+		checkLayout.makeColumnsEqualWidth = true;
+		checkComp.setLayout(checkLayout);
+		gd = new GridData(GridData.FILL_HORIZONTAL);
+		checkComp.setLayoutData(gd);
+		checkComp.setFont(font);
 
-        fCreatePkgLabel = new Label(checkComp, SWT.NONE);
-        fCreatePkgLabel.setText("Create Debug Package"); //$NON-NLS-1$
-        gd = new GridData();
-        gd.verticalAlignment = 1;
-        fCreatePkgLabel.setLayoutData(gd);
-        fCreatePkgLabel.setFont(font);
+		fCreatePkgLabel = new Label(checkComp, SWT.NONE);
+		fCreatePkgLabel.setText("Create Debug Package"); //$NON-NLS-1$
+		gd = new GridData();
+		gd.verticalAlignment = 1;
+		fCreatePkgLabel.setLayoutData(gd);
+		fCreatePkgLabel.setFont(font);
         
-        //fPortText = new Text(portComp, SWT.SINGLE | SWT.BORDER);
-        fCreatePkgCheckBox = new Button(checkComp, SWT.CHECK | SWT.CENTER);
-        gd = new GridData(GridData.FILL_HORIZONTAL);
-        gd.horizontalSpan = 1;
-        fCreatePkgCheckBox.setLayoutData(gd);
-        fCreatePkgCheckBox.setFont(font);
+		//fPortText = new Text(portComp, SWT.SINGLE | SWT.BORDER);
+		fCreatePkgCheckBox = new Button(checkComp, SWT.CHECK | SWT.CENTER);
+		gd = new GridData(GridData.FILL_HORIZONTAL);
+		gd.horizontalSpan = 1;
+		fCreatePkgCheckBox.setLayoutData(gd);
+		fCreatePkgCheckBox.setFont(font);
+		new Label(checkComp, SWT.NONE);
 
-        fCreatePkgCheckBox.addSelectionListener(new SelectionListener() {
+		fCreatePkgCheckBox.addSelectionListener(new SelectionListener() {
 
-            public void widgetSelected(SelectionEvent e) {
-                // TODO Auto-generated method stub
-                calculatePackageFilePathEnabled();
-                updateLaunchConfigurationDialog();
-            }
+			public void widgetSelected(SelectionEvent e) {
+				// TODO Auto-generated method stub
+				calculatePackageFilePathEnabled();
+				updateLaunchConfigurationDialog();
+			}
 
-            public void widgetDefaultSelected(SelectionEvent e) {
-                // TODO Auto-generated method stub
+			public void widgetDefaultSelected(SelectionEvent e) {
+				// TODO Auto-generated method stub
 
-            }
-        });
+			}
+		});
         
-        //********************************
+		//********************************
 
-        layout = new GridLayout();
-        layout.numColumns = 3;
-        layout.marginHeight = 0;
-        layout.marginWidth = 0;
-        layout.makeColumnsEqualWidth = true;
-        gd = new GridData(GridData.FILL_HORIZONTAL);
+		layout = new GridLayout();
+		layout.numColumns = 3;
+		layout.marginHeight = 0;
+		layout.marginWidth = 0;
+		layout.makeColumnsEqualWidth = true;
+		gd = new GridData(GridData.FILL_HORIZONTAL);
 
-        mDebugPackageComp = new Composite(comp, SWT.NONE);
-        mDebugPackageComp.setLayout(layout);
-        mDebugPackageComp.setLayoutData(gd);
-        mDebugPackageComp.setFont(font);
+		mDebugPackageComp = new Composite(comp, SWT.NONE);
+		mDebugPackageComp.setLayout(layout);
+		mDebugPackageComp.setLayoutData(gd);
+		mDebugPackageComp.setFont(font);
 
-        mDebugPackageFilePath = new FileFieldEditor("Test",
-                "Debug Package File Path", mDebugPackageComp);
+		mDebugPackageFilePath = new FileFieldEditor("Test",
+				"Debug Package File Path", mDebugPackageComp);
 
-        String[] ext = {".zip"};
-        mDebugPackageFilePath.setFileExtensions(ext);
-        //fHTMLRootDir.fillIntoGrid(htmlRootDirComp, 3);
-        mDebugPackageFilePath.setPropertyChangeListener(this);
-        calculatePackageFilePathEnabled();
-    }
+		String[] ext = {".zip"};
+		mDebugPackageFilePath.setFileExtensions(ext);
+		//fHTMLRootDir.fillIntoGrid(htmlRootDirComp, 3);
+		mDebugPackageFilePath.setPropertyChangeListener(this);
+		calculatePackageFilePathEnabled();
+	}
 
-    void calculatePackageFilePathEnabled() {
-        mDebugPackageFilePath.setEnabled(fCreatePkgCheckBox.getSelection(),
-                mDebugPackageComp);
-    }
-    /**
-     * @see org.eclipse.debug.ui.ILaunchConfigurationTab#initializeFrom(ILaunchConfiguration)
-     */
-    public void initializeFrom(ILaunchConfiguration config) {
-        
-        fProjectAndFileBlock.initializeFrom(config);
-        updateParamsFromConfig(config);
-        updateDebugPackageFromConfig(config);
+	void calculatePackageFilePathEnabled() {
+		mDebugPackageFilePath.setEnabled(fCreatePkgCheckBox.getSelection(),
+				mDebugPackageComp);
+	}
+	
+	void calculateDestTextEnabled() {
+		fDestLabel.setEnabled(!fmd5CheckBox.getSelection());
+		fDestText.setEnabled(!fmd5CheckBox.getSelection());
+	}
+	/**
+	 * @see org.eclipse.debug.ui.ILaunchConfigurationTab#initializeFrom(ILaunchConfiguration)
+	 */
+	public void initializeFrom(ILaunchConfiguration config) {
+		
+		fProjectAndFileBlock.initializeFrom(config);
+		updateParamsFromConfig(config);
+		updateDebugPackageFromConfig(config);
 
-        String val = ""; //$NON-NLS-1$
-        try {
-            val = config.getAttribute(
-                    PerlLaunchConfigurationConstants.ATTR_REMOTE_PORT,
-                    EMPTY_STRING);
-        } catch (CoreException ce) {
-            PerlDebugPlugin.log(ce);
-        }
-        fPortText.setText(val);
+		String val = ""; //$NON-NLS-1$
+		try {
+			val = config.getAttribute(
+					PerlLaunchConfigurationConstants.ATTR_REMOTE_PORT,
+					EMPTY_STRING);
+		} catch (CoreException ce) {
+			PerlDebugPlugin.log(ce);
+		}
+		fPortText.setText(val);
 
-        val = ""; //$NON-NLS-1$
-        try {
-            val = config.getAttribute(
-                    PerlLaunchConfigurationConstants.ATTR_REMOTE_HOST,
-                    EMPTY_STRING);
-        } catch (CoreException ce) {
-            PerlDebugPlugin.log(ce);
-        }
-        fHostText.setText(val);
+		val = ""; //$NON-NLS-1$
+		try {
+			val = config.getAttribute(
+					PerlLaunchConfigurationConstants.ATTR_REMOTE_HOST,
+					EMPTY_STRING);
+		} catch (CoreException ce) {
+			PerlDebugPlugin.log(ce);
+		}
+		fHostText.setText(val);
 
-        val = ""; //$NON-NLS-1$
-        try {
-            val = config.getAttribute(
-                    PerlLaunchConfigurationConstants.ATTR_REMOTE_DEST,
-                    EMPTY_STRING);
-        } catch (CoreException ce) {
-            PerlDebugPlugin.log(ce);
-        }
-        fDestText.setText(val);
-        calculatePackageFilePathEnabled();
-    }
+		val = ""; //$NON-NLS-1$
+		try {
+			val = config.getAttribute(
+					PerlLaunchConfigurationConstants.ATTR_REMOTE_DEST,
+					EMPTY_STRING);
+		} catch (CoreException ce) {
+			PerlDebugPlugin.log(ce);
+		}
+		fDestText.setText(val);
+		
+		boolean bval = false;
+		try {
+			bval = config.getAttribute(
+					PerlLaunchConfigurationConstants.ATTR_MD5_BREAKS,
+					false);
+		} catch (CoreException ce) {
+			PerlDebugPlugin.log(ce);
+		}
+		fmd5CheckBox.setSelection(bval);
+		
+		calculatePackageFilePathEnabled();
+		calculateDestTextEnabled();
+	}
 
 //	protected void updateProjectFromConfig(ILaunchConfiguration config) {
 //		String projectName = ""; //$NON-NLS-1$
@@ -421,44 +469,44 @@ public class LaunchConfigurationRemoteMainTab
 //		fProjText.setText(projectName);
 //	}
 
-    protected void updateDebugPackageFromConfig(ILaunchConfiguration config) {
-        String path = ""; //$NON-NLS-1$
-        boolean create = true, capture = true;
+	protected void updateDebugPackageFromConfig(ILaunchConfiguration config) {
+		String path = ""; //$NON-NLS-1$
+		boolean create = true, capture = true;
 
-        try {
-            path = config
-                    .getAttribute(
-                            PerlLaunchConfigurationConstants.ATTR_REMOTE_DEBUG_PACKAGE_PATH,
-                            EMPTY_STRING);
-            create = config
-                    .getAttribute(
-                            PerlLaunchConfigurationConstants.ATTR_REMOTE_CREATE_DEBUG_PACKAGE,
-                            true);
+		try {
+			path = config
+					.getAttribute(
+							PerlLaunchConfigurationConstants.ATTR_REMOTE_DEBUG_PACKAGE_PATH,
+							EMPTY_STRING);
+			create = config
+					.getAttribute(
+							PerlLaunchConfigurationConstants.ATTR_REMOTE_CREATE_DEBUG_PACKAGE,
+							true);
 
             capture = config
                     .getAttribute(
                     PerlLaunchConfigurationConstants.ATTR_REMOTE_CAPTURE_OUTPUT,
                     true);
         } catch (CoreException ce) {
-            PerlDebugPlugin.log(ce);
-        }
+			PerlDebugPlugin.log(ce);
+		}
 
-        mDebugPackageFilePath.setStringValue(path);
-        fCreatePkgCheckBox.setSelection(create);
+		mDebugPackageFilePath.setStringValue(path);
+		fCreatePkgCheckBox.setSelection(create);
         fCaptureOutCheckBox.setSelection(capture);
-    }
+	}
 
-    protected void updateParamsFromConfig(ILaunchConfiguration config) {
-        String params = ""; //$NON-NLS-1$
-        try {
-            params = config.getAttribute(
-                    PerlLaunchConfigurationConstants.ATTR_PROGRAM_PARAMETERS,
-                    EMPTY_STRING);
-        } catch (CoreException ce) {
-            PerlDebugPlugin.log(ce);
-        }
-        fHostText.setText(params);
-    }
+	protected void updateParamsFromConfig(ILaunchConfiguration config) {
+		String params = ""; //$NON-NLS-1$
+		try {
+			params = config.getAttribute(
+					PerlLaunchConfigurationConstants.ATTR_PROGRAM_PARAMETERS,
+					EMPTY_STRING);
+		} catch (CoreException ce) {
+			PerlDebugPlugin.log(ce);
+		}
+		fHostText.setText(params);
+	}
 
 //	protected void updateFileFromConfig(ILaunchConfiguration config) {
 //		String fileName = ""; //$NON-NLS-1$
@@ -472,187 +520,194 @@ public class LaunchConfigurationRemoteMainTab
 //		fFileText.setText(fileName);
 //	}
 
-    /**
-     * @see org.eclipse.debug.ui.ILaunchConfigurationTab#performApply(ILaunchConfigurationWorkingCopy)
-     */
-    public void performApply(ILaunchConfigurationWorkingCopy config) {
-        fProjectAndFileBlock.performApply(config);
-        config.setAttribute(PerlLaunchConfigurationConstants.ATTR_REMOTE_HOST,
-                (String) fHostText.getText());
-        config.setAttribute(PerlLaunchConfigurationConstants.ATTR_REMOTE_DEST,
-                (String) fDestText.getText());
-        config.setAttribute(PerlLaunchConfigurationConstants.ATTR_REMOTE_PORT,
-                (String) fPortText.getText());
-        config.setAttribute(
+	/**
+	 * @see org.eclipse.debug.ui.ILaunchConfigurationTab#performApply(ILaunchConfigurationWorkingCopy)
+	 */
+	public void performApply(ILaunchConfigurationWorkingCopy config) {
+		fProjectAndFileBlock.performApply(config);
+		config.setAttribute(PerlLaunchConfigurationConstants.ATTR_REMOTE_HOST,
+				(String) fHostText.getText());
+		config.setAttribute(PerlLaunchConfigurationConstants.ATTR_REMOTE_DEST,
+				(String) fDestText.getText());
+		config.setAttribute(PerlLaunchConfigurationConstants.ATTR_REMOTE_PORT,
+				(String) fPortText.getText());
+		config.setAttribute(
             PerlLaunchConfigurationConstants.ATTR_REMOTE_DEBUG_PACKAGE_PATH,
-            (String) mDebugPackageFilePath.getStringValue());
-        config.setAttribute(
-            PerlLaunchConfigurationConstants.ATTR_REMOTE_CREATE_DEBUG_PACKAGE,
-            (boolean) fCreatePkgCheckBox.getSelection());
+			(String) mDebugPackageFilePath.getStringValue());
+		config.setAttribute(
+	            PerlLaunchConfigurationConstants.ATTR_MD5_BREAKS,
+				(boolean) fmd5CheckBox.getSelection());
+		config.setAttribute(
+			PerlLaunchConfigurationConstants.ATTR_REMOTE_CREATE_DEBUG_PACKAGE,
+			(boolean) fCreatePkgCheckBox.getSelection());
         config.setAttribute(
             PerlLaunchConfigurationConstants.ATTR_REMOTE_CAPTURE_OUTPUT,
             (boolean) fCaptureOutCheckBox.getSelection());
     }
 
-    /**
-     * @see org.eclipse.debug.ui.ILaunchConfigurationTab#dispose()
-     */
-    public void dispose() {
-    }
+	/**
+	 * @see org.eclipse.debug.ui.ILaunchConfigurationTab#dispose()
+	 */
+	public void dispose() {
+	}
 
-    /**
-     * Convenience method to get the workspace root.
-     */
-    private IWorkspaceRoot getWorkspaceRoot() {
-        return ResourcesPlugin.getWorkspace().getRoot();
-    }
+	/**
+	 * Convenience method to get the workspace root.
+	 */
+	private IWorkspaceRoot getWorkspaceRoot() {
+		return ResourcesPlugin.getWorkspace().getRoot();
+	}
 
-    /**
-     * @see org.eclipse.debug.ui.ILaunchConfigurationTab#isValid(ILaunchConfiguration)
-     */
-    public boolean isValid(ILaunchConfiguration config) {
+	/**
+	 * @see org.eclipse.debug.ui.ILaunchConfigurationTab#isValid(ILaunchConfiguration)
+	 */
+	public boolean isValid(ILaunchConfiguration config) {
 
-        setErrorMessage(null);
-        setMessage(null);
+		setErrorMessage(null);
+		setMessage(null);
 
-        if(!fProjectAndFileBlock.isValid(config)){
-            return false;
-        }
-        String name = fPortText.getText().trim();
-        int port = -1;
+		if(!fProjectAndFileBlock.isValid(config)){
+			return false;
+		}
+		String name = fPortText.getText().trim();
+		int port = -1;
 
-        try {
-            port = Integer.parseInt(name);
-        } catch (Exception e) {
-        }
+		try {
+			port = Integer.parseInt(name);
+		} catch (Exception e) {
+		}
 
-        if (name.length() == 0 || port < 0) {
-            setErrorMessage("Port is not valid"); //$NON-NLS-1$
-            return false;
-        }
-        name = fDestText.getText().trim();
-        if (name.length() == 0) {
-            setErrorMessage("Target Host Project Installation Path is not specified"); //$NON-NLS-1$
-            return false;
-        }
+		if (name.length() == 0 || port < 0) {
+			setErrorMessage("Port is not valid"); //$NON-NLS-1$
+			return false;
+		}
+		name = fDestText.getText().trim();
+		if (name.length() == 0 && !fmd5CheckBox.getSelection()) {
+			setErrorMessage("Target Host Project Installation Path is not specified"); //$NON-NLS-1$
+			return false;
+		}
 
-        name = fHostText.getText().trim();
-        if (name.length() == 0) {
-            setErrorMessage("Local Host is not specified"); //$NON-NLS-1$
-            return false;
-        }
+		name = fHostText.getText().trim();
+		if (name.length() == 0) {
+			setErrorMessage("Local Host is not specified"); //$NON-NLS-1$
+			return false;
+		}
 
-        if (this.fCreatePkgCheckBox.getSelection()) {
+		if (this.fCreatePkgCheckBox.getSelection()) {
 
-            name = mDebugPackageFilePath.getStringValue();
+			name = mDebugPackageFilePath.getStringValue();
 
-            if (name == null)
-                setErrorMessage("Debug Package File Path missing");
-            else {
-                Path path = new Path(name);
-                File file = path.removeLastSegments(1).toFile();
+			if (name == null)
+				setErrorMessage("Debug Package File Path missing");
+			else {
+				Path path = new Path(name);
+				File file = path.removeLastSegments(1).toFile();
 
-                if (!path.isValidPath(name) || path.segmentCount() == 0
-                        || !file.exists())
-                    setErrorMessage("Debug Package File Path invalid");
-            }
+				if (!path.isValidPath(name) || path.segmentCount() == 0
+						|| !file.exists())
+					setErrorMessage("Debug Package File Path invalid");
+			}
 
-        }
-        return true;
-    }
+		}
+		return true;
+	}
 
-    /**
-     * @see org.eclipse.debug.ui.ILaunchConfigurationTab#setDefaults(ILaunchConfigurationWorkingCopy)
-     */
-    public void setDefaults(ILaunchConfigurationWorkingCopy config) {
+	/**
+	 * @see org.eclipse.debug.ui.ILaunchConfigurationTab#setDefaults(ILaunchConfigurationWorkingCopy)
+	 */
+	public void setDefaults(ILaunchConfigurationWorkingCopy config) {
 
-        String host = null;
-        try {
-            host = InetAddress.getLocalHost().getHostAddress().toString();
-        } catch (UnknownHostException e1) {
-            // TODO Auto-generated catch block
-            e1.printStackTrace();
-        }
-        fProjectAndFileBlock.setDefaults(config);
-        config.setAttribute(
-                PerlLaunchConfigurationConstants.ATTR_PROGRAM_PARAMETERS, "");
-        config.setAttribute(PerlLaunchConfigurationConstants.ATTR_REMOTE_HOST,
-                host);
-        config.setAttribute(PerlLaunchConfigurationConstants.ATTR_REMOTE_PORT,
-                Integer.toString(RemotePort.findFreePort()));
-        config
-                .setAttribute(
-                        PerlLaunchConfigurationConstants.ATTR_REMOTE_CREATE_DEBUG_PACKAGE,
-                        true);
-        config
-                .setAttribute(
-                        PerlLaunchConfigurationConstants.ATTR_REMOTE_DEBUG_PACKAGE_PATH,
-                        "");
-        config.setAttribute(PerlLaunchConfigurationConstants.ATTR_REMOTE,
-                "REMOTE");
-    }
+		String host = null;
+		try {
+			host = InetAddress.getLocalHost().getHostAddress().toString();
+		} catch (UnknownHostException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		fProjectAndFileBlock.setDefaults(config);
+		config.setAttribute(
+				PerlLaunchConfigurationConstants.ATTR_PROGRAM_PARAMETERS, "");
+		config.setAttribute(PerlLaunchConfigurationConstants.ATTR_REMOTE_HOST,
+				host);
+		config.setAttribute(PerlLaunchConfigurationConstants.ATTR_REMOTE_PORT,
+				Integer.toString(RemotePort.findFreePort()));
+		config
+		.setAttribute(
+				PerlLaunchConfigurationConstants.ATTR_MD5_BREAKS,
+				false);
+		config
+				.setAttribute(
+						PerlLaunchConfigurationConstants.ATTR_REMOTE_CREATE_DEBUG_PACKAGE,
+						true);
+		config
+				.setAttribute(
+						PerlLaunchConfigurationConstants.ATTR_REMOTE_DEBUG_PACKAGE_PATH,
+						"");
+		config.setAttribute(PerlLaunchConfigurationConstants.ATTR_REMOTE,
+				"REMOTE");
+	}
 
-    /**
-     * Set the main type & name attributes on the working copy based on the
-     * IJavaElement
-     */
-    /*
-     * protected void initializeMainTypeAndName(IJavaElement javaElement,
-     * ILaunchConfigurationWorkingCopy config) { String name= null; if
-     * (javaElement instanceof IMember) { IMember member = (IMember)javaElement;
-     * if (member.isBinary()) { javaElement = member.getClassFile(); } else {
-     * javaElement = member.getCompilationUnit(); } } if (javaElement instanceof
-     * ICompilationUnit || javaElement instanceof IClassFile) { try { IType[]
-     * types = MainMethodFinder.findTargets(new BusyIndicatorRunnableContext(),
-     * new Object[] {javaElement}); if (types != null && (types.length > 0)) { //
-     * Simply grab the first main type found in the searched element name =
-     * types[0].getFullyQualifiedName(); } } catch (InterruptedException ie) { }
-     * catch (InvocationTargetException ite) { } } if (name == null) { name= "";
-     * //$NON-NLS-1$ }
-     * config.setAttribute(PerlLaunchConfigurationConstants.ATTR_STARTUP_FILE,
-     * name); if (name.length() > 0) { int index = name.lastIndexOf('.'); if
-     * (index > 0) { name = name.substring(index + 1); } name =
-     * getLaunchConfigurationDialog().generateName(name); config.rename(name); } }
-     */
-    /**
-     * @see org.eclipse.debug.ui.ILaunchConfigurationTab#getName()
-     */
-    public String getName() {
-        return "Configuration"; //$NON-NLS-1$
-    }
+	/**
+	 * Set the main type & name attributes on the working copy based on the
+	 * IJavaElement
+	 */
+	/*
+	 * protected void initializeMainTypeAndName(IJavaElement javaElement,
+	 * ILaunchConfigurationWorkingCopy config) { String name= null; if
+	 * (javaElement instanceof IMember) { IMember member = (IMember)javaElement;
+	 * if (member.isBinary()) { javaElement = member.getClassFile(); } else {
+	 * javaElement = member.getCompilationUnit(); } } if (javaElement instanceof
+	 * ICompilationUnit || javaElement instanceof IClassFile) { try { IType[]
+	 * types = MainMethodFinder.findTargets(new BusyIndicatorRunnableContext(),
+	 * new Object[] {javaElement}); if (types != null && (types.length > 0)) { //
+	 * Simply grab the first main type found in the searched element name =
+	 * types[0].getFullyQualifiedName(); } } catch (InterruptedException ie) { }
+	 * catch (InvocationTargetException ite) { } } if (name == null) { name= "";
+	 * //$NON-NLS-1$ }
+	 * config.setAttribute(PerlLaunchConfigurationConstants.ATTR_STARTUP_FILE,
+	 * name); if (name.length() > 0) { int index = name.lastIndexOf('.'); if
+	 * (index > 0) { name = name.substring(index + 1); } name =
+	 * getLaunchConfigurationDialog().generateName(name); config.rename(name); } }
+	 */
+	/**
+	 * @see org.eclipse.debug.ui.ILaunchConfigurationTab#getName()
+	 */
+	public String getName() {
+		return "Configuration"; //$NON-NLS-1$
+	}
 
-    /**
-     * @see org.eclipse.debug.ui.ILaunchConfigurationTab#getImage()
-     */
-    public Image getImage() {
-        return (PerlDebugPlugin.getDefaultDesciptorImageRegistry()
-                .get(PerlDebugImages.DESC_OBJS_LaunchTabRemote));
-    }
+	/**
+	 * @see org.eclipse.debug.ui.ILaunchConfigurationTab#getImage()
+	 */
+	public Image getImage() {
+		return (PerlDebugPlugin.getDefaultDesciptorImageRegistry()
+				.get(PerlDebugImages.DESC_OBJS_LaunchTabRemote));
+	}
 
-    /**
-     * Returns a String array whith all Perl projects
-     * 
-     * @return Stiring[] List of Perl projects
-     */
-    private String[] getPerlProjects() {
+	/**
+	 * Returns a String array whith all Perl projects
+	 * 
+	 * @return Stiring[] List of Perl projects
+	 */
+	private String[] getPerlProjects() {
         List<String> projectList = new ArrayList<String>();
-        IWorkspaceRoot workspaceRoot = PerlDebugPlugin.getWorkspace().getRoot();
-        IProject[] projects = workspaceRoot.getProjects();
-        for (int i = 0; i < projects.length; i++) {
-            IProject project = projects[i];
-            try {
-                if (project.isAccessible() && project.hasNature(PERL_NATURE_ID)) {
-                    //System.out.println("Perl Project: " + project.getName());
-                    projectList.add(project.getName());
-                }
-            } catch (CoreException e) {
-                e.printStackTrace();
-            }
+		IWorkspaceRoot workspaceRoot = PerlDebugPlugin.getWorkspace().getRoot();
+		IProject[] projects = workspaceRoot.getProjects();
+		for (int i = 0; i < projects.length; i++) {
+			IProject project = projects[i];
+			try {
+				if (project.isAccessible() && project.hasNature(PERL_NATURE_ID)) {
+					//System.out.println("Perl Project: " + project.getName());
+					projectList.add(project.getName());
+				}
+			} catch (CoreException e) {
+				e.printStackTrace();
+			}
 
-        }
+		}
 
         return projectList.toArray(new String[projectList.size()]);
-    }
+	}
 
 //	private String[] getPerlFiles() {
 //		String projectName = fProjText.getText();
@@ -672,55 +727,55 @@ public class LaunchConfigurationRemoteMainTab
 //		return ((PerlProjectVisitor) visitor).getList();
 //	}
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.eclipse.jface.util.IPropertyChangeListener#propertyChange(org.eclipse.jface.util.PropertyChangeEvent)
-     */
-    public void propertyChange(PropertyChangeEvent event) {
-        String path = this.mDebugPackageFilePath.getStringValue();
-        if (path.length() >= 1 && !path.endsWith(".zip"))
-                mDebugPackageFilePath.setStringValue(path + ".zip");
-            
-            updateLaunchConfigurationDialog();
-        
-            
-    }
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.jface.util.IPropertyChangeListener#propertyChange(org.eclipse.jface.util.PropertyChangeEvent)
+	 */
+	public void propertyChange(PropertyChangeEvent event) {
+		String path = this.mDebugPackageFilePath.getStringValue();
+		if (path.length() >= 1 && !path.endsWith(".zip"))
+				mDebugPackageFilePath.setStringValue(path + ".zip");
+			
+			updateLaunchConfigurationDialog();
+		
+			
+	}
 
-    class PerlProjectVisitor implements IResourceVisitor
+	class PerlProjectVisitor implements IResourceVisitor
 
-    {
-        private static final String PERL_EDITOR_ID = "org.epic.perleditor.editors.PerlEditor";
-        private static final String EMB_PERL_FILE_EXTENSION = "epl";
+	{
+		private static final String PERL_EDITOR_ID = "org.epic.perleditor.editors.PerlEditor";
+		private static final String EMB_PERL_FILE_EXTENSION = "epl";
 
         private List<String> fileList = new ArrayList<String>();
-        /*
-         * (non-Javadoc)
-         * 
-         * @see org.eclipse.core.resources.IResourceVisitor#visit(org.eclipse.core.resources.IResource)
-         */
-        public boolean visit(IResource resource) throws CoreException {
-            IEditorDescriptor defaultEditorDescriptor = PerlDebugPlugin
-                    .getDefault().getWorkbench().getEditorRegistry()
-                    .getDefaultEditor(resource.getFullPath().toString());
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see org.eclipse.core.resources.IResourceVisitor#visit(org.eclipse.core.resources.IResource)
+		 */
+		public boolean visit(IResource resource) throws CoreException {
+			IEditorDescriptor defaultEditorDescriptor = PerlDebugPlugin
+					.getDefault().getWorkbench().getEditorRegistry()
+					.getDefaultEditor(resource.getFullPath().toString());
 
-            if (defaultEditorDescriptor == null) {
-                return true;
-            }
+			if (defaultEditorDescriptor == null) {
+				return true;
+			}
 
-            if (defaultEditorDescriptor.getId().equals(PERL_EDITOR_ID)
-                    && !resource.getFileExtension().equals(
-                            EMB_PERL_FILE_EXTENSION)) {
-                fileList.add(resource.getFullPath().removeFirstSegments(1)
-                        .toString());
-            }
+			if (defaultEditorDescriptor.getId().equals(PERL_EDITOR_ID)
+					&& !resource.getFileExtension().equals(
+							EMB_PERL_FILE_EXTENSION)) {
+				fileList.add(resource.getFullPath().removeFirstSegments(1)
+						.toString());
+			}
 
-            return true;
-        }
+			return true;
+		}
 
-        public String[] getList() {
+		public String[] getList() {
             return fileList.toArray(new String[fileList.size()]);
-        }
+		}
 
-    }
+	}
 }

@@ -81,14 +81,6 @@ public class ExternalCompletionHelper  {
         }
 
         public void apply(IDocument document) {
-            try {
-                document.replace(
-                    fReplacementPosition.getOffset(),
-                    fReplacementPosition.getLength(),
-                    fReplacementString);
-            } catch (BadLocationException x) {
-                // ignore
-            }
         }
 
         public Point getSelection(IDocument document) {
@@ -113,7 +105,32 @@ public class ExternalCompletionHelper  {
 
         @Override
         public void apply(ITextViewer viewer, char trigger, int stateMask, int offset) {
-            apply(viewer.getDocument());
+            try {
+                // We have to deal here with a (typical) situation in which the user has triggered
+                // autocompletion and then continued to type in a prefix of the proposal (to narrow
+                // down the proposals list) before accepting a proposal by hitting Enter.
+                // In this case the replacement length returned by our helper script, which is only aware
+                // of what was in the document at trigger time, is not valid. Rather, we must instead
+                // replace the entire length of the proposal's prefix, including those characters
+                // typed in between generating and accepting the autocompletion proposal.
+                
+                IDocument doc = viewer.getDocument();
+                String prefix = doc.get(fReplacementPosition.getOffset(), offset - fReplacementPosition.getOffset());
+                if (prefix.length() > 0 && fReplacementString.startsWith(prefix)) {
+                    viewer.getDocument().replace(
+                        fReplacementPosition.getOffset(),
+                        prefix.length(),
+                        fReplacementString);
+                }
+                else {
+                    viewer.getDocument().replace(
+                        fReplacementPosition.getOffset(),
+                        fReplacementPosition.getLength(),
+                        fReplacementString);
+                }
+            } catch (BadLocationException x) {
+                // ignore
+            }
         }
 
         @Override

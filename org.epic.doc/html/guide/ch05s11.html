@@ -1,76 +1,56 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
-<html xmlns="http://www.w3.org/1999/xhtml">
+<!DOCTYPE html>
+<html>
 <head>
-  <meta name="generator" content="HTML Tidy for Linux/x86 (vers 12 April 2005), see www.w3.org" />
-
+  <meta name="generator" content="HTML Tidy for HTML5 for Linux version 5.6.0">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
   <title>Refactoring</title>
-  <link href="book.css" rel="stylesheet" type="text/css" />
-  <meta content="DocBook XSL-NS Stylesheets V1.73.0" name="generator" />
-  <link rel="start" href="index.html" title="EPIC - User's Guide" />
-  <link rel="up" href="ch05.html" title="Working with the Perl Editor" />
-  <link rel="prev" href="ch05s10.html" title="Source Folding" />
-  <link rel="next" href="ch05s12.html" title="HTML Export" />
+  <link href="book.css" rel="stylesheet" type="text/css">
+  <meta content="DocBook XSL-NS Stylesheets V1.73.0" name="generator">
+  <link rel="start" href="index.html" title="EPIC - User's Guide">
+  <link rel="up" href="ch05.html" title="Working with the Perl Editor">
+  <link rel="prev" href="ch05s10.html" title="Source Folding">
+  <link rel="next" href="ch05s12.html" title="HTML Export">
 </head>
-
-<body>
-  <div class="section" lang="en" xml:lang="en">
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+  <div class="section" lang="en">
     <div class="titlepage">
       <div>
         <div>
-          <h2 class="title" style="clear: both"><a id="N10616" name="N10616"></a>Refactoring</h2>
+          <h2 class="title" style="clear: both"><a name="N10644" id="N10644"></a>Refactoring</h2>
         </div>
       </div>
     </div>
-
-    <div class="section" lang="en" xml:lang="en">
+    <div class="section" lang="en">
       <div class="titlepage">
         <div>
           <div>
-            <h3 class="title"><a id="N10619" name="N10619"></a>Extract Subroutine</h3>
+            <h3 class="title"><a name="N10647" id="N10647"></a>Extract Subroutine</h3>
           </div>
         </div>
       </div>
-
       <p>Extraction of subroutines is supported by the use of the CPAN Devel::Refactor module.</p>
-
       <p>To extract a subroutine, mark the code to extract and select <span class=
       "guimenu">Refactor</span> → <span class="guimenuitem">Extract Subroutine</span> from the
       popup menu.</p>
-
       <div class="screenshot">
-        <div class="mediaobject" align="center">
-          <img src="images/extract_subroutine_1.gif" align="middle" alt=
-          "Extract Subroutine Selection" />
-        </div>
+        <div class="mediaobject" align="center"><img src="images/extract_subroutine_1.gif" align=
+        "middle" alt="Extract Subroutine Selection"></div>
       </div>
-
       <p>In the popup menu insert the name of the new subroutine and press <span class=
       "keycap"><strong>Enter</strong></span>.</p>
-
       <div class="screenshot">
-        <div class="mediaobject" align="center">
-          <img src="images/extract_subroutine_2.gif" align="middle" alt=
-          "Extract Subroutine Dialog" />
-        </div>
+        <div class="mediaobject" align="center"><img src="images/extract_subroutine_2.gif" align=
+        "middle" alt="Extract Subroutine Dialog"></div>
       </div>
-
       <p>The new subroutine will be placed at the end of the Perl script (before <code class=
       "literal">__END__</code> section) and the selection will be replaced with the subroutine
       call.</p>
-
       <div class="screenshot">
-        <div class="mediaobject" align="center">
-          <img src="images/extract_subroutine_3.gif" align="middle" alt=
-          "Extract Subroutine Result" />
-        </div>
+        <div class="mediaobject" align="center"><img src="images/extract_subroutine_3.gif" align=
+        "middle" alt="Extract Subroutine Result"></div>
       </div>
-
       <div class="note" style="margin-left: 0.5in; margin-right: 0.5in;">
         <h3 class="title">Note</h3>
-
         <p>The extraction might not work properly at the moment because the Devel::Refactor module
         is in an early stage of development. With upcoming versions of the module, this function
         should become more reliable.</p>

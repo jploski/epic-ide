@@ -5,11 +5,21 @@
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
 				xmlns:xhtml="http://www.w3.org/1999/xhtml"
                 version="1.0">
-- 
+
 <xsl:template match='*|@*' priority="1">
 <xsl:copy>
 <xsl:apply-templates select='node()|@*'/>
 </xsl:copy>
+</xsl:template>
+
+<xsl:template match="xhtml:html" priority="100">
+	<xsl:text disable-output-escaping="yes">&lt;?php header('Content-Type: text/html; charset=UTF-8'); ?&gt;</xsl:text>
+	<xsl:copy><xsl:apply-templates select='node()|@*'/></xsl:copy>
+</xsl:template>
+
+<xsl:template match="xhtml:head" priority="100">
+	<xsl:text disable-output-escaping="yes">&lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;</xsl:text>
+	<xsl:copy><xsl:apply-templates select='node()|@*'/></xsl:copy>	
 </xsl:template>
 
 <xsl:template match="xhtml:base" priority="100">

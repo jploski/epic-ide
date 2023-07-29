@@ -4,7 +4,7 @@
 		xmlns:d="http://docbook.org/ns/docbook"
 version="1.0">
 
-<xsl:import href="http://docbook.sourceforge.net/release/xsl/1.73.0/html/chunk.xsl"/>
+<xsl:import href="/data/mnt/data/usr/local/docbook-xsl-ns-1.73.0/html/chunk.xsl"/>
 
 <!-- ********************************************************************
      $Id$

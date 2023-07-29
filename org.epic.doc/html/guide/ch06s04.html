@@ -1,155 +1,121 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
-<html xmlns="http://www.w3.org/1999/xhtml">
+<!DOCTYPE html>
+<html>
 <head>
-  <meta name="generator" content="HTML Tidy for Linux/x86 (vers 12 April 2005), see www.w3.org" />
-
+  <meta name="generator" content="HTML Tidy for HTML5 for Linux version 5.6.0">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
   <title>Views in the Debug Perspective</title>
-  <link href="book.css" rel="stylesheet" type="text/css" />
-  <meta content="DocBook XSL-NS Stylesheets V1.73.0" name="generator" />
-  <link rel="start" href="index.html" title="EPIC - User's Guide" />
-  <link rel="up" href="ch06.html" title="Using the Perl Debugger" />
-  <link rel="prev" href="ch06s03.html" title="Breakpoints" />
-  <link rel="next" href="ch06s05.html" title="Stepping Through the Execution of a Perl Program" />
+  <link href="book.css" rel="stylesheet" type="text/css">
+  <meta content="DocBook XSL-NS Stylesheets V1.73.0" name="generator">
+  <link rel="start" href="index.html" title="EPIC - User's Guide">
+  <link rel="up" href="ch06.html" title="Using the Perl Debugger">
+  <link rel="prev" href="ch06s03.html" title="Breakpoints">
+  <link rel="next" href="ch06s05.html" title="Stepping Through the Execution of a Perl Program">
 </head>
-
-<body>
-  <div class="section" lang="en" xml:lang="en">
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+  <div class="section" lang="en">
     <div class="titlepage">
       <div>
         <div>
-          <h2 class="title" style="clear: both"><a id="debug-perspective" name=
+          <h2 class="title" style="clear: both"><a name="debug-perspective" id=
           "debug-perspective"></a>Views in the Debug Perspective</h2>
         </div>
       </div>
     </div>
-
     <p>If any of the views described below is not visible, you can open it using the <span class=
     "guimenu">Window</span> → <span class="guisubmenu">Show View</span> menu.</p>
-
-    <div class="section" lang="en" xml:lang="en">
+    <div class="section" lang="en">
       <div class="titlepage">
         <div>
           <div>
-            <h3 class="title"><a id="debug-view" name="debug-view"></a>Debug View</h3>
+            <h3 class="title"><a name="debug-view" id="debug-view"></a>Debug View</h3>
           </div>
         </div>
       </div>
-
       <div class="screenshot">
-        <div class="mediaobject" align="center">
-          <img src="images/Debug_view.gif" align="middle" alt="Debug View" />
-        </div>
+        <div class="mediaobject" align="center"><img src="images/Debug_view.gif" align="middle"
+        alt="Debug View"></div>
       </div>
-
       <p>This view allows you to manage the debugging or running of programs in the workbench. It
       displays the stack frames for the suspended program you are debugging. It also displays the
       process for each target you are running.</p>
-
       <p>If the program is suspended, its stack frames are shown as child elements. Clicking on a
       stack frame takes you to the corresponding line in the Perl editor and updates contents of
       the <a class="link" href="ch06s04.html#variables-view" title="Variables View"><span class=
       "guilabel">Variables</span> view</a>. If necessary, a new editor is opened automatically.</p>
-
       <div class="note" style="margin-left: 0.5in; margin-right: 0.5in;">
         <h3 class="title">Note</h3>
-
         <p>EPIC does not currently include support for debugging multi-threaded programs.</p>
       </div>
     </div>
-
-    <div class="section" lang="en" xml:lang="en">
+    <div class="section" lang="en">
       <div class="titlepage">
         <div>
           <div>
-            <h3 class="title"><a id="variables-view" name="variables-view"></a>Variables View</h3>
+            <h3 class="title"><a name="variables-view" id="variables-view"></a>Variables View</h3>
           </div>
         </div>
       </div>
-
       <div class="screenshot">
-        <div class="mediaobject" align="center">
-          <img src="images/variables_view.gif" align="middle" alt="Variables View" />
-        </div>
+        <div class="mediaobject" align="center"><img src="images/variables_view.gif" align="middle"
+        alt="Variables View"></div>
       </div>
-
       <p>When a stack frame is selected, you can see the visible variables in that stack frame in
       the <span class="guilabel">Variables</span> view. The view shows the value of primitive
       (scalar) types. Variables which point to data structures such as hashes, lists or objects can
       be examined by expanding them to show their members. Variables that are references are
       dereferenced to show the final scalar value or data structure pointed to by the reference
       chain (or an indication of cyclic reference).</p>
-
       <p>Global variables (including Perl internal variables) are marked with an <span class=
-      "inlinemediaobject"><img src="images/global_var.gif" /></span> icon, local variables with an
-      <span class="inlinemediaobject"><img src="images/local_var.gif" /></span> icon.</p>
-
-      <div class="section" lang="en" xml:lang="en">
+      "inlinemediaobject"><img src="images/global_var.gif"></span> icon, local variables with an
+      <span class="inlinemediaobject"><img src="images/local_var.gif"></span> icon.</p>
+      <div class="section" lang="en">
         <div class="titlepage">
           <div>
             <div>
-              <h4 class="title"><a id="N1097D" name="N1097D"></a>Customizing the Variables
+              <h4 class="title"><a name="N109AB" id="N109AB"></a>Customizing the Variables
               View</h4>
             </div>
           </div>
         </div>
-
         <p>You can customize the presentation with the configuration menu:</p>
-
-        <h5><a id="N10982" name="N10982"></a>Show Details Pane</h5>
-
+        <h5><a name="N109B0" id="N109B0"></a>Show Details Pane</h5>
         <p>To show the detail pane select <span class="guilabel">Vertical View Orientation</span>
         or <span class="guilabel">Horizontal View Orientation</span>. Select <span class=
         "guilabel">Variables View Only</span> to disable it. The details pane shows the value of
         primitive variables (especially useful for string variables).</p>
-
-        <h5><a id="N10992" name="N10992"></a>Highlight Updated Variables</h5>
-
+        <h5><a name="N109C0" id="N109C0"></a>Highlight Updated Variables</h5>
         <p>If you enable this option, the variables whose values have changed during the last
         execution step (since the last suspend) and new variables will be highlighted. If a change
         has occurred inside of a complex variable, the variable will be highlighted and the path to
         the changed value will also be indicated using delta symbols:</p>
-
         <div class="screenshot">
-          <div class="mediaobject" align="center">
-            <img src="images/var_delta_complex.gif" align="middle" alt=
-            "Change Indicators in Variables View" />
-          </div>
+          <div class="mediaobject" align="center"><img src="images/var_delta_complex.gif" align=
+          "middle" alt="Change Indicators in Variables View"></div>
         </div>
-
         <p>This makes it possible to see these kinds of changes even if variables are
         collapsed.</p>
-
         <div class="note" style="margin-left: 0.5in; margin-right: 0.5in;">
           <h3 class="title">Note</h3>
-
           <p>This feature requires EPIC to retrieve and remember the value of every variable on
           each suspend. It may be very slow for larger programs (e.g. it might take about 20
           seconds for a program containing data structures with 5000+ values). For this reason, the
           option is disabled by default and should be used with care.</p>
         </div>
-
-        <h5><a id="N109A5" name="N109A5"></a>Select Variables to Display</h5>
-
+        <h5><a name="N109D3" id="N109D3"></a>Select Variables to Display</h5>
         <p>The variables view allows to select the following types of variables for displaying by
         checking the corresponding menu entry:</p>
-
         <div class="itemizedlist">
           <ul type="disc">
             <li>
               <p>Perl Internal Variables: these are variables provided by the Perl interpreter like
               <code class="varname">$_</code>, <code class="varname">@INC</code> etc.</p>
             </li>
-
             <li>
               <p>Global Variables: variables visible from everywhere in your program. More
               precisely, these are the variables from the symbol table of the package in which the
               debugger is suspended or from the <code class="literal">main</code> package (in
               scripts).</p>
             </li>
-
             <li>
               <p>Local Variables: variables declared with the keyword <code class=
               "literal">my</code>, more correctly called "lexical" variables in Perl. To show
@@ -160,9 +126,7 @@
             </li>
           </ul>
         </div>
-
-        <h5><a id="N109C9" name="N109C9"></a>Show Addresses of Variables</h5>
-
+        <h5><a name="N109F7" id="N109F7"></a>Show Addresses of Variables</h5>
         <p>By default, EPIC shows the address to which a reference variable points, but it does not
         show the address of each non-reference variable. This additional information can be helpful
         when you wish to check which variable is pointed to by a reference. When enabled, the
@@ -170,49 +134,39 @@
         value.</p>
       </div>
     </div>
-
-    <div class="section" lang="en" xml:lang="en">
+    <div class="section" lang="en">
       <div class="titlepage">
         <div>
           <div>
-            <h3 class="title"><a id="breakpoints-view" name="breakpoints-view"></a>Breakpoints
+            <h3 class="title"><a name="breakpoints-view" id="breakpoints-view"></a>Breakpoints
             View</h3>
           </div>
         </div>
       </div>
-
       <div class="screenshot">
-        <div class="mediaobject" align="center">
-          <img src="images/breakpoint_view.gif" align="middle" alt="Breakpoints View" />
-        </div>
+        <div class="mediaobject" align="center"><img src="images/breakpoint_view.gif" align=
+        "middle" alt="Breakpoints View"></div>
       </div>
-
       <p>The <span class="guilabel">Breakpoints</span> view shows all breakpoints (see <a class=
       "xref" href="ch06s03.html" title="Breakpoints">the section called “Breakpoints”</a>), their
       state and location.</p>
-
       <p>By selecting one or more breakpoints and invoking the context menu, you can enable,
       disable or remove these breakpoints.</p>
     </div>
-
-    <div class="section" lang="en" xml:lang="en">
+    <div class="section" lang="en">
       <div class="titlepage">
         <div>
           <div>
-            <h3 class="title"><a id="N109E6" name="N109E6"></a>Perl Expression View</h3>
+            <h3 class="title"><a name="N10A14" id="N10A14"></a>Perl Expression View</h3>
           </div>
         </div>
       </div>
-
       <div class="screenshot">
-        <div class="mediaobject" align="center">
-          <img src="images/perl_expr_view.gif" align="middle" alt="Perl Expression View" />
-        </div>
+        <div class="mediaobject" align="center"><img src="images/perl_expr_view.gif" align="middle"
+        alt="Perl Expression View"></div>
       </div>
-
       <p>The <span class="guilabel">Perl Expression View</span> allows you to execute any valid
       Perl code within the current context of the program executed in debug mode.</p>
-
       <div class="orderedlist">
         <ol type="1">
           <li>
@@ -220,14 +174,12 @@
             View</span> → <span class="guimenuitem">Other</span>, then <span class=
             "guimenu">EPIC</span> → <span class="guimenuitem">Perl Expression View</span>).</p>
           </li>
-
           <li>
             <p>Enter the code to execute.</p>
           </li>
-
           <li>
             <p>Press the <span class="inlinemediaobject"><img src=
-            "images/perl_expr_run.gif" /></span> symbol.</p>
+            "images/perl_expr_run.gif"></span> symbol.</p>
           </li>
         </ol>
       </div>

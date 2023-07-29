@@ -1,94 +1,115 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
-<html xmlns="http://www.w3.org/1999/xhtml">
+<!DOCTYPE html>
+<html>
 <head>
-  <meta name="generator" content="HTML Tidy for Linux/x86 (vers 12 April 2005), see www.w3.org" />
-
+  <meta name="generator" content="HTML Tidy for HTML5 for Linux version 5.6.0">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
   <title>Code Assist</title>
-  <link href="book.css" rel="stylesheet" type="text/css" />
-  <meta content="DocBook XSL-NS Stylesheets V1.73.0" name="generator" />
-  <link rel="start" href="index.html" title="EPIC - User's Guide" />
-  <link rel="up" href="ch05.html" title="Working with the Perl Editor" />
-  <link rel="prev" href="ch05s05.html" title="Quick Reference" />
-  <link rel="next" href="ch05s07.html" title="Task Markers" />
+  <link href="book.css" rel="stylesheet" type="text/css">
+  <meta content="DocBook XSL-NS Stylesheets V1.73.0" name="generator">
+  <link rel="start" href="index.html" title="EPIC - User's Guide">
+  <link rel="up" href="ch05.html" title="Working with the Perl Editor">
+  <link rel="prev" href="ch05s05.html" title="Quick Reference">
+  <link rel="next" href="ch05s07.html" title="Task Markers">
 </head>
-
-<body>
-  <div class="section" lang="en" xml:lang="en">
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+  <div class="section" lang="en">
     <div class="titlepage">
       <div>
         <div>
-          <h2 class="title" style="clear: both"><a id="N1051B" name="N1051B"></a>Code Assist</h2>
+          <h2 class="title" style="clear: both"><a name="N10524" id="N10524"></a>Code Assist</h2>
         </div>
       </div>
     </div>
-
     <p>Code Assist features try to assist the user during source code editing.</p>
-
     <div class="note" style="margin-left: 0.5in; margin-right: 0.5in;">
       <h3 class="title">Note</h3>
-
-      <p>The features currently implemented in EPIC may not be fully functional but will be
-      improved in the future.</p>
+      <p>The features currently implemented in EPIC are rudimentary. An option to utilize a
+      user-defined script for code assist suggestions is provided to allow integration of more
+      powerful, external code generation tools.</p>
     </div>
-
-    <div class="section" lang="en" xml:lang="en">
+    <div class="section" lang="en">
       <div class="titlepage">
         <div>
           <div>
-            <h3 class="title"><a id="N10523" name="N10523"></a>Variable Inspection</h3>
+            <h3 class="title"><a name="N1052C" id="N1052C"></a>Variable Inspection</h3>
           </div>
         </div>
       </div>
-
       <p>When you press one of the auto completion characters <strong class="userinput"><code>$ @
       %</code></strong>, the editor displays all defined variables in a list. From the list you can
       select the variable that should be inserted in the source code.</p>
-
       <div class="screenshot">
-        <div class="mediaobject" align="center">
-          <img src="images/variable_inspection_1.gif" align="middle" alt="Variable Inspection" />
-        </div>
+        <div class="mediaobject" align="center"><img src="images/variable_inspection_1.gif" align=
+        "middle" alt="Variable Inspection"></div>
       </div>
     </div>
-
-    <div class="section" lang="en" xml:lang="en">
+    <div class="section" lang="en">
       <div class="titlepage">
         <div>
           <div>
-            <h3 class="title"><a id="N10536" name="N10536"></a>Module Inspection</h3>
+            <h3 class="title"><a name="N1053F" id="N1053F"></a>Module Inspection</h3>
           </div>
         </div>
       </div>
-
       <p>The editor tries to display methods available in modules when the auto completion
       characters <strong class="userinput"><code>&gt;</code></strong> or <strong class=
       "userinput"><code>:</code></strong> are entered.</p>
-
       <div class="screenshot">
-        <div class="mediaobject" align="center">
-          <img src="images/module_inspection_1.gif" align="middle" alt="Module Inspection" />
-        </div>
+        <div class="mediaobject" align="center"><img src="images/module_inspection_1.gif" align=
+        "middle" alt="Module Inspection"></div>
       </div>
-
       <div class="note" style="margin-left: 0.5in; margin-right: 0.5in;">
         <h3 class="title">Note</h3>
-
         <p>Currently, indirect object invocations are not recognized by code assist. This code
         block will not work:</p>
-        <pre class="programlisting">
-$smtp = new Net::SMTP;
-$smtp-&gt;[no content assist]
-</pre>
-
+        <pre class="programlisting">$smtp = new Net::SMTP;
+$smtp-&gt;[no content assist]</pre>
         <p>This one will work:</p>
-        <pre class="programlisting">
-$smtp = Net::SMTP-&gt;new();
-$smtp-&gt;[content assist]
-</pre>
+        <pre class="programlisting">$smtp = Net::SMTP-&gt;new();
+$smtp-&gt;[content assist]</pre>
       </div>
+    </div>
+    <div class="section" lang="en">
+      <div class="titlepage">
+        <div>
+          <div>
+            <h3 class="title"><a name="external-content-assistant" id=
+            "external-content-assistant"></a>External Content Assistant</h3>
+          </div>
+        </div>
+      </div>
+      <p>If specified on the <span class="guilabel">Code Assist</span> preferences page, a
+      user-defined Perl script can be used to compute autocompletion suggestions instead of or in
+      addition to EPIC's built-in ones. It is called by EPIC with the following arguments:</p>
+      <div class="itemizedlist">
+        <ul type="disc">
+          <li>documentPath = workspace-relative path of the edited source file (if available),</li>
+          <li>documentOffset = selection start offset in the document/file (or caret position if
+          there is no selection),</li>
+          <li>selectionLength = length of selection (0 if there is no selection),</li>
+        </ul>
+      </div>and the entire source document is passed in as standard input.
+      <p>Based on the provided information the script is supposed to generate on standard output a
+      list of autocomplete suggestions or "proposals" which, if not empty, take precedence over
+      EPIC's built-in generation. Each suggestion contains instructions to insert/replace a
+      contiguous piece of text at a given position in the source document and move the caret to a
+      new position. A suggestion is formatted as a comma-separated list of
+      "replacementOffset,replacementLength,newCursorPosition,replacementString":</p>
+      <div class="itemizedlist">
+        <ul type="disc">
+          <li>replacementOffset = where to insert the proposal in the file (typically =
+          documentOffset),</li>
+          <li>replacementLength = how many characters to remove at this offset (typically 0, i.e.
+          just insert),</li>
+          <li>newCursorPosition = where to place caret after the insertion, relative to
+          replacementOffset (typically = replacementString.length()),</li>
+          <li>replacementString = what to insert at replacementOffset</li>
+        </ul>
+      </div>
+      <p>Suggestions are separated from each other by the special <strong class=
+      "userinput"><code>&lt;|proposal|&gt;</code></strong> token.</p>
+      <p>Refer to the source code of org.epic.perleditor.editors.util.ExternalAutoComplete for
+      further implementation details.</p>
     </div>
   </div>
 </body>

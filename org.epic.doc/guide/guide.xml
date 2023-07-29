@@ -225,12 +225,18 @@
       when the characters <userinput>$ @ %</userinput> are typed. To switch
       this feature off, deselect the <guilabel>Inspect Variables</guilabel>
       check box.</para>
+      
+      <para>The <guilabel>External content assistant</guilabel> field allows
+      advanced users to specify a custom Perl script to be used to generate
+      autocompletion suggestions, for example to integrate project-specific
+      suggestions or AI language models
+      (see <xref linkend="external-content-assistant" />)).</para>
 
       <screenshot>
         <mediaobject>
           <imageobject>
-            <imagedata align="center" fileref="images/preferences_5.gif"
-                       format="GIF" />
+            <imagedata align="center" fileref="images/preferences_5.png"
+                       format="PNG" />
           </imageobject>
 
           <textobject>
@@ -1261,8 +1267,10 @@
       editing.</para>
 
       <note>
-        <para>The features currently implemented in EPIC may not be fully
-        functional but will be improved in the future.</para>
+        <para>The features currently implemented in EPIC are rudimentary.
+        An option to utilize a user-defined script for code assist suggestions
+        is provided to allow integration of more powerful, external code
+        generation tools.</para>
       </note>
 
       <section>
@@ -1321,6 +1329,36 @@ $smtp-&gt;[no content assist]</programlisting>
 $smtp-&gt;[content assist]</programlisting>
         </note>
       </section>
+      
+      <section id="external-content-assistant">
+      	<title>External Content Assistant</title>
+      	
+      	<para>If specified on the <guilabel>Code Assist</guilabel> preferences page,
+      	a user-defined Perl script can compute autocompletion suggestions instead of
+      	or in addition to EPIC's built-in ones. It is called by EPIC with the following
+      	arguments:
+      	<itemizedlist>
+	        <listitem>documentPath = workspace-relative path of the edited source file (if available),</listitem>
+        	<listitem>documentOffset = selection start offset in the document/file (or caret position if there is no selection),</listitem>
+      		<listitem>selectionLength = length of selection (0 if there is no selection),</listitem>
+      	</itemizedlist>
+      	and the entire source document is passed in as standard input.</para>
+      
+      	<para>Based on the provided information the script is supposed to generate
+      	on standard output a list of autocomplete suggestions or &quot;proposals&quot; which,
+      	if not empty, take precedence over EPIC's built-in generation. Each suggestion
+      	contains instructions to insert/replace a contiguous piece of text at a given
+      	position in the source document and move the caret to a new position. A suggestion
+      	is formatted as a comma-separated list of &quot;replacementOffset,replacementLength,newCursorPosition,replacementString&quot;:
+      	<itemizedlist>
+	      	<listitem>replacementOffset = where to insert the proposal in the file (typically = documentOffset),</listitem>
+      		<listitem>replacementLength = how many characters to remove at this offset (typically 0, i.e. just insert),</listitem>
+     		<listitem>newCursorPosition = where to place caret after the insertion, relative to replacementOffset (typically = replacementString.length()),</listitem>
+     		<listitem>replacementString = what to insert at replacementOffset</listitem>
+      	</itemizedlist></para>
+      	<para>Suggestions are separated from each other by the special <userinput>&lt;|proposal|&gt;</userinput> token.</para>
+      	<para>Refer to the source code of org.epic.perleditor.editors.util.ExternalAutoComplete for further implementation details.</para>
+	  </section>
     </section>
 
     <section id="todo-markers">

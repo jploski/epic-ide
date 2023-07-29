@@ -12,7 +12,7 @@
   <xsl:apply-imports/>
 </xsl:template>
 
-<xsl:param name="html.base">http://www.epic-ide.org/guide/</xsl:param>
+<xsl:param name="html.base">https://www.epic-ide.org/guide/</xsl:param>
 <xsl:param name="html.ext">.php</xsl:param>
 <xsl:param name="html.stylesheet">../css/style.css</xsl:param>
 <xsl:param name="chunk.quietly" select="1"/>

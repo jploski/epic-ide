@@ -53,7 +53,8 @@ See build.properties for more information.
 		    description="All output formats"/>
 
 	<target name="build-pdf" depends="check-env" description="Single PDF file">
-		<exec executable="dblatex">
+		<exec executable="/usr/bin/python2.7">
+			<arg value="/usr/bin/dblatex" />
 			<arg value="-b" />
 			<arg value="pdftex" />
 			<arg value="--texstyle=guide.sty" />
@@ -144,6 +145,7 @@ See build.properties for more information.
 			<srcfile/>
 			<fileset dir="temp" includes="*.html"/>
 		</apply>
+		<echo>Note: exit code 1 from tidy invocations above indicates warnings and can be ignored. Exit code 2 indicates errors.</echo>
 		<mkdir dir="../html/guide"/>
 		<copy todir="../html/guide">
 			<fileset dir="temp" includes="**"/>

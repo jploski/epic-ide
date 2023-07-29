@@ -29,14 +29,14 @@
 <topic href="html/guide/ch04s01.html" label="Perspectives"/>
 <topic href="html/guide/ch04s02.html" label="Views"/>
 <topic href="html/guide/ch04s03.html" label="Using Perspectives">
-<topic href="html/guide/ch04s03.html#N102E6" label="New Perspectives"/>
-<topic href="html/guide/ch04s03.html#N10361" label="Configuring Perspectives"/>
-<topic href="html/guide/ch04s03.html#N103D0" label="Saving a User Defined Perspective"/>
-<topic href="html/guide/ch04s03.html#N103F5" label="Resetting Perspectives"/>
+<topic href="html/guide/ch04s03.html#N102EF" label="New Perspectives"/>
+<topic href="html/guide/ch04s03.html#N1036A" label="Configuring Perspectives"/>
+<topic href="html/guide/ch04s03.html#N103D9" label="Saving a User Defined Perspective"/>
+<topic href="html/guide/ch04s03.html#N103FE" label="Resetting Perspectives"/>
 </topic>
 <topic href="html/guide/ch04s04.html" label="Using Views">
-<topic href="html/guide/ch04s04.html#N1042C" label="Opening Views"/>
-<topic href="html/guide/ch04s04.html#N1044A" label="Moving and Docking Views"/>
+<topic href="html/guide/ch04s04.html#N10435" label="Opening Views"/>
+<topic href="html/guide/ch04s04.html#N10453" label="Moving and Docking Views"/>
 </topic>
 </topic>
 <topic href="html/guide/ch05.html" label="Working with the Perl Editor">
@@ -46,49 +46,50 @@
 <topic href="html/guide/ch05s04.html" label="Perldoc"/>
 <topic href="html/guide/ch05s05.html" label="Quick Reference"/>
 <topic href="html/guide/ch05s06.html" label="Code Assist">
-<topic href="html/guide/ch05s06.html#N10523" label="Variable Inspection"/>
-<topic href="html/guide/ch05s06.html#N10536" label="Module Inspection"/>
+<topic href="html/guide/ch05s06.html#N1052C" label="Variable Inspection"/>
+<topic href="html/guide/ch05s06.html#N1053F" label="Module Inspection"/>
+<topic href="html/guide/ch05s06.html#external-content-assistant" label="External Content Assistant"/>
 </topic>
 <topic href="html/guide/ch05s07.html" label="Task Markers"/>
 <topic href="html/guide/ch05s08.html" label="Templates">
-<topic href="html/guide/ch05s08.html#N1057C" label="Defining Templates"/>
-<topic href="html/guide/ch05s08.html#N105AE" label="Using Templates"/>
+<topic href="html/guide/ch05s08.html#N105AA" label="Defining Templates"/>
+<topic href="html/guide/ch05s08.html#N105DC" label="Using Templates"/>
 </topic>
 <topic href="html/guide/ch05s09.html" label="Source Formatter"/>
 <topic href="html/guide/ch05s10.html" label="Source Folding"/>
 <topic href="html/guide/ch05s11.html" label="Refactoring">
-<topic href="html/guide/ch05s11.html#N10619" label="Extract Subroutine"/>
+<topic href="html/guide/ch05s11.html#N10647" label="Extract Subroutine"/>
 </topic>
 <topic href="html/guide/ch05s12.html" label="HTML Export"/>
 <topic href="html/guide/ch05s13.html" label="Outline View"/>
 </topic>
 <topic href="html/guide/ch06.html" label="Using the Perl Debugger">
 <topic href="html/guide/ch06s01.html" label="Launching Perl Programs">
-<topic href="html/guide/ch06s01.html#N106B1" label="Launching Perl Programs in Run Mode"/>
-<topic href="html/guide/ch06s01.html#N106F0" label="Re-launching a Perl Program"/>
+<topic href="html/guide/ch06s01.html#N106DF" label="Launching Perl Programs in Run Mode"/>
+<topic href="html/guide/ch06s01.html#N1071E" label="Re-launching a Perl Program"/>
 </topic>
 <topic href="html/guide/ch06s02.html" label="Creating Launch Configurations">
-<topic href="html/guide/ch06s02.html#N10751" label="Perl Local: Running a Perl Script on the Local Machine"/>
-<topic href="html/guide/ch06s02.html#N107A0" label="Perl CGI: Run Perl Programs in a CGI Environment"/>
-<topic href="html/guide/ch06s02.html#N10812" label="Perl Remote: Debug a Perl Script on a Remote Machine"/>
+<topic href="html/guide/ch06s02.html#N1077F" label="Perl Local: Running a Perl Script on the Local Machine"/>
+<topic href="html/guide/ch06s02.html#N107CE" label="Perl CGI: Run Perl Programs in a CGI Environment"/>
+<topic href="html/guide/ch06s02.html#N10840" label="Perl Remote: Debug a Perl Script on a Remote Machine"/>
 </topic>
 <topic href="html/guide/ch06s03.html" label="Breakpoints">
-<topic href="html/guide/ch06s03.html#N108F1" label="Setting Breakpoints"/>
-<topic href="html/guide/ch06s03.html#N10907" label="Enabling or Disabling Breakpoints"/>
-<topic href="html/guide/ch06s03.html#N10913" label="Removing Breakpoints"/>
+<topic href="html/guide/ch06s03.html#N1091F" label="Setting Breakpoints"/>
+<topic href="html/guide/ch06s03.html#N10935" label="Enabling or Disabling Breakpoints"/>
+<topic href="html/guide/ch06s03.html#N10941" label="Removing Breakpoints"/>
 </topic>
 <topic href="html/guide/ch06s04.html" label="Views in the Debug Perspective">
 <topic href="html/guide/ch06s04.html#debug-view" label="Debug View"/>
 <topic href="html/guide/ch06s04.html#variables-view" label="Variables View">
-<topic href="html/guide/ch06s04.html#N1097D" label="Customizing the Variables View"/>
+<topic href="html/guide/ch06s04.html#N109AB" label="Customizing the Variables View"/>
 </topic>
 <topic href="html/guide/ch06s04.html#breakpoints-view" label="Breakpoints View"/>
-<topic href="html/guide/ch06s04.html#N109E6" label="Perl Expression View"/>
+<topic href="html/guide/ch06s04.html#N10A14" label="Perl Expression View"/>
 </topic>
 <topic href="html/guide/ch06s05.html" label="Stepping Through the Execution of a Perl Program">
-<topic href="html/guide/ch06s05.html#N10A25" label="Step Over"/>
-<topic href="html/guide/ch06s05.html#N10A4B" label="Step Into"/>
-<topic href="html/guide/ch06s05.html#N10A71" label="Run to Return"/>
+<topic href="html/guide/ch06s05.html#N10A53" label="Step Over"/>
+<topic href="html/guide/ch06s05.html#N10A79" label="Step Into"/>
+<topic href="html/guide/ch06s05.html#N10A9F" label="Run to Return"/>
 </topic>
 </topic>
 <topic href="html/guide/ch07.html" label="RegExp Plug-in">

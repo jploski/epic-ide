@@ -67,7 +67,8 @@ public class PerlSourceViewerConfiguration extends SourceViewerConfiguration
         for (int i = 0; i < contentTypes.length; i++)
         {
             assistant.setContentAssistProcessor(
-                new PerlCompletionProcessor(editor), contentTypes[i]);
+                new PerlCompletionProcessor(
+                    editor, prefs.getString(CodeAssistPreferences.EXTERNAL_ASSISTANT_PATH)), contentTypes[i]);
         }
 
         assistant.enableAutoActivation(true);

@@ -14,6 +14,7 @@ public class CodeAssistPreferences {
     public static final String AUTO_ACTIVATION_CHARS = "CodeAssist.autoActivationChars";
     public static final String INSPECT_VARIABLES = "CodeAssist.inspectVariables";
     public static final String AUTO_ACTIVATION_DELAY = "CodeAssist.autoActivationDelay";
+    public static final String EXTERNAL_ASSISTANT_PATH = "CodeAssist.externalAssistantPath";
     
     
     /**
@@ -33,6 +34,7 @@ public class CodeAssistPreferences {
         store.setDefault(AUTO_ACTIVATION_CHARS, ">:<$%@");
         store.setDefault(INSPECT_VARIABLES, true);
         store.setDefault(AUTO_ACTIVATION_DELAY, 500);
+        store.setDefault(EXTERNAL_ASSISTANT_PATH, "");
     }
 
     

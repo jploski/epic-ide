@@ -1,13 +1,18 @@
 package org.epic.perleditor.editors.perl;
 
+import java.io.File;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.text.*;
 import org.eclipse.jface.text.contentassist.*;
+import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.editors.text.TextEditor;
+import org.eclipse.ui.part.FileEditorInput;
 import org.epic.core.model.ISourceElement;
 import org.epic.core.util.PerlExecutor;
 import org.epic.perleditor.PerlEditorPlugin;
@@ -33,10 +38,12 @@ public class PerlCompletionProcessor implements IContentAssistProcessor
     private final PerlCompletionProposalComparator fComparator = new PerlCompletionProposalComparator();    
     private final TextEditor fTextEditor;
     private final TemplateEngine fTemplateEngine;
+    private final File fExternalAssistantPath;
 
-    public PerlCompletionProcessor(TextEditor textEditor) 
+    public PerlCompletionProcessor(TextEditor textEditor, String externalAssistantPath) 
     {
         fTextEditor = textEditor;
+        fExternalAssistantPath = new File(externalAssistantPath);
 
         ContextType contextType = getContextType();
         if (contextType != null) fTemplateEngine = new TemplateEngine(contextType);
@@ -48,8 +55,18 @@ public class PerlCompletionProcessor implements IContentAssistProcessor
     {
         // get the current document's text, up to caret position
         IDocument document = viewer.getDocument();
-        ITextSelection selection = (ITextSelection) viewer.getSelectionProvider().getSelection();        
-        if (selection.getLength() > 0) return NO_PROPOSALS;
+        ITextSelection selection = (ITextSelection) viewer.getSelectionProvider().getSelection();
+        
+        if (fExternalAssistantPath.exists() && fExternalAssistantPath.isFile())
+        {
+            ICompletionProposal[] externalProposals = computeExternalProposals(
+                viewer, documentOffset, selection.getLength(), document.get());
+            if (externalProposals.length > 0) return externalProposals;
+        }
+        if (selection.getLength() > 0)
+        {
+            return NO_PROPOSALS;
+        }
 
         String lastTextLine = null;
         try
@@ -110,6 +127,17 @@ public class PerlCompletionProcessor implements IContentAssistProcessor
         return null;
     }
 
+    private ICompletionProposal[] computeExternalProposals(
+        ITextViewer viewer, int documentOffset, int selectionLength, String documentText)
+    {
+        IEditorInput input = fTextEditor.getEditorInput();
+        IFile file = (input instanceof FileEditorInput) ? ((FileEditorInput) input).getFile() : null;
+        IPath path = file != null ? file.getFullPath() : null;
+        
+        ExternalCompletionHelper completionHelper = ExternalCompletionHelper.getInstance();
+        return completionHelper.getProposals(documentText, documentOffset, selectionLength, path, viewer);
+    }
+    
     private ICompletionProposal[] computeMethodProposals(
         ITextViewer viewer, int documentOffset, String className)
     {

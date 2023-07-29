@@ -6,6 +6,9 @@ Git
 		Editor:
 
 
+Version 0.7.9 - 29-Jul-2023
+		* Implemented Feature Request #720 External content assistant
+
 Version 0.7.8 - 26-Sep-2020
 		* Fixed Bug #713 "Perl Auto Builder" doesn't work anymore with Eclipse 2020-09
 

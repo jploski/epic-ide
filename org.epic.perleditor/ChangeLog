@@ -6,6 +6,9 @@ Git
 		Editor:
 
 
+Version 0.7.10 - 29-Jul-2023
+		* Fixed wrong autocompletion behavior from Feature Request #720 External content assistant
+
 Version 0.7.9 - 29-Jul-2023
 		* Implemented Feature Request #720 External content assistant
 

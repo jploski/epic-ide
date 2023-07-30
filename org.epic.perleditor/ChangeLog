@@ -5,6 +5,11 @@ Git
 		
 		Editor:
 
+Version 0.7.11 - 30-Jul-2023
+		* Extended Feature Request #720 External content assistant with an ability to
+		  provide a different label for the autocompletion popup than what will actually be inserted
+		  in editor; intended to allow displaying concise user-friendly summaries for proposed
+		  longer generations
 
 Version 0.7.10 - 29-Jul-2023
 		* Fixed wrong autocompletion behavior from Feature Request #720 External content assistant

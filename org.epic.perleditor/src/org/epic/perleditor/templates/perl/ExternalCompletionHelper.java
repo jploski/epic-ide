@@ -40,6 +40,21 @@ public class ExternalCompletionHelper  {
             int thirdCommaIndex = str[i].indexOf(',', secondCommaIndex+1);
             
             String replacementString = str[i];
+            if (thirdCommaIndex > 0) replacementString = str[i].substring(thirdCommaIndex+1);
+            
+            // If replacementString is of the form "<|display|>Something<|replace|>Another thing",
+            // we display a different label than we replace the selection with; otherwise label = replacement.
+            // This is particularly useful if the label summarizes a longer replacement text.
+            
+            String displayString = replacementString; 
+            if (replacementString.startsWith(ExternalAutoComplete.DISPLAY_STRING_DELIMITER)) {
+                int replaceIndex = replacementString.indexOf(ExternalAutoComplete.REPLACE_STRING_DELIMITER);
+                if (replaceIndex > 0) {
+                    displayString = replacementString.substring(ExternalAutoComplete.DISPLAY_STRING_DELIMITER.length(), replaceIndex);
+                    replacementString = replacementString.substring(replaceIndex + ExternalAutoComplete.REPLACE_STRING_DELIMITER.length());
+                }
+            }
+            
             int replacementOffset = documentOffset,
                 replacementLength = 0,
                 cursorPosition = documentOffset + replacementString.length();
@@ -49,11 +64,11 @@ public class ExternalCompletionHelper  {
                 replacementOffset = Integer.parseInt(str[i].substring(0, firstCommaIndex));
                 replacementLength = Integer.parseInt(str[i].substring(firstCommaIndex+1, secondCommaIndex));
                 cursorPosition = Integer.parseInt(str[i].substring(secondCommaIndex+1, thirdCommaIndex));
-                replacementString = str[i].substring(thirdCommaIndex+1);
             } catch (NumberFormatException e) {}
             
             proposals[i] = new PositionBasedCompletionProposal(
                 replacementString,
+                displayString,
                 new Position(replacementOffset, replacementLength),
                 cursorPosition);
         }
@@ -63,6 +78,8 @@ public class ExternalCompletionHelper  {
     // Cf. org.eclipse.jface.text.templates.PositionBasedCompletionProposal
     class PositionBasedCompletionProposal implements ICompletionProposal, ICompletionProposalExtension2 {
 
+        /** The string displayed in pop-up, usually same as fReplacementString */
+        private final String fDisplayString;
         /** The replacement string */
         private final String fReplacementString;
         /** The replacement position. */
@@ -72,9 +89,11 @@ public class ExternalCompletionHelper  {
 
         public PositionBasedCompletionProposal(
             String replacementString,
+            String displayString,
             Position replacementPosition,
             int cursorPosition) {
             
+            this.fDisplayString = displayString;
             this.fReplacementString = replacementString;
             this.fReplacementPosition = replacementPosition;
             this.fCursorPosition = cursorPosition;
@@ -92,7 +111,7 @@ public class ExternalCompletionHelper  {
         }
 
         public String getDisplayString() {
-            return fReplacementString;
+            return fDisplayString;
         }
 
         public Image getImage() {

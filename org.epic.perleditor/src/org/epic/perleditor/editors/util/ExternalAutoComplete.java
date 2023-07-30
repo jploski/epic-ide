@@ -26,8 +26,10 @@ public class ExternalAutoComplete extends ScriptExecutor
     
     //~ Static fields/initializers
 
-    public static final String DELIMITER = "\\<\\|proposal\\|\\>"; // it's a regex
-
+    public static final String PROPOSAL_DELIMITER = "\\<\\|proposal\\|\\>"; // it's a regex
+    public static final String DISPLAY_STRING_DELIMITER = "<|display|>"; // it's a plain string
+    public static final String REPLACE_STRING_DELIMITER = "<|replace|>";
+    
     //~ Constructors
 
     protected ExternalAutoComplete(ILog log, String externalAssistantPath)
@@ -58,7 +60,10 @@ public class ExternalAutoComplete extends ScriptExecutor
      *         replacementLength = how many characters to remove at this offset (typically 0, i.e. just insert),
      *         newCursorPosition = where to place caret after the insertion, relative to replacementOffset
      *                             (typically = replacementString.length()),
-     *         replacementString = what to insert at replacementOffset
+     *         replacementString = what to insert at replacementOffset;
+     *              extension: if this string begins with the special token <pre>&lt;|display|&gt</pre>,
+     *              then the following text up until the special token <pre>&lt;|replace|&gt</pre>
+     *              will be used as the display label in the pop-up and the remaining string as true replacement
      */
     public static String[] getProposals(
         String documentText, int documentOffset, int selectionLength, IPath documentPath)
@@ -71,7 +76,7 @@ public class ExternalAutoComplete extends ScriptExecutor
                 CodeAssistPreferences.EXTERNAL_ASSISTANT_PATH);            
             String result = new ExternalAutoComplete(log, assistantPath).run(
                 documentText, buildArgs(documentPath, documentOffset, selectionLength)).stdout;
-            return result.split(DELIMITER);
+            return result.split(PROPOSAL_DELIMITER);
         }
         catch (CoreException e)
         {

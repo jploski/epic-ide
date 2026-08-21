@@ -1,10 +1,12 @@
-#Sun Nov 11 14:07:23 CET 2018
-column4=540
-column3=150
-column2=793
-orderValue=-1
 activate=true
-show_filter_text=true
+activateError=true
+activateWarn=false
+column2=793
+column3=150
+column4=540
 eclipse.preferences.version=1
-orderType=2
 groupBy=0
+maxLogTailSize=1
+orderType=2
+orderValue=-1
+show_filter_text=true

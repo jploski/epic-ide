@@ -4,6 +4,7 @@ package dumpvar_epic;
 
 use strict;
 use warnings;
+use utf8;
 
 use Encode;
 use Scalar::Util;
@@ -234,24 +235,25 @@ sub _dump_package_var
     my $key = shift;
     my $val = shift;
 
+    return if ($key =~ /^_</ || $key =~ /^[\001-\037\177]/);
+
     local (*dumpvar_epic::entry);
     *dumpvar_epic::entry = $val if (defined($val));
     
     eval
     {
-        if ($key !~ /^_</ and defined $dumpvar_epic::entry) # SCALAR
+        if (defined $dumpvar_epic::entry) # SCALAR
         {
         	_dump_entity('$'._unctrl($key), \$dumpvar_epic::entry);
         }
-        if ($key !~ /^_</ and @dumpvar_epic::entry) # ARRAY
+        if (@dumpvar_epic::entry) # ARRAY
         {
         	_dump_entity('@'.$key, \@dumpvar_epic::entry);
         }
         if ($key ne "main::" &&
             $key ne "DB::" &&
             %dumpvar_epic::entry &&
-            $key !~ /::$/ &&
-            $key !~ /^_</) # HASH
+            $key !~ /::$/) # HASH
         {
         	_dump_entity('%'.$key, \%dumpvar_epic::entry);
         }

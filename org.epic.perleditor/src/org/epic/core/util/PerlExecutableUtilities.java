@@ -146,8 +146,8 @@ public class PerlExecutableUtilities
         return path;
     }
     
-    // package-scope visibility to enable testing
-    static String translatePathForCygwin(String path)
+    // public visibility to enable testing
+    public static String translatePathForCygwin(String path)
     {
         path = path.replace('\\', '/');
         path = path.toLowerCase();

@@ -24,7 +24,7 @@ import org.epic.perleditor.PerlEditorPlugin;
  *
  * @author jploski
  */
-abstract class PerlValidatorBase
+public abstract class PerlValidatorBase
 {
     private static int maxErrorsShown = 500;
     private static final int BUF_SIZE = 1024;
@@ -182,7 +182,7 @@ abstract class PerlValidatorBase
      * @param path  file that should be read
      * @return text contents
      */
-    protected String readSourceFile(String path, String charset) throws IOException
+    public String readSourceFile(String path, String charset) throws IOException
     {
         BufferedReader in = null;
         

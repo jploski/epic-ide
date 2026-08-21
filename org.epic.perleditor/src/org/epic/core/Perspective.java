@@ -62,7 +62,7 @@ public class Perspective implements IPerspectiveFactory
         layout.addNewWizardShortcut("org.eclipse.ui.wizards.new.file");//$NON-NLS-1$
 
         // Add "show views".
-        layout.addShowViewShortcut(IPageLayout.ID_RES_NAV);
+        layout.addShowViewShortcut(IPageLayout.ID_PROJECT_EXPLORER);
         layout.addShowViewShortcut(IPageLayout.ID_BOOKMARKS);
         layout.addShowViewShortcut(IPageLayout.ID_OUTLINE);
         layout.addShowViewShortcut(IPageLayout.ID_PROP_SHEET);
@@ -94,7 +94,7 @@ public class Perspective implements IPerspectiveFactory
         // Top left.
         IFolderLayout topLeft = layout.createFolder(
             "topLeft", IPageLayout.LEFT, (float) 0.26, editorArea);//$NON-NLS-1$
-        topLeft.addView(IPageLayout.ID_RES_NAV);
+        topLeft.addView(IPageLayout.ID_PROJECT_EXPLORER);
         topLeft.addPlaceholder(IPageLayout.ID_BOOKMARKS);
 
         // Bottom left.

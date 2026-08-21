@@ -3,21 +3,49 @@
 	<list key="installedFeatures">
 	</list>
 	<section name="CleanDialogSettings">
-		<item value="563" key="DIALOG_WIDTH"/>
-		<item value="true" key="TOGGLE_SELECTED"/>
-		<item value="408" key="DIALOG_HEIGHT"/>
-		<item value="171" key="DIALOG_Y_ORIGIN"/>
-		<item value="296" key="DIALOG_X_ORIGIN"/>
+		<item key="DIALOG_WIDTH" value="563"/>
+		<item key="TOGGLE_SELECTED" value="true"/>
+		<item key="DIALOG_HEIGHT" value="408"/>
+		<item key="DIALOG_Y_ORIGIN" value="171"/>
+		<item key="DIALOG_X_ORIGIN" value="296"/>
 	</section>
 	<section name="ResourceNavigator">
-		<item value="Aggregate for window 1180790581835" key="ResourceWorkingSetFilter.STORE_WORKING_SET"/>
-		<item value="1" key="ResourceViewer.STORE_SORT_TYPE"/>
+		<item key="ResourceWorkingSetFilter.STORE_WORKING_SET" value="Aggregate for window 1180790581835"/>
+		<item key="ResourceViewer.STORE_SORT_TYPE" value="1"/>
 	</section>
 	<section name="NewWizardAction">
+		<item key="NewWizardSelectionPage.STORE_SELECTED_ID" value="org.epic.newproject.wizard"/>
+		<list key="NewWizardSelectionPage.STORE_EXPANDED_CATEGORIES_ID">
+			<item value="org.epic.newproject"/>
+		</list>
+		<section name="NewWizard.dialogBounds">
+		</section>
 	</section>
 	<section name="org.eclipse.ui.views.task">
 	</section>
 	<section name="org.eclipse.ui.internal.views.markers.FiltersConfigurationDialog">
-		<item value="Warnings on Selection" key="SELECTED_FILTER_GROUP"/>
+		<item key="SELECTED_FILTER_GROUP" value="Warnings on Selection"/>
+	</section>
+	<section name="SmartImportWizard">
+		<item key="SmartImportRootWizardPage.STORE_HIDE_ALREADY_OPEN" value="false"/>
+		<item key="SmartImportRootWizardPage.STORE_CLOSE_IMPORTED" value="false"/>
+		<item key="SmartImportRootWizardPage.STORE_NESTED_PROJECTS" value="true"/>
+		<item key="SmartImportRootWizardPage.STORE_CONFIGURE_NATURES" value="true"/>
+		<section name="SmartImportWizard.dialogBounds">
+			<item key="DIALOG_X_ORIGIN" value="250"/>
+			<item key="DIALOG_Y_ORIGIN" value="24"/>
+			<item key="DIALOG_WIDTH" value="880"/>
+			<item key="DIALOG_HEIGHT" value="710"/>
+			<item key="DIALOG_FONT_NAME" value="1|&quot;Verdana 7&quot;|10.0|0|GTK|1|"/>
+		</section>
+	</section>
+	<section name="ExternalProjectImportWizard">
+		<section name="ExternalProjectImportWizard.dialogBounds">
+			<item key="DIALOG_X_ORIGIN" value="250"/>
+			<item key="DIALOG_Y_ORIGIN" value="24"/>
+			<item key="DIALOG_WIDTH" value="525"/>
+			<item key="DIALOG_HEIGHT" value="830"/>
+			<item key="DIALOG_FONT_NAME" value="1|&quot;Verdana 7&quot;|10.0|0|GTK|1|"/>
+		</section>
 	</section>
 </section>

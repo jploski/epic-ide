@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: EPIC Documentation Plug-in
 Bundle-SymbolicName: org.epic.doc; singleton:=true
 Bundle-Version: 0.7.3
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
 Bundle-Vendor: EPIC Project
 Require-Bundle: org.eclipse.help

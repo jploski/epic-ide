@@ -33,7 +33,19 @@ public class Keyboard
      */
     public static void backspace()
     {
-        keystroke(SWT.BS, -1);
+        Event e;
+
+        e = new Event();
+        e.type = SWT.KeyDown;
+        e.character = SWT.BS;
+        e.keyCode = SWT.BS;
+        postEvent(e);
+
+        e = new Event();
+        e.type = SWT.KeyUp;
+        e.character = SWT.BS;
+        e.keyCode = SWT.BS;
+        postEvent(e);
     }
     
     /**

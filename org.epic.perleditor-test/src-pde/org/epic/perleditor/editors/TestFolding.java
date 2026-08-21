@@ -14,41 +14,61 @@ public class TestFolding extends BasePDETestCase
         _testCase("EPICTest/Twig.pm", "test.in/TestFolding-expected1.txt");
         _testCase("EPICTest/test_Folding.pl", "test.in/TestFolding-expected2.txt");
     }
-    
+
     private void _testCase(String inFile, String outFile) throws Exception
-    {   
+    {
         String expected = readFile(outFile);
         PerlEditor editor = openEditor(inFile);
-        
+
         try
         {
             IAnnotationModel model = (IAnnotationModel)
                 editor.getAdapter(ProjectionAnnotationModel.class);
-            
-            List<String> lines = new ArrayList<String>();
-            for(Iterator<Annotation> i = model.getAnnotationIterator(); i.hasNext();)
+
+            String actual = "";
+            long timeout = System.currentTimeMillis() + 3000;
+
+            while (System.currentTimeMillis() < timeout)
             {
-                Annotation a = i.next();
-                Position p = model.getPosition(a);
-                
+                // Pump UI event loop so async background reconciler updates can execute
+                org.eclipse.swt.widgets.Display display = org.eclipse.swt.widgets.Display.getDefault();
+                while (display.readAndDispatch()) { }
+
+                List<String> lines = new ArrayList<String>();
+                for (Iterator<Annotation> i = model.getAnnotationIterator(); i.hasNext();)
+                {
+                    Annotation a = i.next();
+                    Position p = model.getPosition(a);
+                    if (p != null)
+                    {
+                        StringBuilder buf = new StringBuilder();
+                        buf.append(p.getOffset());
+                        buf.append(':');
+                        buf.append(p.getLength());
+                        buf.append(':');
+                        buf.append(a.getType());
+                        lines.add(buf.toString());
+                    }
+                }
+                Collections.sort(lines);
+
                 StringBuilder buf = new StringBuilder();
-                buf.append(p.getOffset());
-                buf.append(':');
-                buf.append(p.getLength());
-                buf.append(':');
-                buf.append(a.getType());
-                lines.add(buf.toString());
+                for (Iterator<String> i = lines.iterator(); i.hasNext();)
+                {
+                    buf.append(i.next());
+                    buf.append('\n');
+                }
+
+                actual = buf.toString();
+                if (expected.equals(actual))
+                {
+                    break;
+                }
+
+                Thread.sleep(50);
             }
-            Collections.sort(lines);
-            
-            StringBuilder buf = new StringBuilder();
-            for (Iterator<String> i = lines.iterator(); i.hasNext();)
-            {
-                buf.append(i.next());
-                buf.append('\n');
-            }
-            //System.err.println(buf);
-            assertEquals(expected, buf.toString());
+
+            assertEquals(expected, actual);
         }
         finally
         {

@@ -1,5 +1,13 @@
 package org.epic.perleditor.actions;
 
+import java.util.LinkedList;
+import java.util.List;
+
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.swt.widgets.Shell;
@@ -24,6 +32,7 @@ public class OpenDeclarationAction extends PerlEditorAction
 {
     private final OpenSubDeclaration openSub;
     private final OpenPackageDeclaration openPackage;
+    private final List<AbstractOpenDeclaration> contributedActions;
     
     //~ Constructors
 
@@ -33,6 +42,22 @@ public class OpenDeclarationAction extends PerlEditorAction
         
         this.openSub = new OpenSubDeclaration(this);
         this.openPackage = new OpenPackageDeclaration(this);
+        this.contributedActions = new LinkedList<AbstractOpenDeclaration>();
+
+        IConfigurationElement[] config = Platform.getExtensionRegistry().getConfigurationElementsFor("org.epic.perleditor.openDeclaration");
+        for (IConfigurationElement cfg: config) {
+            Object handler;
+            try {
+                handler = cfg.createExecutableExtension("class");
+                if ( handler instanceof IOpenDeclarationHandler ) {
+                    contributedActions.add(new ContributedOpenDeclarationHandler(this, (IOpenDeclarationHandler)handler));
+                }
+            } catch ( CoreException e ) {
+                PerlEditorPlugin.getDefault().getLog().log(
+                        new Status(IStatus.WARNING, PerlEditorPlugin.getUniqueIdentifier(),
+                        "failed to load openDeclaration extension", e));
+            }
+        }
     }
     
     //~ Methods
@@ -46,7 +71,18 @@ public class OpenDeclarationAction extends PerlEditorAction
         if (!res1.isFound())
         {
             AbstractOpenDeclaration.Result res2 = openPackage.run(selection);
-            if (!res2.isFound()) reportFailure(res1);
+            if (!res2.isFound())
+            {
+                for (AbstractOpenDeclaration decl: contributedActions)
+                {
+                    AbstractOpenDeclaration.Result res3 = decl.run(selection);
+                    if (res3.isFound())
+                    {
+                        return;
+                    }
+                }
+                reportFailure(res2);
+            }
         }
     }
     
@@ -56,7 +92,18 @@ public class OpenDeclarationAction extends PerlEditorAction
         if (!res1.isFound())
         {
             AbstractOpenDeclaration.Result res2 = openPackage.run();
-            if (!res2.isFound()) reportFailure(res1);
+            if (!res2.isFound())
+            {
+                for (AbstractOpenDeclaration decl: contributedActions)
+                {
+                    AbstractOpenDeclaration.Result res3 = decl.run();
+                    if (res3.isFound())
+                    {
+                        return;
+                    }
+                }
+                reportFailure(res2);
+            }
         }
     }
     

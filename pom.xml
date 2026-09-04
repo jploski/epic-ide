@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>org.epic</groupId>
+    <artifactId>org.epic.parent</artifactId>
+    <version>0.7.12-SNAPSHOT</version>
+    <packaging>pom</packaging>
+
+    <properties>
+        <tycho.version>4.0.8</tycho.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+    </properties>
+
+    <modules>
+        <module>org.epic.debug</module>
+        <module>org.epic.doc</module>
+        <module>org.epic.lib</module>
+        <module>org.epic.perleditor</module>
+        <module>org.epic.perleditor-test</module>
+        <module>org.epic.regexp</module>
+        <module>org.epic.source</module>
+        <module>org.epic.feature.main</module>
+        <module>org.epic.repository</module>
+    </modules>
+
+    <repositories>
+        <repository>
+            <id>eclipse-releases</id>
+            <layout>p2</layout>
+            <url>https://download.eclipse.org/releases/2024-03</url>
+        </repository>
+    </repositories>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.eclipse.tycho</groupId>
+                <artifactId>tycho-maven-plugin</artifactId>
+                <version>${tycho.version}</version>
+                <extensions>true</extensions>
+            </plugin>
+            <plugin>
+                <groupId>org.eclipse.tycho</groupId>
+                <artifactId>tycho-versions-plugin</artifactId>
+                <version>${tycho.version}</version>
+            </plugin>
+            <plugin>
+                <groupId>org.eclipse.tycho</groupId>
+                <artifactId>target-platform-configuration</artifactId>
+                <version>${tycho.version}</version>
+                <configuration>
+                    <pomDependencies>consider</pomDependencies>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>

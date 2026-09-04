@@ -2,7 +2,7 @@
 <feature
       id="org.epic.feature.main"
       label="EPIC"
-      version="0.7.11"
+      version="0.7.12.qualifier"
       provider-name="Epic Project"
       plugin="org.epic.perleditor"
       image="icons/epic_install.jpg">
@@ -279,50 +279,50 @@ The included JDOM software is distributed under the following license:
    </license>
 
    <url>
-      <update label="EPIC Updates" url="http://e-p-i-c.sourceforge.net/updates/testing"/>
+      <update label="EPIC Updates" url="https://epic-ide.org/updates/testing"/>
    </url>
 
    <requires>
-      <import feature="org.eclipse.platform" version="3.7.0" match="greaterOrEqual"/>
+      <import feature="org.eclipse.platform" version="4.4.0" match="greaterOrEqual"/>
    </requires>
 
    <plugin
          id="org.epic.regexp"
          download-size="0"
          install-size="0"
-         version="0.7.2"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
          id="org.epic.perleditor"
          download-size="0"
          install-size="0"
-         version="0.7.10"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
          id="org.epic.doc"
          download-size="0"
          install-size="0"
-         version="0.7.3"/>
+         version="0.0.0"/>
 
    <plugin
          id="org.epic.debug"
          download-size="0"
          install-size="0"
-         version="0.7.5"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
          id="org.epic.lib"
          download-size="0"
          install-size="0"
-         version="0.7.2"/>
+         version="0.0.0"/>
 
    <plugin
          id="org.epic.source"
          download-size="0"
          install-size="0"
-         version="0.7.11"/>
+         version="0.0.0"/>
 
 </feature>

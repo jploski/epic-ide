@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<site>
+   <feature id="org.epic.feature.main" version="0.0.0">
+      <category name="org.epic.category"/>
+   </feature>
+   <category-def name="org.epic.category" label="EPIC Perl IDE"/>
+</site>

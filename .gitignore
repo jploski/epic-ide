@@ -1,2 +1,3 @@
 org.epic.website
 .metadata/
+**/target/

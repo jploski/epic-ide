@@ -29,8 +29,10 @@ public class PerlLaunchConfigurationConstants
     public final static String ATTR_CGI_ENV = "ATTR_CGI_ENV";
     /* STR */
     public final static String ATTR_CGI_FILE_EXTENSION = "ATTR_CGI_FILE_EXTENSION";
+    public static final String ATTR_MULTIREMOTE_PORT = "ATTR_MULTIREMOTE_PORT";
     public static final String ATTR_REMOTE_PORT = "ATTR_REMOTE_PORT";
     public static final String ATTR_REMOTE_DEST = "ATTR_REMOTE_DEST";
+    public static final String ATTR_MD5_BREAKS = "ATTR_MD5_BREAKS";
     public static final String ATTR_REMOTE_HOST = "ATTR_REMOTE_HOST";
     public static final String ATTR_REMOTE = "ATTR_REMOTE";
     public static final String ATTR_REMOTE_CREATE_DEBUG_PACKAGE = "ATTR_REMOTE_CREATE_DEBUG_PACKAGE";
@@ -50,6 +52,20 @@ public class PerlLaunchConfigurationConstants
         {
             PerlDebugPlugin.log(e);
             return null;
+        }
+    }
+
+    public final static boolean getMD5Breaks(ILaunch fLaunch)
+    {
+        try
+        {
+            return fLaunch.getLaunchConfiguration().getAttribute(
+                ATTR_MD5_BREAKS, false);
+        }
+        catch (CoreException e)
+        {
+            PerlDebugPlugin.log(e);
+            return false;
         }
     }
 

@@ -6,12 +6,23 @@ use strict;
 use warnings;
 
 use Cwd 'abs_path';
+use File::Basename;
+use Digest;
 
 # pending_breaks maps the canonical path of each source file with pending
 # breakpoints to an array of hash refs with keys { line, cond, add }
 # Pending breakpoints are inserted (or removed) as soon as the debugger
 # loads the target source file (and invokes epic_breakpoints::_postponed).
 my %pending_breaks = ();
+
+# pending_MD5breaks maps the name of each source file with pending
+# MD5breakpoints to an aray of hash refs with keys { line, cond, add, MD5}
+# Pending breakpoints are inserted (or removed) as soon as the debugger
+# loads the target source file (and invokes epic_breakpoints::_postponed).
+my %pending_MD5breaks = ();
+
+# maps source file cannonical path to the MD5 of the file contents
+my %cachedMD5s;
 
 # we try to invoke Cwd::abs_path as seldom as possible for better performance...
 my %abs_path_cache = ();
@@ -39,6 +50,22 @@ sub add_breakpoint
     # note/TODO: $@ ne '' here if the line was not breakable
 }
 
+# Adds a breakpoint for a given source file identified by name and MD5, line and condition.
+# Depending on the debugger's state the breakpoint is inserted immediately
+# or added to the pending list. The invoker should not care. 
+#
+# @param script_name    name of the script (not necessarily interested in path)
+# @param MD5			the MD5 of the script you want to break on.  
+#                       The MD5 should have been run on the text of the script with line endings removed
+# @param line           line on which to break
+# @param cond           (optional) breakpoint condition, ignored if ''
+#
+sub add_MD5breakpoint
+{
+    eval { _add_MD5breakpoint(@_); };
+    # note/TODO: $@ ne '' here if the line was not breakable
+}
+
 # Converts a relative path in the debugger file system to absolute.
 #
 # @param source_path    relative path to the source file
@@ -48,6 +75,26 @@ sub get_abs_path
     no warnings;
     eval { print $DB::OUT _abs_path(@_) };
     # TODO: some sort of error reporting?
+}
+
+# Gets the MD5 of a script, ignore line endings
+#
+#param source_path	path to the source file
+#
+sub get_script_MD5
+{
+    no warnings;
+    eval { print $DB::OUT _get_script_MD5(@_);};
+}
+
+#gets the text of a script
+#
+#param source_path	path to the source file
+#
+sub get_script_source
+{
+	no warnings;
+	eval {print $DB::OUT _get_script_source(@_);};	
 }
 
 # Removes a breakpoint from a given source file.
@@ -63,12 +110,19 @@ sub remove_breakpoint
     # TODO: some sort of error reporting?
 }
 
+sub remove_MD5breakpoint
+{
+    eval { _remove_MD5breakpoint(@_); };
+    # TODO: some sort of error reporting?
+}
+
 # -------------------------------------------------------------------------
 # Implementations of private subroutines & API for DB
 
 sub _abs_path
 {
     my $path = shift;
+    $path =~ s/\\/\//g;
     
     my $cached = $abs_path_cache{$path};
     return $cached if $cached;
@@ -104,6 +158,28 @@ sub _add_breakpoint
     _add_pending($source_path, $line, $cond, 1);
 }
 
+sub _add_MD5breakpoint
+{
+    my $script_name = _trim(shift);
+    my $MD5 = _trim(shift);
+    my $line = _trim(shift);
+    my $cond = _trim(shift) || 1;
+
+	my @source_paths=_get_source_paths($script_name);
+    foreach my $source_path(@source_paths)
+    {
+    	next if (_get_script_MD5($source_path) ne $MD5);
+        eval { DB::break_on_filename_line($source_path, $line, $cond); };
+    }
+
+    # Here we add this breakpoint to pending_breaks in any case,
+    # even if the above break_on_filename_line succeeded. The reason
+    # is that the file might become 'require'd in using a different
+    # path in the future and we want this breakpoint to be set then.
+    _remove_MD5pending($script_name, $MD5, $line);
+    _add_MD5pending($script_name, $MD5, $line, $cond, 1);
+}
+
 sub _add_pending
 {
     my $source_path = shift;
@@ -115,6 +191,20 @@ sub _add_pending
     push(
         @{$pending_breaks{$source_path}},
         { line => $line, cond => $cond, add => $add });
+}
+
+sub _add_MD5pending
+{
+    my $script_name = shift;
+    my $MD5 = shift;
+    my $line = shift;
+    my $cond = shift;
+    my $add = shift;
+
+    $pending_MD5breaks{$script_name} = [] if (!defined($pending_MD5breaks{$script_name}));
+    push(
+        @{$pending_MD5breaks{$script_name}},
+        { line => $line, cond => $cond, add => $add, MD5 => $MD5});
 }
 
 # Called (only) from (a patched version of) DB::postponed each time a new
@@ -148,6 +238,20 @@ sub _postponed
             $ret = 1 if ($break->{line} == $line);  
         }
     }
+    foreach my $MD5break(@{$pending_MD5breaks{basename($source_path)}})
+    {
+        if ($MD5break->{add} && $MD5break->{MD5} eq _get_script_MD5($source_path))
+        {
+            $breaks_to_add{$MD5break->{line}} = $MD5break->{cond};
+
+            eval { DB::_set_breakpoint_enabled_status($filename, $MD5break->{line}, 1); };
+
+            # force break now if we just entered the file on a line
+            # which had a pending breakpoint:            
+            $ret = 1 if ($MD5break->{line} == $line);  
+        }
+    }
+    
     # Note that we DON'T delete $pending_breaks{$source_path} here.
     # This is because the file might be 'require'd using a different
     # path later in which case we still want its breakpoints to be set.
@@ -193,6 +297,34 @@ sub _remove_breakpoint
     }
 }
 
+sub _remove_MD5breakpoint
+{
+    my $script_name = _trim(shift);
+    my $MD5 = _trim(shift);
+    my $line = _trim(shift);
+
+    my $pending = 0;
+    
+    my @source_paths=_get_source_paths($script_name);
+    foreach my $source_path(@source_paths)
+    {
+        next if (_get_script_MD5($source_path) ne $MD5);
+        eval
+        {
+            no warnings;
+            local *DB::dbline = $main::{'_<'.$source_path};
+            DB::delete_breakpoint($line);
+        };
+        $pending = 1 if ($@ ne '');
+    }
+
+    if ($pending)
+    {
+        _remove_MD5pending($script_name, $MD5, $line);
+        _add_pending($script_name, $MD5, $line, '', 0);
+    }
+}
+
 sub _remove_pending
 {
     my $source_path = shift;
@@ -212,9 +344,69 @@ sub _remove_pending
     }
 }
 
+sub _remove_MD5pending
+{
+    my $script_name = shift;
+    my $MD5 = shift;
+    my $line = shift;
+
+    return if (!defined($pending_MD5breaks{$script_name}));
+
+    my $i = 0;
+    foreach my $MD5break(@{$pending_MD5breaks{$script_name}})
+    {
+        if ($MD5break->{line} == $line && $MD5break->{MD5} eq $MD5)
+        {
+            splice(@{$pending_MD5breaks{$script_name}}, $i, 1);
+            return;
+        }
+        $i++;
+    }
+}
+
+sub _get_source_paths
+{
+	my ($script_name) = @_;
+	my @source_paths = ();
+	push (@source_paths, $main_script_path) if(basename($main_script_path) eq $script_name);
+	foreach my $key(keys %INC)
+    {
+        next if (basename($INC{$key}) ne $script_name);
+        push (@source_paths, $INC{$key});
+    }
+	return @source_paths;
+}
+
+sub _get_script_MD5
+{
+	my ($source_path) = @_;
+	if(! exists $cachedMD5s{$source_path}){
+		my $MD5 = Digest->new("MD5");
+		open my $fh, "<$source_path";
+		while (<$fh>) {
+			s/\r|\n//g;
+			$MD5->add($_);
+		}
+		$cachedMD5s{$source_path} = $MD5->hexdigest;
+	}
+	return $cachedMD5s{$source_path}; 
+}
+
+sub _get_script_source
+{
+	my ($source_path) = @_;
+	my $source;
+	open my $fh, "<$source_path";
+	while (<$fh>) {
+		$source .= $_;
+	}
+	close $fh;
+	return $source; 
+}
 sub _trim
 {
     my $str = shift;
+    return if(!$str);
     $str =~ s/^\s*//s;
     $str =~ s/\s*$//s;
     return $str;

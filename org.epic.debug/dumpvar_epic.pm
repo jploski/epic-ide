@@ -46,6 +46,21 @@ sub dump_array_expr
     if (!$@) { dump_array(eval($expr)); }
 }
 
+sub set_variable
+{
+	my $frame_index=shift;
+	my $setexpr=shift;
+	
+	my $h = eval { PadWalker::peek_my(3 + $frame_index) };
+	if (!$@) { eval($setexpr); };
+}
+
+sub dump_entity
+{
+	no warnings 'all';
+	eval {_dump_entity(@_);};
+}
+
 # Dumps all key-value pairs of a hash.
 #
 # @param hash   hash reference

@@ -16,15 +16,15 @@ import org.epic.debug.db.DebuggerInterface;
  */
 public class RemotePathMapper extends AbstractPathMapper
 {
-    private static final IPathChecker localPathChecker = new IPathChecker() {
+    protected static final IPathChecker localPathChecker = new IPathChecker() {
         public boolean fileExists(IPath path)
         {
             return path.toFile().exists();
         } };
     
-    private final String remoteProjectDir;
-    private final List<IPath> epicInc;
-    private List<IPath> debuggerInc;
+    protected final String remoteProjectDir;
+    protected final List epicInc;
+    protected List debuggerInc;
     
     public RemotePathMapper(IProject project, String remoteProjectDir)
         throws CoreException

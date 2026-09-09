@@ -1,8 +1,10 @@
 package org.epic.debug.db;
 
+import java.io.IOException;
 import java.util.*;
 
 import org.eclipse.core.runtime.Status;
+import org.eclipse.debug.core.DebugEvent;
 import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.model.*;
 import org.epic.debug.PerlDebugPlugin;
@@ -205,7 +207,19 @@ public abstract class PerlVariable extends DebugElement implements IVariable
      */
     public void setValue(String expression) throws DebugException
     {
-        throwNotSupported();
+    	String e2=expression;
+    	if(e2.contains("\n")){
+    		e2="\""+expression.replaceAll("\r?\n", "\\\\n")+"\"";
+    	}
+    	String setString=this.getExpression() + "=" + e2;
+    	setString=setString.replaceAll("([@$%\\\\\"])", "\\\\$1");
+    	
+        try {
+			this.frame.getPerlThread().getDB().eval(String.format("dumpvar_epic::set_variable(%d, \"%s\")", this.frame.getFrameIndex(), setString));
+			this.frame.getPerlThread().suspended(0);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
     }
 
     /**
@@ -213,7 +227,7 @@ public abstract class PerlVariable extends DebugElement implements IVariable
      */
     public void setValue(IValue value) throws DebugException
     {
-        throwNotSupported();
+    	throwNotSupported();
     }
 
     /**
@@ -225,7 +239,7 @@ public abstract class PerlVariable extends DebugElement implements IVariable
      */
     public boolean supportsValueModification()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -233,8 +247,7 @@ public abstract class PerlVariable extends DebugElement implements IVariable
      */
     public boolean verifyValue(String expression) throws DebugException
     {
-        throwNotSupported();
-        return false;
+        return true;
     }
 
     /**
@@ -318,16 +331,16 @@ public abstract class PerlVariable extends DebugElement implements IVariable
     
     private IVariable[] getPerlVariables(IValue value) throws DebugException
     {
-        IVariable[] vars = value.getVariables();
-        if (vars.length == 0 || vars[0] instanceof PerlVariable) return vars;
-        else
-        {
-            assert vars[0] instanceof ArraySlice;
+    	IVariable[] vars = value.getVariables();
+    	if (vars.length == 0 || vars[0] instanceof PerlVariable) return vars;
+    	else
+    	{
+    		assert vars[0] instanceof ArraySlice;
             List<IVariable> elements = new ArrayList<IVariable>();
-            for (int i = 0; i < vars.length; i++)
-                elements.addAll(Arrays.asList(getPerlVariables(vars[i].getValue()))); 
+    		for (int i = 0; i < vars.length; i++)
+    			elements.addAll(Arrays.asList(getPerlVariables(vars[i].getValue()))); 
             return elements.toArray(new IVariable[elements.size()]);
-        }
+    	}
     }
     
     private void throwNotSupported() throws DebugException

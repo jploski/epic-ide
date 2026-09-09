@@ -23,9 +23,15 @@ public class RemoteLaunchConfigurationDelegate
         ILaunch launch,
         IProgressMonitor monitor) throws CoreException
     {
-        RemotePathMapper mapper = new RemotePathMapper(
-            getProject(launch),
-            getRemoteProjectDir(launch));
+    	RemotePathMapper mapper=null;
+    	if(md5Breaks(launch)){
+    		mapper = new RemotePathMapperMd5	(
+    	            getProject(launch));
+    	}else{
+    		mapper = new RemotePathMapper(
+    				getProject(launch),
+    				getRemoteProjectDir(launch));
+    	}
         
         if (shouldCreateDebugPackage(launch))
         {
@@ -111,7 +117,7 @@ public class RemoteLaunchConfigurationDelegate
     
     String getRemoteProjectDir(ILaunch launch) throws CoreException
     {
-        return launch.getLaunchConfiguration().getAttribute(
+        return md5Breaks(launch)?"":launch.getLaunchConfiguration().getAttribute(
             PerlLaunchConfigurationConstants.ATTR_REMOTE_DEST, "");
     }
     
@@ -126,5 +132,12 @@ public class RemoteLaunchConfigurationDelegate
         return launch.getLaunchConfiguration().getAttribute(
             PerlLaunchConfigurationConstants.ATTR_REMOTE_CREATE_DEBUG_PACKAGE,
             true);
+    }
+    
+    boolean md5Breaks(ILaunch launch) throws CoreException
+    {
+        return launch.getLaunchConfiguration().getAttribute(
+            PerlLaunchConfigurationConstants.ATTR_MD5_BREAKS,
+            false);
     }
 }

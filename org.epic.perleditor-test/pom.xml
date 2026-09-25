@@ -6,7 +6,7 @@
     <parent>
         <groupId>org.epic</groupId>
         <artifactId>org.epic.parent</artifactId>
-        <version>0.7.12-SNAPSHOT</version>
+        <version>0.7.13-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 

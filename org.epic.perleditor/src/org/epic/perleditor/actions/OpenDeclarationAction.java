@@ -12,9 +12,11 @@ import org.epic.perleditor.editors.PerlEditorActionIds;
  * if no selection exists, of the element over whose invocation
  * the caret is located.
  * 
- * First, the selected text is interpreted as a subroutine name.
- * If the search fails, it is interpreted as a package name and
- * the search is repeated. If that one also fails, the user is
+ * First, the selected text is interpreted as a symbol referenced through
+ * the arrow operator (e.g. <code>Some::Class-&gt;CONSTANT</code>). If this
+ * does not apply or the search fails, the selected text is interpreted as
+ * a subroutine name. If the search fails, it is interpreted as a package
+ * name and the search is repeated. If that one also fails, the user is
  * notified. 
  * 
  * @author LeO (original implementation)
@@ -24,6 +26,7 @@ public class OpenDeclarationAction extends PerlEditorAction
 {
     private final OpenSubDeclaration openSub;
     private final OpenPackageDeclaration openPackage;
+    private final OpenArrowDeclaration openArrow;
     
     //~ Constructors
 
@@ -33,6 +36,7 @@ public class OpenDeclarationAction extends PerlEditorAction
         
         this.openSub = new OpenSubDeclaration(this);
         this.openPackage = new OpenPackageDeclaration(this);
+        this.openArrow = new OpenArrowDeclaration(this);
     }
     
     //~ Methods
@@ -42,6 +46,11 @@ public class OpenDeclarationAction extends PerlEditorAction
      */
     public void run(ITextSelection selection)
     {
+        // First try to treat the selection as an arrow-qualified symbol
+        // (e.g. Some::Class->CONSTANT); if that does not apply or fails,
+        // fall back to the original sub-then-package search.
+        if (openArrow.run(selection).isFound()) return;
+
         AbstractOpenDeclaration.Result res1 = openSub.run(selection);
         if (!res1.isFound())
         {
@@ -52,6 +61,11 @@ public class OpenDeclarationAction extends PerlEditorAction
     
     protected void doRun()
     {
+        // First try to treat the selection as an arrow-qualified symbol
+        // (e.g. Some::Class->CONSTANT); if that does not apply or fails,
+        // fall back to the original sub-then-package search.
+        if (openArrow.run().isFound()) return;
+
         AbstractOpenDeclaration.Result res1 = openSub.run();
         if (!res1.isFound())
         {

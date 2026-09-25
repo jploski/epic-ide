@@ -59,7 +59,7 @@ import org.epic.perleditor.editors.perl.SourceParser;
  */
 abstract class AbstractOpenDeclaration
 {
-    private static final String REQUIRE_REG_EXPR = "^[\\s]*require\\s+(\\S+)";
+	private static final String REQUIRE_REG_EXPR = "^[ \\t]*+require\\s++(\\S+)";
     private final OpenDeclarationAction action;
 
     //~ Constructors
